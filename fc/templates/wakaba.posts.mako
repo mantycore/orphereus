@@ -33,7 +33,7 @@
 			${t.Message}
 		</blockquote>
 		%if t.OmittedPosts:
-			<span class="omittedposts">${$t.OmittedPosts}</span>
+			<span class="omittedposts">${t.OmittedPosts}</span>
 		%endif
 		%for p in t.Replies:
 			<table>

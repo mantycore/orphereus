@@ -17,25 +17,58 @@ class FccController(BaseController):
 
     def GetOverview(self):
         c.board = '*'
-        post_q = meta.Session.query(Post)
-        c.posts = post_q.all()
-        return render('/board.mako')
+        c.PostAction = ''
+        post_q = meta.Session.query(Post).filter(Post.parentid==-1)
+        c.threads = post_q.all()
+        for i in c.threads:
+            i.Replies = meta.Session.query(Post).filter(Post.parentid==i.id).all()
+        #return render('/board.mako')
+        return render('/wakaba.posts.mako')
+
 
     def GetThread(self, post):
-        return 'Thread: '+post
+        ThePost = meta.Session.query(Post).filter(Post.id==post).one()
+        if ThePost.parentid != -1:
+           Thread = meta.Session.query(Post).filter(Post.id==ThePost.parentid).one()
+        else:
+           Thread = ThePost
+        Thread.Replies = meta.Session.query(Post).filter(Post.parentid==Thread.id).all()
+        c.PostAction = Thread.id
+        c.threads = [Thread]
+        return render('/wakaba.posts.mako')
 
     def GetBoard(self, board):
         c.board = board
+        c.PostAction = board
         post_q = meta.Session.query(Post).filter(Post.tags.any(tag=board))
-        c.posts = post_q.all()
-        return render('/board.mako')
+        c.threads = post_q.all()
+        for i in c.threads:
+            i.Replies = meta.Session.query(Post).filter(Post.parentid==i.id).all()
+        #return render('/board.mako')
+        return render('/wakaba.posts.mako')
 
-    #def PostReply(self, post):
+    def PostReply(self, post):
+        ThePost = meta.Session.query(Post).filter(Post.id==post).one()
+        if ThePost.parentid != -1:
+           Thread = meta.Session.query(Post).filter(Post.id==ThePost.parentid).one()
+        else:
+           Thread = ThePost
+        postq = Post()
+        postq.message = request.POST.get('message', '')
+        postq.parentid = Thread.id
+        postq.date = datetime.datetime.now()
+        meta.Session.save(postq)
+        meta.Session.commit()
+        Thread.last_date = datetime.datetime.now()
+        meta.Session.commit()
+        redirect_to(action='GetThread')
+
     def PostThread(self, board):
         post = Post()
         post.message = request.POST.get('message', '')
         post.parentid = -1
         post.date = datetime.datetime.now()
+        post.last_date = datetime.datetime.now()
         post.tags.append(Tag(board))
         meta.Session.save(post)
         meta.Session.commit()

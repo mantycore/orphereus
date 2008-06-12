@@ -11,9 +11,21 @@ class FccController(BaseController):
         #   return render('/some/template.mako')
         # or, Return a response
         return 'Hello World'
+
     def GetOverview(self):
         return 'Overview'
-    def GetThread(self, thread):
-        return 'Thread: '+thread
+
+    def GetThread(self, post):
+        return 'Thread: '+post
+
     def GetBoard(self, board):
-        return 'Board: '+board
+        c.board = board
+        return render('/form.mako')
+
+    #def PostReply(self, post):
+    def PostThread(self, board):
+        log.debug('@PostThread')
+        redirect_to(action='GetOverview')
+
+    #def DeletePost(self, post):
+    #def UnknownAction(self):      

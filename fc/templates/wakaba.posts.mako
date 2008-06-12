@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 <%inherit file="wakaba.base.mako" />
 
 %for t in c.Threads:

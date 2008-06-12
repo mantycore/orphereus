@@ -31,29 +31,33 @@
 		<blockquote>
 			${t.Message}
 		</blockquote>
-		<span class="omittedposts">  Пропущено 8 ответов. Нажмите "ответ", чтобы увидеть тред целиком. </span> 
-		<table>
-			<tbody>
-				<tr>
-					<td class="doubledash">&gt;&gt;</td>
-					<td class="reply" id="reply2492740">
-						<a name="2492740"></a>
-						<label>
-							<input type="checkbox" name="delete" value="2492740" />
-							<span class="replytitle"></span>
-							<span class="commentpostername"></span>
-							Чтв 12 Июн 2008 05:19:59
-						</label>
-						<span class="reflink">
-							<a href="/b/res/2492501.html#i2492740">.2492740</a>
-						</span>
-						&nbsp;  
-						<blockquote>
-							<p>я нихуя не понял</p>
-						</blockquote> 
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		%if t.OmittedPosts:
+			<span class="omittedposts">${$t.OmittedPosts}</span>
+		%endif
+		%for p in t.Replies:
+			<table>
+				<tbody>
+					<tr>
+						<td class="doubledash">&gt;&gt;</td>
+						<td class="reply" id="reply${p.PostID}">
+							<a name="${p.PostID}"></a>
+							<label>
+								<input type="checkbox" name="delete" value="${p.PostID}" />
+								<span class="replytitle"></span>
+								<span class="commentpostername"></span>
+								${p.Date}
+							</label>
+							<span class="reflink">
+								<a href="${p.PostID}#i${p.PostID}">${p.PostID}</a>
+							</span>
+							&nbsp;  
+							<blockquote>
+								${p.Message}
+							</blockquote> 
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		%endfor
 	</div>
 %endfor

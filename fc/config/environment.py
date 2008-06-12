@@ -7,6 +7,9 @@ import fc.lib.app_globals as app_globals
 import fc.lib.helpers
 from fc.config.routing import make_map
 
+from sqlalchemy import engine_from_config
+from fc.model import init_model
+
 def load_environment(global_conf, app_conf):
     """Configure the Pylons environment via the ``pylons.config``
     object
@@ -29,5 +32,7 @@ def load_environment(global_conf, app_conf):
     # Customize templating options via this variable
     tmpl_options = config['buffet.template_options']
 
+    engine = engine_from_config(config, 'sqlalchemy.')
+    init_model(engine)
     # CONFIGURATION OPTIONS HERE (note: all config options will override
     # any Pylons config options)

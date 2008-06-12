@@ -1,6 +1,9 @@
 import logging
 
 from fc.lib.base import *
+from fc.model import *
+
+import datetime
 
 log = logging.getLogger(__name__)
 
@@ -20,14 +23,18 @@ class FccController(BaseController):
 
     def GetBoard(self, board):
         c.board = board
-        return render('/form.mako')
+        post_q = meta.Session.query(Post)
+        c.posts = post_q.all()
+        return render('/board.mako')
 
     #def PostReply(self, post):
     def PostThread(self, board):
-        if not session.has_key('postbody'):
-            session['postbody']=''
-        session['postbody'] = session['postbody'] + ' | ' + request.params['body']
-        session.save()
+        post = Post()
+        post.message = request.POST.get('message', '')
+        post.parentid = -1
+        post.date = datetime.datetime.now()
+        meta.Session.save(post)
+        meta.Session.commit()
         redirect_to(action='GetBoard')
 
     #def DeletePost(self, post):

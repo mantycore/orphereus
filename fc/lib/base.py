@@ -13,6 +13,8 @@ from pylons.templating import render
 import fc.lib.helpers as h
 import fc.model as model
 
+from fc.model import meta
+
 class BaseController(WSGIController):
 
     def __call__(self, environ, start_response):
@@ -20,7 +22,10 @@ class BaseController(WSGIController):
         # WSGIController.__call__ dispatches to the Controller method
         # the request is routed to. This routing information is
         # available in environ['pylons.routes_dict']
-        return WSGIController.__call__(self, environ, start_response)
+        try:
+            return WSGIController.__call__(self, environ, start_response)
+        finally:
+            meta.Session.remove()
 
 # Include the '_' function in the public names
 __all__ = [__name for __name in locals().keys() if not __name.startswith('_') \

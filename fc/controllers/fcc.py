@@ -24,8 +24,11 @@ class FccController(BaseController):
 
     #def PostReply(self, post):
     def PostThread(self, board):
-        log.debug('@PostThread')
-        redirect_to(action='GetOverview')
+        if not session.has_key('postbody'):
+            session['postbody']=''
+        session['postbody'] = session['postbody'] + ' | ' + request.params['body']
+        session.save()
+        redirect_to(action='GetBoard')
 
     #def DeletePost(self, post):
     #def UnknownAction(self):      

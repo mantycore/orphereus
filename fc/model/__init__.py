@@ -29,11 +29,12 @@ class Post(object):
     pass
 
 class Tag(object):
-    pass
+    def __init__(self, tag):
+        self.tag = tag
 
 orm.mapper(Tag, t_tags, properties = {
-    'my_posts' : orm.relation(Post, secondary = t_post_tags)
+    'posts' : orm.relation(Post, secondary = t_post_tags)
     })
 orm.mapper(Post, t_posts, properties = {
-    'my_tags' : orm.relation(Tag, secondary = t_post_tags)
+    'tags' : orm.relation(Tag, secondary = t_post_tags)
     })

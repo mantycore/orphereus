@@ -16,14 +16,17 @@ class FccController(BaseController):
         return 'Hello World'
 
     def GetOverview(self):
-        return 'Overview'
+        c.board = '*'
+        post_q = meta.Session.query(Post)
+        c.posts = post_q.all()
+        return render('/board.mako')
 
     def GetThread(self, post):
         return 'Thread: '+post
 
     def GetBoard(self, board):
         c.board = board
-        post_q = meta.Session.query(Post)
+        post_q = meta.Session.query(Post).filter(Post.tags.any(tag=board))
         c.posts = post_q.all()
         return render('/board.mako')
 
@@ -33,6 +36,7 @@ class FccController(BaseController):
         post.message = request.POST.get('message', '')
         post.parentid = -1
         post.date = datetime.datetime.now()
+        post.tags.append(Tag(board))
         meta.Session.save(post)
         meta.Session.commit()
         redirect_to(action='GetBoard')

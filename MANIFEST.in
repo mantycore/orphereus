@@ -1,0 +1,2 @@
+recursive-include fc/public *
+recursive-include fc/templates *

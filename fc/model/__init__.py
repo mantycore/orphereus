@@ -11,7 +11,9 @@ t_piclist = sa.Table("piclist", meta.metadata,
     sa.Column("path"     , sa.types.String(255), nullable=False),
     sa.Column("thumpath" , sa.types.String(255), nullable=False),
     sa.Column("width"    , sa.types.Integer, nullable=False),
-    sa.Column("height"   , sa.types.Integer, nullable=False),
+    sa.Column("height"   , sa.types.Integer, nullable=False),    
+    sa.Column("thwidth"  , sa.types.Integer, nullable=False),
+    sa.Column("thheight" , sa.types.Integer, nullable=False),
     sa.Column("spoiler"  , sa.types.Boolean, nullable=True)
     )
 
@@ -24,8 +26,8 @@ t_posts = sa.Table("posts", meta.metadata,
     sa.Column("sign"     , sa.types.String(32), nullable=True),
     sa.Column("uid_number",sa.types.Integer,nullable=True),
     sa.Column("picid"    , sa.types.Integer, sa.ForeignKey('piclist.id')),
-    sa.Column("date"     , sa.types.Date, nullable=False),
-    sa.Column("last_date", sa.types.Date, nullable=True)
+    sa.Column("date"     , sa.types.Datetime, nullable=False),
+    sa.Column("last_date", sa.types.Datetime, nullable=True)
     )
 
 t_tags = sa.Table("tags", meta.metadata,

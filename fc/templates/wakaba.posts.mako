@@ -1,59 +1,104 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.base.mako" />
+<%inherit file="wakaba.main.mako" />
 
-%for t in c.Threads:
-	<div id="thread-${t.PostID}">
+<div class="postarea">
+	<form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="task" value="post" />
+	<input type="hidden" name="akane" />
+	<table>
+		<tbody>
+		<tr id="tremail">
+			<td class="postblock">Sage</td>
+			<td><input type="checkbox" name="sage" /></td>
+		</tr>
+		<tr id="trsubject">
+			<td class="postblock">Title</td>
+			<td>
+				<input type="text" name="title" size="35" />
+				<input type="submit" value="Post" />
+			</td>
+		</tr>
+		<tr id="trcomment">
+			<td class="postblock">Text</td>
+			<td><textarea name="message" cols="60" rows="6"></textarea></td>
+		</tr>
+		<tr id="trfile">
+			<td class="postblock">File</td>
+			<td><input type="file" name="file" size="35" /></td>
+		</tr>
+		<tr id="trgetback">
+			<td class="postblock">Gb2 :</td>
+			<td>
+				<label><input type="radio" name="gb2" value="board" />board</label>
+				<label>
+					<input type="radio" name="gb2" value="thread" checked="checked" /> 
+					thread
+				</label>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+	</form>
+</div>
+<hr />
+
+%for thread in c.threads:
+	<div id="thread-${thread.id}">
+		<%doc>
 		<span class="filesize">
-			<a target="_blank" href="${t.FileSrc}">${t.FileName}</a>
-			(<em>${t.FileSize}, ${t.ImgDimensions}</em>)
+			<a target="_blank" href="${c.Threads[t]['FileSrc']}">${c.Threads[t]['FileName']}</a>
+			(<em>${c.Threads[t]['FileSize']}, ${c.Threads[t]['ImgDimensions']}</em>)
 		</span>
 		<span class="thumbnailmsg"></span><br />
-		<a target="_blank" href="${t.FileSrc}">
-			<img src="${ThumbSrc}" class="thumb" />
+		<a target="_blank" href="${c.Threads[t]['FileSrc']}">
+			<img src="${c.Threads[t]['ThumbSrc']}" class="thumb" />
 		</a>
-		<a name="${t.PostID}"></a>
+		</%doc>
+		<a name="${thread.id}"></a>
 		<label>
-			<input type="checkbox" name="delete" value="${t.PostID}" />
+			<input type="checkbox" name="delete" value="${thread.id}" />
 			<span class="filetitle"></span>  
 			<span class="postername"></span>
-			${t.Date}
+			${thread.date}
 		</label>
 		<span class="reflink">
-			<a href="${t.PostID}#i${t.PostID}">${t.PostID}</a>
+			<a href="${thread.id}#i${thread.id}">#${thread.id}</a>
 		</span>
 		&nbsp;
 		<span class="replytothread">
 			[
-			<a href="${t.PostID}#i${t.PostID}">
-				${c.Strings.Reply}
+			<a href="${thread.id}#i${thread.id}">
+				Reply
 			</a>
 			]
 		</span>
 		<blockquote>
-			${t.Message}
+			${thread.message}
 		</blockquote>
-		%if t.OmittedPosts:
-			<span class="omittedposts">${t.OmittedPosts}</span>
-		%endif
-		%for p in t.Replies:
+		<%doc>
+		if c.Threads[t]['OmittedPosts']:
+			<span class="omittedposts">${c.Threads[t]['OmittedPosts']}</span>
+		endif
+		</%doc>
+		%for p in thread.Replies:
 			<table>
 				<tbody>
 					<tr>
 						<td class="doubledash">&gt;&gt;</td>
-						<td class="reply" id="reply${p.PostID}">
-							<a name="${p.PostID}"></a>
+						<td class="reply" id="reply${p.id}">
+							<a name="${p.id}"></a>
 							<label>
-								<input type="checkbox" name="delete" value="${p.PostID}" />
+								<input type="checkbox" name="delete" value="${p.id}" />
 								<span class="replytitle"></span>
 								<span class="commentpostername"></span>
-								${p.Date}
+								${p.date}
 							</label>
 							<span class="reflink">
-								<a href="${p.PostID}#i${p.PostID}">${p.PostID}</a>
+								<a href="${p.id}#i${p.id}">${p.id}</a>
 							</span>
 							&nbsp;  
 							<blockquote>
-								${p.Message}
+								${p.message}
 							</blockquote> 
 						</td>
 					</tr>
@@ -61,4 +106,5 @@
 			</table>
 		%endfor
 	</div>
+	<br clear="left" /><hr />
 %endfor

@@ -26,8 +26,8 @@ t_posts = sa.Table("posts", meta.metadata,
     sa.Column("sign"     , sa.types.String(32), nullable=True),
     sa.Column("uid_number",sa.types.Integer,nullable=True),
     sa.Column("picid"    , sa.types.Integer, sa.ForeignKey('piclist.id')),
-    sa.Column("date"     , sa.types.Datetime, nullable=False),
-    sa.Column("last_date", sa.types.Datetime, nullable=True)
+    sa.Column("date"     , sa.types.DateTime, nullable=False),
+    sa.Column("last_date", sa.types.DateTime, nullable=True)
     )
 
 t_tags = sa.Table("tags", meta.metadata,

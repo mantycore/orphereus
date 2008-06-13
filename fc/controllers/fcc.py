@@ -26,7 +26,7 @@ class FccController(BaseController):
            return []
 
     def processFile(self, file):
-        if file.filename:
+        if file and file.filename:
            # We should check whether we got this file already or not
            # If we dont have it, we add it
            name = str(long(time.time() * 10**7))
@@ -83,7 +83,7 @@ class FccController(BaseController):
         c.board = '*'
         c.PostAction = ''
         c.uploadPathWeb = uploadPathWeb
-        post_q = meta.Session.query(Post).filter(Post.parentid==-1)
+        post_q = meta.Session.query(Post).filter(Post.parentid==-1).order_by(Post.last_date.desc())
         c.threads = post_q.all()
         for i in c.threads:
             i.Replies = meta.Session.query(Post).filter(Post.parentid==i.id).all()
@@ -126,7 +126,7 @@ class FccController(BaseController):
         c.board = board
         c.PostAction = board
         c.uploadPathWeb = uploadPathWeb
-        post_q = meta.Session.query(Post).filter(Post.tags.any(tag=board))
+        post_q = meta.Session.query(Post).filter(Post.tags.any(tag=board)).order_by(Post.last_date.desc())
         c.threads = post_q.all()
         for i in c.threads:
             i.Replies = meta.Session.query(Post).filter(Post.parentid==i.id).all()

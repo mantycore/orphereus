@@ -44,16 +44,16 @@
 
 %for thread in c.threads:
 	<div id="thread-${thread.id}">
-		<%doc>
+		%if thread.file:
 		<span class="filesize">
-			<a target="_blank" href="${c.Threads[t]['FileSrc']}">${c.Threads[t]['FileName']}</a>
-			(<em>${c.Threads[t]['FileSize']}, ${c.Threads[t]['ImgDimensions']}</em>)
+			<a target="_blank" href="${c.uploadPathWeb + thread.file.path}">${thread.file.path}</a>
+			(<em>${thread.file.size}, ${thread.file.width}x${thread.file.height}</em>)
 		</span>
 		<span class="thumbnailmsg"></span><br />
-		<a target="_blank" href="${c.Threads[t]['FileSrc']}">
-			<img src="${c.Threads[t]['ThumbSrc']}" class="thumb" />
+		<a target="_blank" href="${c.uploadPathWeb + thread.file.path}">
+			<img src="${c.uploadPathWeb + thread.file.thumpath}" class="thumb" />
 		</a>
-		</%doc>
+		%endif
 		<a name="${thread.id}"></a>
 		<label>
 			<input type="checkbox" name="delete" value="${thread.id}" />
@@ -94,9 +94,18 @@
 								${p.date}
 							</label>
 							<span class="reflink">
-								<a href="${p.id}#i${p.id}">${p.id}</a>
+								<a href="${p.id}#i${p.id}">#${p.id}</a>
 							</span>
 							&nbsp;  
+							%if p.file:
+								<br /><span class="filesize">File: <a 
+							target="_blank" 
+							href="${c.uploadPathWeb + p.file.path}">${p.file.path}</a> 
+							(<em>${p.file.size}, ${p.file.width}x${p.file.height}</em>)</span> <span 
+							class="thumbnailmsg"></span><br 
+							/>  <a target="_blank" href="${c.uploadPathWeb + p.file.path}">   <img src="${c.uploadPathWeb + p.file.thumpath}" width="${p.file.thwidth}" 
+							height="${p.file.thheight}" class="thumb" />  </a>							
+							%endif
 							<blockquote>
 								${p.message}
 							</blockquote> 

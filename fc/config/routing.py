@@ -18,6 +18,7 @@ def make_map():
 
     # CUSTOM ROUTES HERE
     map.connect('', controller='fcc', action='GetOverview')
+    map.connect('/:url/auth', controller='fcc', action='authorize', conditions=dict(method=['POST']))
     map.connect('/:post', controller='fcc', action='PostReply',conditions=dict(method=['POST']),requirements=dict(post='\d+'))
     map.connect('/:board', controller='fcc', action='PostThread',conditions=dict(method=['POST']))
     map.connect('/:post/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))

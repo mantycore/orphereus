@@ -169,14 +169,17 @@ class FccController(BaseController):
         file = request.POST['file'];
         postq = Post()
         postq.message = request.POST.get('message', '')
+        postq.title = request.POST['title']
         postq.parentid = Thread.id
         postq.date = datetime.datetime.now()
         postq.picid = self.processFile(file)
         postq.uid_number = session['uid_number']
+        postq.sage = request.POST.get('sage', False)
         meta.Session.save(postq)
         meta.Session.commit()
-        Thread.last_date = datetime.datetime.now()
-        meta.Session.commit()
+        if not postq.sage:
+           Thread.last_date = datetime.datetime.now()
+           meta.Session.commit()
         redirect_to(action='GetThread')
 
     def PostThread(self, board):
@@ -187,6 +190,7 @@ class FccController(BaseController):
         post.message = request.POST.get('message', '')
         file = request.POST['file'];
         post.parentid = -1
+        post.title = request.POST['titile']
         post.date = datetime.datetime.now()
         post.last_date = datetime.datetime.now()
         post.picid = self.processFile(file)

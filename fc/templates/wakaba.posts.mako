@@ -57,7 +57,7 @@
 		<a name="${thread.id}"></a>
 		<label>
 			<input type="checkbox" name="delete" value="${thread.id}" />
-			<span class="filetitle"></span>  
+			<span class="filetitle">${thread.title}</span>  
 			<span class="postername"></span>
 			${thread.date}
 		</label>
@@ -89,7 +89,10 @@
 							<a name="${p.id}"></a>
 							<label>
 								<input type="checkbox" name="delete" value="${p.id}" />
-								<span class="replytitle"></span>
+								%if p.sage:
+								  <img src='/images/sage.png'>
+								%endif
+								<span class="replytitle">${p.title}</span>
 								<span class="commentpostername"></span>
 								${p.date}
 							</label>

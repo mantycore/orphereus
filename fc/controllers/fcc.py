@@ -212,5 +212,38 @@ class FccController(BaseController):
               session.save()
               redirect_to(c.currentURL)
         return render('/wakaba.login.mako')
+    def makeInvite(self):
+        c.currentURL = request.path_info + '/'
+        if not self.isAuthorized():
+           return render('/wakaba.login.mako')
+        invite = Invite()
+        invite.date = datetime.datetime.now()
+        invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+        meta.Session.save(invite)
+        meta.Session.commit()
+        return "<a href='/register/%s'>INVITE</a>" % invite.invite
+    
+    def register(self,invite):
+        if 'invite' not in session:
+            invite_q = meta.Session.query(Invite).filter(Invite.invite==invite).first()
+            if invite_q:
+                meta.Session.delete(invite_q)
+                meta.Session.commit()
+                session['invite'] = invite
+                session.save()
+            else:
+                abort(404)
+        key = request.POST.get('key','')
+        if key:
+            if len(key)>=24:
+               uid = hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+               user = User()
+               user.uid = uid
+               meta.Session.save(user)
+               meta.Session.commit()
+               session['uid_number']=user.uid_number
+               session.save()
+               redirect_to('/')
+        return render('/wakaba.register.mako')
     #def DeletePost(self, post):
     #def UnknownAction(self):      

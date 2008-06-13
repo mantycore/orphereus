@@ -6,6 +6,12 @@ def init_model(engine):
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
 
+t_invites = sa.Table("invites", meta.metadata,
+    sa.Column("id"       , sa.types.Integer, primary_key=True),
+    sa.Column("invite"   , sa.types.String(128), nullable=False),
+    sa.Column("date"     , sa.types.DateTime,  nullable=False)
+    )
+
 t_users = sa.Table("users", meta.metadata,
     sa.Column("uid_number",sa.types.Integer, primary_key=True),
     sa.Column("uid"      , sa.types.String(128), nullable=False)
@@ -57,6 +63,8 @@ t_post_tags = sa.Table("post_tags", meta.metadata,
     sa.Column('tag_id', sa.types.Integer, sa.ForeignKey('tags.id')),
     sa.Column('is_main', sa.types.Boolean, nullable=True)
     )
+class Invite(object):
+    pass
 
 class User(object):
     pass
@@ -74,6 +82,7 @@ class Tag(object):
     def __init__(self, tag):
         self.tag = tag
 
+orm.mapper(Invite, t_invites)
 orm.mapper(User, t_users)
 orm.mapper(Extension, t_extlist)
 orm.mapper(Picture, t_piclist, properties = {

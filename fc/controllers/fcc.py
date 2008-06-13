@@ -233,7 +233,8 @@ class FccController(BaseController):
                 session['invite'] = invite
                 session.save()
             else:
-                abort(404)
+                c.currentURL = '/'
+                return render('/wakaba.login.mako')
         key = request.POST.get('key','')
         key2 = request.POST.get('key2','')
         if key:

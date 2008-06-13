@@ -234,14 +234,16 @@ class FccController(BaseController):
             else:
                 abort(404)
         key = request.POST.get('key','')
+        key2 = request.POST.get('key2','')
         if key:
-            if len(key)>=24:
+            if len(key)>=24 and key == key2:
                uid = hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
                user = User()
                user.uid = uid
                meta.Session.save(user)
                meta.Session.commit()
                session['uid_number']=user.uid_number
+               del session['invite']
                session.save()
                redirect_to('/')
         return render('/wakaba.register.mako')

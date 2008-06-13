@@ -85,7 +85,7 @@ class FccController(BaseController):
         return 'Hello World'
 
     def GetOverview(self):
-	c.currentURL = request.path_info
+	c.currentURL = '/'
 	if not self.isAuthorized():
 	   return render('/wakaba.login.mako')
         c.board = '*'
@@ -110,7 +110,7 @@ class FccController(BaseController):
 
 
     def GetThread(self, post):
-        c.currentURL = request.path_info
+        c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
         ThePost = meta.Session.query(Post).filter(Post.id==post).one()
@@ -134,7 +134,7 @@ class FccController(BaseController):
         return render('/wakaba.posts.mako')
 
     def GetBoard(self, board):
-        c.currentURL = request.path_info
+        c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
         c.board = board
@@ -158,7 +158,7 @@ class FccController(BaseController):
         return render('/wakaba.posts.mako')
 
     def PostReply(self, post):
-        c.currentURL = request.path_info
+        c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
         ThePost = meta.Session.query(Post).filter(Post.id==post).one()
@@ -183,7 +183,7 @@ class FccController(BaseController):
         redirect_to(action='GetThread')
 
     def PostThread(self, board):
-        c.currentURL = request.path_info
+        c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
         post = Post()
@@ -200,7 +200,10 @@ class FccController(BaseController):
         meta.Session.commit()
         redirect_to(action='GetBoard')
     def authorize(self, url):
-        c.currentURL = '/' + str(url)
+        if url:
+          c.currentURL = '/' + str(url) + '/'
+        else:
+          c.currentURL = '/'
         if request.POST['code']:
            code = hashlib.sha512(request.POST['code'] + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
            user = meta.Session.query(User).filter(User.uid==code).first()

@@ -9,12 +9,17 @@ import datetime
 import time
 import Image
 import posix
+import hashlib
 
 log = logging.getLogger(__name__)
 uploadPath = 'fc/public/uploads/'
 uploadPathWeb = '/uploads/'
+hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 
 class FccController(BaseController):
+    def isAuthorized(self):
+        return 'uid_number' in session
+
     def makeThumbnail(self, source, dest, maxSize):
         sourceImage = Image.open(source)
         size = sourceImage.size
@@ -80,6 +85,9 @@ class FccController(BaseController):
         return 'Hello World'
 
     def GetOverview(self):
+	c.currentURL = request.path_info
+	if not self.isAuthorized():
+	   return render('/wakaba.login.mako')
         c.board = '*'
         c.PostAction = ''
         c.uploadPathWeb = uploadPathWeb
@@ -102,6 +110,9 @@ class FccController(BaseController):
 
 
     def GetThread(self, post):
+        c.currentURL = request.path_info
+        if not self.isAuthorized():
+           return render('/wakaba.login.mako')
         ThePost = meta.Session.query(Post).filter(Post.id==post).one()
         if ThePost.parentid != -1:
            Thread = meta.Session.query(Post).filter(Post.id==ThePost.parentid).one()
@@ -123,6 +134,9 @@ class FccController(BaseController):
         return render('/wakaba.posts.mako')
 
     def GetBoard(self, board):
+        c.currentURL = request.path_info
+        if not self.isAuthorized():
+           return render('/wakaba.login.mako')
         c.board = board
         c.PostAction = board
         c.uploadPathWeb = uploadPathWeb
@@ -144,6 +158,9 @@ class FccController(BaseController):
         return render('/wakaba.posts.mako')
 
     def PostReply(self, post):
+        c.currentURL = request.path_info
+        if not self.isAuthorized():
+           return render('/wakaba.login.mako')
         ThePost = meta.Session.query(Post).filter(Post.id==post).one()
         if ThePost.parentid != -1:
            Thread = meta.Session.query(Post).filter(Post.id==ThePost.parentid).one()
@@ -155,6 +172,7 @@ class FccController(BaseController):
         postq.parentid = Thread.id
         postq.date = datetime.datetime.now()
         postq.picid = self.processFile(file)
+        postq.uid_number = session['uid_number']
         meta.Session.save(postq)
         meta.Session.commit()
         Thread.last_date = datetime.datetime.now()
@@ -162,6 +180,9 @@ class FccController(BaseController):
         redirect_to(action='GetThread')
 
     def PostThread(self, board):
+        c.currentURL = request.path_info
+        if not self.isAuthorized():
+           return render('/wakaba.login.mako')
         post = Post()
         post.message = request.POST.get('message', '')
         file = request.POST['file'];
@@ -169,10 +190,20 @@ class FccController(BaseController):
         post.date = datetime.datetime.now()
         post.last_date = datetime.datetime.now()
         post.picid = self.processFile(file)
+        post.uid_number = session['uid_number']
         post.tags.append(Tag(board))
         meta.Session.save(post)
         meta.Session.commit()
         redirect_to(action='GetBoard')
-
+    def authorize(self, url):
+        c.currentURL = '/' + str(url)
+        if request.POST['code']:
+           code = hashlib.sha512(request.POST['code'] + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+           user = meta.Session.query(User).filter(User.uid==code).first()
+           if user:
+              session['uid_number'] = user.uid_number
+              session.save()
+              redirect_to(c.currentURL)
+        return render('/wakaba.login.mako')
     #def DeletePost(self, post):
     #def UnknownAction(self):      

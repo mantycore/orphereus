@@ -4,6 +4,7 @@ from fc.lib.base import *
 from fc.model import *
 
 import os
+import cgi
 import shutil
 import datetime
 import time
@@ -31,7 +32,7 @@ class FccController(BaseController):
            return []
 
     def processFile(self, file):
-        if file and file.filename:
+        if isinstance(file,cgi.FieldStorage):
            # We should check whether we got this file already or not
            # If we dont have it, we add it
            name = str(long(time.time() * 10**7))
@@ -166,7 +167,7 @@ class FccController(BaseController):
            Thread = meta.Session.query(Post).filter(Post.id==ThePost.parentid).one()
         else:
            Thread = ThePost
-        file = request.POST['file'];
+        file = request.POST.get('file',False);
         postq = Post()
         postq.message = request.POST.get('message', '')
         postq.title = request.POST['title']
@@ -190,7 +191,7 @@ class FccController(BaseController):
         post.message = request.POST.get('message', '')
         file = request.POST['file'];
         post.parentid = -1
-        post.title = request.POST['titile']
+        post.title = request.POST['title']
         post.date = datetime.datetime.now()
         post.last_date = datetime.datetime.now()
         post.picid = self.processFile(file)

@@ -54,7 +54,7 @@
 			<img src="${c.uploadPathWeb + thread.file.thumpath}" class="thumb" />
 		</a>
 		%endif
-		<a name="${thread.id}"></a>
+		<a name="i${thread.id}"></a>
 		<label>
 			<input type="checkbox" name="delete" value="${thread.id}" />
 			<span class="filetitle">${thread.title}</span>  
@@ -72,7 +72,7 @@
 			</a>
 			]
 		</span>
-		<blockquote>
+		<blockquote class="postbody">
 			${thread.message}
 		</blockquote>
 		<%doc>
@@ -86,7 +86,7 @@
 					<tr>
 						<td class="doubledash">&gt;&gt;</td>
 						<td class="reply" id="reply${p.id}">
-							<a name="${p.id}"></a>
+							<a name="i${p.id}"></a>
 							<label>
 								<input type="checkbox" name="delete" value="${p.id}" />
 								%if p.sage:
@@ -109,7 +109,7 @@
 							/>  <a target="_blank" href="${c.uploadPathWeb + p.file.path}">   <img src="${c.uploadPathWeb + p.file.thumpath}" width="${p.file.thwidth}" 
 							height="${p.file.thheight}" class="thumb" />  </a>							
 							%endif
-							<blockquote>
+							<blockquote class="postbody">
 								${p.message}
 							</blockquote> 
 						</td>

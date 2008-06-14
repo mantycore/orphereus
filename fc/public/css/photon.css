@@ -223,5 +223,26 @@ p.spoiler > span.spoiler {
 p.spoiler > span.spoiler:hover {
 	color: #333333;
 }
+.signature {
+        background: #00FF00;
+        color: #00AA00;
+}
+.signature a {
+        color: #006600;
+}
+.signature a:hover {
+        color: #003300;
+}
 
-
+.postbody blockquote {
+        background:inherit;
+        color:#789922;
+}
+.postbody blockquote blockquote{
+        color:#406010;
+        margin:0;
+}
+.postbody blockquote blockquote blockquote{
+        color:#204010;
+        margin:0;
+}

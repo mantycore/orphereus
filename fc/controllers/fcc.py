@@ -12,6 +12,8 @@ import Image
 import posix
 import hashlib
 
+import wakabaparse
+
 log = logging.getLogger(__name__)
 uploadPath = 'fc/public/uploads/'
 uploadPathWeb = '/uploads/'
@@ -20,6 +22,20 @@ hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 class FccController(BaseController):
     def isAuthorized(self):
         return 'uid_number' in session
+
+    def getParentID(self, id):
+        post = meta.Session.query(Post).filter(Post.id==id).first()
+        if post:
+           return post.parentid
+        else:
+           return False
+    
+    def isPostOwner(self, id):
+        post = meta.Session.query(Post).filter(Post.id==id).first()
+        if post and post.uid_number == session['uid_number']:
+           return post.parentid
+        else:
+           return False
 
     def makeThumbnail(self, source, dest, maxSize):
         sourceImage = Image.open(source)
@@ -170,6 +186,8 @@ class FccController(BaseController):
         file = request.POST.get('file',False);
         postq = Post()
         postq.message = request.POST.get('message', '')
+        if postq.message:
+           postq.message = wakabaparse.parseWakaba(postq.message,self)
         postq.title = request.POST['title']
         postq.parentid = Thread.id
         postq.date = datetime.datetime.now()
@@ -189,6 +207,8 @@ class FccController(BaseController):
            return render('/wakaba.login.mako')
         post = Post()
         post.message = request.POST.get('message', '')
+        if post.message:
+           post.message = wakabaparse.parseWakaba(post.message,self)                
         file = request.POST['file'];
         post.parentid = -1
         post.title = request.POST['title']
@@ -214,9 +234,9 @@ class FccController(BaseController):
               redirect_to(c.currentURL)
         return render('/wakaba.login.mako')
     def makeInvite(self):
-        c.currentURL = request.path_info + '/'
-        if not self.isAuthorized():
-           return render('/wakaba.login.mako')
+        #c.currentURL = request.path_info + '/'
+        #if not self.isAuthorized():
+        #   return render('/wakaba.login.mako')
         invite = Invite()
         invite.date = datetime.datetime.now()
         invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()

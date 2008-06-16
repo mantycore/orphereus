@@ -22,10 +22,16 @@
 			<td class="postblock">Text</td>
 			<td><textarea name="message" cols="60" rows="6"></textarea></td>
 		</tr>
-		<tr id="trfile">
+		%if c.oekaki:
+		  <tr id="trfile">
+		        <td colspan=2><input type="hidden" name="tempid" value="${c.oekaki.tempid}"><img src="${c.uploadPathWeb + c.oekaki.path}"></td>
+		  </tr>
+		%else:
+		  <tr id="trfile">
 			<td class="postblock">File</td>
 			<td><input type="file" name="file" size="35" /></td>
-		</tr>
+		  </tr>
+		%endif
 		<tr id="trgetback">
 			<td class="postblock">Gb2 :</td>
 			<td>
@@ -66,11 +72,10 @@
 		</span>
 		&nbsp;
 		<span class="replytothread">
-			[
-			<a href="${thread.id}#i${thread.id}">
-				Reply
-			</a>
-			]
+			[<a href="${thread.id}#i${thread.id}">Reply</a>]
+			%if thread.file and thread.file.width:
+			 [<a href="${thread.id}/oekakiDraw">Draw</a>]
+			%endif
 		</span>
 		<blockquote class="postbody">
 			${thread.message}
@@ -98,6 +103,10 @@
 							</label>
 							<span class="reflink">
 								<a href="${p.id}#i${p.id}">#${p.id}</a>
+								%if p.file and p.file.width:
+                                                                  [<a href="${p.id}/oekakiDraw">Draw</a>]
+                                                                %endif
+                                                                         								
 							</span>
 							&nbsp;  
 							%if p.file:

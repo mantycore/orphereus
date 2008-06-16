@@ -21,12 +21,15 @@ def make_map():
     map.connect('/auth', controller='fcc', action='authorize', url='', conditions=dict(method=['POST']))
     map.connect('/register/:invite', controller='fcc', action='register')
     map.connect('/makeInvite', controller='fcc', action='makeInvite')
+    map.connect('/:url/oekakiDraw', controller='fcc', action='oekakiDraw', url='')
+    map.connect('/:url/oekakiSave/:tempid', controller='fcc', action='oekakiSave', url='',requirements=dict(tempid='\d+'))
+    map.connect('/:url/oekakiFinish/:tempid', controller='fcc', action='oekakiFinish', url='',requirements=dict(tempid='\d+'))
     map.connect('/:url/auth', controller='fcc', action='authorize', url='', conditions=dict(method=['POST']))
     map.connect('/:post', controller='fcc', action='PostReply',conditions=dict(method=['POST']),requirements=dict(post='\d+'))
     map.connect('/:board', controller='fcc', action='PostThread',conditions=dict(method=['POST']))
     map.connect('/:post/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))
-    map.connect('/:post', controller='fcc', action='GetThread',requirements=dict(post='\d+'))
-    map.connect('/:board', controller='fcc', action='GetBoard')
+    map.connect('/:post/:tempid', controller='fcc', action='GetThread', tempid=0, requirements=dict(post='\d+',tempid='\d+'))
+    map.connect('/:board/:tempid', controller='fcc', action='GetBoard', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('*url', controller='fcc', action='UnknownAction')
 
     return map

@@ -2,7 +2,6 @@ import logging
 
 from fc.lib.base import *
 from fc.model import *
-
 import os
 import cgi
 import shutil
@@ -13,6 +12,18 @@ import posix
 import hashlib
 
 import wakabaparse
+
+class FieldStorageLike(object):
+    def __init__(self,filename,filepath):
+       self.filename = filename
+       self.file = open(filepath,'rb')
+
+def isNumber(n):
+   import re
+   if re.match("^[-+]?[0-9]+$", n):
+      return True
+   else:
+      return False
 
 log = logging.getLogger(__name__)
 uploadPath = 'fc/public/uploads/'
@@ -48,7 +59,13 @@ class FccController(BaseController):
            return []
 
     def processFile(self, file):
-        if isinstance(file,cgi.FieldStorage):
+        if isinstance(file,cgi.FieldStorage) or isinstance(file,FieldStorageLike):
+           #if isinstance(file,cgi.FieldStorage):
+           #   filef  = file.file
+           #   finenm = file.filename
+           #else:
+           #   filef  = file['file']
+           #   filenm = file['filename']
            # We should check whether we got this file already or not
            # If we dont have it, we add it
            name = str(long(time.time() * 10**7))
@@ -122,11 +139,11 @@ class FccController(BaseController):
                i.file = meta.Session.query(Picture).filter(Picture.id==i.picid).one()
             else:
                i.file = False
-        #return render('/board.mako')
+        c.oekaki = False
         return render('/wakaba.posts.mako')
 
 
-    def GetThread(self, post):
+    def GetThread(self, post, tempid):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
@@ -148,9 +165,15 @@ class FccController(BaseController):
         c.PostAction = Thread.id
         c.threads = [Thread]
         c.uploadPathWeb = uploadPathWeb
+        
+        if tempid:
+           oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+           c.oekaki = oekaki
+        else:
+           c.oekaki = False
         return render('/wakaba.posts.mako')
 
-    def GetBoard(self, board):
+    def GetBoard(self, board, tempid):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
@@ -171,7 +194,13 @@ class FccController(BaseController):
                i.file = meta.Session.query(Picture).filter(Picture.id==i.picid).one()
             else:
                i.file = False
-        #return render('/board.mako')
+
+        if tempid:
+           oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+           c.oekaki = oekaki
+        else:
+           c.oekaki = False
+
         return render('/wakaba.posts.mako')
 
     def PostReply(self, post):
@@ -183,9 +212,17 @@ class FccController(BaseController):
            Thread = meta.Session.query(Post).filter(Post.id==ThePost.parentid).one()
         else:
            Thread = ThePost
-        file = request.POST.get('file',False);
+        tempid = request.POST.get('tempid',False)
         postq = Post()
         postq.message = request.POST.get('message', '')
+        if tempid:
+           oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+           file = FieldStorageLike(oekaki.path,os.path.join(uploadPath,oekaki.path))
+           postq.message += "\r\nDrawn with **%s** in %s seconds" % (oekaki.type,str(int(oekaki.time/1000)))
+           if oekaki.source:
+              postq.message += ", source >>%s" % oekaki.source
+        else:
+           file = request.POST.get('file',False)
         if postq.message:
            postq.message = wakabaparse.parseWakaba(postq.message,self)
         postq.title = request.POST['title']
@@ -207,9 +244,17 @@ class FccController(BaseController):
            return render('/wakaba.login.mako')
         post = Post()
         post.message = request.POST.get('message', '')
+        tempid = request.POST.get('tempid',False)
+        if tempid:
+           oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+           file = FieldStorageLike(oekaki.path,os.path.join(uploadPath,oekaki.path))
+           post.message += "\r\nDrawn with **%s** in %s seconds" % (oekaki.type,str(int(oekaki.time/1000)))
+           if oekaki.source:
+              post.message += ", source >>%s" % oekaki.source
+        else:
+           file = request.POST.get('file',False)
         if post.message:
            post.message = wakabaparse.parseWakaba(post.message,self)                
-        file = request.POST['file'];
         post.parentid = -1
         post.title = request.POST['title']
         post.date = datetime.datetime.now()
@@ -269,5 +314,67 @@ class FccController(BaseController):
                session.save()
                redirect_to('/')
         return render('/wakaba.register.mako')
+    def oekakiDraw(self,url):
+        c.currentURL = request.path_info + '/'
+        if not self.isAuthorized():
+           return render('/wakaba.login.mako')
+        c.url = url
+        c.uploadPathWeb = uploadPathWeb
+        c.canvas = False
+        c.width  = 300
+        c.height = 300
+        c.tempid = str(long(time.time() * 10**7))
+        oekaki = Oekaki()
+        oekaki.tempid = c.tempid
+        oekaki.picid = -1
+        oekaki.time = -1
+        oekaki.type = 'Shi normal'
+        oekaki.uid_number = session['uid_number']
+        oekaki.path = ''        
+        oekaki.source = 0
+        if isNumber(url):
+           post = meta.Session.query(Post).filter(Post.id==url).one()
+           if post.picid:
+              pic = meta.Session.query(Picture).filter(Picture.id==post.picid).first()
+              if pic and pic.width:
+                 oekaki.source = post.id
+                 c.canvas = pic.path
+                 c.width  = pic.width
+                 c.height = pic.height
+        meta.Session.save(oekaki)
+        meta.Session.commit()
+        return render('/spainter.mako')
+    def oekakiSave(self, environ, start_response, url,tempid):
+        start_response('200 OK', [('Content-Type','text/plain'),('Content-Length','2')])
+        oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+        print oekaki
+        cl = int(request.environ['CONTENT_LENGTH'])
+        if oekaki and cl:
+           id = request.environ['wsgi.input'].read(1)
+           if id == 'S':
+              headerLength = int(request.environ['wsgi.input'].read(8))
+              print headerLength
+              header = request.environ['wsgi.input'].read(headerLength)
+              print header
+              bodyLength = int(request.environ['wsgi.input'].read(8))
+              #print bodyLength
+              request.environ['wsgi.input'].read(2)
+              body = request.environ['wsgi.input'].read(bodyLength)
+              #print type(body)
+              headers = header.split('&')
+              type = headers[0].split('=')[1]
+              time = headers[1].split('=')[1]
+              localFilePath = os.path.join(uploadPath,tempid + '.' + type)
+              localFile = open(localFilePath,'wb')
+              localFile.write(body)
+              localFile.close()
+              oekaki.time = time
+              oekaki.type = 'Shi normal'
+              oekaki.path = tempid + '.' + type
+              meta.Session.commit()
+        return ['ok']
+    def oekakiFinish(self,url,tempid):
+        print type(c)
+        return 'ok'
     #def DeletePost(self, post):
     #def UnknownAction(self):      

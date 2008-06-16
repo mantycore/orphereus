@@ -39,6 +39,17 @@ t_piclist = sa.Table("piclist", meta.metadata,
     sa.Column("spoiler"  , sa.types.Boolean, nullable=True)
     )
 
+t_oekaki = sa.Table("oekaki", meta.metadata,
+    sa.Column("id"       , sa.types.Integer, primary_key=True),
+    sa.Column("tempid"   , sa.types.Integer, nullable=False),
+    sa.Column("picid"    , sa.types.Integer, nullable=False),
+    sa.Column("time"     , sa.types.Integer, nullable=False),
+    sa.Column("source"   , sa.types.Integer, nullable=False),
+    sa.Column("uid_number",sa.types.Integer, nullable=False),
+    sa.Column("type"     , sa.types.String(255), nullable=False),
+    sa.Column("path"     , sa.types.String(255), nullable=False)
+    )
+
 t_posts = sa.Table("posts", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("parentid" , sa.types.Integer, nullable=False),
@@ -63,6 +74,10 @@ t_post_tags = sa.Table("post_tags", meta.metadata,
     sa.Column('tag_id', sa.types.Integer, sa.ForeignKey('tags.id')),
     sa.Column('is_main', sa.types.Boolean, nullable=True)
     )
+    
+class Oekaki(object):
+    pass
+    
 class Invite(object):
     pass
 
@@ -81,7 +96,7 @@ class Post(object):
 class Tag(object):
     def __init__(self, tag):
         self.tag = tag
-
+orm.mapper(Oekaki, t_oekaki)
 orm.mapper(Invite, t_invites)
 orm.mapper(User, t_users)
 orm.mapper(Extension, t_extlist)

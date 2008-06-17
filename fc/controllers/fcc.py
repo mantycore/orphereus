@@ -15,15 +15,15 @@ import wakabaparse
 
 class FieldStorageLike(object):
     def __init__(self,filename,filepath):
-       self.filename = filename
-       self.file = open(filepath,'rb')
+        self.filename = filename
+        self.file = open(filepath,'rb')
 
 def isNumber(n):
-   import re
-   if re.match("^[-+]?[0-9]+$", n):
-      return True
-   else:
-      return False
+	import re
+	if re.match("^[-+]?[0-9]+$", n):
+		return True
+	else:
+		return False
 
 log = logging.getLogger(__name__)
 uploadPath = 'fc/public/uploads/'
@@ -60,12 +60,6 @@ class FccController(BaseController):
 
     def processFile(self, file):
         if isinstance(file,cgi.FieldStorage) or isinstance(file,FieldStorageLike):
-           #if isinstance(file,cgi.FieldStorage):
-           #   filef  = file.file
-           #   finenm = file.filename
-           #else:
-           #   filef  = file['file']
-           #   filenm = file['filename']
            # We should check whether we got this file already or not
            # If we dont have it, we add it
            name = str(long(time.time() * 10**7))
@@ -125,20 +119,10 @@ class FccController(BaseController):
         c.board = '*'
         c.PostAction = ''
         c.uploadPathWeb = uploadPathWeb
-        post_q = meta.Session.query(Post).filter(Post.parentid==-1).order_by(Post.last_date.desc())
+        post_q = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1).order_by(Post.last_date.desc())
         c.threads = post_q.all()
         for i in c.threads:
-            i.Replies = meta.Session.query(Post).filter(Post.parentid==i.id).all()
-            # Really fugly code, shouldnt be like this, should auto-LEFT JOIN
-            for j in i.Replies:
-               if j.picid:
-                  j.file = meta.Session.query(Picture).filter(Picture.id==j.picid).one()
-               else:
-                  j.file = False
-            if i.picid:
-               i.file = meta.Session.query(Picture).filter(Picture.id==i.picid).one()
-            else:
-               i.file = False
+            i.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==i.id).all()
         c.oekaki = False
         return render('/wakaba.posts.mako')
 
@@ -147,21 +131,14 @@ class FccController(BaseController):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
-        ThePost = meta.Session.query(Post).filter(Post.id==post).one()
+        ThePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).one()
         if ThePost.parentid != -1:
-           Thread = meta.Session.query(Post).filter(Post.id==ThePost.parentid).one()
+           Thread = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==ThePost.parentid).one()
         else:
            Thread = ThePost
-        if Thread.picid:
-           Thread.file = meta.Session.query(Picture).filter(Picture.id==Thread.picid).one()
-        else:
-           Thread.file = False
-        Thread.Replies = meta.Session.query(Post).filter(Post.parentid==Thread.id).all()
-        for i in Thread.Replies:
-           if i.picid:
-              i.file = meta.Session.query(Picture).filter(Picture.id==i.picid).one()
-           else:
-              i.file = False
+
+        Thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==Thread.id).all()
+
         c.PostAction = Thread.id
         c.threads = [Thread]
         c.uploadPathWeb = uploadPathWeb
@@ -180,20 +157,10 @@ class FccController(BaseController):
         c.board = board
         c.PostAction = board
         c.uploadPathWeb = uploadPathWeb
-        post_q = meta.Session.query(Post).filter(Post.tags.any(tag=board)).order_by(Post.last_date.desc())
+        post_q = meta.Session.query(Post).options(eagerload('file')).filter(Post.tags.any(tag=board)).order_by(Post.last_date.desc())
         c.threads = post_q.all()
         for i in c.threads:
-            i.Replies = meta.Session.query(Post).filter(Post.parentid==i.id).all()
-            # Really fugly code, shouldnt be like this, should auto-LEFT JOIN
-            for j in i.Replies:
-               if j.picid:
-                  j.file = meta.Session.query(Picture).filter(Picture.id==j.picid).one()
-               else:
-                  j.file = False
-            if i.picid:
-               i.file = meta.Session.query(Picture).filter(Picture.id==i.picid).one()
-            else:
-               i.file = False
+            i.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==i.id).all()
 
         if tempid:
            oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
@@ -261,7 +228,11 @@ class FccController(BaseController):
         post.last_date = datetime.datetime.now()
         post.picid = self.processFile(file)
         post.uid_number = session['uid_number']
-        post.tags.append(Tag(board))
+        tag = meta.Session.query(Tag).filter(Tag.tag==board).first()
+        if tag:
+        	post.tags.append(tag)
+        else:
+        	post.tags.append(Tag(board))
         meta.Session.save(post)
         meta.Session.commit()
         redirect_to(action='GetBoard')

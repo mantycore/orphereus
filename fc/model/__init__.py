@@ -17,6 +17,9 @@ t_users = sa.Table("users", meta.metadata,
     sa.Column("uid"      , sa.types.String(128), nullable=False)
     )
 
+t_user_options = sa.Table("user_options", meta.metadata,
+    sa.Column("uid"      , sa.types.Integer, 
+
 t_extlist = sa.Table("extlist", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("path"     , sa.types.String(255), nullable=False),
@@ -64,8 +67,14 @@ t_posts = sa.Table("posts", meta.metadata,
     )
 
 t_tags = sa.Table("tags", meta.metadata,
-    sa.Column("id", sa.types.Integer, primary_key=True),
-    sa.Column("tag", sa.types.UnicodeText, nullable=False)
+    sa.Column("id"       , sa.types.Integer, primary_key=True),
+    sa.Column("tag"      , sa.types.UnicodeText, nullable=False)
+    )
+
+t_tag_options = sa.Table("tag_options", meta.metadata,
+    sa.Column("id"       , sa.types.Integer, primary_key=True),
+    sa.Column("comment"  , sa.types.String(255), nullable=True),
+    sa.Column("section_id", sa.types.Integer, nullable=False)
     )
 
 t_post_tags = sa.Table("post_tags", meta.metadata,
@@ -96,6 +105,7 @@ class Post(object):
 class Tag(object):
     def __init__(self, tag):
         self.tag = tag
+
 orm.mapper(Oekaki, t_oekaki)
 orm.mapper(Invite, t_invites)
 orm.mapper(User, t_users)
@@ -103,10 +113,8 @@ orm.mapper(Extension, t_extlist)
 orm.mapper(Picture, t_piclist, properties = {
     'extlist' : orm.relation(Extension)
     })
-orm.mapper(Tag, t_tags, properties = {
-    'posts' : orm.relation(Post, secondary = t_post_tags)
-    })
+orm.mapper(Tag, t_tags)
 orm.mapper(Post, t_posts, properties = {
     'tags' : orm.relation(Tag, secondary = t_post_tags),
-    'piclist': orm.relation(Picture)
+    'file': orm.relation(Picture)
     })

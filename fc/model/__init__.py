@@ -17,9 +17,6 @@ t_users = sa.Table("users", meta.metadata,
     sa.Column("uid"      , sa.types.String(128), nullable=False)
     )
 
-t_user_options = sa.Table("user_options", meta.metadata,
-    sa.Column("uid"      , sa.types.Integer, 
-
 t_extlist = sa.Table("extlist", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("path"     , sa.types.String(255), nullable=False),

@@ -2,6 +2,7 @@ import logging
 
 from fc.lib.base import *
 from fc.model import *
+from sqlalchemy.orm import eagerload
 import os
 import cgi
 import shutil

@@ -20,11 +20,11 @@ class FieldStorageLike(object):
         self.file = open(filepath,'rb')
 
 def isNumber(n):
-	import re
-	if re.match("^[-+]?[0-9]+$", n):
-		return True
-	else:
-		return False
+    import re
+    if re.match("^[-+]?[0-9]+$", n):
+        return True
+    else:
+        return False
 
 log = logging.getLogger(__name__)
 uploadPath = 'fc/public/uploads/'
@@ -183,10 +183,10 @@ class FccController(BaseController):
            return ''  
 
     def GetOverview(self):
-	    c.currentURL = '/'
-	    if not self.isAuthorized():
+        c.currentURL = '/'
+        if not self.isAuthorized():
             return render('/wakaba.login.mako')
-	   
+       
         c.PostAction = ''
         return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1), tempid=0, page=0, board='*')
 
@@ -273,9 +273,9 @@ class FccController(BaseController):
         post.uid_number = session['uid_number']
         tag = meta.Session.query(Tag).filter(Tag.tag==board).first()
         if tag:
-        	post.tags.append(tag)
+            post.tags.append(tag)
         else:
-        	post.tags.append(Tag(board))
+            post.tags.append(Tag(board))
         meta.Session.save(post)
         meta.Session.commit()
         redirect_to(action='GetBoard')

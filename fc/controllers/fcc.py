@@ -50,7 +50,7 @@ class FccController(BaseController):
                     'style':'photon',
                     'template':'wakaba'
                 }
-    def showPosts(self, threadFilter, tempid=0, page=0, board='')
+    def showPosts(self, threadFilter, tempid=0, page=0, board=''):
         c.title = 'FailChan'
         c.board = board
         c.uploadPathWeb = uploadPathWeb
@@ -98,7 +98,7 @@ class FccController(BaseController):
                     replyLim = 0
                 thread.omittedPosts = replyLim
                 thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id)[replyLim:]
-            elif:
+            else:
                 thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).all()
                 thread.omittedPosts = 0
                 

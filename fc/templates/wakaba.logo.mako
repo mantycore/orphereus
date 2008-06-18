@@ -1,0 +1,1 @@
+<div class="logo">${c.title}</div>

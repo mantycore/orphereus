@@ -47,7 +47,7 @@
     </form>
 </div>
 <hr />
-
+<form>
 %for thread in c.threads:
     <div id="thread-${thread.id}">
         %if thread.file:
@@ -62,7 +62,9 @@
         %endif
         <a name="i${thread.id}"></a>
         <label>
-            <input type="checkbox" name="delete" value="${thread.id}" />
+            %if thread.uid_number == c.uid_number:
+                <input type="checkbox" name="delete" value="${thread.id}" />
+            %endif
             <span class="filetitle">${thread.title}</span>  
             <span class="postername"></span>
             ${thread.date}
@@ -80,11 +82,9 @@
         <blockquote class="postbody">
             ${thread.message}
         </blockquote>
-        <%doc>
-        if c.Threads[t]['OmittedPosts']:
-            <span class="omittedposts">${c.Threads[t]['OmittedPosts']}</span>
-        endif
-        </%doc>
+        %if thread.omittedPosts:
+            <span class="omittedposts">${thread.omittedPosts} posts omitted.</span>
+        %endif
         %for p in thread.Replies:
             <table>
                 <tbody>
@@ -93,7 +93,9 @@
                         <td class="reply" id="reply${p.id}">
                             <a name="i${p.id}"></a>
                             <label>
-                                <input type="checkbox" name="delete" value="${p.id}" />
+                                %if p.uid_number == c.uid_number:
+                                    <input type="checkbox" name="delete" value="${p.id}" />
+                                %endif
                                 %if p.sage:
                                     <img src='/images/sage.png'>
                                 %endif
@@ -125,5 +127,28 @@
             </table>
         %endfor
     </div>
-    <br clear="left" /><hr />
+    <br clear="left" />
+    <hr />
 %endfor
+<table class="userdelete">
+    <tbody>
+        <tr><td> 
+            <input type="hidden" name="task" value="delete" />Delete post [<label><input type="checkbox" name="fileonly" value="on" />Only file</label>]
+            <br />
+            <input value="Delete" type="submit" />
+        </td></tr>
+    </tbody>
+</table>
+</form>
+%if c.pages
+<table border="1"><tbody><tr><td>
+    %for pg in range(0,c.pages):
+        %if pg == c.page:
+            [${pg}]
+        %else:
+            [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
+        %endif
+    %endfor
+</td></tr></tbody></table>
+%endif
+<br clear="all" />

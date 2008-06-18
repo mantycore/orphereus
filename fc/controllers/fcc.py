@@ -34,7 +34,82 @@ hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 class FccController(BaseController):
     def isAuthorized(self):
         return 'uid_number' in session
+    def login(self, user):
+        session['uid_number'] = user.uid_number
+        if user.options:
+            session['options'] = {
+                    'threads_per_page':user.options.threads_per_page,
+                    'replies_per_thread':user.options.replies_per_thread,
+                    'style':user.options.style,
+                    'template':user.options.template
+                }        
+        else:
+            session['options'] = {
+                    'threads_per_page':10,
+                    'replies_per_thread':10,
+                    'style':'photon',
+                    'template':'wakaba'
+                }
+    def showPosts(self, threadFilter, tempid=0, page=0, board='')
+        c.title = 'FailChan'
+        c.board = board
+        c.uploadPathWeb = uploadPathWeb
+        c.uid_number = session['uid_number']
+        count = threadFilter.count()
 
+        boards = meta.Session.query(Tag).filter(Tag.options.persistent==True).order_by(Tag.options.section_id).all()
+        c.boardlist = []
+        section_id = 0
+        for b in boards:
+            if not section_id:
+                section_id = b.options.section_id
+                section = []
+            if section_id != b.options.section_id:
+                c.boardlist.append(section)
+                section_id = b.options.section_id
+                section = []
+            section.append(b.tag)
+        if section:
+            c.boardlist.append(section)
+        
+        if count > 1:
+            p = divmod(count, session['options']['threads_per_page'])
+            c.pages = p[0]
+            if p[1]:
+                c.pages += 1
+            if (page + 1) > c.pages:
+                page = c.pages - 1
+            c.page = page
+            c.threads = threadFilter[(page * session['options']['threads_per_page']):(page * session['options']['threads_per_page'] + session['options']['threads_per_page'])]
+        elif count == 1:
+            c.page  = False
+            c.pages = False
+            c.threads = [threadFilter.one()]
+        elif count == 0:
+            c.page  = False
+            c.pages = False
+            c.threads = []
+
+        for thread in c.threads:
+            if count > 1:
+                replyCount = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
+                replyLim   = replyCount - session['options']['replies_per_thread']
+                if replyLim < 0:
+                    replyLim = 0
+                thread.omittedPosts = replyLim
+                thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id)[replyLim:]
+            elif:
+                thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).all()
+                thread.omittedPosts = 0
+                
+        if tempid:
+            oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+            c.oekaki = oekaki
+        else:
+            c.oekaki = False
+        
+        return render('/%s.posts.mako' % session['options']['template'])
+        
     def getParentID(self, id):
         post = meta.Session.query(Post).filter(Post.id==id).first()
         if post:
@@ -107,69 +182,36 @@ class FccController(BaseController):
         else:
            return ''  
 
-    def index(self):
-        # Return a rendered template
-        #   return render('/some/template.mako')
-        # or, Return a response
-        return 'Hello World'
-
     def GetOverview(self):
-	c.currentURL = '/'
-	if not self.isAuthorized():
-	   return render('/wakaba.login.mako')
-        c.board = '*'
+	    c.currentURL = '/'
+	    if not self.isAuthorized():
+            return render('/wakaba.login.mako')
+	   
         c.PostAction = ''
-        c.uploadPathWeb = uploadPathWeb
-        post_q = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1).order_by(Post.last_date.desc())
-        c.threads = post_q.all()
-        for i in c.threads:
-            i.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==i.id).all()
-        c.oekaki = False
-        return render('/wakaba.posts.mako')
-
+        return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1), tempid=0, page=0, board='*')
 
     def GetThread(self, post, tempid):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
-        ThePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).one()
+           
+        ThePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
         if ThePost.parentid != -1:
-           Thread = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==ThePost.parentid).one()
+           filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==ThePost.parentid)
+           c.PostAction = ThePost.parentid
         else:
-           Thread = ThePost
+           filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post)
+           c.PostAction = ThePost.id
 
-        Thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==Thread.id).all()
-
-        c.PostAction = Thread.id
-        c.threads = [Thread]
-        c.uploadPathWeb = uploadPathWeb
-        
-        if tempid:
-           oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
-           c.oekaki = oekaki
-        else:
-           c.oekaki = False
-        return render('/wakaba.posts.mako')
+        return self.showPosts(threadFilter=filter, tempid, page=0, board='')
 
     def GetBoard(self, board, tempid):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
-        c.board = board
         c.PostAction = board
-        c.uploadPathWeb = uploadPathWeb
-        post_q = meta.Session.query(Post).options(eagerload('file')).filter(Post.tags.any(tag=board)).order_by(Post.last_date.desc())
-        c.threads = post_q.all()
-        for i in c.threads:
-            i.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==i.id).all()
-
-        if tempid:
-           oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
-           c.oekaki = oekaki
-        else:
-           c.oekaki = False
-
-        return render('/wakaba.posts.mako')
+        
+        return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.tags.any(tag=board)), tempid, page=0, board)
 
     def PostReply(self, post):
         c.currentURL = request.path_info + '/'
@@ -239,21 +281,20 @@ class FccController(BaseController):
         redirect_to(action='GetBoard')
     def authorize(self, url):
         if url:
-          c.currentURL = '/' + str(url) + '/'
+            c.currentURL = '/' + str(url) + '/'
         else:
-          c.currentURL = '/'
+            c.currentURL = '/'
         if request.POST['code']:
-           code = hashlib.sha512(request.POST['code'] + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
-           user = meta.Session.query(User).filter(User.uid==code).first()
-           if user:
-              session['uid_number'] = user.uid_number
-              session.save()
-              redirect_to(c.currentURL)
+            code = hashlib.sha512(request.POST['code'] + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+            user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==code).first()
+            if user:
+                self.login(user)
+                redirect_to(c.currentURL)
         return render('/wakaba.login.mako')
     def makeInvite(self):
-        #c.currentURL = request.path_info + '/'
-        #if not self.isAuthorized():
-        #   return render('/wakaba.login.mako')
+        c.currentURL = request.path_info + '/'
+        if not self.isAuthorized():
+           return render('/wakaba.login.mako')
         invite = Invite()
         invite.date = datetime.datetime.now()
         invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
@@ -281,9 +322,8 @@ class FccController(BaseController):
                user.uid = uid
                meta.Session.save(user)
                meta.Session.commit()
-               session['uid_number']=user.uid_number
                del session['invite']
-               session.save()
+               self.login(user)
                redirect_to('/')
         return render('/wakaba.register.mako')
     def oekakiDraw(self,url):

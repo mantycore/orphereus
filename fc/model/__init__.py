@@ -17,6 +17,17 @@ t_users = sa.Table("users", meta.metadata,
     sa.Column("uid"      , sa.types.String(128), nullable=False)
     )
 
+t_user_options = sa.Table("user_options", meta.metadata,
+    sa.Column("optid"    ,sa.types.Integer, primary_key=True),
+    sa.Column("uid_number",sa.types.Integer, sa.ForeignKey('users.uid_number')),
+    sa.Column("threads_per_page", sa.types.Integer, nullable=False),
+    sa.Column("replies_per_thread", sa.types.Integer, nullable=False),
+    sa.Column("style"    , sa.types.String(32), nullable=False),
+    sa.Column("template" , sa.types.String(32), nullable=False),
+    sa.Column("bantime"  , sa.types.Integer, nullable=False),
+    sa.Column("banreason", sa.types.String(256), nullable=False)
+    )
+
 t_extlist = sa.Table("extlist", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("path"     , sa.types.String(255), nullable=False),
@@ -71,14 +82,19 @@ t_tags = sa.Table("tags", meta.metadata,
 t_tag_options = sa.Table("tag_options", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("comment"  , sa.types.String(255), nullable=True),
-    sa.Column("section_id", sa.types.Integer, nullable=False)
+    sa.Column("section_id", sa.types.Integer, nullable=False),
+    sa.Column("persistent", sa.types.Boolean, nullable=False),
+    sa.Column("imageless_thread", sa.types.Boolean, nullable=False),
+    sa.Column("imageless_post", sa.types.Boolean, nullable=False),
+    sa.Column("images"   , sa.types.Boolean, nullable=False),
+    sa.Column("max_size" , sa.types.Integer, nullable=False)
     )
 
 t_post_tags = sa.Table("post_tags", meta.metadata,
     #sa.Column('id', sa.types.Integer, primary_key=True),
-    sa.Column('post_id', sa.types.Integer, sa.ForeignKey('posts.id')),
-    sa.Column('tag_id', sa.types.Integer, sa.ForeignKey('tags.id')),
-    sa.Column('is_main', sa.types.Boolean, nullable=True)
+    sa.Column('post_id'  , sa.types.Integer, sa.ForeignKey('posts.id')),
+    sa.Column('tag_id'   , sa.types.Integer, sa.ForeignKey('tags.id')),
+    sa.Column('is_main'  , sa.types.Boolean, nullable=True)
     )
     
 class Oekaki(object):
@@ -88,6 +104,9 @@ class Invite(object):
     pass
 
 class User(object):
+    pass
+    
+class UserOptions(object):
     pass
 
 class Extension(object):
@@ -103,14 +122,23 @@ class Tag(object):
     def __init__(self, tag):
         self.tag = tag
 
+class TagOptions(object):
+    pass
+
 orm.mapper(Oekaki, t_oekaki)
 orm.mapper(Invite, t_invites)
-orm.mapper(User, t_users)
+orm.mapper(UserOptions, t_user_options)
+orm.mapper(User, t_users, properties = {
+    'options' : orm.relation(UserOptions)
+    })
 orm.mapper(Extension, t_extlist)
 orm.mapper(Picture, t_piclist, properties = {
     'extlist' : orm.relation(Extension)
     })
-orm.mapper(Tag, t_tags)
+orm.mapper(TagOptions, t_tag_options)
+orm.mapper(Tag, t_tags, properties = {
+    'options' : orm.relation(TagOptions)
+    })
 orm.mapper(Post, t_posts, properties = {
     'tags' : orm.relation(Tag, secondary = t_post_tags),
     'file': orm.relation(Picture)

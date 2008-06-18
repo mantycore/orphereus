@@ -50,6 +50,7 @@ class FccController(BaseController):
                     'style':'photon',
                     'template':'wakaba'
                 }
+        session.save()
     def showPosts(self, threadFilter, tempid=0, page=0, board=''):
         c.title = 'FailChan'
         c.board = board
@@ -57,9 +58,10 @@ class FccController(BaseController):
         c.uid_number = session['uid_number']
         count = threadFilter.count()
 
-        boards = meta.Session.query(Tag).filter(Tag.options.persistent==True).order_by(Tag.options.section_id).all()
+        boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.section_id).all()
         c.boardlist = []
         section_id = 0
+	section = []
         for b in boards:
             if not section_id:
                 section_id = b.options.section_id
@@ -80,7 +82,7 @@ class FccController(BaseController):
             if (page + 1) > c.pages:
                 page = c.pages - 1
             c.page = page
-            c.threads = threadFilter[(page * session['options']['threads_per_page']):(page * session['options']['threads_per_page'] + session['options']['threads_per_page'])]
+            c.threads = threadFilter.order_by(Post.last_date.desc())[(page * session['options']['threads_per_page']):(page * session['options']['threads_per_page'] + session['options']['threads_per_page'])]
         elif count == 1:
             c.page  = False
             c.pages = False
@@ -203,15 +205,15 @@ class FccController(BaseController):
            filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post)
            c.PostAction = ThePost.id
 
-        return self.showPosts(threadFilter=filter, tempid, page=0, board='')
+        return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='')
 
-    def GetBoard(self, board, tempid):
+    def GetBoard(self, board, tempid, page=0):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
         c.PostAction = board
         
-        return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.tags.any(tag=board)), tempid, page=0, board)
+        return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.tags.any(tag=board)), tempid=tempid, page=int(page), board=board)
 
     def PostReply(self, post):
         c.currentURL = request.path_info + '/'

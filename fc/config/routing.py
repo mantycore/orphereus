@@ -30,6 +30,7 @@ def make_map():
     map.connect('/:post/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))
     map.connect('/:post/:tempid', controller='fcc', action='GetThread', tempid=0, requirements=dict(post='\d+',tempid='\d+'))
     map.connect('/:board/:tempid', controller='fcc', action='GetBoard', tempid=0, requirements=dict(tempid='\d+'))
+    map.connect('/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))
     map.connect('*url', controller='fcc', action='UnknownAction')
 
     return map

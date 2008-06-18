@@ -70,13 +70,13 @@
             ${thread.date}
         </label>
         <span class="reflink">
-            <a href="${thread.id}#i${thread.id}">#${thread.id}</a>
+            <a href="/${thread.id}#i${thread.id}">#${thread.id}</a>
         </span>
         &nbsp;
         <span class="replytothread">
-            [<a href="${thread.id}#i${thread.id}">Reply</a>]
+            [<a href="/${thread.id}#i${thread.id}">Reply</a>]
             %if thread.file and thread.file.width:
-             [<a href="${thread.id}/oekakiDraw">Draw</a>]
+             [<a href="/${thread.id}/oekakiDraw">Draw</a>]
             %endif
         </span>
         <blockquote class="postbody">
@@ -95,6 +95,8 @@
                             <label>
                                 %if p.uid_number == c.uid_number:
                                     <input type="checkbox" name="delete" value="${p.id}" />
+                                %else:
+                                    <input type="checkbox" name="delete" disabled/>
                                 %endif
                                 %if p.sage:
                                     <img src='/images/sage.png'>
@@ -104,9 +106,9 @@
                                 ${p.date}
                             </label>
                             <span class="reflink">
-                                <a href="${p.id}#i${p.id}">#${p.id}</a>
+                                <a href="/${p.id}#i${p.id}">#${p.id}</a>
                                 %if p.file and p.file.width:
-                                    [<a href="${p.id}/oekakiDraw">Draw</a>]
+                                    [<a href="/${p.id}/oekakiDraw">Draw</a>]
                                 %endif                                                      
                             </span>
                             &nbsp;  
@@ -140,7 +142,7 @@
     </tbody>
 </table>
 </form>
-%if c.pages
+%if c.pages:
 <table border="1"><tbody><tr><td>
     %for pg in range(0,c.pages):
         %if pg == c.page:

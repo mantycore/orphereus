@@ -81,6 +81,7 @@ t_tags = sa.Table("tags", meta.metadata,
 
 t_tag_options = sa.Table("tag_options", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
+    sa.Column("tag_id"   , sa.types.Integer,  sa.ForeignKey('tags.id')),
     sa.Column("comment"  , sa.types.String(255), nullable=True),
     sa.Column("section_id", sa.types.Integer, nullable=False),
     sa.Column("persistent", sa.types.Boolean, nullable=False),

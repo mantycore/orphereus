@@ -22,6 +22,15 @@
             <td class="postblock">Text</td>
             <td><textarea name="message" cols="60" rows="6"></textarea></td>
         </tr>
+        %if c.allowTags:
+            <tr id="trtags">
+                <td class="postblock">Boards</td>
+                <td>
+                    <input type="hidden" name="maintag" value='${c.currentTag}' />
+                    <input type="text" name="tags" size="35" />
+                </td>
+            </tr>
+        %endif
         %if c.oekaki:
             <tr id="trfile">
                 <td colspan=2><input type="hidden" name="tempid" value="${c.oekaki.tempid}"><img src="${c.uploadPathWeb + c.oekaki.path}"></td>

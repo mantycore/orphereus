@@ -214,11 +214,30 @@ class FccController(BaseController):
             tags = thread.tags
         else:
             tags = []
-            tag = meta.Session.query(Tag).filter(Tag.tag==board).first()
-            if tag:
-                tags.append(tag)
-            else:
-                tags.append(Tag(board))
+            tagsl= []
+            maintag = request.POST.get('maintag',False)
+            if maintag and maintag != '*':
+                tag = meta.Session.query(Tag).filter(Tag.tag==maintag).first()
+                if tag:
+                    tags.append(tag)
+                else:
+                    tags.append(Tag(maintag))
+                tagsl.append(maintag)
+            tagstr = request.POST.get('tags',False)
+            if tagstr:
+                regex = re.compile(r'([a-zA-Z]\w*)')
+                tlist = regex.findall(tagstr)
+                for t in tlist:
+                    if not t in tagsl:
+                        tag = meta.Session.query(Tag).filter(Tag.tag==t).first()
+                        if tag:
+                            tags.append(tag)
+                        else:
+                            tags.append(Tag(t))
+                        tagsl.append(t)
+            if not tags:
+                c.errorText = "You should specify at least one board"
+                return render('/wakaba.error.mako')
         
         options = self.conjunctTagOptions(tags)
         if not options.images and ((not options.imageless_thread and not postid) or (postid and not options.imageless_post)):
@@ -279,19 +298,23 @@ class FccController(BaseController):
         else:
             return redirect_to(action='GetBoard',board=tags[0].tag,post=None)
 
-    def GetOverview(self):
-        c.currentURL = '/'
+    def GetOverview(self, page=0, tempid=0):
+        c.currentURL = '/*/'
         if not self.isAuthorized():
             return render('/wakaba.login.mako')
-       
-        c.PostAction = ''
-        return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1), tempid=0, page=0, board='*')
+        c.currentTag = ''
+        c.allowTags = True
+        c.PostAction = '*'
+        return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1), tempid=tempid, page=int(page), board='*')
 
     def GetThread(self, post, tempid):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
-           
+
+        c.currentTag = ''
+        c.allowTags = False
+        
         ThePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
         if ThePost.parentid != -1:
            filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==ThePost.parentid)
@@ -307,6 +330,9 @@ class FccController(BaseController):
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
         c.PostAction = board
+        
+        c.currentTag = board
+        c.allowTags = True
         
         return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.tags.any(tag=board)), tempid=tempid, page=int(page), board=board)
 

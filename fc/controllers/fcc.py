@@ -61,7 +61,7 @@ class FccController(BaseController):
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.section_id).all()
         c.boardlist = []
         section_id = 0
-    section = []
+        section = []
         for b in boards:
             if not section_id:
                 section_id = b.options.section_id
@@ -232,9 +232,9 @@ class FccController(BaseController):
         meta.Session.save(post)
         meta.Session.commit()
         if request.POST.get('gb2', 'board') == 'thread':
-            return redirect_to(action='GetThread',post=post.id)
+            return redirect_to(action='GetThread',post=post.id,board=None)
         else:
-            return redirect_to(action='GetBoard',board=tags[0].tag)
+            return redirect_to(action='GetBoard',board=tags[0].tag,post=None)
 
     def GetOverview(self):
         c.currentURL = '/'

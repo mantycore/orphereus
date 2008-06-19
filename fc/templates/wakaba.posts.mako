@@ -54,14 +54,11 @@
             </tr>   
          </form>       
          
-            <form method="post" action="/${c.PostAction}/oekakiDraw">
-                <table>
-                <tbody>
-                <tr id="tremail">
-                <td class="postblock">Oekaki</td>
-                <td>   
-                
-                Painter:  
+        <form method="post" action="/${c.PostAction}/oekakiDraw">
+            <tr id="tremail">
+               <td class="postblock">Oekaki</td>
+               <td>   
+     
                 <select name="oekaki_painter">   
                     <option selected="selected" value="shiNormal">Shi Normal</option>      
                 <option value="shiPro">Shi Pro</option>     
@@ -73,11 +70,11 @@
                 <input type="submit" value="Draw Oekaki"/>    
                 
                 </td> 
-                </tr>
-            </form>            
-            </tbody>
-            </table>    
+            </tr>
+        </form>            
         %endif
+            </tbody>
+            </table>            
 </div>
 <hr />
 <form action="/${c.PostAction}/delete" method="post">

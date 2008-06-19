@@ -58,6 +58,13 @@ class FccController(BaseController):
         c.uploadPathWeb = uploadPathWeb
         c.uid_number = session['uid_number']
         count = threadFilter.count()
+        
+        if board and board != '~':
+            currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()
+            if currentBoard and currentBoard.options and currentBoard.options[0].comment:
+                c.boardName = currentBoard.options[0].comment
+            else:
+                c.boardName = '/%s/' % board
 
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.section_id).all()
         c.boardlist = []
@@ -65,11 +72,11 @@ class FccController(BaseController):
         section = []
         for b in boards:
             if not section_id:
-                section_id = b.options.section_id
+                section_id = b.options[0].section_id
                 section = []
-            if section_id != b.options.section_id:
+            if section_id != b.options[0].section_id:
                 c.boardlist.append(section)
-                section_id = b.options.section_id
+                section_id = b.options[0].section_id
                 section = []
             section.append(b.tag)
         if section:
@@ -194,15 +201,15 @@ class FccController(BaseController):
         options.thumb_size = 250
         for t in tags:
             if t.options:
-                options.imageless_thread = options.imageless_thread & t.options.imageless_thread
-                options.imageless_post = options.imageless_post & t.options.imageless_post
-                options.images = options.images & t.options.images
-                if t.options.max_fsize < options.max_fsize:
-                    options.max_fsize = t.options.max_fsize
-                if t.options.min_size > options.min_size:
-                    options.min_size = t.options.min_size
-                if t.options.thumb_size < options.thumb_size:
-                    options.thumb_size = t.options.thumb_size                   
+                options.imageless_thread = options.imageless_thread & t.options[0].imageless_thread
+                options.imageless_post = options.imageless_post & t.options[0].imageless_post
+                options.images = options.images & t.options[0].images
+                if t.options[0].max_fsize < options.max_fsize:
+                    options.max_fsize = t.options[0].max_fsize
+                if t.options[0].min_size > options.min_size:
+                    options.min_size = t.options[0].min_size
+                if t.options[0].thumb_size < options.thumb_size:
+                    options.thumb_size = t.options[0].thumb_size                   
         return options
     def processPost(self, postid=0, board=''):
         if postid:

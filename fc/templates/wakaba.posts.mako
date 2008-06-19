@@ -88,6 +88,11 @@
              [<a href="/${thread.id}/oekakiDraw">Draw</a>]
             %endif
         </span>
+        <span>Posted in :
+        %for t in thread.tags:
+            <a href="/${t.tag}/">/${t.tag}/</a> 
+        %endfor
+        </span>
         <blockquote class="postbody">
             ${thread.message}
         </blockquote>

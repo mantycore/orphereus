@@ -1,1 +1,6 @@
-<div class="logo">${c.title}</div>
+<div class="logo">
+	${c.title}
+	%if c.boardName:
+		- ${c.boardName}
+	%endif
+</div>

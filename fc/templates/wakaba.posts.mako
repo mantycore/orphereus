@@ -39,7 +39,7 @@
             <tr id="trfile">
                 <td class="postblock">File</td>
                 <td><input type="file" name="file" size="35" />
-                    <a href="${c.currentTag}/oekakiDraw">Draw oekaki</a>
+                    <a href="/oekakiDraw">Draw oekaki</a>
                 </td>
             </tr>
         %endif

@@ -1,0 +1,43 @@
+[DEFAULT]
+debug = false
+smtp_server = localhost
+error_email_from = paste@localhost <mailto:paste@localhost>
+
+[server:main]
+use = egg:Paste#http
+host = 127.0.0.1
+port = 5000
+[app:main]
+use = egg:FC
+full_stack = true
+cache_dir = %(here)s/data
+beaker.session.key = fc
+beaker.session.secret = somesecret
+sqlalchemy.url = mysql://user:passwd@127.0.0.1/database
+sqlalchemy.pool_recycle = 3600
+[loggers]
+keys = root, fc
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+[logger_fc]
+level = DEBUG
+handlers =
+qualname = fc
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s,%(msecs)03d %(levelname)-5.5s [%(name)s] %(message)s
+datefmt = %H:%M:%S

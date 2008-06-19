@@ -10,7 +10,7 @@ import shutil
 import datetime
 import time
 import Image
-import posix
+import os
 import hashlib
 import re
 import wakabaparse
@@ -185,7 +185,7 @@ class FccController(BaseController):
            pic.thwidth = size[2]
            pic.thheight = size[3]
            pic.extid = extParams.id
-           pic.size = posix.stat(localFilePath)[6]
+           pic.size = os.stat(localFilePath)[6]
            meta.Session.save(pic)
            meta.Session.commit()
            return pic

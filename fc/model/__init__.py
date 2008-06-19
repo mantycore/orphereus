@@ -88,7 +88,9 @@ t_tag_options = sa.Table("tag_options", meta.metadata,
     sa.Column("imageless_thread", sa.types.Boolean, nullable=False),
     sa.Column("imageless_post", sa.types.Boolean, nullable=False),
     sa.Column("images"   , sa.types.Boolean, nullable=False),
-    sa.Column("max_size" , sa.types.Integer, nullable=False)
+    sa.Column("max_fsize" , sa.types.Integer, nullable=False),
+    sa.Column("min_size" , sa.types.Integer, nullable=False),
+    sa.Column("thumb_size", sa.types.Integer, nullable=False),
     )
 
 t_post_tags = sa.Table("post_tags", meta.metadata,

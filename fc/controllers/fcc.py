@@ -136,7 +136,7 @@ class FccController(BaseController):
         else:
            return []
 
-    def processFile(self, file):
+    def processFile(self, file, thumbSize=250):
         if isinstance(file,cgi.FieldStorage) or isinstance(file,FieldStorageLike):
            # We should check whether we got this file already or not
            # If we dont have it, we add it
@@ -161,11 +161,11 @@ class FccController(BaseController):
            
            if extParams.type == 'image':
               thumbFilePath = name + 's.' + ext
-              size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (250,250))
+              size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (thumbSize,thumbSize))
            else:
                if extParams.type == 'image-jpg':
                   thumbFilePath = name + 's.jpg'
-                  size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (250,250))
+                  size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (thumbSize,thumbSize))
                else:
                   thumbFilePath = extParams.path
                   size = [0,0,extParams.thwidth,extParams.thheight]
@@ -180,10 +180,29 @@ class FccController(BaseController):
            pic.size = posix.stat(localFilePath)[6]
            meta.Session.save(pic)
            meta.Session.commit()
-           return pic.id
+           return pic
         else:
-           return ''  
-
+           return None  
+    def conjunctTagOptions(self, tags):
+        options = TagOptions()
+        options.imageless_thread = True
+        options.imageless_post   = True
+        options.images   = True
+        options.max_fsize = 2621440
+        options.min_size = 50
+        options.thumb_size = 250
+        for t in tags:
+            if t.options:
+                options.imageless_thread = options.imageless_thread & t.options.imageless_thread
+                options.imageless_post = options.imageless_post & t.options.imageless_post
+                options.images = options.images & t.options.images
+                if t.options.max_fsize < options.max_fsize:
+                    options.max_fsize = t.options.max_fsize
+                if t.options.min_size > options.min_size:
+                    options.min_size = t.options.min_size
+                if t.options.thumb_size < options.thumb_size:
+                    options.thumb_size = t.options.thumb_size                   
+        return options
     def processPost(self, postid=0, board=''):
         if postid:
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
@@ -199,6 +218,11 @@ class FccController(BaseController):
                 tags.append(tag)
             else:
                 tags.append(Tag(board))
+        
+        options = self.conjunctTagOptions(tags)
+        if not options.images and ((not options.imageless_thread and not postid) or (postid and not options.imageless_post)):
+            c.errorText = "Unacceptable combination of tags"
+            return render('/wakaba.error.mako')
         
         post = Post()
         tempid = request.POST.get('tempid',False)
@@ -216,15 +240,33 @@ class FccController(BaseController):
            post.message = wakabaparse.parseWakaba(post.message,self)     
         post.title = request.POST['title']
         post.date = datetime.datetime.now()
-        post.picid = self.processFile(file)
+        pic = self.processFile(file,options.thumb_size)
+        if pic:
+            if pic.size > options.max_fszie:
+                c.errorText = "File size exceeds the limit"
+                return render('/wakaba.error.mako')
+            if pic.height and (pic.height < options.min_size or pic.width < options.min_size):
+                c.errorText = "Image is too small"
+                return render('/wakaba.error.mako')
+            post.picid = pic.id
         post.uid_number = session['uid_number']
         
+        if not post.message and not post.picid:
+            c.errorText = "At least message or file should be specified"
+            return render('/wakaba.error.mako')
+        
         if postid:
+            if not post.picid and not options.imageless_post:
+                c.errorText = "Replies without image are not allowed"
+                return render('/wakaba.error.mako')
             post.parentid = thread.id
             post.sage = request.POST.get('sage', False)
             if not post.sage:
                 thread.last_date = datetime.datetime.now()
         else:
+            if not post.picid and not options.imageless_thread:
+                c.errorText = "Threads without image are not allowed"
+                return render('/wakaba.error.mako')        
             post.parentid = -1
             post.last_date = datetime.datetime.now()
             post.tags = tags

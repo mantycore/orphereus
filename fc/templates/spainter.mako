@@ -4,7 +4,7 @@
 <script language="javascript" type="text/javascript" src="/sp.js"></script>
 </head>
 <body>
-<applet code="c.ShiPainter.class" name="paintbbs" archive="/spainter.jar,/res/normal.zip" WIDTH="100%" height="90%" MAYSCRIPT>
+<applet code="c.ShiPainter.class" name="paintbbs" archive="/spainter.jar,/res/${c.oekakiToolString}.zip" WIDTH="100%" height="90%" MAYSCRIPT>
 <param name="image_width" value="${c.width}">
 <param name="image_height" value="${c.height}">
 %if c.canvas:
@@ -23,13 +23,8 @@
 <param name="dir_resource" value="/res/">
 <param name="tt.zip" value="/res/tt.zip">
 
-%if c.oekakiType == 'Shi normal':
-<param name="res.zip" value="/res/res_normal.zip">
-<param name="tools" value="normal">
-%else:
-<param name="res.zip" value="./res/res_pro.zip">
-<param name="tools" value="pro">
-%endif
+<param name="res.zip" value="/res/res_${c.oekakiToolString}.zip">
+<param name="tools" value="${c.oekakiToolString}">
 
 <param name="layer_count" value="3">
 <param name="quality" value="1">

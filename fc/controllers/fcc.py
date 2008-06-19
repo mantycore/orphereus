@@ -421,9 +421,10 @@ class FccController(BaseController):
         oekaki.time = -1
         if request.POST.get('oekaki_painter',False) == 'shiNormal':
             oekaki.type = 'Shi normal'
+            c.oekakiToolString = 'normal';
         else:
             oekaki.type = 'Shi pro'
-        c.oekakiType = oekaki.type;
+            c.oekakiToolString = 'pro'
         oekaki.uid_number = session['uid_number']
         oekaki.path = ''        
         oekaki.source = 0

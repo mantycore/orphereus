@@ -12,7 +12,7 @@ import time
 import Image
 import posix
 import hashlib
-
+import re
 import wakabaparse
 
 class FieldStorageLike(object):
@@ -216,7 +216,7 @@ class FccController(BaseController):
             tags = []
             tagsl= []
             maintag = request.POST.get('maintag',False)
-            if maintag and maintag != '*':
+            if maintag and maintag != '~':
                 tag = meta.Session.query(Tag).filter(Tag.tag==maintag).first()
                 if tag:
                     tags.append(tag)
@@ -299,13 +299,13 @@ class FccController(BaseController):
             return redirect_to(action='GetBoard',board=tags[0].tag,post=None)
 
     def GetOverview(self, page=0, tempid=0):
-        c.currentURL = '/*/'
+        c.currentURL = '/~/'
         if not self.isAuthorized():
             return render('/wakaba.login.mako')
         c.currentTag = ''
         c.allowTags = True
-        c.PostAction = '*'
-        return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1), tempid=tempid, page=int(page), board='*')
+        c.PostAction = '~'
+        return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1), tempid=tempid, page=int(page), board='~')
 
     def GetThread(self, post, tempid):
         c.currentURL = request.path_info + '/'

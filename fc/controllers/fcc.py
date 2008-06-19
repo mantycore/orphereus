@@ -61,7 +61,7 @@ class FccController(BaseController):
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.section_id).all()
         c.boardlist = []
         section_id = 0
-	section = []
+    section = []
         for b in boards:
             if not section_id:
                 section_id = b.options.section_id
@@ -184,6 +184,58 @@ class FccController(BaseController):
         else:
            return ''  
 
+    def processPost(self, postid=0, board=''):
+        if postid:
+            thePost = meta.Session.query(Post).filter(Post.id==postid).first()
+            if thePost.parentid != -1:
+               thread = meta.Session.query(Post).filter(Post.id==thePost.parentid).one()
+            else:
+               thread = thePost
+            tags = thread.tags
+        else:
+            tags = []
+            tag = meta.Session.query(Tag).filter(Tag.tag==board).first()
+            if tag:
+                tags.append(tag)
+            else:
+                tags.append(Tag(board))
+        
+        post = Post()
+        tempid = request.POST.get('tempid',False)
+        post.message = request.POST.get('message', '')
+        tempid = request.POST.get('tempid',False)
+        if tempid:
+           oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+           file = FieldStorageLike(oekaki.path,os.path.join(uploadPath,oekaki.path))
+           post.message += "\r\nDrawn with **%s** in %s seconds" % (oekaki.type,str(int(oekaki.time/1000)))
+           if oekaki.source:
+              post.message += ", source >>%s" % oekaki.source
+        else:
+           file = request.POST.get('file',False)
+        if post.message:
+           post.message = wakabaparse.parseWakaba(post.message,self)     
+        post.title = request.POST['title']
+        post.date = datetime.datetime.now()
+        post.picid = self.processFile(file)
+        post.uid_number = session['uid_number']
+        
+        if postid:
+            post.parentid = thread.id
+            post.sage = request.POST.get('sage', False)
+            if not post.sage:
+                thread.last_date = datetime.datetime.now()
+        else:
+            post.parentid = -1
+            post.last_date = datetime.datetime.now()
+            post.tags = tags
+        
+        meta.Session.save(post)
+        meta.Session.commit()
+        if request.POST.get('gb2', 'board') == 'thread':
+            return redirect_to(action='GetThread',post=post.id)
+        else:
+            return redirect_to(action='GetBoard',board=tags[0].tag)
+
     def GetOverview(self):
         c.currentURL = '/'
         if not self.isAuthorized():
@@ -219,68 +271,14 @@ class FccController(BaseController):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
-        ThePost = meta.Session.query(Post).filter(Post.id==post).one()
-        if ThePost.parentid != -1:
-           Thread = meta.Session.query(Post).filter(Post.id==ThePost.parentid).one()
-        else:
-           Thread = ThePost
-        tempid = request.POST.get('tempid',False)
-        postq = Post()
-        postq.message = request.POST.get('message', '')
-        if tempid:
-           oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
-           file = FieldStorageLike(oekaki.path,os.path.join(uploadPath,oekaki.path))
-           postq.message += "\r\nDrawn with **%s** in %s seconds" % (oekaki.type,str(int(oekaki.time/1000)))
-           if oekaki.source:
-              postq.message += ", source >>%s" % oekaki.source
-        else:
-           file = request.POST.get('file',False)
-        if postq.message:
-           postq.message = wakabaparse.parseWakaba(postq.message,self)
-        postq.title = request.POST['title']
-        postq.parentid = Thread.id
-        postq.date = datetime.datetime.now()
-        postq.picid = self.processFile(file)
-        postq.uid_number = session['uid_number']
-        postq.sage = request.POST.get('sage', False)
-        meta.Session.save(postq)
-        meta.Session.commit()
-        if not postq.sage:
-           Thread.last_date = datetime.datetime.now()
-           meta.Session.commit()
-        redirect_to(action='GetThread')
+        return self.processPost(postid=post)
 
     def PostThread(self, board):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
-        post = Post()
-        post.message = request.POST.get('message', '')
-        tempid = request.POST.get('tempid',False)
-        if tempid:
-           oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
-           file = FieldStorageLike(oekaki.path,os.path.join(uploadPath,oekaki.path))
-           post.message += "\r\nDrawn with **%s** in %s seconds" % (oekaki.type,str(int(oekaki.time/1000)))
-           if oekaki.source:
-              post.message += ", source >>%s" % oekaki.source
-        else:
-           file = request.POST.get('file',False)
-        if post.message:
-           post.message = wakabaparse.parseWakaba(post.message,self)                
-        post.parentid = -1
-        post.title = request.POST['title']
-        post.date = datetime.datetime.now()
-        post.last_date = datetime.datetime.now()
-        post.picid = self.processFile(file)
-        post.uid_number = session['uid_number']
-        tag = meta.Session.query(Tag).filter(Tag.tag==board).first()
-        if tag:
-            post.tags.append(tag)
-        else:
-            post.tags.append(Tag(board))
-        meta.Session.save(post)
-        meta.Session.commit()
-        redirect_to(action='GetBoard')
+        return self.processPost(board=board)
+        
     def authorize(self, url):
         if url:
             c.currentURL = '/' + str(url) + '/'

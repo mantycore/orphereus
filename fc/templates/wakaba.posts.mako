@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
+%if not c.board:
+    <div class="theader">Reply</div>
+%endif    
+
 <div class="postarea">
     <table>
         <tbody>
     <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
     <input type="hidden" name="task" value="post" />
-    <input type="hidden" name="akane" />        
+    <input type="hidden" name="akane" />   
+    %if not c.board:
         <tr id="tremail">
             <td class="postblock">Sage</td>
             <td><input type="checkbox" name="sage" /></td>
         </tr>
+    %endif
         <tr id="trsubject">
             <td class="postblock">Title</td>
             <td>

@@ -242,7 +242,7 @@ class FccController(BaseController):
         post.date = datetime.datetime.now()
         pic = self.processFile(file,options.thumb_size)
         if pic:
-            if pic.size > options.max_fszie:
+            if pic.size > options.max_fsize:
                 c.errorText = "File size exceeds the limit"
                 return render('/wakaba.error.mako')
             if pic.height and (pic.height < options.min_size or pic.width < options.min_size):

@@ -41,7 +41,7 @@
                 <td><input type="file" name="file" size="35" />
                     <a href="oekakiDraw">Draw oekaki</a>
                 </td>
-            </tr>
+            </tr>                      
         %endif
         <tr id="trgetback">
             <td class="postblock">Gb2 :</td>
@@ -56,6 +56,20 @@
         </tbody>
     </table>
     </form>
+    
+<form method="POST" action="oekakiDraw">
+    Painter:  
+    <select name="oekaki_painter">   
+        <option selected="selected" value="shiNormal">Shi Normal</option>      
+        <option value="shiPro">Shi Pro</option>     
+    </select>
+    Width: 
+    <input type="text" value="300" size="3" name="oekaki_x"/>
+    Height: 
+    <input type="text" value="300" size="3" name="oekaki_y"/> 
+    <input type="submit" value="Draw Oekaki"/> 
+</form>
+    
 </div>
 <hr />
 <form action="/${c.PostAction}/delete" method="POST">

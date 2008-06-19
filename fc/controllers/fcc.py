@@ -409,14 +409,21 @@ class FccController(BaseController):
         c.url = url
         c.uploadPathWeb = uploadPathWeb
         c.canvas = False
-        c.width  = 300
-        c.height = 300
+        c.width  = request.POST.get('oekaki_x',False)
+        c.height = request.POST.get('oekaki_y',False)
+        if not (isNumber(c.width) or isNumber(c.height)):
+           c.width = 300
+           c.height = 300
         c.tempid = str(long(time.time() * 10**7))
         oekaki = Oekaki()
         oekaki.tempid = c.tempid
         oekaki.picid = -1
         oekaki.time = -1
-        oekaki.type = 'Shi normal'
+        if request.POST.get('oekaki_painter',False) == 'shiNormal':
+            oekaki.type = 'Shi normal'
+        else:
+            oekaki.type = 'Shi pro'
+        c.oekakiType = oekaki.type;
         oekaki.uid_number = session['uid_number']
         oekaki.path = ''        
         oekaki.source = 0

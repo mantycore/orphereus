@@ -22,8 +22,15 @@
 
 <param name="dir_resource" value="/res/">
 <param name="tt.zip" value="/res/tt.zip">
+
+%if c.oekakiType == 'Shi normal':
 <param name="res.zip" value="/res/res_normal.zip">
 <param name="tools" value="normal">
+%else:
+<param name="res.zip" value="./res/res_pro.zip">
+<param name="tools" value="pro">
+%endif
+
 <param name="layer_count" value="3">
 <param name="quality" value="1">
 

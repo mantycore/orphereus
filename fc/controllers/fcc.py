@@ -21,11 +21,11 @@ class FieldStorageLike(object):
         self.file = open(filepath,'rb')
 
 def isNumber(n):
-    import re
-    if re.match("^[-+]?[0-9]+$", n):
-        return True
-    else:
-        return False
+    if n:
+        if re.match("^[-+]?[0-9]+$", n):
+            return True
+        else:
+            return False
 
 log = logging.getLogger(__name__)
 uploadPath = 'fc/public/uploads/'

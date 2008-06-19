@@ -26,6 +26,8 @@ def isNumber(n):
             return True
         else:
             return False
+    else:
+        return False
 
 log = logging.getLogger(__name__)
 uploadPath = 'fc/public/uploads/'
@@ -411,7 +413,7 @@ class FccController(BaseController):
         c.canvas = False
         c.width  = request.POST.get('oekaki_x',False)
         c.height = request.POST.get('oekaki_y',False)
-        if not c.width or not c.height or not (isNumber(c.width) or isNumber(c.height)):
+        if not (isNumber(c.width) or isNumber(c.height)):
            c.width = 300
            c.height = 300
         c.tempid = str(long(time.time() * 10**7))

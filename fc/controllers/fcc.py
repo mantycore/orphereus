@@ -421,7 +421,7 @@ class FccController(BaseController):
         oekaki.tempid = c.tempid
         oekaki.picid = -1
         oekaki.time = -1
-        if request.POST.get('oekaki_painter',False) == 'shiNormal':
+        if request.POST.get('oekaki_painter','shiNormal') == 'shiNormal':
             oekaki.type = 'Shi normal'
             c.oekakiToolString = 'normal';
         else:

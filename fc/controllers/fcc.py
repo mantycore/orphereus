@@ -430,5 +430,14 @@ class FccController(BaseController):
     def oekakiFinish(self,url,tempid):
         print type(c)
         return 'ok'
-    #def DeletePost(self, post):
+    def DeletePost(self, post):
+        for i in request.POST:
+            p = meta.Session.query(Post).get(request.POST[i])
+            if p and p.uid_number == session['uid_number']:
+                if p.parentid == -1:
+                    t = class_mapper(Post).t_posts
+                    t.delete(t.c.parentid == p.id).execute()
+                meta.Session.delete(p)
+        meta.Session.commit()
+        return redirect_to('/%s' % post)
     #def UnknownAction(self):      

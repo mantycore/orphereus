@@ -47,7 +47,7 @@
     </form>
 </div>
 <hr />
-<form>
+<form action="/${c.PostAction}/delete" method="POST">
 %for thread in c.threads:
     <div id="thread-${thread.id}">
         %if thread.file:
@@ -63,7 +63,7 @@
         <a name="i${thread.id}"></a>
         <label>
             %if thread.uid_number == c.uid_number:
-                <input type="checkbox" name="delete" value="${thread.id}" />
+                <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
             %endif
             <span class="filetitle">${thread.title}</span>  
             <span class="postername"></span>
@@ -94,9 +94,9 @@
                             <a name="i${p.id}"></a>
                             <label>
                                 %if p.uid_number == c.uid_number:
-                                    <input type="checkbox" name="delete" value="${p.id}" />
+                                    <input type="checkbox" name="delete-${p.id}" value="${p.id}" />
                                 %else:
-                                    <input type="checkbox" name="delete" disabled/>
+                                    <input type="checkbox" name="delete-${p.id}" disabled/>
                                 %endif
                                 %if p.sage:
                                     <img src='/images/sage.png'>

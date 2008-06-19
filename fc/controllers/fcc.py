@@ -3,6 +3,7 @@ import logging
 from fc.lib.base import *
 from fc.model import *
 from sqlalchemy.orm import eagerload
+from sqlalchemy.orm import class_mapper
 import os
 import cgi
 import shutil
@@ -435,9 +436,8 @@ class FccController(BaseController):
             p = meta.Session.query(Post).get(request.POST[i])
             if p and p.uid_number == session['uid_number']:
                 if p.parentid == -1:
-                    t = class_mapper(Post).t_posts
-                    t.delete(t.c.parentid == p.id).execute()
+                    meta.Session.execute(t_posts.delete().where(t_posts.c.parentid == p.id))
                 meta.Session.delete(p)
         meta.Session.commit()
-        return redirect_to('/%s' % post)
+        return redirect_to(str('/%s' % post))
     #def UnknownAction(self):      

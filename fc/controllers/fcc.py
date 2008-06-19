@@ -411,8 +411,8 @@ class FccController(BaseController):
         c.url = url
         c.uploadPathWeb = uploadPathWeb
         c.canvas = False
-        c.width  = request.POST.get('oekaki_x',False)
-        c.height = request.POST.get('oekaki_y',False)
+        c.width  = request.POST.get('oekaki_x',300)
+        c.height = request.POST.get('oekaki_y',300)
         if not (isNumber(c.width) or isNumber(c.height)):
            c.width = 300
            c.height = 300

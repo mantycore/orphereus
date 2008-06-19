@@ -2,11 +2,11 @@
 <%inherit file="wakaba.main.mako" />
 
 <div class="postarea">
-    <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="task" value="post" />
-    <input type="hidden" name="akane" />
     <table>
         <tbody>
+    <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="task" value="post" />
+    <input type="hidden" name="akane" />        
         <tr id="tremail">
             <td class="postblock">Sage</td>
             <td><input type="checkbox" name="sage" /></td>
@@ -45,19 +45,15 @@
             <tr id="trfile">
                 <td colspan=2><input type="hidden" name="tempid" value="${c.oekaki.tempid}"><img src="${c.uploadPathWeb + c.oekaki.path}"></td>
             </tr>
-            </tbody>
-            </table>
             </form>            
         %else:
             <tr id="trfile">
                 <td class="postblock">File</td>
                 <td>
                 <input type="file" name="file" size="35" /></td>
-            </tr>                      
-            </tbody>
-            </table>
-            </form>             
-            
+            </tr>   
+         </form>       
+         
             <form method="post" action="/${c.PostAction}/oekakiDraw">
                 <table>
                 <tbody>
@@ -78,10 +74,9 @@
                 
                 </td> 
                 </tr>
-                </tbody>
-                </table>                
-            </form>    
-    
+            </form>            
+            </tbody>
+            </table>    
         %endif
 </div>
 <hr />

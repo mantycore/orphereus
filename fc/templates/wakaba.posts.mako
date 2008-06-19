@@ -31,18 +31,8 @@
                 </td>
             </tr>
         %endif
-        %if c.oekaki:
-            <tr id="trfile">
-                <td colspan=2><input type="hidden" name="tempid" value="${c.oekaki.tempid}"><img src="${c.uploadPathWeb + c.oekaki.path}"></td>
-            </tr>
-        %else:
-            <tr id="trfile">
-                <td class="postblock">File</td>
-                <td><input type="file" name="file" size="35" /></td>
-            </tr>                      
-        %endif
         <tr id="trgetback">
-            <td class="postblock">Gb2 :</td>
+            <td class="postblock">Go to</td>
             <td>
                 <label><input type="radio" name="gb2" value="board" />board</label>
                 <label>
@@ -50,27 +40,52 @@
                     thread
                 </label>
             </td>
-        </tr>
-        </tbody>
-    </table>
-    </form>
+        </tr>        
+        %if c.oekaki:
+            <tr id="trfile">
+                <td colspan=2><input type="hidden" name="tempid" value="${c.oekaki.tempid}"><img src="${c.uploadPathWeb + c.oekaki.path}"></td>
+            </tr>
+            </tbody>
+            </table>
+            </form>            
+        %else:
+            <tr id="trfile">
+                <td class="postblock">File</td>
+                <td>
+                <input type="file" name="file" size="35" /></td>
+            </tr>                      
+            </tbody>
+            </table>
+            </form>             
+            
+            <form method="post" action="/${c.PostAction}/oekakiDraw">
+                <table>
+                <tbody>
+                <tr id="tremail">
+                <td class="postblock">Oekaki</td>
+                <td>   
+                
+                Painter:  
+                <select name="oekaki_painter">   
+                    <option selected="selected" value="shiNormal">Shi Normal</option>      
+                <option value="shiPro">Shi Pro</option>     
+                </select>
+                Width: 
+                <input type="text" value="300" size="3" name="oekaki_x"/>
+                Height: 
+                <input type="text" value="300" size="3" name="oekaki_y"/> 
+                <input type="submit" value="Draw Oekaki"/>    
+                
+                </td> 
+                </tr>
+                </tbody>
+                </table>                
+            </form>    
     
-<form method="POST" action="oekakiDraw">
-    Painter:  
-    <select name="oekaki_painter">   
-        <option selected="selected" value="shiNormal">Shi Normal</option>      
-        <option value="shiPro">Shi Pro</option>     
-    </select>
-    Width: 
-    <input type="text" value="300" size="3" name="oekaki_x"/>
-    Height: 
-    <input type="text" value="300" size="3" name="oekaki_y"/> 
-    <input type="submit" value="Draw Oekaki"/> 
-</form>
-    
+        %endif
 </div>
 <hr />
-<form action="/${c.PostAction}/delete" method="POST">
+<form action="/${c.PostAction}/delete" method="post">
 %for thread in c.threads:
     <div id="thread-${thread.id}">
         %if thread.file:

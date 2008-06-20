@@ -24,7 +24,7 @@ if mode == 'test':
 		taglist = parser.getTagList(testtxt)
 		print "Done test %s in %s seconds" % (test,(time.time() - t1))
 		print taglist
-		parser.PrintTree(self, taglist[1], 0)
+		parser.PrintTree(taglist[1], 0)
 elif mode == 'testall':
 	for test in testlist:
 	    testtxt = open('wakabaparse/' + test).read()
@@ -36,7 +36,7 @@ elif mode == 'testall':
 	    else:
 	    	print "Test %s failed!" % test
 	    	print taglist
-	    	parser.PrintTree(self, taglist[1], 0)
+	    	parser.PrintTree(taglist[1], 0)
 elif mode == 'build':
 	for test in testlist:
 	    testtxt = open('wakabaparse/' + test).read()
@@ -44,7 +44,7 @@ elif mode == 'build':
 	    taglist = parser.getTagList(testtxt)
 	    print "Passed test %s in %s seconds" % (test,(time.time() - t1))
 	    print taglist
-	    parser.PrintTree(self, taglist[1], 0)
+	    parser.PrintTree(taglist[1], 0)
 	    isok = raw_input('Is it correct? (y/n) : ')
 	    if isok == 'y':
 	    	testres = open('wakabaparse/%s.res' % test,'w')

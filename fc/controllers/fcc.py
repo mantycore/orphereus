@@ -266,7 +266,7 @@ class FccController(BaseController):
         else:
            file = request.POST.get('file',False)
         if post.message:
-           post.message = wakabaparse.parseWakaba(post.message,self)     
+           post.message = wakabaparse.WakabaParser().parseWakaba(post.message,self)     
         post.title = request.POST['title']
         post.date = datetime.datetime.now()
         pic = self.processFile(file,options.thumb_size)

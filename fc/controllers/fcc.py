@@ -467,7 +467,7 @@ class FccController(BaseController):
               localFile.write(body)
               localFile.close()
               oekaki.time = time
-              oekaki.type = 'Shi normal'
+              #oekaki.type = 'Shi normal'
               oekaki.path = tempid + '.' + type
               meta.Session.commit()
         return ['ok']

@@ -8,5 +8,6 @@
         %endfor
         ]
     %endfor
+	[<a href="/@/">@</a>]
 </div>
 %endif

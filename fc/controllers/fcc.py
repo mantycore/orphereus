@@ -316,6 +316,17 @@ class FccController(BaseController):
         c.PostAction = '~'
         return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1), tempid=tempid, page=int(page), board='~')
 
+    def GetMyThreads(self, page=0, tempid=0):
+        c.currentURL = '/@/'
+        if not self.isAuthorized():
+            return render('/wakaba.login.mako')
+        c.currentTag = ''
+        c.allowTags = True
+        c.PostAction = '@'
+        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.uid_number==session['uid_number'])
+        return self.showPosts(threadFilter=filter, tempid=tempid, page=int(page), board='@')
+        
+
     def GetThread(self, post, tempid):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
@@ -411,8 +422,8 @@ class FccController(BaseController):
         c.url = url
         c.uploadPathWeb = uploadPathWeb
         c.canvas = False
-        c.width  = request.POST.get('oekaki_x',300)
-        c.height = request.POST.get('oekaki_y',300)
+        c.width  = request.POST.get('oekaki_x','300')
+        c.height = request.POST.get('oekaki_y','300')
         if not (isNumber(c.width) or isNumber(c.height)):
            c.width = 300
            c.height = 300

@@ -164,7 +164,7 @@ class FccController(BaseController):
               return ''
            
            localFilePath = os.path.join(uploadPath,name + '.' + ext)
-           localFile = open(localFilePath,'w')
+           localFile = open(localFilePath,'wb')
            shutil.copyfileobj(file.file, localFile)
            file.file.close()
            localFile.close()

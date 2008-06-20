@@ -13,7 +13,7 @@ import Image
 import os
 import hashlib
 import re
-import wakabaparse
+from wakabaparse import WakabaParser
 
 class FieldStorageLike(object):
     def __init__(self,filename,filepath):
@@ -266,7 +266,8 @@ class FccController(BaseController):
         else:
            file = request.POST.get('file',False)
         if post.message:
-           post.message = wakabaparse.WakabaParser().parseWakaba(post.message,self)     
+           parser = WakabaParser()
+           post.message = parser.parseWakaba(post.message,self)     
         post.title = request.POST['title']
         post.date = datetime.datetime.now()
         pic = self.processFile(file,options.thumb_size)

@@ -12,8 +12,8 @@ class WakabaParser(object):
         self.input  = u''
         self.calledBy = None
         self.baseProd = baseProd
-        self.def = open(definition).read()
-        self.parser = generator.buildParser(self.def).parserbyname(baseProd)
+        self.defl = open(definition).read()
+        self.parser = generator.buildParser(self.defl).parserbyname(baseProd)
         
     def PrintTree(self, Node, Depth):
         for tag, beg, end, parts in Node:
@@ -81,7 +81,7 @@ class WakabaParser(object):
         valid = {} 
         result = ''
         for nn, i, j, p in parts:
-            pid = calledBy.isPostOwner(self.input[i:j])
+            pid = self.calledBy.isPostOwner(self.input[i:j])
             if pid == -1:
                 pid = self.input[i:j]
             if pid:
@@ -104,7 +104,7 @@ class WakabaParser(object):
             if tag in self.plain:
                 result += self.filterPlain(self.input[beg:end])
             elif tag in self.simple and parts:
-                result += '<' + simple[tag]+ '>' + self.formatInHTML(parts) + '</' + simple[tag]+ '>'
+                result += '<' + self.simple[tag]+ '>' + self.formatInHTML(parts) + '</' + self.simple[tag]+ '>'
             elif tag in self.complex:
                 if fP:
                     fP = False

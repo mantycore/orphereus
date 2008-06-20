@@ -141,3 +141,8 @@ class WakabaParser(object):
         taglist = TextTools.tag(self.input, self.parser)
         result = self.formatInHTML(taglist[1])
         return result
+
+    def getTagList(self, message):
+    	self.input = "\n" + message
+    	taglist = TextTools.tag(self.input, self.parser)
+    	return taglist

@@ -70,9 +70,10 @@
                 <option value="shiPro">Shi Pro</option>     
                 </select>
                 Width: 
-                <input type="text" value="300" size="3" name="oekaki_x"/>
+                <input type="text" value="300" size="3" name="oekaki_x"/>                
                 Height: 
-                <input type="text" value="300" size="3" name="oekaki_y"/> 
+                <input type="text" value="300" size="3" name="oekaki_y"/>
+                <input type="hidden" value="New" name="oekaki_type"/>
                 <input type="submit" value="Draw Oekaki"/>    
                 
                 </td> 

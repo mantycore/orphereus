@@ -425,9 +425,10 @@ class FccController(BaseController):
         c.canvas = False
         c.width  = request.POST.get('oekaki_x','300')
         c.height = request.POST.get('oekaki_y','300')
+        enablePicLoading = not (request.POST.get('oekaki_type','Reply') == 'New');
         if not (isNumber(c.width) or isNumber(c.height)):
            c.width = 300
-           c.height = 300
+           c.height = 300            
         c.tempid = str(long(time.time() * 10**7))
         oekaki = Oekaki()
         oekaki.tempid = c.tempid
@@ -442,7 +443,7 @@ class FccController(BaseController):
         oekaki.uid_number = session['uid_number']
         oekaki.path = ''        
         oekaki.source = 0
-        if isNumber(url):
+        if isNumber(url) and enablePicLoading:
            post = meta.Session.query(Post).filter(Post.id==url).one()
            if post.picid:
               pic = meta.Session.query(Picture).filter(Picture.id==post.picid).first()

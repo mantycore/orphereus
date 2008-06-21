@@ -3,14 +3,23 @@
 
 <div class="postarea">
 	<form id="postform" action="/register/doesntmatteranymore" method="post">
-		<span class="postblock">Enter your security code :</span>
-		<input name="key" type="password" size=60>
-                <br>
-                <span class="postblock">Re-enter security code :</span>
-                <input name="key2" type="password" size=60>
-                <br>
-                Should be at least 24 symbols
-                <br>
-		<input type="submit" value="OK">                
+        <h2>${_('New UID')}</h2>
+         
+         <p><i> 
+            ${_('Now you can enter your personal security code.')}
+            <br/>
+            ${_("Warning: you can't use this link twice.")} 
+            <br/>
+            ${_("If you close browser now you'll loss your ability to join us.")}
+            <br/>
+         </i></p>
+        
+		<span class="postblock">${_('Enter your security code')}</span>
+        <p><input name="key" type="password" size=60></p> 
+        <span class="postblock">${_('Re-enter security code')}</span>
+        <p><input name="key2" type="password" size=60></p>                
+        <i>${_('Security code should be at least 24 symbols')}</i>
+        <p><input type="submit" value="${_('OK')}"></p>                
 	</form>
+    
 </div>

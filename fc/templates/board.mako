@@ -1,5 +1,5 @@
 <form name="test" method="POST" action="/${c.board}">
-Post goes here: 
+${_('Post goes here')}: 
 <br />
 <textarea name="message" ></textarea>
 <br />
@@ -7,7 +7,7 @@ Post goes here:
 </form>
 <br />
 % for post in c.posts:
-<span style="background-color: wheat;">Post # ${post.id}</span>
+<span style="background-color: wheat;">${_('Post # %s') % post.id}</span>
 ${post.message}
 <br />
 % endfor

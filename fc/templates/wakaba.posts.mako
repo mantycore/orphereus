@@ -2,7 +2,7 @@
 <%inherit file="wakaba.main.mako" />
 
 %if not c.board:
-    <div class="theader">Reply</div>
+    <div class="theader">${_('Reply')}</div>
 %endif    
 
 <div class="postarea">
@@ -13,24 +13,24 @@
     <input type="hidden" name="akane" />   
     %if not c.board:
         <tr id="tremail">
-            <td class="postblock">Sage</td>
+            <td class="postblock">${_('Sage')}</td>
             <td><input type="checkbox" name="sage" /></td>
         </tr>
     %endif
         <tr id="trsubject">
-            <td class="postblock">Title</td>
+            <td class="postblock">${_('Title')}</td>
             <td>
                 <input type="text" name="title" size="35" />
                 <input type="submit" value="Post" />
             </td>
         </tr>
         <tr id="trcomment">
-            <td class="postblock">Text</td>
+            <td class="postblock">${_('Text')}</td>
             <td><textarea name="message" cols="60" rows="6"></textarea></td>
         </tr>
         %if c.allowTags:
             <tr id="trtags">
-                <td class="postblock">Boards</td>
+                <td class="postblock">${_('Boards')}</td>
                 <td>
                     <input type="hidden" name="maintag" value='${c.currentTag}' />
                     <input type="text" name="tags" size="35" />
@@ -38,13 +38,13 @@
             </tr>
         %endif
         <tr id="trgetback">
-            <td class="postblock">Go to</td>
+            <td class="postblock">${_('Go to')}</td>
             <td>
                 %if c.returnToThread:
                     <label><input type="radio" name="gb2" value="board" />board</label>
-                    <label><input type="radio" name="gb2" value="thread" checked="checked" />thread</label>
+                    <label><input type="radio" name="gb2" value="thread" checked="checked" />${_('thread')}</label>
                 %else:
-                    <label><input type="radio" name="gb2" value="board" checked="checked" />board</label>
+                    <label><input type="radio" name="gb2" value="board" checked="checked" />${_('board')}</label>
                     <label><input type="radio" name="gb2" value="thread" />thread</label>                
                 %endif
             </td>
@@ -56,7 +56,7 @@
             </form>            
         %else:
             <tr id="trfile">
-                <td class="postblock">File</td>
+                <td class="postblock">${_('File')}</td>
                 <td>
                 <input type="file" name="file" size="35" /></td>
             </tr>   
@@ -64,7 +64,7 @@
          
         <form method="post" action="/${c.PostAction}/oekakiDraw">
             <tr id="tremail">
-               <td class="postblock">Oekaki</td>
+               <td class="postblock">${_('Oekaki')}</td>
                <td>   
      
                 <select name="oekaki_painter">   
@@ -76,7 +76,7 @@
                 Height: 
                 <input type="text" value="300" size="3" name="oekaki_y"/>
                 <input type="hidden" value="New" name="oekaki_type"/>
-                <input type="submit" value="Draw Oekaki"/>    
+                <input type="submit" value="${_('Draw Oekaki')}"/>    
                 
                 </td> 
             </tr>
@@ -118,7 +118,7 @@
              [<a href="/${thread.id}/oekakiDraw">Draw</a>]
             %endif
         </span>
-        <span>Posted in :
+        <span>${_('Posted in')} :
         %for t in thread.tags:
             <a href="/${t.tag}/">/${t.tag}/</a> 
         %endfor
@@ -127,7 +127,7 @@
             ${thread.message}
         </blockquote>
         %if thread.omittedPosts:
-            <span class="omittedposts">${thread.omittedPosts} posts omitted.</span>
+            <span class="omittedposts">${_('%s posts omitted.') % thread.omittedPosts } </span>
         %endif
         %for p in thread.Replies:
             <table>
@@ -157,7 +157,7 @@
                             </span>
                             &nbsp;  
                             %if p.file:
-                                <br /><span class="filesize">File: 
+                                <br /><span class="filesize">${_('File:')} 
                                 <a target="_blank" href="${c.uploadPathWeb + p.file.path}">${p.file.path}</a> 
                                 (<em>${p.file.size}, ${p.file.width}x${p.file.height}</em>)</span>
                                 <span class="thumbnailmsg"></span><br />

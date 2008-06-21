@@ -3,7 +3,7 @@ import os
 import sys
 import time
 
-testlist = ['test_sanity','test_all_inline','test_all_inline_complex','blocks','all']
+testlist = ['test_sanity','test_links','test_all_inline','test_all_inline_complex','test_marksymbols','blocks','all']
 
 t1 = time.time()
 parser = WakabaParser()
@@ -51,3 +51,19 @@ elif mode == 'build':
 	    	testres.write(str(taglist))
 	    	testres.close()
 	    	print "Saved."
+elif mode == 'buildnew':
+        for test in testlist:
+            if not os.path.isfile('wakabaparse/%s.res' % test):
+                testtxt = open('wakabaparse/' + test).read()
+                t1 = time.time()
+                taglist = parser.getTagList(testtxt)
+                print "Passed test %s in %s seconds" % (test,(time.time() - t1))
+                print taglist
+                parser.PrintTree(taglist[1], 0)
+                isok = raw_input('Is it correct? (y/n) : ')
+                if isok == 'y':
+                    testres = open('wakabaparse/%s.res' % test,'w')
+                    testres.write(str(taglist))
+                    testres.close()
+                    print "Saved."
+                    

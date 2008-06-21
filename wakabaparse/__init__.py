@@ -8,7 +8,7 @@ class WakabaParser(object):
     def __init__(self, definition = 'wakabaparse/mark.def', baseProd = 'all'):
         self.plain  = ['safe_text','text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nou']
         self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','block_code':'code'}
-        self.complex= ['reference','signature','block_cite','block_list']
+        self.complex= ['reference','signature','block_cite','block_list','link']
         self.input  = u''
         self.calledBy = None
         self.baseProd = baseProd
@@ -21,6 +21,8 @@ class WakabaParser(object):
             if parts:
                 self.PrintTree(parts,Depth + 1)
 
+    def link(self, tag, beg, end, parts):
+        return '<a href="%s">%s</a>' % (self.input[beg:end],self.input[beg:end])
     def block_cite(self, tag, beg, end, parts):
         depth = 0
         n = 0

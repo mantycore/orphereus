@@ -6,7 +6,7 @@ from mx.TextTools import TextTools
 
 class WakabaParser(object):
     def __init__(self, definition = 'wakabaparse/mark.def', baseProd = 'all'):
-        self.plain  = ['safe_text','text','symbol','whitespace','strikedout']
+        self.plain  = ['safe_text','text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nou']
         self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','block_code':'code'}
         self.complex= ['reference','signature','block_cite','block_list']
         self.input  = u''

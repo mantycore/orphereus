@@ -1,6 +1,9 @@
 newline         := "\r\n"/"\n"/"\r"
 number          := [0-9]+
 whitespace      := [ \t]+
+symbol_mark     := [*_>#`]
+symbol_mark_noa := [_>#`]
+symbol_mark_nou := [*>#`]
 noaccent_code   := -(newline / '`')+
 accent_code     := -(newline / '``')+
 symbol          := -(whitespace / newline)
@@ -10,14 +13,14 @@ reference       := ">>" , number
 signature       := "##" , number , (',' , number)*
 strikedout      := -[ \t\r\n*_>#`^]+
 strikeout       := strikedout, ('^H'+/'^W')
-emphasis        := ('*' ,?-'*', (inline/symbol), (inline_safe/[_>#`])* , '*') / 
-                   ('_' ,?-'_', (inline/symbol), (inline_safe/[*>#`])* , '_')
-strong          := ('**' , (inline/symbol), (inline_safe/[_>#`])* , '**') /
-                   ('__' , (inline/symbol), (inline_safe/[*>#`])* , '__')
+emphasis        := ('*' ,?-'*', (inline/symbol), (inline_safe/symbol_mark_noa)* , '*') / 
+                   ('_' ,?-'_', (inline/symbol), (inline_safe/symbol_mark_nou)* , '_')
+strong          := ('**' , (inline/symbol), (inline_safe/symbol_mark_noa)* , '**') /
+                   ('__' , (inline/symbol), (inline_safe/symbol_mark_nou)* , '__')
 inline_code     := ('`' , noaccent_code , '`') / ('``' , accent_code , '``')
 inline          := (inline_code / reference / signature / strikeout / strong / emphasis)
 inline_safe     := (inline_code / reference / signature / strikeout / strong / emphasis / safe_text)+
-inline_full     := (inline_code / reference / signature / strikeout / strong / emphasis / safe_text / [*_>#`] / text)+
+inline_full     := (inline_code / reference / signature / strikeout / strong / emphasis / safe_text / symbol_mark / text)+
 line            := newline, inline_full?
 sub_cite        := whitespace?, ?-reference, '>'
 cite            := newline, whitespace?, ?-reference, '>', sub_cite*, inline_full?

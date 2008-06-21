@@ -40,11 +40,13 @@
         <tr id="trgetback">
             <td class="postblock">Go to</td>
             <td>
-                <label><input type="radio" name="gb2" value="board" />board</label>
-                <label>
-                    <input type="radio" name="gb2" value="thread" checked="checked" /> 
-                    thread
-                </label>
+                %if c.returnToThread:
+                    <label><input type="radio" name="gb2" value="board" />board</label>
+                    <label><input type="radio" name="gb2" value="thread" checked="checked" />thread</label>
+                %else:
+                    <label><input type="radio" name="gb2" value="board" checked="checked" />board</label>
+                    <label><input type="radio" name="gb2" value="thread" />thread</label>                
+                %endif
             </td>
         </tr>        
         %if c.oekaki:

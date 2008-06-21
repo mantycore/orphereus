@@ -120,6 +120,12 @@ class FccController(BaseController):
         else:
             c.oekaki = False
         
+        try:
+            retTo = request.cookies['returnTo']
+            c.returnToThread = (retTo == 'thread')
+        except KeyError: 
+            pass
+             
         return render('/%s.posts.mako' % session['options']['template'])
         
     def getParentID(self, id):
@@ -303,7 +309,9 @@ class FccController(BaseController):
         
         meta.Session.save(post)
         meta.Session.commit()
-        if request.POST.get('gb2', 'board') == 'thread':
+        returnTo = request.POST.get('gb2', 'board')
+        response.set_cookie('returnTo', returnTo, expires=3600000)
+        if returnTo == 'thread':             
             return redirect_to(action='GetThread',post=post.id,board=None)
         else:
             return redirect_to(action='GetBoard',board=tags[0].tag,post=None)
@@ -480,7 +488,7 @@ class FccController(BaseController):
               localFile.write(body)
               localFile.close()
               oekaki.time = time
-              #oekaki.type = 'Shi normal'
+              #oekaki.type = 'Shi normal' #this value don't need be overwritten. It's come from oekakiDraw
               oekaki.path = tempid + '.' + type
               meta.Session.commit()
         return ['ok']

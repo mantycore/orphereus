@@ -88,16 +88,19 @@ class FUser():
         return self.__user.bantime
     def banreason(self):
         return self.__user.banreason    
-
+    
 ssn = -1        
 try:
     ssn = session['uid_number'];
 except: 
-    pass
-    
+    pass    
 userInstance = FUser(ssn)
     
 class FccController(BaseController):
+    def __begin__(self):
+        log.debug('BEGIN!!!')
+
+        
     def authorize(self, url):
         if url:
             c.currentURL = '/' + str(url) + '/'
@@ -199,9 +202,8 @@ class FccController(BaseController):
         else:
             c.oekaki = False
         
-        try:
-            retTo = request.cookies['returnTo']
-            c.returnToThread = (retTo == 'thread')
+        try:            
+            c.returnToThread = session['returnToThread']
         except KeyError: 
             pass
              
@@ -389,11 +391,13 @@ class FccController(BaseController):
         meta.Session.save(post)
         meta.Session.commit()
         returnTo = request.POST.get('gb2', 'board')
-        response.set_cookie('returnTo', returnTo, expires=3600000)
-        if returnTo == 'thread':             
-            return redirect_to(action='GetThread',post=post.id,board=None)
-        else:
+        #response.set_cookie('returnTo', returnTo, expires=3600000)
+        session['returnToThread'] = not (returnTo == 'board')
+        session.save()
+        if returnTo == 'board':             
             return redirect_to(action='GetBoard',board=tags[0].tag,post=None)
+        else:
+            return redirect_to(action='GetThread',post=post.id,board=None)            
 
     def GetOverview(self, page=0, tempid=0):
         c.currentURL = '/~/'

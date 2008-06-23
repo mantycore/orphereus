@@ -71,7 +71,7 @@ class FUser():
     def isValid(self):
         return self.__valid
     def isAuthorized(self):
-        return self.isValid() and ('uid_number' in session) and (session.get('uid_number', -1) == self.__uidNumber)
+        return self.isValid() and (session.get('uid_number', -1) == self.__uidNumber)
     def uidNumber(self):
         return self.__uidNumber
     def threadsPerPage(self):

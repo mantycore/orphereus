@@ -71,7 +71,7 @@ class FUser():
     def isValid(self):
         return self.__valid
     def isAuthorized(self):
-        return self.__uidNumber and ('uid_number' in session) and (session.get('uid_number', -1) == self.__uidNumber)
+        return self.isValid() and ('uid_number' in session) and (session.get('uid_number', -1) == self.__uidNumber)
     def uidNumber(self):
         return self._uidNumber
     def threadsPerPage(self):
@@ -377,7 +377,7 @@ class FccController(BaseController):
 
     def GetOverview(self, page=0, tempid=0):
         c.currentURL = '/~/'
-        if not self.isAuthorized():
+        if not self.userInst.isAuthorized():
             return render('/wakaba.login.mako')
         c.currentTag = ''
         c.allowTags = True
@@ -386,7 +386,7 @@ class FccController(BaseController):
 
     def GetMyThreads(self, page=0, tempid=0):
         c.currentURL = '/@/'
-        if not self.isAuthorized():
+        if not self.userInst.isAuthorized():
             return render('/wakaba.login.mako')
         c.currentTag = ''
         c.allowTags = True
@@ -397,7 +397,7 @@ class FccController(BaseController):
 
     def GetThread(self, post, tempid):
         c.currentURL = request.path_info + '/'
-        if not self.isAuthorized():
+        if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
 
         c.currentTag = ''
@@ -415,7 +415,7 @@ class FccController(BaseController):
 
     def GetBoard(self, board, tempid, page=0):
         c.currentURL = request.path_info + '/'
-        if not self.isAuthorized():
+        if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
         c.PostAction = board
         
@@ -426,19 +426,19 @@ class FccController(BaseController):
 
     def PostReply(self, post):
         c.currentURL = request.path_info + '/'
-        if not self.isAuthorized():
+        if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
         return self.processPost(postid=post)
 
     def PostThread(self, board):
         c.currentURL = request.path_info + '/'
-        if not self.isAuthorized():
+        if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
         return self.processPost(board=board)
         
     def makeInvite(self):         
         c.currentURL = request.path_info + '/'
-        if not self.isAuthorized():
+        if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
         
         if self.userInst.canMakeInvite():
@@ -478,7 +478,7 @@ class FccController(BaseController):
         return render('/wakaba.register.mako')
     def oekakiDraw(self,url):
         c.currentURL = request.path_info + '/'
-        if not self.isAuthorized():
+        if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
         c.url = url
         c.uploadPathWeb = uploadPathWeb

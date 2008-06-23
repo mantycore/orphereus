@@ -36,7 +36,7 @@ hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 
 class FUser():
     def __init__(self, uid_number = -1):
-        log.debug('userInstance init UID_NUMBER == '+str(ssn))
+        #log.debug('self.userInst init UID_NUMBER == '+str(ssn))
         if uid_number>-1:
             self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uid_number==uid_number).first()
             
@@ -87,19 +87,17 @@ class FUser():
     def bantime(self):   
         return self.__user.bantime
     def banreason(self):
-        return self.__user.banreason    
-    
-ssn = -1        
-try:
-    ssn = session['uid_number'];
-except: 
-    pass    
-userInstance = FUser(ssn)
+        return self.__user.banreason 
+
     
 class FccController(BaseController):
-    def __begin__(self):
-        log.debug('BEGIN!!!')
-
+    def __before__(self):
+        ssn = -1        
+        try:
+            ssn = session['uid_number'];
+        except: 
+            pass    
+        self.userInst = FUser(ssn)
         
     def authorize(self, url):
         if url:
@@ -118,29 +116,12 @@ class FccController(BaseController):
     def login(self, user):
         isNumber(True)
         session['uid_number'] = user.uid_number
-        #log.debug('Logged in: '+ str(session['uid_number']))
-        #if user.options:
-        #    session['options'] = {
-        #            'threads_per_page':user.options.threads_per_page,
-        #            'replies_per_thread':user.options.replies_per_thread,
-        #            'style':user.options.style,
-        #            'template':user.options.template,
-        #            'rights_level':user.options.rights_level
-        #        }        
-        #else:
-        #    session['options'] = {
-        #            'threads_per_page':10,
-        #            'replies_per_thread':10,
-        #            'style':'photon',
-        #            'template':'wakaba',
-        #            'rights_level':0
-        #        }
         session.save()
     def showPosts(self, threadFilter, tempid=0, page=0, board=''):
         c.title = 'FailChan'
         c.board = board
         c.uploadPathWeb = uploadPathWeb
-        c.uid_number = userInstance.uidNumber()
+        c.uid_number = self.userInst.uidNumber()
         count = threadFilter.count()
         
         if board and board != '~':
@@ -167,14 +148,14 @@ class FccController(BaseController):
             c.boardlist.append(section)
         
         if count > 1:
-            p = divmod(count, userInstance.threadsPerPage())
+            p = divmod(count, self.userInst.threadsPerPage())
             c.pages = p[0]
             if p[1]:
                 c.pages += 1
             if (page + 1) > c.pages:
                 page = c.pages - 1
             c.page = page
-            c.threads = threadFilter.order_by(Post.last_date.desc())[(page * userInstance.threadsPerPage()):(page + 1)* userInstance.threadsPerPage()]
+            c.threads = threadFilter.order_by(Post.last_date.desc())[(page * self.userInst.threadsPerPage()):(page + 1)* self.userInst.threadsPerPage()]
         elif count == 1:
             c.page  = False
             c.pages = False
@@ -187,7 +168,7 @@ class FccController(BaseController):
         for thread in c.threads:
             if count > 1:
                 replyCount = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
-                replyLim   = replyCount - userInstance.repliesPerThread() 
+                replyLim   = replyCount - self.userInst.repliesPerThread() 
                 if replyLim < 0:
                     replyLim = 0
                 thread.omittedPosts = replyLim
@@ -207,7 +188,7 @@ class FccController(BaseController):
         except KeyError: 
             pass
              
-        return render('/%s.posts.mako' % userInstance.template())
+        return render('/%s.posts.mako' % self.userInst.template())
         
     def getParentID(self, id):
         post = meta.Session.query(Post).filter(Post.id==id).first()
@@ -218,7 +199,7 @@ class FccController(BaseController):
     
     def isPostOwner(self, id):
         post = meta.Session.query(Post).filter(Post.id==id).first()
-        if post and post.uid_number == userInstance.uidNumber():
+        if post and post.uid_number == self.userInst.uidNumber():
            return post.parentid
         else:
            return False
@@ -366,7 +347,7 @@ class FccController(BaseController):
                 c.errorText = "Image is too small"
                 return render('/wakaba.error.mako')
             post.picid = pic.id
-        post.uid_number = userInstance.uidNumber()
+        post.uid_number = self.userInst.uidNumber()
         
         if not post.message and not post.picid:
             c.errorText = "At least message or file should be specified"
@@ -415,7 +396,7 @@ class FccController(BaseController):
         c.currentTag = ''
         c.allowTags = True
         c.PostAction = '@'
-        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.uid_number==userInstance.uidNumber())
+        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.uid_number==self.userInst.uidNumber())
         return self.showPosts(threadFilter=filter, tempid=tempid, page=int(page), board='@')
         
 
@@ -465,7 +446,7 @@ class FccController(BaseController):
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
         
-        if userInstance.canMakeInvite():
+        if self.userInst.canMakeInvite():
             invite = Invite()
             invite.date = datetime.datetime.now()
             invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
@@ -574,7 +555,7 @@ class FccController(BaseController):
     def DeletePost(self, post):
         for i in request.POST:
             p = meta.Session.query(Post).get(request.POST[i])
-            if p and p.uid_number == userInstance.uidNumber() or userInstance.canDeleteAllPosts():
+            if p and p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts():
                 if p.parentid == -1:
                     meta.Session.execute(t_posts.delete().where(t_posts.c.parentid == p.id))
                 meta.Session.delete(p)

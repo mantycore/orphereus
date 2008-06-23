@@ -77,9 +77,9 @@ class FUser():
     def rightsLevel(self):
         return self.__rightsLevel
     def bantime(self):   
-        return __user.bantime
+        return self.__user.bantime
     def banreason(self):
-        return __user.banreason    
+        return self.__user.banreason    
 
 ssn = -1        
 try:

@@ -2,7 +2,7 @@ import sqlalchemy as sa
 from sqlalchemy import orm
 from fc.model import meta
 def init_model(engine):
-    sm = orm.sessionmaker(autoflush=True, transactional=True, bind=engine)
+    sm = orm.sessionmaker(autoflush=True, autocommit=False, bind=engine)
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
 
@@ -25,7 +25,8 @@ t_user_options = sa.Table("user_options", meta.metadata,
     sa.Column("style"    , sa.types.String(32), nullable=False),
     sa.Column("template" , sa.types.String(32), nullable=False),
     sa.Column("bantime"  , sa.types.Integer, nullable=False),
-    sa.Column("banreason", sa.types.String(256), nullable=False)
+    sa.Column("banreason", sa.types.String(256), nullable=False),
+    sa.Column("rights_level", sa.types.Integer, nullable=False)
     )
 
 t_extlist = sa.Table("extlist", meta.metadata,

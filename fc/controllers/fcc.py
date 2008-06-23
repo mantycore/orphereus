@@ -21,7 +21,7 @@ class FieldStorageLike(object):
         self.file = open(filepath,'rb')
 
 def isNumber(n):
-    if n:
+    if n and isinstance(n, basestring):
         if re.match("^[-+]?[0-9]+$", n):
             return True
         else:
@@ -34,31 +34,102 @@ uploadPath = 'fc/public/uploads/'
 uploadPathWeb = '/uploads/'
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 
+class FUser():
+    def __init__(self, uid_number = -1):
+        log.debug('userInstance init UID_NUMBER == '+str(ssn))
+        if ssn>-1:
+            self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uid_number==uid_number).first()
+            
+            #log.debug(self.__user) 
+            
+            if self.__user:
+                self.__valid = True                
+
+                if not self.__user.options:
+                    self.__user.options.threads_per_page = 10
+                    self.__user.options.replies_per_thread = 10
+                    self.__user.options.style = 'photon'
+                    self.__user.options.template = 'wakaba'
+                    self.__user.options.rights_level = 0                 
+                  
+                #it could be replaced by __user.* ... But it can reduce performance in case of using AutoCommit... So I'm using additional fields
+                self.__threadsPerPage = self.__user.options.threads_per_page #session['options']['threads_per_page']
+                self.__repliesPerThread = self.__user.options.replies_per_thread #session['options']['replies_per_thread']
+                self.__style = self.__user.options.style #session['options']['style']
+                self.__template =  self.__user.options.template #session['options']['template']
+                self.__rightsLevel = self.__user.options.rights_level #session['options']['rights_level']                       
+                
+            else:
+                log.debug('problem: ' + str(uid_number))
+                self.__valid = False
+    def isValid(self):
+        return self.__valid
+    def uidNumber(self):
+        return session['uid_number']
+    def threadsPerPage(self):
+        return self.__threadsPerPage
+    def repliesPerThread(self):
+        return self.__repliesPerThread
+    def style(self):
+        return self.__style
+    def template(self):
+        return self.__template
+    def rightsLevel(self):
+        return self.__rightsLevel
+    def bantime(self):   
+        return __user.bantime
+    def banreason(self):
+        return __user.banreason    
+
+ssn = -1        
+try:
+    ssn = session['uid_number'];
+except: 
+    pass
+    
+userInstance = FUser(ssn)
+    
 class FccController(BaseController):
+    def authorize(self, url):
+        if url:
+            c.currentURL = '/' + str(url) + '/'
+        else:
+            c.currentURL = '/'
+        if request.POST['code']:
+            code = hashlib.sha512(request.POST['code'] + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+            user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==code).first()
+            if user:
+                self.login(user)
+                redirect_to(c.currentURL)
+        return render('/wakaba.login.mako')
     def isAuthorized(self):
         return 'uid_number' in session
     def login(self, user):
+        isNumber(True)
         session['uid_number'] = user.uid_number
-        if user.options:
-            session['options'] = {
-                    'threads_per_page':user.options.threads_per_page,
-                    'replies_per_thread':user.options.replies_per_thread,
-                    'style':user.options.style,
-                    'template':user.options.template
-                }        
-        else:
-            session['options'] = {
-                    'threads_per_page':10,
-                    'replies_per_thread':10,
-                    'style':'photon',
-                    'template':'wakaba'
-                }
+        #log.debug('Logged in: '+ str(session['uid_number']))
+        #if user.options:
+        #    session['options'] = {
+        #            'threads_per_page':user.options.threads_per_page,
+        #            'replies_per_thread':user.options.replies_per_thread,
+        #            'style':user.options.style,
+        #            'template':user.options.template,
+        #            'rights_level':user.options.rights_level
+        #        }        
+        #else:
+        #    session['options'] = {
+        #            'threads_per_page':10,
+        #            'replies_per_thread':10,
+        #            'style':'photon',
+        #            'template':'wakaba',
+        #            'rights_level':0
+        #        }
         session.save()
     def showPosts(self, threadFilter, tempid=0, page=0, board=''):
         c.title = 'FailChan'
         c.board = board
         c.uploadPathWeb = uploadPathWeb
-        c.uid_number = session['uid_number']
+        c.uid_number = userInstance.uidNumber()
         count = threadFilter.count()
         
         if board and board != '~':
@@ -85,14 +156,14 @@ class FccController(BaseController):
             c.boardlist.append(section)
         
         if count > 1:
-            p = divmod(count, session['options']['threads_per_page'])
+            p = divmod(count, userInstance.threadsPerPage())
             c.pages = p[0]
             if p[1]:
                 c.pages += 1
             if (page + 1) > c.pages:
                 page = c.pages - 1
             c.page = page
-            c.threads = threadFilter.order_by(Post.last_date.desc())[(page * session['options']['threads_per_page']):(page * session['options']['threads_per_page'] + session['options']['threads_per_page'])]
+            c.threads = threadFilter.order_by(Post.last_date.desc())[(page * userInstance.threadsPerPage()):(page + 1)* userInstance.threadsPerPage()]
         elif count == 1:
             c.page  = False
             c.pages = False
@@ -105,7 +176,7 @@ class FccController(BaseController):
         for thread in c.threads:
             if count > 1:
                 replyCount = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
-                replyLim   = replyCount - session['options']['replies_per_thread']
+                replyLim   = replyCount - userInstance.repliesPerThread() 
                 if replyLim < 0:
                     replyLim = 0
                 thread.omittedPosts = replyLim
@@ -126,7 +197,7 @@ class FccController(BaseController):
         except KeyError: 
             pass
              
-        return render('/%s.posts.mako' % session['options']['template'])
+        return render('/%s.posts.mako' % userInstance.template())
         
     def getParentID(self, id):
         post = meta.Session.query(Post).filter(Post.id==id).first()
@@ -137,7 +208,7 @@ class FccController(BaseController):
     
     def isPostOwner(self, id):
         post = meta.Session.query(Post).filter(Post.id==id).first()
-        if post and post.uid_number == session['uid_number']:
+        if post and post.uid_number == userInstance.uidNumber():
            return post.parentid
         else:
            return False
@@ -285,7 +356,7 @@ class FccController(BaseController):
                 c.errorText = "Image is too small"
                 return render('/wakaba.error.mako')
             post.picid = pic.id
-        post.uid_number = session['uid_number']
+        post.uid_number = userInstance.uidNumber()
         
         if not post.message and not post.picid:
             c.errorText = "At least message or file should be specified"
@@ -332,7 +403,7 @@ class FccController(BaseController):
         c.currentTag = ''
         c.allowTags = True
         c.PostAction = '@'
-        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.uid_number==session['uid_number'])
+        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.uid_number==userInstance.uidNumber())
         return self.showPosts(threadFilter=filter, tempid=tempid, page=int(page), board='@')
         
 
@@ -377,18 +448,6 @@ class FccController(BaseController):
            return render('/wakaba.login.mako')
         return self.processPost(board=board)
         
-    def authorize(self, url):
-        if url:
-            c.currentURL = '/' + str(url) + '/'
-        else:
-            c.currentURL = '/'
-        if request.POST['code']:
-            code = hashlib.sha512(request.POST['code'] + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
-            user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==code).first()
-            if user:
-                self.login(user)
-                redirect_to(c.currentURL)
-        return render('/wakaba.login.mako')
     def makeInvite(self):
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
@@ -433,8 +492,8 @@ class FccController(BaseController):
         c.canvas = False
         c.width  = request.POST.get('oekaki_x','300')
         c.height = request.POST.get('oekaki_y','300')
-        enablePicLoading = not (request.POST.get('oekaki_type','Reply') == 'New');
-        if not (isNumber(c.width) or isNumber(c.height)):
+        enablePicLoading = not (request.POST.get('oekaki_type','Reply') == 'New');        
+        if not (isNumber(c.width) or isNumber(c.height)) or (c.width<=10 or c.height<=10):
            c.width = 300
            c.height = 300            
         c.tempid = str(long(time.time() * 10**7))
@@ -498,7 +557,7 @@ class FccController(BaseController):
     def DeletePost(self, post):
         for i in request.POST:
             p = meta.Session.query(Post).get(request.POST[i])
-            if p and p.uid_number == session['uid_number']:
+            if p and p.uid_number == userInstance.uidNumber():
                 if p.parentid == -1:
                     meta.Session.execute(t_posts.delete().where(t_posts.c.parentid == p.id))
                 meta.Session.delete(p)

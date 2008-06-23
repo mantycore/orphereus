@@ -36,7 +36,7 @@ hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 
 class FUser():
     def __init__(self, uid_number = -1):
-        #log.debug('self.userInst init UID_NUMBER == '+str(ssn))
+        self._uidNumber = uid_number
         if uid_number>-1:
             self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uid_number==uid_number).first()
             
@@ -71,7 +71,7 @@ class FUser():
     def isValid(self):
         return self.__valid
     def uidNumber(self):
-        return session['uid_number']
+        return self._uidNumber
     def threadsPerPage(self):
         return self.__threadsPerPage
     def repliesPerThread(self):
@@ -92,12 +92,7 @@ class FUser():
     
 class FccController(BaseController):
     def __before__(self):
-        ssn = -1        
-        try:
-            ssn = session['uid_number'];
-        except: 
-            pass    
-        self.userInst = FUser(ssn)
+        self.userInst = FUser(session.get('uid_number',-1))
         
     def authorize(self, url):
         if url:

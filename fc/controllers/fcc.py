@@ -37,6 +37,8 @@ hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 class FUser():
     def __init__(self, uid_number = -1):
         self.__uidNumber = uid_number
+        self.__valid = False
+        
         if uid_number>-1:
             self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uid_number==uid_number).first()
             
@@ -64,9 +66,8 @@ class FUser():
                 self.__template =  self.__user.options.template #session['options']['template']
                 self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
                 self.__canMakeInvite = self.__user.options.canMakeInvite
-                return
-        #userID invalid...    
-        self.__valid = False
+                self.__valid = True
+                
     def isValid(self):
         return self.__valid
     def isAuthorized(self):

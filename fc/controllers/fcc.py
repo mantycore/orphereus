@@ -65,8 +65,7 @@ class FUser():
                 self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
                 self.__canMakeInvite = self.__user.options.canMakeInvite
                 return
-            
-        log.debug('problem: ' + str(uid_number))
+        #userID invalid...    
         self.__valid = False
     def isValid(self):
         return self.__valid

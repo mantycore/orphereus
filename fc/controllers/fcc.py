@@ -36,7 +36,7 @@ hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 
 class FUser():
     def __init__(self, uid_number = -1):
-        self._uidNumber = uid_number
+        self.__uidNumber = uid_number
         if uid_number>-1:
             self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uid_number==uid_number).first()
             
@@ -73,7 +73,7 @@ class FUser():
     def isAuthorized(self):
         return self.isValid() and ('uid_number' in session) and (session.get('uid_number', -1) == self.__uidNumber)
     def uidNumber(self):
-        return self._uidNumber
+        return self.__uidNumber
     def threadsPerPage(self):
         return self.__threadsPerPage
     def repliesPerThread(self):

@@ -25,8 +25,9 @@ t_user_options = sa.Table("user_options", meta.metadata,
     sa.Column("style"    , sa.types.String(32), nullable=False),
     sa.Column("template" , sa.types.String(32), nullable=False),
     sa.Column("bantime"  , sa.types.Integer, nullable=False),
-    sa.Column("banreason", sa.types.String(256), nullable=False),
-    sa.Column("rights_level", sa.types.Integer, nullable=False)
+    sa.Column("banreason", sa.types.String(256), nullable=True),
+    sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable=True),
+    sa.Column("canMakeInvite", sa.types.Boolean, nullable=True),    
     )
 
 t_extlist = sa.Table("extlist", meta.metadata,
@@ -132,9 +133,11 @@ class TagOptions(object):
 orm.mapper(Oekaki, t_oekaki)
 orm.mapper(Invite, t_invites)
 orm.mapper(UserOptions, t_user_options)
-orm.mapper(User, t_users, properties = {
-    'options' : orm.relation(UserOptions)
+orm.mapper(User, t_users, properties = {    
+        'options' : orm.relation(UserOptions, uselist=False, backref='t_users')    
     })
+    
+#'options' : orm.relation(UserOptions)    
 orm.mapper(Extension, t_extlist)
 orm.mapper(Picture, t_piclist, properties = {
     'extlist' : orm.relation(Extension)

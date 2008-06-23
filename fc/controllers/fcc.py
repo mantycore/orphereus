@@ -37,7 +37,7 @@ hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 class FUser():
     def __init__(self, uid_number = -1):
         log.debug('userInstance init UID_NUMBER == '+str(ssn))
-        if ssn>-1:
+        if uid_number>-1:
             self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uid_number==uid_number).first()
             
             #log.debug(self.__user) 
@@ -46,18 +46,24 @@ class FUser():
                 self.__valid = True                
 
                 if not self.__user.options:
+                    log.debug(self.__user.options)
+                    self.__user.options = UserOptions()
                     self.__user.options.threads_per_page = 10
                     self.__user.options.replies_per_thread = 10
                     self.__user.options.style = 'photon'
                     self.__user.options.template = 'wakaba'
-                    self.__user.options.rights_level = 0                 
-                  
+                    self.__user.options.bantime = 0
+                    self.__user.options.canDeleteAllPosts = 0                       
+                    self.__user.options.canMakeInvite = 0                     
+                    meta.Session.commit()                  
+                    
                 #it could be replaced by __user.* ... But it can reduce performance in case of using AutoCommit... So I'm using additional fields
                 self.__threadsPerPage = self.__user.options.threads_per_page #session['options']['threads_per_page']
                 self.__repliesPerThread = self.__user.options.replies_per_thread #session['options']['replies_per_thread']
                 self.__style = self.__user.options.style #session['options']['style']
                 self.__template =  self.__user.options.template #session['options']['template']
-                self.__rightsLevel = self.__user.options.rights_level #session['options']['rights_level']                       
+                self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
+                self.__canMakeInvite = self.__user.options.canMakeInvite
                 
             else:
                 log.debug('problem: ' + str(uid_number))
@@ -74,8 +80,10 @@ class FUser():
         return self.__style
     def template(self):
         return self.__template
-    def rightsLevel(self):
-        return self.__rightsLevel
+    def canDeleteAllPosts(self):
+        return self.__canDeleteAllPosts
+    def canMakeInvite(self):
+        return self.__canMakeInvite        
     def bantime(self):   
         return self.__user.bantime
     def banreason(self):
@@ -448,16 +456,21 @@ class FccController(BaseController):
            return render('/wakaba.login.mako')
         return self.processPost(board=board)
         
-    def makeInvite(self):
+    def makeInvite(self):         
         c.currentURL = request.path_info + '/'
         if not self.isAuthorized():
            return render('/wakaba.login.mako')
-        invite = Invite()
-        invite.date = datetime.datetime.now()
-        invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
-        meta.Session.save(invite)
-        meta.Session.commit()
-        return "<a href='/register/%s'>INVITE</a>" % invite.invite
+        
+        if userInstance.canMakeInvite():
+            invite = Invite()
+            invite.date = datetime.datetime.now()
+            invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+            meta.Session.save(invite)
+            meta.Session.commit()
+            return "<a href='/register/%s'>INVITE</a>" % invite.invite
+        else:
+            c.errorText = "No way! You aren't holy enough!"
+            return render('/wakaba.error.mako') 
     
     def register(self,invite):
         if 'invite' not in session:
@@ -557,7 +570,7 @@ class FccController(BaseController):
     def DeletePost(self, post):
         for i in request.POST:
             p = meta.Session.query(Post).get(request.POST[i])
-            if p and p.uid_number == userInstance.uidNumber():
+            if p and p.uid_number == userInstance.uidNumber() or userInstance.canDeleteAllPosts():
                 if p.parentid == -1:
                     meta.Session.execute(t_posts.delete().where(t_posts.c.parentid == p.id))
                 meta.Session.delete(p)

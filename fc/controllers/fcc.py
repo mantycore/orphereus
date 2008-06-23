@@ -64,12 +64,14 @@ class FUser():
                 self.__template =  self.__user.options.template #session['options']['template']
                 self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
                 self.__canMakeInvite = self.__user.options.canMakeInvite
-                
-            else:
-                log.debug('problem: ' + str(uid_number))
-                self.__valid = False
+                return
+            
+        log.debug('problem: ' + str(uid_number))
+        self.__valid = False
     def isValid(self):
         return self.__valid
+    def isAuthorized(self):
+        return self.__uidNumber and ('uid_number' in session) and (session.get('uid_number', -1) == self.__uidNumber)
     def uidNumber(self):
         return self._uidNumber
     def threadsPerPage(self):
@@ -106,8 +108,6 @@ class FccController(BaseController):
                 self.login(user)
                 redirect_to(c.currentURL)
         return render('/wakaba.login.mako')
-    def isAuthorized(self):
-        return 'uid_number' in session
     def login(self, user):
         isNumber(True)
         session['uid_number'] = user.uid_number

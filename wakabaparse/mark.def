@@ -8,7 +8,7 @@ noaccent_code   := -(newline / '`')+
 accent_code     := -(newline / '``')+
 symbol          := -(whitespace / newline)
 text            := -newline+
-safe_text       := -(newline / whitespace / [*_>#`])+/whitespace
+safe_text       := -(newline / whitespace / [%*_>#`])+/whitespace
 reference       := ">>" , number
 signature       := "##" , number , (',' , number)*
 link            := 'http' / 'ftp', 's'?, '://', -[ \t\r\n<>`^'"]+
@@ -19,7 +19,7 @@ emphasis        := ('*' ,?-'*', (inline/symbol), (inline_safe/symbol_mark_noa)* 
 strong          := ('**' , (inline/symbol), (inline_safe/symbol_mark_noa)* , '**') /
                    ('__' , (inline/symbol), (inline_safe/symbol_mark_nou)* , '__')
 inline_code     := ('`' , noaccent_code , '`') / ('``' , accent_code , '``')
-inline_spoiler  := ('%%', (?-'%%',(inline_safe/symbol_mark))* , '%%')
+inline_spoiler  := ('%%', (inline_safe/symbol_mark)* , '%%')
 inline          := (inline_code / reference / signature / inline_spoiler / strikeout / strong / emphasis / link)
 inline_safe     := (inline_code / reference / signature / inline_spoiler / strikeout / strong / emphasis / link / safe_text)+
 inline_full     := (inline_code / reference / signature / inline_spoiler / strikeout / strong / emphasis / link / safe_text / symbol_mark / text)+

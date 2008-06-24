@@ -8,7 +8,7 @@ class WakabaParser(object):
     def __init__(self, definition = 'wakabaparse/mark.def', baseProd = 'all'):
         self.plain  = ['safe_text','text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nou']
         self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','block_code':'code'}
-        self.complex= ['reference','signature','block_cite','block_list','link']
+        self.complex= ['reference','signature','block_cite','block_list','inline_spoiler','block_spoiler','link']
         self.input  = u''
         self.calledBy = None
         self.baseProd = baseProd
@@ -67,7 +67,12 @@ class WakabaParser(object):
         else:
             result += '</ul>'
         return result
-
+    def inline_spoiler(self, tag, beg, end, parts):
+        if parts:
+            return "<span class='spoiler'>" + self.formatInHTML(parts) + "</span>"
+    def block_spoiler(self, tag, beg, end, parts):
+        if parts:
+            return "<span class='spoiler'>" + self.formatInHTML(parts) + "</span>"
     def reference(self, tag, beg, end, parts):
         n,i,j,p = parts[0]
         number = self.input[i:j]
@@ -112,7 +117,7 @@ class WakabaParser(object):
                     fP = False
                     result += '</p>'
                 result += getattr(self,tag)(tag, beg, end, parts)
-            elif tag == 'line':
+            elif tag == 'line' or tag == 'spoiler_line':
                 if fP and len(parts) > 1:
                     result += '<br />'
                 elif len(parts) > 1:

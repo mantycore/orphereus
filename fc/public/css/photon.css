@@ -210,17 +210,13 @@ dl.menu dd {
 dl.menu dd.hidden {
 	display: none;
 }
-p.spoiler > span.warning {
-	color: #FF6600;
-	font-weight: bolder;
+.spoiler {
+	background: #CCCCCC;
+	color: #CCCCCC;
 }
-p.spoiler > span.spoiler {
-	padding-left: .5em;
-	padding-right: .5em;
-	background: #BBBBBB;
-	color: #BBBBBB;
-}
-p.spoiler > span.spoiler:hover {
+
+.spoiler:hover {
+	backgorund: #CCCCCC;
 	color: #333333;
 }
 .signature {

@@ -51,7 +51,9 @@
         </tr>        
         %if c.oekaki:
             <tr id="trfile">
-                <td colspan=2><input type="hidden" name="tempid" value="${c.oekaki.tempid}"><img src="${c.uploadPathWeb + c.oekaki.path}"></td>
+                <td colspan=2 class="theader"><input type="hidden" name="tempid" value="${c.oekaki.tempid}">
+                <img src="${c.uploadPathWeb + c.oekaki.path}">
+                </td>
             </tr>
             </form>            
         %else:

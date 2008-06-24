@@ -112,7 +112,7 @@ class FccController(BaseController):
         isNumber(True)
         session['uid_number'] = user.uid_number
         session.save()
-    def showPosts(self, threadFilter, tempid=0, page=0, board=''):
+    def showPosts(self, threadFilter, tempid='', page=0, board=''):
         c.title = 'FailChan'
         c.board = board
         c.uploadPathWeb = uploadPathWeb
@@ -376,7 +376,7 @@ class FccController(BaseController):
         else:
             return redirect_to(action='GetThread',post=post.id,board=None)            
 
-    def GetOverview(self, page=0, tempid=0):
+    def GetOverview(self, page=0, tempid=''):
         c.currentURL = '/~/'
         if not self.userInst.isAuthorized():
             return render('/wakaba.login.mako')
@@ -385,7 +385,7 @@ class FccController(BaseController):
         c.PostAction = '~'
         return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1), tempid=tempid, page=int(page), board='~')
 
-    def GetMyThreads(self, page=0, tempid=0):
+    def GetMyThreads(self, page=0, tempid=''):
         c.currentURL = '/@/'
         if not self.userInst.isAuthorized():
             return render('/wakaba.login.mako')
@@ -491,6 +491,7 @@ class FccController(BaseController):
            c.width = 300
            c.height = 300            
         c.tempid = str(long(time.time() * 10**7))
+        log.debug(c.tempid)
         oekaki = Oekaki()
         oekaki.tempid = c.tempid
         oekaki.picid = -1
@@ -516,7 +517,7 @@ class FccController(BaseController):
         meta.Session.save(oekaki)
         meta.Session.commit()
         return render('/spainter.mako')
-    def oekakiSave(self, environ, start_response, url,tempid):
+    def oekakiSave(self, environ, start_response, url, tempid):
         start_response('200 OK', [('Content-Type','text/plain'),('Content-Length','2')])
         oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
         print oekaki
@@ -536,7 +537,7 @@ class FccController(BaseController):
               headers = header.split('&')
               type = headers[0].split('=')[1]
               time = headers[1].split('=')[1]
-              localFilePath = os.path.join(uploadPath,tempid + '.' + type)
+              localFilePath = os.path.join(uploadPath, tempid + '.' + type)
               localFile = open(localFilePath,'wb')
               localFile.write(body)
               localFile.close()

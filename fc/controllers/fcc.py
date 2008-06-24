@@ -48,7 +48,6 @@ class FUser():
                 self.__valid = True                
 
                 if not self.__user.options:
-                    log.debug(self.__user.options)
                     self.__user.options = UserOptions()
                     self.__user.options.threads_per_page = 10
                     self.__user.options.replies_per_thread = 10
@@ -58,7 +57,7 @@ class FUser():
                     self.__user.options.canDeleteAllPosts = 0                       
                     self.__user.options.canMakeInvite = 0                     
                     meta.Session.commit()                  
-                    
+
                 #it could be replaced by __user.* ... But it can reduce performance in case of using AutoCommit... So I'm using additional fields
                 self.__threadsPerPage = self.__user.options.threads_per_page #session['options']['threads_per_page']
                 self.__repliesPerThread = self.__user.options.replies_per_thread #session['options']['replies_per_thread']
@@ -122,8 +121,8 @@ class FccController(BaseController):
         
         if board and board != '~':
             currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()
-            if currentBoard and currentBoard.options and currentBoard.options[0].comment:
-                c.boardName = currentBoard.options[0].comment
+            if currentBoard and currentBoard.options and currentBoard.options.comment:
+                c.boardName = currentBoard.options.comment
             else:
                 c.boardName = '/%s/' % board
 
@@ -133,11 +132,11 @@ class FccController(BaseController):
         section = []
         for b in boards:
             if not section_id:
-                section_id = b.options[0].section_id
+                section_id = b.options.section_id
                 section = []
-            if section_id != b.options[0].section_id:
+            if section_id != b.options.section_id:
                 c.boardlist.append(section)
-                section_id = b.options[0].section_id
+                section_id = b.options.section_id
                 section = []
             section.append(b.tag)
         if section:
@@ -267,15 +266,15 @@ class FccController(BaseController):
         options.thumb_size = 250
         for t in tags:
             if t.options:
-                options.imageless_thread = options.imageless_thread & t.options[0].imageless_thread
-                options.imageless_post = options.imageless_post & t.options[0].imageless_post
-                options.images = options.images & t.options[0].images
-                if t.options[0].max_fsize < options.max_fsize:
-                    options.max_fsize = t.options[0].max_fsize
-                if t.options[0].min_size > options.min_size:
-                    options.min_size = t.options[0].min_size
-                if t.options[0].thumb_size < options.thumb_size:
-                    options.thumb_size = t.options[0].thumb_size                   
+                options.imageless_thread = options.imageless_thread & t.options.imageless_thread
+                options.imageless_post = options.imageless_post & t.options.imageless_post
+                options.images = options.images & t.options.images
+                if t.options.max_fsize < options.max_fsize:
+                    options.max_fsize = t.options.max_fsize
+                if t.options.min_size > options.min_size:
+                    options.min_size = t.options.min_size
+                if t.options.thumb_size < options.thumb_size:
+                    options.thumb_size = t.options.thumb_size                   
         return options
     def processPost(self, postid=0, board=''):
         if postid:
@@ -491,7 +490,6 @@ class FccController(BaseController):
            c.width = 300
            c.height = 300            
         c.tempid = str(long(time.time() * 10**7))
-        log.debug(c.tempid)
         oekaki = Oekaki()
         oekaki.tempid = c.tempid
         oekaki.picid = -1

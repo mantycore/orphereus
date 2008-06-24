@@ -122,8 +122,9 @@ class Picture(object):
 class Post(object):
     pass
 
+
 class Tag(object):
-    def __init__(self, tag):
+    def __init__(self, tag): # xxx???  Liebert
         self.tag = tag
 
 class TagOptions(object):
@@ -135,15 +136,14 @@ orm.mapper(UserOptions, t_user_options)
 orm.mapper(User, t_users, properties = {    
         'options' : orm.relation(UserOptions, uselist=False, backref='t_users')    
     })
-    
-#'options' : orm.relation(UserOptions)    
+
 orm.mapper(Extension, t_extlist)
 orm.mapper(Picture, t_piclist, properties = {
     'extlist' : orm.relation(Extension)
     })
 orm.mapper(TagOptions, t_tag_options)
 orm.mapper(Tag, t_tags, properties = {
-    'options' : orm.relation(TagOptions)
+        'options' : orm.relation(TagOptions, uselist=False, backref='t_tags')
     })
 orm.mapper(Post, t_posts, properties = {
     'tags' : orm.relation(Tag, secondary = t_post_tags),

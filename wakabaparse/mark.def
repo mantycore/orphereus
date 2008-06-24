@@ -35,4 +35,5 @@ block_cite      := cite+
 block_list      := list+
 block_code      := code+
 block_spoiler   := newline, '%%', (block_cite / block_list / block_code / spoiler_line)+, newline, '%%'
-all             := (block_spoiler, block_cite / block_list / block_code / line)+
+all             := (block_spoiler / block_cite / block_list / block_code / line)+
+

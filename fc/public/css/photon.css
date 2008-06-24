@@ -246,3 +246,14 @@ p.spoiler > span.spoiler:hover {
         color:#204010;
         margin:0;
 }
+.errorMessage{
+	background:#EEaaaa;
+	text-align:center;
+	padding:2px;
+	color:#880000;
+	clear: both;
+	font-weight: bold;
+	margin-bottom: .5em;
+	border: solid 1px #FF0000;
+	-moz-border-radius: 5px;
+}

@@ -160,7 +160,7 @@
                                 <br /><span class="filesize">${_('File:')} 
                                 <a target="_blank" href="${c.uploadPathWeb + p.file.path}">${p.file.path}</a> 
                                 (<em>${p.file.size}, ${p.file.width}x${p.file.height}</em>)</span>
-                                <span class="thumbnailmsg"></span><br />
+                                <span class="thumbnailmsg">This is resized copy. Click it to view original image</span><br />
                                 <a target="_blank" href="${c.uploadPathWeb + p.file.path}">
                                 <img src="${c.uploadPathWeb + p.file.thumpath}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" /></a>
                             %endif

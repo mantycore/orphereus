@@ -27,7 +27,7 @@ a:hover {
 }
 .adminbar {
 	clear:both;
-	float:right;
+	float:left;
 	font-size: .8em;
 }
 .adminbar a {

@@ -430,7 +430,7 @@ class FccController(BaseController):
         c.width  = request.POST.get('oekaki_x','300')
         c.height = request.POST.get('oekaki_y','300')
         enablePicLoading = not (request.POST.get('oekaki_type','Reply') == 'New');        
-        if not (isNumber(c.width) or isNumber(c.height)) or (c.width<=10 or c.height<=10):
+        if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width)<=10 or int(c.height)<=10):
            c.width = 300
            c.height = 300            
         c.tempid = str(long(time.time() * 10**7))

@@ -117,6 +117,7 @@ class FccController(BaseController):
         c.board = board
         c.uploadPathWeb = uploadPathWeb
         c.uid_number = self.userInst.uidNumber()
+        c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         count = threadFilter.count()
         
         if board and board != '~':

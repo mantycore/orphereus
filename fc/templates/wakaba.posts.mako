@@ -101,7 +101,7 @@
         %endif
         <a name="i${thread.id}"></a>
         <label>
-            %if thread.uid_number == c.uid_number:
+            %if thread.uid_number == c.uid_number or c.enableAllPostDeletion:
                 <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
             %endif
             <span class="filetitle">${thread.title}</span>  

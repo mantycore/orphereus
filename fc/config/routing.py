@@ -17,24 +17,36 @@ def make_map():
     map.connect('error/:action/:id', controller='error')
 
     # CUSTOM ROUTES HERE
+    # Special routes
     map.connect('', controller='fcc', action='GetOverview')
     map.connect('/auth', controller='fcc', action='authorize', url='', conditions=dict(method=['POST']))
+    map.connect('/:url/auth', controller='fcc', action='authorize', url='', conditions=dict(method=['POST']))
     map.connect('/register/:invite', controller='fcc', action='register')
-    map.connect('/makeInvite', controller='fcc', action='makeInvite')
+    # Oekaki
     map.connect('/:url/oekakiDraw', controller='fcc', action='oekakiDraw', url='')
     map.connect('/:url/oekakiSave/:tempid', controller='fcc', action='oekakiSave', url='',requirements=dict(tempid='\d+'))
     map.connect('/:url/oekakiFinish/:tempid', controller='fcc', action='oekakiFinish', url='',requirements=dict(tempid='\d+'))
-    map.connect('/:url/auth', controller='fcc', action='authorize', url='', conditions=dict(method=['POST']))
+    
+    # User subsystem
+    map.connect('/userProfile', controller='fcc', action='showProfile')
+    map.connect('/userProfile/messages', controller='fcc', action='showMessages')
+    # Admin subsystem
+    #map.connect('/holySynod/makeInvite', controller='fca', action='makeInvite')
+    map.connect('/makeInvite', controller='fcc', action='makeInvite')
+    # Threads
     map.connect('/:post', controller='fcc', action='PostReply',conditions=dict(method=['POST']),requirements=dict(post='\d+'))
-    map.connect('/:board', controller='fcc', action='PostThread',conditions=dict(method=['POST']))
     map.connect('/:post/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))
     map.connect('/:post/:tempid', controller='fcc', action='GetThread', tempid=0, requirements=dict(post='\d+',tempid='\d+'))
+    map.connect('/:board', controller='fcc', action='PostThread',conditions=dict(method=['POST']))
+    # Special filters
     map.connect('/~/:tempid', controller='fcc', action='GetOverview', tempid=0, requirements=dict(tempid='\d+'))
-    map.connect('/@/:tempid', controller='fcc', action='GetMyThreads', tempid=0, requirements=dict(tempid='\d+'))
-    map.connect('/:board/:tempid', controller='fcc', action='GetBoard', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('/~/page/:page', controller='fcc', action='GetOverview', tempid=0, page=0, requirements=dict(page='\d+'))
+    map.connect('/@/:tempid', controller='fcc', action='GetMyThreads', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('/@/page/:page', controller='fcc', action='GetMyThreads', tempid=0, page=0, requirements=dict(page='\d+'))
+    # Generic filter
+    map.connect('/:board/:tempid', controller='fcc', action='GetBoard', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))
+
     map.connect('*url', controller='fcc', action='UnknownAction')
 
     return map

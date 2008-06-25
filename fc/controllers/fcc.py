@@ -154,7 +154,9 @@ class FccController(BaseController):
            return []
 
     def processFile(self, file, thumbSize=250):
+        print "processFile(), thumbSize=%s" % thumbSize
         if isinstance(file,cgi.FieldStorage) or isinstance(file,FieldStorageLike):
+           print file.filename
            # We should check whether we got this file already or not
            # If we dont have it, we add it
            name = str(long(time.time() * 10**7))
@@ -254,7 +256,6 @@ class FccController(BaseController):
             if not tags:
                 c.errorText = "You should specify at least one board"
                 return render('/wakaba.error.mako')
-        
         options = self.conjunctTagOptions(tags)
         if not options.images and ((not options.imageless_thread and not postid) or (postid and not options.imageless_post)):
             c.errorText = "Unacceptable combination of tags"
@@ -278,6 +279,7 @@ class FccController(BaseController):
         post.title = request.POST['title']
         post.date = datetime.datetime.now()
         pic = self.processFile(file,options.thumb_size)
+        print pic
         if pic:
             if pic.size > options.max_fsize:
                 c.errorText = "File size exceeds the limit"
@@ -484,13 +486,9 @@ class FccController(BaseController):
               localFile.write(body)
               localFile.close()
               oekaki.time = time
-              #oekaki.type = 'Shi normal' #this value don't need be overwritten. It's come from oekakiDraw
               oekaki.path = tempid + '.' + type
               meta.Session.commit()
         return ['ok']
-    def oekakiFinish(self,url,tempid):
-        print type(c)
-        return 'ok'
     def DeletePost(self, post):
         for i in request.POST:
             p = meta.Session.query(Post).get(request.POST[i])
@@ -500,4 +498,16 @@ class FccController(BaseController):
                 meta.Session.delete(p)
         meta.Session.commit()
         return redirect_to(str('/%s' % post))
-    #def UnknownAction(self):      
+    def showProfile(self):
+        if not self.userInst.isAuthorized():
+            return render('/wakaba.login.mako')
+        c.templates = ['wakaba']
+        c.styles    = ['photon']
+        if request.POST:
+            template = request.POST.get('template',self.userInst.template())
+        c.userInst = self.userInst
+        return render('/wakaba.profile.mako')
+    def UnknownAction(self):      
+        c.errorText = "Excuse me, WTF are you?"
+        return render('/wakaba.error.mako')
+

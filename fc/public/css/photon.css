@@ -210,15 +210,6 @@ dl.menu dd {
 dl.menu dd.hidden {
 	display: none;
 }
-.spoiler {
-	background: #CCCCCC;
-	color: #CCCCCC;
-}
-
-.spoiler:hover {
-	backgorund: #CCCCCC;
-	color: #333333;
-}
 .signature {
         background: #00FF00;
         color: #00AA00;
@@ -241,6 +232,24 @@ dl.menu dd.hidden {
 .postbody blockquote blockquote blockquote{
         color:#204010;
         margin:0;
+}
+.spoiler {
+        background: #CCCCCC !important;
+        color: #CCCCCC !important;
+}
+.spoiler blockquote{
+	background: #CCCCCC !important;
+	color: #CCCCCC !important;
+}
+.spoiler:hover {
+        background: #CCCCCC !important;
+        color: #333333 !important;
+}
+.spoiler:hover blockquote{
+	color:#789922 !important;
+}
+.spoiler blockquote:hover {
+	color:#789922 !important;
 }
 .errorMessage{
 	background:#EEaaaa;

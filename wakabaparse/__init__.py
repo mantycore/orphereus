@@ -7,8 +7,8 @@ from mx.TextTools import TextTools
 class WakabaParser(object):
     def __init__(self, definition = 'wakabaparse/mark.def', baseProd = 'all'):
         self.plain  = ['safe_text','text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nou']
-        self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','block_code':'code'}
-        self.complex= ['reference','signature','block_cite','block_list','inline_spoiler','block_spoiler','link']
+        self.simple = {'strong':'strong','emphasis':'em','strikeout':'del'}
+        self.complex= ['reference','signature','block_code','block_cite','block_list','inline_spoiler','block_spoiler','link']
         self.input  = u''
         self.calledBy = None
         self.baseProd = baseProd
@@ -47,7 +47,9 @@ class WakabaParser(object):
             n += 1
         result += ('</blockquote>' * (depth + 1)) 
         return result
-   
+    def block_code(self, tag, beg, end, parts):
+        if parts:
+            return "<code>" + self.formatInHTML(parts) + "</code>"
     def block_list(self, tag, beg, end, parts):
         fNL = (parts[0][3][1][0] == 'numlist')
         if fNL:
@@ -72,7 +74,7 @@ class WakabaParser(object):
             return "<span class='spoiler'>" + self.formatInHTML(parts) + "</span>"
     def block_spoiler(self, tag, beg, end, parts):
         if parts:
-            return "<span class='spoiler'>" + self.formatInHTML(parts) + "</span>"
+            return "<div class='spoiler'>" + self.formatInHTML(parts) + "</div>"
     def reference(self, tag, beg, end, parts):
         n,i,j,p = parts[0]
         number = self.input[i:j]

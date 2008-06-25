@@ -58,22 +58,22 @@ class FUser(object):
     def threadsPerPage(self, value = False):
     	if value:
     	    self.__user.options.threads_per_page = value
-    		self.__threadsPerPage = value        
+            self.__threadsPerPage = value        
         return self.__threadsPerPage
     def repliesPerThread(self, value = False):
     	if value:
     	    self.__user.options.replies_per_thread = value
-    		self.__repliesPerThread = value        
+    	    self.__repliesPerThread = value        
         return self.__repliesPerThread
     def style(self, value = False):
     	if value:
     	    self.__user.options.style = value
-    		self.__style = value        
+    	    self.__style = value        
         return self.__style
     def template(self, value = False):
     	if value:
     	    self.__user.options.template = value
-    		self.__template = value
+    	    self.__template = value
         return self.__template
     def canDeleteAllPosts(self):
         return self.__canDeleteAllPosts

@@ -516,12 +516,13 @@ class FccController(BaseController):
             if style in c.styles:
                 self.userInst.style(style)
             threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
-            if 0 < threadsPerPage < 100:
+            if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 100):
                 self.userInst.threadsPerPage(threadsPerPage)
             repliesPerThread = request.POST.get('repliesPerThread',self.userInst.repliesPerThread())
-            if 0 < repliesPerThread < 100:
-                self.userInst.threadsPerPage(repliesPerThread)
+            if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
+                self.userInst.repliesPerThread(repliesPerThread)
             c.profileChanged = True
+            meta.Session.commit()
         c.userInst = self.userInst
         return render('/wakaba.profile.mako')
     def UnknownAction(self):      

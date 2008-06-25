@@ -507,8 +507,21 @@ class FccController(BaseController):
             return render('/wakaba.login.mako')
         c.templates = ['wakaba']
         c.styles    = ['photon']
+        c.profileChanged = False
         if request.POST:
             template = request.POST.get('template',self.userInst.template())
+            if template in c.templates:
+                self.userInst.template(template)
+            style = request.POST.get('style',self.userInst.style())
+            if style in c.styles:
+                self.userInst.style(style)
+            threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
+            if 0 < threadsPerPage < 100:
+                self.userInst.threadsPerPage(threadsPerPage)
+            repliesPerThread = request.POST.get('repliesPerThread',self.userInst.repliesPerThread())
+            if 0 < repliesPerThread < 100:
+                self.userInst.threadsPerPage(repliesPerThread)
+            c.profileChanged = True
         c.userInst = self.userInst
         return render('/wakaba.profile.mako')
     def UnknownAction(self):      

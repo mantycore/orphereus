@@ -53,13 +53,27 @@ class FUser(object):
         return self.isValid() and (session.get('uid_number', -1) == self.__uidNumber)
     def uidNumber(self):
         return self.__uidNumber
-    def threadsPerPage(self):
+    def uid(self):
+        return self.__user.uid
+    def threadsPerPage(self, value = False):
+    	if value:
+    	    self.__user.options.threads_per_page = value
+    		self.__threadsPerPage = value        
         return self.__threadsPerPage
-    def repliesPerThread(self):
+    def repliesPerThread(self, value = False):
+    	if value:
+    	    self.__user.options.replies_per_thread = value
+    		self.__repliesPerThread = value        
         return self.__repliesPerThread
-    def style(self):
+    def style(self, value = False):
+    	if value:
+    	    self.__user.options.style = value
+    		self.__style = value        
         return self.__style
-    def template(self):
+    def template(self, value = False):
+    	if value:
+    	    self.__user.options.template = value
+    		self.__template = value
         return self.__template
     def canDeleteAllPosts(self):
         return self.__canDeleteAllPosts

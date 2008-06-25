@@ -9,5 +9,6 @@
         ]
     %endfor
 	[<a href="/@/">@</a>]
+	[<a href="/userProfile/">Profile</a>]
 </div>
 %endif

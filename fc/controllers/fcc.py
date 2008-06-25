@@ -55,21 +55,8 @@ class FccController(BaseController):
         isNumber(True)
         session['uid_number'] = user.uid_number
         session.save()
-    def showPosts(self, threadFilter, tempid='', page=0, board=''):
+    def initEnvironment(self):
         c.title = 'FailChan'
-        c.board = board
-        c.uploadPathWeb = uploadPathWeb
-        c.uid_number = self.userInst.uidNumber()
-        c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
-        count = threadFilter.count()
-        
-        if board and board != '~':
-            currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()
-            if currentBoard and currentBoard.options and currentBoard.options.comment:
-                c.boardName = currentBoard.options.comment
-            else:
-                c.boardName = '/%s/' % board
-
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.section_id).all()
         c.boardlist = []
         section_id = 0
@@ -85,7 +72,21 @@ class FccController(BaseController):
             section.append(b.tag)
         if section:
             c.boardlist.append(section)
+    def showPosts(self, threadFilter, tempid='', page=0, board=''):
+        self.initEnvironment()
+        c.board = board
+        c.uploadPathWeb = uploadPathWeb
+        c.uid_number = self.userInst.uidNumber()
+        c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
+        count = threadFilter.count()
         
+        if board and board != '~':
+            currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()
+            if currentBoard and currentBoard.options and currentBoard.options.comment:
+                c.boardName = currentBoard.options.comment
+            else:
+                c.boardName = '/%s/' % board
+
         if count > 1:
             p = divmod(count, self.userInst.threadsPerPage())
             c.pages = p[0]
@@ -505,6 +506,7 @@ class FccController(BaseController):
     def showProfile(self):
         if not self.userInst.isAuthorized():
             return render('/wakaba.login.mako')
+        self.initEnvironment()
         c.templates = ['wakaba']
         c.styles    = ['photon']
         c.profileChanged = False

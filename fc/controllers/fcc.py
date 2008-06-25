@@ -350,6 +350,10 @@ class FccController(BaseController):
         c.allowTags = False
         
         ThePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
+        if not ThePost:
+            c.errorText = "No such post exist."
+            return render('/wakaba.error.mako')
+                            
         if ThePost.parentid != -1:
            filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==ThePost.parentid)
            c.PostAction = ThePost.parentid

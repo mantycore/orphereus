@@ -14,7 +14,7 @@ import os
 import hashlib
 import re
 
-class FUser():
+class FUser(object):
     def __init__(self, uid_number = -1):
         self.__uidNumber = uid_number
         self.__valid = False

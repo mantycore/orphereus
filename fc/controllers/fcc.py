@@ -4,6 +4,8 @@ from fc.lib.base import *
 from fc.model import *
 from sqlalchemy.orm import eagerload
 from sqlalchemy.orm import class_mapper
+from sqlalchemy.sql import and_, or_, not_
+import sqlalchemy
 import os
 import cgi
 import shutil
@@ -72,9 +74,72 @@ class FccController(BaseController):
             section.append(b.tag)
         if section:
             c.boardlist.append(section)
-    def getAST(self,text):
+    def getRPN(self,text,operators):
+        whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']
+        stack = []
+        temp  = []
+        result= []
+        for i in text:
+            if i == '(':
+                if temp:
+                    result.append(''.join(temp))
+                    temp = []
+                stack.append('(')
+            elif i == ')':
+                if temp:
+                    result.append(''.join(temp))
+                    temp = []                
+                while (stack and stack[-1] != '('):
+                    result.append(stack.pop())
+                if stack:
+                    stack.pop()
+            elif i in operators:
+                if temp:
+                    result.append(''.join(temp))
+                    temp = []
+                while (stack and (stack[-1] in operators) and (operators[i] <= operators[stack[-1]])):
+                    result.append(stack.pop())
+                stack.append(i)
+            elif not i in whitespace:
+                temp.append(i)
+        if temp:
+            result.append(''.join(temp))
+            temp = []
+        while stack:
+            result.append(stack.pop())
+        return result
+    def buildFilter(self,url)
+        def buildArgument(arg)
+            if not isinstance(arg,sqlalchemy.sql.expression.ClauseElement):
+                if arg == '@':
+                    return Post.parentid==-1 # TO IMPLEMENT LATER!
+                elif arg == '~':
+                    return Post.parentid==-1
+                else:
+                    return Post.tags.any(tag=arg)
+            else:
+                return arg
         operators = {'+':1,'-':1,'^':2,'&':2}
-                    
+        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1)
+        RPN = self.getRPN(url,operators)
+        stack = []
+        for i in RPN:
+            if i in operators:
+                # If operator is not provided with 2 arguments, we silently ignore it. (for example '- b' will be just 'b')
+                if len(stack)>= 2:
+                    arg2 = buildArgument(stack.pop())
+                    arg1 = buildArgument(stack.pop())
+                    if i == '+':
+                        stack.append(or_(arg1,arg2))
+                    elif i == '&' or i == '^':
+                        stack.append(and_(arg1,arg2))
+                    elif i == '-':
+                        stack.append(and_(arg1,not_(arg2)))
+            else:
+                stack.append(i)
+        if stack and isinstance(stack[0],sqlalchemy.sql.expression.ClauseElement):
+            filter.filter(stack[0])
+        return filter
     def showPosts(self, threadFilter, tempid='', page=0, board=''):
         self.initEnvironment()
         c.board = board
@@ -325,7 +390,7 @@ class FccController(BaseController):
             if postid:
                 return redirect_to(action='GetThread',post=post.parentid,board=None)
             else:
-                return redirect_to(action='GetThread',post=post.id,board=None)			
+                return redirect_to(action='GetThread',post=post.id,board=None)          
 
     def GetOverview(self, page=0, tempid=''):
         c.currentURL = '/~/'
@@ -378,7 +443,7 @@ class FccController(BaseController):
         c.currentTag = board
         c.allowTags = True
         
-        return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.tags.any(tag=board)), tempid=tempid, page=int(page), board=board)
+        return self.showPosts(threadFilter=self.buildFilter(board), tempid=tempid, page=int(page), board=board)
 
     def PostReply(self, post):
         c.currentURL = request.path_info + '/'

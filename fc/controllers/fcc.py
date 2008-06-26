@@ -72,6 +72,9 @@ class FccController(BaseController):
             section.append(b.tag)
         if section:
             c.boardlist.append(section)
+    def getAST(self,text):
+        operators = {'+':1,'-':1,'^':2,'&':2}
+                    
     def showPosts(self, threadFilter, tempid='', page=0, board=''):
         self.initEnvironment()
         c.board = board
@@ -112,9 +115,9 @@ class FccController(BaseController):
                 if replyLim < 0:
                     replyLim = 0
                 thread.omittedPosts = replyLim
-                thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id)[replyLim:]
+                thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc())[replyLim:]
             else:
-                thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).all()
+                thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()).all()
                 thread.omittedPosts = 0
                 
         if tempid:

@@ -31,8 +31,9 @@ def make_map():
     map.connect('/userProfile', controller='fcc', action='showProfile')
     map.connect('/userProfile/messages', controller='fcc', action='showMessages')
     # Admin subsystem
-    #map.connect('/holySynod/makeInvite', controller='fca', action='makeInvite')
-    map.connect('/makeInvite', controller='fcc', action='makeInvite')
+    map.connect('/holySynod', controller='fca', action='index')
+    map.connect('/holySynod/makeInvite', controller='fca', action='makeInvite')
+    #map.connect('/makeInvite', controller='fcc', action='makeInvite')
     # Threads
     map.connect('/:post', controller='fcc', action='PostReply',conditions=dict(method=['POST']),requirements=dict(post='\d+'))
     map.connect('/:post/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))

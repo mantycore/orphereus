@@ -36,6 +36,7 @@ class FUser(object):
                     self.__user.options.bantime = 0
                     self.__user.options.canDeleteAllPosts = 0                       
                     self.__user.options.canMakeInvite = 0                     
+                    self.__user.options.isAdmin = False
                     meta.Session.commit()                  
 
                 #it could be replaced by __user.* ... But it can reduce performance in case of using AutoCommit... So I'm using additional fields
@@ -45,12 +46,15 @@ class FUser(object):
                 self.__template =  self.__user.options.template #session['options']['template']
                 self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
                 self.__canMakeInvite = self.__user.options.canMakeInvite
+                self.__isAdmin = self.__user.options.isAdmin
                 self.__valid = True
                 
     def isValid(self):
         return self.__valid
     def isAuthorized(self):
         return self.isValid() and (session.get('uid_number', -1) == self.__uidNumber)
+    def isAdmin(self):
+        return self.__isAdmin
     def uidNumber(self):
         return self.__uidNumber
     def uid(self):

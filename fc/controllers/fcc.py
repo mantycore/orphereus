@@ -322,7 +322,7 @@ class FccController(BaseController):
             #    tagsl.append(maintag)
             tagstr = request.POST.get('tags',False)
             if tagstr:
-                regex = re.compile(r'([^,\+\-\&\s\/\\<>"%\d][^,\+\-\&\s\/\\<>"%]*)')
+                regex = re.compile(r"""([^,@~\+\-\&\s\/\\<>'"%\d][^,@~\+\-\&\s\/\\<>'"%]*)""")
                 tlist = regex.findall(tagstr)
                 for t in tlist:
                     if not t in tagsl:
@@ -466,23 +466,7 @@ class FccController(BaseController):
         if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
         return self.processPost(board=board)
-        
-    def makeInvite(self):         
-        c.currentURL = request.path_info + '/'
-        if not self.userInst.isAuthorized():
-           return render('/wakaba.login.mako')
-        
-        if self.userInst.canMakeInvite():
-            invite = Invite()
-            invite.date = datetime.datetime.now()
-            invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
-            meta.Session.save(invite)
-            meta.Session.commit()
-            return "<a href='/register/%s'>INVITE</a>" % invite.invite
-        else:
-            c.errorText = "No way! You aren't holy enough!"
-            return render('/wakaba.error.mako') 
-    
+            
     def register(self,invite):
         if 'invite' not in session:
             invite_q = meta.Session.query(Invite).filter(Invite.invite==invite).first()

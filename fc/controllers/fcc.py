@@ -109,7 +109,7 @@ class FccController(BaseController):
             result.append(stack.pop())
         return result
     def buildFilter(self,url):
-        def buildMyPostsFilter()
+        def buildMyPostsFilter():
             list  = []
             posts = meta.Session.query(Post).filter(Post.uid_number==self.userInst.uidNumber()).all()
             for p in posts:

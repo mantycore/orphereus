@@ -303,17 +303,17 @@ class FccController(BaseController):
         else:
             tags = []
             tagsl= []
-            maintag = request.POST.get('maintag',False)
-            if maintag and maintag != '~':
-                tag = meta.Session.query(Tag).filter(Tag.tag==maintag).first()
-                if tag:
-                    tags.append(tag)
-                else:
-                    tags.append(Tag(maintag))
-                tagsl.append(maintag)
+            #maintag = request.POST.get('maintag',False)
+            #if maintag and maintag != '~':
+            #    tag = meta.Session.query(Tag).filter(Tag.tag==maintag).first()
+            #    if tag:
+            #        tags.append(tag)
+            #    else:
+            #        tags.append(Tag(maintag))
+            #    tagsl.append(maintag)
             tagstr = request.POST.get('tags',False)
             if tagstr:
-                regex = re.compile(r'([a-zA-Z]\w*)')
+                regex = re.compile(r'([^,\+\-\&\s\/\\<>"%\d][^,\+\-\&\s\/\\<>"%]*)')
                 tlist = regex.findall(tagstr)
                 for t in tlist:
                     if not t in tagsl:

@@ -48,9 +48,18 @@ class FcaController(BaseController):
     def index(self):
         c.boardName = 'Index'
         return render('/wakaba.adminIndex.mako')
-    def boardsManagement(self):
+    def manageBoards(self):
         c.boardName = 'Boards management'
-        return render('/wakaba.boardsManage.mako')
+        return render('/wakaba.manageBoards.mako')
+    def manageUsers(self):
+        c.boardName = 'Users management'
+        return render('/wakaba.manageUsers.mako')
+    def manageQuestions(self):
+        c.boardName = 'Questions management'
+        return render('/wakaba.manageQuestions.mako')        
+    def manageApplications(self):
+        c.boardName = 'Applications management'
+        return render('/wakaba.manageApplications.mako')        
     def makeInvite(self):         
         if not self.userInst.canMakeInvite():
             c.errorText = "No way! You aren't holy enough!"

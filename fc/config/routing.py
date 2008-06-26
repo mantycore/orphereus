@@ -33,7 +33,10 @@ def make_map():
     # Admin subsystem
     map.connect('/holySynod', controller='fca', action='index')
     map.connect('/holySynod/makeInvite', controller='fca', action='makeInvite')
-    #map.connect('/makeInvite', controller='fcc', action='makeInvite')
+    map.connect('/holySynod/manageBoards', controller='fca', action='manageBoards')
+    map.connect('/holySynod/manageUsers', controller='fca', action='manageUsers')
+    map.connect('/holySynod/manageQuestions', controller='fca', action='manageQuestions')
+    map.connect('/holySynod/manageApplications', controller='fca', action='manageApplications')
     # Threads
     map.connect('/:post', controller='fcc', action='PostReply',conditions=dict(method=['POST']),requirements=dict(post='\d+'))
     map.connect('/:post/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))

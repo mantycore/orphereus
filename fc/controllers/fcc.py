@@ -224,9 +224,7 @@ class FccController(BaseController):
            return []
 
     def processFile(self, file, thumbSize=250):
-        print "processFile(), thumbSize=%s" % thumbSize
         if isinstance(file,cgi.FieldStorage) or isinstance(file,FieldStorageLike):
-           print file.filename
            # We should check whether we got this file already or not
            # If we dont have it, we add it
            name = str(long(time.time() * 10**7))
@@ -292,7 +290,7 @@ class FccController(BaseController):
                 if t.options.thumb_size < options.thumb_size:
                     options.thumb_size = t.options.thumb_size                   
         return options
-    def processPost(self, postid=0, board=''):
+    def processPost(self, postid=0, board=u''):
         if postid:
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
             if thePost.parentid != -1:
@@ -349,7 +347,6 @@ class FccController(BaseController):
         post.title = request.POST['title']
         post.date = datetime.datetime.now()
         pic = self.processFile(file,options.thumb_size)
-        print pic
         if pic:
             if pic.size > options.max_fsize:
                 c.errorText = "File size exceeds the limit"
@@ -386,7 +383,8 @@ class FccController(BaseController):
         session['returnToThread'] = not (returnTo == 'board')
         session.save()
         if returnTo == 'board':             
-            return redirect_to(action='GetBoard',board=tags[0].tag,post=None)
+            rboard = u'/'+tags[0].tag+u'/'
+            redirect_to(rboard.encode('utf-8'))
         else:
             if postid:
                 return redirect_to(action='GetThread',post=post.parentid,board=None)
@@ -436,7 +434,7 @@ class FccController(BaseController):
         return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='')
 
     def GetBoard(self, board, tempid, page=0):
-        c.currentURL = request.path_info + '/'
+        c.currentURL = request.path_info.decode('utf-8') + '/'
         if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
         c.PostAction = board
@@ -540,20 +538,15 @@ class FccController(BaseController):
     def oekakiSave(self, environ, start_response, url, tempid):
         start_response('200 OK', [('Content-Type','text/plain'),('Content-Length','2')])
         oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
-        print oekaki
         cl = int(request.environ['CONTENT_LENGTH'])
         if oekaki and cl:
            id = request.environ['wsgi.input'].read(1)
            if id == 'S':
               headerLength = int(request.environ['wsgi.input'].read(8))
-              print headerLength
               header = request.environ['wsgi.input'].read(headerLength)
-              print header
               bodyLength = int(request.environ['wsgi.input'].read(8))
-              #print bodyLength
               request.environ['wsgi.input'].read(2)
               body = request.environ['wsgi.input'].read(bodyLength)
-              #print type(body)
               headers = header.split('&')
               type = headers[0].split('=')[1]
               time = headers[1].split('=')[1]
@@ -573,7 +566,7 @@ class FccController(BaseController):
                     meta.Session.execute(t_posts.delete().where(t_posts.c.parentid == p.id))
                 meta.Session.delete(p)
         meta.Session.commit()
-        return redirect_to(str('/%s' % post))
+        return redirect_to(str('/%s' % post.encode('utf-8')))
     def showProfile(self):
         if not self.userInst.isAuthorized():
             return render('/wakaba.login.mako')

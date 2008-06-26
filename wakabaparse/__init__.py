@@ -80,11 +80,9 @@ class WakabaParser(object):
         number = self.input[i:j]
         pid = self.calledBy.getParentID(number)
         if pid == -1:
-            pid = number
-        if pid:
-            return '<a href="%s#i%s">&gt;&gt;%s</a>' % (pid,number,number)
+            return '<a href="/%s">&gt;&gt;%s</a>' % (number,number)
         else:
-            return '&gt;&gt;%s' % number
+            return '<a href="/%s#%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (pid,number,number,number)
 
     def signature(self, tag, beg, end, parts):
         valid = {} 

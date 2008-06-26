@@ -114,11 +114,15 @@
             ${thread.date}
         </label>
         <span class="reflink">
-            <a href="/${thread.id}#i${thread.id}">#${thread.id}</a>
+			%if c.board:
+				<a href="/${thread.id}#i${thread.id}">#${thread.id}</a>
+			%else:
+				<a href="javascript:insert('&gt;&gt;${thread.id}')">#${thread.id}</a>
+			%endif 
         </span>
         &nbsp;
         <span class="replytothread">
-            [<a href="/${thread.id}#i${thread.id}">Reply</a>]
+            [<a href="/${thread.id}">Reply</a>]
             %if thread.file and thread.file.width:
              [<a href="/${thread.id}/oekakiDraw">Draw</a>]
             %endif
@@ -140,7 +144,7 @@
                     <tr>
                         <td class="doubledash">&gt;&gt;</td>
                         <td class="reply" id="reply${p.id}">
-                            <a name="i${p.id}"></a>
+                            <a name="${p.id}"></a>
                             <label>
 								&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Del'></a>
 								<div style="display:none" class="delete">
@@ -158,7 +162,11 @@
                                 ${p.date}
                             </label>
                             <span class="reflink">
-                                <a href="/${p.id}#i${p.id}">#${p.id}</a>
+								%if c.board:
+									<a href="/${thread.id}#i${p.id}">#${p.id}</a>
+								%else:
+									<a href="javascript:insert('&gt;&gt;${p.id}')">#${p.id}</a>
+								%endif 
                                 %if p.file and p.file.width:
                                     [<a href="/${p.id}/oekakiDraw">Draw</a>]
                                 %endif                                                      

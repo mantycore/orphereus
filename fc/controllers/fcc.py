@@ -310,7 +310,6 @@ class FccController(BaseController):
             post.parentid = -1
             post.last_date = datetime.datetime.now()
             post.tags = tags
-        
         meta.Session.save(post)
         meta.Session.commit()
         returnTo = request.POST.get('gb2', 'board')
@@ -320,7 +319,10 @@ class FccController(BaseController):
         if returnTo == 'board':             
             return redirect_to(action='GetBoard',board=tags[0].tag,post=None)
         else:
-            return redirect_to(action='GetThread',post=post.id,board=None)            
+            if postid:
+                return redirect_to(action='GetThread',post=post.parentid,board=None)
+            else:
+                return redirect_to(action='GetThread',post=post.id,board=None)			
 
     def GetOverview(self, page=0, tempid=''):
         c.currentURL = '/~/'

@@ -108,8 +108,8 @@ class FccController(BaseController):
         while stack:
             result.append(stack.pop())
         return result
-    def buildFilter(self,url)
-        def buildArgument(arg)
+    def buildFilter(self,url):
+        def buildArgument(arg):
             if not isinstance(arg,sqlalchemy.sql.expression.ClauseElement):
                 if arg == '@':
                     return Post.parentid==-1 # TO IMPLEMENT LATER!
@@ -127,8 +127,8 @@ class FccController(BaseController):
             if i in operators:
                 # If operator is not provided with 2 arguments, we silently ignore it. (for example '- b' will be just 'b')
                 if len(stack)>= 2:
-                    arg2 = buildArgument(stack.pop())
-                    arg1 = buildArgument(stack.pop())
+                    arg2 = stack.pop()
+                    arg1 = stack.pop()
                     if i == '+':
                         stack.append(or_(arg1,arg2))
                     elif i == '&' or i == '^':
@@ -136,9 +136,10 @@ class FccController(BaseController):
                     elif i == '-':
                         stack.append(and_(arg1,not_(arg2)))
             else:
-                stack.append(i)
+                stack.append(buildArgument(i))
         if stack and isinstance(stack[0],sqlalchemy.sql.expression.ClauseElement):
-            filter.filter(stack[0])
+            cl = stack.pop()
+            filter = filter.filter(cl)
         return filter
     def showPosts(self, threadFilter, tempid='', page=0, board=''):
         self.initEnvironment()

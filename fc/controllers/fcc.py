@@ -109,16 +109,27 @@ class FccController(BaseController):
             result.append(stack.pop())
         return result
     def buildFilter(self,url):
+        def buildMyPostsFilter()
+            list  = []
+            posts = meta.Session.query(Post).filter(Post.uid_number==self.userInst.uidNumber()).all()
+            for p in posts:
+                if p.parentid == -1 and not p.id in list:
+                    list.append(p.id)
+                elif p.parentid > -1 and not p.parentid in list:
+                    list.append(p.parentid)
+            return Post.id.in_(list)
+            
         def buildArgument(arg):
             if not isinstance(arg,sqlalchemy.sql.expression.ClauseElement):
                 if arg == '@':
-                    return Post.parentid==-1 # TO IMPLEMENT LATER!
+                    return buildMyPostsFilter()
                 elif arg == '~':
                     return Post.parentid==-1
                 else:
                     return Post.tags.any(tag=arg)
             else:
                 return arg
+         
         operators = {'+':1,'-':1,'^':2,'&':2}
         filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1)
         RPN = self.getRPN(url,operators)

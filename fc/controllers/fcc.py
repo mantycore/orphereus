@@ -40,6 +40,7 @@ hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 class FccController(BaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uid_number',-1))
+        c.userInst = self.userInst
         
     def authorize(self, url):
         if url:

@@ -15,7 +15,7 @@ import re
 from fc.lib.fuser import FUser
 
 log = logging.getLogger(__name__)
-
+hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 class FcaController(BaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uid_number',-1))
@@ -23,7 +23,7 @@ class FcaController(BaseController):
             c.currentURL = '/holySynod/'
             return render('/wakaba.login.mako')
         self.initEnvironment()
-        if not self.isAdmin():
+        if not self.userInst.isAdmin():
             c.errorText = "No way! You aren't holy enough!"
             return render('/wakaba.error.mako')
         c.userInst = self.userInst

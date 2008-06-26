@@ -148,10 +148,8 @@
                             <label>
 								&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Del'></a>
 								<div style="display:none" class="delete">
-                                %if p.uid_number == c.uid_number:
+                                %if p.uid_number == c.uid_number or c.enableAllPostDeletion:
                                     <input type="checkbox" name="delete-${p.id}" value="${p.id}" />
-                                %else:
-                                    <input type="checkbox" name="delete-${p.id}" disabled/>
                                 %endif
 								</div>
                                 %if p.sage:

@@ -25,6 +25,8 @@ a {
 a:hover {
 	color: #0066FF;
 }
+div.delete { 
+}
 .adminbar {
 	clear:both;
 	float:left;

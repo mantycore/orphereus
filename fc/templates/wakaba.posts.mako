@@ -103,9 +103,12 @@
         %endif
         <a name="i${thread.id}"></a>
         <label>
+			&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Del'></a>
+			<div style="display:none" class="delete">		
             %if thread.uid_number == c.uid_number or c.enableAllPostDeletion:
                 <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
             %endif
+			</div>
             <span class="filetitle">${thread.title}</span>  
             <span class="postername"></span>
             ${thread.date}
@@ -139,11 +142,14 @@
                         <td class="reply" id="reply${p.id}">
                             <a name="i${p.id}"></a>
                             <label>
+								&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Del'></a>
+								<div style="display:none" class="delete">
                                 %if p.uid_number == c.uid_number:
                                     <input type="checkbox" name="delete-${p.id}" value="${p.id}" />
                                 %else:
                                     <input type="checkbox" name="delete-${p.id}" disabled/>
                                 %endif
+								</div>
                                 %if p.sage:
                                     <img src='/images/sage.png'>
                                 %endif

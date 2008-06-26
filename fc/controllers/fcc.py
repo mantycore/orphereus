@@ -43,7 +43,7 @@ class FccController(BaseController):
         
     def authorize(self, url):
         if url:
-            c.currentURL = '/' + str(url) + '/'
+            c.currentURL = '/' + str(url.encode('utf-8')) + '/'
         else:
             c.currentURL = '/'
         if request.POST['code']:

@@ -50,28 +50,28 @@ class FcaController(BaseController):
         return render('/wakaba.adminIndex.mako')
     def manageBoards(self):
         c.boardName = 'Boards management'
-        boards = meta.Session.query(Tag).join('options').order_by(TagOptions.persistent.desc()).order_by(TagOptions.section_id.asc()).all()
-        c.boards = []
-        section_id = 0
-        section = []
+        #boards = meta.Session.query(Tag).join('options').order_by(TagOptions.persistent.desc()).order_by(TagOptions.section_id.asc()).all()
+        boards = meta.Session.query(Tag).options(eagerload('options')).all()
+        c.boards = {999:[]}
         for b in boards:
-            if not section_id:
-                section_id = b.options.section_id
-                section = []
-            if section_id != b.options.section_id:
-                c.boards.append(section)
-                section_id = b.options.section_id
-                section = []
-            section.append(b.tag)
-        if section:
-            c.boards.append(section)        
+            if b.options and b.options.persistent and b.options.section_id:
+                if not b.options.section_id in c.boards:
+                    c.boards[b.options.section_id]=[]
+                c.boards[b.options.section_id].append(b)
+            else:
+                c.boards[999].append(b)
+        bs = {}
+        for key in sorted(c.boards.iterkeys()):
+            bs[key] = c.boards[key]
+        c.boards = bs
         return render('/wakaba.manageBoards.mako')
     def editBoard(self,tag):
         c.boardName = 'Edit board'
         c.message = ''
         c.tag = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==tag).first()
         if not c.tag:
-            c.tag = Tag()
+            c.tag = Tag(tag)
+        if not c.tag.options:
             c.tag.options = TagOptions()
             c.tag.options.comment = ''
             c.tag.options.section_id = 0
@@ -93,9 +93,9 @@ class FcaController(BaseController):
                     c.tag.options.comment = request.POST.get('comment','')
                     c.tag.options.section_id = request.POST.get('section_id',0)
                     c.tag.options.persistent = request.POST.get('persistent',False)
-                    c.tag.options.imageless_thread = request.POST.get('imageless_thread',True)
-                    c.tag.options.imageless_post = request.POST.get('imageless_post',True)
-                    c.tag.options.images = request.POST.get('images',True)
+                    c.tag.options.imageless_thread = request.POST.get('imageless_thread',False)
+                    c.tag.options.imageless_post = request.POST.get('imageless_post',False)
+                    c.tag.options.images = request.POST.get('images',False)
                     c.tag.options.max_fsize = request.POST.get('max_fsize',3145728)
                     c.tag.options.min_size = request.POST.get('min_size',0)
                     c.tag.options.thumb_size = request.POST.get('thumb_size',250)

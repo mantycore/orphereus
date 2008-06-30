@@ -5,6 +5,11 @@
     <form id="postform" method="post">
         <table>
             <tbody>
+                %if c.message:
+                    <tr id="trmessage">
+                        <td colspan=2>${c.message}</td>
+                    </tr>
+                %endif
                 <tr id="trtag">
                     <td class="postblock">${_('Tag')}</td>
                     <td>
@@ -18,7 +23,7 @@
                     </td>
                 </tr>
                 <tr id="trsection">
-                    <td class="postblock">${_('Section ¹')}</td>
+                    <td class="postblock">${_('Section')}</td>
                     <td>
                         <input type="text" name="section_id" size="35" value="${c.tag.options.section_id}" />
                     </td>

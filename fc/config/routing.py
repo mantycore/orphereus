@@ -34,6 +34,7 @@ def make_map():
     map.connect('/holySynod', controller='fca', action='index')
     map.connect('/holySynod/makeInvite', controller='fca', action='makeInvite')
     map.connect('/holySynod/manageBoards', controller='fca', action='manageBoards')
+    map.connect('/holySynod/manageBoards/edit/:tag', controller='fca', tag='', action='editBoard')
     map.connect('/holySynod/manageUsers', controller='fca', action='manageUsers')
     map.connect('/holySynod/manageQuestions', controller='fca', action='manageQuestions')
     map.connect('/holySynod/manageApplications', controller='fca', action='manageApplications')

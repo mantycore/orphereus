@@ -561,7 +561,7 @@ class FccController(BaseController):
     def DeletePost(self, post):
         for i in request.POST:
             p = meta.Session.query(Post).get(request.POST[i])
-            if p and p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts():
+            if p and (p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
                 if p.parentid == -1:
                     meta.Session.execute(t_posts.delete().where(t_posts.c.parentid == p.id))
                 meta.Session.delete(p)

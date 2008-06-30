@@ -1,0 +1,74 @@
+# -*- coding: utf-8 -*-
+<%inherit file="wakaba.admin.mako" />
+
+<div class="postarea">
+    <form id="postform" method="post">
+        <table>
+            <tbody>
+                <tr id="trtag">
+                    <td class="postblock">${_('Tag')}</td>
+                    <td>
+                        <input type="text" name="tag" size="35" value="${c.tag.tag}" />
+                    </td>
+                </tr>
+                <tr id="trtitle">
+                    <td class="postblock">${_('Title')}</td>
+                    <td>
+                        <input type="text" name="comment" size="35" value="${c.tag.options.comment}" />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Section ¹')}</td>
+                    <td>
+                        <input type="text" name="section_id" size="35" value="${c.tag.options.section_id}" />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Persistent')}</td>
+                    <td>
+                        <input type="checkbox" name="persistent" ${c.tag.options.persistent and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Allow OPs without image')}</td>
+                    <td>
+                        <input type="checkbox" name="imageless_thread" ${c.tag.options.imageless_thread and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Allow replies without image')}</td>
+                    <td>
+                        <input type="checkbox" name="imageless_post" ${c.tag.options.imageless_post and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Allow files')}</td>
+                    <td>
+                        <input type="checkbox" name="images" ${c.tag.options.images and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Max filesize (bytes)')}</td>
+                    <td>
+                        <input type="text" name="max_fsize" size="35" value="${c.tag.options.max_fsize}" />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Minimal size for images (pixels)')}</td>
+                    <td>
+                        <input type="text" name="min_size" size="35" value="${c.tag.options.min_size}" />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Thumbnail size (pixels)')}</td>
+                    <td>
+                        <input type="text" name="thumb_size" size="35" value="${c.tag.options.thumb_size}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='2'><input type='submit' value='${_('Update')}'></td>
+                </tr>                           
+            </tbody>
+        </table>
+    </form>                 
+</div>

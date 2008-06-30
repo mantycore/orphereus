@@ -21,11 +21,11 @@ class FcaController(BaseController):
         self.userInst = FUser(session.get('uid_number',-1))
         if not self.userInst.isAuthorized():
             c.currentURL = '/holySynod/'
-            return render('/wakaba.login.mako')
+            return redirect_to('/')
         self.initEnvironment()
         if not self.userInst.isAdmin():
             c.errorText = "No way! You aren't holy enough!"
-            return render('/wakaba.error.mako')
+            return redirect_to('/')
         c.userInst = self.userInst
         
     def initEnvironment(self):

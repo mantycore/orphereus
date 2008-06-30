@@ -425,6 +425,8 @@ class FccController(BaseController):
 
     def GetThread(self, post, tempid):
         c.currentURL = request.path_info + '/'
+        if c.currentURL == '/':	
+           c.currentURL = ''
         if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
 
@@ -447,6 +449,8 @@ class FccController(BaseController):
 
     def GetBoard(self, board, tempid, page=0):
         c.currentURL = request.path_info.decode('utf-8') + '/'
+        if c.currentURL == '//':
+           c.currentURL = '/~/'
         if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
         c.PostAction = board

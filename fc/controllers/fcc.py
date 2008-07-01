@@ -563,7 +563,8 @@ class FccController(BaseController):
            return render('/wakaba.login.mako')
         fileonly = 'fileonly' in request.POST
         for i in request.POST:
-            self.processDelete(request.POST[i],fileonly)
+            if re.compile("^\d+$").match(request.POST[i]):
+                self.processDelete(request.POST[i],fileonly)
         return redirect_to(str('/%s' % post.encode('utf-8')))
     def processDelete(self, postid, fileonly=False):
         p = meta.Session.query(Post).get(postid)

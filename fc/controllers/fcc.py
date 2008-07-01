@@ -580,19 +580,21 @@ class FccController(BaseController):
             if meta.Session.query(Post).filter(Post.picid==p.picid).count() == 1:
                 pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
             else:
-                pic = False
+                pic = None
             if fileonly:
-                p.picid = 0
+                p.picid = None
             else:
                 if p.parentid == -1:
                     for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
                         self.processDelete(postid=post.id)
                 meta.Session.delete(p)
             if pic:
-                os.unlink(os.path.join(uploadPath,pic.path))
+                filePath = os.path.join(uploadPath,pic.path)
+                thumPath = os.path.join(uploadPath,pic.thumpath)
+                if os.path.isfile(filePath): os.unlink(filePath)
                 ext = meta.Session.query(Extension).filter(Extension.id==pic.extid).first()
                 if not ext.path:
-                    os.unlink(os.path.join(uploadPath,pic.thumpath))
+                    if os.path.isfile(thumPath): os.unlink(thumPath)
                 meta.Session.delete(pic)
         meta.Session.commit()
     def showProfile(self):

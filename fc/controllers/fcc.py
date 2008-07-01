@@ -559,17 +559,21 @@ class FccController(BaseController):
               meta.Session.commit()
         return ['ok']
     def DeletePost(self, post):
+        if not self.userInst.isAuthorized():
+           return render('/wakaba.login.mako')
+        fileonly = 'fileonly' in request.POST
         for i in request.POST:
-            self.processDelete(request.POST[i])
+            self.processDelete(request.POST[i],fileonly)
         return redirect_to(str('/%s' % post.encode('utf-8')))
-    def processDelete(self, postid):
+    def processDelete(self, postid, fileonly=False):
         p = meta.Session.query(Post).get(postid)
         if p and (p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
             pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
-            if p.parentid == -1:
+            if p.parentid == -1 and not fileonly:
                 for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
-                    self.processDelete(postid=post.id)
-            meta.Session.delete(p)
+                    self.processDelete(post.id,fileonly)
+            if not fileonly:
+                meta.Session.delete(p)
             if pic:
                 os.unlink(os.path.join(uploadPath,pic.path))
                 ext = meta.Session.query(Extension).filter(Extension.id==pic.extid).first()

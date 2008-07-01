@@ -88,7 +88,8 @@ t_posts = sa.Table("posts", meta.metadata,
     sa.Column("uid_number",sa.types.Integer,nullable=True),
     sa.Column("picid"    , sa.types.Integer, sa.ForeignKey('piclist.id')),
     sa.Column("date"     , sa.types.DateTime, nullable=False),
-    sa.Column("last_date", sa.types.DateTime, nullable=True)
+    sa.Column("last_date", sa.types.DateTime, nullable=True),
+    sa.Column("spoiler"  , sa.types.Boolean, nullable=True)   
     )
 
 t_tags = sa.Table("tags", meta.metadata,
@@ -108,6 +109,7 @@ t_tag_options = sa.Table("tag_options", meta.metadata,
     sa.Column("max_fsize" , sa.types.Integer, nullable=False),
     sa.Column("min_size" , sa.types.Integer, nullable=False),
     sa.Column("thumb_size", sa.types.Integer, nullable=False),
+    sa.Column("enableSpoilers"   , sa.types.Boolean, nullable=False)
     )
 
 t_post_tags = sa.Table("post_tags", meta.metadata,

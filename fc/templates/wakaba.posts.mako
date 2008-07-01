@@ -17,6 +17,13 @@
             <td><input type="checkbox" name="sage" /></td>
         </tr>
     %endif
+    
+    %if c.showSpoilerCheckbox:
+        <tr id="tremail">
+            <td class="postblock">${_('Spoiler')}</td>
+            <td><input type="checkbox" name="spoiler" /></td>
+        </tr> 
+    %endif   
         <tr id="trsubject">
             <td class="postblock">${_('Title')}</td>
             <td>
@@ -59,8 +66,7 @@
         %else:
             <tr id="trfile">
                 <td class="postblock">${_('File')}</td>
-                <td>
-                <input type="file" name="file" size="35" /></td>
+                <td><input type="file" name="file" size="35" /></td>
             </tr>   
          </form>       
          
@@ -96,9 +102,14 @@
             <a target="_blank" href="${c.uploadPathWeb + thread.file.path}">${thread.file.path}</a>
             (<em>${thread.file.size}, ${thread.file.width}x${thread.file.height}</em>)
         </span>
-        <span class="thumbnailmsg"></span><br />
+        <span class="thumbnailmsg"></span><br />                       
         <a target="_blank" href="${c.uploadPathWeb + thread.file.path}">
-            <img src="${c.uploadPathWeb + thread.file.thumpath}" class="thumb" />
+        %if thread.spoiler:
+            <img src="/images/spoiler.png" class="thumb"/>
+        %else:
+            <img src="${c.uploadPathWeb + thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />
+        %endif                 
+            
         </a>
         %endif
         <a name="i${thread.id}"></a>
@@ -176,7 +187,12 @@
                                 (<em>${p.file.size}, ${p.file.width}x${p.file.height}</em>)</span>
                                 <span class="thumbnailmsg">This is resized copy. Click it to view original image</span><br />
                                 <a target="_blank" href="${c.uploadPathWeb + p.file.path}">
-                                <img src="${c.uploadPathWeb + p.file.thumpath}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" /></a>
+                                %if p.spoiler:
+                                    <img src="/images/spoiler.png" class="thumb"/>
+                                %else:
+                                    <img src="${c.uploadPathWeb + p.file.thumpath}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />
+                                %endif
+                                </a>
                             %endif
                             <blockquote class="postbody">
                                 ${p.message}

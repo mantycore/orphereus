@@ -165,8 +165,10 @@ class FccController(BaseController):
             currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()
             if currentBoard and currentBoard.options and currentBoard.options.comment:
                 c.boardName = currentBoard.options.comment
+                c.showSpoilerCheckbox = currentBoard.options.enableSpoilers
             else:
                 c.boardName = '/%s/' % board
+                c.showSpoilerCheckbox = True
 
         if count > 1:
             p = divmod(count, self.userInst.threadsPerPage())
@@ -381,6 +383,9 @@ class FccController(BaseController):
             c.errorText = "At least message or file should be specified"
             return render('/wakaba.error.mako')
         
+        if options.enableSpoilers:
+            post.spoiler = request.POST.get('spoiler', False)        
+            
         if postid:
             if not post.picid and not options.imageless_post:
                 c.errorText = "Replies without image are not allowed"

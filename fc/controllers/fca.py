@@ -107,10 +107,11 @@ class FcaController(BaseController):
         if request.POST.get('update',False):
             for s in request.POST:
                 if s in settingsDef:
-                    settingsMap[s].value = request.POST[s]
+                    if settingsMap[s].value != request.POST[s]:
+                        self.addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s,settingsMap[s].value,request.POST[s]))
+                        settingsMap[s].value = request.POST[s]
             meta.Session.commit()
             c.message = _('Updated settings')
-            self.addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed board settings")
         c.settings = settingsMap
         return render('/wakaba.manageSettings.mako')
         

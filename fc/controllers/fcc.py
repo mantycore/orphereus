@@ -161,14 +161,14 @@ class FccController(BaseController):
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         count = threadFilter.count()
         
+        c.showSpoilerCheckbox = True
         if board and board != '~':
             currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()
             if currentBoard and currentBoard.options and currentBoard.options.comment:
                 c.boardName = currentBoard.options.comment
                 c.showSpoilerCheckbox = currentBoard.options.enableSpoilers
             else:
-                c.boardName = '/%s/' % board
-                c.showSpoilerCheckbox = True
+                c.boardName = '/%s/' % board               
 
         if count > 1:
             p = divmod(count, self.userInst.threadsPerPage())

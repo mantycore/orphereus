@@ -14,6 +14,14 @@ import hashlib
 import re
 from fc.lib.fuser import FUser
 
+LOG_EVENT_INVITE       = 0x00010001
+LOG_EVENT_BOARD_EDIT   = 0x00020001
+LOG_EVENT_BOARD_DELETE = 0x00020002
+LOG_EVENT_USER_EDIT    = 0x00030001
+LOG_EVENT_USER_DELETE  = 0x00030002
+LOG_EVENT_USER_ADMIN   = 0x00030003
+LOG_EVENT_USER_BAN     = 0x00030004
+
 log = logging.getLogger(__name__)
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 class FcaController(BaseController):
@@ -45,6 +53,15 @@ class FcaController(BaseController):
             section.append(b.tag)
         if section:
             c.boardlist.append(section)
+    def addLogEntry(self,event,entry):
+        logEntry = LogEntry()
+        logEntry.uid_number = self.userInst.uidNumber()
+        logEntry.date = datetime.datetime.now()
+        logEntry.event = event
+        logEntry.entry = entry
+        meta.Session.save(logEntry)
+        meta.Session.commit()
+        
     def index(self):
         c.boardName = 'Index'
         return render('/wakaba.adminIndex.mako')
@@ -89,7 +106,11 @@ class FcaController(BaseController):
                 newtag = newtagre.groups()[0]
                 newtagRecord = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==newtag).first()
                 if not newtagRecord or newtagRecord.id == c.tag.id:
-                    c.tag.tag = newtag
+                    if c.tag.tag != newtag:
+                        oldtag = c.tag.tag
+                        c.tag.tag = newtag
+                    else:
+                        oldtag = ''
                     c.tag.options.comment = request.POST.get('comment','')
                     c.tag.options.section_id = request.POST.get('section_id',0)
                     c.tag.options.persistent = request.POST.get('persistent',False)
@@ -102,6 +123,7 @@ class FcaController(BaseController):
                     if not c.tag.id:
                         meta.Session.save(c.tag)
                     meta.Session.commit()
+                    self.addLogEvent(LOG_EVENT_BOARD_EDIT,"Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
                     c.message = _("Updated board")
                 else:
                     c.message = _("Board %s already exists!") % newtag
@@ -127,8 +149,19 @@ class FcaController(BaseController):
         invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
         meta.Session.save(invite)
         meta.Session.commit()
+        self.addLogEvent(LOG_EVENT_INVITE,"Generated invite id %s" % invite.id)
         c.message = "<a href='/register/%s'>INVITE</a>" % invite.invite
         return render('/wakaba.adminMessage.mako')
     def viewLog(self,page):
         c.boardName = 'Logs'
-        
+        page = int(page)
+        count = meta.Session.query(LogEntry).count()
+        p = divmod(count, 100)
+        c.pages = p[0]
+        if p[1]:
+            c.pages += 1
+        if (page + 1) > c.pages:
+            page = c.pages - 1
+        c.page = page        
+        c.logs = meta.Session.query(LogEntry).options(eagerload('user'))[page*100:(page+1)*100]
+        return render('/wakaba.adminLogs.mako')

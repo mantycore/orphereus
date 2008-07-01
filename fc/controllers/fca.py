@@ -3,6 +3,7 @@ from fc.lib.base import *
 from fc.model import *
 from sqlalchemy.orm import eagerload
 from sqlalchemy.orm import class_mapper
+from sqlalchemy.sql import and_, or_, not_
 import os
 import cgi
 import shutil
@@ -181,6 +182,13 @@ class FcaController(BaseController):
         return render('/wakaba.editBoard.mako')
     def manageUsers(self):
         c.boardName = 'Users management'
+        if request.POST.get("uid",False):
+            uid = request.POST.get("uid",False)
+            user = meta.Session.query(User).filter(or_(User.uid==uid,User.uid_number==uid)).first()
+            if user:
+                return redirect_to('/holySynod/manageUsers/edit/%s' % user.uid_number)
+            else:
+                c.message = _('No such user exists.')
         return render('/wakaba.manageUsers.mako')
     def manageQuestions(self):
         c.boardName = 'Questions management'

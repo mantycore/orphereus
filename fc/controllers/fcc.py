@@ -212,7 +212,7 @@ class FccController(BaseController):
                     if currentBoard.options.comment:
                         c.boardName = currentBoard.options.comment                    
                 else: #filters
-                    c.boardName = '/%s/' % board                   
+                    c.boardName = '/%s/' % board   #todo: rights computing for complex filters                
             #else: #overview                
                 
         else: # reply mode

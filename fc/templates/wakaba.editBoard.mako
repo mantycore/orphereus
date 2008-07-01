@@ -53,6 +53,12 @@
                     </td>
                 </tr>
                 <tr id="trsection">
+                    <td class="postblock">${_('Allow spoilers')}</td>
+                    <td>
+                        <input type="checkbox" name="spoilers" ${c.tag.options.enableSpoilers and "checked" or ""} />
+                    </td>
+                </tr>                
+                <tr id="trsection">
                     <td class="postblock">${_('Max filesize (bytes)')}</td>
                     <td>
                         <input type="text" name="max_fsize" size="35" value="${c.tag.options.max_fsize}" />

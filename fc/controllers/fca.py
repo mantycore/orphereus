@@ -146,6 +146,7 @@ class FcaController(BaseController):
             c.tag.options.imageless_thread = True
             c.tag.options.imageless_post = True
             c.tag.options.images = True
+            c.tag.enableSpoilers = False
             c.tag.options.max_fsize = 3145728
             c.tag.options.min_size = 0
             c.tag.options.thumb_size = 250
@@ -167,6 +168,7 @@ class FcaController(BaseController):
                     c.tag.options.imageless_thread = request.POST.get('imageless_thread',False)
                     c.tag.options.imageless_post = request.POST.get('imageless_post',False)
                     c.tag.options.images = request.POST.get('images',False)
+                    c.tag.options.enableSpoilers = request.POST.get('spoilers',False)
                     c.tag.options.max_fsize = request.POST.get('max_fsize',3145728)
                     c.tag.options.min_size = request.POST.get('min_size',0)
                     c.tag.options.thumb_size = request.POST.get('thumb_size',250)

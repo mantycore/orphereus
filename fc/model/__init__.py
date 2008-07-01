@@ -6,6 +6,12 @@ def init_model(engine):
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
 
+t_settings = sa.Table("settings", meta.metadata,
+    sa.Column("id"       , sa.types.Integer, primary_key=True),
+    sa.Column("name"     , sa.types.String(64), nullable=False),
+    sa.Column("value"    , sa.types.UnicodeText, nullable=False)
+    )
+
 t_invites = sa.Table("invites", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("invite"   , sa.types.String(128), nullable=False),
@@ -29,6 +35,13 @@ t_user_options = sa.Table("user_options", meta.metadata,
     sa.Column("isAdmin"  , sa.types.Boolean, nullable=True),
     sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable=True),
     sa.Column("canMakeInvite", sa.types.Boolean, nullable=True),    
+    )
+    
+t_log = sa.Table("log", meta.metadata,
+    sa.Column("id"    , sa.types.Integer, primary_key=True),
+    sa.Column("uid_number", sa.types.Integer, sa.ForeignKey('users.uid_number')),
+    sa.Column("event" , sa.types.Integer, nullable=False),
+    sa.Column("entry" , sa.types.UnicodeText, nullable=False)
     )
 
 t_extlist = sa.Table("extlist", meta.metadata,
@@ -130,6 +143,12 @@ class Tag(object):
 
 class TagOptions(object):
     pass
+    
+class Setting(object):
+    pass
+
+class LogEntry(object):
+    pass
 
 orm.mapper(Oekaki, t_oekaki)
 orm.mapper(Invite, t_invites)
@@ -149,4 +168,9 @@ orm.mapper(Tag, t_tags, properties = {
 orm.mapper(Post, t_posts, properties = {
     'tags' : orm.relation(Tag, secondary = t_post_tags),
     'file': orm.relation(Picture)
+    })
+
+orm.mapper(Setting, t_settings)
+orm.mapper(LogEntry, t_log, properties = {
+    'user' : orm.relation(User)
     })

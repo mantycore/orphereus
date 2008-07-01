@@ -182,16 +182,7 @@ class FccController(BaseController):
         c.uid_number = self.userInst.uidNumber()
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         count = threadFilter.count()
-        
-        c.showSpoilerCheckbox = True
-        if board and board != '~':
-            currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()
-            if currentBoard and currentBoard.options and currentBoard.options.comment:
-                c.boardName = currentBoard.options.comment
-                c.showSpoilerCheckbox = currentBoard.options.enableSpoilers
-            else:
-                c.boardName = '/%s/' % board               
-
+                  
         if count > 1:
             p = divmod(count, self.userInst.threadsPerPage())
             c.pages = p[0]
@@ -210,6 +201,22 @@ class FccController(BaseController):
             c.pages = False
             c.threads = []
 
+        c.showSpoilerCheckbox = False
+        if board:
+            if board != '~':
+                currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()
+                c.showSpoilerCheckbox = currentBoard.options.enableSpoilers
+                
+                if currentBoard and currentBoard.options and currentBoard.options.comment:
+                    c.boardName = currentBoard.options.comment
+                else:
+                    c.boardName = '/%s/' % board                   
+            else: #overview
+                c.showSpoilerCheckbox = True
+        else: # reply mode
+            opRights = self.conjunctTagOptions(c.threads[0].tags)
+            c.showSpoilerCheckbox = opRights.enableSpoilers              
+            
         for thread in c.threads:
             if count > 1:
                 replyCount = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
@@ -338,15 +345,7 @@ class FccController(BaseController):
                     options.thumb_size = t.options.thumb_size                   
         return options
         
-    def processPost(self, postid=0, board=u''):
-        if postid:
-            thePost = meta.Session.query(Post).filter(Post.id==postid).first()
-            if thePost.parentid != -1:
-               thread = meta.Session.query(Post).filter(Post.id==thePost.parentid).one()
-            else:
-               thread = thePost
-            tags = thread.tags
-        else:
+    def getPostTags(self, tagstr):
             tags = []
             tagsl= []
             #maintag = request.POST.get('maintag',False)
@@ -357,7 +356,6 @@ class FccController(BaseController):
             #    else:
             #        tags.append(Tag(maintag))
             #    tagsl.append(maintag)
-            tagstr = request.POST.get('tags',False)
             if tagstr:
                 regex = re.compile(r"""([^,@~\+\-\&\s\/\\\(\)<>'"%\d][^,@~\+\-\&\s\/\\\(\)<>'"%]*)""")
                 tlist = regex.findall(tagstr)
@@ -368,7 +366,20 @@ class FccController(BaseController):
                             tags.append(tag)
                         else:
                             tags.append(Tag(t))
-                        tagsl.append(t)
+                        tagsl.append(t)      
+            return tags
+    
+    def processPost(self, postid=0, board=u''):
+        if postid:
+            thePost = meta.Session.query(Post).filter(Post.id==postid).first()
+            if thePost.parentid != -1:
+               thread = meta.Session.query(Post).filter(Post.id==thePost.parentid).one()
+            else:
+               thread = thePost
+            tags = thread.tags
+        else:
+            tagstr = request.POST.get('tags',False)
+            tags = getPostTags(tagstr)
             if not tags:
                 c.errorText = "You should specify at least one board"
                 return render('/wakaba.error.mako')
@@ -409,10 +420,8 @@ class FccController(BaseController):
             c.errorText = "At least message or file should be specified"
             return render('/wakaba.error.mako')
         
-        log.debug('AAABLA')
         if options.enableSpoilers:
             post.spoiler = request.POST.get('spoiler', False)  
-            log.debug('IN!')
             
         if postid:
             if not post.picid and not options.imageless_post:

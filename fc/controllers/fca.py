@@ -129,3 +129,6 @@ class FcaController(BaseController):
         meta.Session.commit()
         c.message = "<a href='/register/%s'>INVITE</a>" % invite.invite
         return render('/wakaba.adminMessage.mako')
+    def viewLog(self,page):
+        c.boardName = 'Logs'
+        

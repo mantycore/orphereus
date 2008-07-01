@@ -40,6 +40,7 @@ t_user_options = sa.Table("user_options", meta.metadata,
 t_log = sa.Table("log", meta.metadata,
     sa.Column("id"    , sa.types.Integer, primary_key=True),
     sa.Column("uid_number", sa.types.Integer, sa.ForeignKey('users.uid_number')),
+    sa.Column("date"  , sa.types.DateTime, nullable=False),
     sa.Column("event" , sa.types.Integer, nullable=False),
     sa.Column("entry" , sa.types.UnicodeText, nullable=False)
     )

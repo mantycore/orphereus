@@ -201,18 +201,20 @@ class FccController(BaseController):
             c.pages = False
             c.threads = []
 
-        c.showSpoilerCheckbox = False
+        c.showSpoilerCheckbox = True
         if board:
             if board != '~':
-                currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()
-                c.showSpoilerCheckbox = currentBoard.options.enableSpoilers
+                currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()                
                 
-                if currentBoard and currentBoard.options and currentBoard.options.comment:
-                    c.boardName = currentBoard.options.comment
-                else:
+                if currentBoard and currentBoard.options:
+                    c.showSpoilerCheckbox = currentBoard.options.enableSpoilers
+                    
+                    if currentBoard.options.comment:
+                        c.boardName = currentBoard.options.comment                    
+                else: #filters
                     c.boardName = '/%s/' % board                   
-            else: #overview
-                c.showSpoilerCheckbox = True
+            #else: #overview                
+                
         else: # reply mode
             opRights = self.conjunctTagOptions(c.threads[0].tags)
             c.showSpoilerCheckbox = opRights.enableSpoilers              
@@ -345,7 +347,7 @@ class FccController(BaseController):
                     options.thumb_size = t.options.thumb_size                   
         return options
         
-    def getPostTags(self, tagstr):
+    def __getPostTags(self, tagstr):
             tags = []
             tagsl= []
             #maintag = request.POST.get('maintag',False)
@@ -379,7 +381,7 @@ class FccController(BaseController):
             tags = thread.tags
         else:
             tagstr = request.POST.get('tags',False)
-            tags = getPostTags(tagstr)
+            tags = self.__getPostTags(tagstr)
             if not tags:
                 c.errorText = "You should specify at least one board"
                 return render('/wakaba.error.mako')

@@ -109,7 +109,7 @@ t_tag_options = sa.Table("tag_options", meta.metadata,
     sa.Column("max_fsize" , sa.types.Integer, nullable=False),
     sa.Column("min_size" , sa.types.Integer, nullable=False),
     sa.Column("thumb_size", sa.types.Integer, nullable=False),
-    sa.Column("enableSpoilers"   , sa.types.Boolean, nullable=False)
+    sa.Column("enableSpoilers", sa.types.Boolean, nullable=False)
     )
 
 t_post_tags = sa.Table("post_tags", meta.metadata,

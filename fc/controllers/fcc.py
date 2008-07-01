@@ -53,10 +53,12 @@ class FccController(BaseController):
                 self.login(user)
                 redirect_to(c.currentURL)
         return render('/wakaba.login.mako')
+        
     def login(self, user):
         isNumber(True)
         session['uid_number'] = user.uid_number
         session.save()
+        
     def initEnvironment(self):
         settingsDef = {
             "title" : "FailChan",
@@ -92,6 +94,7 @@ class FccController(BaseController):
             section.append(b.tag)
         if section:
             c.boardlist.append(section)
+            
     def getRPN(self,text,operators):
         whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']
         stack = []
@@ -126,6 +129,7 @@ class FccController(BaseController):
         while stack:
             result.append(stack.pop())
         return result
+        
     def buildFilter(self,url):
         def buildMyPostsFilter():
             list  = []
@@ -170,6 +174,7 @@ class FccController(BaseController):
             cl = stack.pop()
             filter = filter.filter(cl)
         return filter
+        
     def showPosts(self, threadFilter, tempid='', page=0, board=''):
         self.initEnvironment()
         c.board = board
@@ -309,11 +314,13 @@ class FccController(BaseController):
            return pic
         else:
            return None
+           
     def conjunctTagOptions(self, tags):
         options = TagOptions()
         options.imageless_thread = True
         options.imageless_post   = True
         options.images   = True
+        options.enableSpoilers = True
         options.max_fsize = 2621440
         options.min_size = 50
         options.thumb_size = 250
@@ -321,6 +328,7 @@ class FccController(BaseController):
             if t.options:
                 options.imageless_thread = options.imageless_thread & t.options.imageless_thread
                 options.imageless_post = options.imageless_post & t.options.imageless_post
+                options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
                 options.images = options.images & t.options.images
                 if t.options.max_fsize < options.max_fsize:
                     options.max_fsize = t.options.max_fsize
@@ -329,6 +337,7 @@ class FccController(BaseController):
                 if t.options.thumb_size < options.thumb_size:
                     options.thumb_size = t.options.thumb_size                   
         return options
+        
     def processPost(self, postid=0, board=u''):
         if postid:
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
@@ -400,8 +409,10 @@ class FccController(BaseController):
             c.errorText = "At least message or file should be specified"
             return render('/wakaba.error.mako')
         
+        log.debug('AAABLA')
         if options.enableSpoilers:
-            post.spoiler = request.POST.get('spoiler', False)        
+            post.spoiler = request.POST.get('spoiler', False)  
+            log.debug('IN!')
             
         if postid:
             if not post.picid and not options.imageless_post:

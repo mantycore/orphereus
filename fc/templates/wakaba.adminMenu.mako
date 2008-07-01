@@ -5,5 +5,5 @@
 <a href="/holySynod/manageApplications">${_('Manage applications')}</a><br />
 <a href="/holySynod/viewLog">${_('View logs')}</a><br />
 %if c.userInst.canMakeInvite():
-<a href="/holySynod/makeInvite">${_('Generate invite')}</a><br />
+<a href="/holySynod/invitePage">${_('Generate invite')}</a><br />
 %endif

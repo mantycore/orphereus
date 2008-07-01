@@ -186,7 +186,9 @@ class FcaController(BaseController):
         return render('/wakaba.manageQuestions.mako')        
     def manageApplications(self):
         c.boardName = 'Applications management'
-        return render('/wakaba.manageApplications.mako')        
+        return render('/wakaba.manageApplications.mako')     
+    def invitePage(self):
+        return render('/wakaba.invitePage.mako') 
     def makeInvite(self):         
         if not self.userInst.canMakeInvite():
             c.errorText = "No way! You aren't holy enough!"
@@ -198,8 +200,8 @@ class FcaController(BaseController):
         meta.Session.save(invite)
         meta.Session.commit()
         self.addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s" % invite.id)
-        c.message = "<a href='/register/%s'>INVITE</a>" % invite.invite
-        return render('/wakaba.adminMessage.mako')
+        c.inviteLink = "<a href='/register/%s'>INVITE</a>" % invite.invite
+        return render('/wakaba.newInvite.mako')
     def viewLog(self,page):
         c.boardName = 'Logs'
         page = int(page)

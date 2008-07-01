@@ -577,18 +577,11 @@ class FccController(BaseController):
     def processDelete(self, postid, fileonly=False):
         p = meta.Session.query(Post).get(postid)
         if p and (p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
-            if meta.Session.query(Post).filter(Post.picid==p.picid).count() == 1:
-                pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
-            else:
-                pic = None
-            if fileonly:
-                p.picid = None
-            else:
-                if p.parentid == -1:
-                    for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
-                        self.processDelete(postid=post.id)
-                meta.Session.delete(p)
-            if pic:
+            if p.parentid == -1 and not fileonly:
+                for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
+                    self.processDelete(postid=post.id)
+            pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
+            if pic and meta.Session.query(Post).filter(Post.picid==p.picid).count() == 1:
                 filePath = os.path.join(uploadPath,pic.path)
                 thumPath = os.path.join(uploadPath,pic.thumpath)
                 if os.path.isfile(filePath): os.unlink(filePath)
@@ -596,6 +589,8 @@ class FccController(BaseController):
                 if not ext.path:
                     if os.path.isfile(thumPath): os.unlink(thumPath)
                 meta.Session.delete(pic)
+            if fileonly: p.picid = None
+            else: meta.Session.delete(p)
         meta.Session.commit()
     def showProfile(self):
         if not self.userInst.isAuthorized():

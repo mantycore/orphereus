@@ -84,6 +84,7 @@ class FcaController(BaseController):
         
     def index(self):
         c.boardName = 'Index'
+        c.admins = meta.Session.query(User).join('options').filter(or_(UserOptions.isAdmin==True,UserOptions.canDeleteAllPosts==True)).all()
         return render('/wakaba.adminIndex.mako')
     def manageSettings(self):
         c.boardName = 'Settings management'
@@ -192,6 +193,15 @@ class FcaController(BaseController):
             else:
                 c.message = _('No such user exists.')
         return render('/wakaba.manageUsers.mako')
+    def editUser(self,uid):
+        c.boardName = 'Edit user %s' % uid
+        user = meta.Session.query(User).options(eagerload('options')).get(uid)
+        if user:
+            c.user = user
+            return render('/wakaba.editUser.mako')
+        else:
+            c.errorText = _('No such user exists.')
+            return render('/wakaba.error.mako')
     def manageQuestions(self):
         c.boardName = 'Questions management'
         return render('/wakaba.manageQuestions.mako')        

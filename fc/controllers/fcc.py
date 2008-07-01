@@ -581,10 +581,12 @@ class FccController(BaseController):
                 pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
             else:
                 pic = False
-            if p.parentid == -1 and not fileonly:
-                for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
-                    self.processDelete(post.id,fileonly)
-            if not fileonly:
+            if fileonly:
+                p.picid = 0
+            else:
+                if p.parentid == -1:
+                    for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
+                        self.processDelete(postid=post.id)
                 meta.Session.delete(p)
             if pic:
                 os.unlink(os.path.join(uploadPath,pic.path))

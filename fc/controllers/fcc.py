@@ -33,10 +33,9 @@ def isNumber(n):
         return False
 
 log = logging.getLogger(__name__)
+hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 uploadPath = 'fc/public/uploads/'
 uploadPathWeb = '/uploads/'
-hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
-    
 class FccController(BaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uid_number',-1))
@@ -59,7 +58,25 @@ class FccController(BaseController):
         session['uid_number'] = user.uid_number
         session.save()
     def initEnvironment(self):
-        c.title = 'FailChan'
+        settingsDef = {
+            "title" : "FailChan",
+            "uploadPathLocal" : 'fc/public/uploads/',
+            "uploadPathWeb" :  '/uploads/'
+        }
+        settings = meta.Session.query(Setting).all()
+        settingsMap = {}
+        if settings:
+            for s in settings:
+                if s.name in settingsDef:
+                    settingsMap[s.name] = s
+        for s in settingsDef:
+            if not s in settingsMap:
+                settingsMap[s] = Setting()
+                settingsMap[s].name = s
+                settingsMap[s].value = settingsDef[s]
+                meta.Session.save(settingsMap[s])
+                meta.Session.commit()        
+        c.title = settingsMap['title'].value
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.section_id).all()
         c.boardlist = []
         section_id = 0

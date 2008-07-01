@@ -21,6 +21,7 @@ LOG_EVENT_USER_EDIT    = 0x00030001
 LOG_EVENT_USER_DELETE  = 0x00030002
 LOG_EVENT_USER_ADMIN   = 0x00030003
 LOG_EVENT_USER_BAN     = 0x00030004
+LOG_EVENT_SETTINGS_EDIT= 0x00040001
 
 log = logging.getLogger(__name__)
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
@@ -37,7 +38,25 @@ class FcaController(BaseController):
         c.userInst = self.userInst
         
     def initEnvironment(self):
-        c.title = 'FailChan'
+        settingsDef = {
+            "title" : "FailChan",
+            "uploadPathLocal" : 'fc/public/uploads/',
+            "uploadPathWeb" :  '/uploads/'
+        }
+        settings = meta.Session.query(Setting).all()
+        settingsMap = {}
+        if settings:
+            for s in settings:
+                if s.name in settingsDef:
+                    settingsMap[s.name] = s
+        for s in settingsDef:
+            if not s in settingsMap:
+                settingsMap[s] = Setting()
+                settingsMap[s].name = s
+                settingsMap[s].value = settingsDef[s]
+                meta.Session.save(settingsMap[s])
+                meta.Session.commit()        
+        c.title = settingsMap['title'].value
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.section_id).all()
         c.boardlist = []
         section_id = 0
@@ -65,9 +84,38 @@ class FcaController(BaseController):
     def index(self):
         c.boardName = 'Index'
         return render('/wakaba.adminIndex.mako')
+    def manageSettings(self):
+        c.boardName = 'Settings management'
+        settingsDef = {
+            "title" : "FailChan",
+            "uploadPathLocal" : 'fc/public/uploads/',
+            "uploadPathWeb" :  '/uploads/'
+        }
+        settings = meta.Session.query(Setting).all()
+        settingsMap = {}
+        if settings:
+            for s in settings:
+                if s.name in settingsDef:
+                    settingsMap[s.name] = s
+        for s in settingsDef:
+            if not s in settingsMap:
+                settingsMap[s] = Setting()
+                settingsMap[s].name = s
+                settingsMap[s].value = settingsDef[s]
+                meta.Session.save(settingsMap[s])
+                meta.Session.commit()
+        if request.POST.get('update',False):
+            for s in request.POST:
+                if s in settingsDef:
+                    settingsMap[s].value = request.POST[s]
+            meta.Session.commit()
+            c.message = _('Updated settings')
+            self.addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed board settings")
+        c.settings = settingsMap
+        return render('/wakaba.manageSettings.mako')
+        
     def manageBoards(self):
         c.boardName = 'Boards management'
-        #boards = meta.Session.query(Tag).join('options').order_by(TagOptions.persistent.desc()).order_by(TagOptions.section_id.asc()).all()
         boards = meta.Session.query(Tag).options(eagerload('options')).all()
         c.boards = {999:[]}
         for b in boards:

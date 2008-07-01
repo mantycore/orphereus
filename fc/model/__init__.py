@@ -63,6 +63,7 @@ t_piclist = sa.Table("piclist", meta.metadata,
     sa.Column("thwidth"  , sa.types.Integer, nullable=False),
     sa.Column("thheight" , sa.types.Integer, nullable=False),
     sa.Column("size"     , sa.types.Integer, nullable=False),
+    sa.Column("md5"      , sa.types.String(32), nullable=False),
     sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extlist.id')), 
     sa.Column("spoiler"  , sa.types.Boolean, nullable=True)
     )

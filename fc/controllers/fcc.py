@@ -251,13 +251,20 @@ class FccController(BaseController):
            extParams = meta.Session.query(Extension).filter(Extension.ext==ext).first()
            if not extParams:
               return ''
-           
+
            localFilePath = os.path.join(uploadPath,name + '.' + ext)
-           localFile = open(localFilePath,'wb')
+           localFile = open(localFilePath,'w+b')
            shutil.copyfileobj(file.file, localFile)
+           localFile.seek(0)
+           md5 = hashlib.md5(localFile.read()).hexdigest()
            file.file.close()
            localFile.close()
-           
+
+           pic = meta.Session.query(Picture).filter(Picture.md5==md5).first()
+           if pic:
+               os.unlink(localFilePath)
+               return pic
+
            if extParams.type == 'image':
               thumbFilePath = name + 's.' + ext
               size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (thumbSize,thumbSize))
@@ -277,11 +284,12 @@ class FccController(BaseController):
            pic.thheight = size[3]
            pic.extid = extParams.id
            pic.size = os.stat(localFilePath)[6]
+           pic.md5 = md5
            meta.Session.save(pic)
            meta.Session.commit()
            return pic
         else:
-           return None  
+           return None
     def conjunctTagOptions(self, tags):
         options = TagOptions()
         options.imageless_thread = True
@@ -569,7 +577,10 @@ class FccController(BaseController):
     def processDelete(self, postid, fileonly=False):
         p = meta.Session.query(Post).get(postid)
         if p and (p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
-            pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
+            if meta.Session.query(Post).filter(Post.picid==p.picid).count() == 1:
+                pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
+            else:
+                pic = False
             if p.parentid == -1 and not fileonly:
                 for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
                     self.processDelete(post.id,fileonly)

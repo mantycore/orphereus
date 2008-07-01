@@ -425,7 +425,7 @@ class FccController(BaseController):
 
     def GetThread(self, post, tempid):
         c.currentURL = request.path_info + '/'
-        if c.currentURL == '/':	
+        if c.currentURL == '/': 
            c.currentURL = ''
         if not self.userInst.isAuthorized():
            return render('/wakaba.login.mako')
@@ -560,13 +560,23 @@ class FccController(BaseController):
         return ['ok']
     def DeletePost(self, post):
         for i in request.POST:
-            p = meta.Session.query(Post).get(request.POST[i])
-            if p and (p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
-                if p.parentid == -1:
-                    meta.Session.execute(t_posts.delete().where(t_posts.c.parentid == p.id))
-                meta.Session.delete(p)
-        meta.Session.commit()
+            self.processDelete(request.POST[i])
         return redirect_to(str('/%s' % post.encode('utf-8')))
+    def processDelete(self, postid):
+        p = meta.Session.query(Post).get(postid)
+        if p and (p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
+            pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
+            if p.parentid == -1:
+                for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
+                    self.processDelete(postid=post.id)
+            meta.Session.delete(p)
+            if pic:
+                os.unlink(os.path.join(uploadPath,pic.path))
+                ext = meta.Session.query(Extension).filter(Extension.id==pic.extid).first()
+                if not ext.path:
+                    os.unlink(os.path.join(uploadPath,pic.thumpath))
+                meta.Session.delete(pic)
+        meta.Session.commit()
     def showProfile(self):
         if not self.userInst.isAuthorized():
             return render('/wakaba.login.mako')

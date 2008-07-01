@@ -574,12 +574,15 @@ class FccController(BaseController):
             if re.compile("^\d+$").match(request.POST[i]):
                 self.processDelete(request.POST[i],fileonly)
         return redirect_to(str('/%s' % post.encode('utf-8')))
-    def processDelete(self, postid, fileonly=False):
+    def processDelete(self, postid, fileonly=False, checkOwnage=True):
         p = meta.Session.query(Post).get(postid)
-        if p and (p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
+        if p:
+            if checkOwnage and not (p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
+                # print some error stuff here
+                return
             if p.parentid == -1 and not fileonly:
                 for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
-                    self.processDelete(postid=post.id)
+                    self.processDelete(postid=post.id,checkOwnage=False)
             pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
             if pic and meta.Session.query(Post).filter(Post.picid==p.picid).count() == 1:
                 filePath = os.path.join(uploadPath,pic.path)

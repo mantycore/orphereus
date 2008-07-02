@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 class FcpController(BaseController):
     def login(self, user):
-        session['uid_number'] = user.uid_number
+        session['uidNumber'] = user.uidNumber
         session.save()
     def authorize(self, url):
         if url:

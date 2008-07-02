@@ -14,7 +14,7 @@ import os
 import hashlib
 import re
 from fc.lib.fuser import FUser
-from miscUtils import *
+from fc.lib.miscUtils import *
 
 LOG_EVENT_INVITE       = 0x00010001
 LOG_EVENT_BOARD_EDIT   = 0x00020001

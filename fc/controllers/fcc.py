@@ -17,7 +17,7 @@ import hashlib
 import re
 from wakabaparse import WakabaParser
 from fc.lib.fuser import FUser
-from miscUtils import *
+from fc.lib.miscUtils import *
 
 class FieldStorageLike(object):
     def __init__(self,filename,filepath):

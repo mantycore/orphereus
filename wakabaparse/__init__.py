@@ -3,7 +3,7 @@ import sys
 
 from simpleparse import generator
 from mx.TextTools import TextTools
-from miscUtils import *
+from fc.lib.miscUtils import *
 
 class WakabaParser(object):
     def __init__(self, definition = 'wakabaparse/mark.def', baseProd = 'all'):

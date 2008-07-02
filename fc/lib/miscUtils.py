@@ -1,0 +1,2 @@
+def filterText(text)
+    return text.replace('<','&lt;').replace('>','&gt;').replace("'",'&#39;').replace('"','&quot;').replace('(c)','&copy;').replace('--','&#150;').replace('---','&#151;').replace('(tm)','&#153;')

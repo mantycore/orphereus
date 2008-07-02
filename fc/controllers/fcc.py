@@ -17,6 +17,7 @@ import hashlib
 import re
 from wakabaparse import WakabaParser
 from fc.lib.fuser import FUser
+from miscUtils import *
 
 class FieldStorageLike(object):
     def __init__(self,filename,filepath):
@@ -393,7 +394,7 @@ class FccController(BaseController):
         if post.message:
            parser = WakabaParser()
            post.message = parser.parseWakaba(post.message,self)     
-        post.title = request.POST['title']
+        post.title = filterText(request.POST['title'])
         post.date = datetime.datetime.now()
         print file
         pic = self.processFile(file,options.thumbSize)

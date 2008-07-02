@@ -14,6 +14,7 @@ import os
 import hashlib
 import re
 from fc.lib.fuser import FUser
+from miscUtils import *
 
 LOG_EVENT_INVITE       = 0x00010001
 LOG_EVENT_BOARD_EDIT   = 0x00020001
@@ -121,7 +122,7 @@ class FcaController(BaseController):
                 if s in settingsDef:
                     if settingsMap[s].value != request.POST[s]:
                         self.addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s,settingsMap[s].value,request.POST[s]))
-                        settingsMap[s].value = request.POST[s]
+                        settingsMap[s].value = filterText(request.POST[s])
             meta.Session.commit()
             c.message = _('Updated settings')
         c.settings = settingsMap
@@ -173,7 +174,7 @@ class FcaController(BaseController):
                         c.tag.tag = newtag
                     else:
                         oldtag = ''
-                    c.tag.options.comment = request.POST.get('comment','')
+                    c.tag.options.comment = filterText(request.POST.get('comment',''))
                     c.tag.options.sectionId = request.POST.get('sectionId',0)
                     c.tag.options.persistent = request.POST.get('persistent',False)
                     c.tag.options.imagelessThread = request.POST.get('imagelessThread',False)
@@ -226,7 +227,7 @@ class FcaController(BaseController):
                 if user.options.bantime > 0:
                     c.message = _('This user is already banned')
                 else:
-                    banreason = request.POST.get('banreason','')
+                    banreason = filterText(request.POST.get('banreason',''))
                     bantime = request.POST.get('bantime','0')
                     if len(banreason)>1:
                         if isNumber(bantime) and int(bantime) > 0:
@@ -250,9 +251,9 @@ class FcaController(BaseController):
                 else:
                     c.message = _('This user is not banned')
             elif request.POST.get('lookup',False):
-		c.message = _('NOT IMPLEMENTED YET')
+		        c.message = _('NOT IMPLEMENTED YET')
             elif request.POST.get('delete',False):
-                reason = request.POST.get('deletereason','')
+                reason = filterText(request.POST.get('deletereason',''))
                 if len(reason)>1:
                     meta.Session.delete(user)
                     self.addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))

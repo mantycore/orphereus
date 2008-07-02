@@ -3,6 +3,7 @@ import sys
 
 from simpleparse import generator
 from mx.TextTools import TextTools
+from miscUtils import *
 
 class WakabaParser(object):
     def __init__(self, definition = 'wakabaparse/mark.def', baseProd = 'all'):
@@ -101,15 +102,13 @@ class WakabaParser(object):
                 sep = ','
             result += '</span>'
         return result
-    def filterPlain(self, text):
-    	return text.replace('<','&lt;').replace('>','&gt;')
     def formatInHTML(self, Nodes):
         result = ''
         fP = False
         fC = False
         for tag, beg, end, parts in Nodes:
             if tag in self.plain:
-                result += self.filterPlain(self.input[beg:end])
+                result += filterText(self.input[beg:end])
             elif tag in self.simple and parts:
                 result += '<' + self.simple[tag]+ '>' + self.formatInHTML(parts) + '</' + self.simple[tag]+ '>'
             elif tag in self.complex:

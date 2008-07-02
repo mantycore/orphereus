@@ -19,7 +19,7 @@ def make_map():
     # CUSTOM ROUTES HERE
     # Special routes
     #map.connect('', controller='fcc', action='GetOverview')
-    #map.connect('/authorize', controller='fcc', action='authorize', url='', conditions=dict(method=['POST']))
+    map.connect('/authorize', controller='fcp', action='authorize', url='')
     map.connect('/*url/authorize', controller='fcp', action='authorize', url='')
     map.connect('/register/:invite', controller='fcp', action='register')
     map.connect('/youAreBanned', controller='fcp', action='banned')

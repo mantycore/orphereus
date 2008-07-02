@@ -18,7 +18,7 @@ import re
 from fc.lib.fuser import FUser
 
 log = logging.getLogger(__name__)
-
+hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 class FcpController(BaseController):
     def login(self, user):
         session['uid_number'] = user.uid_number
@@ -28,7 +28,7 @@ class FcpController(BaseController):
             c.currentURL = '/' + str(url.encode('utf-8')) + '/'
         else:
             c.currentURL = '/'
-        if request.POST['code']:
+        if request.POST.get('code',False):
             code = hashlib.sha512(request.POST['code'] + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
             user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==code).first()
             if user:

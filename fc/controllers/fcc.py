@@ -40,10 +40,9 @@ class FccController(BaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uid_number',-1))
         c.userInst = self.userInst
-        if request.path_info != '/':
-            c.currentURL = request.path_info + '/'
-        else:
-            c.currentURL = '/'
+        c.currentURL = request.path_info
+        if c.currentURL[-1] != '/':
+            c.currentURL = c.currentURL + '/'
         if not self.userInst.isAuthorized():
             return redirect_to(c.currentURL+'authorize')
         if self.userInst.isBanned():

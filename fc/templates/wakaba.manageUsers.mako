@@ -2,7 +2,7 @@
 <%inherit file="wakaba.admin.mako" />
 
 <div class="postarea">
-    <form id="postform" method="post">
+    <form id="postform" method="post" action="/holySynod/manageUsers">
         <table>
             <tbody>
                 %if c.message:

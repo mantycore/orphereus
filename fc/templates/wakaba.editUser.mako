@@ -80,6 +80,12 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Reason')}</td>
+                    <td>
+                        <input type="text" name="lookupreason" size="35" value="" />
+                    </td>
+                </tr>                
+                <tr>
                     <td colspan='2'><input type='submit' name='lookup' value='${_('Look up')}'></td>
                 </tr>
                 <tr>

@@ -20,9 +20,19 @@ LOG_EVENT_BOARD_EDIT   = 0x00020001
 LOG_EVENT_BOARD_DELETE = 0x00020002
 LOG_EVENT_USER_EDIT    = 0x00030001
 LOG_EVENT_USER_DELETE  = 0x00030002
-LOG_EVENT_USER_ADMIN   = 0x00030003
+LOG_EVENT_USER_ACCESS  = 0x00030003
 LOG_EVENT_USER_BAN     = 0x00030004
+LOG_EVENT_USER_UNBAN   = 0x00030005
 LOG_EVENT_SETTINGS_EDIT= 0x00040001
+
+def isNumber(n):
+    if n and isinstance(n, basestring):
+        if re.match("^[-+]?[0-9]+$", n):
+            return True
+        else:
+            return False
+    else:
+        return False
 
 log = logging.getLogger(__name__)
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
@@ -198,6 +208,57 @@ class FcaController(BaseController):
         user = meta.Session.query(User).options(eagerload('options')).get(uid)
         if user:
             c.user = user
+            if request.POST.get('access',False):
+                canDeleteAllPosts = request.POST.get('canDeleteAllPosts',False)
+                if user.options.canDeleteAllPosts != canDeleteAllPosts:
+                    user.options.canDeleteAllPosts = canDeleteAllPosts
+                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canDeleteAllPosts to %s') % (user.uid_number,canDeleteAllPosts))
+                isAdmin = request.POST.get('isAdmin',False)
+                if user.options.isAdmin != isAdmin:
+                    user.options.isAdmin = isAdmin
+                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s isAdmin to %s') % (user.uid_number,isAdmin))                
+                canMakeInvite = request.POST.get('canMakeInvite',False)
+                if user.options.canMakeInvite != canMakeInvite:
+                    user.options.canMakeInvite = canMakeInvite
+                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canMakeInvite to %s') % (user.uid_number,canMakeInvite))                
+                c.message = _('User access was changed')
+            elif request.POST.get('ban',False):
+                if user.options.bantime > 0:
+                    c.message = _('This user is already banned')
+                else:
+                    banreason = request.POST.get('banreason','')
+                    bantime = request.POST.get('bantime','0')
+                    if len(banreason)>1:
+                        if isNumber(bantime) and int(bantime) > 0:
+                            bantime = int(bantime)
+                            user.options.bantime = bantime
+                            user.options.banreason = bantime
+                            self.addLogEntry(LOG_EVENT_USER_BAN,_('Banned user %s for %s days for reason "%s"') % (user.uid_number,bantime,banreason))
+                            c.message = _('User was banned')
+                        else:
+                            c.message = _('You should specify ban time in days')
+                    else:
+                        c.message = _('You should specify ban reason')
+            elif request.POST.get('unban',False):
+                if user.options.bantime > 0:
+                    banreason = user.options.banreason
+                    bantime = user.options.bantime
+                    user.options.bantime = 0
+                    user.options.banreason = ''
+                    self.addLogEntry(LOG_EVENT_USER_UNBAN,_('Unbanned user %s (%s days for reason "%s")') % (user.uid_number,bantime,banreason))
+                    c.message = _('User was unbanned')
+                else:
+                    c.message = _('This user is not banned')
+            elif request.POST.get('lookup',False):
+            elif request.POST.get('delete',False):
+                reason = request.POST.get('deletereason','')
+                if len(reason)>1:
+                    meta.Session.delete(user)
+                    self.addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uid_number,reason))
+                    c.message = "User deleted"
+                    return render('/wakaba.manageUsers.mako')
+                else:
+                    c.message = _('You should specify deletion reason')
             return render('/wakaba.editUser.mako')
         else:
             c.errorText = _('No such user exists.')

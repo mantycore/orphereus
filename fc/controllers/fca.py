@@ -209,15 +209,15 @@ class FcaController(BaseController):
         if user:
             c.user = user
             if request.POST.get('access',False):
-                canDeleteAllPosts = request.POST.get('canDeleteAllPosts',False)
+                canDeleteAllPosts = request.POST.get('canDeleteAllPosts',False) and True or False
                 if user.options.canDeleteAllPosts != canDeleteAllPosts:
                     user.options.canDeleteAllPosts = canDeleteAllPosts
                     self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canDeleteAllPosts to %s') % (user.uid_number,canDeleteAllPosts))
-                isAdmin = request.POST.get('isAdmin',False)
+                isAdmin = request.POST.get('isAdmin',False) and True or False
                 if user.options.isAdmin != isAdmin:
                     user.options.isAdmin = isAdmin
                     self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s isAdmin to %s') % (user.uid_number,isAdmin))                
-                canMakeInvite = request.POST.get('canMakeInvite',False)
+                canMakeInvite = request.POST.get('canMakeInvite',False) and True or False
                 if user.options.canMakeInvite != canMakeInvite:
                     user.options.canMakeInvite = canMakeInvite
                     self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canMakeInvite to %s') % (user.uid_number,canMakeInvite))                
@@ -232,7 +232,7 @@ class FcaController(BaseController):
                         if isNumber(bantime) and int(bantime) > 0:
                             bantime = int(bantime)
                             user.options.bantime = bantime
-                            user.options.banreason = bantime
+                            user.options.banreason = banreason
                             self.addLogEntry(LOG_EVENT_USER_BAN,_('Banned user %s for %s days for reason "%s"') % (user.uid_number,bantime,banreason))
                             c.message = _('User was banned')
                         else:
@@ -250,6 +250,7 @@ class FcaController(BaseController):
                 else:
                     c.message = _('This user is not banned')
             elif request.POST.get('lookup',False):
+		c.message = _('NOT IMPLEMENTED YET')
             elif request.POST.get('delete',False):
                 reason = request.POST.get('deletereason','')
                 if len(reason)>1:

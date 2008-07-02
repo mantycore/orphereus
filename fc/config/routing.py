@@ -19,13 +19,13 @@ def make_map():
     # CUSTOM ROUTES HERE
     # Special routes
     #map.connect('', controller='fcc', action='GetOverview')
-    map.connect('/auth', controller='fcc', action='authorize', url='', conditions=dict(method=['POST']))
-    map.connect('/:url/auth', controller='fcc', action='authorize', url='', conditions=dict(method=['POST']))
-    map.connect('/register/:invite', controller='fcc', action='register')
+    #map.connect('/authorize', controller='fcc', action='authorize', url='', conditions=dict(method=['POST']))
+    map.connect('/*url/authorize', controller='fcp', action='authorize', url='')
+    map.connect('/register/:invite', controller='fcp', action='register')
+    map.connect('/youAreBanned', controller='fcp', action='banned')
     # Oekaki
     map.connect('/:url/oekakiDraw', controller='fcc', action='oekakiDraw', url='')
-    map.connect('/:url/oekakiSave/:tempid', controller='fcc', action='oekakiSave', url='',requirements=dict(tempid='\d+'))
-    map.connect('/:url/oekakiFinish/:tempid', controller='fcc', action='oekakiFinish', url='',requirements=dict(tempid='\d+'))
+    map.connect('/:url/oekakiSave/:tempid', controller='fcp', action='oekakiSave', url='',requirements=dict(tempid='\d+'))
     
     # User subsystem
     map.connect('/userProfile', controller='fcc', action='showProfile')
@@ -56,6 +56,6 @@ def make_map():
     map.connect('/:board/:tempid', controller='fcc', action='GetBoard', board = '~', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))
 
-    map.connect('*url', controller='fcc', action='UnknownAction')
+    map.connect('*url', controller='fcp', action='UnknownAction')
 
     return map

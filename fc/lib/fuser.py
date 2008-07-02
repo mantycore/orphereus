@@ -53,6 +53,8 @@ class FUser(object):
         return self.__valid
     def isAuthorized(self):
         return self.isValid() and (session.get('uid_number', -1) == self.__uidNumber)
+    def isBanned(self):
+        return self.__user.options.bantime > 0
     def isAdmin(self):
         return self.__isAdmin
     def uidNumber(self):

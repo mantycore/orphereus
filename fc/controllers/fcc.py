@@ -40,26 +40,14 @@ class FccController(BaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uid_number',-1))
         c.userInst = self.userInst
-        
-    def authorize(self, url):
-        if url:
-            c.currentURL = '/' + str(url.encode('utf-8')) + '/'
+        if request.path_info != '/':
+            c.currentURL = request.path_info + '/'
         else:
             c.currentURL = '/'
-        if request.POST['code']:
-            code = hashlib.sha512(request.POST['code'] + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
-            user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==code).first()
-            if user:
-                self.login(user)
-                redirect_to(c.currentURL)
-        return render('/wakaba.login.mako')
-        
-    def login(self, user):
-        isNumber(True)
-        session['uid_number'] = user.uid_number
-        session.save()
-        
-    def initEnvironment(self):
+        if not self.userInst.isAuthorized():
+            return redirect_to(c.currentURL+'authorize')
+        if self.userInst.isBanned():
+            return redirect_to('/youAreBanned')
         settingsDef = {
             "title" : "FailChan",
             "uploadPathLocal" : 'fc/public/uploads/',
@@ -176,7 +164,6 @@ class FccController(BaseController):
         return filter
         
     def showPosts(self, threadFilter, tempid='', page=0, board=''):
-        self.initEnvironment()
         c.board = board
         c.uploadPathWeb = uploadPathWeb
         c.uid_number = self.userInst.uidNumber()
@@ -458,32 +445,12 @@ class FccController(BaseController):
                 return redirect_to(action='GetThread',post=post.id,board=None)          
 
     def GetOverview(self, page=0, tempid=''):
-        c.currentURL = '/~/'
-        if not self.userInst.isAuthorized():
-            return render('/wakaba.login.mako')
         c.currentTag = ''
         c.allowTags = True
         c.PostAction = '~'
         return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1), tempid=tempid, page=int(page), board='~')
 
-    def GetMyThreads(self, page=0, tempid=''):
-        c.currentURL = '/@/'
-        if not self.userInst.isAuthorized():
-            return render('/wakaba.login.mako')
-        c.currentTag = ''
-        c.allowTags = True
-        c.PostAction = '@'
-        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.uid_number==self.userInst.uidNumber())
-        return self.showPosts(threadFilter=filter, tempid=tempid, page=int(page), board='@')
-        
-
     def GetThread(self, post, tempid):
-        c.currentURL = request.path_info + '/'
-        if c.currentURL == '/': 
-           c.currentURL = ''
-        if not self.userInst.isAuthorized():
-           return render('/wakaba.login.mako')
-
         c.currentTag = ''
         c.allowTags = False
         
@@ -502,11 +469,6 @@ class FccController(BaseController):
         return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='')
 
     def GetBoard(self, board, tempid, page=0):
-        c.currentURL = request.path_info.decode('utf-8') + '/'
-        if c.currentURL == '//':
-           c.currentURL = '/~/'
-        if not self.userInst.isAuthorized():
-           return render('/wakaba.login.mako')
         c.PostAction = board
         
         c.currentTag = board
@@ -515,45 +477,13 @@ class FccController(BaseController):
         return self.showPosts(threadFilter=self.buildFilter(board), tempid=tempid, page=int(page), board=board)
 
     def PostReply(self, post):
-        c.currentURL = request.path_info + '/'
-        if not self.userInst.isAuthorized():
-           return render('/wakaba.login.mako')
         return self.processPost(postid=post)
 
     def PostThread(self, board):
-        c.currentURL = request.path_info + '/'
-        if not self.userInst.isAuthorized():
-           return render('/wakaba.login.mako')
         return self.processPost(board=board)
             
-    def register(self,invite):
-        if 'invite' not in session:
-            invite_q = meta.Session.query(Invite).filter(Invite.invite==invite).first()
-            if invite_q:
-                meta.Session.delete(invite_q)
-                meta.Session.commit()
-                session['invite'] = invite
-                session.save()
-            else:
-                c.currentURL = '/'
-                return render('/wakaba.login.mako')
-        key = request.POST.get('key','')
-        key2 = request.POST.get('key2','')
-        if key:
-            if len(key)>=24 and key == key2:
-               uid = hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
-               user = User()
-               user.uid = uid
-               meta.Session.save(user)
-               meta.Session.commit()
-               del session['invite']
-               self.login(user)
-               redirect_to('/')
-        return render('/wakaba.register.mako')
+
     def oekakiDraw(self,url):
-        c.currentURL = request.path_info + '/'
-        if not self.userInst.isAuthorized():
-           return render('/wakaba.login.mako')
         c.url = url
         c.uploadPathWeb = uploadPathWeb
         c.canvas = False
@@ -589,32 +519,7 @@ class FccController(BaseController):
         meta.Session.save(oekaki)
         meta.Session.commit()
         return render('/spainter.mako')
-    def oekakiSave(self, environ, start_response, url, tempid):
-        start_response('200 OK', [('Content-Type','text/plain'),('Content-Length','2')])
-        oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
-        cl = int(request.environ['CONTENT_LENGTH'])
-        if oekaki and cl:
-           id = request.environ['wsgi.input'].read(1)
-           if id == 'S':
-              headerLength = int(request.environ['wsgi.input'].read(8))
-              header = request.environ['wsgi.input'].read(headerLength)
-              bodyLength = int(request.environ['wsgi.input'].read(8))
-              request.environ['wsgi.input'].read(2)
-              body = request.environ['wsgi.input'].read(bodyLength)
-              headers = header.split('&')
-              type = headers[0].split('=')[1]
-              time = headers[1].split('=')[1]
-              localFilePath = os.path.join(uploadPath, tempid + '.' + type)
-              localFile = open(localFilePath,'wb')
-              localFile.write(body)
-              localFile.close()
-              oekaki.time = time
-              oekaki.path = tempid + '.' + type
-              meta.Session.commit()
-        return ['ok']
     def DeletePost(self, post):
-        if not self.userInst.isAuthorized():
-           return render('/wakaba.login.mako')
         fileonly = 'fileonly' in request.POST
         for i in request.POST:
             if re.compile("^\d+$").match(request.POST[i]):
@@ -642,8 +547,6 @@ class FccController(BaseController):
             else: meta.Session.delete(p)
         meta.Session.commit()
     def showProfile(self):
-        if not self.userInst.isAuthorized():
-            return render('/wakaba.login.mako')
         self.initEnvironment()
         c.templates = ['wakaba']
         c.styles    = ['photon']
@@ -665,7 +568,3 @@ class FccController(BaseController):
             meta.Session.commit()
         c.userInst = self.userInst
         return render('/wakaba.profile.mako')
-    def UnknownAction(self):      
-        c.errorText = "Excuse me, WTF are you?"
-        return render('/wakaba.error.mako')
-

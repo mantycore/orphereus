@@ -16,6 +16,8 @@ import os
 import hashlib
 import re
 from fc.lib.fuser import FUser
+uploadPath = 'fc/public/uploads/'
+uploadPathWeb = '/uploads/'
 
 log = logging.getLogger(__name__)
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge

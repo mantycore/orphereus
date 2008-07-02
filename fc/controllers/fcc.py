@@ -395,7 +395,9 @@ class FccController(BaseController):
            post.message = parser.parseWakaba(post.message,self)     
         post.title = request.POST['title']
         post.date = datetime.datetime.now()
+        print file
         pic = self.processFile(file,options.thumbSize)
+        print pic
         if pic:
             if pic.size > options.maxFileSize:
                 c.errorText = "File size exceeds the limit"

@@ -86,6 +86,6 @@ class FUser(object):
     def canMakeInvite(self):
         return self.__canMakeInvite        
     def bantime(self):   
-        return self.__user.bantime
+        return self.__user.options.bantime
     def banreason(self):
-        return self.__user.banreason 
+        return self.__user.options.banreason 

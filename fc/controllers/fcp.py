@@ -84,6 +84,15 @@ class FcpController(BaseController):
                 oekaki.path = tempid + '.' + type
                 meta.Session.commit()
         return ['ok']
+    def banned(self):
+        self.userInst = FUser(session.get('uidNumber',-1))
+        c.userInst = self.userInst
+        if self.userInst.isBanned():
+            return render('/wakaba.banned.mako')
+        else:
+            c.errorText = _("ORLY?")
+            return render('/wakaba.error.mako')
     def UnknownAction(self):      
         c.errorText = "Excuse me, WTF are you?"
         return render('/wakaba.error.mako')
+    

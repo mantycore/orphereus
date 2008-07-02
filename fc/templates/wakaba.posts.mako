@@ -115,7 +115,7 @@
         <label>
 			&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Del'></a>
 			<div style="display:none" class="delete">		
-            %if thread.uid_number == c.uid_number or c.enableAllPostDeletion:
+            %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                 <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
             %endif
 			</div>
@@ -158,7 +158,7 @@
                             <label>
 								&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Del'></a>
 								<div style="display:none" class="delete">
-                                %if p.uid_number == c.uid_number or c.enableAllPostDeletion:
+                                %if p.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                                     <input type="checkbox" name="delete-${p.id}" value="${p.id}" />
                                 %endif
 								</div>

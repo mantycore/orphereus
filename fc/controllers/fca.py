@@ -38,7 +38,7 @@ log = logging.getLogger(__name__)
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 class FcaController(BaseController):
     def __before__(self):
-        self.userInst = FUser(session.get('uid_number',-1))
+        self.userInst = FUser(session.get('uidNumber',-1))
         if not self.userInst.isAuthorized():
             c.currentURL = '/holySynod/'
             return redirect_to('/')
@@ -68,24 +68,24 @@ class FcaController(BaseController):
                 meta.Session.save(settingsMap[s])
                 meta.Session.commit()        
         c.title = settingsMap['title'].value
-        boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.section_id).all()
+        boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
         c.boardlist = []
-        section_id = 0
+        sectionId = 0
         section = []
         for b in boards:
-            if not section_id:
-                section_id = b.options.section_id
+            if not sectionId:
+                sectionId = b.options.sectionId
                 section = []
-            if section_id != b.options.section_id:
+            if sectionId != b.options.sectionId:
                 c.boardlist.append(section)
-                section_id = b.options.section_id
+                sectionId = b.options.sectionId
                 section = []
             section.append(b.tag)
         if section:
             c.boardlist.append(section)
     def addLogEntry(self,event,entry):
         logEntry = LogEntry()
-        logEntry.uid_number = self.userInst.uidNumber()
+        logEntry.uidNumber = self.userInst.uidNumber()
         logEntry.date = datetime.datetime.now()
         logEntry.event = event
         logEntry.entry = entry
@@ -132,10 +132,10 @@ class FcaController(BaseController):
         boards = meta.Session.query(Tag).options(eagerload('options')).all()
         c.boards = {999:[]}
         for b in boards:
-            if b.options and b.options.persistent and b.options.section_id:
-                if not b.options.section_id in c.boards:
-                    c.boards[b.options.section_id]=[]
-                c.boards[b.options.section_id].append(b)
+            if b.options and b.options.persistent and b.options.sectionId:
+                if not b.options.sectionId in c.boards:
+                    c.boards[b.options.sectionId]=[]
+                c.boards[b.options.sectionId].append(b)
             else:
                 c.boards[999].append(b)
         bs = {}
@@ -152,15 +152,15 @@ class FcaController(BaseController):
         if not c.tag.options:
             c.tag.options = TagOptions()
             c.tag.options.comment = ''
-            c.tag.options.section_id = 0
+            c.tag.options.sectionId = 0
             c.tag.options.persistent = False
-            c.tag.options.imageless_thread = True
-            c.tag.options.imageless_post = True
+            c.tag.options.imagelessThread = True
+            c.tag.options.imagelessPost = True
             c.tag.options.images = True
             c.tag.enableSpoilers = False
-            c.tag.options.max_fsize = 3145728
-            c.tag.options.min_size = 0
-            c.tag.options.thumb_size = 250
+            c.tag.options.maxFileSize = 3145728
+            c.tag.options.minPicSize = 0
+            c.tag.options.thumbSize = 250
         if request.POST.get('tag',False):
             newtag = request.POST.get('tag',False)
             newtagre = re.compile(r"""([^,@~\+\-\&\s\/\\\(\)<>'"%\d][^,@~\+\-\&\s\/\\\(\)<>'"%]*)""").match(newtag)
@@ -174,15 +174,15 @@ class FcaController(BaseController):
                     else:
                         oldtag = ''
                     c.tag.options.comment = request.POST.get('comment','')
-                    c.tag.options.section_id = request.POST.get('section_id',0)
+                    c.tag.options.sectionId = request.POST.get('sectionId',0)
                     c.tag.options.persistent = request.POST.get('persistent',False)
-                    c.tag.options.imageless_thread = request.POST.get('imageless_thread',False)
-                    c.tag.options.imageless_post = request.POST.get('imageless_post',False)
+                    c.tag.options.imagelessThread = request.POST.get('imagelessThread',False)
+                    c.tag.options.imagelessPost = request.POST.get('imagelessPost',False)
                     c.tag.options.images = request.POST.get('images',False)
                     c.tag.options.enableSpoilers = request.POST.get('spoilers',False)
-                    c.tag.options.max_fsize = request.POST.get('max_fsize',3145728)
-                    c.tag.options.min_size = request.POST.get('min_size',0)
-                    c.tag.options.thumb_size = request.POST.get('thumb_size',250)
+                    c.tag.options.maxFileSize = request.POST.get('maxFileSize',3145728)
+                    c.tag.options.minPicSize = request.POST.get('minPicSize',0)
+                    c.tag.options.thumbSize = request.POST.get('thumbSize',250)
                     if not c.tag.id:
                         meta.Session.save(c.tag)
                     meta.Session.commit()
@@ -197,9 +197,9 @@ class FcaController(BaseController):
         c.boardName = 'Users management'
         if request.POST.get("uid",False):
             uid = request.POST.get("uid",False)
-            user = meta.Session.query(User).filter(or_(User.uid==uid,User.uid_number==uid)).first()
+            user = meta.Session.query(User).filter(or_(User.uid==uid,User.uidNumber==uid)).first()
             if user:
-                return redirect_to('/holySynod/manageUsers/edit/%s' % user.uid_number)
+                return redirect_to('/holySynod/manageUsers/edit/%s' % user.uidNumber)
             else:
                 c.message = _('No such user exists.')
         return render('/wakaba.manageUsers.mako')
@@ -212,15 +212,15 @@ class FcaController(BaseController):
                 canDeleteAllPosts = request.POST.get('canDeleteAllPosts',False) and True or False
                 if user.options.canDeleteAllPosts != canDeleteAllPosts:
                     user.options.canDeleteAllPosts = canDeleteAllPosts
-                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canDeleteAllPosts to %s') % (user.uid_number,canDeleteAllPosts))
+                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canDeleteAllPosts to %s') % (user.uidNumber,canDeleteAllPosts))
                 isAdmin = request.POST.get('isAdmin',False) and True or False
                 if user.options.isAdmin != isAdmin:
                     user.options.isAdmin = isAdmin
-                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s isAdmin to %s') % (user.uid_number,isAdmin))                
+                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s isAdmin to %s') % (user.uidNumber,isAdmin))                
                 canMakeInvite = request.POST.get('canMakeInvite',False) and True or False
                 if user.options.canMakeInvite != canMakeInvite:
                     user.options.canMakeInvite = canMakeInvite
-                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canMakeInvite to %s') % (user.uid_number,canMakeInvite))                
+                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canMakeInvite to %s') % (user.uidNumber,canMakeInvite))                
                 c.message = _('User access was changed')
             elif request.POST.get('ban',False):
                 if user.options.bantime > 0:
@@ -233,7 +233,7 @@ class FcaController(BaseController):
                             bantime = int(bantime)
                             user.options.bantime = bantime
                             user.options.banreason = banreason
-                            self.addLogEntry(LOG_EVENT_USER_BAN,_('Banned user %s for %s days for reason "%s"') % (user.uid_number,bantime,banreason))
+                            self.addLogEntry(LOG_EVENT_USER_BAN,_('Banned user %s for %s days for reason "%s"') % (user.uidNumber,bantime,banreason))
                             c.message = _('User was banned')
                         else:
                             c.message = _('You should specify ban time in days')
@@ -245,7 +245,7 @@ class FcaController(BaseController):
                     bantime = user.options.bantime
                     user.options.bantime = 0
                     user.options.banreason = ''
-                    self.addLogEntry(LOG_EVENT_USER_UNBAN,_('Unbanned user %s (%s days for reason "%s")') % (user.uid_number,bantime,banreason))
+                    self.addLogEntry(LOG_EVENT_USER_UNBAN,_('Unbanned user %s (%s days for reason "%s")') % (user.uidNumber,bantime,banreason))
                     c.message = _('User was unbanned')
                 else:
                     c.message = _('This user is not banned')
@@ -255,7 +255,7 @@ class FcaController(BaseController):
                 reason = request.POST.get('deletereason','')
                 if len(reason)>1:
                     meta.Session.delete(user)
-                    self.addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uid_number,reason))
+                    self.addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
                     c.message = "User deleted"
                     return render('/wakaba.manageUsers.mako')
                 else:

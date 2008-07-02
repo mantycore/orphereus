@@ -25,7 +25,7 @@
                 <tr id="trsection">
                     <td class="postblock">${_('Section')}</td>
                     <td>
-                        <input type="text" name="section_id" size="35" value="${c.tag.options.section_id}" />
+                        <input type="text" name="sectionId" size="35" value="${c.tag.options.sectionId}" />
                     </td>
                 </tr>
                 <tr id="trsection">
@@ -37,13 +37,13 @@
                 <tr id="trsection">
                     <td class="postblock">${_('Allow OPs without image')}</td>
                     <td>
-                        <input type="checkbox" name="imageless_thread" ${c.tag.options.imageless_thread and "checked" or ""} />
+                        <input type="checkbox" name="imagelessThread" ${c.tag.options.imagelessThread and "checked" or ""} />
                     </td>
                 </tr>
                 <tr id="trsection">
                     <td class="postblock">${_('Allow replies without image')}</td>
                     <td>
-                        <input type="checkbox" name="imageless_post" ${c.tag.options.imageless_post and "checked" or ""} />
+                        <input type="checkbox" name="imagelessPost" ${c.tag.options.imagelessPost and "checked" or ""} />
                     </td>
                 </tr>
                 <tr id="trsection">
@@ -61,19 +61,19 @@
                 <tr id="trsection">
                     <td class="postblock">${_('Max filesize (bytes)')}</td>
                     <td>
-                        <input type="text" name="max_fsize" size="35" value="${c.tag.options.max_fsize}" />
+                        <input type="text" name="maxFileSize" size="35" value="${c.tag.options.maxFileSize}" />
                     </td>
                 </tr>
                 <tr id="trsection">
                     <td class="postblock">${_('Minimal size for images (pixels)')}</td>
                     <td>
-                        <input type="text" name="min_size" size="35" value="${c.tag.options.min_size}" />
+                        <input type="text" name="minPicSize" size="35" value="${c.tag.options.minPicSize}" />
                     </td>
                 </tr>
                 <tr id="trsection">
                     <td class="postblock">${_('Thumbnail size (pixels)')}</td>
                     <td>
-                        <input type="text" name="thumb_size" size="35" value="${c.tag.options.thumb_size}" />
+                        <input type="text" name="thumbSize" size="35" value="${c.tag.options.thumbSize}" />
                     </td>
                 </tr>
                 <tr>

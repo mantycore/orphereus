@@ -11,7 +11,7 @@
                     </tr>
                 %endif
                 <tr>
-                    <td class="postblock">${_('UID or UID_Number')}</td>
+                    <td class="postblock">${_('UID or uidNumber')}</td>
                     <td>
                         <input type="text" name="uid" size="35" value="" /><input type="submit" value="${_('View')}">
                     </td>

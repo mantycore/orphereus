@@ -15,7 +15,7 @@
     %for log in c.logs:
         <tr>
             <td>${log.date}</td>
-            <td>${log.uid_number}</td>
+            <td>${log.uidNumber}</td>
             <td>${log.event}</td>
             <td>${log.entry}</td>
         </tr>

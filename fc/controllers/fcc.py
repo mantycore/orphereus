@@ -38,7 +38,7 @@ uploadPath = 'fc/public/uploads/'
 uploadPathWeb = '/uploads/'
 class FccController(BaseController):
     def __before__(self):
-        self.userInst = FUser(session.get('uid_number',-1))
+        self.userInst = FUser(session.get('uidNumber',-1))
         c.userInst = self.userInst
         c.currentURL = request.path_info
         if c.currentURL[-1] != '/':
@@ -66,17 +66,17 @@ class FccController(BaseController):
                 meta.Session.save(settingsMap[s])
                 meta.Session.commit()        
         c.title = settingsMap['title'].value
-        boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.section_id).all()
+        boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
         c.boardlist = []
-        section_id = 0
+        sectionId = 0
         section = []
         for b in boards:
-            if not section_id:
-                section_id = b.options.section_id
+            if not sectionId:
+                sectionId = b.options.sectionId
                 section = []
-            if section_id != b.options.section_id:
+            if sectionId != b.options.sectionId:
                 c.boardlist.append(section)
-                section_id = b.options.section_id
+                sectionId = b.options.sectionId
                 section = []
             section.append(b.tag)
         if section:
@@ -120,7 +120,7 @@ class FccController(BaseController):
     def buildFilter(self,url):
         def buildMyPostsFilter():
             list  = []
-            posts = meta.Session.query(Post).filter(Post.uid_number==self.userInst.uidNumber()).all()
+            posts = meta.Session.query(Post).filter(Post.uidNumber==self.userInst.uidNumber()).all()
             for p in posts:
                 if p.parentid == -1 and not p.id in list:
                     list.append(p.id)
@@ -165,7 +165,7 @@ class FccController(BaseController):
     def showPosts(self, threadFilter, tempid='', page=0, board=''):
         c.board = board
         c.uploadPathWeb = uploadPathWeb
-        c.uid_number = self.userInst.uidNumber()
+        c.uidNumber = self.userInst.uidNumber()
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         count = threadFilter.count()
                   
@@ -177,7 +177,7 @@ class FccController(BaseController):
             if (page + 1) > c.pages:
                 page = c.pages - 1
             c.page = page
-            c.threads = threadFilter.order_by(Post.last_date.desc())[(page * self.userInst.threadsPerPage()):(page + 1)* self.userInst.threadsPerPage()]
+            c.threads = threadFilter.order_by(Post.bumpDate.desc())[(page * self.userInst.threadsPerPage()):(page + 1)* self.userInst.threadsPerPage()]
         elif count == 1:
             c.page  = False
             c.pages = False
@@ -241,7 +241,7 @@ class FccController(BaseController):
     
     def isPostOwner(self, id):
         post = meta.Session.query(Post).filter(Post.id==id).first()
-        if post and post.uid_number == self.userInst.uidNumber():
+        if post and post.uidNumber == self.userInst.uidNumber():
            return post.parentid
         else:
            return False
@@ -314,25 +314,25 @@ class FccController(BaseController):
            
     def conjunctTagOptions(self, tags):
         options = TagOptions()
-        options.imageless_thread = True
-        options.imageless_post   = True
+        options.imagelessThread = True
+        options.imagelessPost   = True
         options.images   = True
         options.enableSpoilers = True
-        options.max_fsize = 2621440
-        options.min_size = 50
-        options.thumb_size = 250
+        options.maxFileSize = 2621440
+        options.minPicSize = 50
+        options.thumbSize = 250
         for t in tags:
             if t.options:
-                options.imageless_thread = options.imageless_thread & t.options.imageless_thread
-                options.imageless_post = options.imageless_post & t.options.imageless_post
+                options.imagelessThread = options.imagelessThread & t.options.imagelessThread
+                options.imagelessPost = options.imagelessPost & t.options.imagelessPost
                 options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
                 options.images = options.images & t.options.images
-                if t.options.max_fsize < options.max_fsize:
-                    options.max_fsize = t.options.max_fsize
-                if t.options.min_size > options.min_size:
-                    options.min_size = t.options.min_size
-                if t.options.thumb_size < options.thumb_size:
-                    options.thumb_size = t.options.thumb_size                   
+                if t.options.maxFileSize < options.maxFileSize:
+                    options.maxFileSize = t.options.maxFileSize
+                if t.options.minPicSize > options.minPicSize:
+                    options.minPicSize = t.options.minPicSize
+                if t.options.thumbSize < options.thumbSize:
+                    options.thumbSize = t.options.thumbSize                   
         return options
         
     def __getPostTags(self, tagstr):
@@ -374,7 +374,7 @@ class FccController(BaseController):
                 c.errorText = "You should specify at least one board"
                 return render('/wakaba.error.mako')
         options = self.conjunctTagOptions(tags)
-        if not options.images and ((not options.imageless_thread and not postid) or (postid and not options.imageless_post)):
+        if not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
             c.errorText = "Unacceptable combination of tags"
             return render('/wakaba.error.mako')
         
@@ -395,16 +395,16 @@ class FccController(BaseController):
            post.message = parser.parseWakaba(post.message,self)     
         post.title = request.POST['title']
         post.date = datetime.datetime.now()
-        pic = self.processFile(file,options.thumb_size)
+        pic = self.processFile(file,options.thumbSize)
         if pic:
-            if pic.size > options.max_fsize:
+            if pic.size > options.maxFileSize:
                 c.errorText = "File size exceeds the limit"
                 return render('/wakaba.error.mako')
-            if pic.height and (pic.height < options.min_size or pic.width < options.min_size):
+            if pic.height and (pic.height < options.minPicSize or pic.width < options.minPicSize):
                 c.errorText = "Image is too small"
                 return render('/wakaba.error.mako')
             post.picid = pic.id
-        post.uid_number = self.userInst.uidNumber()
+        post.uidNumber = self.userInst.uidNumber()
         
         if not post.message and not post.picid:
             c.errorText = "At least message or file should be specified"
@@ -414,19 +414,19 @@ class FccController(BaseController):
             post.spoiler = request.POST.get('spoiler', False)  
             
         if postid:
-            if not post.picid and not options.imageless_post:
+            if not post.picid and not options.imagelessPost:
                 c.errorText = "Replies without image are not allowed"
                 return render('/wakaba.error.mako')
             post.parentid = thread.id
             post.sage = request.POST.get('sage', False)
             if not post.sage:
-                thread.last_date = datetime.datetime.now()
+                thread.bumpDate = datetime.datetime.now()
         else:
-            if not post.picid and not options.imageless_thread:
+            if not post.picid and not options.imagelessThread:
                 c.errorText = "Threads without image are not allowed"
                 return render('/wakaba.error.mako')        
             post.parentid = -1
-            post.last_date = datetime.datetime.now()
+            post.bumpDate = datetime.datetime.now()
             post.tags = tags
         meta.Session.save(post)
         meta.Session.commit()
@@ -503,7 +503,7 @@ class FccController(BaseController):
         else:
             oekaki.type = 'Shi pro'
             c.oekakiToolString = 'pro'
-        oekaki.uid_number = session['uid_number']
+        oekaki.uidNumber = session['uidNumber']
         oekaki.path = ''        
         oekaki.source = 0
         if isNumber(url) and enablePicLoading:
@@ -527,7 +527,7 @@ class FccController(BaseController):
     def processDelete(self, postid, fileonly=False, checkOwnage=True):
         p = meta.Session.query(Post).get(postid)
         if p:
-            if checkOwnage and not (p.uid_number == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
+            if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
                 # print some error stuff here
                 return
             if p.parentid == -1 and not fileonly:

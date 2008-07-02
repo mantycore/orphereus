@@ -39,8 +39,7 @@
             <tr id="trtags">
                 <td class="postblock">${_('Boards')}</td>
                 <td>
-                    <input type="hidden" name="maintag" value='${c.currentTag}' />
-                    <input type="text" name="tags" size="35" />
+                    <input type="text" name="tags" size="35" value='${c.addCurentBoardIntoBoardsField and c.currentTag+"," or ""}' />
                 </td>
             </tr>
         %endif

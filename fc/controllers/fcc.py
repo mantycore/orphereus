@@ -202,12 +202,15 @@ class FccController(BaseController):
             c.threads = []
 
         c.showSpoilerCheckbox = True
+        c.addCurentBoardIntoBoardsField = False
         if board:
             if board != '~':
                 currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()                
                 
                 if currentBoard and currentBoard.options:
                     c.showSpoilerCheckbox = currentBoard.options.enableSpoilers
+                    c.addCurentBoardIntoBoardsField = True
+                    log.debug('hmm')
                     
                     if currentBoard.options.comment:
                         c.boardName = currentBoard.options.comment                    

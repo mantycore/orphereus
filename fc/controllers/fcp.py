@@ -29,7 +29,7 @@ class FcpController(BaseController):
         else:
             c.currentURL = '/'
         if request.POST.get('code',False):
-            code = hashlib.sha512(request.POST['code'] + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+            code = hashlib.sha512(request.POST['code'].encode('utf-8') + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
             user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==code).first()
             if user:
                 self.login(user)

@@ -546,7 +546,6 @@ class FccController(BaseController):
             else: meta.Session.delete(p)
         meta.Session.commit()
     def showProfile(self):
-        self.initEnvironment()
         c.templates = ['wakaba']
         c.styles    = ['photon']
         c.profileChanged = False

@@ -210,7 +210,6 @@ class FccController(BaseController):
                 if currentBoard and currentBoard.options:
                     c.showSpoilerCheckbox = currentBoard.options.enableSpoilers
                     c.addCurentBoardIntoBoardsField = True
-                    log.debug('hmm')
                     
                     if currentBoard.options.comment:
                         c.boardName = currentBoard.options.comment                    

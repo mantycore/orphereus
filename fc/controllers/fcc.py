@@ -394,6 +394,9 @@ class FccController(BaseController):
             if pic.height and (pic.height < options.minPicSize or pic.width < options.minPicSize):
                 c.errorText = "Image is too small"
                 return render('/wakaba.error.mako')
+            if not options.images:
+                c.errorText = "Files are not allowed on this board"
+                return render('/wakaba.error.mako')
             post.picid = pic.id
         post.uidNumber = self.userInst.uidNumber()
         

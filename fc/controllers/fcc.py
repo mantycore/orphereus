@@ -187,7 +187,7 @@ class FccController(BaseController):
             c.pages = False
             c.threads = []
 
-        if tagList and len(tagList) == 1:
+        if tagList and len(tagList) == 1 and tags:
             currentBoard = tags[0]
             c.boardName = currentBoard.options and currentBoard.options.comment or ("/" + currentBoard.tag + "/")
         elif not tagList and tags:

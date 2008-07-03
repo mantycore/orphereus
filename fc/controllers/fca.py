@@ -140,7 +140,7 @@ class FcaController(BaseController):
             c.tag.options.imagelessThread = True
             c.tag.options.imagelessPost = True
             c.tag.options.images = True
-            c.tag.enableSpoilers = False
+            c.tag.options.enableSpoilers = False
             c.tag.options.maxFileSize = 3145728
             c.tag.options.minPicSize = 0
             c.tag.options.thumbSize = 250

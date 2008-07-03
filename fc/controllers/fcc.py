@@ -18,25 +18,10 @@ import re
 from wakabaparse import WakabaParser
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
-
-class FieldStorageLike(object):
-    def __init__(self,filename,filepath):
-        self.filename = filename
-        self.file = open(filepath,'rb')
-
-def isNumber(n):
-    if n and isinstance(n, basestring):
-        if re.match("^[-+]?[0-9]+$", n):
-            return True
-        else:
-            return False
-    else:
-        return False
+from fc.lib.constantValues import *
 
 log = logging.getLogger(__name__)
-hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
-uploadPath = 'fc/public/uploads/'
-uploadPathWeb = '/uploads/'
+
 class FccController(BaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uidNumber',-1))
@@ -132,16 +117,17 @@ class FccController(BaseController):
         def buildArgument(arg):
             if not isinstance(arg,sqlalchemy.sql.expression.ClauseElement):
                 if arg == '@':
-                    return buildMyPostsFilter()
+                    return (buildMyPostsFilter(),[])
                 elif arg == '~':
-                    return Post.parentid==-1
+                    return (Post.parentid==-1,[])
                 else:
-                    return Post.tags.any(tag=arg)
+                    return (Post.tags.any(tag=arg),[arg])
             else:
                 return arg
          
         operators = {'+':1,'-':1,'^':2,'&':2}
         filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1)
+        tagList = []
         RPN = self.getRPN(url,operators)
         stack = []
         for i in RPN:
@@ -151,25 +137,38 @@ class FccController(BaseController):
                     arg2 = stack.pop()
                     arg1 = stack.pop()
                     if i == '+':
-                        stack.append(or_(arg1,arg2))
+                        f = or_(arg1[0],arg2[0])
+                        for t in arg2[1]:
+                            if not t in arg1[1]:
+                                arg1[1].append(t)
+                        stack.append(f,arg1[1])
                     elif i == '&' or i == '^':
-                        stack.append(and_(arg1,arg2))
+                        f = and_(arg1[0],arg2[0])
+                        for t in arg2[1]:
+                            if not t in arg1[1]:
+                                arg1[1].append(t)
+                        stack.append(f,arg1[1])                        
                     elif i == '-':
-                        stack.append(and_(arg1,not_(arg2)))
+                        f = and_(arg1[0],not_(arg2[0]))
+                        for t in arg2[1]:
+                            if t in arg1[1]:
+                                arg1[1].remove(t)
+                        stack.append(f,arg1[1])                        
             else:
                 stack.append(buildArgument(i))
-        if stack and isinstance(stack[0],sqlalchemy.sql.expression.ClauseElement):
+        if stack and isinstance(stack[0][0],sqlalchemy.sql.expression.ClauseElement):
             cl = stack.pop()
-            filter = filter.filter(cl)
-        return filter
+            filter = filter.filter(cl[0])
+            tagList = cl[1]
+        return (filter,tagList)
         
-    def showPosts(self, threadFilter, tempid='', page=0, board=''):
+    def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
         c.board = board
         c.uploadPathWeb = uploadPathWeb
         c.uidNumber = self.userInst.uidNumber()
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         count = threadFilter.count()
-                  
+
         if count > 1:
             p = divmod(count, self.userInst.threadsPerPage())
             c.pages = p[0]
@@ -188,25 +187,14 @@ class FccController(BaseController):
             c.pages = False
             c.threads = []
 
-        c.showSpoilerCheckbox = True
-        c.addCurentBoardIntoBoardsField = False
-        if board:
-            if board != '~':
-                currentBoard = meta.Session.query(Tag).filter(Tag.tag==board).first()                
-                
-                if currentBoard and currentBoard.options:
-                    c.showSpoilerCheckbox = currentBoard.options.enableSpoilers
-                    c.addCurentBoardIntoBoardsField = True
-                    
-                    if currentBoard.options.comment:
-                        c.boardName = currentBoard.options.comment                    
-                else: #filters
-                    c.boardName = '/%s/' % board   #todo: rights computing for complex filters                
-            #else: #overview                
-                
-        else: # reply mode
-            opRights = self.conjunctTagOptions(c.threads[0].tags)
-            c.showSpoilerCheckbox = opRights.enableSpoilers              
+        if len(tags) == 1:
+            currentBoard = tags[0]
+            c.boardName = currentBoard.options.comment                    
+        else:
+            c.boardName = board
+            
+        c.boardOptions = self.conjunctTagOptions(tags)
+        c.tagList = ' '.join(tagList)
             
         for thread in c.threads:
             if count > 1:
@@ -226,11 +214,8 @@ class FccController(BaseController):
         else:
             c.oekaki = False
         
-        try:            
-            c.returnToThread = session['returnToThread']
-        except KeyError: 
-            pass
-             
+        c.returnToThread = session.get('returnToThread',False)
+
         return render('/%s.posts.mako' % self.userInst.template())
         
     def getParentID(self, id):
@@ -444,37 +429,28 @@ class FccController(BaseController):
             else:
                 return redirect_to(action='GetThread',post=post.id,board=None)          
 
-    def GetOverview(self, page=0, tempid=''):
-        c.currentTag = ''
-        c.allowTags = True
-        c.PostAction = '~'
-        return self.showPosts(threadFilter=meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1), tempid=tempid, page=int(page), board='~')
-
     def GetThread(self, post, tempid):
-        c.currentTag = ''
-        c.allowTags = False
-        
-        ThePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
-        if not ThePost:
+        thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
+
+        if thePost and thePost.parentid != -1:
+            thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.parentid).first()
+            
+        if not thePost:
             c.errorText = "No such post exist."
             return render('/wakaba.error.mako')
-                            
-        if ThePost.parentid != -1:
-           filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==ThePost.parentid)
-           c.PostAction = ThePost.parentid
-        else:
-           filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post)
-           c.PostAction = ThePost.id
-
-        return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='')
+            
+        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.id)
+        c.PostAction = thePost.id
+        
+        return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
 
     def GetBoard(self, board, tempid, page=0):
+        board = filterText(board)
         c.PostAction = board
         
-        c.currentTag = board
-        c.allowTags = True
-        
-        return self.showPosts(threadFilter=self.buildFilter(board), tempid=tempid, page=int(page), board=board)
+        filter = self.buildFilter(board)
+        tags = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag.in_(filter[1])).all()
+        return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
 
     def PostReply(self, post):
         return self.processPost(postid=post)

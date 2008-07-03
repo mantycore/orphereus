@@ -18,7 +18,7 @@
         </tr>
     %endif
     
-    %if c.showSpoilerCheckbox:
+    %if c.boardOptions.enableSpoilers:
         <tr id="tremail">
             <td class="postblock">${_('Spoiler')}</td>
             <td><input type="checkbox" name="spoiler" /></td>
@@ -35,11 +35,11 @@
             <td class="postblock">${_('Text')}</td>
             <td><textarea name="message" cols="60" rows="6"></textarea></td>
         </tr>
-        %if c.allowTags:
+        %if c.board:
             <tr id="trtags">
                 <td class="postblock">${_('Boards')}</td>
                 <td>
-                    <input type="text" name="tags" size="35" value='${c.addCurentBoardIntoBoardsField and c.currentTag+"," or ""}' />
+                    <input type="text" name="tags" size="35" value='${c.tagList}' />
                 </td>
             </tr>
         %endif
@@ -62,7 +62,7 @@
                 </td>
             </tr>
             </form>            
-        %else:
+        %elif c.boardOptions.images:
             <tr id="trfile">
                 <td class="postblock">${_('File')}</td>
                 <td><input type="file" name="file" size="35" /></td>
@@ -88,6 +88,8 @@
                 </td> 
             </tr>
         </form>            
+        %else:
+        </form>
         %endif
             </tbody>
             </table>            

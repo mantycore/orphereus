@@ -1,3 +1,4 @@
+import re
 class FieldStorageLike(object):
     def __init__(self,filename,filepath):
         self.filename = filename

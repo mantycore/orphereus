@@ -156,7 +156,7 @@
                     <tr>
                         <td class="doubledash">&gt;&gt;</td>
                         <td class="reply" id="reply${p.id}">
-                            <a name="${p.id}"></a>
+                            <a name="i${p.id}"></a>
                             <label>
 								&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Del'></a>
 								<div style="display:none" class="delete">

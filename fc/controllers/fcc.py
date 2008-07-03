@@ -141,19 +141,19 @@ class FccController(BaseController):
                         for t in arg2[1]:
                             if not t in arg1[1]:
                                 arg1[1].append(t)
-                        stack.append(f,arg1[1])
+                        stack.append((f,arg1[1]))
                     elif i == '&' or i == '^':
                         f = and_(arg1[0],arg2[0])
                         for t in arg2[1]:
                             if not t in arg1[1]:
                                 arg1[1].append(t)
-                        stack.append(f,arg1[1])                        
+                        stack.append((f,arg1[1])) 
                     elif i == '-':
                         f = and_(arg1[0],not_(arg2[0]))
                         for t in arg2[1]:
                             if t in arg1[1]:
                                 arg1[1].remove(t)
-                        stack.append(f,arg1[1])                        
+                        stack.append((f,arg1[1]))                      
             else:
                 stack.append(buildArgument(i))
         if stack and isinstance(stack[0][0],sqlalchemy.sql.expression.ClauseElement):
@@ -187,11 +187,16 @@ class FccController(BaseController):
             c.pages = False
             c.threads = []
 
-        if len(tags) == 1:
+        if tagList and len(tagList) == 1:
             currentBoard = tags[0]
-            c.boardName = currentBoard.options.comment                    
+            c.boardName = currentBoard.options and currentBoard.options.comment or ("/" + currentBoard.tag + "/")
+        elif not tagList and tags:
+            names = []
+            for t in tags:
+                names.append(t.options and t.options.comment or ("/" + t.tag + "/"))
+            c.boardName = " + ".join(names)
         else:
-            c.boardName = board
+            c.boardName = "/" + board + "/"
             
         c.boardOptions = self.conjunctTagOptions(tags)
         c.tagList = ' '.join(tagList)

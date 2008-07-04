@@ -264,3 +264,7 @@ dl.menu dd.hidden {
 	border: solid 1px #FF0000;
 	-moz-border-radius: 5px;
 }
+.adminMenu{
+vertical-align:top;
+background: #DEDEDE;
+}

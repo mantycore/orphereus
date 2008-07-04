@@ -1,3 +1,4 @@
+
 <a href="/holySynod/manageSettings">${_('Manage settings')}</a><br />
 <a href="/holySynod/manageBoards">${_('Manage boards')}</a><br />
 <a href="/holySynod/manageUsers">${_('Manage users')}</a><br />

@@ -191,7 +191,8 @@ class FcaController(BaseController):
         user = meta.Session.query(User).options(eagerload('options')).get(uid)
         if user:
             c.user = user
-            if request.POST.get('access',False):
+            c.userInst = self.userInst
+            if request.POST.get('access', False) and self.userInst.canChangeRights():
                 canDeleteAllPosts = request.POST.get('canDeleteAllPosts',False) and True or False
                 if user.options.canDeleteAllPosts != canDeleteAllPosts:
                     user.options.canDeleteAllPosts = canDeleteAllPosts
@@ -204,6 +205,10 @@ class FcaController(BaseController):
                 if user.options.canMakeInvite != canMakeInvite:
                     user.options.canMakeInvite = canMakeInvite
                     self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canMakeInvite to %s') % (user.uidNumber,canMakeInvite))                
+                canChangeRights = request.POST.get('canChangeRights',False) and True or False
+                if user.options.canChangeRights != canChangeRights:
+                    user.options.canChangeRights = canChangeRights
+                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canChangeRights to %s') % (user.uidNumber,canChangeRights))                                    
                 c.message = _('User access was changed')
             elif request.POST.get('ban',False):
                 if user.options.bantime > 0:

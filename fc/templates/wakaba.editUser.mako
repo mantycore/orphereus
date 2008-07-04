@@ -16,23 +16,29 @@
                 <tr>
                     <td class="postblock">${_('Can delete posts')}</td>
                     <td>
-                        <input type="checkbox" name="canDeleteAllPosts" ${c.user.options.canDeleteAllPosts and "checked" or ""} />
+                        <input type="checkbox" name="canDeleteAllPosts" ${not c.userInst.canChangeRights() and "disabled" or ""} ${c.user.options.canDeleteAllPosts and "checked" or ""} />
                     </td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Admin')}</td>
                     <td>
-                        <input type="checkbox" name="isAdmin" ${c.user.options.isAdmin and "checked" or ""} />
+                        <input type="checkbox" name="isAdmin" ${not c.userInst.canChangeRights() and "disabled" or ""} ${c.user.options.isAdmin and "checked" or ""} />
                     </td>
                 </tr>     
                 <tr>
                     <td class="postblock">${_('Can make invite')}</td>
                     <td>
-                        <input type="checkbox" name="canMakeInvite" ${c.user.options.canMakeInvite and "checked" or ""} />
+                        <input type="checkbox" name="canMakeInvite" ${not c.userInst.canChangeRights() and "disabled" or ""} ${c.user.options.canMakeInvite and "checked" or ""} />
                     </td>
-                </tr>                            
+                </tr>  
                 <tr>
-                    <td colspan='2'><input type='submit' name='access' value='${_('Update')}'></td>
+                    <td class="postblock">${_('CAN CHANGE USER RIGHTS')}</td>
+                    <td>
+                        <input type="checkbox" name="canChangeRights" ${not c.userInst.canChangeRights() and "disabled" or ""} ${c.user.options.canChangeRights and "checked" or ""} />
+                    </td>
+                </tr>                
+                <tr>
+                    <td colspan='2'><input type='submit' name='access' value='${_('Update')}' ${not c.userInst.canChangeRights() and "disabled" or ""}></td>
                 </tr>
                 <tr>
                     <td colspan=2>${_('Ban')}</td>

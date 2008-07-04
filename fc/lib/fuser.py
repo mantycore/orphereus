@@ -36,6 +36,7 @@ class FUser(object):
                     self.__user.options.bantime = 0
                     self.__user.options.canDeleteAllPosts = 0                       
                     self.__user.options.canMakeInvite = 0                     
+                    self.__user.options.canChangeRights = 0  
                     self.__user.options.isAdmin = False
                     meta.Session.commit()                  
 
@@ -44,9 +45,10 @@ class FUser(object):
                 self.__repliesPerThread = self.__user.options.repliesPerThread #session['options']['repliesPerThread']
                 self.__style = self.__user.options.style #session['options']['style']
                 self.__template =  self.__user.options.template #session['options']['template']
+                self.__isAdmin = self.__user.options.isAdmin                
                 self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
-                self.__canMakeInvite = self.__user.options.canMakeInvite
-                self.__isAdmin = self.__user.options.isAdmin
+                self.__canMakeInvite = self.__user.options.canMakeInvite and self.__isAdmin
+                self.__canChangeRights = self.__user.options.canChangeRights and self.__isAdmin
                 self.__valid = True
                 
     def isValid(self):
@@ -84,7 +86,9 @@ class FUser(object):
     def canDeleteAllPosts(self):
         return self.__canDeleteAllPosts
     def canMakeInvite(self):
-        return self.__canMakeInvite        
+        return self.__canMakeInvite    
+    def canChangeRights(self):
+        return self.__canChangeRights            
     def bantime(self):   
         return self.__user.options.bantime
     def banreason(self):

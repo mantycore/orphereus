@@ -34,7 +34,8 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("banreason", sa.types.String(256), nullable=True),
     sa.Column("isAdmin"  , sa.types.Boolean, nullable=True),
     sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable=True),
-    sa.Column("canMakeInvite", sa.types.Boolean, nullable=True),    
+    sa.Column("canMakeInvite", sa.types.Boolean, nullable=True),   
+    sa.Column("canChangeRights", sa.types.Boolean, nullable=True)
     )
     
 t_log = sa.Table("log", meta.metadata,

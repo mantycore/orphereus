@@ -146,7 +146,7 @@ class FcaController(BaseController):
             c.tag.options.thumbSize = 250
         if request.POST.get('tag',False):
             newtag = request.POST.get('tag',False)
-            newtagre = re.compile(r"""([^,@~\+\-\&\s\/\\\(\)<>'"%\d][^,@~\+\-\&\s\/\\\(\)<>'"%]*)""").match(newtag)
+            newtagre = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""").match(newtag)
             if newtagre:
                 newtag = newtagre.groups()[0]
                 newtagRecord = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==newtag).first()

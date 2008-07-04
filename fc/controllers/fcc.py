@@ -338,7 +338,7 @@ class FccController(BaseController):
             #        tags.append(Tag(maintag))
             #    tagsl.append(maintag)
             if tagstr:
-                regex = re.compile(r"""([^,@~\+\-\&\s\/\\\(\)<>'"%\d][^,@~\+\-\&\s\/\\\(\)<>'"%]*)""")
+                regex = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""")
                 tlist = regex.findall(tagstr)
                 for t in tlist:
                     if not t in tagsl:

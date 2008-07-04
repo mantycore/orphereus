@@ -14,7 +14,7 @@
         <table cellpadding=5>
             <tbody>
                 <tr>
-                <td id="adminMenu">
+                <td class="adminMenu">
                     <%include file="wakaba.adminMenu.mako" />
                 </td>
                 <td>

@@ -6,7 +6,6 @@
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <link rel="stylesheet" type="text/css" href="/css/photon.css" title="Photon" />
 		<script type="text/javascript" src="/ui.js"></script>
-		<script type="text/javascript" src="/quickReply.js"></script>
     </head>
     <body>
         <%include file="wakaba.menu.mako" />

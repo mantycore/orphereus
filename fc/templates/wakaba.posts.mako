@@ -2,9 +2,9 @@
 <%inherit file="wakaba.main.mako" />
 
 %if not c.board:
-    <div class="theader" onClick="showNewThreadForm(event);">${_('Reply')}</div>
+    <div class="theader">${_('Reply')}</div>
 %else:
-    <div class="theader" onClick="showNewThreadForm(event);">${_('New thread')}</div>
+    <div class="theader">${_('New thread')}</div>
 %endif
 <div id="newThreadPlaceholder">
 <div class="postarea" id="postFormDiv">
@@ -134,9 +134,9 @@
         </label>
         <span class="reflink">
 			%if c.board:
-				<a href="/${thread.id}#i${thread.id}" onClick="showReplyForm(event,${thread.id});">#${thread.id}</a>
+                <a href="/${thread.id}#i${thread.id}">#${thread.id}</a>
 			%else:
-				<a href="javascript:insert('&gt;&gt;${thread.id}')" onClick="showReplyForm(event,${thread.id});">#${thread.id}</a>
+                <a href="javascript:insert('&gt;&gt;${thread.id}')">#${thread.id}</a>
 			%endif 
         </span>
         &nbsp;
@@ -184,9 +184,9 @@
                             </label>
                             <span class="reflink">
 								%if c.board:
-									<a href="/${thread.id}#i${p.id}" onClick="showReplyForm(event,${p.id});">#${p.id}</a>
+									<a href="/${thread.id}#i${p.id}" onClick="doQuickReplyForm(event,${thread.id},${p.id})">#${p.id}</a>
 								%else:
-									<a href="javascript:insert('&gt;&gt;${p.id}')" onClick="showReplyForm(event,${thread.id});">#${p.id}</a>
+									<a href="javascript:insert('&gt;&gt;${p.id}')" onClick="doQuickReplyForm(event,${thread.id},${p.id})">#${p.id}</a>
 								%endif 
                                 %if p.file and p.file.width:
                                     [<a href="/${p.id}/oekakiDraw">Draw</a>]

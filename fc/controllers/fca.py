@@ -265,7 +265,7 @@ class FcaController(BaseController):
         invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
         meta.Session.save(invite)
         meta.Session.commit()
-        self.addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s" % invite.id)
+        self.addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, filterText(request.POST.get('inviteReason','???'))))
         c.inviteLink = "<a href='/register/%s'>INVITE</a>" % invite.invite
         return render('/wakaba.newInvite.mako')
     def viewLog(self,page):

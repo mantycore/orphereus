@@ -3,6 +3,15 @@
 
 <div class="postarea">
     <form id="inviteForm" method="post" action="makeInvite">
-        <input type='submit' name='generateInvite' value='${_('Generate invite')}'>
+<table>    
+    <tr>
+        <td>Reason:</td>
+        <td><input type='text' name='inviteReason'></td>
+    </tr>
+    <tr>        
+        <td>&nbsp;</td>
+        <td><input type='submit' name='generateInvite' value='${_('Generate invite')}'></td>
+    </tr>
+</table>        
     </form>                 
 </div>

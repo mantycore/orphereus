@@ -1,26 +1,29 @@
 originalPostAction = ''
 function showNewThreadForm(event)
 {
-	var form = document.getElementById('postFormDiv');
+	var formDiv = document.getElementById('postFormDiv');
+	var form = document.getElementById('postform');
 	var div = document.getElementById('newThreadPlaceholder');
-	form.parentNode.removeChild(form);
-	form.action = originalPostAction;
-	div.appendChild(form);
+	formDiv.parentNode.removeChild(formDiv);
+	if (originalPostAction)
+		form.action = originalPostAction;
+	div.appendChild(formDiv);
 	event.preventDefault();
 }
 function showReplyForm(event,pid)
 {
-	var form = document.getElementById('postFormDiv');
+	var formDiv = document.getElementById('postFormDiv');
 	var textarea = document.getElementById('replyText');
+	var form = document.getElementById('postform');
 	var QRNode = document.getElementById('quickReplyNode'+pid);
-	form.parentNode.removeChild(form);
+	formDiv.parentNode.removeChild(formDiv);
 	if (!originalPostAction)
 	{
 		originalPostAction = form.action;
 	}
 	form.action = '/'+pid+'/';
-	addTextToTextarea(textarea,"&gt;&gt;"+pid);
-	QRNode.parentNode.insertBefore(form, QRNode.nextSibling);
+	QRNode.parentNode.insertBefore(formDiv, QRNode.nextSibling);
+	addTextToTextarea(textarea,">>"+pid);
 	event.preventDefault();
 }
 function addTextToTextarea(textarea,text)

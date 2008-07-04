@@ -48,8 +48,8 @@ class FcpController(BaseController):
             else:
                 c.currentURL = '/'
                 return render('/wakaba.login.mako')
-        key = request.POST.get('key','')
-        key2 = request.POST.get('key2','')
+        key = request.POST.get('key','').encode('utf-8')
+        key2 = request.POST.get('key2','').encode('utf-8')
         if key:
             if len(key)>=24 and key == key2:
                 uid = hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()

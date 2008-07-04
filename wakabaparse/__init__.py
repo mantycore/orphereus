@@ -98,7 +98,7 @@ class WakabaParser(object):
             result = '<span class="signature">##'
             sep = ''
             for i in valid:
-                result += sep + '<a href="%s#i%s">%s</a>' % (valid[i],i,i)
+                result += sep + '<a href="/%s#i%s">%s</a>' % (valid[i],i,i)
                 sep = ','
             result += '</span>'
         return result

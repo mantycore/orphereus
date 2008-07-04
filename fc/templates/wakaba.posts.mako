@@ -2,12 +2,14 @@
 <%inherit file="wakaba.main.mako" />
 
 %if not c.board:
-    <div class="theader">${_('Reply')}</div>
-%endif    
-
-<div class="postarea">
+    <div class="theader" onClick="showNewThreadForm(event);">${_('Reply')}</div>
+%else:
+    <div class="theader" onClick="showNewThreadForm(event);">${_('New thread')}</div>
+%endif
+<div id="newThreadPlaceholder">
+<div class="postarea" id="postFormDiv">
     <table>
-        <tbody>
+        <tbody >
     <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
     <input type="hidden" name="task" value="post" />
     <input type="hidden" name="akane" />   
@@ -33,7 +35,7 @@
         </tr>
         <tr id="trcomment">
             <td class="postblock">${_('Text')}</td>
-            <td><textarea name="message" cols="60" rows="6"></textarea></td>
+            <td><textarea id="replyText" name="message" cols="60" rows="6"></textarea></td>
         </tr>
         %if c.board:
             <tr id="trtags">
@@ -94,6 +96,7 @@
             </tbody>
             </table>            
 </div>
+</div>
 <hr />
 <form action="/${c.PostAction}/delete" method="post">
 %for thread in c.threads:
@@ -127,9 +130,9 @@
         </label>
         <span class="reflink">
 			%if c.board:
-				<a href="/${thread.id}#i${thread.id}">#${thread.id}</a>
+				<a href="/${thread.id}#i${thread.id}" onClick="showReplyForm(event,${thread.id});">#${thread.id}</a>
 			%else:
-				<a href="javascript:insert('&gt;&gt;${thread.id}')">#${thread.id}</a>
+				<a href="javascript:insert('&gt;&gt;${thread.id}')" onClick="showReplyForm(event,${thread.id});">#${thread.id}</a>
 			%endif 
         </span>
         &nbsp;
@@ -144,14 +147,14 @@
             <a href="/${t.tag}/">/${t.tag}/</a> 
         %endfor
         </span>
-        <blockquote class="postbody">
+        <blockquote class="postbody" id="quickReplyNode${thread.id}">
             ${thread.message}
         </blockquote>
         %if thread.omittedPosts:
             <span class="omittedposts">${_('%s posts omitted.') % thread.omittedPosts } </span>
         %endif
         %for p in thread.Replies:
-            <table>
+            <table id="quickReplyNode${p.id}">
                 <tbody>
                     <tr>
                         <td class="doubledash">&gt;&gt;</td>
@@ -173,9 +176,9 @@
                             </label>
                             <span class="reflink">
 								%if c.board:
-									<a href="/${thread.id}#i${p.id}">#${p.id}</a>
+									<a href="/${thread.id}#i${p.id}" onClick="showReplyForm(event,${p.id});">#${p.id}</a>
 								%else:
-									<a href="javascript:insert('&gt;&gt;${p.id}')">#${p.id}</a>
+									<a href="javascript:insert('&gt;&gt;${p.id}')" onClick="showReplyForm(event,${thread.id});">#${p.id}</a>
 								%endif 
                                 %if p.file and p.file.width:
                                     [<a href="/${p.id}/oekakiDraw">Draw</a>]

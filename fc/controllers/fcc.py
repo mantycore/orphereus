@@ -167,8 +167,11 @@ class FccController(BaseController):
         c.uploadPathWeb = uploadPathWeb
         c.uidNumber = self.userInst.uidNumber()
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
-        c.isAdmin = self.userInst.isAdmin()
+        c.isAdmin = False
         count = threadFilter.count()
+        forbiddenTags = [7,14]
+        if not self.userInst.isAdmin():
+            threadFilter = threadFilter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
 
         if count > 1:
             p = divmod(count, self.userInst.threadsPerPage())

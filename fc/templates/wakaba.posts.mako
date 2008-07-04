@@ -118,10 +118,14 @@
         %endif
         <a name="i${thread.id}"></a>
         <label>
-			&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Del'></a>
+			&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Delete'></a>
 			<div style="display:none" class="delete">		
             %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                 <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
+            %endif
+			%if c.isAdmin:
+				<a href="javascript:void(0)" onclick="return window.open('/holySynod/manageUsers/edit/${thread.uidNumber}','User','width=550,height=550,scrollbars=yes')">
+				<img src='/images/info.gif' border=0 alt='i' title='Info'></a>
             %endif
 			</div>
             <span class="filetitle">${thread.title}</span>  
@@ -166,6 +170,10 @@
                                 %if p.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                                     <input type="checkbox" name="delete-${p.id}" value="${p.id}" />
                                 %endif
+								%if c.isAdmin:
+									<a href="javascript:void(0)" onclick="return window.open('/holySynod/manageUsers/edit/${thread.uidNumber}','User','width=550,height=550,scrollbars=yes')">
+									<img src='/images/info.gif' border=0 alt='i' title='Info'></a>
+								%endif
 								</div>
                                 %if p.sage:
                                     <img src='/images/sage.png'>

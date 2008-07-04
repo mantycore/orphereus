@@ -13,7 +13,7 @@
                 %endif   
                 <tr id="truid">
                     <td class="postblock">${_('UID')}</td>
-                    <td><input value='${c.userInst.uid()}' disabled></td>
+                    <td><input value='${c.userInst.uid()}' readonly></td>
                 </tr>
                 <tr id="trtpp">
                     <td class="postblock">${_('Threads per page')}</td>

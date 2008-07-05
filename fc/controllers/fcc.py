@@ -155,15 +155,12 @@ class FccController(BaseController):
         c.isAdmin = False
         count = threadFilter.count()
         
-        #I think its not best solution TODO FIXME        
-        extList = meta.Session.query(Extension)    
-        c.extLine = ''        
-        cc = 0
-        for ext in extList:
-            cc +=1
-            c.extLine += ext.ext            
-            if cc < extList.count():
-                c.extLine += ', '
+        #I think its not best solution TODO FIXME // Redone this horrible code :P       
+        extensions = meta.Session.query(Extension).all()
+        extList = []
+        for ext in extensions:
+            extList.append(ext.ext)
+        c.extLine = ', '.join(extList)
             
         #xxx!!! dirty hack!!! what about another numbers??? todo fixme            
         forbiddenTags = [7,14] 

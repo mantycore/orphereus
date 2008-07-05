@@ -8,6 +8,9 @@
 %endif
 <div id="newThreadPlaceholder">
 <div class="postarea" id="postFormDiv">
+<table>
+<tr>
+<td>
     <table>
         <tbody >
     <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
@@ -58,11 +61,7 @@
             </td>
         </tr>        
         %if c.oekaki:
-            <tr id="trfile">
-                <td colspan=2 class="theader"><input type="hidden" name="tempid" value="${c.oekaki.tempid}">
-                <img src="${c.uploadPathWeb + c.oekaki.path}">
-                </td>
-            </tr>
+            <input type="hidden" name="tempid" value="${c.oekaki.tempid}">        
             </form>            
         %elif c.boardOptions.images:
             <tr id="trfile">
@@ -94,7 +93,30 @@
         </form>
         %endif
             </tbody>
-            </table>            
+            </table>         
+            </td>
+            
+<td class="adminMenu">
+${_('On this board:')}
+<ul>
+<li>${_('Minimal picture size')}: ${c.boardOptions.minPicSize}<sup>2</sup></li>
+<li>${_('Maximal file size')}: ${c.boardOptions.maxFileSize} bytes</li>
+<li>${_('Thumbnail size')}: ${c.boardOptions.thumbSize}</li>
+<li>${_('Images')}:  ${not c.boardOptions.images and _('not') or ''} allowed</li>
+<li>${_('Imageless threads')}:  ${not c.boardOptions.imagelessThread and _('not') or ''} ${_('allowed')}</li>
+<li>${_('Imageless posts')}:  ${not c.boardOptions.imagelessPost and _('not') or ''} ${_('allowed')}</li>
+<li>${_('Spoiler alerts')}:  ${not c.boardOptions.enableSpoilers and _('not') or ''} ${_('allowed')}</li>
+<li>${_('Enabled extensions')}:  ${c.extLine}</li>
+</ul>
+</td>
+
+</tr>
+</table>
+%if c.oekaki:
+            <div id="trfile" class="theader">
+                <img src="${c.uploadPathWeb + c.oekaki.path}">
+            </div>
+%endif     
 </div>
 </div>
 <hr />

@@ -34,7 +34,7 @@ class FccController(BaseController):
         if self.userInst.isBanned():
             return redirect_to('/youAreBanned')
         settingsDef = {
-            "title" : "FailChan",
+            "title" : "ANOMA.Ch",
             "uploadPathLocal" : 'fc/public/uploads/',
             "uploadPathWeb" :  '/uploads/'
         }
@@ -67,7 +67,7 @@ class FccController(BaseController):
             section.append(b.tag)
         if section:
             c.boardlist.append(section)
-            
+                    
     def getRPN(self,text,operators):
         whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']
         stack = []
@@ -169,10 +169,22 @@ class FccController(BaseController):
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = False
         count = threadFilter.count()
-        forbiddenTags = [7,14]
+        
+        #I think its not best solution TODO FIXME        
+        extList = meta.Session.query(Extension)    
+        c.extLine = ''        
+        cc = 0
+        for ext in extList:
+            cc +=1
+            c.extLine += ext.ext            
+            if cc < extList.count():
+                c.extLine += ', '
+            
+        #xxx!!! dirty hack!!! what about another numbers??? todo fixme            
+        forbiddenTags = [7,14] 
         if not self.userInst.isAdmin():
             threadFilter = threadFilter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
-
+            
         if count > 1:
             p = divmod(count, self.userInst.threadsPerPage())
             c.pages = p[0]

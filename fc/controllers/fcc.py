@@ -511,28 +511,44 @@ class FccController(BaseController):
                 self.processDelete(request.POST[i],fileonly)
         return redirect_to(str('/%s' % post.encode('utf-8')))
     def processDelete(self, postid, fileonly=False, checkOwnage=True):
-    #TODO: invisible bump disabling
-    #  settingsMap = getSettingsMap()        
-    # c.tesst = settingsMap['invisibleBump'].value
         p = meta.Session.query(Post).get(postid)
         if p:
             if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
                 # print some error stuff here
                 return
+                
             if p.parentid == -1 and not fileonly:
                 for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
                     self.processDelete(postid=post.id,checkOwnage=False)
+                    
             pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
             if pic and meta.Session.query(Post).filter(Post.picid==p.picid).count() == 1:
                 filePath = os.path.join(uploadPath,pic.path)
                 thumPath = os.path.join(uploadPath,pic.thumpath)
-                if os.path.isfile(filePath): os.unlink(filePath)
+                
+                if os.path.isfile(filePath):
+                    os.unlink(filePath)
+                    
                 ext = meta.Session.query(Extension).filter(Extension.id==pic.extid).first()
                 if not ext.path:
                     if os.path.isfile(thumPath): os.unlink(thumPath)
                 meta.Session.delete(pic)
-            if fileonly: p.picid = None
-            else: meta.Session.delete(p)
+           
+            if fileonly: 
+                p.picid = None
+            else:
+                settingsMap = getSettingsMap()        
+                invisBump = (settingsMap['invisibleBump'].value == 'false')
+
+                if invisBump and p.parentid != -1:
+                    thread = meta.Session.query(Post).filter(Post.parentid==p.parentid).all()
+                    count = len(thread)
+                    if thread[count - 1].id == p.id:
+                        parent = meta.Session.query(Post).filter(Post.id==p.parentid).first()
+                        parent.bumpDate = thread[count - 2].date
+                        
+                meta.Session.delete(p)
+            
         meta.Session.commit()
     def showProfile(self):
         c.templates = ['wakaba']

@@ -2,6 +2,13 @@ hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 uploadPath = 'fc/public/uploads/'
 uploadPathWeb = '/uploads/'
 
+settingsDef = {
+    "title" : "ANOMA.Ch",
+    "uploadPathLocal" : 'fc/public/uploads/',
+    "uploadPathWeb" :  '/uploads/',
+    "invisibleBump" : 'true'
+}
+
 LOG_EVENT_INVITE       = 0x00010001
 LOG_EVENT_BOARD_EDIT   = 0x00020001
 LOG_EVENT_BOARD_DELETE = 0x00020002

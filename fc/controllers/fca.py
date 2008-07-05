@@ -16,6 +16,7 @@ import re
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
+from fc.lib.settings import *
 
 log = logging.getLogger(__name__)
 
@@ -32,24 +33,7 @@ class FcaController(BaseController):
         c.userInst = self.userInst
         
     def initEnvironment(self):
-        settingsDef = {
-            "title" : "FailChan",
-            "uploadPathLocal" : 'fc/public/uploads/',
-            "uploadPathWeb" :  '/uploads/'
-        }
-        settings = meta.Session.query(Setting).all()
-        settingsMap = {}
-        if settings:
-            for s in settings:
-                if s.name in settingsDef:
-                    settingsMap[s.name] = s
-        for s in settingsDef:
-            if not s in settingsMap:
-                settingsMap[s] = Setting()
-                settingsMap[s].name = s
-                settingsMap[s].value = settingsDef[s]
-                meta.Session.save(settingsMap[s])
-                meta.Session.commit()        
+        settingsMap = getSettingsMap()
         c.title = settingsMap['title'].value
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
         c.boardlist = []
@@ -81,24 +65,8 @@ class FcaController(BaseController):
         return render('/wakaba.adminIndex.mako')
     def manageSettings(self):
         c.boardName = 'Settings management'
-        settingsDef = {
-            "title" : "FailChan",
-            "uploadPathLocal" : 'fc/public/uploads/',
-            "uploadPathWeb" :  '/uploads/'
-        }
-        settings = meta.Session.query(Setting).all()
-        settingsMap = {}
-        if settings:
-            for s in settings:
-                if s.name in settingsDef:
-                    settingsMap[s.name] = s
-        for s in settingsDef:
-            if not s in settingsMap:
-                settingsMap[s] = Setting()
-                settingsMap[s].name = s
-                settingsMap[s].value = settingsDef[s]
-                meta.Session.save(settingsMap[s])
-                meta.Session.commit()
+        settingsMap = getSettingsMap()
+        
         if request.POST.get('update',False):
             for s in request.POST:
                 if s in settingsDef:

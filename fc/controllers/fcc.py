@@ -19,10 +19,11 @@ from wakabaparse import WakabaParser
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
+from fc.lib.settings import *
 
 log = logging.getLogger(__name__)
 
-class FccController(BaseController):
+class FccController(BaseController):        
     def __before__(self):
         self.userInst = FUser(session.get('uidNumber',-1))
         c.userInst = self.userInst
@@ -33,24 +34,8 @@ class FccController(BaseController):
             return redirect_to(c.currentURL+'authorize')
         if self.userInst.isBanned():
             return redirect_to('/youAreBanned')
-        settingsDef = {
-            "title" : "ANOMA.Ch",
-            "uploadPathLocal" : 'fc/public/uploads/',
-            "uploadPathWeb" :  '/uploads/'
-        }
-        settings = meta.Session.query(Setting).all()
-        settingsMap = {}
-        if settings:
-            for s in settings:
-                if s.name in settingsDef:
-                    settingsMap[s.name] = s
-        for s in settingsDef:
-            if not s in settingsMap:
-                settingsMap[s] = Setting()
-                settingsMap[s].name = s
-                settingsMap[s].value = settingsDef[s]
-                meta.Session.save(settingsMap[s])
-                meta.Session.commit()        
+        
+        settingsMap = getSettingsMap()
         c.title = settingsMap['title'].value
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
         c.boardlist = []
@@ -526,6 +511,9 @@ class FccController(BaseController):
                 self.processDelete(request.POST[i],fileonly)
         return redirect_to(str('/%s' % post.encode('utf-8')))
     def processDelete(self, postid, fileonly=False, checkOwnage=True):
+    #TODO: invisible bump disabling
+    #  settingsMap = getSettingsMap()        
+    # c.tesst = settingsMap['invisibleBump'].value
         p = meta.Session.query(Post).get(postid)
         if p:
             if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):

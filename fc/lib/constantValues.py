@@ -4,8 +4,8 @@ uploadPathWeb = '/uploads/'
 
 settingsDef = {
     "title" : "ANOMA.Ch",
-    "uploadPathLocal" : 'fc/public/uploads/',
-    "uploadPathWeb" :  '/uploads/',
+#    "uploadPathLocal" : 'fc/public/uploads/',
+#    "uploadPathWeb" :  '/uploads/',
     "invisibleBump" : 'true'
 }
 

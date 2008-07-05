@@ -101,7 +101,7 @@ ${_('On this board:')}
 <ul>
 <li>${_('Minimal picture size')}: ${c.boardOptions.minPicSize}<sup>2</sup></li>
 <li>${_('Maximal file size')}: ${c.boardOptions.maxFileSize} bytes</li>
-<li>${_('Thumbnail size')}: ${c.boardOptions.thumbSize}</li>
+<li>${_('Thumbnail size')}: ${c.boardOptions.thumbSize}<sup>2</sup></li>
 <li>${_('Images')}:  ${not c.boardOptions.images and _('not') or ''} allowed</li>
 <li>${_('Imageless threads')}:  ${not c.boardOptions.imagelessThread and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Imageless posts')}:  ${not c.boardOptions.imagelessPost and _('not') or ''} ${_('allowed')}</li>

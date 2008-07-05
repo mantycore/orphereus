@@ -25,6 +25,9 @@ class FcpController(BaseController):
     def login(self, user):
         session['uidNumber'] = user.uidNumber
         session.save()
+    def logout(self):
+        session.delete()        
+        redirect_to('/')
     def authorize(self, url):
         if url:
             c.currentURL = '/' + str(url.encode('utf-8')) + '/'

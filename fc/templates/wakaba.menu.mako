@@ -13,5 +13,6 @@
     %if c.userInst.isAdmin():
         [<a href="/holySynod/">${_('Holy Synod')}</a>]
     %endif 
+    [<a href="/logout/">${_('Logout')}</a>]    
 </div>
 %endif

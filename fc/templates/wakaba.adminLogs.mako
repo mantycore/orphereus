@@ -13,7 +13,7 @@
     </thead>
     <tbody>
     %for log in c.logs:
-        <tr>
+        <tr ${log.event < 0x10000 and "style='color:#F00;'" or ""}>
             <td>${log.date}</td>
             <td>${log.uidNumber}</td>
             <td>${log.event}</td>

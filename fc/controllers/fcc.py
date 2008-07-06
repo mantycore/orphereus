@@ -36,23 +36,7 @@ class FccController(BaseController):
             return redirect_to('/youAreBanned')
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
-        settingsMap = getSettingsMap()
-        c.title = settingsMap['title'].value
-        boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
-        c.boardlist = []
-        sectionId = 0
-        section = []
-        for b in boards:
-            if not sectionId:
-                sectionId = b.options.sectionId
-                section = []
-            if sectionId != b.options.sectionId:
-                c.boardlist.append(section)
-                sectionId = b.options.sectionId
-                section = []
-            section.append(b.tag)
-        if section:
-            c.boardlist.append(section)
+        initEnvironment()
                     
     def getRPN(self,text,operators):
         whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']

@@ -18,10 +18,14 @@ import re
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
+from fc.lib.settings import *
 
 log = logging.getLogger(__name__)
 
 class FcpController(BaseController):
+    def __before__(self):
+        settingsMap = getSettingsMap()
+        c.title = settingsMap['title'].value
     def login(self, user):
         session['uidNumber'] = user.uidNumber
         session.save()

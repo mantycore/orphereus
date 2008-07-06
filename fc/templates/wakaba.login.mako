@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
-<h1><center>${_('ANOMA.Ch')}</center></h1>
+<div class="logo"><center>${c.title}</center></div>
 <hr />
 
 <div class="postarea">

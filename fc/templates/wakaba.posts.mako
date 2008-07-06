@@ -146,8 +146,7 @@ ${_('On this board:')}
                 <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
             %endif
 			%if c.isAdmin:
-				<a href="javascript:void(0)" onclick="return window.open('/holySynod/manageUsers/editAttempt/${thread.id}','User','width=550,height=550,scrollbars=yes')">
-				[User]</a>
+				<a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>                   
 			%endif
 			</div>
             <span class="filetitle">${thread.title}</span>  
@@ -193,8 +192,7 @@ ${_('On this board:')}
                                     <input type="checkbox" name="delete-${p.id}" value="${p.id}" />
                                 %endif                              
 								%if c.isAdmin:
-									<a href="javascript:void(0)" onclick="return window.open('/holySynod/manageUsers/editAttempt/${p.id}','User','width=550,height=550,scrollbars=yes')">
-									[User]</a>
+									<a href="/holySynod/manageUsers/editAttempt/${p.id}">[User]</a>                                    
 								%endif
 								</div>
                                 %if p.sage:

@@ -486,12 +486,14 @@ class FccController(BaseController):
         meta.Session.save(oekaki)
         meta.Session.commit()
         return render('/spainter.mako')
+        
     def DeletePost(self, post):
         fileonly = 'fileonly' in request.POST
         for i in request.POST:
             if re.compile("^\d+$").match(request.POST[i]):
                 self.processDelete(request.POST[i],fileonly)
         return redirect_to(str('/%s' % post.encode('utf-8')))
+        
     def processDelete(self, postid, fileonly=False, checkOwnage=True):
         p = meta.Session.query(Post).get(postid)
         if p:
@@ -519,7 +521,7 @@ class FccController(BaseController):
                 meta.Session.delete(pic)
            
             if fileonly: 
-                p.picid = None
+                p.picid = -1
             else:
                 settingsMap = getSettingsMap()        
                 invisBump = (settingsMap['invisibleBump'].value == 'false')

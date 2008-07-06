@@ -133,10 +133,12 @@ ${_('On this board:')}
         %if thread.spoiler:
             <img src="/images/spoiler.png" class="thumb"/>
         %else:
-            <img src="${c.uploadPathWeb + thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />
-        %endif                 
-            
+            <img src="${c.uploadPathWeb + thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
+        %endif                             
         </a>
+        %elif thread.picid == -1:
+            <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
+            <img src='/images/picDeleted.png' class="thumb" >             
         %endif
         <a name="i${thread.id}"></a>
         <label>
@@ -217,15 +219,18 @@ ${_('On this board:')}
                                 <br /><span class="filesize">${_('File:')} 
                                 <a target="_blank" href="${c.uploadPathWeb + p.file.path}">${p.file.path}</a> 
                                 (<em>${p.file.size}, ${p.file.width}x${p.file.height}</em>)</span>
-                                <span class="thumbnailmsg">This is resized copy. Click it to view original image</span><br />
+                                <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
                                 <a target="_blank" href="${c.uploadPathWeb + p.file.path}">
                                 %if p.spoiler:
                                     <img src="/images/spoiler.png" class="thumb"/>
-                                %else:
+                                %else:     
                                     <img src="${c.uploadPathWeb + p.file.thumpath}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />
-                                %endif
+                                %endif 
                                 </a>
-                            %endif
+                                %elif p.picid == -1:
+                                    <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
+                                    <img src='/images/picDeleted.png' class="thumb">                                    
+                                %endif
                             <blockquote class="postbody">
                                 ${p.message}
                             </blockquote> 

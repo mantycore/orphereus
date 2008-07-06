@@ -530,7 +530,7 @@ class FccController(BaseController):
                     thread = meta.Session.query(Post).filter(Post.parentid==p.parentid).all()
                     if thread and thread[-1].id == p.id:
                         parent = meta.Session.query(Post).filter(Post.id==p.parentid).first()
-                        if len(thread) > 2:
+                        if len(thread) > 1:
                             parent.bumpDate = thread[-2].date
                         else:
                             parent.bumpDate = thread.date

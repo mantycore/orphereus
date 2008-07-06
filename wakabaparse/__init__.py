@@ -4,9 +4,10 @@ import sys
 from simpleparse import generator
 from mx.TextTools import TextTools
 from fc.lib.miscUtils import *
+from fc.lib.constantValues import *
 
 class WakabaParser(object):
-    def __init__(self, definition = 'wakabaparse/mark.def', baseProd = 'all'):
+    def __init__(self, definition = markupFile, baseProd = 'all'):
         self.plain  = ['safe_text','text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nou']
         self.simple = {'strong':'strong','emphasis':'em','strikeout':'del'}
         self.complex= ['reference','signature','block_code','block_cite','block_list','inline_spoiler','block_spoiler','link']

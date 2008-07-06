@@ -1,6 +1,10 @@
+import sys
+import os 
+
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
-uploadPath = 'fc/public/uploads/'
+uploadPath = os.path.join(sys.path[0],'fc/public/uploads/')
 uploadPathWeb = '/uploads/'
+markupFile = os.path.join(sys.path[0],'wakabaparse/mark.def')
 
 settingsDef = {
     "title" : "ANOMA.Ch",

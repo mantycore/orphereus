@@ -26,7 +26,7 @@ class FcaController(BaseController):
         if not self.userInst.isAuthorized():
             c.currentURL = '/holySynod/'
             return redirect_to('/')
-        self.initEnvironment()
+        initEnvironment()
         if not self.userInst.isAdmin():
             c.errorText = "No way! You aren't holy enough!"
             return redirect_to('/')

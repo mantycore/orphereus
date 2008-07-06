@@ -90,7 +90,7 @@ function getReplyForm(iThreadId)
 		{
 			objCloseBtn.onclick = hideQuickReplyForm;
 		}
-		objCloseBtn.appendChild(document.createTextNode('\u2716'));
+		objCloseBtn.appendChild(document.createTextNode('Close'));
 		objBottomDiv.appendChild(objCloseBtn);
 		g_objReplyForm.appendChild(objBottomDiv);
 	}

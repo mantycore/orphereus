@@ -268,3 +268,66 @@ dl.menu dd.hidden {
 vertical-align:top;
 background: #DEDEDE;
 }
+
+.postername, .postertrip, .commentpostername {
+	display: inline; visibility: visible; font-weight: bold; color: #339;
+}
+.postertrip {
+	color: #993;
+}
+.hidden-thread {
+	color: #666; padding: 5px 0 0 28px; min-height: 24px; vertical-align: middle; background: url('images/hidden.png') no-repeat left center;
+}
+form > div + br[clear="left"] {
+display: block; height: 1px;
+}
+.reply label {
+font-size: 80%; color: #666;
+}
+.reply label span {
+font-size: 125%; 
+}
+label, label input {
+vertical-align: middle;
+}
+a.loading {
+	padding-left: 16px;
+	background: url('images/loading.gif') no-repeat left center;
+}
+.x_unfoldreply td {
+	border-color: #999;
+}
+.x_qrattached:hover {
+	border-bottom: 1px #ccc dotted;
+}
+div a.show-hide-thread {
+	display: block; float: right; font-size: 70%; text-decoration: none;
+}
+div a.show-hide-thread:hover {
+	text-decoration: underline; color: #f33;
+}
+#x_replyform {
+	display: block; border: 1px #ccc solid; margin: 0 2px 2px 2px; padding: 5px; 
+	background-color: #ddd; -moz-border-radius: 5px;
+}
+#x_replyform textarea {
+	width: 100%; border: 1px #888 solid;
+}
+#x_replyform div {
+	overflow: hidden; margin-top: 5px;
+}
+#x_replyform label {
+	float: left; margin-right: 10px;
+}
+#x_replyform input[type="text"], #x_replyform input[type="password"] {
+	border: 1px #888 solid;
+}
+#x_replyform input[type="file"] > input[type="text"] {
+	border: 1px #888 solid;
+} 
+#x_replyform input[type="submit"] {
+	border: 1px #666 solid; margin-left: 10px;
+}
+#x_replyform button {
+	border: 1px #666 solid; margin-left: 10px;
+}

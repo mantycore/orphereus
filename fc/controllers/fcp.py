@@ -43,6 +43,7 @@ class FcpController(BaseController):
             if user:
                 self.login(user)
                 redirect_to(c.currentURL)
+        c.boardName = _('Login')
         return render('/wakaba.login.mako')
     def register(self,invite):
         if 'invite' not in session:
@@ -67,6 +68,7 @@ class FcpController(BaseController):
                 del session['invite']
                 self.login(user)
                 redirect_to('/')
+        c.boardName = _('Register')
         return render('/wakaba.register.mako')
     def oekakiSave(self, environ, start_response, url, tempid):
         start_response('200 OK', [('Content-Type','text/plain'),('Content-Length','2')])
@@ -95,11 +97,14 @@ class FcpController(BaseController):
         self.userInst = FUser(session.get('uidNumber',-1))
         c.userInst = self.userInst
         if self.userInst.isBanned():
+            c.boardName = _('Banned')
             return render('/wakaba.banned.mako')
         else:
+            c.boardName = _('Error')
             c.errorText = _("ORLY?")
             return render('/wakaba.error.mako')
     def UnknownAction(self):      
+        c.boardName = _('Error')
         c.errorText = "Excuse me, WTF are you?"
         return render('/wakaba.error.mako')
     

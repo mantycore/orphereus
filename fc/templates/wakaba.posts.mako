@@ -156,9 +156,9 @@ ${_('On this board:')}
         </label>
         <span class="reflink">
 			%if c.board:
-                <a href="/${thread.id}#i${thread.id}">#${thread.id}</a>
+                <a href="/${thread.id}#i${thread.id}" onClick="doQuickReplyForm(event,${thread.id},${thread.id})">#${thread.id}</a>
 			%else:
-                <a href="javascript:insert('&gt;&gt;${thread.id}')">#${thread.id}</a>
+                <a href="javascript:insert('&gt;&gt;${thread.id}')" onClick="doQuickReplyForm(event,${thread.id},${thread.id})">#${thread.id}</a>
 			%endif 
         </span>
         &nbsp;

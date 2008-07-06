@@ -533,7 +533,7 @@ class FccController(BaseController):
                         if len(thread) > 1:
                             parent.bumpDate = thread[-2].date
                         else:
-                            parent.bumpDate = thread.date
+                            parent.bumpDate = parent.date
                 meta.Session.delete(p)
         meta.Session.commit()
         

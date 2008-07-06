@@ -11,10 +11,10 @@
         <%include file="wakaba.menu.mako" />
         <%include file="wakaba.logo.mako" />
         <hr />
-        <table cellpadding=5>
+        <table cellpadding=5 width="100%">
             <tbody>
                 <tr>
-                <td class="adminMenu">
+                <td class="adminMenu" width="200px;">
                     <%include file="wakaba.adminMenu.mako" />
                 </td>
                 <td>

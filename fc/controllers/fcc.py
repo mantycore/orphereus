@@ -498,7 +498,9 @@ class FccController(BaseController):
             if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
                 # print some error stuff here
                 return
-                
+            if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
+                addLogEntry(LOG_EVENT_POSTS_DELETE,_("Deleted post %s (owner %s)") % (p.id,p.uidNumber))
+            
             if p.parentid == -1 and not fileonly:
                 for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
                     self.processDelete(postid=post.id,checkOwnage=False)

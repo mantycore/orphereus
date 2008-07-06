@@ -31,34 +31,9 @@ class FcaController(BaseController):
             c.errorText = "No way! You aren't holy enough!"
             return redirect_to('/')
         c.userInst = self.userInst
-        
-    def initEnvironment(self):
-        settingsMap = getSettingsMap()
-        c.title = settingsMap['title'].value
-        boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
-        c.boardlist = []
-        sectionId = 0
-        section = []
-        for b in boards:
-            if not sectionId:
-                sectionId = b.options.sectionId
-                section = []
-            if sectionId != b.options.sectionId:
-                c.boardlist.append(section)
-                sectionId = b.options.sectionId
-                section = []
-            section.append(b.tag)
-        if section:
-            c.boardlist.append(section)
-    def addLogEntry(self,event,entry):
-        logEntry = LogEntry()
-        logEntry.uidNumber = self.userInst.uidNumber()
-        logEntry.date = datetime.datetime.now()
-        logEntry.event = event
-        logEntry.entry = entry
-        meta.Session.save(logEntry)
-        meta.Session.commit()
-        
+        if not checkAdminIP():
+            return redirect_to('/')
+            
     def index(self):
         c.boardName = 'Index'
         c.admins = meta.Session.query(User).join('options').filter(or_(UserOptions.isAdmin==True,UserOptions.canDeleteAllPosts==True)).all()
@@ -71,7 +46,7 @@ class FcaController(BaseController):
             for s in request.POST:
                 if s in settingsDef:
                     if settingsMap[s].value != request.POST[s]:
-                        self.addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s,settingsMap[s].value,request.POST[s]))
+                        addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s,settingsMap[s].value,request.POST[s]))
                         settingsMap[s].value = filterText(request.POST[s])
             meta.Session.commit()
             c.message = _('Updated settings')
@@ -137,7 +112,7 @@ class FcaController(BaseController):
                     if not c.tag.id:
                         meta.Session.save(c.tag)
                     meta.Session.commit()
-                    self.addLogEntry(LOG_EVENT_BOARD_EDIT,"Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
+                    addLogEntry(LOG_EVENT_BOARD_EDIT,"Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
                     c.message = _("Updated board")
                 else:
                     c.message = _("Board %s already exists!") % newtag
@@ -164,19 +139,19 @@ class FcaController(BaseController):
                 canDeleteAllPosts = request.POST.get('canDeleteAllPosts',False) and True or False
                 if user.options.canDeleteAllPosts != canDeleteAllPosts:
                     user.options.canDeleteAllPosts = canDeleteAllPosts
-                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canDeleteAllPosts to %s') % (user.uidNumber,canDeleteAllPosts))
+                    addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canDeleteAllPosts to %s') % (user.uidNumber,canDeleteAllPosts))
                 isAdmin = request.POST.get('isAdmin',False) and True or False
                 if user.options.isAdmin != isAdmin:
                     user.options.isAdmin = isAdmin
-                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s isAdmin to %s') % (user.uidNumber,isAdmin))                
+                    addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s isAdmin to %s') % (user.uidNumber,isAdmin))                
                 canMakeInvite = request.POST.get('canMakeInvite',False) and True or False
                 if user.options.canMakeInvite != canMakeInvite:
                     user.options.canMakeInvite = canMakeInvite
-                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canMakeInvite to %s') % (user.uidNumber,canMakeInvite))                
+                    addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canMakeInvite to %s') % (user.uidNumber,canMakeInvite))                
                 canChangeRights = request.POST.get('canChangeRights',False) and True or False
                 if user.options.canChangeRights != canChangeRights:
                     user.options.canChangeRights = canChangeRights
-                    self.addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canChangeRights to %s') % (user.uidNumber,canChangeRights))                                    
+                    addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canChangeRights to %s') % (user.uidNumber,canChangeRights))                                    
                 c.message = _('User access was changed')
             elif request.POST.get('ban',False):
                 if user.options.bantime > 0:
@@ -189,7 +164,7 @@ class FcaController(BaseController):
                             bantime = int(bantime)
                             user.options.bantime = bantime
                             user.options.banreason = banreason
-                            self.addLogEntry(LOG_EVENT_USER_BAN,_('Banned user %s for %s days for reason "%s"') % (user.uidNumber,bantime,banreason))
+                            addLogEntry(LOG_EVENT_USER_BAN,_('Banned user %s for %s days for reason "%s"') % (user.uidNumber,bantime,banreason))
                             c.message = _('User was banned')
                         else:
                             c.message = _('You should specify ban time in days')
@@ -201,7 +176,7 @@ class FcaController(BaseController):
                     bantime = user.options.bantime
                     user.options.bantime = 0
                     user.options.banreason = ''
-                    self.addLogEntry(LOG_EVENT_USER_UNBAN,_('Unbanned user %s (%s days for reason "%s")') % (user.uidNumber,bantime,banreason))
+                    addLogEntry(LOG_EVENT_USER_UNBAN,_('Unbanned user %s (%s days for reason "%s")') % (user.uidNumber,bantime,banreason))
                     c.message = _('User was unbanned')
                 else:
                     c.message = _('This user is not banned')
@@ -211,7 +186,7 @@ class FcaController(BaseController):
                 reason = filterText(request.POST.get('deletereason',''))
                 if len(reason)>1:
                     meta.Session.delete(user)
-                    self.addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
+                    addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
                     c.message = "User deleted"
                     return render('/wakaba.manageUsers.mako')
                 else:
@@ -238,7 +213,7 @@ class FcaController(BaseController):
         invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
         meta.Session.save(invite)
         meta.Session.commit()
-        self.addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, filterText(request.POST.get('inviteReason','???'))))
+        addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, filterText(request.POST.get('inviteReason','???'))))
         c.inviteLink = "<a href='/register/%s'>INVITE</a>" % invite.invite
         return render('/wakaba.newInvite.mako')
     def viewLog(self,page):

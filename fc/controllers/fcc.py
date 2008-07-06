@@ -34,7 +34,8 @@ class FccController(BaseController):
             return redirect_to(c.currentURL+'authorize')
         if self.userInst.isBanned():
             return redirect_to('/youAreBanned')
-        
+        if self.userInst.isAdmin() and not checkAdminIP():
+            return redirect_to('/')
         settingsMap = getSettingsMap()
         c.title = settingsMap['title'].value
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()

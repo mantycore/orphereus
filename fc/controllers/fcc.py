@@ -539,14 +539,15 @@ class FccController(BaseController):
 
                 if invisBump and p.parentid != -1:
                     thread = meta.Session.query(Post).filter(Post.parentid==p.parentid).all()
-                    count = len(thread)
-                    if thread[count - 1].id == p.id:
+                    if thread and thread[-1].id == p.id:
                         parent = meta.Session.query(Post).filter(Post.id==p.parentid).first()
-                        parent.bumpDate = thread[count - 2].date
-                        
+                        if len(thread) > 1:
+                            parent.bumpDate = thread[-2].date
+                        else:
+                            parent.bumpDate = thread.date
                 meta.Session.delete(p)
-            
         meta.Session.commit()
+        
     def showProfile(self):
         c.templates = ['wakaba']
         c.styles    = ['photon']

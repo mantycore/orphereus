@@ -365,8 +365,12 @@ class FccController(BaseController):
         else:
            file = request.POST.get('file',False)
         if post.message:
-           parser = WakabaParser()
-           post.message = parser.parseWakaba(post.message,self)     
+           if len(post.message) <= 64000:
+               parser = WakabaParser()
+               post.message = parser.parseWakaba(post.message,self)     
+           else:
+               c.errorText = _('Message is too long')
+               return render('/wakaba.error.mako')
         post.title = filterText(request.POST['title'])
         post.date = datetime.datetime.now()
         pic = self.processFile(file,options.thumbSize)

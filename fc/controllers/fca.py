@@ -139,7 +139,6 @@ class FcaController(BaseController):
         post = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==pid).order_by(Post.id.asc()).first()
         reason = request.POST.get("UIDViewReason", 'No reason given!')
         addLogEntry(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '%s'. Reason: %s" % (post.uidNumber, pid, reason))
-        log.debug(post.uidNumber)
         return redirect_to('/holySynod/manageUsers/edit/%s' % post.uidNumber)        
         
     def editUser(self,uid):

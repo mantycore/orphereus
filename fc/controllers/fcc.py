@@ -138,7 +138,6 @@ class FccController(BaseController):
         c.uidNumber = self.userInst.uidNumber()
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = self.userInst.isAdmin()
-        log.debug(c.isAdmin)
         count = threadFilter.count()
         
         #I think its not best solution TODO FIXME // Redone this horrible code :P       

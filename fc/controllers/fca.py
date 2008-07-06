@@ -129,6 +129,19 @@ class FcaController(BaseController):
             else:
                 c.message = _('No such user exists.')
         return render('/wakaba.manageUsers.mako')
+        
+    def editUserAttempt(self, pid):
+        c.boardName = 'User edit attemption'
+        c.pid = pid
+        return render('/wakaba.editUserAttempt.mako')
+        
+    def editUserByPost(self, pid):
+        post = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==pid).order_by(Post.id.asc()).first()
+        reason = request.POST.get("UIDViewReason", 'No reason given!')
+        addLogEntry(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '%s'. Reason: %s" % (post.uidNumber, pid, reason))
+        log.debug(post.uidNumber)
+        return redirect_to('/holySynod/manageUsers/edit/%s' % post.uidNumber)        
+        
     def editUser(self,uid):
         c.boardName = 'Edit user %s' % uid
         user = meta.Session.query(User).options(eagerload('options')).get(uid)

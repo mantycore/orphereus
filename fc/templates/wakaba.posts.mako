@@ -146,9 +146,9 @@ ${_('On this board:')}
                 <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
             %endif
 			%if c.isAdmin:
-				<a href="javascript:void(0)" onclick="return window.open('/holySynod/manageUsers/edit/${thread.uidNumber}','User','width=550,height=550,scrollbars=yes')">
-				<img src='/images/info.gif' border=0 alt='i' title='Info'></a>
-            %endif
+				<a href="javascript:void(0)" onclick="return window.open('/holySynod/manageUsers/editAttempt/${thread.id}','User','width=550,height=550,scrollbars=yes')">
+				[User]</a>
+			%endif
 			</div>
             <span class="filetitle">${thread.title}</span>  
             <span class="postername"></span>
@@ -191,10 +191,10 @@ ${_('On this board:')}
 								<div style="display:none" class="delete">
                                 %if p.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                                     <input type="checkbox" name="delete-${p.id}" value="${p.id}" />
-                                %endif
+                                %endif                              
 								%if c.isAdmin:
-									<a href="javascript:void(0)" onclick="return window.open('/holySynod/manageUsers/edit/${thread.uidNumber}','User','width=550,height=550,scrollbars=yes')">
-									<img src='/images/info.gif' border=0 alt='i' title='Info'></a>
+									<a href="javascript:void(0)" onclick="return window.open('/holySynod/manageUsers/editAttempt/${p.id}','User','width=550,height=550,scrollbars=yes')">
+									[User]</a>
 								%endif
 								</div>
                                 %if p.sage:

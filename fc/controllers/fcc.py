@@ -363,20 +363,27 @@ class FccController(BaseController):
             settingsMap = getSettingsMap()        
             maxTagsCount = int(settingsMap['maxTagsCount'].value)
             maxTagLen = int(settingsMap['maxTagLen'].value)
+            disabledTagsLine = settingsMap['disabledTags'].value
             
             if len(tags)>maxTagsCount:
                 c.errorText = _("Too many tags. Maximum allowed: %s") % (maxTagsCount)
                 return render('/wakaba.error.mako')
                 
-            tagsLenOk = True
+            tagsPermOk = True
             problemTags = []
+            disabledTags = disabledTagsLine.split(',')
             for tag in tags:
-                if ((not tag.options) or (tag.options and not tag.options.persistent)) and len(tag.tag)>maxTagLen:
-                    tagsLenOk = False
-                    problemTags.append(tag.tag)
+                tagLengthProblem = ((not tag.options) or (tag.options and not tag.options.persistent)) and len(tag.tag)>maxTagLen
+                tagDisabled = tag.tag in disabledTags
+                if (tagLengthProblem or tagDisabled):
+                    tagsPermOk = False
+                    errorMsg = _("Too long. Maximal length: %s" % maxTagLen)
+                    if tagDisabled:
+                        errorMsg = _("Disabled")
+                    problemTags.append(tag.tag + " [%s]" % errorMsg)
                     
-            if not tagsLenOk:
-                c.errorText = _("Too long: %s. Maximum tag length: %s") % (', '.join(problemTags), maxTagLen)
+            if not tagsPermOk:
+                c.errorText = _("Tags restrictions violations:<br/> %s") % ('<br/>'.join(problemTags))
                 return render('/wakaba.error.mako')    
                 
         options = self.conjunctTagOptions(tags)

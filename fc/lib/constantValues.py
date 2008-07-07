@@ -10,7 +10,8 @@ settingsDef = {
     "title"         : "ANOMA.Ch",
     "invisibleBump" : 'true',
     "maxTagsCount"  : '5',
-    "maxTagLen"     : '6'
+    "maxTagLen"     : '6',
+    "disabledTags"  : 'logout,authorize,register,youAreBanned,userProfile,holySynod'
 }
 
 LOG_EVENT_SECURITY_IP   = 0x00000001

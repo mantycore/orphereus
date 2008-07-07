@@ -294,7 +294,7 @@ class FccController(BaseController):
         options.enableSpoilers = True
         options.maxFileSize = 2621440
         options.minPicSize = 50
-        options.thumbSize = 250
+        options.thumbSize = 180
         for t in tags:
             if t.options:
                 options.imagelessThread = options.imagelessThread & t.options.imagelessThread

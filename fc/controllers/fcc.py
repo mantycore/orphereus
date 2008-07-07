@@ -288,25 +288,37 @@ class FccController(BaseController):
            
     def conjunctTagOptions(self, tags):
         options = TagOptions()
-        options.imagelessThread = True
-        options.imagelessPost   = True
-        options.images   = True
-        options.enableSpoilers = True
-        options.maxFileSize = 2621440
-        options.minPicSize = 50
-        options.thumbSize = 180
+        optionsFlag = True
         for t in tags:
             if t.options:
-                options.imagelessThread = options.imagelessThread & t.options.imagelessThread
-                options.imagelessPost = options.imagelessPost & t.options.imagelessPost
-                options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
-                options.images = options.images & t.options.images
-                if t.options.maxFileSize < options.maxFileSize:
+                if optionsFlag:
+                    options.imagelessThread = t.options.imagelessThread
+                    options.imagelessPost   = t.options.imagelessPost
+                    options.images   = t.options.images
+                    options.enableSpoilers = t.options.enableSpoilers
                     options.maxFileSize = t.options.maxFileSize
-                if t.options.minPicSize > options.minPicSize:
                     options.minPicSize = t.options.minPicSize
-                if t.options.thumbSize < options.thumbSize:
-                    options.thumbSize = t.options.thumbSize                   
+                    options.thumbSize = t.options.thumbSize
+                    optionsFlag = False
+                else:
+                    options.imagelessThread = options.imagelessThread & t.options.imagelessThread
+                    options.imagelessPost = options.imagelessPost & t.options.imagelessPost
+                    options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
+                    options.images = options.images & t.options.images
+                    if t.options.maxFileSize < options.maxFileSize:
+                        options.maxFileSize = t.options.maxFileSize
+                    if t.options.minPicSize > options.minPicSize:
+                        options.minPicSize = t.options.minPicSize
+                    if t.options.thumbSize < options.thumbSize:
+                        options.thumbSize = t.options.thumbSize
+        if optionsFlag:
+            options.imagelessThread = True
+            options.imagelessPost   = True
+            options.images   = True
+            options.enableSpoilers = True
+            options.maxFileSize = 2621440
+            options.minPicSize = 50
+            options.thumbSize = 250
         return options
         
     def __getPostTags(self, tagstr):

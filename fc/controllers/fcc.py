@@ -371,10 +371,10 @@ class FccController(BaseController):
                 
             tagsPermOk = True
             problemTags = []
-            disabledTags = lower(disabledTagsLine).split(',')
+            disabledTags = disabledTagsLine.lower().split(',')
             for tag in tags:
                 tagLengthProblem = ((not tag.options) or (tag.options and not tag.options.persistent)) and len(tag.tag)>maxTagLen
-                tagDisabled = lower(tag.tag) in disabledTags
+                tagDisabled = tag.tag.lower() in disabledTags
                 if (tagLengthProblem or tagDisabled):
                     tagsPermOk = False
                     errorMsg = _("Too long. Maximal length: %s" % maxTagLen)

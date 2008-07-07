@@ -36,6 +36,8 @@ def make_map():
     map.connect('/holySynod/invitePage', controller='fca', action='invitePage')
     map.connect('/holySynod/makeInvite', controller='fca', action='makeInvite')
     map.connect('/holySynod/manageSettings', controller='fca', action='manageSettings')
+    map.connect('/holySynod/manageExtensions', controller='fca', action='manageExtensions')
+    map.connect('/holySynod/manageExtensions/edit/:ext', controller='fca', ext='', action='editExtension')
     map.connect('/holySynod/manageBoards', controller='fca', action='manageBoards')
     map.connect('/holySynod/manageBoards/edit/:tag', controller='fca', tag='', action='editBoard')
     map.connect('/holySynod/manageUsers', controller='fca', action='manageUsers')

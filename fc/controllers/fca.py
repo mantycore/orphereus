@@ -207,6 +207,14 @@ class FcaController(BaseController):
         else:
             c.errorText = _('No such user exists.')
             return render('/wakaba.error.mako')
+    def manageExtensions(self):
+        c.extensions = meta.Session.query(Extension).order_by(Extension.type).all()
+        return render('/wakaba.manageExtensions.mako')
+    def editExtension(self,ext):
+        c.ext = meta.Session.query(Extension).filter(Extension.ext==ext).first()
+        if not c.ext:
+            c.ext = Extension()
+        return render('/wakaba.editExtension.mako')
     def manageQuestions(self):
         c.boardName = 'Questions management'
         return render('/wakaba.manageQuestions.mako')        

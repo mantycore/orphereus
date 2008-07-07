@@ -211,9 +211,27 @@ class FcaController(BaseController):
         c.extensions = meta.Session.query(Extension).order_by(Extension.type).all()
         return render('/wakaba.manageExtensions.mako')
     def editExtension(self,ext):
+        ext = filterText(request.POST.get('ext',ext))
+        if len(ext) > 10:
+            ext = ''
         c.ext = meta.Session.query(Extension).filter(Extension.ext==ext).first()
         if not c.ext:
             c.ext = Extension()
+            c.ext.ext = ext
+            c.ext.path = ''
+            c.ext.thwidth = 0
+            c.ext.thheight= 0
+            c.ext.type = 'image'
+        if request.POST.get('ext',False):
+            c.ext.path = filterText(request.POST.get('type',''))
+            c.ext.thwidth = request.POST.get('thwidth',0)
+            c.ext.thheight = request.POST.get('thheight',0)
+            c.ext.type = filterText(request.POST.get('type','image'))
+            if not c.ext.id:
+                meta.Session.save(c.ext)
+            meta.Session.commit()
+            addLogEntry(LOG_EVENT_EXTENSION_EDIT,_('Edited extension %s') % c.ext.ext)
+            c.message = _('Extension edited')
         return render('/wakaba.editExtension.mako')
     def manageQuestions(self):
         c.boardName = 'Questions management'

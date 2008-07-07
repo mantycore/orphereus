@@ -211,6 +211,8 @@ class FcaController(BaseController):
         c.extensions = meta.Session.query(Extension).order_by(Extension.type).all()
         return render('/wakaba.manageExtensions.mako')
     def editExtension(self,ext):
+        if not ext:
+            ext = ''
         ext = filterText(request.POST.get('ext',ext))
         if len(ext) > 10:
             ext = ''
@@ -223,7 +225,7 @@ class FcaController(BaseController):
             c.ext.thheight= 0
             c.ext.type = 'image'
         if request.POST.get('ext',False):
-            c.ext.path = filterText(request.POST.get('type',''))
+            c.ext.path = filterText(request.POST.get('path',''))
             c.ext.thwidth = request.POST.get('thwidth',0)
             c.ext.thheight = request.POST.get('thheight',0)
             c.ext.type = filterText(request.POST.get('type','image'))

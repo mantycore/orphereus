@@ -318,7 +318,7 @@ class FccController(BaseController):
             options.enableSpoilers = True
             options.maxFileSize = 2621440
             options.minPicSize = 50
-            options.thumbSize = 250
+            options.thumbSize = 180
         return options
         
     def __getPostTags(self, tagstr):

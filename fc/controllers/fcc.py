@@ -353,12 +353,32 @@ class FccController(BaseController):
             else:
                thread = thePost
             tags = thread.tags
-        else:
+        else:        
             tagstr = request.POST.get('tags',False)
             tags = self.__getPostTags(tagstr)
             if not tags:
-                c.errorText = "You should specify at least one board"
+                c.errorText = _("You should specify at least one board")
                 return render('/wakaba.error.mako')
+            
+            settingsMap = getSettingsMap()        
+            maxTagsCount = int(settingsMap['maxTagsCount'].value)
+            maxTagLen = int(settingsMap['maxTagLen'].value)
+            
+            if len(tags)>maxTagsCount:
+                c.errorText = _("Too many tags. Maximum allowed: %s") % (maxTagsCount)
+                return render('/wakaba.error.mako')
+                
+            tagsLenOk = True
+            problemTags = []
+            for tag in tags:
+                if ((not tag.options) or (tag.options and not tag.options.persistent)) and len(tag.tag)>maxTagLen:
+                    tagsLenOk = False
+                    problemTags.append(tag.tag)
+                    
+            if not tagsLenOk:
+                c.errorText = _("Too long: %s. Maximum tag length: %s") % (', '.join(problemTags), maxTagLen)
+                return render('/wakaba.error.mako')    
+                
         options = self.conjunctTagOptions(tags)
         if not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
             c.errorText = "Unacceptable combination of tags"
@@ -408,8 +428,9 @@ class FccController(BaseController):
             
         if postid:
             if not post.picid and not options.imagelessPost:
-                c.errorText = "Replies without image are not allowed"
+                c.errorText = _("Replies without image are not allowed")
                 return render('/wakaba.error.mako')
+                
             post.parentid = thread.id
             post.sage = request.POST.get('sage', False)
             if not post.sage:

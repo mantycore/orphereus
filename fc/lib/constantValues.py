@@ -7,10 +7,10 @@ uploadPathWeb = '/uploads/'
 markupFile = os.path.join(sys.path[0],'wakabaparse/mark.def')
 
 settingsDef = {
-    "title" : "ANOMA.Ch",
-#    "uploadPathLocal" : 'fc/public/uploads/',
-#    "uploadPathWeb" :  '/uploads/',
-    "invisibleBump" : 'true'
+    "title"         : "ANOMA.Ch",
+    "invisibleBump" : 'true',
+    "maxTagsCount"  : '5',
+    "maxTagLen"     : '6'
 }
 
 LOG_EVENT_SECURITY_IP   = 0x00000001

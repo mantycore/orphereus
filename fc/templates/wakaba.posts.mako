@@ -121,6 +121,7 @@ ${_('On this board:')}
 </div>
 <hr />
 <form action="/${c.PostAction}/delete" method="post">
+<input type="hidden" name="tagLine" value="${c.tagLine}">
 %for thread in c.threads:
     <div id="thread-${thread.id}">
         %if thread.file:

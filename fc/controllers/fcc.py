@@ -175,9 +175,12 @@ class FccController(BaseController):
             c.boardName = currentBoard.options and currentBoard.options.comment or ("/" + currentBoard.tag + "/")
         elif not tagList and tags:
             names = []
+            rawNames = []
             for t in tags:
                 names.append(t.options and t.options.comment or ("/" + t.tag + "/"))
+                rawNames.append(t.tag)
             c.boardName = " + ".join(names)
+            c.tagLine = "+".join(rawNames)
         else:
             c.boardName = "/" + board + "/"
             
@@ -344,7 +347,7 @@ class FccController(BaseController):
                             tags.append(Tag(t))
                         tagsl.append(t)      
             return tags
-    
+                    
     def processPost(self, postid=0, board=u''):
         if postid:
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
@@ -467,11 +470,12 @@ class FccController(BaseController):
     def GetThread(self, post, tempid):
         thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
 
+        #if thePost isn't op-post, using op-post instead
         if thePost and thePost.parentid != -1:
             thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.parentid).first()
             
         if not thePost:
-            c.errorText = "No such post exist."
+            c.errorText = _("No such post exist.")
             return render('/wakaba.error.mako')
             
         filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.id)
@@ -533,21 +537,32 @@ class FccController(BaseController):
         
     def DeletePost(self, post):
         fileonly = 'fileonly' in request.POST
+        redirectAddr = post
+             
+        opPostDeleted = False
         for i in request.POST:
             if re.compile("^\d+$").match(request.POST[i]):
-                self.processDelete(request.POST[i],fileonly)
-        return redirect_to(str('/%s' % post.encode('utf-8')))
+                opPostDeleted = opPostDeleted or self.processDelete(request.POST[i], fileonly)
+     
+        tagLine = request.POST.get('tagLine', False)
+        if opPostDeleted and tagLine:
+            redirectAddr = tagLine   
+            
+        return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
         
     def processDelete(self, postid, fileonly=False, checkOwnage=True):
         p = meta.Session.query(Post).get(postid)
+        opPostDeleted = False
         if p:
             if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
                 # print some error stuff here
-                return
+                return False
+                
             if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
                 addLogEntry(LOG_EVENT_POSTS_DELETE,_("Deleted post %s (owner %s)") % (p.id,p.uidNumber))
             
             if p.parentid == -1 and not fileonly:
+                opPostDeleted = True
                 for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
                     self.processDelete(postid=post.id,checkOwnage=False)
                     
@@ -580,6 +595,7 @@ class FccController(BaseController):
                             parent.bumpDate = parent.date
                 meta.Session.delete(p)
         meta.Session.commit()
+        return opPostDeleted
         
     def showProfile(self):
         c.templates = ['wakaba']

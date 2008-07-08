@@ -115,7 +115,6 @@ class FcaController(BaseController):
                         if count>0:
                             c.message = _("Board must be empty for deletion")                        
                         else:
-                            log.debug('delete')
                             meta.Session.delete(c.tag)                    
                             meta.Session.commit()
                             addLogEntry(LOG_EVENT_BOARD_EDIT,"Deleted board %s %s" % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))

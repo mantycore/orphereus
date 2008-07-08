@@ -147,8 +147,18 @@ class FccController(BaseController):
             extList.append(ext.ext)
         c.extLine = ', '.join(extList)
             
-        #xxx!!! dirty hack!!! what about another numbers??? todo fixme            
-        forbiddenTags = [7,14] 
+        #todo: improve acceess rights       
+        settingsMap = getSettingsMap()
+        adminTagsLine = settingsMap['adminOnlyTags'].value
+        forbiddenTags = []
+        adminTags = adminTagsLine.split(',')
+        for adminTag in adminTags:
+            atag = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==adminTag).first()
+            if atag:
+                forbiddenTags.append(atag.id)
+        
+        #log.debug(forbiddenTags)
+        #forbiddenTags = [7,14] 
         if not self.userInst.isAdmin():
             threadFilter = threadFilter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
             

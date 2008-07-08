@@ -11,7 +11,8 @@ settingsDef = {
     "invisibleBump" : 'true',
     "maxTagsCount"  : '5',
     "maxTagLen"     : '6',
-    "disabledTags"  : 'logout,authorize,register,youAreBanned,userProfile,holySynod'
+    "disabledTags"  : 'logout,authorize,register,youAreBanned,userProfile,holySynod',
+    "adminOnlyTags" : 'synod,logs'
 }
 
 LOG_EVENT_SECURITY_IP   = 0x00000001

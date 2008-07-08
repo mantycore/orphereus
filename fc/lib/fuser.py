@@ -21,9 +21,7 @@ class FUser(object):
         
         if uidNumber>-1:
             self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
-            
-            #log.debug(self.__user) 
-            
+                        
             if self.__user:
                 self.__valid = True                
 

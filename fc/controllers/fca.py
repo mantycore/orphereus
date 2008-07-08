@@ -111,16 +111,20 @@ class FcaController(BaseController):
                     c.tag.options.thumbSize = request.POST.get('thumbSize',250)
                     
                     if request.POST.get('deleteBoard', False) and c.tag.id:
-                        log.debug('delete')
-                        meta.Session.delete(c.tag)                    
-                        addLogEntry(LOG_EVENT_BOARD_EDIT,"Deleted board %s %s" % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))
-                        return redirect_to('/holySynod/manageBoards/')                       
+                        count = meta.Session.query(Post).filter(Post.tags.any(tag=tag)).count()
+                        if count>0:
+                            c.message = _("Board must be empty for deletion")                        
+                        else:
+                            log.debug('delete')
+                            meta.Session.delete(c.tag)                    
+                            meta.Session.commit()
+                            addLogEntry(LOG_EVENT_BOARD_EDIT,"Deleted board %s %s" % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))
+                            return redirect_to('/holySynod/manageBoards/')                       
                     elif not c.tag.id:
                         meta.Session.save(c.tag)
+                        meta.Session.commit()
                         addLogEntry(LOG_EVENT_BOARD_EDIT,"Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
-                        c.message = _("Updated board")                        
-                        
-                    meta.Session.commit()                  
+                        c.message = _("Updated board")                       
                 else:
                     c.message = _("Board %s already exists!") % newtag
             else:

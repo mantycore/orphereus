@@ -29,7 +29,7 @@
         %if pg == c.page:
             [${pg}]
         %else:
-            [<a href='holySynod/viewLog/${pg}'>${pg}</a>]
+            [<a href='/holySynod/viewLog/${pg}'>${pg}</a>]
         %endif
     %endfor
 </td></tr></tbody></table>

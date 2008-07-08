@@ -14,7 +14,7 @@
                     <td class="postblock">${_('Tag')}</td>
                     <td>
                         <input type="text" name="tag" size="35" value="${c.tag.tag}" />
-                        <a href="/${c.tag.tag}" target="_blank">Preview board</a>
+                        <a href="/${c.tag.tag}" target="_blank">Show board</a>
                     </td>
                 </tr>
                 <tr id="trtitle">

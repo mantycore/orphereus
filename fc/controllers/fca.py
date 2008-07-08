@@ -85,8 +85,8 @@ class FcaController(BaseController):
             c.tag.options.images = True
             c.tag.options.enableSpoilers = False
             c.tag.options.maxFileSize = 3145728
-            c.tag.options.minPicSize = 0
-            c.tag.options.thumbSize = 250
+            c.tag.options.minPicSize = 50
+            c.tag.options.thumbSize = 180
         if request.POST.get('tag',False):
             newtag = request.POST.get('tag',False)
             newtagre = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""").match(newtag)
@@ -109,16 +109,24 @@ class FcaController(BaseController):
                     c.tag.options.maxFileSize = request.POST.get('maxFileSize',3145728)
                     c.tag.options.minPicSize = request.POST.get('minPicSize',0)
                     c.tag.options.thumbSize = request.POST.get('thumbSize',250)
-                    if not c.tag.id:
+                    
+                    if request.POST.get('deleteBoard', False) and c.tag.id:
+                        log.debug('delete')
+                        meta.Session.delete(c.tag)                    
+                        addLogEntry(LOG_EVENT_BOARD_EDIT,"Deleted board %s %s" % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))
+                        return redirect_to('/holySynod/manageBoards/')                       
+                    elif not c.tag.id:
                         meta.Session.save(c.tag)
-                    meta.Session.commit()
-                    addLogEntry(LOG_EVENT_BOARD_EDIT,"Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
-                    c.message = _("Updated board")
+                        addLogEntry(LOG_EVENT_BOARD_EDIT,"Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
+                        c.message = _("Updated board")                        
+                        
+                    meta.Session.commit()                  
                 else:
                     c.message = _("Board %s already exists!") % newtag
             else:
                 c.message = _("Board name should be non-empty and should contain only valid symbols")
         return render('/wakaba.editBoard.mako')
+        
     def manageUsers(self):
         c.boardName = 'Users management'
         if request.POST.get("uid",False):

@@ -76,6 +76,12 @@
                         <input type="text" name="thumbSize" size="35" value="${c.tag.options.thumbSize}" />
                     </td>
                 </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('DELETE BOARD')}</td>
+                    <td>
+                        <input type="checkbox" name="deleteBoard"} />
+                    </td>
+                </tr>                
                 <tr>
                     <td colspan='2'><input type='submit' value='${_('Update')}'></td>
                 </tr>                           

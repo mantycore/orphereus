@@ -115,15 +115,17 @@ class FcaController(BaseController):
                         if count>0:
                             c.message = _("Board must be empty for deletion")                        
                         else:
-                            meta.Session.delete(c.tag)                    
-                            meta.Session.commit()
-                            addLogEntry(LOG_EVENT_BOARD_EDIT,"Deleted board %s %s" % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))
+                            meta.Session.delete(c.tag)        
+                            addLogEntry(LOG_EVENT_BOARD_EDIT, "Deleted board %s %s" % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))
+                            meta.Session.commit()                              
                             return redirect_to('/holySynod/manageBoards/')                       
-                    elif not c.tag.id:
-                        meta.Session.save(c.tag)
-                        meta.Session.commit()
-                        addLogEntry(LOG_EVENT_BOARD_EDIT,"Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
-                        c.message = _("Updated board")                       
+                    elif not c.tag.id:                    
+                        meta.Session.save(c.tag)                        
+                        
+                    c.message = _("Updated board")    
+                    addLogEntry(LOG_EVENT_BOARD_EDIT, "Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))                        
+                    meta.Session.commit()                       
+                                        
                 else:
                     c.message = _("Board %s already exists!") % newtag
             else:

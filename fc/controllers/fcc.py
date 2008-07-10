@@ -417,7 +417,7 @@ class FccController(BaseController):
         else:
            file = request.POST.get('file',False)
         if post.message:
-           if len(post.message) <= 64000:
+           if len(post.message) <= 20000:
                parser = WakabaParser()
                post.message = parser.parseWakaba(post.message,self)     
            else:

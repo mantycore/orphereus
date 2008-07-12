@@ -32,10 +32,10 @@ class FcajaxController(BaseController):
     def getPost(self,post):
         postInst = meta.Session.query(Post).get(post)
         if postInst:
-            if postInst.parent == -1:
+            if postInst.parentid == -1:
                 parent = postInst
             else:
-                parent = meta.Session.query(Post).get(postInst.parent)
+                parent = meta.Session.query(Post).get(postInst.parentid)
             settingsMap = getSettingsMap()
             forbiddenTags = getTagsListFromString(settingsMap['adminOnlyTags'].value)       
             for t in parent.tags:

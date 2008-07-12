@@ -7,6 +7,7 @@
         <link rel="stylesheet" type="text/css" href="/css/photon.css" title="Photon" />
 		<script type="text/javascript" src="/js/ui.js"></script>
 		<script type="text/javascript" src="/js/utils.js"></script>
+		<script type="text/javascript" src="/js/jquery-1.2.6.js"></script>
     </head>
     <body>
         <%include file="wakaba.menu.mako" />

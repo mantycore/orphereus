@@ -143,25 +143,25 @@ ${_('On this board:')}
         %endif
         <a name="i${thread.id}"></a>
         <label>
-			&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Delete'></a>
-			<div style="display:none" class="delete">		
+            &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Delete'></a>
+            <div style="display:none" class="delete">       
             %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                 <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
             %endif
-			%if c.isAdmin:
-				<a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>                   
-			%endif
-			</div>
+            %if c.isAdmin:
+                <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>                   
+            %endif
+            </div>
             <span class="filetitle">${thread.title}</span>  
             <span class="postername"></span>
             ${thread.date}
         </label>
         <span class="reflink">
-			%if c.board:
+            %if c.board:
                 <a href="/${thread.id}#i${thread.id}" onClick="doQuickReplyForm(event,${thread.id},${thread.id})">#${thread.id}</a>
-			%else:
+            %else:
                 <a href="javascript:insert('&gt;&gt;${thread.id}')" onClick="doQuickReplyForm(event,${thread.id},${thread.id})">#${thread.id}</a>
-			%endif 
+            %endif 
         </span>
         &nbsp;
         <span class="replytothread">
@@ -179,7 +179,7 @@ ${_('On this board:')}
             %if (c.count > 1) and thread.messageShort:
                 ${thread.messageShort}
                 <br />
-                ${_('Comment is too long.')} <a href="/${thread.id}#i${thread.id}"' onClick="getFullText(event,${thread.id},${thread.id});">${_('Full version')}</a>
+                ${_('Comment is too long.')} <a href="#" onClick="getFullText(event,${thread.id},${thread.id});">${_('Full version')}</a>
             %else:
                 ${thread.message}
             %endif
@@ -195,15 +195,15 @@ ${_('On this board:')}
                         <td class="reply" id="reply${p.id}">
                             <a name="i${p.id}"></a>
                             <label>
-								&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Del'></a>
-								<div style="display:none" class="delete">
+                                &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='/images/delete.gif' border=0 alt='x' title='Del'></a>
+                                <div style="display:none" class="delete">
                                 %if p.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                                     <input type="checkbox" name="delete-${p.id}" value="${p.id}" />
                                 %endif                              
-								%if c.isAdmin:
-									<a href="/holySynod/manageUsers/editAttempt/${p.id}">[User]</a>                                    
-								%endif
-								</div>
+                                %if c.isAdmin:
+                                    <a href="/holySynod/manageUsers/editAttempt/${p.id}">[User]</a>                                    
+                                %endif
+                                </div>
                                 %if p.sage:
                                     <img src='/images/sage.png'>
                                 %endif
@@ -212,11 +212,11 @@ ${_('On this board:')}
                                 ${p.date}
                             </label>
                             <span class="reflink">
-								%if c.board:
-									<a href="/${thread.id}#i${p.id}" onClick="doQuickReplyForm(event,${thread.id},${p.id})">#${p.id}</a>
-								%else:
-									<a href="javascript:insert('&gt;&gt;${p.id}')" onClick="doQuickReplyForm(event,${thread.id},${p.id})">#${p.id}</a>
-								%endif 
+                                %if c.board:
+                                    <a href="/${thread.id}#i${p.id}" onClick="doQuickReplyForm(event,${thread.id},${p.id})">#${p.id}</a>
+                                %else:
+                                    <a href="javascript:insert('&gt;&gt;${p.id}')" onClick="doQuickReplyForm(event,${thread.id},${p.id})">#${p.id}</a>
+                                %endif 
                                 %if p.file and p.file.width:
                                     [<a href="/${p.id}/oekakiDraw">Draw</a>]
                                 %endif                                                      

@@ -62,3 +62,12 @@ def checkAdminIP():
         return False
     else:
         return True
+
+def getTagsListFromString(string):
+    result = []
+    tags = string.split(',')
+    for tag in tags:
+        aTag = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==tag).first()
+        if aTag:
+            result.append(aTag.id)
+    return result

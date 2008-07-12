@@ -179,7 +179,7 @@ ${_('On this board:')}
             %if (c.count > 1) and thread.messageShort:
                 ${thread.messageShort}
                 <br />
-                ${_('Comment is too long.')}<a href="/${thread.id}#i${thread.id}"' onClick="getFullText(event,${thread.id},${thread.id});">${_('Full version')}</a>
+                ${_('Comment is too long.')} <a href="/${thread.id}#i${thread.id}"' onClick="getFullText(event,${thread.id},${thread.id});">${_('Full version')}</a>
             %else:
                 ${thread.message}
             %endif
@@ -242,7 +242,7 @@ ${_('On this board:')}
                                 %if (c.count > 1) and p.messageShort:
                                     ${p.messageShort}
                                     <br />
-                                    ${_('Comment is too long.')}<a href="/${thread.id}#i${p.id}"' onClick="getFullText(event,${thread.id},${p.id});">${_('Full version')}</a>
+                                    ${_('Comment is too long.')} <a href="/${thread.id}#i${p.id}"' onClick="getFullText(event,${thread.id},${p.id});">${_('Full version')}</a>
                                 %else:
                                     ${p.message}
                                 %endif                            

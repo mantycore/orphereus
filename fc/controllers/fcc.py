@@ -359,6 +359,7 @@ class FccController(BaseController):
             return tags
                     
     def processPost(self, postid=0, board=u''):
+        settingsMap = getSettingsMap()
         if postid:
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
             if thePost.parentid != -1:
@@ -373,7 +374,6 @@ class FccController(BaseController):
                 c.errorText = _("You should specify at least one board")
                 return render('/wakaba.error.mako')
             
-            settingsMap = getSettingsMap()        
             maxTagsCount = int(settingsMap['maxTagsCount'].value)
             maxTagLen = int(settingsMap['maxTagLen'].value)
             disabledTagsLine = settingsMap['disabledTags'].value
@@ -419,7 +419,8 @@ class FccController(BaseController):
         if post.message:
            if len(post.message) <= 15000:
                parser = WakabaParser()
-               parsedMessage = parser.parseWakaba(post.message,self,lines=settingsMap['maxLinesInPost'])
+               maxLinesInPost = int(settingsMap['maxLinesInPost'].value)
+               parsedMessage = parser.parseWakaba(post.message,self,lines=maxLinesInPost)
                post.message = parsedMessage[0]
                post.messageShort = parsedMessage[1]
            else:

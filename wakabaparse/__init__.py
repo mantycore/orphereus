@@ -8,15 +8,17 @@ from fc.lib.constantValues import *
 
 class WakabaParser(object):
     def __init__(self, definition = markupFile, baseProd = 'all'):
-        self.plain  = ['safe_text','text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nou']
-        self.simple = {'strong':'strong','emphasis':'em','strikeout':'del'}
-        self.complex= ['reference','signature','block_code','block_cite','block_list','inline_spoiler','block_spoiler','link']
+        self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nou']
+        self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','inline_spoiler':"span class='spoiler'"}
+        self.complex= ['reference','signature','link']
+        self.block  = {'block_code':'code','block_spoiler':"div class='spoiler'"}
+        self.line   = ['inline_full','text']
+        self.mline  = ['block_cite','block_list']
         self.input  = u''
         self.calledBy = None
         self.baseProd = baseProd
         self.defl = open(definition).read()
         self.parser = generator.buildParser(self.defl).parserbyname(baseProd)
-        
     def PrintTree(self, Node, Depth):
         for tag, beg, end, parts in Node:
             print ''.ljust(Depth,"\t") + tag + '=' + self.input[beg:end]
@@ -25,58 +27,7 @@ class WakabaParser(object):
 
     def link(self, tag, beg, end, parts):
         return '<a href="%s">%s</a>' % (self.input[beg:end],self.input[beg:end])
-    def block_cite(self, tag, beg, end, parts):
-        depth = 0
-        n = 0
-        result = '<blockquote>'
-        for citeline, clbeg, clend, clparts in parts:
-            if len(clparts) > 1:
-                i = 1
-                while clparts[i][0] == 'sub_cite':
-                    i += 1
-                i -= 1
-            else:
-                i = 0
-            if i > depth:
-                result += ('<blockquote>' * (i - depth))
-                depth = i
-            elif i < depth:
-                result += ('</blockquote>' * (depth - i))
-                depth = i
-            elif n:
-                result += '<br />'
-            result += ('&gt; ' * (depth + 1)) + self.formatInHTML(clparts)
-            n += 1
-        result += ('</blockquote>' * (depth + 1)) 
-        return result
-    def block_code(self, tag, beg, end, parts):
-        if parts:
-            return "<code>" + self.formatInHTML(parts) + "</code>"
-    def block_list(self, tag, beg, end, parts):
-        fNL = (parts[0][3][1][0] == 'numlist')
-        if fNL:
-            result = '<ol>'
-        else:
-            result = '<ul>'
-        for citeline, clbeg, clend, clparts in parts:
-            if fNL != (clparts[1][0] == 'numlist'):
-                fNL = not fNL
-                if fNL:
-                    result += '</ul><ol>'
-                else:
-                    result += '</ol><ul>'
-            result += '<li>' + self.formatInHTML(clparts) + '</li>'
-        if fNL:
-            result += '</ol>'
-        else:
-            result += '</ul>'
-        return result
-    def inline_spoiler(self, tag, beg, end, parts):
-        if parts:
-            return "<span class='spoiler'>" + self.formatInHTML(parts) + "</span>"
-    def block_spoiler(self, tag, beg, end, parts):
-        if parts:
-            return "<div class='spoiler'>" + self.formatInHTML(parts) + "</div>"
+        
     def reference(self, tag, beg, end, parts):
         n,i,j,p = parts[0]
         number = self.input[i:j]
@@ -103,6 +54,65 @@ class WakabaParser(object):
                 sep = ','
             result += '</span>'
         return result
+
+    def openTag(self, tag, quantity=1)
+        tagName = tag.split()[0]
+        for i in range(0,quantity):
+            self.result += "<%s>" % tag
+            self.tags.append(tagName)
+
+    def closeTag(self,quantity=1)
+        for i in range(0,quantity):
+            tag = self.tags.pop()
+            self.result += "</%s>" % tag
+
+    def block_cite(self, tag, beg, end, parts):
+        depth = 0
+        n = 0
+        self.openTag('blockquote')
+        for citeline, clbeg, clend, clparts in parts:
+            if len(clparts) > 1:
+                i = 1
+                while clparts[i][0] == 'sub_cite':
+                    i += 1
+                i -= 1
+            else:
+                i = 0
+            if i > depth:
+                self.openTag('blockquote',i - depth)
+                depth = i
+            elif i < depth:
+                self.closeTag(depth - 1)
+                depth = i
+            elif n:
+                self.result += '<br />'
+            self.result += ('&gt; ' * (depth + 1))
+            self.formatInHTML(clparts)
+            n += 1
+        self.closeTag(depth + 1)
+        return result
+    def block_list(self, tag, beg, end, parts):
+        fNL = (parts[0][3][1][0] == 'numlist')
+        if fNL:
+            self.openTag('ol')
+        else:
+            self.openTag('ul')
+        for citeline, clbeg, clend, clparts in parts:
+            if fNL != (clparts[1][0] == 'numlist'):
+                fNL = not fNL
+                if fNL:
+                    self.closeTag()
+                    self.openTag('ol')
+                else:
+                    self.closeTag()
+                    self.openTag('ul')
+            self.openTag('li')
+            if clparts:
+                self.formatInHTML(clparts)
+            self.closeTag()
+        self.closeTag()
+        return result
+        
     def formatInHTML(self, Nodes):
         result = ''
         fP = False
@@ -111,43 +121,69 @@ class WakabaParser(object):
             if tag in self.plain:
                 result += filterText(self.input[beg:end])
             elif tag in self.simple and parts:
-                result += '<' + self.simple[tag]+ '>' + self.formatInHTML(parts) + '</' + self.simple[tag]+ '>'
-            elif tag in self.complex:
+                tagName = tag.split()[0]
+                result += '<' + self.simple[tag]+ '>' + self.formatInHTML(parts) + '</' + self.simple[tagName]+ '>'
+            elif tag in self.complex and parts:
+                result += getattr(self,tag)(tag, beg, end, parts)
+
+            elif tag in self.line:
+                self.lines += 1
+                if parts:
+                    self.result += self.formatInHTML(parts)
+                if not self.linesFlag and self.lines > self.maxLines:
+                    self.linesFlag = True
+                    self.short = self.result
+                    if self.tags:
+                        for t in tags[::-1]:
+                            self.short += "</%s>" % t
+            elif tag in self.block:
+                self.openTag(self.block[tag])
+                if parts:
+                    self.formatInHTML(parts)
+                self.closeTag()
+            elif tag in self.mline:
                 if fP:
                     fP = False
-                    result += '</p>'
-                result += getattr(self,tag)(tag, beg, end, parts)
+                    self.result += '</p>'
+                getattr(self,tag)(tag, beg, end, parts)
             elif tag == 'line' or tag == 'spoiler_line':
                 if fP and len(parts) > 1:
-                    result += '<br />'
+                    self.result += '<br />'
                 elif len(parts) > 1:
                     fP = True
-                    result += '<p>'
+                    self.result += '<p>'
                 elif fP:
                     fP = False
-                    result += '</p>'
-                result += self.formatInHTML(parts)
+                    self.result += '</p>'
+                if parts:
+                    self.formatInHTML(parts)
             elif tag == 'code':
                 if fC:
-                    result += '<br />'
+                    self.result += '<br />'
                 else:
                     fC = True
-                result += self.formatInHTML(parts)
+                self.formatInHTML(parts)
             elif tag == 'newline':
-                result += "\r\n"
+                self.result += "\r\n"
             elif parts:
                 result += self.formatInHTML(parts)
         if fP:
             fP = False
-            result += '</p>'
+            self.result += '</p>'
         return result
 
-    def parseWakaba(self, message, o):
+    def parseWakaba(self, message, o, lines=20):
         self.input = "\n" + message
         self.calledBy = o
+        self.maxLines = lines
+        self.lines = 0
+        self.linesFlag = False
+        self.result = ''
+        self.short = ''
+        self.tags = []
         taglist = TextTools.tag(self.input, self.parser)
         result = self.formatInHTML(taglist[1])
-        return result
+        return (self.result,self.short)
 
     def getTagList(self, message):
     	self.input = "\n" + message

@@ -26,7 +26,7 @@ inline_full     := (inline_code / reference / signature / inline_spoiler / strik
 line            := newline, inline_full?
 sub_cite        := whitespace?, ?-reference, '>'
 cite            := newline, whitespace?, ?-reference, '>', sub_cite*, inline_full?
-numlist         := [0-9], '.'
+numlist         := [0-9]+, '.'
 sub_list        := whitespace, ('*'/numlist), ?whitespace
 list            := newline, whitespace?, ('*'/numlist), sub_list*, ?whitespace, inline_full?
 code            := newline, whitespace, text
@@ -36,4 +36,3 @@ block_list      := list+
 block_code      := code+
 block_spoiler   := newline, '%%', (block_cite / block_list / block_code / spoiler_line)+, newline, '%%'
 all             := (block_spoiler / block_cite / block_list / block_code / line)+
-

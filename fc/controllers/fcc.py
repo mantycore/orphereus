@@ -138,16 +138,7 @@ class FccController(BaseController):
         c.uidNumber = self.userInst.uidNumber()
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = self.userInst.isAdmin()
-        count = threadFilter.count()
         
-        #I think its not best solution TODO FIXME // Redone this horrible code :P       
-        extensions = meta.Session.query(Extension).all()
-        extList = []
-        for ext in extensions:
-            extList.append(ext.ext)
-        c.extLine = ', '.join(extList)
-            
-        #todo: improve acceess rights       
         settingsMap = getSettingsMap()
         adminTagsLine = settingsMap['adminOnlyTags'].value
         forbiddenTags = []
@@ -156,11 +147,18 @@ class FccController(BaseController):
             atag = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==adminTag).first()
             if atag:
                 forbiddenTags.append(atag.id)
-        
-        #log.debug(forbiddenTags)
-        #forbiddenTags = [7,14] 
+
         if not self.userInst.isAdmin():
             threadFilter = threadFilter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
+        
+        count = threadFilter.count()
+        
+        #I think its not best solution TODO FIXME // Redone this horrible code :P       
+        extensions = meta.Session.query(Extension).all()
+        extList = []
+        for ext in extensions:
+            extList.append(ext.ext)
+        c.extLine = ', '.join(extList)
             
         if count > 1:
             p = divmod(count, self.userInst.threadsPerPage())
@@ -179,7 +177,9 @@ class FccController(BaseController):
             c.page  = False
             c.pages = False
             c.threads = []
-
+            
+        c.count = count
+        
         if tagList and len(tagList) == 1 and tags:
             currentBoard = tags[0]
             c.boardName = currentBoard.options and currentBoard.options.comment or ("/" + currentBoard.tag + "/")
@@ -419,7 +419,9 @@ class FccController(BaseController):
         if post.message:
            if len(post.message) <= 15000:
                parser = WakabaParser()
-               post.message = parser.parseWakaba(post.message,self)     
+               parsedMessage = parser.parseWakaba(post.message,self,lines=settingsMap['maxLinesInPost'])
+               post.message = parsedMessage[0]
+               post.messageShort = parsedMessage[1]
            else:
                c.errorText = _('Message is too long')
                return render('/wakaba.error.mako')

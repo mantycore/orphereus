@@ -55,13 +55,13 @@ class WakabaParser(object):
             result += '</span>'
         return result
 
-    def openTag(self, tag, quantity=1)
+    def openTag(self, tag, quantity=1):
         tagName = tag.split()[0]
         for i in range(0,quantity):
             self.result += "<%s>" % tag
             self.tags.append(tagName)
 
-    def closeTag(self,quantity=1)
+    def closeTag(self,quantity=1):
         for i in range(0,quantity):
             tag = self.tags.pop()
             self.result += "</%s>" % tag

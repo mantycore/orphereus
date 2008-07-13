@@ -13,7 +13,7 @@ import Image
 import os
 import hashlib
 import re
-import pickler
+import pickle
 
 class FUser(object):
     def __init__(self, uidNumber = -1):
@@ -37,9 +37,13 @@ class FUser(object):
                     self.__user.options.canMakeInvite = 0                     
                     self.__user.options.canChangeRights = 0  
                     self.__user.options.isAdmin = False
-                    self.__user.options.homeExclude = pickler.dumps([])
+                    self.__user.options.homeExclude = pickle.dumps([])
                     meta.Session.commit()                  
-
+                
+                if not self.__user.options.homeExclude:
+                    self.__user.options.homeExclude = pickle.dumps([])
+                    meta.Session.commit()
+                
                 #it could be replaced by __user.* ... But it can reduce performance in case of using AutoCommit... So I'm using additional fields
                 self.__threadsPerPage = self.__user.options.threadsPerPage #session['options']['threadsPerPage']
                 self.__repliesPerThread = self.__user.options.repliesPerThread #session['options']['repliesPerThread']
@@ -49,7 +53,7 @@ class FUser(object):
                 self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
                 self.__canMakeInvite = self.__user.options.canMakeInvite and self.__isAdmin
                 self.__canChangeRights = self.__user.options.canChangeRights and self.__isAdmin
-                self.__homeExclude = pickler.loads(self.__user.options.homeExclude)
+                self.__homeExclude = pickle.loads(self.__user.options.homeExclude)
                 self.__filters = self.__user.filters
                 self.__valid = True
                 
@@ -69,8 +73,8 @@ class FUser(object):
         return self.__filters
     def homeExclude(self, value = False):
         if value:
-            self.__user.options.homeExclude = pickler.dumps(value)
-            self.__homeExclude = pickler.loads(self.__user.options.homeExclude)
+            self.__user.options.homeExclude = pickle.dumps(value)
+            self.__homeExclude = pickle.loads(self.__user.options.homeExclude)
         return self.__homeExclude
     def threadsPerPage(self, value = False):
     	if value:

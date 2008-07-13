@@ -30,6 +30,7 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("repliesPerThread", sa.types.Integer, nullable=False),
     sa.Column("style"    , sa.types.String(32), nullable=False),
     sa.Column("template" , sa.types.String(32), nullable=False),
+    sa.Column("homeExclude", sa.types.String(256), nullable=False),
     sa.Column("bantime"  , sa.types.Integer, nullable=False),
     sa.Column("banreason", sa.types.String(256), nullable=True),
     sa.Column("isAdmin"  , sa.types.Boolean, nullable=True),
@@ -37,7 +38,11 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("canMakeInvite", sa.types.Boolean, nullable=True),   
     sa.Column("canChangeRights", sa.types.Boolean, nullable=True)
     )
-    
+t_userFilters = sa.Table("userFilters", meta.metadata,
+    sa.Column("id"    ,sa.types.Integer, primary_key=True),
+    sa.Column("uidNumber",sa.types.Integer, sa.ForeignKey('users.uidNumber')),
+    sa.Column("filter"    , sa.types.String(64), nullable=False)
+    )
 t_log = sa.Table("log", meta.metadata,
     sa.Column("id"    , sa.types.Integer, primary_key=True),
     sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('users.uidNumber')),
@@ -131,7 +136,8 @@ class User(object):
     
 class UserOptions(object):
     pass
-
+class UserFilters(object):
+    pass
 class Extension(object):
     pass
 
@@ -158,8 +164,10 @@ class LogEntry(object):
 orm.mapper(Oekaki, t_oekaki)
 orm.mapper(Invite, t_invites)
 orm.mapper(UserOptions, t_userOptions)
+orm.mapper(UserFilters, t_userFilters)
 orm.mapper(User, t_users, properties = {    
-        'options' : orm.relation(UserOptions, uselist=False, backref='t_users')    
+        'options' : orm.relation(UserOptions, uselist=False, backref='t_users'),
+        'filters' : orm.relation(UserFilters)
     })
 
 orm.mapper(Extension, t_extlist)

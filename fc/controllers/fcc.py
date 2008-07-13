@@ -89,7 +89,7 @@ class FccController(BaseController):
                 if arg == '@':
                     return (buildMyPostsFilter(),[])
                 elif arg == '~':
-                    return (Post.parentid==-1,[])
+                    return (not_(Post.tags.any(Tag.id.in_(self.userInst.homeExclude()))),[])
                 else:
                     return (Post.tags.any(tag=arg),[arg])
             else:

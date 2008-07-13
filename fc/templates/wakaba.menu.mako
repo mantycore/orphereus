@@ -13,6 +13,14 @@
     %if c.userInst.isAdmin():
         [<a href="/holySynod/">${_('Holy Synod')}</a>]
     %endif 
-    [<a href="/logout/">${_('Logout')}</a>]    
+    [<a href="/logout/">${_('Logout')}</a>]
+    %if c.userInst.filters():
+        <br />
+        [
+        %for f in c.userInst.filters():
+            <a href="/${f.filter}/">/${f.filter}/</a>
+        %endfor
+        ]
+    %endif
 </div>
 %endif

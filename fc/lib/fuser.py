@@ -37,6 +37,7 @@ class FUser(object):
                     self.__user.options.canMakeInvite = 0                     
                     self.__user.options.canChangeRights = 0  
                     self.__user.options.isAdmin = False
+                    self.__user.options.hideLongComments = True
                     self.__user.options.homeExclude = pickle.dumps([])
                     meta.Session.commit()                  
                 
@@ -50,6 +51,7 @@ class FUser(object):
                 self.__style = self.__user.options.style #session['options']['style']
                 self.__template =  self.__user.options.template #session['options']['template']
                 self.__isAdmin = self.__user.options.isAdmin                
+                self.__hideLongComments = self.__user.options.hideLongComments
                 self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
                 self.__canMakeInvite = self.__user.options.canMakeInvite and self.__isAdmin
                 self.__canChangeRights = self.__user.options.canChangeRights and self.__isAdmin
@@ -71,6 +73,10 @@ class FUser(object):
         return self.__user.uid
     def filters(self):
         return self.__filters
+    def hideLongComments(self,value=None):
+        if value != None:
+            self.__user.options.hideLongComments = value
+        return self.__hideLongComments
     def homeExclude(self, value = False):
         if value:
             self.__user.options.homeExclude = pickle.dumps(value)

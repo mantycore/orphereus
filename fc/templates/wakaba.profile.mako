@@ -24,6 +24,10 @@
                     <td><input name='repliesPerThread' value='${c.userInst.repliesPerThread()}'></td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Hide long comments')}</td>
+                    <td><input type="checkbox" name='hideLongComments' ${c.userInst.hideLongComments() and "checked" or ""}></td>
+                </tr>                
+                <tr>
                     <td class="postblock">${_('Home filter exclusions')}</td>
                     <td><input name='homeExclude' value='${c.homeExclude}'></td>
                 </tr>                

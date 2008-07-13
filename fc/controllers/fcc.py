@@ -623,6 +623,7 @@ class FccController(BaseController):
             repliesPerThread = request.POST.get('repliesPerThread',self.userInst.repliesPerThread())
             if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
                 self.userInst.repliesPerThread(repliesPerThread)
+            self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
             homeExcludeTags = self.__getPostTags(request.POST.get('homeExclude',''))
             homeExcludeList = []
             for t in homeExcludeTags:

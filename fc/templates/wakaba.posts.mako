@@ -176,7 +176,7 @@ ${_('On this board:')}
         %endfor
         </span>
         <blockquote class="postbody" id="quickReplyNode${thread.id}">
-            %if (c.count > 1) and thread.messageShort:
+            %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():
                 ${thread.messageShort}
                 <br />
                 ${_('Comment is too long.')} <a href="/${thread.id}#i${thread.id}" onClick="getFullText(event,${thread.id},${thread.id});">${_('Full version')}</a>
@@ -239,7 +239,7 @@ ${_('On this board:')}
                                     <img src='/images/picDeleted.png' class="thumb">                                    
                                 %endif
                             <blockquote class="postbody" id="postBQId${p.id}">
-                                %if (c.count > 1) and p.messageShort:
+                                %if (c.count > 1) and p.messageShort and c.userInst.hideLongComments():
                                     ${p.messageShort}
                                     <br />
                                     ${_('Comment is too long.')} <a href="/${thread.id}#i${p.id}"' onClick="getFullText(event,${thread.id},${p.id});">${_('Full version')}</a>

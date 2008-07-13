@@ -181,6 +181,7 @@ function getFullText(event, thread, post) {
     $.get('/ajax/getPost/' + post, {}, function(response){
       $(bq).html(response);
     });
+    event.preventDefault();
 }
 window.onload=function(e)
 {

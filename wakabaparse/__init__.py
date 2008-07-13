@@ -123,7 +123,7 @@ class WakabaParser(object):
             elif tag in self.simple and parts:
                 tagName = tag.split()[0]
                 result += '<' + self.simple[tag]+ '>' + self.formatInHTML(parts) + '</' + self.simple[tagName]+ '>'
-            elif tag in self.complex and parts:
+            elif tag in self.complex:
                 result += getattr(self,tag)(tag, beg, end, parts)
 
             elif tag in self.line:

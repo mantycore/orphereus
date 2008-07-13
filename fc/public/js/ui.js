@@ -174,14 +174,40 @@ function hideQuickReplyForm(objEvent)
     { ; }
     objEvent.preventDefault();
 }
-function getFullText(event, thread, post) {
+function getFullText(event, thread, post)
+{
     var bq = document.getElementById('postBQId' + post);
     if (!bq) bq = document.getElementById('quickReplyNode' + post);
 
-    $.get('/ajax/getPost/' + post, {}, function(response){
+    $.get('/ajax/getPost/' + post, {}, function(response)
+    {
       $(bq).html(response);
     });
     event.preventDefault();
+}
+function userFiltersAdd(event)
+{
+	$.get('/ajax/addUserFilter/' + $('#newFilterInput').get()[0].value, {}, function(response)
+	{
+		$(response).insertBefore('#newFilterTR')
+	});
+	event.preventDefault();
+}
+function userFiltersEdit(event,fid)
+{
+	$.get('/ajax/editUserFilter/' + fid + '/' + $('#filterId' + fid + 'Input').get()[0].value, {}, function(response)
+	{
+		$('#filterId' + fid + 'Input').get()[0].value = response
+	});
+	event.preventDefault();
+}
+function userFiltersDelete(event,fid)
+{
+	$.get('/ajax/deleteUserFilter/' + fid, {}, function(response)
+	{
+		$('#filterId' + fid).remove()
+	});
+	event.preventDefault();
 }
 window.onload=function(e)
 {

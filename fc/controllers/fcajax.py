@@ -60,7 +60,7 @@ class FcajaxController(BaseController):
         meta.Session.commit()
         return ''
         
-     def addUserFilter(self,filter):
+    def addUserFilter(self,filter):
         userFilter = UserFilters()
         userFilter.uidNumber = self.userInst.uidNumber()
         userFilter.filter = filterText(filter)

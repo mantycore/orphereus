@@ -130,6 +130,8 @@ class WakabaParser(object):
                 self.lines += 1
                 if parts:
                     self.result += self.formatInHTML(parts)
+                else:
+                    self.result += filterText(self.input[beg:end])
                 if not self.linesFlag and self.lines > self.maxLines:
                     self.linesFlag = True
                     self.short = self.result

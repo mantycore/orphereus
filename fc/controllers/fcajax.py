@@ -44,3 +44,27 @@ class FcajaxController(BaseController):
             return postInst.message
         else:
             abort(404)
+    def editUserFilter(self,fid,filter):
+        userFilter = meta.Session.query(UserFilters).get(fid)
+        if not userFilter or userFilter.uidNumber != self.userInst.uidNumber():
+            abort(404)
+        userFilter.filter = filterText(filter)
+        meta.Session.commit()
+        return userFilter.filter
+    
+    def deleteUserFilter(self,fid):
+        userFilter = meta.Session.query(UserFilters).get(fid)
+        if not userFilter or userFilter.uidNumber != self.userInst.uidNumber():
+            abort(404)
+        meta.Session.delete(userFilter)
+        meta.Session.commit()
+        return ''
+        
+     def addUserFilter(self,filter):
+        userFilter = UserFilters()
+        userFilter.uidNumber = self.userInst.uidNumber()
+        userFilter.filter = filterText(filter)
+        meta.Session.save(userFilter)
+        meta.Session.commit()
+        c.userFilter = userFilter
+        return render('/ajax.addUserFilter.mako')

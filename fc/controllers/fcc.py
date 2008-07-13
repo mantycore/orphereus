@@ -610,7 +610,7 @@ class FccController(BaseController):
         c.templates = ['wakaba']
         c.styles    = ['photon']
         c.profileChanged = False
-        if request.POST:
+        if request.POST.get('update',False):
             template = request.POST.get('template',self.userInst.template())
             if template in c.templates:
                 self.userInst.template(template)
@@ -623,6 +623,11 @@ class FccController(BaseController):
             repliesPerThread = request.POST.get('repliesPerThread',self.userInst.repliesPerThread())
             if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
                 self.userInst.repliesPerThread(repliesPerThread)
+            homeExcludeTags = self.__getPostTags(request.POST.get('homeExclude',''))
+            homeExcludeList = []
+            for t in homeExcludeTags:
+                homeExcludeList.append(t.id)
+            self.userInst.homeExclude(homeExcludeList)
             c.profileChanged = True
             meta.Session.commit()
         homeExcludeTags = meta.Session.query(Tag).filter(Tag.id.in_(self.userInst.homeExclude())).all()

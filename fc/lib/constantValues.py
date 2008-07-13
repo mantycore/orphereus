@@ -13,7 +13,8 @@ settingsDef = {
     "maxTagLen"     : '6',
     "disabledTags"  : 'logout,authorize,register,youAreBanned,userProfile,holySynod',
     "adminOnlyTags" : 'synod,logs',
-    "maxLinesInPost": '15'
+    "maxLinesInPost": '15',
+    "cutSymbols"    : '5000',
 }
 
 LOG_EVENT_SECURITY_IP   = 0x00000001

@@ -132,7 +132,7 @@ class WakabaParser(object):
                     self.result += self.formatInHTML(parts)
                 else:
                     self.result += filterText(self.input[beg:end])
-                if not self.linesFlag and self.lines > self.maxLines:
+                if not self.linesFlag and (self.lines > self.maxLines or len(self.result) > self.maxLen):
                     self.linesFlag = True
                     self.short = self.result
                     if self.tags:
@@ -174,10 +174,11 @@ class WakabaParser(object):
             self.result += '</p>'
         return result
 
-    def parseWakaba(self, message, o, lines=20):
+    def parseWakaba(self, message, o, lines=20, maxLen=5000):
         self.input = "\n" + message
         self.calledBy = o
         self.maxLines = lines
+        self.maxLen = maxLen
         self.lines = 0
         self.linesFlag = False
         self.result = ''

@@ -415,7 +415,8 @@ class FccController(BaseController):
            if len(post.message) <= 15000:
                parser = WakabaParser()
                maxLinesInPost = int(settingsMap['maxLinesInPost'].value)
-               parsedMessage = parser.parseWakaba(post.message,self,lines=maxLinesInPost)
+               cutSymbols = int(settingsMap["cutSymbols"].value)
+               parsedMessage = parser.parseWakaba(post.message,self,lines=maxLinesInPost,maxLen=cutSymbols)
                post.message = parsedMessage[0]
                post.messageShort = parsedMessage[1]
            else:

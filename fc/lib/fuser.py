@@ -76,6 +76,7 @@ class FUser(object):
     def hideLongComments(self,value=None):
         if value != None:
             self.__user.options.hideLongComments = value
+            self.__hideLongComments = self.__user.options.hideLongComments
         return self.__hideLongComments
     def homeExclude(self, value = False):
         if value:

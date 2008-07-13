@@ -175,8 +175,11 @@ function hideQuickReplyForm(objEvent)
     objEvent.preventDefault();
 }
 function getFullText(event, thread, post) {
+    var bq = document.getElementById('postBQId' + post);
+    if (!bq) bq = document.getElementById('quickReplyNode' + post);
+
     $.get('/ajax/getPost/' + post, {}, function(response){
-      $('#postBQId' + post).html(response);
+      $(bq).html(response);
     });
 }
 window.onload=function(e)

@@ -625,5 +625,10 @@ class FccController(BaseController):
                 self.userInst.repliesPerThread(repliesPerThread)
             c.profileChanged = True
             meta.Session.commit()
+        homeExcludeTags = meta.Session.query(Tag).filter(Tag.id.in_(self.userInst.homeExclude())).all()
+        homeExcludeList = []
+        for t in homeExcludeTags:
+            homeExcludeList.append(t.tag)
+        c.homeExclude = ', '.join(homeExcludeList)
         c.userInst = self.userInst
         return render('/wakaba.profile.mako')

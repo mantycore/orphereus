@@ -78,8 +78,8 @@ class FUser(object):
             self.__user.options.hideLongComments = value
             self.__hideLongComments = self.__user.options.hideLongComments
         return self.__hideLongComments
-    def homeExclude(self, value = False):
-        if value:
+    def homeExclude(self, value = None):
+        if value != None:
             self.__user.options.homeExclude = pickle.dumps(value)
             self.__homeExclude = pickle.loads(self.__user.options.homeExclude)
         return self.__homeExclude

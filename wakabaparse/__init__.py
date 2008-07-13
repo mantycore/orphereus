@@ -111,7 +111,7 @@ class WakabaParser(object):
                 self.formatInHTML(clparts)
             self.closeTag()
         self.closeTag()
-        return result
+        return ''
         
     def formatInHTML(self, Nodes):
         result = ''

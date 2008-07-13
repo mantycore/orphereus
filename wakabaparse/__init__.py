@@ -90,7 +90,7 @@ class WakabaParser(object):
             self.formatInHTML(clparts)
             n += 1
         self.closeTag(depth + 1)
-        return result
+        return ''
     def block_list(self, tag, beg, end, parts):
         fNL = (parts[0][3][1][0] == 'numlist')
         if fNL:
@@ -134,7 +134,7 @@ class WakabaParser(object):
                     self.linesFlag = True
                     self.short = self.result
                     if self.tags:
-                        for t in tags[::-1]:
+                        for t in self.tags[::-1]:
                             self.short += "</%s>" % t
             elif tag in self.block:
                 self.openTag(self.block[tag])

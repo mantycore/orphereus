@@ -472,7 +472,7 @@ class FccController(BaseController):
                 rboard = u'/'+board+u'/'
             else:
                 print request.headers.get('REFERER','')
-                ref = re.compile(r'(/[^/]+/)$').search(request.headers.get('REFERER',''))
+                ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER',''))
                 if ref:
                     rboard = ref.groups()[0]
                 else:

@@ -135,6 +135,7 @@ class WakabaParser(object):
                 if not self.linesFlag and (self.lines > self.maxLines or len(self.result) > self.maxLen):
                     self.linesFlag = True
                     self.short = self.result
+                    self.linesCutted = self.lines
                     if self.tags:
                         for t in self.tags[::-1]:
                             self.short += "</%s>" % t
@@ -180,10 +181,13 @@ class WakabaParser(object):
         self.maxLines = lines
         self.maxLen = maxLen
         self.lines = 0
+        self.linesCutted = 0
         self.linesFlag = False
         self.result = ''
         self.short = ''
         self.tags = []
+        if self.short and self.linesCutted == self.lines:
+            self.short = ''
         taglist = TextTools.tag(self.input, self.parser)
         result = self.formatInHTML(taglist[1])
         return (self.result,self.short)

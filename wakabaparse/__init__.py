@@ -8,8 +8,8 @@ from fc.lib.constantValues import *
 
 class WakabaParser(object):
     def __init__(self, definition = markupFile, baseProd = 'all'):
-        self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nou']
-        self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','inline_spoiler':"span class='spoiler'"}
+        self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nou','accent_code','noaccent_code']
+        self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','inline_spoiler':"span class='spoiler'",'inline_code':'code'}
         self.complex= ['reference','signature','link']
         self.block  = {'block_code':'code','block_spoiler':"div class='spoiler'"}
         self.line   = ['inline_full','text']

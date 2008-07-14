@@ -467,8 +467,16 @@ class FccController(BaseController):
         #response.set_cookie('returnTo', returnTo, expires=3600000)
         session['returnToThread'] = not (returnTo == 'board')
         session.save()
-        if returnTo == 'board':             
-            rboard = u'/'+tags[0].tag+u'/'
+        if returnTo == 'board':
+            if board:
+                rboard = u'/'+board+u'/'
+            else:
+                print request.headers.get('REFERER','')
+                ref = re.compile(r'(/[^/]+/)$').search(request.headers.get('REFERER',''))
+                if ref:
+                    rboard = ref.groups()[0]
+                else:
+                    rboard = u'/'+tags[0].tag+u'/'
             redirect_to(rboard.encode('utf-8'))
         else:
             if postid:

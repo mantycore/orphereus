@@ -3,7 +3,7 @@ import os
 import sys
 import time
 
-testlist = ['test_sanity','test_links','test_all_inline','test_all_inline_complex','test_marksymbols','blocks'
+testlist = ['test_sanity','test_symbols','test_links','test_all_inline','test_all_inline_complex','test_marksymbols','blocks'
        ,'test_spoiler_inline','test_spoiler_block','test_spoiler_mixed','all']
 
 t1 = time.time()

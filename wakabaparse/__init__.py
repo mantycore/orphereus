@@ -8,7 +8,7 @@ from fc.lib.constantValues import *
 
 class WakabaParser(object):
     def __init__(self, definition = markupFile, baseProd = 'all'):
-        self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nou','accent_code','noaccent_code']
+        self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nop','symbol_mark_nou','accent_code','noaccent_code']
         self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','inline_spoiler':"span class='spoiler'",'inline_code':'code'}
         self.complex= ['reference','signature','link']
         self.block  = {'block_code':'code','block_spoiler':"div class='spoiler'"}
@@ -176,7 +176,7 @@ class WakabaParser(object):
         return result
 
     def parseWakaba(self, message, o, lines=20, maxLen=5000):
-        self.input = "\n" + message
+        self.input = "\n" + message + "\n"
         self.calledBy = o
         self.maxLines = lines
         self.maxLen = maxLen
@@ -186,13 +186,13 @@ class WakabaParser(object):
         self.result = ''
         self.short = ''
         self.tags = []
-        if self.short and self.linesCutted == self.lines:
-            self.short = ''
         taglist = TextTools.tag(self.input, self.parser)
         result = self.formatInHTML(taglist[1])
+        if self.short and self.linesCutted == self.lines:
+            self.short = ''
         return (self.result,self.short)
 
     def getTagList(self, message):
-    	self.input = "\n" + message
+    	self.input = "\n" + message + "\n"
     	taglist = TextTools.tag(self.input, self.parser)
     	return taglist

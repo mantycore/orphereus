@@ -35,7 +35,7 @@ class WakabaParser(object):
         if pid == -1:
             return '<a href="/%s">&gt;&gt;%s</a>' % (number,number)
         else:
-            return '<a href="/%s#%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (pid,number,number,number)
+            return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (pid,number,number,number)
 
     def signature(self, tag, beg, end, parts):
         valid = {} 

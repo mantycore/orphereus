@@ -82,7 +82,7 @@ class WakabaParser(object):
                 self.openTag('blockquote',i - depth)
                 depth = i
             elif i < depth:
-                self.closeTag(depth - 1)
+                self.closeTag(depth - i)
                 depth = i
             elif n:
                 self.result += '<br />'

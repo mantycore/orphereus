@@ -301,6 +301,7 @@ class FccController(BaseController):
     def conjunctTagOptions(self, tags):
         options = TagOptions()
         optionsFlag = True
+        rulesList = []
         for t in tags:
             if t.options:
                 if optionsFlag:
@@ -311,7 +312,7 @@ class FccController(BaseController):
                     options.maxFileSize = t.options.maxFileSize
                     options.minPicSize = t.options.minPicSize
                     options.thumbSize = t.options.thumbSize
-                    optionsFlag = False
+                    optionsFlag = False                    
                 else:
                     options.imagelessThread = options.imagelessThread & t.options.imagelessThread
                     options.imagelessPost = options.imagelessPost & t.options.imagelessPost
@@ -323,6 +324,14 @@ class FccController(BaseController):
                         options.minPicSize = t.options.minPicSize
                     if t.options.thumbSize < options.thumbSize:
                         options.thumbSize = t.options.thumbSize
+                                            
+                tagRulesList = t.options.specialRules.split(';') 
+                for rule in tagRulesList:
+                    if rule and not rule in rulesList:
+                        rulesList.append(rule)      
+                        
+        options.rulesList = rulesList
+        
         if optionsFlag:
             options.imagelessThread = True
             options.imagelessPost   = True
@@ -331,6 +340,7 @@ class FccController(BaseController):
             options.maxFileSize = 2621440
             options.minPicSize = 50
             options.thumbSize = 180
+            options.specialRules = ''
         return options
         
     def __getPostTags(self, tagstr):

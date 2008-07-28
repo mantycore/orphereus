@@ -332,3 +332,5 @@ div a.show-hide-thread:hover {
 	border: 1px #666 solid; margin-left: 10px;
 }
 .logline {background: #DDDDDD;}
+.nomargin{margin: 0;}
+#smallFont{font-size: 70%;}

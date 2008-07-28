@@ -23,6 +23,12 @@
                         <input type="text" name="comment" size="35" value="${c.tag.options.comment}" />
                     </td>
                 </tr>
+                <tr id="trtitle">
+                    <td class="postblock">${_('Special board rules (split with ";")')}</td>
+                    <td>
+                        <input type="text" name="specialRules" size="35" value="${c.tag.options.specialRules}" />
+                    </td>
+                </tr>                
                 <tr id="trsection">
                     <td class="postblock">${_('Section')}</td>
                     <td>

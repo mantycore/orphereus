@@ -100,6 +100,7 @@ class FcaController(BaseController):
                     else:
                         oldtag = ''
                     c.tag.options.comment = filterText(request.POST.get('comment',''))
+                    c.tag.options.specialRules = filterText(request.POST.get('specialRules',''))
                     c.tag.options.sectionId = request.POST.get('sectionId',0)
                     c.tag.options.persistent = request.POST.get('persistent',False)
                     c.tag.options.imagelessThread = request.POST.get('imagelessThread',False)

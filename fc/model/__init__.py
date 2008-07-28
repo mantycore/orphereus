@@ -116,7 +116,8 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     sa.Column("maxFileSize" , sa.types.Integer, nullable=False),
     sa.Column("minPicSize" , sa.types.Integer, nullable=False),
     sa.Column("thumbSize", sa.types.Integer, nullable=False),
-    sa.Column("enableSpoilers", sa.types.Boolean, nullable=False)
+    sa.Column("enableSpoilers", sa.types.Boolean, nullable=False),
+    sa.Column("specialRules"  , sa.types.UnicodeText, nullable=True),
     )
 
 t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,

@@ -97,10 +97,11 @@
             </td>
             
 <td class="adminMenu">
+<div id="smallFont">
 ${_('On this board:')}
-<ul>
+<ul class="nomargin">
 <li>${_('Minimal picture size')}: ${c.boardOptions.minPicSize}<sup>2</sup></li>
-<li>${_('Maximal file size')}: ${c.boardOptions.maxFileSize} bytes</li>
+<li>${_('Maximal file size')}: ${'%.2f' % (c.boardOptions.maxFileSize / 1024.0)} Kbytes</li>
 <li>${_('Thumbnail size')}: ${c.boardOptions.thumbSize}<sup>2</sup></li>
 <li>${_('Images')}:  ${not c.boardOptions.images and _('not') or ''} allowed</li>
 <li>${_('Imageless threads')}:  ${not c.boardOptions.imagelessThread and _('not') or ''} ${_('allowed')}</li>
@@ -108,6 +109,15 @@ ${_('On this board:')}
 <li>${_('Spoiler alerts')}:  ${not c.boardOptions.enableSpoilers and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Enabled extensions')}:  ${c.extLine}</li>
 </ul>
+</div>
+%if c.boardOptions.rulesList:
+${_('Board-specific rules:')}
+<ul class="nomargin">
+    %for rule in c.boardOptions.rulesList:
+        <li>${_('Special rule')}:  ${rule}</li>
+    %endfor    
+    </ul>   
+%endif
 </td>
 
 </tr>

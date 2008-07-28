@@ -494,14 +494,23 @@ class FccController(BaseController):
                 return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))         
             
             #this shit needed only for quick reply. TODO FIXME
-            if board:
-                rboard = u'/'+board+u'/'
+            #if board:
+            #    rboard = u'/'+board+u'/'
+            #else:
+            ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER','')) #fuckin shit!!! XXX FIXME TODO
+            if ref:
+               rboard = ref.groups()[0]
             else:
-                ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER','')) #fuckin shit!!! XXX FIXME TODO
-                if ref:
-                    rboard = ref.groups()[0]
-                else:
-                    rboard = u'/'+tags[0].tag+u'/'
+                rboard = u'/'
+                ccc = 0
+                for tag in tags:
+                    rboard += tag.tag                    
+                    ccc+=1
+                    
+                    if ccc != len(tags):
+                        rboard+="+"
+                rboard += u'/'
+                #rboard = u'/'+tags[0].tag+u'/'
             redirect_to(rboard.encode('utf-8'))
         else:
             if postid:

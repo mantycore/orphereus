@@ -114,7 +114,7 @@ ${_('On this board:')}
 ${_('Board-specific rules:')}
 <ul class="nomargin">
     %for rule in c.boardOptions.rulesList:
-        <li>${_('Special rule')}:  ${rule}</li>
+        <li>${rule}</li>
     %endfor    
     </ul>   
 %endif

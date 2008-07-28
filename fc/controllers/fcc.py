@@ -268,16 +268,20 @@ class FccController(BaseController):
                os.unlink(localFilePath)
                return pic
 
-           if extParams.type == 'image':
-              thumbFilePath = name + 's.' + ext
-              size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (thumbSize,thumbSize))
-           else:
-               if extParams.type == 'image-jpg':
-                  thumbFilePath = name + 's.jpg'
-                  size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (thumbSize,thumbSize))
-               else:
-                  thumbFilePath = extParams.path
-                  size = [0,0,extParams.thwidth,extParams.thheight]
+           try:
+                if extParams.type == 'image':
+                   thumbFilePath = name + 's.' + ext
+                   size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (thumbSize,thumbSize))
+                else:
+                   if extParams.type == 'image-jpg':
+                      thumbFilePath = name + 's.jpg'
+                      size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (thumbSize,thumbSize))
+                   else:
+                     thumbFilePath = extParams.path
+                     size = [0,0,extParams.thwidth,extParams.thheight]
+           except:
+                return -1
+              
            pic = Picture()
            pic.path = name + '.' + ext
            pic.thumpath = thumbFilePath
@@ -426,6 +430,9 @@ class FccController(BaseController):
         post.date = datetime.datetime.now()
         pic = self.processFile(file,options.thumbSize)
         if pic:
+            if pic == -1:
+                c.errorText = "Broken picture"
+                return render('/wakaba.error.mako')        
             if pic.size > options.maxFileSize:
                 c.errorText = "File size exceeds the limit"
                 return render('/wakaba.error.mako')

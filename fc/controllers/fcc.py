@@ -178,6 +178,7 @@ class FccController(BaseController):
         if tagList and len(tagList) == 1 and tags:
             currentBoard = tags[0]
             c.boardName = currentBoard.options and currentBoard.options.comment or ("/" + currentBoard.tag + "/")
+            c.tagLine   = currentBoard.tag
         elif not tagList and tags:
             names = []
             rawNames = []
@@ -185,9 +186,10 @@ class FccController(BaseController):
                 names.append(t.options and t.options.comment or ("/" + t.tag + "/"))
                 rawNames.append(t.tag)
             c.boardName = " + ".join(names)
-            c.tagLine = "+".join(rawNames)
+            c.tagLine ="+".join(rawNames)
         else:
-            c.boardName = "/" + board + "/"
+            c.boardName = board
+            c.tagLine = c.boardName
             
         c.boardOptions = self.conjunctTagOptions(tags)
         c.tagList = ' '.join(tagList)
@@ -485,15 +487,20 @@ class FccController(BaseController):
         session['returnToThread'] = not (returnTo == 'board')
         session.save()
         if returnTo == 'board':
-            if board:
-                rboard = u'/'+board+u'/'
-            else:
-                ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER',''))
-                if ref:
-                    rboard = ref.groups()[0]
-                else:
-                    rboard = u'/'+tags[0].tag+u'/'
-            redirect_to(rboard.encode('utf-8'))
+            tagLine = request.POST.get('tagLine', False)
+            if  tagLine:
+                redirectAddr = tagLine   
+            
+            return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))        
+            #if board:
+            #    rboard = u'/'+board+u'/'
+            #else:
+            #    ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER',''))
+            #    if ref:
+            #        rboard = ref.groups()[0]
+            #    else:
+            #        rboard = u'/'+tags[0].tag+u'/'
+            #redirect_to(rboard.encode('utf-8'))
         else:
             if postid:
                 return redirect_to(action='GetThread',post=post.parentid,board=None)
@@ -528,8 +535,7 @@ class FccController(BaseController):
         return self.processPost(postid=post)
 
     def PostThread(self, board):
-        return self.processPost(board=board)
-            
+        return self.processPost(board=board)            
 
     def oekakiDraw(self,url):
         c.url = url

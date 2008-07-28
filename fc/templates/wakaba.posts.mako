@@ -14,6 +14,7 @@
     <table>
         <tbody >
     <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="tagLine" value="${c.tagLine}">
     <input type="hidden" name="task" value="post" />
     <input type="hidden" name="akane" />   
     %if not c.board:

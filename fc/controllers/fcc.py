@@ -487,20 +487,22 @@ class FccController(BaseController):
         session['returnToThread'] = not (returnTo == 'board')
         session.save()
         if returnTo == 'board':
+            redirectAddr = ''
             tagLine = request.POST.get('tagLine', False)
             if  tagLine:
                 redirectAddr = tagLine   
+                return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))         
             
-            return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))        
-            #if board:
-            #    rboard = u'/'+board+u'/'
-            #else:
-            #    ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER',''))
-            #    if ref:
-            #        rboard = ref.groups()[0]
-            #    else:
-            #        rboard = u'/'+tags[0].tag+u'/'
-            #redirect_to(rboard.encode('utf-8'))
+            #this shit needed only for quick reply. TODO FIXME
+            if board:
+                rboard = u'/'+board+u'/'
+            else:
+                ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER','')) #fuckin shit!!! XXX FIXME TODO
+                if ref:
+                    rboard = ref.groups()[0]
+                else:
+                    rboard = u'/'+tags[0].tag+u'/'
+            redirect_to(rboard.encode('utf-8'))
         else:
             if postid:
                 return redirect_to(action='GetThread',post=post.parentid,board=None)

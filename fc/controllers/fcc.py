@@ -168,8 +168,13 @@ class FccController(BaseController):
                 c.showPagesPartial = True
                 if c.page-5>1:
                     c.leftPage = c.page-5 
-                if c.page+5<c.pages-1:
+                else:
+                    c.leftPage=2
+                    
+                if c.page+5<c.pages-2:
                     c.rightPage = c.page+5 
+                else:
+                    c.rightPage=c.pages-2
                
         elif count == 1:
             c.page  = False

@@ -223,6 +223,17 @@ dl.menu dd.hidden {
         color: #003300;
 }
 
+.badsignature {
+        background: #FF0000;
+        color: #AA0000;
+}
+.badsignature a {
+        color: #660000;
+}
+.badsignature a:hover {
+        color: #330000;
+}
+
 .postbody blockquote {
         background:inherit;
         color:#789922;

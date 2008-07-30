@@ -39,6 +39,7 @@ class WakabaParser(object):
 
     def signature(self, tag, beg, end, parts):
         valid = {} 
+        invalid = {} 
         result = ''
         for nn, i, j, p in parts:
             pid = self.calledBy.isPostOwner(self.input[i:j])
@@ -46,6 +47,12 @@ class WakabaParser(object):
                 pid = self.input[i:j]
             if pid:
                 valid[self.input[i:j]]=pid
+            else: #red label - only valid posts from ANOTHER users
+                pid = self.calledBy.postOwner(self.input[i:j])
+                if pid == -1:
+                    pid = self.input[i:j]                
+                if pid:
+                    invalid[self.input[i:j]]=pid
         if valid:
             result = '<span class="signature">##'
             sep = ''
@@ -53,6 +60,18 @@ class WakabaParser(object):
                 result += sep + '<a href="/%s#i%s">%s</a>' % (valid[i],i,i)
                 sep = ','
             result += '</span>'
+        if invalid:
+            if result:
+                result+=","             
+                result += '<span class="badsignature">'
+            else:
+                result += '<span class="badsignature">##'
+                
+            sep = ''
+            for i in invalid:
+                result += sep + '<a href="/%s#i%s">%s</a>' % (invalid[i],i,i)
+                sep = ','
+            result += '</span>'            
         return result
 
     def openTag(self, tag, quantity=1):

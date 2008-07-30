@@ -229,6 +229,13 @@ class FccController(BaseController):
            return post.parentid
         else:
            return False
+           
+    def postOwner(self, id):
+        post = meta.Session.query(Post).filter(Post.id==id).first()
+        if post:
+           return post.parentid
+        else:
+           return False           
 
     def makeThumbnail(self, source, dest, maxSize):
         sourceImage = Image.open(source)

@@ -288,14 +288,16 @@ ${_('Board-specific rules:')}
         %endif
     %endfor
 %else:
-    %for pg in range(0,4):
+    %for pg in range(0,1):
         %if pg == c.page:
             [${pg}]
         %else:
             [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
         %endif
     %endfor
+    %if c.leftPage>2
     ...
+    %endif
     %if c.leftPage and c.rightPage:
         %for pg in range(c.leftPage,c.rightPage):
             %if pg == c.page:
@@ -306,7 +308,10 @@ ${_('Board-specific rules:')}
         %endfor    
         ...
     %endif
-    %for pg in range(c.pages-5,c.pages):
+    %if c.rightPage<c.pages-1
+    ...
+    %endif    
+    %for pg in range(c.pages-1,c.pages):
         %if pg == c.page:
             [${pg}]
         %else:

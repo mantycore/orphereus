@@ -297,7 +297,6 @@ ${_('Board-specific rules:')}
     %endfor
     ...
     %if c.leftPage and c.rightPage:
-
         %for pg in range(c.leftPage,c.rightPage):
             %if pg == c.page:
                 [${pg}]
@@ -306,7 +305,7 @@ ${_('Board-specific rules:')}
             %endif
         %endfor    
         ...
-    #endif
+    #end
     %for pg in range(c.pages-5,c.pages):
         %if pg == c.page:
             [${pg}]

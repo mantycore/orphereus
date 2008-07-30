@@ -280,6 +280,10 @@ vertical-align:top;
 background: #DEDEDE;
 }
 
+.hlTable td{
+background: #DEDEDE;
+}
+
 .postername, .postertrip, .commentpostername {
 	display: inline; visibility: visible; font-weight: bold; color: #339;
 }

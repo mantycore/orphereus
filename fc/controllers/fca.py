@@ -179,11 +179,11 @@ class FcaController(BaseController):
                     user.options.canChangeRights = canChangeRights
                     addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canChangeRights to %s') % (user.uidNumber,canChangeRights))                                    
                 c.message = _('User access was changed')
-            elif request.POST.get('ban',False):
+            elif request.POST.get('ban', False):
                 if user.options.bantime > 0:
                     c.message = _('This user is already banned')
                 else:
-                    banreason = filterText(request.POST.get('banreason',''))
+                    banreason = filterText(request.POST.get('banreason','???'))
                     bantime = request.POST.get('bantime','0')
                     if len(banreason)>1:
                         if isNumber(bantime) and int(bantime) > 0:

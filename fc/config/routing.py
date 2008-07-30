@@ -47,6 +47,12 @@ def make_map():
     map.connect('/holySynod/manageQuestions', controller='fca', action='manageQuestions')
     map.connect('/holySynod/manageApplications', controller='fca', action='manageApplications')
     map.connect('/holySynod/viewLog/:page', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
+    # Maintenance
+    map.connect('/holySynod/service', controller='fcm', action='index')
+    map.connect('/holySynod/service/clearOekaki', controller='fcm', action='clearOekaki')
+    map.connect('/holySynod/service/destroyInvites', controller='fcm', action='destroyInvites')
+    map.connect('/holySynod/service/integrityChecks', controller='fcm', action='integrityChecks')
+    
     # AJAX
     map.connect('/ajax/getPost/:post', controller='fcajax', action='getPost', requirements=dict(post='\d+'))
     map.connect('/ajax/editUserFilter/:fid/:filter', controller='fcajax', action='editUserFilter', requirements=dict(fid='\d+'))

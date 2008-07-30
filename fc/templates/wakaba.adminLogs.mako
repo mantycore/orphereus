@@ -2,7 +2,7 @@
 <%inherit file="wakaba.admin.mako" />
 
 %if c.logs:
-<table width="100%">
+<table width="100%" class="hlTable">
     <thead>
         <tr>
             <td>Date</td>
@@ -13,7 +13,7 @@
     </thead>
     <tbody>
     %for log in c.logs:
-        <tr class="logline" ${log.event < 0x10000 and "style='color:#F00;'" or ""}>
+        <tr ${log.event < 0x10000 and "style='color:#F00;'" or ""}>
             <td>${log.date}</td>
             <td>${log.uidNumber}</td>
             <td>${log.event}</td>

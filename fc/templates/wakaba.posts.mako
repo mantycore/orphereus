@@ -305,7 +305,7 @@ ${_('Board-specific rules:')}
             %endif
         %endfor    
         ...
-    %end
+    %endif
     %for pg in range(c.pages-5,c.pages):
         %if pg == c.page:
             [${pg}]

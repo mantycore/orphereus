@@ -53,25 +53,24 @@ class WakabaParser(object):
                     pid = self.input[i:j]                
                 if pid:
                     invalid[self.input[i:j]]=pid
-        if valid:
-            result = '<span class="signature">##'
-            sep = ''
-            for i in valid:
-                result += sep + '<a href="/%s#i%s">%s</a>' % (valid[i],i,i)
-                sep = ','
-            result += '</span>'
         if invalid:
-            if result:
-                result+=","             
-                result += '<span class="badsignature">'
-            else:
-                result += '<span class="badsignature">##'
-                
+            result += '<span class="badsignature">##'    
             sep = ''
             for i in invalid:
                 result += sep + '<a href="/%s#i%s">%s</a>' % (invalid[i],i,i)
                 sep = ','
-            result += '</span>'            
+            result += '</span>'                     
+        if valid:
+            if result:
+                result+=","             
+                result += '<span class="signature">'
+            else:
+                result += '<span class="signature">##'        
+            sep = ''
+            for i in valid:
+                result += sep + '<a href="/%s#i%s">%s</a>' % (valid[i],i,i)
+                sep = ','
+            result += '</span>'           
         return result
 
     def openTag(self, tag, quantity=1):

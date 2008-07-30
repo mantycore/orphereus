@@ -295,15 +295,17 @@ ${_('Board-specific rules:')}
             [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
         %endif
     %endfor
-    ...
-    %for pg in range(c.leftPage,c.rightPage):
-        %if pg == c.page:
-            [${pg}]
-        %else:
-            [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
-        %endif
-    %endfor    
-    ...
+    %if c.leftPage and c.rightPage:
+        ...    
+        %for pg in range(c.leftPage,c.rightPage):
+            %if pg == c.page:
+                [${pg}]
+            %else:
+                [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
+            %endif
+        %endfor    
+        ...
+    %endif
     %for pg in range(c.pages-5,c.pages):
         %if pg == c.page:
             [${pg}]

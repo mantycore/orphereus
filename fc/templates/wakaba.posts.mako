@@ -287,22 +287,6 @@ ${_('Board-specific rules:')}
             [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
         %endif
     %endfor
-%elif not c.showCenteredPageLinks:
-    %for pg in range(0,4):
-        %if pg == c.page:
-            [${pg}]
-        %else:
-            [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
-        %endif
-    %endfor
-    ...
-    %for pg in range(c.pages-5,c.pages):
-        %if pg == c.page:
-            [${pg}]
-        %else:
-            [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
-        %endif
-    %endfor    
 %else:
     %for pg in range(0,4):
         %if pg == c.page:
@@ -312,7 +296,7 @@ ${_('Board-specific rules:')}
         %endif
     %endfor
     ...
-    %for pg in range(c.page-4,c.page+4):
+    %for pg in range(c.leftPage,c.rightPage):
         %if pg == c.page:
             [${pg}]
         %else:

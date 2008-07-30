@@ -279,6 +279,7 @@ ${_('Board-specific rules:')}
 </form>
 %if c.pages:
 <table border="1"><tbody><tr><td>
+%if not c.showPagesPartial:
     %for pg in range(0,c.pages):
         %if pg == c.page:
             [${pg}]
@@ -286,6 +287,47 @@ ${_('Board-specific rules:')}
             [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
         %endif
     %endfor
+%elif not c.showCenteredPageLinks:
+    %for pg in range(0,4):
+        %if pg == c.page:
+            [${pg}]
+        %else:
+            [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
+        %endif
+    %endfor
+    ...
+    %for pg in range(c.pages-5,c.pages):
+        %if pg == c.page:
+            [${pg}]
+        %else:
+            [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
+        %endif
+    %endfor    
+%else:
+    %for pg in range(0,4):
+        %if pg == c.page:
+            [${pg}]
+        %else:
+            [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
+        %endif
+    %endfor
+    ...
+    %for pg in range(c.page-4,c.page+4):
+        %if pg == c.page:
+            [${pg}]
+        %else:
+            [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
+        %endif
+    %endfor    
+    ...
+    %for pg in range(c.pages-5,c.pages):
+        %if pg == c.page:
+            [${pg}]
+        %else:
+            [<a href='/${c.board}/page/${pg}/'>${pg}</a>]
+        %endif
+    %endfor    
+%endif
 </td></tr></tbody></table>
 %endif
 <br clear="all" />

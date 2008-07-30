@@ -164,6 +164,11 @@ class FccController(BaseController):
                 page = c.pages - 1
             c.page = page
             c.threads = threadFilter.order_by(Post.bumpDate.desc())[(page * self.userInst.threadsPerPage()):(page + 1)* self.userInst.threadsPerPage()]
+            if c.pages>15:
+                c.showPagesPartial = True
+                if c.page>5 and c.page<c.pages-5:
+                    c.showCenteredPageLinks = True
+               
         elif count == 1:
             c.page  = False
             c.pages = False

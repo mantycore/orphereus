@@ -26,6 +26,7 @@ class FcpController(BaseController):
     def __before__(self):
         settingsMap = getSettingsMap()
         c.title = settingsMap['title'].value
+        c.devmode = os.path.exists(devTest)     
     def login(self, user):
         session['uidNumber'] = user.uidNumber
         session.save()

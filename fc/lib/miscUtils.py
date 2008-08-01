@@ -1,4 +1,5 @@
 import re
+import os
 import logging
 import datetime
 from fc.lib.base import *
@@ -38,6 +39,7 @@ def addLogEntry(event,entry):
 def initEnvironment():
     c.settingsMap = getSettingsMap()
     c.title = c.settingsMap['title'].value
+    c.devmode = os.path.exists(devTest)
     boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
     c.boardlist = []
     sectionId = 0

@@ -77,6 +77,19 @@
                 </tr>
                 %endif
                 <tr>
+                    <td colspan=2>${_('Delete user')}</td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Reason')}</td>
+                    <td>
+                        <input type="text" name="deletereason" size="35" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='2'><input type='submit' name='delete' value='${_('Delete')}' ${not c.userInst.canChangeRights() and "disabled" or ""}></td>
+                </tr>                  
+                
+                <tr>
                     <td colspan=2>${_('Look up posts')}</td>
                 </tr>
                 <tr>
@@ -93,19 +106,7 @@
                 </tr>                
                 <tr>
                     <td colspan='2'><input type='submit' name='lookup' value='${_('Look up')}'></td>
-                </tr>
-                <tr>
-                    <td colspan=2>${_('Delete user')}</td>
-                </tr>
-                <tr>
-                    <td class="postblock">${_('Reason')}</td>
-                    <td>
-                        <input type="text" name="deletereason" size="35" value="" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan='2'><input type='submit' name='delete' value='${_('Delete')}'></td>
-                </tr>                
+                </tr>              
             </tbody>
         </table>
     </form>                 

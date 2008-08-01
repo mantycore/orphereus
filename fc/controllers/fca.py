@@ -210,13 +210,16 @@ class FcaController(BaseController):
 		        c.message = _('NOT IMPLEMENTED YET')
             elif request.POST.get('delete',False):
                 reason = filterText(request.POST.get('deletereason',''))
-                if len(reason)>1:
-                    meta.Session.delete(user)
-                    addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
-                    c.message = "User deleted"
-                    return render('/wakaba.manageUsers.mako')
+                if self.userInst.canChangeRights():
+                    if len(reason)>1:
+                        meta.Session.delete(user)
+                        addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
+                        c.message = "User deleted"
+                        return render('/wakaba.manageUsers.mako')
+                    else:
+                        c.message = _('You should specify deletion reason')
                 else:
-                    c.message = _('You should specify deletion reason')
+                    c.message = "You haven't rights to delete user"
             return render('/wakaba.editUser.mako')
         else:
             c.errorText = _('No such user exists.')

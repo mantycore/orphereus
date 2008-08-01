@@ -27,6 +27,7 @@ class FccController(BaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uidNumber',-1))
         c.userInst = self.userInst
+        c.settingsMap = getSettingsMap()
         c.currentURL = request.path_info
         if c.currentURL[-1] != '/':
             c.currentURL = c.currentURL + '/'
@@ -139,7 +140,7 @@ class FccController(BaseController):
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = self.userInst.isAdmin()
         
-        settingsMap = getSettingsMap()
+        settingsMap = c.settingsMap
         adminTagsLine = settingsMap['adminOnlyTags'].value
         forbiddenTags = getTagsListFromString(adminTagsLine)
 
@@ -389,7 +390,7 @@ class FccController(BaseController):
             return tags
                     
     def processPost(self, postid=0, board=u''):
-        settingsMap = getSettingsMap()
+        settingsMap = c.settingsMap
         if postid:
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
             if thePost.parentid != -1:
@@ -651,7 +652,7 @@ class FccController(BaseController):
             if fileonly: 
                 p.picid = -1
             else:
-                settingsMap = getSettingsMap()        
+                settingsMap = c.settingsMap        
                 invisBump = (settingsMap['invisibleBump'].value == 'false')
 
                 if invisBump and p.parentid != -1:
@@ -698,3 +699,26 @@ class FccController(BaseController):
         c.homeExclude = ', '.join(homeExcludeList)
         c.userInst = self.userInst
         return render('/wakaba.profile.mako')
+        
+    def viewLog(self,page):
+        settingsMap = c.settingsMap    
+        if settingsMap['usersCanViewLogs'].value == 'true':
+            c.boardName = 'Logs'
+            page = int(page)
+            count = meta.Session.query(LogEntry).count()
+            p = divmod(count, 100)
+            c.pages = p[0]
+            if p[1]:
+                c.pages += 1
+            if (page + 1) > c.pages:
+                page = c.pages - 1
+            c.page = page        
+            c.logs = meta.Session.query(LogEntry).options(eagerload('user')).order_by(LogEntry.date.desc())[page*100:(page+1)*100]
+            rv = re.compile('(\d+.){3}\d+')
+            for log in c.logs:
+                log.entry = rv.sub('<font color="red">[IP REMOVED]</font>', log.entry)
+            return render('/wakaba.logs.mako')
+        else:
+            return redirect_to('/')
+        
+        

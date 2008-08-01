@@ -31,6 +31,7 @@ def make_map():
     # User subsystem
     map.connect('/userProfile', controller='fcc', action='showProfile')
     map.connect('/userProfile/messages', controller='fcc', action='showMessages')
+    map.connect('/viewLog/', controller='fcc:page', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
     # Admin subsystem
     map.connect('/holySynod', controller='fca', action='index')
     map.connect('/holySynod/invitePage', controller='fca', action='invitePage')

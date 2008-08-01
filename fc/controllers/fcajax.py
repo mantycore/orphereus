@@ -39,7 +39,7 @@ class FcajaxController(BaseController):
             settingsMap = getSettingsMap()
             forbiddenTags = getTagsListFromString(settingsMap['adminOnlyTags'].value)       
             for t in parent.tags:
-                if t.id in forbiddenTags:
+                if t.id in forbiddenTags and not self.userInst.isAdmin():
                     abort(403)
             return postInst.message
         else:

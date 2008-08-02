@@ -82,7 +82,8 @@ t_oekaki = sa.Table("oekaki", meta.metadata,
     sa.Column("source"   , sa.types.Integer, nullable=False),
     sa.Column("uidNumber",sa.types.Integer, nullable=False),
     sa.Column("type"     , sa.types.String(255), nullable=False),
-    sa.Column("path"     , sa.types.String(255), nullable=False)
+    sa.Column("path"     , sa.types.String(255), nullable=False),
+    sa.Column("timeStamp", sa.types.DateTime, nullable=False)
     )
 
 t_posts = sa.Table("posts", meta.metadata,

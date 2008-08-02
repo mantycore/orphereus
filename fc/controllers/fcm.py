@@ -25,51 +25,92 @@ class Empty:
 
 class FcmController(BaseController):
     def __before__(self):
-        self.userInst = FUser(session.get('uidNumber',-1))
-        if not self.userInst.isAuthorized():
-            c.currentURL = '/holySynod/'
-            return redirect_to('/')
-        initEnvironment()
-        if not self.userInst.isAdmin():
-            c.errorText = "No way! You aren't holy enough!"
-            return redirect_to('/')
-        c.userInst = self.userInst
-        if not checkAdminIP():
-            return redirect_to('/')
+        pass
             
-    def index(self):
-        c.boardName = 'Index'
-        return render('/wakaba.mtnIndex.mako')
-
+    def createLogEntry(self, type, message):
+        act = Empty()
+        act.type = type
+        act.message = message   
+        return act
+        
     def clearOekaki(self):
-        c.boardName = 'Clearing old oekaki entries...'
-        c.boardName = 'Removing orphaned oekaki...'
+        mtnLog = []     
+        mtnLog.append(self.createLogEntry('Task', 'Clearing old oekaki entries...'))
         oekakies = meta.Session.query(Oekaki).all()
-        c.mtnLog = []
+        currentTime = datetime.datetime.now()
         for oekaki in oekakies:
-            if oekaki.time==-1 and not oekaki.path and oekaki.id<len(oekakies)-30:
-                act = Empty()
-                act.type="Info"
-                act.message="Deleted oekaki with <b>#%d</b>" % (oekaki.id)
-                c.mtnLog.append(act)
+            if oekaki.time==-1 and not oekaki.path and oekaki.timeStamp < currentTime - datetime.timedelta(days=1):
+                mtnLog.append(self.createLogEntry('Info', "Deleted oekaki with <b>#%d</b>" % (oekaki.id)))
                 meta.Session.delete(oekaki)
         meta.Session.commit()
-        return render('/wakaba.mtnLog.mako')        
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog
 
     def destroyInvites(self):
-        c.boardName = 'Destroying all invites...'
+        mtnLog = []
+        mtnLog.append(self.createLogEntry('Task', 'Deleting old invites...'))
+        currentTime = datetime.datetime.now()                
         invites = meta.Session.query(Invite).all()
-        c.mtnLog = []
         for invite in invites:
-            act = Empty()
-            act.type="Info"
-            act.message="Deleted invite <b>#%d</b> from date <b>%s</b> with id <font size='-2'>%s</font>" % (invite.id, invite.date, invite.invite)
-            c.mtnLog.append(act)
-            meta.Session.delete(invite)
+            if invite.date < currentTime - datetime.timedelta(weeks=1):
+                mtnLog.append(self.createLogEntry('Info', "Deleted invite <b>#%d</b> from date <b>%s</b> with id <font size='-2'>%s</font>" % (invite.id, invite.date, invite.invite)))
+                meta.Session.delete(invite)
         meta.Session.commit()
-        return render('/wakaba.mtnLog.mako')
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog;
 
     def integrityChecks(self):
-        c.boardName = 'Doing integrity checks.... NOT IMPLEMENTED.'
-        return render('/wakaba.mtnLog.mako')        
-      
+        mtnLog = []
+        mtnLog.append(self.createLogEntry('Task', 'Doing integrity checks.... NOT IMPLEMENTED.'))
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog;
+
+    def mtnAction(self, actid, secid):
+        secTestPassed = False    
+        if not secid:
+            self.userInst = FUser(session.get('uidNumber',-1))
+            if not self.userInst.isAuthorized():
+                c.currentURL = '/holySynod/'
+                return redirect_to('/')
+            initEnvironment()
+            if not self.userInst.isAdmin():
+                c.errorText = "No way! You aren't holy enough!"
+                return redirect_to('/')
+            c.userInst = self.userInst
+            if not checkAdminIP():
+                return redirect_to('/')
+            secTestPassed = True
+        else:
+            secidFilePath = os.path.join(appPath, 'fc/secid')
+            try:
+                secidFile = open(secidFilePath)
+                secidFile.seek(0)                
+                secTestPassed = (secidFile.read() == secid)
+                c.serviceOut = secTestPassed                
+                secidFile.close()
+                os.remove(secidFilePath)                
+            except IOError, err:
+                pass
+                
+        if not secTestPassed:
+            return redirect_to('/')
+                
+        if not actid:
+            c.boardName = 'Index'
+            return render('/wakaba.mtnIndex.mako')        
+        else:
+            mtnLog = []
+            c.boardName = 'Maintenance log'
+            if actid == 'clearOekaki':
+                mtnLog = self.clearOekaki()
+            elif actid == 'destroyInvites':
+                mtnLog = self.destroyInvites()
+            elif actid == 'integrityChecks':
+                mtnLog = self.integrityChecks()
+            elif actid == 'all':
+                mtnLog = self.clearOekaki()
+                mtnLog+=self.destroyInvites()
+                mtnLog+=self.integrityChecks()
+                
+            c.mtnLog = mtnLog
+            return render('/wakaba.mtnLog.mako')

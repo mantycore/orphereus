@@ -2,10 +2,11 @@ import sys
 import os 
 
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
-uploadPath = os.path.join(sys.path[0],'fc/public/uploads/')
+appPath = sys.path[0]
+uploadPath = os.path.join(appPath, 'fc/public/uploads/')
 uploadPathWeb = '/uploads/'
-markupFile = os.path.join(sys.path[0],'wakabaparse/mark.def')
-devMode = os.path.exists(os.path.join(sys.path[0],'fc/development.dummy'))    
+markupFile = os.path.join(appPath, 'wakabaparse/mark.def')
+devMode = os.path.exists(os.path.join(appPath, 'fc/development.dummy'))    
 
 settingsDef = {
     "title"         : "ANOMA.Ch",

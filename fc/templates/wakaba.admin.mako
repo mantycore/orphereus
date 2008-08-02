@@ -8,22 +8,26 @@
 		<script type="text/javascript" src="/ui.js"></script>
     </head>
     <body>
-        <%include file="wakaba.menu.mako" />
-        <%include file="wakaba.logo.mako" />
-        <hr />
-        <table cellpadding=5 width="100%">
-            <tbody>
-                <tr>
-                <td class="adminMenu" width="200px;">
-                    <%include file="wakaba.adminMenu.mako" />
-                </td>
-                <td>
-                    ${self.body()}
-                </td>
-                </tr>        
-            </tbody>
-        </table>
-        <%include file="wakaba.menu.mako" />
-        <%include file="wakaba.footer.mako" />
+        %if not c.serviceOut:
+            <%include file="wakaba.menu.mako" />
+            <%include file="wakaba.logo.mako" />
+            <hr />
+            <table cellpadding=5 width="100%">
+                <tbody>
+                    <tr>
+                    <td class="adminMenu" width="200px;">
+                        <%include file="wakaba.adminMenu.mako" />
+                    </td>
+                    <td>
+        %endif                            
+        ${self.body()}        
+        %if not c.serviceOut:                
+                    </td>
+                    </tr>        
+                </tbody>
+            </table>
+            <%include file="wakaba.menu.mako" />
+            <%include file="wakaba.footer.mako" />
+        %endif
     </body>
 </html>

@@ -142,9 +142,6 @@ class FcaController(BaseController):
                 user = meta.Session.query(User).filter(User.uidNumber==uid).first()               
             else:
                 user = meta.Session.query(User).filter(User.uid==uid).first()
-                log.debug("string")
-                log.debug(uid)
-                log.debug(user)
             if user:
                 return redirect_to('/holySynod/manageUsers/edit/%s' % user.uidNumber)
             else:

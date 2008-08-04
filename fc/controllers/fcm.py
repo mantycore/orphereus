@@ -39,7 +39,8 @@ class FcmController(BaseController):
         oekakies = meta.Session.query(Oekaki).all()
         currentTime = datetime.datetime.now()
         for oekaki in oekakies:
-            if oekaki.time==-1 and not oekaki.path and oekaki.timeStamp < currentTime - datetime.timedelta(days=1):
+            #oekaki.time==-1 and not oekaki.path and 
+            if oekaki.timeStamp < currentTime - datetime.timedelta(days=1):
                 mtnLog.append(self.createLogEntry('Info', "Deleted oekaki with <b>#%d</b>" % (oekaki.id)))
                 meta.Session.delete(oekaki)
         meta.Session.commit()
@@ -58,12 +59,30 @@ class FcmController(BaseController):
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog;
+        
+    def banRotate(self):
+        mtnLog = []
+        mtnLog.append(self.createLogEntry('Task', 'Removing bans...'))
+        currentTime = datetime.datetime.now()                
+        users = meta.Session.query(User).all()
+        for user in users:
+            bantime = user.options.bantime
+            banDate = user.options.banDate
+            if banDate and bantime>0 and banDate < currentTime - datetime.timedelta(days=bantime):
+                unbanMessage = ("Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
+                mtnLog.append(self.createLogEntry('Info', unbanMessage))
+                addLogEntry(LOG_EVENT_MTN_UNBAN, unbanMessage)
+                user.options.bantime = 0
+                user.options.banreason = ''
+        meta.Session.commit()
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog;        
 
     def integrityChecks(self):
         mtnLog = []
         mtnLog.append(self.createLogEntry('Task', 'Doing integrity checks.... NOT IMPLEMENTED.'))
         mtnLog.append(self.createLogEntry('Task', 'Done'))
-        return mtnLog;
+        return mtnLog;     
 
     def mtnAction(self, actid, secid):
         secTestPassed = False    
@@ -99,18 +118,23 @@ class FcmController(BaseController):
             c.boardName = 'Index'
             return render('/wakaba.mtnIndex.mako')        
         else:
+            addLogEntry(LOG_EVENT_MTN_BEGIN, _('Maintenance runned'))
             mtnLog = []
             c.boardName = 'Maintenance log'
             if actid == 'clearOekaki':
                 mtnLog = self.clearOekaki()
             elif actid == 'destroyInvites':
                 mtnLog = self.destroyInvites()
+            elif actid == 'banRotate':
+                mtnLog = self.banRotate()                
             elif actid == 'integrityChecks':
                 mtnLog = self.integrityChecks()
             elif actid == 'all':
                 mtnLog = self.clearOekaki()
-                mtnLog+=self.destroyInvites()
-                mtnLog+=self.integrityChecks()
+                mtnLog += self.destroyInvites()
+                mtnLog += self.integrityChecks()
+                mtnLog += self.banRotate()   
                 
             c.mtnLog = mtnLog
+            addLogEntry(LOG_EVENT_MTN_END, _('Maintenance ended'))
             return render('/wakaba.mtnLog.mako')

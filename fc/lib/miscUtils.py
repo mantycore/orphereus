@@ -29,7 +29,10 @@ def isNumber(n):
         
 def addLogEntry(event,entry):
     logEntry = LogEntry()
-    logEntry.uidNumber = c.userInst.uidNumber()
+    if c.userInst:
+        logEntry.uidNumber = c.userInst.uidNumber()
+    else:
+        logEntry.uidNumber = -1
     logEntry.date = datetime.datetime.now()
     logEntry.event = event
     logEntry.entry = entry

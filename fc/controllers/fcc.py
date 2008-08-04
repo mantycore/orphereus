@@ -445,6 +445,7 @@ class FccController(BaseController):
            post.message += "\r\nDrawn with **%s** in %s seconds" % (oekaki.type,str(int(oekaki.time/1000)))
            if oekaki.source:
               post.message += ", source >>%s" % oekaki.source
+           meta.Session.delete(oekaki) # TODO: Is it really needed to destroy oekaki IDs?
         else:
            file = request.POST.get('file',False)
         if post.message:

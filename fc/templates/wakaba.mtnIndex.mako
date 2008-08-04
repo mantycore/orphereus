@@ -35,6 +35,16 @@ ${_('Destroy unused invites (older than one week)')}
 
 <tr>
 <td>
+<form method="post" action="service/banRotate">
+${_('Remove old bans')}
+<br/>
+<input type="submit" value="Launch">
+</form>
+</td>
+</tr>
+
+<tr>
+<td>
 <form method="post" action="service/integrityChecks">
 <span style="color: red;">${_('Integrity checks')}</span>
 <br/>

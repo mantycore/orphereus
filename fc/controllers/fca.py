@@ -135,13 +135,16 @@ class FcaController(BaseController):
         
     def manageUsers(self):
         c.boardName = 'Users management'
-        if request.POST.get("uid",False):
-            uid = request.POST.get("uid",False)
+        uid = request.POST.get("uid", False)
+        if uid:            
             user = False
             if isNumber(uid):
-                user = meta.Session.query(User).filter(or_(User.uidNumber==uid)).first()                
+                user = meta.Session.query(User).filter(User.uidNumber==uid).first()               
             else:
-                user = meta.Session.query(User).filter(or_(User.uid==uid)).first()
+                user = meta.Session.query(User).filter(User.uid==uid).first()
+                log.debug("string")
+                log.debug(uid)
+                log.debug(user)
             if user:
                 return redirect_to('/holySynod/manageUsers/edit/%s' % user.uidNumber)
             else:

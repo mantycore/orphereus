@@ -58,6 +58,7 @@ def initEnvironment():
         section.append(b.tag)
     if section:
         c.boardlist.append(section)
+    response.set_cookie('fc', request.cookies['fc'], domain='wut.anoma.ch') # dirty antirat hack
 
 def checkAdminIP():
     if request.environ["REMOTE_ADDR"] != '127.0.0.1':

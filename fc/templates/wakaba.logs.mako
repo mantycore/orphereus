@@ -16,7 +16,11 @@
         <tr ${log.event < 0x10000 and "style='color:#F00;'" or ""}>
             <td>${log.date}</td>
             <td>${log.uidNumber}</td>
+%if log.event>1:            
             <td>${log.event + c.userInst.secid()}</td>
+%else:      
+            <td>${log.event}</td>      
+%endif
             <td>${log.entry}</td>
         </tr>
     %endfor

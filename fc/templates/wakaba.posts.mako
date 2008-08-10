@@ -141,11 +141,11 @@ ${_('Board-specific rules:')}
             (<em>${'%.2f' % (thread.file.size / 1024.0)} Kbytes, ${thread.file.width}x${thread.file.height}</em>)
         </span>
         <span class="thumbnailmsg"></span><br />                       
-        <a target="_blank" href="${c.uploadPathWeb + thread.file.path}">
+        <a target="_blank" href="${"http://wut.anoma.ch/img1/%d%s" %(c.userInst.secid(), thread.file.path)}">
         %if thread.spoiler:
             <img src="/images/spoiler.png" class="thumb"/>
         %else:
-            <img src="${"http://wut.anoma.ch/img1/%d%s" %(c.userInst.secid(), thread.file.path)}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
+            <img src="${c.uploadPathWeb + thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
         %endif                             
         </a>
         %elif thread.picid == -1:
@@ -238,11 +238,11 @@ ${_('Board-specific rules:')}
                                 <a target="_blank" href="${"http://wut.anoma.ch/img1/%d%s" %(c.userInst.secid(), p.file.path)}">${"%d%s" %(c.userInst.secid(), p.file.path)}</a> 
                                 (<em>${'%.2f' % (p.file.size / 1024.0)} Kbytes, ${p.file.width}x${p.file.height}</em>)</span>
                                 <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-                                <a target="_blank" href="${c.uploadPathWeb + p.file.path}">
+                                <a target="_blank" href="${"http://wut.anoma.ch/img1/%d%s" %(c.userInst.secid(), p.file.path)}">
                                 %if p.spoiler:
                                     <img src="/images/spoiler.png" class="thumb"/>
                                 %else:     
-                                    <img src="${"http://wut.anoma.ch/img1/%d%s" %(c.userInst.secid(), p.file.path)}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />
+                                    <img src="${c.uploadPathWeb + p.file.thumpath}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />
                                 %endif 
                                 </a>
                                 %elif p.picid == -1:

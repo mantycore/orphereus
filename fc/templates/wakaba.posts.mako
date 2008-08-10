@@ -237,7 +237,7 @@ ${_('Board-specific rules:')}
                             %if p.file:
                                 <br /><span class="filesize">${_('File:')} 
 #${"%d%s" %(c.userInst.secid(), p.file.path)}                                
-                                <a target="_blank" href="${c.uploadPathWeb + p.file.path}">${"%d%s" %(p.file.path)}</a> 
+                                <a target="_blank" href="${c.uploadPathWeb + p.file.path}">${"%s" %(p.file.path)}</a> 
                                 (<em>${'%.2f' % (p.file.size / 1024.0)} Kbytes, ${p.file.width}x${p.file.height}</em>)</span>
                                 <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
                                 <a target="_blank" href="${c.uploadPathWeb + p.file.path}">

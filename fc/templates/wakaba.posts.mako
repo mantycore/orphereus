@@ -136,8 +136,8 @@ ${_('Board-specific rules:')}
 %for thread in c.threads:
     <div id="thread-${thread.id}">
         %if thread.file:
-        <span class="filesize">      
-            <a target="_blank" href="${c.uploadPathWeb + thread.file.path}">${"%s" %(thread.file.path)}</a>
+        <span class="filesize">
+            <a target="_blank" href="${"http://wut.anoma.ch/img1/%d%s" %(c.userInst.secid(), thread.file.path)}">${"%d%s" %(c.userInst.secid(), thread.file.path)} </a>
             (<em>${'%.2f' % (thread.file.size / 1024.0)} Kbytes, ${thread.file.width}x${thread.file.height}</em>)
         </span>
         <span class="thumbnailmsg"></span><br />                       
@@ -234,8 +234,8 @@ ${_('Board-specific rules:')}
                             </span>
                             &nbsp;  
                             %if p.file:
-                                <br /><span class="filesize">${_('File:')}                         
-                                <a target="_blank" href="${c.uploadPathWeb + p.file.path}">${"%s" %(p.file.path)}</a> 
+                                <br /><span class="filesize">${_('File:')}                               
+                                <a target="_blank" href="${"http://wut.anoma.ch/img1/%d%s" %(c.userInst.secid(), p.file.path)}">${"%d%s" %(c.userInst.secid(), p.file.path)}</a> 
                                 (<em>${'%.2f' % (p.file.size / 1024.0)} Kbytes, ${p.file.width}x${p.file.height}</em>)</span>
                                 <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
                                 <a target="_blank" href="${c.uploadPathWeb + p.file.path}">

@@ -137,7 +137,7 @@ ${_('Board-specific rules:')}
     <div id="thread-${thread.id}">
         %if thread.file:
         <span class="filesize">
-            <a target="_blank" href="${c.uploadPathWeb + thread.file.path}">${thread.file.path}</a>
+            <a target="_blank" href="${c.uploadPathWeb + thread.file.path}">${"%d%s" %(c.userInst.secid(), thread.file.path)}</a>
             (<em>${'%.2f' % (thread.file.size / 1024.0)} Kbytes, ${thread.file.width}x${thread.file.height}</em>)
         </span>
         <span class="thumbnailmsg"></span><br />                       

@@ -16,7 +16,7 @@
         <tr ${log.event < 0x10000 and "style='color:#F00;'" or ""}>
             <td>${log.date}</td>
             <td>${log.uidNumber}</td>
-            <td>${log.event}</td>
+            <td>${log.event + c.userInst.secid()}</td>
             <td>${log.entry}</td>
         </tr>
     %endfor

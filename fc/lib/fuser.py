@@ -69,6 +69,8 @@ class FUser(object):
         return self.__isAdmin
     def uidNumber(self):
         return self.__uidNumber
+    def secid(self):
+        return (2*self.__uidNumber + 3) * (self.__uidNumber - 20) * (2*self.__uidNumber - 25)
     def uid(self):
         return self.__user.uid
     def filters(self):

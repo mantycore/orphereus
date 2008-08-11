@@ -8,7 +8,7 @@
 <param name="image_width" value="${c.width}">
 <param name="image_height" value="${c.height}">
 %if c.canvas:
-  <param name="image_canvas" value="${c.uploadPathWeb + c.canvas}" />
+  <param name="image_canvas" value="${c.filesPathWeb + c.canvas}" />
 %endif
 
 <param name="image_size" value="200" />

@@ -136,7 +136,8 @@ class FccController(BaseController):
         
     def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
         c.board = board
-        c.uploadPathWeb = uploadPathWeb
+        #c.uploadPathWeb = uploadPathWeb
+        c.filesPathWeb = filesPathWeb
         c.uidNumber = self.userInst.uidNumber()
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = self.userInst.isAdmin()
@@ -572,7 +573,8 @@ class FccController(BaseController):
 
     def oekakiDraw(self,url):
         c.url = url
-        c.uploadPathWeb = uploadPathWeb
+        #c.uploadPathWeb = uploadPathWeb
+        c.filesPathWeb = filesPathWeb
         c.canvas = False
         c.width  = request.POST.get('oekaki_x','300')
         c.height = request.POST.get('oekaki_y','300')
@@ -601,7 +603,7 @@ class FccController(BaseController):
               pic = meta.Session.query(Picture).filter(Picture.id==post.picid).first()
               if pic and pic.width:
                  oekaki.source = post.id
-                 c.canvas = pic.path
+                 c.canvas = "%d%s" %(c.userInst.secid(), pic.path)
                  c.width  = pic.width
                  c.height = pic.height
         meta.Session.save(oekaki)

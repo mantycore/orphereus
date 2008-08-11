@@ -58,6 +58,7 @@ def initEnvironment():
         section.append(b.tag)
     if section:
         c.boardlist.append(section)
+    response.set_cookie('fc', request.cookies['fc'], domain='.'+baseDomain)         
     #response.set_cookie('fc', request.cookies['fc'], domain='wut.anoma.ch') # dirty antirat hack
     #response.set_cookie('fc', request.cookies['fc'], domain='wut.anoma.li') # dirty antirat hack
 

@@ -2,8 +2,8 @@
 <a href="/holySynod/manageSettings">${_('Manage settings')}</a><br />
 <a href="/holySynod/manageBoards">${_('Manage boards')}</a><br />
 <a href="/holySynod/manageUsers">${_('Manage users')}</a><br />
-<!--
 <a href="/holySynod/manageExtensions">${_('Manage extensions')}</a><br />
+<!--
 <a href="/holySynod/manageQuestions">${_('Manage questions')}</a><br />
 <a href="/holySynod/manageApplications">${_('Manage applications')}</a><br />
 -->

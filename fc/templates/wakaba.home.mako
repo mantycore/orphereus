@@ -10,16 +10,18 @@
     <thead>
         <tr>
             <td style="width: 200px;">${_('Name')}</td>
+            <td style="width: 40px;">${_('Threads')}</td>            
             <td>${_('Description')}</td>
         </tr>
     </thead>
     <tbody>
 %for b in c.boards:
         <tr>
-            <td><a href="/${b.tag}/"><div class="hovblock">${b.tag}</div></a></td>
+            <td><a href="/${b.board.tag}/"><div class="hovblock">${b.board.tag}</div></a></td>
+            <td>${b.count}</td>            
             <td>
-            %if b.options and b.options.comment:
-                ${b.options.comment}
+            %if b.board.options and b.board.options.comment:
+                ${b.board.options.comment}
             %endif
             </td>  
         </tr>
@@ -33,18 +35,20 @@
     <thead>
         <tr>
             <td style="width: 200px;">${_('Name')}</td>
+            <td style="width: 40px;">${_('Threads')}</td>
             <td>${_('Description')}</td>
         </tr>
     </thead>
     <tbody>
 %for b in c.tags:
         <tr>
-            <td><a href="/${b.tag}/"><div class="hovblock">${b.tag}</div></a></td>
+            <td><a href="/${b.board.tag}/"><div class="hovblock">${b.board.tag}</div></a></td>
+            <td>${b.count}</td>            
             <td>
-            %if b.options and b.options.comment:
-                ${b.options.comment}
+            %if b.board.options and b.board.options.comment:
+                ${b.board.options.comment}
             %endif
-            </td>   
+            </td>  
         </tr>
 %endfor    
     </tbody>

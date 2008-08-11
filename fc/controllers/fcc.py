@@ -565,15 +565,27 @@ class FccController(BaseController):
             settingsMap = c.settingsMap
             adminTagsLine = settingsMap['adminOnlyTags'].value
             log.debug(adminTagsLine)
-            forbiddenTags = adminTagsLine.split(',')              
+            forbiddenTags = adminTagsLine.split(',')                          
             for b in boards:
                 if not b.tag in forbiddenTags:
+                    filter = self.buildFilter(b.tag)                    
+                    bc = empty()
+                    bc.board = b
+                    bc.count = filter[0].count()
                     if b.options and b.options.persistent:
-                        c.boards.append(b)
+                        c.boards.append(bc)
                     else:
-                        c.tags.append(b)
+                        c.tags.append(bc)
                  
             return render('/%s.home.mako' % self.userInst.template())
+            
+            
+        #forbiddenTags = getTagsListFromString(adminTagsLine)
+
+        #if not self.userInst.isAdmin():
+        #    threadFilter = threadFilter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
+        
+        #count = threadFilter.count()            
             
         board = filterText(board)
         c.PostAction = board

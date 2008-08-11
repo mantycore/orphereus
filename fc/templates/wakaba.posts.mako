@@ -144,9 +144,11 @@ ${_('Board-specific rules:')}
         <a target="_blank" href="${c.filesPathWeb+"%d%s" %(c.userInst.secid(), thread.file.path)}">
         %if thread.spoiler:
             <img src="/images/spoiler.png" class="thumb"/>
-        %else:
+        %elif not '..' in thread.file.thumpath:
             <img src="${c.filesPathWeb+"%d%s" %(c.userInst.secid(), thread.file.thumpath)}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
-        %endif                             
+        %else:
+            <img src="${c.filesPathWeb+thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
+        %endif   
         </a>
         %elif thread.picid == -1:
             <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>

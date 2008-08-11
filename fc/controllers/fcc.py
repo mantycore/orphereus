@@ -465,7 +465,7 @@ class FccController(BaseController):
         pic = self.processFile(file,options.thumbSize)
         if pic:
             if pic == -1:
-                c.errorText = "Broken picture"
+                c.errorText = _("Broken picture. Maybe it is interlaced PNG?")
                 return render('/wakaba.error.mako')        
             if pic.size > options.maxFileSize:
                 c.errorText = "File size exceeds the limit"

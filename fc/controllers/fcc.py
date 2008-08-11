@@ -755,4 +755,7 @@ class FccController(BaseController):
         else:
             return redirect_to('/')
         
-        
+    def showStatic(self, page):
+        c.page = page
+        c.boardName = page
+        return render('/%s.static.mako' % self.userInst.template())

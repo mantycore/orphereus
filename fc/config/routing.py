@@ -69,6 +69,8 @@ def make_map():
     # Generic filter
     map.connect('/:board/:tempid', controller='fcc', action='GetBoard', board = '!', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))
+    
+    map.connect('/static/:page', controller='fcc', action='showStatic', page = 'Rules')
 
     map.connect('*url', controller='fcp', action='UnknownAction')
 

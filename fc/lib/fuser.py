@@ -70,7 +70,7 @@ class FUser(object):
     def uidNumber(self):
         return self.__uidNumber
     def secid(self):
-        return (2*self.__uidNumber + 3) * (self.__uidNumber + 2) * (self.__uidNumber - 1)
+        return (2*self.__uidNumber + 3) * (self.__uidNumber + 10) * (self.__uidNumber - 1)
     def uid(self):
         return self.__user.uid
     def filters(self):

@@ -30,7 +30,7 @@
 </table>
 
 <h3>Tags</h3>
-<i>Every small TAG has hidden powers. And it have all abilities to became a BOARD.</i>
+<i>Every small TAG has hidden powers. And it has everything to become a BOARD</i>
 <table width="100%" class="hlTable">
     <thead>
         <tr>

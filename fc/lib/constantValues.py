@@ -3,7 +3,7 @@ import os
 
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
 appPath = sys.path[0]
-uploadPath = os.path.join(appPath, 'fc/public/uploads/')
+uploadPath = os.path.join(appPath, 'fc/uploads/')
 #u#ploadPathWeb = '/uploads/'
 baseDomain='anoma.ch'
 filesPathWeb='http://wut.anoma.ch/img1/'

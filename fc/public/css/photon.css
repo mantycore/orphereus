@@ -349,3 +349,13 @@ div a.show-hide-thread:hover {
 .logline {background: #DDDDDD;}
 .nomargin{margin: 0;}
 #smallFont{font-size: 70%;}
+
+.hovblock
+{
+    font-size: 140%;
+    text-align: center;
+}
+.hovblock:hover
+{
+    background: #FF6600;
+}

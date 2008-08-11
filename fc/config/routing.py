@@ -30,7 +30,7 @@ def make_map():
     
     # User subsystem
     map.connect('/userProfile', controller='fcc', action='showProfile')
-    map.connect('/userProfile/messages', controller='fcc', action='showMessages')
+    #map.connect('/userProfile/messages', controller='fcc', action='showMessages')
     map.connect('/viewLog/:page', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
     # Admin subsystem
     map.connect('/holySynod', controller='fca', action='index')
@@ -67,7 +67,7 @@ def make_map():
     #map.connect('/@/:tempid', controller='fcc', action='GetMyThreads', tempid=0, requirements=dict(tempid='\d+'))
     #map.connect('/@/page/:page', controller='fcc', action='GetMyThreads', tempid=0, page=0, requirements=dict(page='\d+'))
     # Generic filter
-    map.connect('/:board/:tempid', controller='fcc', action='GetBoard', board = '~', tempid=0, requirements=dict(tempid='\d+'))
+    map.connect('/:board/:tempid', controller='fcc', action='GetBoard', board = '!', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))
 
     map.connect('*url', controller='fcp', action='UnknownAction')

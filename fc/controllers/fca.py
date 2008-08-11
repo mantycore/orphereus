@@ -87,6 +87,7 @@ class FcaController(BaseController):
             c.tag.options.maxFileSize = 3145728
             c.tag.options.minPicSize = 50
             c.tag.options.thumbSize = 180
+            c.tag.options.specialRules = ''
         if request.POST.get('tag',False):
             newtag = request.POST.get('tag',False)
             newtagre = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""").match(newtag)
@@ -100,7 +101,7 @@ class FcaController(BaseController):
                     else:
                         oldtag = ''
                     c.tag.options.comment = filterText(request.POST.get('comment',''))
-                    c.tag.options.specialRules = filterText(request.POST.get('specialRules',''))
+                    c.tag.options.specialRules = filterText(request.POST.get('specialRules',''))                    
                     c.tag.options.sectionId = request.POST.get('sectionId',0)
                     c.tag.options.persistent = request.POST.get('persistent',False)
                     c.tag.options.imagelessThread = request.POST.get('imagelessThread',False)

@@ -10,6 +10,9 @@ from sqlalchemy.sql import and_, or_, not_
 from fc.lib.constantValues import *
 from fc.lib.settings import *
 
+class empty(object):
+    pass
+
 class FieldStorageLike(object):
     def __init__(self,filename,filepath):
         self.filename = filename
@@ -55,7 +58,10 @@ def initEnvironment():
             c.boardlist.append(section)
             sectionId = b.options.sectionId
             section = []
-        section.append(b.tag)
+        bc = empty()
+        bc.tag = b.tag
+        bc.comment = b.options.comment
+        section.append(bc) #b.tag)
     if section:
         c.boardlist.append(section)
     response.set_cookie('fc', request.cookies['fc'], domain='.'+baseDomain)         

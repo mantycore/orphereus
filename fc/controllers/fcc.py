@@ -558,6 +558,23 @@ class FccController(BaseController):
         return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
 
     def GetBoard(self, board, tempid, page=0):
+        if board == '!':
+            boards = meta.Session.query(Tag).options(eagerload('options')).all()
+            c.boards=[]
+            c.tags=[]
+            settingsMap = c.settingsMap
+            adminTagsLine = settingsMap['adminOnlyTags'].value
+            log.debug(adminTagsLine)
+            forbiddenTags = adminTagsLine.split(',')              
+            for b in boards:
+                if not b.tag in forbiddenTags:
+                    if b.options and b.options.persistent:
+                        c.boards.append(b)
+                    else:
+                        c.tags.append(b)
+                 
+            return render('/%s.home.mako' % self.userInst.template())
+            
         board = filterText(board)
         c.PostAction = board
         

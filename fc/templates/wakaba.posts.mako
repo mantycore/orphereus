@@ -241,8 +241,10 @@ ${_('Board-specific rules:')}
                                 <a target="_blank" href="${c.filesPathWeb+"%d%s" %(c.userInst.secid(), p.file.path)}">
                                 %if p.spoiler:
                                     <img src="/images/spoiler.png" class="thumb"/>
-                                %else:     
+                                %elif not '..' in p.file.thumpath:                                     
                                     <img src="${c.filesPathWeb +"%d%s" %(c.userInst.secid(), p.file.thumpath)}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />
+                                %else:  
+                                    <img src="${c.filesPathWeb + p.file.thumpath}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />                                
                                 %endif 
                                 </a>
                                 %elif p.picid == -1:

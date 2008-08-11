@@ -34,7 +34,8 @@ class FccController(BaseController):
         if not self.userInst.isAuthorized():
             return redirect_to(c.currentURL+'authorize')
         if self.userInst.isBanned():
-            return redirect_to('/youAreBanned')
+            abort(500, 'Internal Server Error')    
+            #return redirect_to('/youAreBanned')
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
         initEnvironment()

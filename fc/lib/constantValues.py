@@ -6,9 +6,11 @@ appPath = sys.path[0]
 uploadPath = os.path.join(appPath, 'fc/uploads/')
 #u#ploadPathWeb = '/uploads/'
 baseDomain='anoma.ch'
-filesPathWeb='http://wut.anoma.ch/img1/'
 markupFile = os.path.join(appPath, 'wakabaparse/mark.def')
 devMode = os.path.exists(os.path.join(appPath, 'fc/development.dummy'))    
+filesPathWeb='http://wut.anoma.ch/img1/'
+if devMode:
+    filesPathWeb='http://wut.anoma.ch/img2/'
 
 settingsDef = {
     "title"         : "ANOMA.Ch",

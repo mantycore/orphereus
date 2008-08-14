@@ -118,7 +118,7 @@ class FcmController(BaseController):
             c.boardName = 'Index'
             return render('/wakaba.mtnIndex.mako')        
         else:
-            addLogEntry(LOG_EVENT_MTN_BEGIN, _('Maintenance runned'))
+            addLogEntry(LOG_EVENT_MTN_BEGIN, _('Maintenance started'))
             mtnLog = []
             c.boardName = 'Maintenance log'
             if actid == 'clearOekaki':

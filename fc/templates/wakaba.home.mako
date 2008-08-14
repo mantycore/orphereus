@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
-<h2 style="text-align: center;"><a href="/static/rules">Rules</a> <a href="/static/markup">Markup</a></h2>
+<h2 style="text-align: center;"><a href="/static/rules">Rules</a> <a href="/static/markup">Markup and features</a></h2>
 <hr />
 
 <h3>Boards</h3>

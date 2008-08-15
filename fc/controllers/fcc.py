@@ -577,7 +577,9 @@ class FccController(BaseController):
             adminTagsLine = settingsMap['adminOnlyTags'].value
             #log.debug(adminTagsLine)
             forbiddenTags = adminTagsLine.split(',')    
-
+            result = meta.Session().execute("select count(id) from posts")                                        
+            c.totalPostsCount = result.fetchone()[0]   
+            
             for b in boards:
                 if not b.tag in forbiddenTags:
                     bc = empty()

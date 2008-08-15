@@ -23,6 +23,9 @@ from fc.lib.settings import *
 
 log = logging.getLogger(__name__)
 
+def taglistcmp(a, b):
+    return cmp(b.count, a.count) or cmp(a.board.tag, b.board.tag)
+
 class FccController(BaseController):        
     def __before__(self):
         self.userInst = FUser(session.get('uidNumber',-1))
@@ -566,20 +569,35 @@ class FccController(BaseController):
             boards = meta.Session.query(Tag).options(eagerload('options')).all()
             c.boards=[]
             c.tags=[]
+            c.totalBoardsThreads = 0
+            c.totalTagsThreads = 0
+            c.totalBoardsPosts = 0
+            c.totalTagsPosts = 0            
             settingsMap = c.settingsMap
             adminTagsLine = settingsMap['adminOnlyTags'].value
-            log.debug(adminTagsLine)
-            forbiddenTags = adminTagsLine.split(',')                          
+            #log.debug(adminTagsLine)
+            forbiddenTags = adminTagsLine.split(',')    
+
             for b in boards:
                 if not b.tag in forbiddenTags:
-                    filter = self.buildFilter(b.tag)                    
                     bc = empty()
                     bc.board = b
-                    bc.count = filter[0].count()
+                    result = meta.Session().execute("select count(id) from posts as p, tagsToPostsMap as m where (p.id = m.postId and m.tagId = :ctid)", {'ctid':b.id})                                        
+                    #filter = self.buildFilter(b.tag)                                        
+                    #bc.count = filter[0].count()
+                    bc.count = result.fetchone()[0]
+                    result = meta.Session().execute("select count(id) from posts as p, tagsToPostsMap as m where ((p.id = m.postId or p.parentId = m.postId)and m.tagId = :ctid)", {'ctid':b.id})                    
+                    bc.postsCount = result.fetchone()[0]
                     if b.options and b.options.persistent:
                         c.boards.append(bc)
+                        c.totalBoardsThreads += bc.count
+                        c.totalBoardsPosts += bc.postsCount
                     else:
                         c.tags.append(bc)
+                        c.totalTagsThreads += bc.count
+                        c.totalTagsPosts += bc.postsCount                        
+            c.boards = sorted(c.boards, taglistcmp)
+            c.tags = sorted(c.tags, taglistcmp)
                  
             return render('/%s.home.mako' % self.userInst.template())
             

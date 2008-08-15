@@ -5,10 +5,10 @@
         <title>${c.title} &#151; ${c.boardName}</title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <link rel="stylesheet" type="text/css" href="/css/photon.css" title="Photon" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 		<script type="text/javascript" src="/js/ui.js"></script>
 		<script type="text/javascript" src="/js/utils.js"></script>
 		<script type="text/javascript" src="/js/jquery-1.2.6.js"></script>
-        <link type="image/x-icon" href="/favicon.ico" rel="shortcut icon"/>
     </head>
     <body>
         <%include file="wakaba.menu.mako" />

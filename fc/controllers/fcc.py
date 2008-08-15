@@ -205,7 +205,13 @@ class FccController(BaseController):
         else:
             c.boardName = board
             c.tagLine = c.boardName
-            
+            if board == '~':
+                c.boardName = _('Overview')
+            if board == '@':
+                c.boardName = _('Related threads')
+            if board == '!':
+                c.boardName = _('Home')                
+                
         c.boardOptions = self.conjunctTagOptions(tags)
         c.tagList = ' '.join(tagList)
             
@@ -705,6 +711,7 @@ class FccController(BaseController):
         c.templates = ['wakaba']
         c.styles    = ['photon']
         c.profileChanged = False
+        c.boardName = _('Profile')
         if request.POST.get('update',False):
             template = request.POST.get('template',self.userInst.template())
             if template in c.templates:

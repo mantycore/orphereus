@@ -208,9 +208,7 @@ class FccController(BaseController):
             if board == '~':
                 c.boardName = _('Overview')
             if board == '@':
-                c.boardName = _('Related threads')
-            if board == '!':
-                c.boardName = _('Home')                
+                c.boardName = _('Related threads')             
                 
         c.boardOptions = self.conjunctTagOptions(tags)
         c.tagList = ' '.join(tagList)

@@ -2,8 +2,8 @@
 <%inherit file="wakaba.main.mako" />
 
 <h2 style="clear: both;">
-<span style="float: right"><a href="/static/markup">Markup and features</a></span>
-<span ><a href="/static/rules">Rules</a></span>
+<span><a href="/static/markup">Markup and features</a></span>
+<span><a href="/static/rules">Rules</a></span>
 </h2>
 
 <hr style="clear: both;"/>

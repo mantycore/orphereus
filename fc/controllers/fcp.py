@@ -90,7 +90,7 @@ class FcpController(OrphieBaseController):
                 request.environ['wsgi.input'].read(2)
                 body = request.environ['wsgi.input'].read(bodyLength)
                 headers = header.split('&')
-                type = headers[0].split('=')[1]
+                type = filterText(headers[0].split('=')[1])
                 time = headers[1].split('=')[1]
                 localFilePath = os.path.join(uploadPath, tempid + '.' + type)
                 localFile = open(localFilePath,'wb')

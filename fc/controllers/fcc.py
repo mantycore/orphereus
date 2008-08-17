@@ -453,29 +453,37 @@ class FccController(OrphieBaseController):
             return self.render('error')
         
         post = Post()
-        tempid = request.POST.get('tempid',False)
+        tempid = request.POST.get('tempid', False)
         post.message = request.POST.get('message', '')
-        tempid = request.POST.get('tempid',False)
+        tempid = request.POST.get('tempid', False)
+        
+        painterMark = False
         if tempid:
            oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
-           file = FieldStorageLike(oekaki.path,os.path.join(uploadPath,oekaki.path))
-           post.message += "\r\nDrawn with **%s** in %s seconds" % (oekaki.type,str(int(oekaki.time/1000)))
+           file = FieldStorageLike(oekaki.path,os.path.join(uploadPath, oekaki.path))
+           painterMark = '<br /><div style="background: #DEAEDE;">Drawn with **%s** in %s seconds</div>' % (oekaki.type, str(int(oekaki.time/1000)))
            if oekaki.source:
-              post.message += ", source >>%s" % oekaki.source
+              painterMark += ", source >>%s" % oekaki.source
            meta.Session.delete(oekaki) # TODO: Is it really needed to destroy oekaki IDs?
         else:
            file = request.POST.get('file',False)
+           
         if post.message:
            if len(post.message) <= 15000:
                parser = WakabaParser()
                maxLinesInPost = int(settingsMap['maxLinesInPost'].value)
                cutSymbols = int(settingsMap["cutSymbols"].value)
                parsedMessage = parser.parseWakaba(post.message,self,lines=maxLinesInPost,maxLen=cutSymbols)
-               post.message = parsedMessage[0]
+               fullMessage = parsedMessage[0]
+               if painterMark:
+                   fullMessage += painterMark                 
+
+               post.message = fullMessage
                post.messageShort = parsedMessage[1]
            else:
                c.errorText = _('Message is too long')
                return self.render('error') 
+               
         post.title = filterText(request.POST['title'])
         post.date = datetime.datetime.now()
         pic = self.processFile(file,options.thumbSize)

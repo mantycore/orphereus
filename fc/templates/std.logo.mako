@@ -1,4 +1,4 @@
-<div class="logo">
+<div class="logo" style="text-align: center;">
     %if c.devmode:
         [DEV]
     %endif

@@ -2,13 +2,13 @@
 <%inherit file="wakaba.main.mako" />
 
 <h2 style="clear: both;">
+<span style="float: right;"><a href="/static/rules">Rules</a></span>
 <span><a href="/static/markup">Markup and features</a></span>
-<span><a href="/static/rules">Rules</a></span>
 </h2>
 
 <hr style="clear: both;"/>
 <h3>Boards</h3>
-<span style="float: right"><i>Interesting numbers: ${c.totalPostsCount} [${c.userInst.secid()*c.userInst.secid()}]</i></span>
+<span style="float: right;"><i>Interesting numbers: ${c.totalPostsCount} [${c.userInst.secid()*c.userInst.secid()}]</i></span>
 <i>Let my BOARDS go!</i>
 <table width="100%" class="hlTable">
     <thead>

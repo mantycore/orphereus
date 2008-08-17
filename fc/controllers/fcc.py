@@ -461,7 +461,7 @@ class FccController(OrphieBaseController):
         if tempid:
            oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
            file = FieldStorageLike(oekaki.path,os.path.join(uploadPath, oekaki.path))
-           painterMark = '<br /><span style="background: #DADADA;">Drawn with **%s** in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
+           painterMark = '<br /><span style="background: #D8D8D8;">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
            if oekaki.source:
               painterMark += ", source >>%s" % oekaki.source
            meta.Session.delete(oekaki) # TODO: Is it really needed to destroy oekaki IDs?

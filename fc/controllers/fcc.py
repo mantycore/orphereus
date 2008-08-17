@@ -461,7 +461,7 @@ class FccController(OrphieBaseController):
         if tempid:
            oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
            file = FieldStorageLike(oekaki.path,os.path.join(uploadPath, oekaki.path))
-           painterMark = '<br /><div style="background: #DEAEDE;">Drawn with **%s** in %s seconds</div>' % (oekaki.type, str(int(oekaki.time/1000)))
+           painterMark = '<br /><span style="background: #DDDDDD;">Drawn with **%s** in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
            if oekaki.source:
               painterMark += ", source >>%s" % oekaki.source
            meta.Session.delete(oekaki) # TODO: Is it really needed to destroy oekaki IDs?
@@ -483,6 +483,8 @@ class FccController(OrphieBaseController):
            else:
                c.errorText = _('Message is too long')
                return self.render('error') 
+        elif painterMark:
+            post.message = painterMark 
                
         post.title = filterText(request.POST['title'])
         post.date = datetime.datetime.now()

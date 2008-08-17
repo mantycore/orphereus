@@ -17,13 +17,14 @@ from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from fc.lib.settings import *
+from OrphieBaseController import OrphieBaseController
 
 log = logging.getLogger(__name__)
 
 class Empty:
     pass
 
-class FcmController(BaseController):
+class FcmController(OrphieBaseController):
     def __before__(self):
         pass
             
@@ -116,7 +117,7 @@ class FcmController(BaseController):
                 
         if not actid:
             c.boardName = 'Index'
-            return render('/wakaba.mtnIndex.mako')        
+            return self.render('mtnIndex')        
         else:
             addLogEntry(LOG_EVENT_MTN_BEGIN, _('Maintenance started'))
             mtnLog = []
@@ -137,4 +138,4 @@ class FcmController(BaseController):
                 
             c.mtnLog = mtnLog
             addLogEntry(LOG_EVENT_MTN_END, _('Maintenance ended'))
-            return render('/wakaba.mtnLog.mako')
+            return self.render('mtnLog')

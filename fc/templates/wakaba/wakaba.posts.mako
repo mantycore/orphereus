@@ -125,7 +125,7 @@ ${_('Board-specific rules:')}
 </table>
 %if c.oekaki:
             <div id="trfile" class="theader">
-                <img src="${c.uploadPathWeb + c.oekaki.path}">
+                <img src="${c.filesPathWeb + c.oekaki.path}">
             </div>
 %endif     
 </div>

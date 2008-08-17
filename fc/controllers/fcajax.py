@@ -20,15 +20,17 @@ from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from fc.lib.settings import *
+from OrphieBaseController import OrphieBaseController
 
 log = logging.getLogger(__name__)
 
-class FcajaxController(BaseController):
+class FcajaxController(OrphieBaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uidNumber',-1))
         c.userInst = self.userInst
         if not self.userInst.isAuthorized():
             abort(403)
+            
     def getPost(self,post):
         postInst = meta.Session.query(Post).get(post)
         if postInst:
@@ -44,6 +46,7 @@ class FcajaxController(BaseController):
             return postInst.message
         else:
             abort(404)
+            
     def editUserFilter(self,fid,filter):
         userFilter = meta.Session.query(UserFilters).get(fid)
         if not userFilter or userFilter.uidNumber != self.userInst.uidNumber():
@@ -67,4 +70,4 @@ class FcajaxController(BaseController):
         meta.Session.save(userFilter)
         meta.Session.commit()
         c.userFilter = userFilter
-        return render('/ajax.addUserFilter.mako')
+        return self.render('ajax.addUserFilter') #render('/ajax.addUserFilter.mako')

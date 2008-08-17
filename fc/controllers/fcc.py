@@ -20,15 +20,16 @@ from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from fc.lib.settings import *
+from OrphieBaseController import OrphieBaseController
 
 log = logging.getLogger(__name__)
 
 def taglistcmp(a, b):
     return cmp(b.count, a.count) or cmp(a.board.tag, b.board.tag)
 
-class FccController(BaseController):        
+class FccController(OrphieBaseController):        
     def __before__(self):
-        self.userInst = FUser(session.get('uidNumber',-1))
+        self.userInst = FUser(session.get('uidNumber', -1))
         c.userInst = self.userInst
         c.settingsMap = getSettingsMap()
         c.currentURL = request.path_info
@@ -42,7 +43,12 @@ class FccController(BaseController):
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
         initEnvironment()
-                    
+        
+    def showStatic(self, page):
+        c.page = page
+        c.boardName = page
+        return self.render('static.%s' % page) #render('/%s.static.mako' % self.userInst.template())
+            
     def getRPN(self,text,operators):
         whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']
         stack = []
@@ -135,7 +141,7 @@ class FccController(BaseController):
             cl = stack.pop()
             filter = filter.filter(cl[0])
             tagList = cl[1]
-        return (filter,tagList)
+        return (filter, tagList)
         
     def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
         c.board = board
@@ -235,8 +241,7 @@ class FccController(BaseController):
             c.oekaki = False
         
         c.returnToThread = session.get('returnToThread',False)
-
-        return render('/%s.posts.mako' % self.userInst.template())
+        return self.render('posts')
         
     def getParentID(self, id):
         post = meta.Session.query(Post).filter(Post.id==id).first()
@@ -402,6 +407,9 @@ class FccController(BaseController):
         settingsMap = c.settingsMap
         if postid:
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
+            if not thePost:
+                c.errorText = _("Can't post into non-existent thread")
+                return self.render('error')                
             if thePost.parentid != -1:
                thread = meta.Session.query(Post).filter(Post.id==thePost.parentid).one()
             else:
@@ -412,7 +420,7 @@ class FccController(BaseController):
             tags = self.__getPostTags(tagstr)
             if not tags:
                 c.errorText = _("You should specify at least one board")
-                return render('/wakaba.error.mako')
+                return self.render('error') 
             
             maxTagsCount = int(settingsMap['maxTagsCount'].value)
             maxTagLen = int(settingsMap['maxTagLen'].value)
@@ -420,7 +428,7 @@ class FccController(BaseController):
             
             if len(tags)>maxTagsCount:
                 c.errorText = _("Too many tags. Maximum allowed: %s") % (maxTagsCount)
-                return render('/wakaba.error.mako')
+                return self.render('error') 
                 
             tagsPermOk = True
             problemTags = []
@@ -437,12 +445,12 @@ class FccController(BaseController):
                     
             if not tagsPermOk:
                 c.errorText = _("Tags restrictions violations:<br/> %s") % ('<br/>'.join(problemTags))
-                return render('/wakaba.error.mako')    
+                return self.render('error') 
                 
         options = self.conjunctTagOptions(tags)
         if not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
             c.errorText = "Unacceptable combination of tags"
-            return render('/wakaba.error.mako')
+            return self.render('error')
         
         post = Post()
         tempid = request.POST.get('tempid',False)
@@ -467,29 +475,29 @@ class FccController(BaseController):
                post.messageShort = parsedMessage[1]
            else:
                c.errorText = _('Message is too long')
-               return render('/wakaba.error.mako')
+               return self.render('error') 
         post.title = filterText(request.POST['title'])
         post.date = datetime.datetime.now()
         pic = self.processFile(file,options.thumbSize)
         if pic:
             if pic == -1:
                 c.errorText = _("Broken picture. Maybe it is interlaced PNG?")
-                return render('/wakaba.error.mako')        
+                return self.render('error')      
             if pic.size > options.maxFileSize:
                 c.errorText = "File size exceeds the limit"
-                return render('/wakaba.error.mako')
+                return self.render('error') 
             if pic.height and (pic.height < options.minPicSize or pic.width < options.minPicSize):
                 c.errorText = "Image is too small"
-                return render('/wakaba.error.mako')
+                return self.render('error') 
             if not options.images:
                 c.errorText = "Files are not allowed on this board"
-                return render('/wakaba.error.mako')
+                return self.render('error') 
             post.picid = pic.id
         post.uidNumber = self.userInst.uidNumber()
         
         if not post.message and not post.picid:
             c.errorText = "At least message or file should be specified"
-            return render('/wakaba.error.mako')
+            return self.render('error') 
         
         if options.enableSpoilers:
             post.spoiler = request.POST.get('spoiler', False)  
@@ -497,7 +505,7 @@ class FccController(BaseController):
         if postid:
             if not post.picid and not options.imagelessPost:
                 c.errorText = _("Replies without image are not allowed")
-                return render('/wakaba.error.mako')
+                return self.render('error') 
                 
             post.parentid = thread.id
             post.sage = request.POST.get('sage', False)
@@ -506,7 +514,7 @@ class FccController(BaseController):
         else:
             if not post.picid and not options.imagelessThread:
                 c.errorText = "Threads without image are not allowed"
-                return render('/wakaba.error.mako')        
+                return self.render('error')
             post.parentid = -1
             post.bumpDate = datetime.datetime.now()
             post.tags = tags
@@ -557,7 +565,7 @@ class FccController(BaseController):
             
         if not thePost:
             c.errorText = _("No such post exist.")
-            return render('/wakaba.error.mako')
+            return self.render('error')
             
         filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.id)
         c.PostAction = thePost.id
@@ -601,15 +609,7 @@ class FccController(BaseController):
             c.boards = sorted(c.boards, taglistcmp)
             c.tags = sorted(c.tags, taglistcmp)
                  
-            return render('/%s.home.mako' % self.userInst.template())
-            
-            
-        #forbiddenTags = getTagsListFromString(adminTagsLine)
-
-        #if not self.userInst.isAdmin():
-        #    threadFilter = threadFilter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
-        
-        #count = threadFilter.count()            
+            return self.render('home') 
             
         board = filterText(board)
         c.PostAction = board
@@ -661,7 +661,8 @@ class FccController(BaseController):
                  c.height = pic.height
         meta.Session.save(oekaki)
         meta.Session.commit()
-        return render('/spainter.mako')
+#        return render('/spainter.mako')
+        return self.render('spainter')
         
     def DeletePost(self, post):
         fileonly = 'fileonly' in request.POST
@@ -757,7 +758,7 @@ class FccController(BaseController):
             homeExcludeList.append(t.tag)
         c.homeExclude = ', '.join(homeExcludeList)
         c.userInst = self.userInst
-        return render('/wakaba.profile.mako')
+        return self.render('profile')
         
     def viewLog(self,page):
         settingsMap = c.settingsMap    
@@ -776,11 +777,7 @@ class FccController(BaseController):
             rv = re.compile('(\d+.){3}\d+')
             for log in c.logs:
                 log.entry = rv.sub('<font color="red">[IP REMOVED]</font>', log.entry)
-            return render('/wakaba.logs.mako')
+            return self.render('logs')
         else:
             return redirect_to('/')
         
-    def showStatic(self, page):
-        c.page = page
-        c.boardName = page
-        return render('/%s.static.mako' % self.userInst.template())

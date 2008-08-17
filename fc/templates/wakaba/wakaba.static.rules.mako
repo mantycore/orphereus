@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+<%inherit file="wakaba.main.mako" />
 
 <h2>Основные принципы Аномы:</h2>
 <font style="font-size: 130%">

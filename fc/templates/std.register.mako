@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.main.mako" />
+<%inherit file="std.main.mako" />
 
 <div class="postarea">
 	<form id="postform" action="/register/doesntmatteranymore" method="post">

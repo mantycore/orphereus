@@ -17,10 +17,11 @@ from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from fc.lib.settings import *
+from OrphieBaseController import OrphieBaseController
 
 log = logging.getLogger(__name__)
 
-class FcaController(BaseController):
+class FcaController(OrphieBaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uidNumber',-1))
         if not self.userInst.isAuthorized():
@@ -37,7 +38,8 @@ class FcaController(BaseController):
     def index(self):
         c.boardName = 'Index'
         c.admins = meta.Session.query(User).join('options').filter(or_(UserOptions.isAdmin==True,UserOptions.canDeleteAllPosts==True)).all()
-        return render('/wakaba.adminIndex.mako')
+        return self.render('adminIndex') 
+        
     def manageSettings(self):
         c.boardName = 'Settings management'
         settingsMap = getSettingsMap()
@@ -51,7 +53,7 @@ class FcaController(BaseController):
             meta.Session.commit()
             c.message = _('Updated settings')
         c.settings = settingsMap
-        return render('/wakaba.manageSettings.mako')
+        return self.render('manageSettings') 
         
     def manageBoards(self):
         c.boardName = 'Boards management'
@@ -68,7 +70,8 @@ class FcaController(BaseController):
         for key in sorted(c.boards.iterkeys()):
             bs[key] = c.boards[key]
         c.boards = bs
-        return render('/wakaba.manageBoards.mako')
+        return self.render('manageBoards')
+        
     def editBoard(self,tag):
         c.boardName = 'Edit board'
         c.message = ''
@@ -132,7 +135,7 @@ class FcaController(BaseController):
                     c.message = _("Board %s already exists!") % newtag
             else:
                 c.message = _("Board name should be non-empty and should contain only valid symbols")
-        return render('/wakaba.editBoard.mako')
+        return self.render('editBoard')
         
     def manageUsers(self):
         c.boardName = 'Users management'
@@ -147,12 +150,12 @@ class FcaController(BaseController):
                 return redirect_to('/holySynod/manageUsers/edit/%s' % user.uidNumber)
             else:
                 c.message = _('No such user exists.')
-        return render('/wakaba.manageUsers.mako')
+        return self.render('manageUsers')
         
     def editUserAttempt(self, pid):
         c.boardName = 'User edit attemption'
         c.pid = pid
-        return render('/wakaba.editUserAttempt.mako')
+        return self.render('editUserAttempt')
         
     def editUserByPost(self, pid):
         post = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==pid).order_by(Post.id.asc()).first()
@@ -221,18 +224,20 @@ class FcaController(BaseController):
                         meta.Session.delete(user)
                         addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
                         c.message = "User deleted"
-                        return render('/wakaba.manageUsers.mako')
+                        return self.render('manageUsers')
                     else:
                         c.message = _('You should specify deletion reason')
                 else:
                     c.message = "You haven't rights to delete user"
-            return render('/wakaba.editUser.mako')
+            return self.render('editUser')
         else:
             c.errorText = _('No such user exists.')
-            return render('/wakaba.error.mako')
+            return self.render('error')
+            
     def manageExtensions(self):
         c.extensions = meta.Session.query(Extension).order_by(Extension.type).all()
-        return render('/wakaba.manageExtensions.mako')
+        return self.render('manageExtensions')
+        
     def editExtension(self,ext):
         if not ext:
             ext = ''
@@ -257,19 +262,23 @@ class FcaController(BaseController):
             meta.Session.commit()
             addLogEntry(LOG_EVENT_EXTENSION_EDIT,_('Edited extension %s') % c.ext.ext)
             c.message = _('Extension edited')
-        return render('/wakaba.editExtension.mako')
+        return self.render('editExtension')
+        
     def manageQuestions(self):
         c.boardName = 'Questions management'
-        return render('/wakaba.manageQuestions.mako')        
+        return self.render('manageQuestions')   
+        
     def manageApplications(self):
         c.boardName = 'Applications management'
-        return render('/wakaba.manageApplications.mako')     
+        return self.render('manageApplications')  
+        
     def invitePage(self):
-        return render('/wakaba.invitePage.mako') 
+        return self.render('invitePage') 
+        
     def makeInvite(self):         
         if not self.userInst.canMakeInvite():
             c.errorText = "No way! You aren't holy enough!"
-            return render('/wakaba.error.mako') 
+            return self.render('error') 
         c.boardName = 'Invites'
         invite = Invite()
         invite.date = datetime.datetime.now()
@@ -278,7 +287,8 @@ class FcaController(BaseController):
         meta.Session.commit()
         addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, filterText(request.POST.get('inviteReason','???'))))
         c.inviteLink = "<a href='/register/%s'>INVITE</a>" % invite.invite
-        return render('/wakaba.newInvite.mako')
+        return self.render('newInvite')
+        
     def viewLog(self,page):
         c.boardName = 'Logs'
         page = int(page)
@@ -291,4 +301,4 @@ class FcaController(BaseController):
             page = c.pages - 1
         c.page = page        
         c.logs = meta.Session.query(LogEntry).options(eagerload('user')).order_by(LogEntry.date.desc())[page*100:(page+1)*100]
-        return render('/wakaba.adminLogs.mako')
+        return self.render('adminLogs')

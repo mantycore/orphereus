@@ -1,7 +1,7 @@
 <div class="logo" style="text-align: center;">
     ${c.title}    
     %if c.boardName:
-        #151; ${c.boardName}
+        &#151; ${c.boardName}
     %endif
 </div>
 

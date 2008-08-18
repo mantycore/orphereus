@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
-<h2>Основные принципы Аномы:</h2>
-<font style="font-size: 130%">
+<h2>Основные правила Аномы:</h2>
+<font style="font-size: 100%">
 <ol>
 <li>Не постить ЦП (CP, Child Porn, детская порнография).</li>
 <li>Не пытаться вайпать/спамить.</li>

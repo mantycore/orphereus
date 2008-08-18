@@ -403,7 +403,7 @@ class FccController(OrphieBaseController):
                         tagsl.append(t)      
             return tags
                     
-    def formatPostReference(postid, parentid = False):                    
+    def formatPostReference(self, postid, parentid = False):                    
         if not parentid:
             parentid = self.getParentID(postid)
             

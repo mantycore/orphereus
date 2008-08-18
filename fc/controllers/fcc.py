@@ -403,6 +403,15 @@ class FccController(OrphieBaseController):
                         tagsl.append(t)      
             return tags
                     
+    def formatPostReference(postid, parentid = False):                    
+        if not parentid:
+            parentid = self.getParentID(postid)
+            
+        if parentid == -1:
+            return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
+        else:
+            return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid, postid, postid, postid)
+            
     def processPost(self, postid=0, board=u''):
         settingsMap = c.settingsMap
         if postid:
@@ -457,13 +466,13 @@ class FccController(OrphieBaseController):
         post.message = request.POST.get('message', '')
         tempid = request.POST.get('tempid', False)
         
-        painterMark = False
+        painterMark = False # TODO FIXME : move into parser
         if tempid:
            oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
            file = FieldStorageLike(oekaki.path,os.path.join(uploadPath, oekaki.path))
            painterMark = '<br /><span style="background: #A8A8A8;">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
            if oekaki.source:
-              painterMark += ", source >>%s" % oekaki.source
+              painterMark += ", source " + self.formatPostReference(oekaki.source) #<a href="">&lt;&lt;%s</a>" % oekaki.source
            meta.Session.delete(oekaki) # TODO: Is it really needed to destroy oekaki IDs?
         else:
            file = request.POST.get('file',False)

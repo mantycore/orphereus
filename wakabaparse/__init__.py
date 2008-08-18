@@ -31,11 +31,11 @@ class WakabaParser(object):
     def reference(self, tag, beg, end, parts):
         n,i,j,p = parts[0]
         number = self.input[i:j]
-        pid = self.calledBy.getParentID(number)
-        if pid == -1:
-            return '<a href="/%s">&gt;&gt;%s</a>' % (number,number)
-        else:
-            return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (pid,number,number,number)
+        return self.calledBy.formatPostReference(number)
+        #if pid == -1:
+        #    return '<a href="/%s">&gt;&gt;%s</a>' % (number, number)
+        #else:
+        #    return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (pid,number, number, number)
 
     def signature(self, tag, beg, end, parts):
         valid = {} 

@@ -26,13 +26,31 @@ class OrphieBaseController(BaseController):
         tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
         
         try:
-            if self.userInst:
+            if self.userInst and not self.userInst.isBanned():
                 tname = self.userInst.template()
                 tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
-        except: #userInst not defined
+        except: #userInst not defined or user banned
             pass
         
         if page and os.path.isfile(os.path.join(templPath, tpath)):               
             return render('/' + tpath)
         else:
             return _("Template problem")
+            
+    def genUid(self, key):
+        return hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()    
+        
+    def banUser(self, user, bantime, banreason):
+        if len(banreason)>1:
+            if isNumber(bantime) and int(bantime) > 0:
+                bantime = int(bantime)
+                user.options.bantime = bantime
+                user.options.banreason = banreason
+                user.options.banDate = datetime.datetime.now() 
+                addLogEntry(LOG_EVENT_USER_BAN,_('Banned user %s for %s days for reason "%s"') % (user.uidNumber, bantime, banreason))
+                meta.Session.commit()
+                return _('User was banned')
+            else:
+                return _('You should specify ban time in days')
+        else:
+            return _('You should specify ban reason')  

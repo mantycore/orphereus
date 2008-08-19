@@ -43,7 +43,7 @@ class FcpController(OrphieBaseController):
         else:
             c.currentURL = '/'
         if request.POST.get('code',False):
-            code = hashlib.sha512(request.POST['code'].encode('utf-8') + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+            code = self.genUid(request.POST['code'].encode('utf-8')) #hashlib.sha512(request.POST['code'].encode('utf-8') + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
             user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==code).first()
             if user:
                 self.login(user)
@@ -61,12 +61,20 @@ class FcpController(OrphieBaseController):
                 session.save()
             else:
                 c.currentURL = '/'
-                return render('/wakaba.login.mako')
+                return self.render('login')
+                
         key = request.POST.get('key','').encode('utf-8')
         key2 = request.POST.get('key2','').encode('utf-8')
+        uid = self.genUid(key) #hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+        user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==uid).first()
+        if user:
+            self.banUser(user, 7777, "Your Security Code was used during registration by another user. Contact administrator immediately please.")
+            c.boardName = _('Error')
+            c.errorText = _("You entered already existing password. Previous account was banned. Contact administrator please.")
+            return self.render('error')
+            
         if key:
-            if len(key)>=24 and key == key2:
-                uid = hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+            if len(key)>=24 and key == key2:                
                 user = User()
                 user.uid = uid
                 meta.Session.save(user)
@@ -106,7 +114,7 @@ class FcpController(OrphieBaseController):
         c.userInst = self.userInst
         if self.userInst.isBanned():
             c.boardName = _('Banned')
-            return self.render('bannded')
+            return self.render('banned')
         else:
             c.boardName = _('Error')
             c.errorText = _("ORLY?")

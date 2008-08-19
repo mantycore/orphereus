@@ -71,11 +71,13 @@ class FUser(object):
         return self.__uidNumber
     def secid(self):
         return (2*self.__uidNumber + 3) * (self.__uidNumber + 10) * (self.__uidNumber - 1)
-    def uid(self):
-        return self.__user.uid
+    def uid(self, value=None):        
+        if value != None and not meta.Session.query(User).options(eagerload('options')).filter(User.uid==value).first():
+            self.__user.uid = value
+        return self.__user.uid        
     def filters(self):
         return self.__filters
-    def hideLongComments(self,value=None):
+    def hideLongComments(self, value=None):
         if value != None:
             self.__user.options.hideLongComments = value
             self.__hideLongComments = self.__user.options.hideLongComments

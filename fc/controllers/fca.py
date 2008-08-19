@@ -193,18 +193,19 @@ class FcaController(OrphieBaseController):
                 else:
                     banreason = filterText(request.POST.get('banreason','???'))
                     bantime = request.POST.get('bantime','0')
-                    if len(banreason)>1:
-                        if isNumber(bantime) and int(bantime) > 0:
-                            bantime = int(bantime)
-                            user.options.bantime = bantime
-                            user.options.banreason = banreason
-                            user.options.banDate = datetime.datetime.now() 
-                            addLogEntry(LOG_EVENT_USER_BAN,_('Banned user %s for %s days for reason "%s"') % (user.uidNumber,bantime,banreason))
-                            c.message = _('User was banned')
-                        else:
-                            c.message = _('You should specify ban time in days')
-                    else:
-                        c.message = _('You should specify ban reason')
+                    c.message = self.banUser(user, bantime, banreason)
+                    #if len(banreason)>1:
+                    #    if isNumber(bantime) and int(bantime) > 0:
+                    #        bantime = int(bantime)
+                    #        user.options.bantime = bantime
+                    #        user.options.banreason = banreason
+                    #        user.options.banDate = datetime.datetime.now() 
+                    #        addLogEntry(LOG_EVENT_USER_BAN,_('Banned user %s for %s days for reason "%s"') % (user.uidNumber, bantime, banreason))
+                    #        c.message = _('User was banned')
+                    #    else:
+                    #        c.message = _('You should specify ban time in days')
+                    #else:
+                    #    c.message = _('You should specify ban reason')
             elif request.POST.get('unban',False):
                 if user.options.bantime > 0:
                     banreason = user.options.banreason

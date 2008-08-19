@@ -403,7 +403,7 @@ class FccController(OrphieBaseController):
                         tagsl.append(t)      
             return tags
                     
-    def formatPostReference(self, postid, parentid = False):                    
+    def formatPostReference(self, postid, parentid = False): # TODO FIXME: move to parser             
         if not parentid:
             parentid = self.getParentID(postid)
             
@@ -769,7 +769,24 @@ class FccController(OrphieBaseController):
             for t in homeExcludeTags:
                 homeExcludeList.append(t.id)
             self.userInst.homeExclude(homeExcludeList)
-            c.profileChanged = True
+
+            key = request.POST.get('key','').encode('utf-8')
+            key2 = request.POST.get('key2','').encode('utf-8')
+            newuid = self.genUid(key) #hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+            olduid = self.userInst.uid()
+            if key == key2 and newuid != olduid:
+                anotherUser = meta.Session.query(User).options(eagerload('options')).filter(User.uid==newuid).first()
+                if not anotherUser:
+                    self.userInst.uid(newuid)
+                else:
+                    currentUser = meta.Session.query(User).options(eagerload('options')).filter(User.uid==olduid).first()                
+                    self.banUser(currentUser, 7777, "Your are entered already existing Security Code. Contact administrator immediately please.")
+                    self.banUser(anotherUser, 7777, "Your Security Code was used during profile update by another user. Contact administrator immediately please.")                    
+                    c.boardName = _('Error')
+                    c.errorText = _("You entered already existing password. Both accounts was banned. Contact administrator please.")
+                    return self.render('error')                    
+            
+            c.profileChanged = True            
             meta.Session.commit()
         homeExcludeTags = meta.Session.query(Tag).filter(Tag.id.in_(self.userInst.homeExclude())).all()
         homeExcludeList = []

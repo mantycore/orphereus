@@ -8,13 +8,30 @@
             <tbody>
                 %if c.profileChanged:
                     <tr>
-                        <td colspan='2'><strong>${_('Profile was updated.')}</strong></td>
+                        <td colspan='2' style="text-align: center;"><span class="theader">${_('Profile was updated.')}</span></td>
                     </tr>                    
                 %endif   
+                <tr>
+                    <td colspan='2' style="text-align: center; font-weight: bold;">${_('Security')}</td>
+                </tr>                   
                 <tr id="truid">
                     <td class="postblock">${_('UID')}</td>
                     <td><input value='${c.userInst.uid()}' readonly></td>
                 </tr>
+                <tr>
+                    <td colspan='2' style="font-size: 50%;">${_("Leave this fields empty if you don't wish to change your security code and UID:")}</td>
+                </tr>                                   
+                <tr>
+                    <td class="postblock">${_('New Security Code')}</td>
+                    <td><input name='key' value=''></td>
+                </tr>                  
+                <tr>
+                    <td class="postblock">${_('Repeat Security Code')}</td>
+                    <td><input name='key2' value=''></td>
+                </tr>  
+                <tr>
+                    <td colspan='2' style="text-align: center; font-weight: bold;">${_('Customization')}</td>
+                </tr>                   
                 <tr id="trtpp">
                     <td class="postblock">${_('Threads per page')}</td>
                     <td><input name='threadsPerPage' value='${c.userInst.threadsPerPage()}'></td>
@@ -47,20 +64,21 @@
                 <tr id="trstyle">
                     <td class="postblock">${_('Style')}</td>
                     <td>
-                        <select name='style'
+                        <select name='style'>
                             <option>${c.userInst.style()}</option>
                             %for s in c.styles:
                                 %if s != c.userInst.style():
                                     <option>${s}</option>
                                 %endif
                             %endfor
+                        </select>                            
                     </td>
-                </tr>
+                </tr>                              
                 <tr>
                     <td colspan='2'><input name='update' type='submit' value='${_('Update')}'></td>
                 </tr>
                 <tr>
-                    <td colspan='2'>${_('User filters')}</td>
+                    <td colspan='2' style="text-align: center; font-weight: bold;">${_('User filters')}</td>
                 </tr>                
                 %for f in c.userInst.filters():
                 <tr id='filterId${f.id}'>

@@ -774,7 +774,7 @@ class FccController(OrphieBaseController):
             key2 = request.POST.get('key2','').encode('utf-8')
             newuid = self.genUid(key) #hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
             olduid = self.userInst.uid()
-            if key == key2 and newuid != olduid:
+            if key == key2 and newuid != olduid and len(key) >= 24:
                 anotherUser = meta.Session.query(User).options(eagerload('options')).filter(User.uid==newuid).first()
                 if not anotherUser:
                     self.userInst.uid(newuid)

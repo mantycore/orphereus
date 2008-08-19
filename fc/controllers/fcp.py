@@ -69,6 +69,7 @@ class FcpController(OrphieBaseController):
         user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==uid).first()
         if user:
             self.banUser(user, 7777, "Your Security Code was used during registration by another user. Contact administrator immediately please.")
+            del session['invite']
             c.boardName = _('Error')
             c.errorText = _("You entered already existing password. Previous account was banned. Contact administrator please.")
             return self.render('error')

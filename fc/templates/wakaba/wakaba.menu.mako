@@ -1,9 +1,9 @@
 %if c.boardlist:
 <div class="adminbar">
     [
+    <a href="/~/" title="${_('Overview')}">/~/</a>
+    <a href="/@/" title="${_('Related threads')}">/@/</a>
     <a href="/!/" title="${_('Home')}">/!/</a>    
-    <a href="/~/" title="${_('Overview')}">/~/</a>   
-	<a href="/@/" title="${_('Related threads')}">/@/</a>
     ]    
     %for section in c.boardlist:
         [

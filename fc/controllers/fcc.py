@@ -626,8 +626,8 @@ class FccController(OrphieBaseController):
                         c.totalTagsThreads += bc.count
                         c.totalTagsPosts += bc.postsCount                        
             c.boards = sorted(c.boards, taglistcmp)
-            c.tags = sorted(c.tags, taglistcmp)
-                 
+            c.tags = sorted(c.tags, taglistcmp)                 
+            c.boardName = _('Home')
             return self.render('home') 
             
         board = filterText(board)

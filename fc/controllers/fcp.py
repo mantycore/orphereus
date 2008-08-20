@@ -28,6 +28,17 @@ class FcpController(OrphieBaseController):
         settingsMap = getSettingsMap()
         c.title = settingsMap['title'].value
         c.devmode = devMode 
+        ref = request.headers.get('REFERER', False)
+        log.debug(ref)
+        
+        if ref:
+            rickroll = True
+            for rc in refControlList:
+                if rc in ref:
+                    rickroll = False
+                
+            if (rickroll):
+                redirect_to('http://www.youtube.com/watch?v=oHg5SJYRHA0')
         
     def login(self, user):
         session['uidNumber'] = user.uidNumber

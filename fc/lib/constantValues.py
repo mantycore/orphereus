@@ -12,6 +12,7 @@ devMode = os.path.exists(os.path.join(appPath, 'fc/development.dummy'))
 filesPathWeb='http://wut.anoma.ch/img1/'
 if devMode:
     filesPathWeb='http://wut.anoma.ch/img2/'
+refControlList = ['anoma.ch', 'anoma.li', 'localhost', '127.0.0.1']
 
 settingsDef = {
     "title"         : "ANOMA.Ch",

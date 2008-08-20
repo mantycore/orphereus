@@ -39,7 +39,7 @@ class FcpController(OrphieBaseController):
                     rickroll = False
                 
             if (rickroll):
-                addLogEntry(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, IP: %s" % (ref, request.environ["REMOTE_ADDR"]))                
+                addLogEntry(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, IP: %s, User-Agent: %s" % (ref, request.environ["REMOTE_ADDR"], request.headers.get('User-Agent', '?')))                
                 redirect_to(fakeLinks[random.randint(0, len(fakeLinks) - 1)])
         
     def login(self, user):

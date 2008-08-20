@@ -15,6 +15,7 @@ import Image
 import os
 import hashlib
 import re
+import random
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *

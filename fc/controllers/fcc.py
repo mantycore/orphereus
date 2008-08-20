@@ -33,6 +33,7 @@ class FccController(OrphieBaseController):
         c.userInst = self.userInst
         c.settingsMap = getSettingsMap()
         c.currentURL = request.path_info
+        c.modLink = modLink
         if c.currentURL[-1] != '/':
             c.currentURL = c.currentURL + '/'
         if not self.userInst.isAuthorized():

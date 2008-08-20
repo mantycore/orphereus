@@ -137,15 +137,15 @@ ${_('Board-specific rules:')}
     <div id="thread-${thread.id}">
         %if thread.file:
         <span class="filesize">
-            <a target="_blank" href="${c.filesPathWeb+"%d%s" %(c.userInst.secid(), thread.file.path)}">${"%d%s" %(c.userInst.secid(), thread.file.path)} </a>
+            <a target="_blank" href="${c.filesPathWeb + c.modLink(thread.file.path, c.userInst.secid())}">${c.modLink(thread.file.path, c.userInst.secid())}</a>            
             (<em>${'%.2f' % (thread.file.size / 1024.0)} Kbytes, ${thread.file.width}x${thread.file.height}</em>)
         </span>
         <span class="thumbnailmsg"></span><br />                       
-        <a target="_blank" href="${c.filesPathWeb+"%d%s" %(c.userInst.secid(), thread.file.path)}">
+        <a target="_blank" href="${c.filesPathWeb + c.modLink(thread.file.path, c.userInst.secid())}">
         %if thread.spoiler:
             <img src="/images/spoiler.png" class="thumb"/>
         %elif not '..' in thread.file.thumpath:
-            <img src="${c.filesPathWeb+"%d%s" %(c.userInst.secid(), thread.file.thumpath)}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
+            <img src="${c.filesPathWeb + c.modLink(thread.file.path, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
         %else:
             <img src="${c.filesPathWeb+thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
         %endif   
@@ -236,15 +236,16 @@ ${_('Board-specific rules:')}
                             </span>
                             &nbsp;  
                             %if p.file:
-                                <br /><span class="filesize">${_('File:')}                               
-                                <a target="_blank" href="${c.filesPathWeb +"%d%s" %(c.userInst.secid(), p.file.path)}">${"%d%s" %(c.userInst.secid(), p.file.path)}</a> 
+                                <br /><span class="filesize">${_('File:')}     
+
+                                <a target="_blank" href="${c.filesPathWeb + c.modLink(p.file.path, c.userInst.secid())}">${c.modLink(p.file.path, c.userInst.secid())}</a> 
                                 (<em>${'%.2f' % (p.file.size / 1024.0)} Kbytes, ${p.file.width}x${p.file.height}</em>)</span>
                                 <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-                                <a target="_blank" href="${c.filesPathWeb+"%d%s" %(c.userInst.secid(), p.file.path)}">
+                                <a target="_blank" href="${c.filesPathWeb + c.modLink(p.file.path, c.userInst.secid())}">
                                 %if p.spoiler:
                                     <img src="/images/spoiler.png" class="thumb"/>
                                 %elif not '..' in p.file.thumpath:                                     
-                                    <img src="${c.filesPathWeb +"%d%s" %(c.userInst.secid(), p.file.thumpath)}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />
+                                    <img src="${c.filesPathWeb + c.modLink(p.file.path, c.userInst.secid())}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />
                                 %else:  
                                     <img src="${c.filesPathWeb + p.file.thumpath}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />                                
                                 %endif 

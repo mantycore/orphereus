@@ -8,7 +8,9 @@
 
 <hr style="clear: both;"/>
 <h3>Boards</h3>
-<span style="float: right;"><i>Interesting numbers: ${c.totalPostsCount} [${c.userInst.secid()*c.userInst.secid()}]</i></span>
+<span style="float: right;">
+<i>Interesting numbers: ${c.totalPostsCount} [${abs(c.userInst.secid()*c.userInst.secid() - c.totalPostsCount*c.totalPostsCount)}]</i>
+</span>
 <i>Let my BOARDS go!</i>
 <table width="100%" class="hlTable">
     <thead>

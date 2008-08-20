@@ -52,12 +52,13 @@ class FcpController(OrphieBaseController):
         return self.render('login')
         
     def register(self, invite):
-        invite_q = meta.Session.query(Invite).filter(Invite.invite==invite).first()    
         if 'invite' not in session:
+            invite_q = meta.Session.query(Invite).filter(Invite.invite==invite).first()
             if invite_q:
                 meta.Session.delete(invite_q)
                 meta.Session.commit()
                 session['invite'] = invite
+                session['iid'] = invite_q.id
                 session.save()
             else:
                 c.currentURL = '/'
@@ -70,6 +71,7 @@ class FcpController(OrphieBaseController):
         if user:
             self.banUser(user, 7777, "Your Security Code was used during registration by another user. Contact administrator immediately please.")
             del session['invite']
+            del session['iid']
             c.boardName = _('Error')
             c.errorText = _("You entered already existing password. Previous account was banned. Contact administrator please.")
             return self.render('error')
@@ -79,9 +81,10 @@ class FcpController(OrphieBaseController):
                 user = User()
                 user.uid = uid
                 meta.Session.save(user)
-                addLogEntry(LOG_EVENT_INVITE_USED, "Invite #%d used" % (invite_q.id))                
+                addLogEntry(LOG_EVENT_INVITE_USED, "Used invite #%d" % (session['iid']))                
                 meta.Session.commit()
                 del session['invite']
+                del session['iid']
                 self.login(user)
                 redirect_to('/')
         c.boardName = _('Register')

@@ -38,7 +38,7 @@ class FcpController(OrphieBaseController):
                     rickroll = False
                 
             if (rickroll):
-                redirect_to('http://www.youtube.com/watch?v=oHg5SJYRHA0')
+                redirect_to(fakeLinks[random.randint(0, len(fakeLinks) - 1)])
         
     def login(self, user):
         session['uidNumber'] = user.uidNumber

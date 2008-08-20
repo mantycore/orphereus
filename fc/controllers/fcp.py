@@ -66,18 +66,19 @@ class FcpController(OrphieBaseController):
                 
         key = request.POST.get('key','').encode('utf-8')
         key2 = request.POST.get('key2','').encode('utf-8')
-        uid = self.genUid(key) #hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
-        user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==uid).first()
-        if user:
-            self.banUser(user, 7777, "Your Security Code was used during registration by another user. Contact administrator immediately please.")
-            del session['invite']
-            del session['iid']
-            c.boardName = _('Error')
-            c.errorText = _("You entered already existing password. Previous account was banned. Contact administrator please.")
-            return self.render('error')
             
         if key:
-            if len(key)>=24 and key == key2:                
+            if len(key)>=24 and key == key2:      
+                uid = self.genUid(key) #hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+                user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==uid).first()
+                if user:
+                    self.banUser(user, 7777, "Your Security Code was used during registration by another user. Contact administrator immediately please.")
+                    del session['invite']
+                    del session['iid']
+                    c.boardName = _('Error')
+                    c.errorText = _("You entered already existing password. Previous account was banned. Contact administrator please.")
+                    return self.render('error')
+            
                 user = User()
                 user.uid = uid
                 meta.Session.save(user)
@@ -85,6 +86,7 @@ class FcpController(OrphieBaseController):
                 meta.Session.commit()
                 del session['invite']
                 del session['iid']
+                session.save()
                 self.login(user)
                 redirect_to('/')
         c.boardName = _('Register')

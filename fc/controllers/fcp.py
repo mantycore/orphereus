@@ -51,9 +51,9 @@ class FcpController(OrphieBaseController):
         c.boardName = _('Login')
         return self.render('login')
         
-    def register(self,invite):
+    def register(self, invite):
+        invite_q = meta.Session.query(Invite).filter(Invite.invite==invite).first()    
         if 'invite' not in session:
-            invite_q = meta.Session.query(Invite).filter(Invite.invite==invite).first()
             if invite_q:
                 meta.Session.delete(invite_q)
                 meta.Session.commit()
@@ -79,6 +79,7 @@ class FcpController(OrphieBaseController):
                 user = User()
                 user.uid = uid
                 meta.Session.save(user)
+                addLogEntry(LOG_EVENT_INVITE_USED, "Invite #%d used" % (invite_q.id))                
                 meta.Session.commit()
                 del session['invite']
                 self.login(user)

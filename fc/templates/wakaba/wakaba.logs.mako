@@ -13,6 +13,7 @@
     </thead>
     <tbody>
     %for log in c.logs:
+      %if log.event != 0x00080001:
         <tr ${log.event < 0x10000 and "style='color:#F00;'" or ""}>
             <td>${log.date}</td>
             <td>${log.uidNumber}</td>
@@ -23,6 +24,7 @@
 %endif
             <td>${log.entry}</td>
         </tr>
+      %endif
     %endfor
     </tbody>
 </table>

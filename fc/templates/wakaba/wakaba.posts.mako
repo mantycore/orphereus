@@ -145,7 +145,7 @@ ${_('Board-specific rules:')}
         %if thread.spoiler:
             <img src="/images/spoiler.png" class="thumb"/>
         %elif not '..' in thread.file.thumpath:
-            <img src="${c.filesPathWeb + c.modLink(thread.file.path, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
+            <img src="${c.filesPathWeb + c.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
         %else:
             <img src="${c.filesPathWeb+thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
         %endif   
@@ -245,7 +245,7 @@ ${_('Board-specific rules:')}
                                 %if p.spoiler:
                                     <img src="/images/spoiler.png" class="thumb"/>
                                 %elif not '..' in p.file.thumpath:                                     
-                                    <img src="${c.filesPathWeb + c.modLink(p.file.path, c.userInst.secid())}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />
+                                    <img src="${c.filesPathWeb + c.modLink(p.file.thumpath, c.userInst.secid())}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />
                                 %else:  
                                     <img src="${c.filesPathWeb + p.file.thumpath}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />                                
                                 %endif 

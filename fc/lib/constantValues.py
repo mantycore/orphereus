@@ -2,7 +2,7 @@ import sys
 import os 
 
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
-appPath = os.path.dirname(__file__) #sys.path[0]
+appPath = sys.path[0] #os.path.dirname(__file__) 
 templPath= os.path.join(appPath, 'fc/templates/')
 uploadPath = os.path.join(appPath, 'fc/uploads/')
 #u#ploadPathWeb = '/uploads/'

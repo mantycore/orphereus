@@ -44,11 +44,6 @@ class FccController(OrphieBaseController):
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
         initEnvironment()
-        
-    def showStatic(self, page):
-        c.page = page
-        c.boardName = page
-        return self.render('static.%s' % page) #render('/%s.static.mako' % self.userInst.template())
             
     def getRPN(self,text,operators):
         whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']

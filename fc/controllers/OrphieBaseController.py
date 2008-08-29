@@ -35,7 +35,7 @@ class OrphieBaseController(BaseController):
         if page and os.path.isfile(os.path.join(templPath, tpath)):               
             return render('/' + tpath)
         else:
-            return _("Template problem")
+            return _("Template problem: " + templPath)
             
     def genUid(self, key):
         return hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()    

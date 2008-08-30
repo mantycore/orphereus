@@ -88,10 +88,6 @@
         </tr>
         <tr>
             <td align="left">--</td>
-            <td align="left">–</td>
-        </tr>
-        <tr>
-            <td align="left">---</td>
             <td align="left">—</td>
         </tr>
         <tr>

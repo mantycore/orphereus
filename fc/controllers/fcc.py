@@ -723,7 +723,7 @@ class FccController(OrphieBaseController):
                     if os.path.isfile(thumPath): os.unlink(thumPath)
                 meta.Session.delete(pic)
            
-            if fileonly: 
+            if fileonly and pic: 
                 p.picid = -1
             else:
                 settingsMap = c.settingsMap        

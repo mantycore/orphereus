@@ -798,7 +798,7 @@ class FccController(OrphieBaseController):
         if settingsMap['usersCanViewLogs'].value == 'true':
             c.boardName = 'Logs'
             page = int(page)
-            count = meta.Session.query(LogEntry).count()
+            count = meta.Session.query(LogEntry).filter(not_(LogEntry.event.in_(disabledEvents))).count()
             p = divmod(count, 100)
             c.pages = p[0]
             if p[1]:

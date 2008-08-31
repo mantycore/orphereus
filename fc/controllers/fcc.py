@@ -34,6 +34,7 @@ class FccController(OrphieBaseController):
         c.settingsMap = getSettingsMap()
         c.currentURL = request.path_info
         c.modLink = modLink
+        c.filesPathWeb = filesPathWeb        
         if c.currentURL[-1] != '/':
             c.currentURL = c.currentURL + '/'
         if not self.userInst.isAuthorized():
@@ -142,7 +143,6 @@ class FccController(OrphieBaseController):
     def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
         c.board = board
         #c.uploadPathWeb = uploadPathWeb
-        c.filesPathWeb = filesPathWeb
         c.uidNumber = self.userInst.uidNumber()
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = self.userInst.isAdmin()

@@ -143,7 +143,7 @@ ${_('Board-specific rules:')}
         <span class="thumbnailmsg"></span><br />                       
         <a target="_blank" href="${c.filesPathWeb + c.modLink(thread.file.path, c.userInst.secid())}">
         %if thread.spoiler:
-            <img src="${c.filesPathWeb}/images/spoiler.png" class="thumb"/>
+            <img src="${c.filesPathWeb}../images/spoiler.png" class="thumb"/>
         %elif not '..' in thread.file.thumpath:
             <img src="${c.filesPathWeb + c.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
         %else:
@@ -152,11 +152,11 @@ ${_('Board-specific rules:')}
         </a>
         %elif thread.picid == -1:
             <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-            <img src='${c.filesPathWeb}/images/picDeleted.png' class="thumb" >             
+            <img src='${c.filesPathWeb}../images/picDeleted.png' class="thumb" >             
         %endif
         <a name="i${thread.id}"></a>
         <label>
-            &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='${c.filesPathWeb}/images/delete.gif' border=0 alt='x' title='Delete'></a>
+            &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='${c.filesPathWeb}../images/delete.gif' border=0 alt='x' title='Delete'></a>
             <div style="display:none" class="delete">       
             %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                 <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
@@ -208,7 +208,7 @@ ${_('Board-specific rules:')}
                         <td class="reply" id="reply${p.id}">
                             <a name="i${p.id}"></a>
                             <label>
-                                &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='${c.filesPathWeb}/images/delete.gif' border=0 alt='x' title='Del'></a>
+                                &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='${c.filesPathWeb}../images/delete.gif' border=0 alt='x' title='Del'></a>
                                 <div style="display:none" class="delete">
                                 %if p.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                                     <input type="checkbox" name="delete-${p.id}" value="${p.id}" />
@@ -218,7 +218,7 @@ ${_('Board-specific rules:')}
                                 %endif
                                 </div>
                                 %if p.sage:
-                                    <img src='${c.filesPathWeb}/images/sage.png'>
+                                    <img src='${c.filesPathWeb}../images/sage.png'>
                                 %endif
                                 <span class="replytitle">${p.title}</span>
                                 <span class="commentpostername"></span>
@@ -243,7 +243,7 @@ ${_('Board-specific rules:')}
                                 <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
                                 <a target="_blank" href="${c.filesPathWeb + c.modLink(p.file.path, c.userInst.secid())}">
                                 %if p.spoiler:
-                                    <img src="${c.filesPathWeb}/images/spoiler.png" class="thumb"/>
+                                    <img src="${c.filesPathWeb}../images/spoiler.png" class="thumb"/>
                                 %elif not '..' in p.file.thumpath:                                     
                                     <img src="${c.filesPathWeb + c.modLink(p.file.thumpath, c.userInst.secid())}" width="${p.file.thwidth}" height="${p.file.thheight}" class="thumb" />
                                 %else:  
@@ -252,7 +252,7 @@ ${_('Board-specific rules:')}
                                 </a>
                                 %elif p.picid == -1:
                                     <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-                                    <img src='${c.filesPathWeb}/images/picDeleted.png' class="thumb">                                    
+                                    <img src='${c.filesPathWeb}../images/picDeleted.png' class="thumb">                                    
                                 %endif
                             <blockquote class="postbody" id="postBQId${p.id}">
                                 %if (c.count > 1) and p.messageShort and c.userInst.hideLongComments():

@@ -102,6 +102,13 @@ def adminAlert(alertStr):
         server.starttls()
         server.ehlo()    
     server.login(alertSender, alertPassword)
-    server.sendmail(alertSender, alertEmail, alertStr)
+
+    msg = MIMEMultipart()
+    msg['From'] = alertSender
+    msg['To'] = alertEmail
+    msg['Subject'] = _('System alert')
+    msg.attach(MIMEText(alertStr))
+   
+    server.sendmail(alertSender, alertEmail, msg.as_string())
     server.close()
  

@@ -9,6 +9,7 @@ from sqlalchemy.orm import class_mapper
 from sqlalchemy.sql import and_, or_, not_
 from fc.lib.constantValues import *
 from fc.lib.settings import *
+import smtplib
 
 class empty(object):
     pass
@@ -93,3 +94,14 @@ def modLink(string, secid):
     p2 = string[4:8]
     p3 = string[8:len(string)]
     return p1 + str(secid) + p2 + p3
+    
+def adminAlert(alertStr)
+    server = smtplib.SMTP(alertServer, alertPort)
+    if alertPort == 587:
+        server.ehlo()
+        server.starttls()
+        server.ehlo()    
+    server.login(alertSender, alertPassword)
+    server.sendmail(alertSender, alertEmail, alertStr)
+    server.close()
+ 

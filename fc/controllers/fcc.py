@@ -794,7 +794,6 @@ class FccController(OrphieBaseController):
         return self.render('profile')
         
     def viewLog(self,page):
-        adminAlert('test')
         settingsMap = c.settingsMap    
         if settingsMap['usersCanViewLogs'].value == 'true':
             c.boardName = 'Logs'

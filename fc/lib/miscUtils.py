@@ -75,9 +75,28 @@ def initEnvironment():
     #response.set_cookie('fc', request.cookies['fc'], domain='wut.anoma.ch') # dirty antirat hack
     #response.set_cookie('fc', request.cookies['fc'], domain='wut.anoma.li') # dirty antirat hack
 
+def adminAlert(alertStr):
+    server = smtplib.SMTP(alertServer, alertPort)
+    if alertPort == 587:
+        server.ehlo()
+        server.starttls()
+        server.ehlo()    
+    server.login(alertSender, alertPassword)
+
+    msg = MIMEMultipart()
+    msg['From'] = alertSender
+    msg['To'] = alertEmail
+    msg['Subject'] = _(baseDomain + ' ALERT')
+    msg.attach(MIMEText(alertStr))
+   
+    server.sendmail(alertSender, alertEmail, msg.as_string())
+    server.close()    
+    
 def checkAdminIP():
     if request.environ["REMOTE_ADDR"] != '127.0.0.1':
-        addLogEntry(LOG_EVENT_SECURITY_IP,_("Access attempt from %s for admin account!")%request.environ["REMOTE_ADDR"])
+        msg = _("Access attempt from %s for admin account!") % request.environ["REMOTE_ADDR"]
+        addLogEntry(LOG_EVENT_SECURITY_IP, msg)
+        adminAlert(msg)
         session['uidNumber'] = -1
         session.save()
         return False
@@ -99,20 +118,4 @@ def modLink(string, secid):
     p3 = string[8:len(string)]
     return p1 + str(secid) + p2 + p3
     
-def adminAlert(alertStr):
-    server = smtplib.SMTP(alertServer, alertPort)
-    if alertPort == 587:
-        server.ehlo()
-        server.starttls()
-        server.ehlo()    
-    server.login(alertSender, alertPassword)
-
-    msg = MIMEMultipart()
-    msg['From'] = alertSender
-    msg['To'] = alertEmail
-    msg['Subject'] = _('System alert')
-    msg.attach(MIMEText(alertStr))
-   
-    server.sendmail(alertSender, alertEmail, msg.as_string())
-    server.close()
  

@@ -10,6 +10,10 @@ from sqlalchemy.sql import and_, or_, not_
 from fc.lib.constantValues import *
 from fc.lib.settings import *
 import smtplib
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEBase import MIMEBase
+from email.MIMEText import MIMEText
+from email import Encoders
 
 class empty(object):
     pass

@@ -95,7 +95,7 @@ def modLink(string, secid):
     p3 = string[8:len(string)]
     return p1 + str(secid) + p2 + p3
     
-def adminAlert(alertStr)
+def adminAlert(alertStr):
     server = smtplib.SMTP(alertServer, alertPort)
     if alertPort == 587:
         server.ehlo()

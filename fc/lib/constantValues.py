@@ -15,7 +15,7 @@ if devMode:
     filesPathWeb='http://wut.anoma.ch/img2/'
 refControlList = ['anoma.ch', 'anoma.li', 'localhost', '127.0.0.1']
 fakeLinks = ['http://www.youtube.com/watch?v=oHg5SJYRHA0', 'http://meatspin.com/', 'http://youtube.com/watch?v=Uqot33mczsw', 'http://youtube.com/watch?v=dZBU6WzBrX8']
-minPassLength=10
+minPassLength=12
 alertEmail='lamo@sms.megafonsib.ru'
 alertServer='smtp.gmail.com'
 alertPort=587

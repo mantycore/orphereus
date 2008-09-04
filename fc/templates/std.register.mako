@@ -18,7 +18,7 @@
         <p><input name="key" type="password" size=60></p> 
         <span class="postblock">${_('Re-enter security code')}</span>
         <p><input name="key2" type="password" size=60></p>                
-        <i>${_('Security code should be at least 24 symbols')}</i>
+        <i>${_('Security code should be at least 12 symbols')}</i>
         <p><input type="submit" value="${_('OK')}"></p>                
 	</form>
     

@@ -2,9 +2,10 @@ import sys
 import os 
 
 hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
-appPath = os.path.dirname(__file__).replace('/fc/lib', '')  #sys.path[0] #os.path.dirname(__file__) 
+appPath = os.path.dirname(__file__).replace('/fc/lib', '').replace('\\fc\\lib', '')  #sys.path[0] #os.path.dirname(__file__) 
 templPath= os.path.join(appPath, 'fc/templates/')
 uploadPath = os.path.join(appPath, 'fc/uploads/')
+captchaFont = os.path.join(appPath, 'fc/cfont.ttf')
 #u#ploadPathWeb = '/uploads/'
 baseDomain='anoma.ch'
 markupFile = os.path.join(appPath, 'wakabaparse/mark.def')
@@ -14,6 +15,7 @@ if devMode:
     filesPathWeb='http://wut.anoma.ch/img2/'
 refControlList = ['anoma.ch', 'anoma.li', 'localhost', '127.0.0.1']
 fakeLinks = ['http://www.youtube.com/watch?v=oHg5SJYRHA0', 'http://meatspin.com/', 'http://youtube.com/watch?v=Uqot33mczsw', 'http://youtube.com/watch?v=dZBU6WzBrX8']
+minPassLength=10
 alertEmail='lamo@sms.megafonsib.ru'
 alertServer='smtp.gmail.com'
 alertPort=587

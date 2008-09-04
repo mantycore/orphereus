@@ -129,6 +129,25 @@ t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
     sa.Column('isMain'  , sa.types.Boolean, nullable=True)
     )
     
+t_logins = sa.Table("loginStats", meta.metadata,
+    sa.Column("id"          , sa.types.Integer, primary_key=True),
+    sa.Column("ip"          , sa.types.String(16), nullable=False),
+    sa.Column("attempts"    , sa.types.Integer, nullable=False),    
+    sa.Column("cid"         , sa.types.Integer, nullable=True), 
+    sa.Column("lastAttempt" , sa.types.DateTime, nullable=True)
+    )    
+t_captchas = sa.Table("captchas", meta.metadata,
+    sa.Column("id"       , sa.types.Integer, primary_key=True),
+    sa.Column("text"     , sa.types.String(32), nullable=False),
+    sa.Column("content"  , sa.types.Binary, nullable=True)
+    )     
+
+class Captcha(object):
+    pass
+    
+class LoginTracker(object):
+    pass
+    
 class Oekaki(object):
     pass
     
@@ -140,8 +159,10 @@ class User(object):
     
 class UserOptions(object):
     pass
+    
 class UserFilters(object):
     pass
+    
 class Extension(object):
     pass
 
@@ -150,7 +171,6 @@ class Picture(object):
 
 class Post(object):
     pass
-
 
 class Tag(object):
     def __init__(self, tag): # xxx???  Liebert
@@ -165,6 +185,8 @@ class Setting(object):
 class LogEntry(object):
     pass
 
+orm.mapper(Captcha, t_captchas)        
+orm.mapper(LoginTracker, t_logins)    
 orm.mapper(Oekaki, t_oekaki)
 orm.mapper(Invite, t_invites)
 orm.mapper(UserOptions, t_userOptions)

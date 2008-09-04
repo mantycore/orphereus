@@ -11,7 +11,9 @@ import cgi
 import shutil
 import datetime
 import time
-import Image
+import Image, ImageDraw, ImageFilter, ImageFont
+import StringIO
+import urllib
 import os
 import hashlib
 import re
@@ -30,7 +32,6 @@ class FcpController(OrphieBaseController):
         c.title = settingsMap['title'].value
         c.devmode = devMode 
         ref = request.headers.get('REFERER', False)
-        log.debug(ref)
         
         if ref:
             rickroll = True
@@ -51,17 +52,118 @@ class FcpController(OrphieBaseController):
         session.delete()        
         redirect_to('/')
         
+    def createCaptcha(self):
+        meta.Session.commit() 
+        captcha = Captcha()
+        captcha.text = self.randomStr()
+        meta.Session.save(captcha)
+        meta.Session.commit()                
+
+        return captcha
+        
+    def randomStr(self):
+        alphabet = 'abcdefghijklmnopqrstuvwxyz'
+        min = 5
+        max = 6
+        str=''
+        
+        for x in random.sample(alphabet,random.randint(min,max)):
+            str+=x
+            
+        return str
+        
+    def captchaPic(self, cid):
+        captcha = meta.Session.query(Captcha).filter(Captcha.id==cid).first()  
+        if not captcha:
+            return 'Id problem'
+        else:
+            text = captcha.text
+            pw = 300
+            ph = 80
+            im = Image.new('RGB', (pw, ph), 'orange')
+            draw = ImageDraw.Draw(im)
+            font = ImageFont.truetype(captchaFont, 64)
+            w = font.getsize(text)[0]
+            h = font.getsize(text)[1]
+            draw.text(((pw - w)/2 + random.randrange(-20, 20), (ph - h)/2 + random.randrange(-10, 10)), captcha.text, font=font)
+            im = im.filter(ImageFilter.BLUR)
+            #im = im.filter(ImageFilter.MinFilter)
+            
+            f = StringIO.StringIO()
+            im.save(f, "PNG")
+            pic = f.getvalue()
+            response.headers['Content-Length'] = len(pic)
+            response.headers['Content-Type'] = 'image/png'
+
+            return pic
+        
     def authorize(self, url):
         if url:
             c.currentURL = '/' + str(url.encode('utf-8')) + '/'
         else:
             c.currentURL = '/'
-        if request.POST.get('code',False):
+        
+        ip = request.environ["REMOTE_ADDR"]
+        tracker = meta.Session.query(LoginTracker).filter(LoginTracker.ip==ip).first()
+        if not tracker:
+            tracker = LoginTracker()
+            tracker.ip = ip
+            tracker.attempts = 0
+            tracker.lastAttempt = datetime.datetime.now()              
+            meta.Session.save(tracker)  
+            meta.Session.commit()
+            #log.debug('new tracker')
+                    
+        captchaOk = True
+        captcha = False
+
+        if tracker.attempts>=2:
+            c.showCaptcha = True
+            captchaOk = False
+            
+            if tracker.cid:
+                captcha = meta.Session.query(Captcha).filter(Captcha.id==tracker.cid).first()            
+
+            if not captcha:
+                captcha = self.createCaptcha()
+                tracker.cid = captcha.id
+                meta.Session.commit()
+                #log.debug('new captcha')
+                
+            c.captid = tracker.cid
+            #log.debug('captcha')
+                
+        if request.POST.get('code', False):
             code = self.genUid(request.POST['code'].encode('utf-8')) #hashlib.sha512(request.POST['code'].encode('utf-8') + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
             user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==code).first()
-            if user:
+                        
+            #log.debug(code)            
+
+            captid = request.POST.get('captid', False)
+            captval = request.POST.get('captcha', False)      
+            #log.debug("%s:%s" %(captid, captval))
+             
+            if (not captchaOk) and captid and captval and isNumber(captid): 
+                if captcha:
+                    captchaOk = (captcha.text == captval)
+                    meta.Session.delete(captcha)
+                    if not captchaOk:
+                        #log.debug('recreated captcha')                    
+                        captcha = self.createCaptcha()
+                        tracker.cid = captcha.id                    
+                    #log.debug('captdel')
+                
+            if user and captchaOk:
+                meta.Session.delete(tracker)
                 self.login(user)
-                redirect_to(c.currentURL)
+            else:
+                tracker.attempts += 1    
+                tracker.lastAttempt = datetime.datetime.now()  
+
+            meta.Session.commit()
+            #log.debug(c.currentURL)
+            redirect_to(c.currentURL)                
+        
         c.boardName = _('Login')
         return self.render('login')
         
@@ -82,7 +184,7 @@ class FcpController(OrphieBaseController):
         key2 = request.POST.get('key2','').encode('utf-8')
             
         if key:
-            if len(key)>=24 and key == key2:      
+            if len(key)>=minPassLength and key == key2:      
                 uid = self.genUid(key) #hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
                 user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==uid).first()
                 if user:

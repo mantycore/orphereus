@@ -144,7 +144,7 @@ class FcpController(OrphieBaseController):
             response.headers['Content-Length'] = len(out)
             response.headers['Content-Type'] = 'image/png'
 
-            return out
+            return out.tounicode() 
         
     def authorize(self, url):
         if url:
@@ -171,7 +171,7 @@ class FcpController(OrphieBaseController):
             captchaOk = False
             
             if tracker.cid:
-                captcha = meta.Session.query(Captcha).filter(Captcha.id==tracker.cid).first()            
+                captcha = meta.Session.query(Captcha).filter(Captcha.id==tracker.cid).first()
 
             if not captcha:
                 captcha = self.createCaptcha()

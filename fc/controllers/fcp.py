@@ -72,9 +72,8 @@ class FcpController(OrphieBaseController):
             str+=x
             
         return str
-        
-       
-    def createHatchingTexture(self, density, width, height, fill):
+           
+    def createHatchingTexture(self, density, width, height, fill): # cool procedure, found in google
     # create image and drawing surface
         hatchImage = Image.new("RGBA", (width, height), 0)
         hatchDraw = ImageDraw.Draw(hatchImage)

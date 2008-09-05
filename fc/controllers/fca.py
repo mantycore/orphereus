@@ -23,6 +23,7 @@ log = logging.getLogger(__name__)
 
 class FcaController(OrphieBaseController):
     def __before__(self):
+        c.filesPathWeb = filesPathWeb      
         self.userInst = FUser(session.get('uidNumber',-1))
         if not self.userInst.isAuthorized():
             c.currentURL = '/holySynod/'
@@ -33,7 +34,7 @@ class FcaController(OrphieBaseController):
             return redirect_to('/')
         c.userInst = self.userInst
         if not checkAdminIP():
-            return redirect_to('/')
+            return redirect_to('/')            
             
     def index(self):
         c.boardName = 'Index'

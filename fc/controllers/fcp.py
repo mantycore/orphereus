@@ -18,6 +18,7 @@ import os
 import hashlib
 import re
 import random
+import string
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
@@ -62,7 +63,7 @@ class FcpController(OrphieBaseController):
         return captcha
         
     def randomStr(self):
-        alphabet = ascii_lowercase + ascii_digits
+        alphabet = string.ascii_lowercase + string.digits + '$%#@'
         min = 6
         max = 8
         str=''

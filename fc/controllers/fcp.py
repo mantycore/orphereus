@@ -62,7 +62,7 @@ class FcpController(OrphieBaseController):
         return captcha
         
     def randomStr(self):
-        alphabet = 'abcdefghijklmnopqrstuvwxyz1234567890&#'
+        alphabet = ascii_lowercase + ascii_digits
         min = 6
         max = 8
         str=''
@@ -144,7 +144,7 @@ class FcpController(OrphieBaseController):
             response.headers['Content-Length'] = len(out)
             response.headers['Content-Type'] = 'image/png'
 
-            return 'test' #out.getvalue() 
+            return out[]
         
     def authorize(self, url):
         if url:

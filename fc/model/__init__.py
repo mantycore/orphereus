@@ -136,6 +136,7 @@ t_logins = sa.Table("loginStats", meta.metadata,
     sa.Column("cid"         , sa.types.Integer, nullable=True), 
     sa.Column("lastAttempt" , sa.types.DateTime, nullable=True)
     )    
+    
 t_captchas = sa.Table("captchas", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("text"     , sa.types.String(32), nullable=False),

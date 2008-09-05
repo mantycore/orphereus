@@ -55,11 +55,32 @@ class FcmController(OrphieBaseController):
         invites = meta.Session.query(Invite).all()
         for invite in invites:
             if invite.date < currentTime - datetime.timedelta(weeks=1):
-                mtnLog.append(self.createLogEntry('Info', "Deleted invite <b>#%d</b> from date <b>%s</b> with id <font size='-2'>%s</font>" % (invite.id, invite.date, invite.invite)))
+                msg1 = "Deleted invite <b>#%d</b>" % (invite.id)
+                msg2 = " from date <b>%s</b> with id <font size='-2'>%s</font>" % (invite.date, invite.invite)
+                addLogEntry(LOG_EVENT_MTN_DELINVITE, msg1)
+                mtnLog.append(self.createLogEntry('Info', msg1+msg2))
                 meta.Session.delete(invite)
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog;
+        
+    def destroyTrackers(self):
+        mtnLog = []
+        mtnLog.append(self.createLogEntry('Task', 'Deleting old trackers...'))
+        currentTime = datetime.datetime.now()                
+        trackers = meta.Session.query(LoginTracker).all()
+        for tracker in trackers:
+            if tracker.lastAttempt < currentTime - datetime.timedelta(days=1):
+                mtnLog.append(self.createLogEntry('Info', "Deleted ip tracker for <b>%s</b> with <b>%d</b> attempts" % (tracker.ip, tracker.attempts)))                
+                if tracker.cid:
+                    captcha = meta.Session.query(Captcha).filter(Captcha.id==tracker.cid).first()            
+                    meta.Session.delete(captcha)
+                    mtnLog.append(self.createLogEntry('Info', "Deleted captcha <b>#%d</b>" % (captcha.id)))                
+                    
+                meta.Session.delete(tracker)
+        meta.Session.commit()
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog;        
         
     def banRotate(self):
         mtnLog = []
@@ -130,11 +151,17 @@ class FcmController(OrphieBaseController):
                 mtnLog = self.banRotate()                
             elif actid == 'integrityChecks':
                 mtnLog = self.integrityChecks()
+            elif actid == 'destroyTrackers':
+                mtnLog = self.destroyTrackers()                
             elif actid == 'all':
                 mtnLog = self.clearOekaki()
                 mtnLog += self.destroyInvites()
+                mtnLog += self.destroyTrackers()
                 mtnLog += self.integrityChecks()
                 mtnLog += self.banRotate()   
+            
+            #for entry in mtnLog:
+            #    addLogEntry(LOG_EVENT_MTN_ACT, entry.type + ': ' + entry.message)
                 
             c.mtnLog = mtnLog
             addLogEntry(LOG_EVENT_MTN_END, _('Maintenance ended'))

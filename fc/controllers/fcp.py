@@ -62,9 +62,9 @@ class FcpController(OrphieBaseController):
         return captcha
         
     def randomStr(self):
-        alphabet = 'abcdefghijklmnopqrstuvwxyz'
-        min = 5
-        max = 6
+        alphabet = 'abcdefghijklmnopqrstuvwxyz1234567890&#'
+        min = 6
+        max = 8
         str=''
         
         for x in random.sample(alphabet,random.randint(min,max)):
@@ -72,30 +72,79 @@ class FcpController(OrphieBaseController):
             
         return str
         
+       
+    def createHatchingTexture(self, density, width, height, fill):
+    # create image and drawing surface
+        hatchImage = Image.new("RGBA", (width, height), 0)
+        hatchDraw = ImageDraw.Draw(hatchImage)
+    # set density
+        spacer = int(10 * density)
+        doubleSpacer = spacer * 2
+   # draw lines
+        y1 = 0
+        y2 = height
+        for x in range(0, width, spacer):
+            x1 = x + random.randint(-doubleSpacer, doubleSpacer)
+            x2 = x + random.randint(-doubleSpacer, doubleSpacer)
+            hatchDraw.line((x1, y1, x2, y2), fill=fill)
+        x1 = 0
+        x2 = width
+        for y in range(0, height, spacer):
+            y1 = y + random.randint(-doubleSpacer, doubleSpacer)
+            y2 = y + random.randint(-doubleSpacer, doubleSpacer)
+            hatchDraw.line((x1, y1, x2, y2), fill=fill)
+        return hatchImage        
+       
     def captchaPic(self, cid):
         captcha = meta.Session.query(Captcha).filter(Captcha.id==cid).first()  
+        
         if not captcha:
             return 'Id problem'
         else:
-            text = captcha.text
-            pw = 300
-            ph = 80
-            im = Image.new('RGB', (pw, ph), 'orange')
-            draw = ImageDraw.Draw(im)
-            font = ImageFont.truetype(captchaFont, 64)
-            w = font.getsize(text)[0]
-            h = font.getsize(text)[1]
-            draw.text(((pw - w)/2 + random.randrange(-20, 20), (ph - h)/2 + random.randrange(-10, 10)), captcha.text, font=font)
-            im = im.filter(ImageFilter.BLUR)
-            #im = im.filter(ImageFilter.MinFilter)
+            out = captcha.content
+            if not out:
+                text = captcha.text
+                pw = 300
+                ph = 80
             
-            f = StringIO.StringIO()
-            im.save(f, "PNG")
-            pic = f.getvalue()
-            response.headers['Content-Length'] = len(pic)
+                textPic = Image.new('RGBA', (pw, ph), 'orange')
+                draw = ImageDraw.Draw(textPic)
+                font = ImageFont.truetype(captchaFont, 64)
+                w = font.getsize(text)[0]
+                h = font.getsize(text)[1]      
+                tcolor = (random.randrange(50, 150), random.randrange(50, 150), random.randrange(50, 150))
+                draw.text(((pw - w)/2 + random.randrange(-20, 20), (ph - h)/2 + random.randrange(-10, 10)), text, font=font, fill=tcolor)
+            
+                noisePic = Image.new('RGBA', (pw, ph), 'yellow')            
+                draw = ImageDraw.Draw(noisePic)
+                pc = random.randrange(20)+10
+                for c in range(pc):
+                    x1 = random.randrange(0, pw)
+                    y1 = random.randrange(0, ph)
+                    x2 = random.randrange(x1, pw)
+                    y2 = random.randrange(y1, ph)   
+                    fcolor=(random.randrange(50,250), random.randrange(50,250), random.randrange(50,250))
+                    ocolor=(random.randrange(50,250), random.randrange(50,250), random.randrange(50,250))
+                    draw.ellipse((x1, y1, x2, y2), fill=tcolor, outline=ocolor)
+
+
+                noisePic= noisePic.filter(ImageFilter.BLUR)                        
+                #textPic = Image.blend(noisePic, textPic, 0.4)            
+                textPic = Image.blend(textPic, noisePic, 0.6)   
+                ht = self.createHatchingTexture(0.5, pw, ph, tcolor)
+                textPic = Image.blend(textPic, ht, 0.3)   
+            
+                f = StringIO.StringIO()
+                textPic.save(f, "PNG")
+                pic = f.getvalue()
+                captcha.content = pic
+                meta.Session.commit()
+                out = pic
+                
+            response.headers['Content-Length'] = len(out)
             response.headers['Content-Type'] = 'image/png'
 
-            return pic
+            return out
         
     def authorize(self, url):
         if url:
@@ -131,7 +180,6 @@ class FcpController(OrphieBaseController):
                 #log.debug('new captcha')
                 
             c.captid = tracker.cid
-            #log.debug('captcha')
                 
         if request.POST.get('code', False):
             code = self.genUid(request.POST['code'].encode('utf-8')) #hashlib.sha512(request.POST['code'].encode('utf-8') + hashlib.sha512(hashSecret).hexdigest()).hexdigest()

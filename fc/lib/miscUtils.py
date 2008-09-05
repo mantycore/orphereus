@@ -37,12 +37,15 @@ def isNumber(n):
     else:
         return False
         
+def currentUID():
+    if c.userInst:
+        return c.userInst.uidNumber()
+    else:
+        return -1        
+        
 def addLogEntry(event,entry):
     logEntry = LogEntry()
-    if c.userInst:
-        logEntry.uidNumber = c.userInst.uidNumber()
-    else:
-        logEntry.uidNumber = -1
+    logEntry.uidNumber = currentUID()
     logEntry.date = datetime.datetime.now()
     logEntry.event = event
     logEntry.entry = entry
@@ -86,7 +89,7 @@ def adminAlert(alertStr):
     msg = MIMEMultipart()
     msg['From'] = alertSender
     msg['To'] = alertEmail
-    msg['Subject'] = _(baseDomain + ' ALERT')
+    msg['Subject'] = _(baseDomain + (' ALERT by %d: ' % currentUID()))
     msg.attach(MIMEText(alertStr))
    
     server.sendmail(alertSender, alertEmail, msg.as_string())

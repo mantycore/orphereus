@@ -144,7 +144,7 @@ class FcpController(OrphieBaseController):
             #response.headers['Content-Length'] = len(out)
             response.headers['Content-Type'] = 'image/png'
 
-            return out.tounicode() 
+            return out.write() 
         
     def authorize(self, url):
         if url:

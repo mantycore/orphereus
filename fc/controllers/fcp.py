@@ -141,10 +141,10 @@ class FcpController(OrphieBaseController):
                 meta.Session.commit()
                 out = pic
                 
-            #response.headers['Content-Length'] = len(out)
+            response.headers['Content-Length'] = len(out)
             response.headers['Content-Type'] = 'image/png'
 
-            return out.getvalue() 
+            return #out.getvalue() 
         
     def authorize(self, url):
         if url:

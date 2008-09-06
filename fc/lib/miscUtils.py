@@ -64,7 +64,7 @@ def adminAlert(alertStr):
     msg['From'] = g.OPT.alertSender
     msg['To'] = g.OPT.alertEmail
     msg['Subject'] = _(g.OPT.baseDomain + (' ALERT by %d: ' % currentUID()))
-    msg.attach(MIMEText(g.OPT.alertStr))
+    msg.attach(MIMEText(alertStr))
    
     server.sendmail(g.OPT.alertSender, g.OPT.alertEmail, msg.as_string())
     server.close()    

@@ -21,6 +21,44 @@ from fc.lib.settings import *
 log = logging.getLogger(__name__)
 
 class OrphieBaseController(BaseController):
+    def __init__(self):
+        settings = meta.Session.query(Setting).all()
+        settingsMap = {}
+        if settings:
+            for s in settings:
+                if s.name in settingsDef:
+                    settingsMap[s.name] = s
+        for s in settingsDef:
+            if not s in settingsMap:
+                settingsMap[s] = Setting()
+                settingsMap[s].name = s
+                settingsMap[s].value = settingsDef[s]
+                meta.Session.save(settingsMap[s])
+                meta.Session.commit()
+        g.settingsMap = settingsMap
+        
+    def initEnvironment(self):
+        c.title = g.settingsMap['title'].value   
+        boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
+        c.boardlist = []
+        sectionId = 0
+        section = []
+        for b in boards:
+            if not sectionId:
+                sectionId = b.options.sectionId
+                section = []
+            if sectionId != b.options.sectionId:
+                c.boardlist.append(section)
+                sectionId = b.options.sectionId
+                section = []
+            bc = empty()
+            bc.tag = b.tag
+            bc.comment = b.options.comment
+            section.append(bc) #b.tag)
+        if section:
+            c.boardlist.append(section)
+        response.set_cookie('fc', request.cookies['fc'], domain='.'+g.OPT.baseDomain)
+                    
     def render(self, page):
         tname = 'std'
         tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
@@ -32,7 +70,7 @@ class OrphieBaseController(BaseController):
         except: #userInst not defined or user banned
             pass
         
-        if page and os.path.isfile(os.path.join(templPath, tpath)):               
+        if page and os.path.isfile(os.path.join(g.OPT.templPath, tpath)):               
             return render('/' + tpath)
         else:
             return _("Template problem: " + page)
@@ -43,7 +81,10 @@ class OrphieBaseController(BaseController):
         return self.render('static.%s' % page) #render('/%s.static.mako' % self.userInst.template())
         
     def genUid(self, key):
-        return hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()    
+        return hashlib.sha512(key + hashlib.sha512(g.OPT.hashSecret).hexdigest()).hexdigest()    
+
+    def genInviteId(self):
+        return hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(g.OPT.hashSecret).hexdigest()).hexdigest()  
         
     def banUser(self, user, bantime, banreason):
         if len(banreason)>1:

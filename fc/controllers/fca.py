@@ -22,13 +22,12 @@ from OrphieBaseController import OrphieBaseController
 log = logging.getLogger(__name__)
 
 class FcaController(OrphieBaseController):
-    def __before__(self):
-        c.filesPathWeb = filesPathWeb      
+    def __before__(self):    
         self.userInst = FUser(session.get('uidNumber',-1))
         if not self.userInst.isAuthorized():
             c.currentURL = '/holySynod/'
             return redirect_to('/')
-        initEnvironment()
+        self.initEnvironment()
         if not self.userInst.isAdmin():
             c.errorText = "No way! You aren't holy enough!"
             return redirect_to('/')
@@ -43,17 +42,17 @@ class FcaController(OrphieBaseController):
         
     def manageSettings(self):
         c.boardName = 'Settings management'
-        settingsMap = getSettingsMap()
+        #settingsMap = getSettingsMap()
         
         if request.POST.get('update',False):
             for s in request.POST:
                 if s in settingsDef:
-                    if settingsMap[s].value != request.POST[s]:
-                        addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s,settingsMap[s].value,request.POST[s]))
-                        settingsMap[s].value = filterText(request.POST[s])
+                    if g.settingsMap[s].value != request.POST[s]:
+                        addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s, g.settingsMap[s].value,request.POST[s]))
+                        g.settingsMap[s].value = filterText(request.POST[s])
             meta.Session.commit()
             c.message = _('Updated settings')
-        c.settings = settingsMap
+        #c.settings = settingsMap
         return self.render('manageSettings') 
         
     def manageBoards(self):
@@ -284,7 +283,7 @@ class FcaController(OrphieBaseController):
         c.boardName = 'Invites'
         invite = Invite()
         invite.date = datetime.datetime.now()
-        invite.invite = hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+        invite.invite = self.genInviteId()
         meta.Session.save(invite)
         meta.Session.commit()
         addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, filterText(request.POST.get('inviteReason','???'))))

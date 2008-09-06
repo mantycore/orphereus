@@ -29,19 +29,18 @@ log = logging.getLogger(__name__)
 
 class FcpController(OrphieBaseController):
     def __before__(self):
-        settingsMap = getSettingsMap()
-        c.title = settingsMap['title'].value
-        c.devmode = devMode 
+        #settingsMap = getSettingsMap()
+        c.title = g.settingsMap['title'].value
         ref = request.headers.get('REFERER', False)
         
         if ref:
             rickroll = True
-            for rc in refControlList:
+            for rc in g.OPT.refControlList:
                 if rc in ref:
                     rickroll = False
                 
             if (rickroll):
-                redir = fakeLinks[random.randint(0, len(fakeLinks) - 1)]
+                redir = g.OPT.fakeLinks[random.randint(0, len(g.OPT.fakeLinks) - 1)]
                 addLogEntry(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, request.environ["REMOTE_ADDR"], request.headers.get('User-Agent', '?')))                
                 redirect_to(redir)
         
@@ -109,7 +108,7 @@ class FcpController(OrphieBaseController):
             
                 textPic = Image.new('RGBA', (pw, ph), 'orange')
                 draw = ImageDraw.Draw(textPic)
-                font = ImageFont.truetype(captchaFont, 64)
+                font = ImageFont.truetype(g.OPT.captchaFont, 64)
                 w = font.getsize(text)[0]
                 h = font.getsize(text)[1]      
                 tcolor = (random.randrange(50, 150), random.randrange(50, 150), random.randrange(50, 150))
@@ -182,7 +181,7 @@ class FcpController(OrphieBaseController):
             c.captid = tracker.cid
                 
         if request.POST.get('code', False):
-            code = self.genUid(request.POST['code'].encode('utf-8')) #hashlib.sha512(request.POST['code'].encode('utf-8') + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+            code = self.genUid(request.POST['code'].encode('utf-8')) 
             user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==code).first()
                         
             #log.debug(code)            
@@ -232,8 +231,8 @@ class FcpController(OrphieBaseController):
         key2 = request.POST.get('key2','').encode('utf-8')
             
         if key:
-            if len(key)>=minPassLength and key == key2:      
-                uid = self.genUid(key) #hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+            if len(key)>=g.OPT.minPassLength and key == key2:      
+                uid = self.genUid(key) 
                 user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==uid).first()
                 if user:
                     self.banUser(user, 7777, "Your Security Code was used during registration by another user. Contact administrator immediately please.")
@@ -271,7 +270,7 @@ class FcpController(OrphieBaseController):
                 headers = header.split('&')
                 type = filterText(headers[0].split('=')[1])
                 time = headers[1].split('=')[1]
-                localFilePath = os.path.join(uploadPath, tempid + '.' + type)
+                localFilePath = os.path.join(g.OPT.uploadPath, tempid + '.' + type)
                 localFile = open(localFilePath,'wb')
                 localFile.write(body)
                 localFile.close()

@@ -16,7 +16,7 @@
     %if c.userInst.isAdmin():
         [<a href="/holySynod/">${_('Holy Synod')}</a>]
     %endif 
-    %if c.settingsMap['usersCanViewLogs'].value == 'true':
+    %if g.settingsMap['usersCanViewLogs'].value == 'true':
         [<a href="/viewLog/">${_('Logs')}</a>]
     %endif     
     [<a href="/logout/">${_('Logout')}</a>]

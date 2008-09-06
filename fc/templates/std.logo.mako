@@ -4,6 +4,6 @@
     %endif
 </div>
 
-%if c.devmode:
+%if g.OPT.devMode:
     <h2 style="text-align: center;"><i>Development Sandbox</i></h2>
 %endif

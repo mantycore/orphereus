@@ -38,8 +38,8 @@ class FcajaxController(OrphieBaseController):
                 parent = postInst
             else:
                 parent = meta.Session.query(Post).get(postInst.parentid)
-            settingsMap = getSettingsMap()
-            forbiddenTags = getTagsListFromString(settingsMap['adminOnlyTags'].value)       
+            #settingsMap = getSettingsMap()
+            forbiddenTags = getTagsListFromString(g.settingsMap['adminOnlyTags'].value)       
             for t in parent.tags:
                 if t.id in forbiddenTags and not self.userInst.isAdmin():
                     abort(403)

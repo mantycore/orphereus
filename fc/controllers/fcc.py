@@ -31,10 +31,9 @@ class FccController(OrphieBaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uidNumber', -1))
         c.userInst = self.userInst
-        c.settingsMap = getSettingsMap()
+        #c.settingsMap = getSettingsMap()
         c.currentURL = request.path_info
-        c.modLink = modLink
-        c.filesPathWeb = filesPathWeb        
+        c.modLink = modLink       
         if c.currentURL[-1] != '/':
             c.currentURL = c.currentURL + '/'
         if not self.userInst.isAuthorized():
@@ -44,7 +43,7 @@ class FccController(OrphieBaseController):
             return redirect_to('/youAreBanned')
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
-        initEnvironment()
+        self.initEnvironment()
             
     def getRPN(self,text,operators):
         whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']
@@ -142,13 +141,12 @@ class FccController(OrphieBaseController):
         
     def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
         c.board = board
-        #c.uploadPathWeb = uploadPathWeb
         c.uidNumber = self.userInst.uidNumber()
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = self.userInst.isAdmin()
         
-        settingsMap = c.settingsMap
-        adminTagsLine = settingsMap['adminOnlyTags'].value
+        #settingsMap = c.settingsMap
+        adminTagsLine = g.settingsMap['adminOnlyTags'].value
         forbiddenTags = getTagsListFromString(adminTagsLine)
 
         if not self.userInst.isAdmin():
@@ -287,7 +285,7 @@ class FccController(OrphieBaseController):
            if not extParams:
               return ''
 
-           localFilePath = os.path.join(uploadPath,name + '.' + ext)
+           localFilePath = os.path.join(g.OPT.uploadPath,name + '.' + ext)
            localFile = open(localFilePath,'w+b')
            shutil.copyfileobj(file.file, localFile)
            localFile.seek(0)
@@ -303,11 +301,11 @@ class FccController(OrphieBaseController):
            try:
                 if extParams.type == 'image':
                    thumbFilePath = name + 's.' + ext
-                   size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (thumbSize,thumbSize))
+                   size = self.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize,thumbSize))
                 else:
                    if extParams.type == 'image-jpg':
                       thumbFilePath = name + 's.jpg'
-                      size = self.makeThumbnail(localFilePath, os.path.join(uploadPath,thumbFilePath), (thumbSize,thumbSize))
+                      size = self.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize,thumbSize))
                    else:
                      thumbFilePath = extParams.path
                      size = [0,0,extParams.thwidth,extParams.thheight]
@@ -409,7 +407,7 @@ class FccController(OrphieBaseController):
             return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid, postid, postid, postid)
             
     def processPost(self, postid=0, board=u''):
-        settingsMap = c.settingsMap
+        #settingsMap = c.settingsMap
         if postid:
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
             if not thePost:
@@ -427,9 +425,9 @@ class FccController(OrphieBaseController):
                 c.errorText = _("You should specify at least one board")
                 return self.render('error') 
             
-            maxTagsCount = int(settingsMap['maxTagsCount'].value)
-            maxTagLen = int(settingsMap['maxTagLen'].value)
-            disabledTagsLine = settingsMap['disabledTags'].value
+            maxTagsCount = int(g.settingsMap['maxTagsCount'].value)
+            maxTagLen = int(g.settingsMap['maxTagLen'].value)
+            disabledTagsLine = g.settingsMap['disabledTags'].value
             
             if len(tags)>maxTagsCount:
                 c.errorText = _("Too many tags. Maximum allowed: %s") % (maxTagsCount)
@@ -465,7 +463,7 @@ class FccController(OrphieBaseController):
         painterMark = False # TODO FIXME : move into parser
         if tempid:
            oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
-           file = FieldStorageLike(oekaki.path,os.path.join(uploadPath, oekaki.path))
+           file = FieldStorageLike(oekaki.path,os.path.join(g.OPT.uploadPath, oekaki.path))
            painterMark = '<br /><span style="background: #A8A8A8;">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
            if oekaki.source:
               painterMark += ", source " + self.formatPostReference(oekaki.source) #<a href="">&lt;&lt;%s</a>" % oekaki.source
@@ -476,8 +474,8 @@ class FccController(OrphieBaseController):
         if post.message:
            if len(post.message) <= 15000:
                parser = WakabaParser()
-               maxLinesInPost = int(settingsMap['maxLinesInPost'].value)
-               cutSymbols = int(settingsMap["cutSymbols"].value)
+               maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
+               cutSymbols = int(g.settingsMap["cutSymbols"].value)
                parsedMessage = parser.parseWakaba(post.message,self,lines=maxLinesInPost,maxLen=cutSymbols)
                fullMessage = parsedMessage[0]
                if painterMark:
@@ -596,8 +594,8 @@ class FccController(OrphieBaseController):
             c.totalTagsThreads = 0
             c.totalBoardsPosts = 0
             c.totalTagsPosts = 0            
-            settingsMap = c.settingsMap
-            adminTagsLine = settingsMap['adminOnlyTags'].value
+            #settingsMap = c.settingsMap
+            adminTagsLine = g.settingsMap['adminOnlyTags'].value
             #log.debug(adminTagsLine)
             forbiddenTags = adminTagsLine.split(',')    
             result = meta.Session().execute("select count(id) from posts")                                        
@@ -641,8 +639,6 @@ class FccController(OrphieBaseController):
 
     def oekakiDraw(self,url):
         c.url = url
-        #c.uploadPathWeb = uploadPathWeb
-        c.filesPathWeb = filesPathWeb
         c.canvas = False
         c.width  = request.POST.get('oekaki_x','300')
         c.height = request.POST.get('oekaki_y','300')
@@ -712,8 +708,8 @@ class FccController(OrphieBaseController):
                     
             pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
             if pic and meta.Session.query(Post).filter(Post.picid==p.picid).count() == 1:
-                filePath = os.path.join(uploadPath,pic.path)
-                thumPath = os.path.join(uploadPath,pic.thumpath)
+                filePath = os.path.join(g.OPT.uploadPath, pic.path)
+                thumPath = os.path.join(g.OPT.uploadPath, pic.thumpath)
                 
                 if os.path.isfile(filePath):
                     os.unlink(filePath)
@@ -727,8 +723,8 @@ class FccController(OrphieBaseController):
                 if pic:
                     p.picid = -1
             else:
-                settingsMap = c.settingsMap        
-                invisBump = (settingsMap['invisibleBump'].value == 'false')
+                #settingsMap = c.settingsMap        
+                invisBump = (g.settingsMap['invisibleBump'].value == 'false')
 
                 if invisBump and p.parentid != -1:
                     thread = meta.Session.query(Post).filter(Post.parentid==p.parentid).all()
@@ -767,14 +763,16 @@ class FccController(OrphieBaseController):
                 homeExcludeList.append(t.id)
             self.userInst.homeExclude(homeExcludeList)
 
+            c.profileMsg = _('Password was NOT changed.')
             key = request.POST.get('key','').encode('utf-8')
             key2 = request.POST.get('key2','').encode('utf-8')
-            newuid = self.genUid(key) #hashlib.sha512(key + hashlib.sha512(hashSecret).hexdigest()).hexdigest()
+            newuid = self.genUid(key)
             olduid = self.userInst.uid()
-            if key == key2 and newuid != olduid and len(key) >= minPassLength:
+            if key == key2 and newuid != olduid and len(key) >= g.OPT.minPassLength:
                 anotherUser = meta.Session.query(User).options(eagerload('options')).filter(User.uid==newuid).first()
                 if not anotherUser:
                     self.userInst.uid(newuid)
+                    c.profileMsg = _('Password was successfully changed.')
                 else:
                     currentUser = meta.Session.query(User).options(eagerload('options')).filter(User.uid==olduid).first()                
                     self.banUser(currentUser, 7777, "Your are entered already existing Security Code. Contact administrator immediately please.")
@@ -783,8 +781,10 @@ class FccController(OrphieBaseController):
                     c.errorText = _("You entered already existing password. Both accounts was banned. Contact administrator please.")
                     return self.render('error')                    
             
-            c.profileChanged = True            
+            c.profileChanged = True 
+            c.profileMsg += _(' Profile was updated.')           
             meta.Session.commit()
+            
         homeExcludeTags = meta.Session.query(Tag).filter(Tag.id.in_(self.userInst.homeExclude())).all()
         homeExcludeList = []
         for t in homeExcludeTags:
@@ -794,8 +794,8 @@ class FccController(OrphieBaseController):
         return self.render('profile')
         
     def viewLog(self,page):
-        settingsMap = c.settingsMap    
-        if settingsMap['usersCanViewLogs'].value == 'true':
+        #settingsMap = c.settingsMap    
+        if g.settingsMap['usersCanViewLogs'].value == 'true':
             c.boardName = 'Logs'
             page = int(page)
             count = meta.Session.query(LogEntry).filter(not_(LogEntry.event.in_(disabledEvents))).count()

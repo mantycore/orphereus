@@ -10,11 +10,11 @@
                         <td colspan=2>${c.message}</td>
                     </tr>
                 %endif
-                %for s in c.settings:
+                %for s in g.settingsMap:
                 <tr>
-                    <td class="postblock">${c.settings[s].name}</td>
+                    <td class="postblock">${g.settingsMap[s].name}</td>
                     <td>
-                        <input type="text" name="${c.settings[s].name}" size="35" value="${c.settings[s].value}" />
+                        <input type="text" name="${g.settingsMap[s].name}" size="35" value="${g.settingsMap[s].value}" />
                     </td>
                 </tr>
                 %endfor

@@ -1,5 +1,5 @@
 <div class="logo">
-    %if c.devmode:
+    %if g.OPT.devMode:
         [DEV]
     %endif
 	${c.title}

@@ -113,7 +113,7 @@ class FcmController(OrphieBaseController):
             if not self.userInst.isAuthorized():
                 c.currentURL = '/holySynod/'
                 return redirect_to('/')
-            initEnvironment()
+            self.initEnvironment()
             if not self.userInst.isAdmin():
                 c.errorText = "No way! You aren't holy enough!"
                 return redirect_to('/')
@@ -122,7 +122,7 @@ class FcmController(OrphieBaseController):
                 return redirect_to('/')
             secTestPassed = True
         else:
-            secidFilePath = os.path.join(appPath, 'fc/secid')
+            secidFilePath = os.path.join(g.OPT.appPath, 'fc/secid')
             try:
                 secidFile = open(secidFilePath)
                 secidFile.seek(0)                

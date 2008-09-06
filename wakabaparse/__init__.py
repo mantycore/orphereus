@@ -7,7 +7,7 @@ from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 
 class WakabaParser(object):
-    def __init__(self, definition = markupFile, baseProd = 'all'):
+    def __init__(self, definition = g.OPT.markupFile, baseProd = 'all'):
         self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nop','symbol_mark_nou','accent_code','noaccent_code']
         self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','inline_spoiler':"span class='spoiler'",'inline_code':'code'}
         self.complex= ['reference','signature','link']
@@ -19,6 +19,7 @@ class WakabaParser(object):
         self.baseProd = baseProd
         self.defl = open(definition).read()
         self.parser = generator.buildParser(self.defl).parserbyname(baseProd)
+        
     def PrintTree(self, Node, Depth):
         for tag, beg, end, parts in Node:
             print ''.ljust(Depth,"\t") + tag + '=' + self.input[beg:end]

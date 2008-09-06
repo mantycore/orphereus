@@ -8,7 +8,11 @@
             <tbody>
                 %if c.profileChanged:
                     <tr>
-                        <td colspan='2' style="text-align: center;"><span class="theader">${_('Profile was updated.')}</span></td>
+                        <td colspan='2' style="text-align: center;">
+                        	<span class="theader">
+                        		${c.profileMsg}
+                        	</span>
+                        </td>
                     </tr>                    
                 %endif   
                 <tr>
@@ -19,16 +23,19 @@
                     <td><input value='${c.userInst.uid()}' readonly></td>
                 </tr>
                 <tr>
-                    <td colspan='2' style="font-size: 50%;">${_("Leave this fields empty if you don't wish to change your security code and UID:")}</td>
-                </tr>                                   
-                <tr>
                     <td class="postblock">${_('New Security Code')}</td>
                     <td><input name='key' value=''></td>
                 </tr>                  
                 <tr>
                     <td class="postblock">${_('Repeat Security Code')}</td>
                     <td><input name='key2' value=''></td>
-                </tr>  
+                </tr>
+                <tr>
+                    <td colspan='2' style="font-size: 80%;">
+                    	${_('Security code should be at least %d symbols') % g.OPT.minPassLength}<br/>                  
+                    	${_("Leave this fields empty if you don't wish to change your security code and UID")}
+                    </td>
+                </tr>                                                     
                 <tr>
                     <td colspan='2' style="text-align: center; font-weight: bold;">${_('Customization')}</td>
                 </tr>                   

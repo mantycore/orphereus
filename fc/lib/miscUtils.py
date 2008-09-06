@@ -52,47 +52,21 @@ def addLogEntry(event,entry):
     meta.Session.save(logEntry)
     meta.Session.commit()
     
-def initEnvironment():
-    c.settingsMap = getSettingsMap()
-    c.title = c.settingsMap['title'].value
-    c.devmode = devMode
-    boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
-    c.boardlist = []
-    sectionId = 0
-    section = []
-    for b in boards:
-        if not sectionId:
-            sectionId = b.options.sectionId
-            section = []
-        if sectionId != b.options.sectionId:
-            c.boardlist.append(section)
-            sectionId = b.options.sectionId
-            section = []
-        bc = empty()
-        bc.tag = b.tag
-        bc.comment = b.options.comment
-        section.append(bc) #b.tag)
-    if section:
-        c.boardlist.append(section)
-    response.set_cookie('fc', request.cookies['fc'], domain='.'+baseDomain)         
-    #response.set_cookie('fc', request.cookies['fc'], domain='wut.anoma.ch') # dirty antirat hack
-    #response.set_cookie('fc', request.cookies['fc'], domain='wut.anoma.li') # dirty antirat hack
-
 def adminAlert(alertStr):
-    server = smtplib.SMTP(alertServer, alertPort)
-    if alertPort == 587:
+    server = smtplib.SMTP(g.OPT.alertServer, g.OPT.alertPort)
+    if g.OPT.alertPort == 587:
         server.ehlo()
         server.starttls()
         server.ehlo()    
-    server.login(alertSender, alertPassword)
+    server.login(g.OPT.alertSender, g.OPT.alertPassword)
 
     msg = MIMEMultipart()
     msg['From'] = alertSender
     msg['To'] = alertEmail
-    msg['Subject'] = _(baseDomain + (' ALERT by %d: ' % currentUID()))
-    msg.attach(MIMEText(alertStr))
+    msg['Subject'] = _(g.OPT.baseDomain + (' ALERT by %d: ' % currentUID()))
+    msg.attach(MIMEText(g.OPT.alertStr))
    
-    server.sendmail(alertSender, alertEmail, msg.as_string())
+    server.sendmail(g.OPT.alertSender, g.OPT.alertEmail, msg.as_string())
     server.close()    
     
 def checkAdminIP():

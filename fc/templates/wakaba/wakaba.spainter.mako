@@ -1,14 +1,14 @@
 <html>
 <head>
 <title>Shi-Painter</title>
-<script language="javascript" type="text/javascript" src="${c.filesPathWeb}../sp.js"></script>
+<script language="javascript" type="text/javascript" src="${g.OPT.filesPathWeb}../sp.js"></script>
 </head>
 <body>
-<applet code="c.ShiPainter.class" name="paintbbs" archive="${c.filesPathWeb}../spainter.jar,/res/${c.oekakiToolString}.zip" WIDTH="100%" height="90%" MAYSCRIPT>
+<applet code="c.ShiPainter.class" name="paintbbs" archive="${g.OPT.filesPathWeb}../spainter.jar,/res/${c.oekakiToolString}.zip" WIDTH="100%" height="90%" MAYSCRIPT>
 <param name="image_width" value="${c.width}">
 <param name="image_height" value="${c.height}">
 %if c.canvas:
-  <param name="image_canvas" value="${c.filesPathWeb + c.canvas}" />
+  <param name="image_canvas" value="${g.OPT.filesPathWeb + c.canvas}" />
 %endif
 
 <param name="image_size" value="200" />

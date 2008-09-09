@@ -31,8 +31,10 @@ class FcpController(OrphieBaseController):
     def __before__(self):
         #settingsMap = getSettingsMap()
         c.title = g.settingsMap['title'].value
-        ref = filterText(request.headers.get('REFERER', False))
-        
+        ref = request.headers.get('REFERER', False)
+        if ref:
+            ref = filterText(ref)
+            
         if ref:
             rickroll = True
             for rc in g.OPT.refControlList:

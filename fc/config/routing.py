@@ -49,7 +49,11 @@ def make_map():
     map.connect('/holySynod/manageUsers/edit/:uid', controller='fca', action='editUser', requirements=dict(uid='\d+'))
     map.connect('/holySynod/manageQuestions', controller='fca', action='manageQuestions')
     map.connect('/holySynod/manageApplications', controller='fca', action='manageApplications')
-    map.connect('/holySynod/viewLog/:page', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
+    map.connect('/holySynod/manageMappings/:id/:act/:tagid', controller='fca', action='manageMappings', id=0, act='show', tagid=0, requirements=dict(id='\d+', tagid='\d+'))
+    map.connect('/holySynod/viewLog/:page', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))    
+    map.connect('/holySynod/managePostMappings', controller='fca', action='managePostMappings')
+    map.connect('/holySynod/appendTag', controller='fca', action='appendTag')
+
     # Maintenance
     map.connect('/holySynod/service/:actid/:secid', controller='fcm', actid='', secid='', action='mtnAction')    
     

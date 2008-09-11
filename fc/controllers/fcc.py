@@ -605,11 +605,11 @@ class FccController(OrphieBaseController):
                 if not b.tag in forbiddenTags:
                     bc = empty()
                     bc.board = b
-                    result = meta.Session().execute("select count(id) from posts as p, tagsToPostsMap as m where (p.id = m.postId and m.tagId = :ctid)", {'ctid':b.id})                                        
+                    result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where (p.id = m.postId and m.tagId = :ctid)", {'ctid':b.id})                                        
                     #filter = self.buildFilter(b.tag)                                        
                     #bc.count = filter[0].count()
                     bc.count = result.fetchone()[0]
-                    result = meta.Session().execute("select count(id) from posts as p, tagsToPostsMap as m where ((p.id = m.postId or p.parentId = m.postId)and m.tagId = :ctid)", {'ctid':b.id})                    
+                    result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where ((p.id = m.postId or p.parentId = m.postId)and m.tagId = :ctid)", {'ctid':b.id})                    
                     bc.postsCount = result.fetchone()[0]
                     if b.options and b.options.persistent:
                         c.boards.append(bc)

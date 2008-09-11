@@ -290,7 +290,7 @@ class FcaController(OrphieBaseController):
         c.inviteLink = "<a href='/register/%s'>INVITE</a>" % invite.invite
         return self.render('newInvite')
         
-    def viewLog(self,page):
+    def viewLog(self, page):
         c.boardName = 'Logs'
         page = int(page)
         count = meta.Session.query(LogEntry).count()
@@ -303,3 +303,52 @@ class FcaController(OrphieBaseController):
         c.page = page        
         c.logs = meta.Session.query(LogEntry).options(eagerload('user')).order_by(LogEntry.date.desc())[page*100:(page+1)*100]
         return self.render('adminLogs')
+
+    def manageMappings(self, id, act, tagid): 
+        if isNumber(id) and isNumber(tagid):         
+            id = int(id)
+            tagid = int(tagid)
+        else:
+            c.errorText = "Incorrect input value"            
+            return self.render('error')
+      
+        if id > 0:
+            post = meta.Session.query(Post).filter(Post.id==id).first()    
+                
+            if post and post.parentid == -1:
+                c.post = post
+
+                if act == 'show':
+                    pass
+                elif act == 'del' and tagid > 0:
+                    if len(post.tags) > 1:
+                        tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
+                        addLogEntry(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))                        
+                        post.tags.remove(tag)                     
+                elif act == 'add':
+                    tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
+                    addLogEntry(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))                        
+                    post.tags.append(tag) 
+                
+                meta.Session.commit()
+            
+            else:
+                c.errorText = "This is not op-post"
+                return self.render('error')
+            
+        return self.render('adminMappings')
+    
+    def managePostMappings(self):
+        return redirect_to(str('/holySynod/manageMappings/' + (filterText(request.POST.get('postid', '')))))
+
+    def appendTag(self):
+        tagName = filterText(request.POST.get('tagName', ''))
+        postId = filterText(request.POST.get('postId', ''))
+        
+        if tagName and postId:        
+            tag = meta.Session.query(Tag).filter(Tag.tag==tagName).first()
+            if tag:
+                return redirect_to(str('/holySynod/manageMappings/%s/add/%s' % (int(postId), tag.id)))
+            else:
+                c.errorText = "Unknown tag"
+                return self.render('error')            

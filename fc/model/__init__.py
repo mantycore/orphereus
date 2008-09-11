@@ -123,10 +123,8 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     )
 
 t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
-    #sa.Column('id', sa.types.Integer, primary_key=True),
     sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('posts.id')),
     sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tags.id')),
-    sa.Column('isMain'  , sa.types.Boolean, nullable=True)
     )
     
 t_logins = sa.Table("loginStats", meta.metadata,
@@ -184,6 +182,9 @@ class Setting(object):
     pass
 
 class LogEntry(object):
+    pass
+
+class TagMapping(object):
     pass
 
 orm.mapper(Captcha, t_captchas)        

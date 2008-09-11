@@ -324,7 +324,10 @@ class FcaController(OrphieBaseController):
                     if len(post.tags) > 1:
                         tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
                         addLogEntry(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))                        
-                        post.tags.remove(tag)                     
+                        post.tags.remove(tag)  
+                    else:
+                        c.errorText = "Can't delete last tag!"
+                        return self.render('error')
                 elif act == 'add':
                     tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
                     addLogEntry(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))                        

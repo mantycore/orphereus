@@ -88,7 +88,6 @@
                                 %endif                              
                                 %if c.isAdmin:
                                     <a href="/holySynod/manageUsers/editAttempt/${p.id}">[User]</a>     
-                                    <a href="/holySynod/manageMappings/${p.id}">[Tags]</a>
                                 %endif
                                 </div>
                                 %if p.sage:

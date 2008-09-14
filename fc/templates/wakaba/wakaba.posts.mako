@@ -34,7 +34,8 @@
                 <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
             %endif
             %if c.isAdmin:
-                <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>                   
+                <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>
+                <a href="/holySynod/manageMappings/${thread.id}">[Tags]</a>                     
             %endif
             </div>
             <span class="filetitle">${thread.title}</span>  
@@ -86,7 +87,8 @@
                                     <input type="checkbox" name="delete-${p.id}" value="${p.id}" />
                                 %endif                              
                                 %if c.isAdmin:
-                                    <a href="/holySynod/manageUsers/editAttempt/${p.id}">[User]</a>                                    
+                                    <a href="/holySynod/manageUsers/editAttempt/${p.id}">[User]</a>     
+                                    <a href="/holySynod/manageMappings/${p.id}">[Tags]</a>
                                 %endif
                                 </div>
                                 %if p.sage:

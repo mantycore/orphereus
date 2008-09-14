@@ -19,6 +19,7 @@
     %if g.settingsMap['usersCanViewLogs'].value == 'true':
         [<a href="/viewLog/">${_('Logs')}</a>]
     %endif     
+    [<a href="http://anoma.ch:3210">${_('Anoma-FM')}</a>]    
     [<a href="/logout/">${_('Logout')}</a>]
     %if c.userInst.filters():
         <br />

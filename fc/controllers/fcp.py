@@ -184,7 +184,7 @@ class FcpController(OrphieBaseController):
                 
         if request.POST.get('code', False):
             code = self.genUid(request.POST['code'].encode('utf-8')) 
-            user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==code).first()
+            user = meta.Session.query(User).filter(User.uid==code).first()
                         
             #log.debug(code)            
 

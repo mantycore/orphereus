@@ -32,10 +32,12 @@ class FccController(OrphieBaseController):
         self.userInst = FUser(session.get('uidNumber', -1))
         c.userInst = self.userInst
         #c.settingsMap = getSettingsMap()
+        
         c.currentURL = request.path_info
-        c.modLink = modLink       
         if c.currentURL[-1] != '/':
             c.currentURL = c.currentURL + '/'
+                    
+        c.modLink = modLink       
         if not self.userInst.isAuthorized():
             return redirect_to(c.currentURL+'authorize')
         if self.userInst.isBanned():

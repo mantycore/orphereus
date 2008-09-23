@@ -87,7 +87,7 @@ class FcaController(OrphieBaseController):
             c.tag.options.imagelessPost = True
             c.tag.options.images = True
             c.tag.options.enableSpoilers = False
-            c.tag.options.canDeleteAllPosts = True
+            c.tag.options.canDeleteThread = True
             c.tag.options.maxFileSize = 3145728
             c.tag.options.minPicSize = 50
             c.tag.options.thumbSize = 180
@@ -112,7 +112,7 @@ class FcaController(OrphieBaseController):
                     c.tag.options.imagelessPost = request.POST.get('imagelessPost',False)
                     c.tag.options.images = request.POST.get('images',False)
                     c.tag.options.enableSpoilers = request.POST.get('spoilers',False)
-                    c.tag.options.canDeleteAllPosts = request.POST.get('canDeleteAllPosts',False)
+                    c.tag.options.canDeleteThread = request.POST.get('canDeleteThread',False)
                     c.tag.options.maxFileSize = request.POST.get('maxFileSize',3145728)
                     c.tag.options.minPicSize = request.POST.get('minPicSize',0)
                     c.tag.options.thumbSize = request.POST.get('thumbSize',250)

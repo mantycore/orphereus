@@ -215,11 +215,10 @@ function userFiltersDelete(event,fid)
 window.onload=function(e)
 {
     var match;
-
     if(match=/#i([0-9]+)/.exec(document.location.toString()))
-    if(!document.forms.postform.message.value)
-    insert(">>"+match[1],1);
-
-    if(match=/#([0-9]+)/.exec(document.location.toString()))
-    highlight(match[1]);
+    {
+        if(!document.forms.postform.message.value)
+            insert(">>"+match[1],1);
+        highlight(match[1]);
+    }
 }  

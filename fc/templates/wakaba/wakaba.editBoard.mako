@@ -64,6 +64,12 @@
                     <td>
                         <input type="checkbox" name="spoilers" ${c.tag.options.enableSpoilers and "checked" or ""} />
                     </td>
+                </tr>           
+                <tr id="trsection">
+                    <td class="postblock">${_('Allow OP to delete his threads')}</td>
+                    <td>
+                        <input type="checkbox" name="canDeleteAllPosts" ${c.tag.options.canDeleteAllPosts and "checked" or ""} />
+                    </td>
                 </tr>                
                 <tr id="trsection">
                     <td class="postblock">${_('Max filesize (bytes)')}</td>

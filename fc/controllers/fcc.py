@@ -273,11 +273,13 @@ class FccController(OrphieBaseController):
                     options.maxFileSize = t.options.maxFileSize
                     options.minPicSize = t.options.minPicSize
                     options.thumbSize = t.options.thumbSize
+                    options.canDeleteAllPosts = t.options.canDeleteAllPosts
                     optionsFlag = False                    
                 else:
                     options.imagelessThread = options.imagelessThread & t.options.imagelessThread
                     options.imagelessPost = options.imagelessPost & t.options.imagelessPost
                     options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
+                    options.canDeleteAllPosts = options.canDeleteAllPosts & t.options.canDeleteAllPosts
                     options.images = options.images & t.options.images
                     if t.options.maxFileSize < options.maxFileSize:
                         options.maxFileSize = t.options.maxFileSize
@@ -298,6 +300,7 @@ class FccController(OrphieBaseController):
             options.imagelessPost   = True
             options.images   = True
             options.enableSpoilers = True
+            options.canDeleteAllPosts = True
             options.maxFileSize = 2621440
             options.minPicSize = 50
             options.thumbSize = 180
@@ -737,6 +740,8 @@ class FccController(OrphieBaseController):
                 addLogEntry(LOG_EVENT_POSTS_DELETE, log)
             
             if p.parentid == -1 and not fileonly:
+                if not (postOptions.canDeleteAllPosts or self.userInst.canDeleteAllPosts()):
+                    return False
                 opPostDeleted = True
                 for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
                     self.processDelete(postid=post.id,checkOwnage=False)

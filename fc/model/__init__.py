@@ -37,7 +37,7 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("banDate", sa.types.DateTime, nullable=True),
     sa.Column("hideLongComments", sa.types.Boolean, nullable=True),
     sa.Column("isAdmin"  , sa.types.Boolean, nullable=True),
-    sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable=True),
+    sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable=True, server_default=1),
     sa.Column("canMakeInvite", sa.types.Boolean, nullable=True),   
     sa.Column("canChangeRights", sa.types.Boolean, nullable=True)
     )
@@ -122,6 +122,7 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     sa.Column("minPicSize" , sa.types.Integer, nullable=False),
     sa.Column("thumbSize", sa.types.Integer, nullable=False),
     sa.Column("enableSpoilers", sa.types.Boolean, nullable=False),
+    sa.Column("canDeleteThread", sa.types.Boolean,
     sa.Column("specialRules"  , sa.types.UnicodeText, nullable=True),
     )
 

@@ -717,13 +717,14 @@ class FccController(OrphieBaseController):
             if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
                 # print some error stuff here
                 return False
-                
+            if p.parentid>0:
+            	parentp = meta.Session.query(Post).get(p.parentid)
+            postOptions = conjunctTagOptions(p.parentid>0 and parentp.tags or p.tags)
             if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
                 tagline = ''
                 taglist = []
                 reason = filterText(request.POST.get('reason', '???'))
                 if p.parentid>0:
-                    parentp = meta.Session.query(Post).get(p.parentid)
                     for tag in parentp.tags:
                     	taglist.append(tag.tag)
                     tagline = ', '.join(taglist)
@@ -753,7 +754,7 @@ class FccController(OrphieBaseController):
                     if os.path.isfile(thumPath): os.unlink(thumPath)
                 meta.Session.delete(pic)
            
-            if fileonly: 
+            if fileonly and postOptions.imagelessPost: 
                 if pic:
                     p.picid = -1
             else:

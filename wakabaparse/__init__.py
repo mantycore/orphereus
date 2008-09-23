@@ -29,7 +29,14 @@ class WakabaParser(object):
     def link(self, tag, beg, end, parts):
         linkString = self.input[beg:end]
         linkHref   = linkString
-        if not (linkString in g.OPT.refControlList):
+        trusted = False
+        
+        for trLink in g.OPT.refControlList:
+            if trLink in linkString:
+                trusted = True
+                break 
+            
+        if not (trusted):
         	linkHref = g.OPT.obfuscator + linkHref
             
         return '<a href="%s">%s</a>' % (linkHref, linkString)

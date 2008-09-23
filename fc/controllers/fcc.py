@@ -720,15 +720,18 @@ class FccController(OrphieBaseController):
                 
             if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
                 tagline = ''
+                taglist = []
                 reason = filterText(request.POST.get('reason', '???'))
                 if p.parentid>0:
                     parentp = meta.Session.query(Post).get(p.parentid)
                     for tag in parentp.tags:
-                        tagline += tag.tag
+                    	taglist.append(tag.tag)
+                    tagline = ', '.join(taglist)
                     log = _("Deleted post %s (owner %s), from thread: %s, tagline: %s, reason: %s") % (p.id, p.uidNumber, p.parentid, tagline, reason)
                 else:
                     for tag in p.tags:
-                        tagline += tag.tag                    
+                    	taglist.append(tag.tag)
+                    tagline = ', '.join(taglist)                   
                     log = _("Deleted thread %s (owner %s), tagline: %s, reason: %s") % (p.id, p.uidNumber, tagline, reason)
                 addLogEntry(LOG_EVENT_POSTS_DELETE, log)
             

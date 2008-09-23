@@ -719,7 +719,7 @@ class FccController(OrphieBaseController):
                 return False
             if p.parentid>0:
             	parentp = meta.Session.query(Post).get(p.parentid)
-            postOptions = conjunctTagOptions(p.parentid>0 and parentp.tags or p.tags)
+            postOptions = self.conjunctTagOptions(p.parentid>0 and parentp.tags or p.tags)
             if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
                 tagline = ''
                 taglist = []

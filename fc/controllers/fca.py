@@ -304,23 +304,40 @@ class FcaController(OrphieBaseController):
         c.logs = meta.Session.query(LogEntry).options(eagerload('user')).order_by(LogEntry.date.desc())[page*100:(page+1)*100]
         return self.render('adminLogs')
 
-    def manageMappings(self, id, act, tagid): 
+    def manageMappings(self, act, id, tagid):
         if isNumber(id) and isNumber(tagid):         
             id = int(id)
             tagid = int(tagid)
-        else:
-            c.errorText = "Incorrect input value"            
-            return self.render('error')
-      
-        if id > 0:
-            post = meta.Session.query(Post).filter(Post.id==id).first()    
+            
+            if id == 0:
+                id = filterText(request.POST.get('postId', ''))
+                if id and isNumber(id):
+                    id = int(id)
                 
-            if post and post.parentid == -1:
-                c.post = post
-
-                if act == 'show':
-                    pass
-                elif act == 'del' and tagid > 0:
+            if tagid == 0:
+                tagName = filterText(request.POST.get('tagName', ''))
+                if tagName:
+                    tag = meta.Session.query(Tag).filter(Tag.tag==tagName).first()
+                    if tag:
+                        tagid = tag.id                
+        else:
+            c.errorText = _("Incorrect input values")            
+            return self.render('error')        
+    
+        if act == 'show':      
+            if id and id > 0:
+                post = meta.Session.query(Post).filter(Post.id==id).first()  
+                if post and post.parentid == -1:
+                    c.post = post      
+                else:
+                    c.errorText = _("This is not op-post")
+                    return self.render('error')   
+            
+            return self.render('adminMappings')                                              
+        elif act in ['del', 'add']:                 
+            post = meta.Session.query(Post).filter(Post.id==id).first()  
+            if post and post.parentid == -1:        
+                if act == 'del' and tagid > 0:
                     if len(post.tags) > 1:
                         tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
                         addLogEntry(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))                        
@@ -334,24 +351,7 @@ class FcaController(OrphieBaseController):
                     post.tags.append(tag) 
                 
                 meta.Session.commit()
-            
-            else:
-                c.errorText = "This is not op-post"
-                return self.render('error')
-            
-        return self.render('adminMappings')
-    
-    def managePostMappings(self):
-        return redirect_to(str('/holySynod/manageMappings/' + (filterText(request.POST.get('postid', '')))))
-
-    def appendTag(self):
-        tagName = filterText(request.POST.get('tagName', ''))
-        postId = filterText(request.POST.get('postId', ''))
-        
-        if tagName and postId:        
-            tag = meta.Session.query(Tag).filter(Tag.tag==tagName).first()
-            if tag:
-                return redirect_to(str('/holySynod/manageMappings/%s/add/%s' % (int(postId), tag.id)))
-            else:
-                c.errorText = "Unknown tag"
-                return self.render('error')            
+                
+            redirect_to('/holySynod/manageMappings/show/%d' % id)
+        else:
+            redirect_to('/holySynod/manageMappings')

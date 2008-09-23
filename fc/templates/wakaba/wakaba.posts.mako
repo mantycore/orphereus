@@ -35,7 +35,7 @@
             %endif
             %if c.isAdmin:
                 <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>
-                <a href="/holySynod/manageMappings/${thread.id}">[Tags]</a>                     
+                <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>                     
             %endif
             </div>
             <span class="filetitle">${thread.title}</span>  

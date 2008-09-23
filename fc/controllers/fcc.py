@@ -727,12 +727,12 @@ class FccController(OrphieBaseController):
                     for tag in parentp.tags:
                     	taglist.append(tag.tag)
                     tagline = ', '.join(taglist)
-                    log = _("Deleted post %s (owner %s), from thread: %s, tagline: %s, reason: %s") % (p.id, p.uidNumber, p.parentid, tagline, reason)
+                    log = _("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (p.id, p.uidNumber, p.parentid, tagline, reason)
                 else:
                     for tag in p.tags:
                     	taglist.append(tag.tag)
                     tagline = ', '.join(taglist)                   
-                    log = _("Deleted thread %s (owner %s), tagline: %s, reason: %s") % (p.id, p.uidNumber, tagline, reason)
+                    log = _("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (p.id, p.uidNumber, tagline, reason)
                 addLogEntry(LOG_EVENT_POSTS_DELETE, log)
             
             if p.parentid == -1 and not fileonly:

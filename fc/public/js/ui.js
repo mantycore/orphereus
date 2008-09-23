@@ -1,4 +1,4 @@
-function insert(text)
+function insert(text,notFocus)
 {
     var textarea=document.forms.postform.message;
     if(textarea)
@@ -19,7 +19,10 @@ function insert(text)
         {
             textarea.value+=text+" ";
         }
-        textarea.focus();
+        if (!notFocus)
+        {
+        	textarea.focus();
+        }
     }
 }
 
@@ -215,7 +218,7 @@ window.onload=function(e)
 
     if(match=/#i([0-9]+)/.exec(document.location.toString()))
     if(!document.forms.postform.message.value)
-    insert(">>"+match[1]);
+    insert(">>"+match[1],1);
 
     if(match=/#([0-9]+)/.exec(document.location.toString()))
     highlight(match[1]);

@@ -24,8 +24,8 @@ class OptHolder(object):
         self.filesPathWeb=config['core.filesPathWeb']
         
         # Security settings
-        self.refControlList = ['anoma.ch', 'anoma.li', 'localhost', '127.0.0.1']
-        self.fakeLinks = ['http://www.youtube.com/watch?v=oHg5SJYRHA0', 'http://meatspin.com/', 'http://youtube.com/watch?v=Uqot33mczsw', 'http://youtube.com/watch?v=dZBU6WzBrX8']
+        #self.refControlList = ['anoma.ch', 'anoma.li', 'localhost', '127.0.0.1']
+        #self.fakeLinks = ['http://www.youtube.com/watch?v=oHg5SJYRHA0', 'http://meatspin.com/', 'http://youtube.com/watch?v=Uqot33mczsw', 'http://youtube.com/watch?v=dZBU6WzBrX8']
 
         self.alertEmail = config['security.alertEmail'] 
         self.alertServer = config['security.alertServer']
@@ -37,6 +37,7 @@ class OptHolder(object):
         self.refControlList = config['security.refControlList'].split(',')
         self.fakeLinks = config['security.fakeLinks'].split(',')
 
+        self.obfuscator = config['security.obfuscator']
 class Globals(object):   
     def __init__(self):
         self.OPT = OptHolder() 

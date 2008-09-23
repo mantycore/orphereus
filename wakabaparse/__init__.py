@@ -29,9 +29,10 @@ class WakabaParser(object):
     def link(self, tag, beg, end, parts):
         linkString = self.input[beg:end]
         linkHref   = linkString
-        if not (linkString.find('anoma.ch') != -1 or linkString.find('anoma.li') != -1):
-        	linkHref = 'http://anonym.to/?' + linkHref
-        return '<a href="%s">%s</a>' % (linkHref,linkString)
+        if not (linkString in g.OPT.refControlList):
+        	linkHref = g.OPT.obfuscator + linkHref
+            
+        return '<a href="%s">%s</a>' % (linkHref, linkString)
         
     def reference(self, tag, beg, end, parts):
         n,i,j,p = parts[0]

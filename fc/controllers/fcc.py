@@ -332,10 +332,11 @@ class FccController(OrphieBaseController):
         if not parentid:
             parentid = self.getParentID(postid)
             
-        if parentid == -1:
-            return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
-        else:
-            return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid, postid, postid, postid)
+        #if parentid == -1:
+        #    return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
+        #else:
+        # We will format all posts same way. Why not? Also, changed to /postid#ipostid instead of /parentid#ipostid
+        return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (postid, postid, postid, postid)
         
     def makeThumbnail(self, source, dest, maxSize):
         sourceImage = Image.open(source)

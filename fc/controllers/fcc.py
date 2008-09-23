@@ -18,6 +18,7 @@ from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from fc.lib.settings import *
+from fc.lib.fileHolder import AngryFileHolder
 from OrphieBaseController import OrphieBaseController
 
 import logging
@@ -257,76 +258,6 @@ class FccController(OrphieBaseController):
            return post.parentid
         else:
            return False           
-
-    def makeThumbnail(self, source, dest, maxSize):
-        sourceImage = Image.open(source)
-        size = sourceImage.size
-        if sourceImage:
-           sourceImage.thumbnail(maxSize,Image.ANTIALIAS)
-           sourceImage.save(dest)
-           return size + sourceImage.size
-        else:
-           return []
-
-    def processFile(self, file, thumbSize=250):
-        if isinstance(file,cgi.FieldStorage) or isinstance(file,FieldStorageLike):
-           # We should check whether we got this file already or not
-           # If we dont have it, we add it
-           name = str(long(time.time() * 10**7))
-           ext  = file.filename.rsplit('.',1)[:0:-1]
-           if ext:
-              ext = ext[0].lstrip(os.sep)
-           else:
-              # Panic, no extention found
-              ext = ''
-              return ''
-           # Make sure its something we want to have
-           extParams = meta.Session.query(Extension).filter(Extension.ext==ext).first()
-           if not extParams:
-              return ''
-
-           localFilePath = os.path.join(g.OPT.uploadPath,name + '.' + ext)
-           localFile = open(localFilePath,'w+b')
-           shutil.copyfileobj(file.file, localFile)
-           localFile.seek(0)
-           md5 = hashlib.md5(localFile.read()).hexdigest()
-           file.file.close()
-           localFile.close()
-
-           pic = meta.Session.query(Picture).filter(Picture.md5==md5).first()
-           if pic:
-               os.unlink(localFilePath)
-               return pic
-
-           try:
-                if extParams.type == 'image':
-                   thumbFilePath = name + 's.' + ext
-                   size = self.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize,thumbSize))
-                else:
-                   if extParams.type == 'image-jpg':
-                      thumbFilePath = name + 's.jpg'
-                      size = self.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize,thumbSize))
-                   else:
-                     thumbFilePath = extParams.path
-                     size = [0,0,extParams.thwidth,extParams.thheight]
-           except:
-                return -1
-              
-           pic = Picture()
-           pic.path = name + '.' + ext
-           pic.thumpath = thumbFilePath
-           pic.width = size[0]
-           pic.height = size[1]
-           pic.thwidth = size[2]
-           pic.thheight = size[3]
-           pic.extid = extParams.id
-           pic.size = os.stat(localFilePath)[6]
-           pic.md5 = md5
-           meta.Session.save(pic)
-           meta.Session.commit()
-           return pic
-        else:
-           return None
            
     def conjunctTagOptions(self, tags):
         options = TagOptions()
@@ -405,21 +336,96 @@ class FccController(OrphieBaseController):
             return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
         else:
             return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid, postid, postid, postid)
-            
+        
+    def makeThumbnail(self, source, dest, maxSize):
+        sourceImage = Image.open(source)
+        size = sourceImage.size
+        if sourceImage:
+           sourceImage.thumbnail(maxSize,Image.ANTIALIAS)
+           sourceImage.save(dest)
+           return size + sourceImage.size
+        else:
+           return []
+               
+    def processFile(self, file, thumbSize=250):
+        if isinstance(file, cgi.FieldStorage) or isinstance(file,FieldStorageLike):
+           # We should check whether we got this file already or not
+           # If we dont have it, we add it
+           name = str(long(time.time() * 10**7))
+           ext  = file.filename.rsplit('.',1)[:0:-1]
+           
+           if ext:
+              ext = ext[0].lstrip(os.sep)
+           else:
+              # Panic, no extention found
+              ext = ''
+              return ''
+          
+           # Make sure its something we want to have
+           extParams = meta.Session.query(Extension).filter(Extension.ext==ext).first()
+           if not extParams:
+              return False
+
+           localFilePath = os.path.join(g.OPT.uploadPath, name + '.' + ext)
+           localFile = open(localFilePath,'w+b')
+           shutil.copyfileobj(file.file, localFile)
+           localFile.seek(0)
+           md5 = hashlib.md5(localFile.read()).hexdigest()
+           file.file.close()
+           localFile.close()
+
+           pic = meta.Session.query(Picture).filter(Picture.md5==md5).first()
+           if pic:
+               os.unlink(localFilePath)
+               return [pic, False]
+
+           try:
+                if extParams.type == 'image':
+                   thumbFilePath = name + 's.' + ext
+                   size = self.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize,thumbSize))
+                else:
+                   if extParams.type == 'image-jpg':
+                      thumbFilePath = name + 's.jpg'
+                      size = self.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize,thumbSize))
+                   else:
+                     thumbFilePath = extParams.path
+                     size = [0, 0, extParams.thwidth, extParams.thheight]
+           except:
+                return [-1, AngryFileHolder(localFilePath)]
+              
+           pic = Picture()
+           pic.path = name + '.' + ext
+           pic.thumpath = thumbFilePath
+           pic.width = size[0]
+           pic.height = size[1]
+           pic.thwidth = size[2]
+           pic.thheight = size[3]
+           pic.extid = extParams.id
+           pic.size = os.stat(localFilePath)[6]
+           pic.md5 = md5
+           meta.Session.save(pic)
+           meta.Session.commit()
+           return [pic, AngryFileHolder(localFilePath, pic)]
+        else:
+           return False
+                   
     def processPost(self, postid=0, board=u''):
-        #settingsMap = c.settingsMap
+        fileHolder = False
+                
         if postid:
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
             if not thePost:
                 c.errorText = _("Can't post into non-existent thread")
-                return self.render('error')                
+                return self.render('error')           
+                 
+            # ???
             if thePost.parentid != -1:
                thread = meta.Session.query(Post).filter(Post.id==thePost.parentid).one()
             else:
                thread = thePost
             tags = thread.tags
         else:        
-            tagstr = request.POST.get('tags',False)
+            tagstr = request.POST.get('tags', False)
             tags = self.__getPostTags(tagstr)
             if not tags:
                 c.errorText = _("You should specify at least one board")
@@ -491,21 +497,28 @@ class FccController(OrphieBaseController):
                
         post.title = filterText(request.POST['title'])
         post.date = datetime.datetime.now()
-        pic = self.processFile(file,options.thumbSize)
+        
+        fileDescriptors = self.processFile(file, options.thumbSize)
+        log.debug(fileDescriptors)        
+        if fileDescriptors:
+            pic = fileDescriptors[0]
+            fileHolder = fileDescriptors[1] # Object for file auto-removing
+        
         if pic:
             if pic == -1:
                 c.errorText = _("Broken picture. Maybe it is interlaced PNG?")
                 return self.render('error')      
             if pic.size > options.maxFileSize:
-                c.errorText = "File size exceeds the limit"
+                c.errorText = "File size exceeds the limit"           
                 return self.render('error') 
             if pic.height and (pic.height < options.minPicSize or pic.width < options.minPicSize):
-                c.errorText = "Image is too small"
+                c.errorText = "Image is too small"             
                 return self.render('error') 
             if not options.images:
                 c.errorText = "Files are not allowed on this board"
                 return self.render('error') 
             post.picid = pic.id
+            
         post.uidNumber = self.userInst.uidNumber()
         
         if not post.message and not post.picid:
@@ -531,6 +544,9 @@ class FccController(OrphieBaseController):
             post.parentid = -1
             post.bumpDate = datetime.datetime.now()
             post.tags = tags
+            
+        if fileHolder:
+            fileHolder.disableDeletion()
         meta.Session.save(post)
         meta.Session.commit()
         returnTo = request.POST.get('gb2', 'board')

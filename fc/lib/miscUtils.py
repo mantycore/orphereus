@@ -89,10 +89,5 @@ def getTagsListFromString(string):
             result.append(aTag.id)
     return result
 
-def modLink(string, secid):
-    p1 = string[0:4]
-    p2 = string[4:8]
-    p3 = string[8:len(string)]
-    return p1 + str(secid) + p2 + p3
-    
+
  

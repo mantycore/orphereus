@@ -31,21 +31,22 @@ class FcpController(OrphieBaseController):
     def __before__(self):
         #settingsMap = getSettingsMap()
         c.title = g.settingsMap['title'].value
-        ref = request.headers.get('REFERER', False)
-        if ref:
-            ref = filterText(ref)
-            
-        if ref:
-            rickroll = True
-            for rc in g.OPT.refControlList:
-                if rc in ref:
-                    rickroll = False
+        if g.OPT.refControlEnabled:
+            ref = request.headers.get('REFERER', False)
+            if ref:
+                ref = filterText(ref)
                 
-            if (rickroll):
-                redir = g.OPT.fakeLinks[random.randint(0, len(g.OPT.fakeLinks) - 1)]
-                addLogEntry(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, request.environ["REMOTE_ADDR"], filterText(request.headers.get('User-Agent', '?'))))                
-                redirect_to(redir)
-        
+            if ref:
+                rickroll = True
+                for rc in g.OPT.refControlList:
+                    if rc in ref:
+                        rickroll = False
+                    
+                if (rickroll):
+                    redir = g.OPT.fakeLinks[random.randint(0, len(g.OPT.fakeLinks) - 1)]
+                    addLogEntry(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, request.environ["REMOTE_ADDR"], filterText(request.headers.get('User-Agent', '?'))))                
+                    redirect_to(redir)
+            
     def login(self, user):
         session['uidNumber'] = user.uidNumber
         session.save()

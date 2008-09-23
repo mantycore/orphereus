@@ -7,6 +7,7 @@ error_email_from = paste@localhost <mailto:paste@localhost>
 use = egg:Paste#http
 host = 127.0.0.1
 port = 5000
+
 [app:main]
 use = egg:FC
 full_stack = true
@@ -15,6 +16,25 @@ beaker.session.key = fc
 beaker.session.secret = somesecret
 sqlalchemy.url = mysql://user:passwd@127.0.0.1/database
 sqlalchemy.pool_recycle = 3600
+
+#basic IB settings
+core.devMode = true
+# We will hash hashSecret by sha512, so no need to have it long
+core.hashSecret = paranoia 
+core.baseDomain= anoma.ch
+core.minPassLength = 12
+core.filesPathWeb = http://wut.anoma.ch/img1/
+
+# Security settings
+security.alertEmail = lamo@sms.megafonsib.ru
+security.alertServer = smtp.gmail.com
+security.alertPort = 587
+security.alertSender= alert@anoma.ch
+security.alertPassword= 60J266
+security.refControlEnabled = true
+security.refControlList = anoma.ch,anoma.li,localhost,127.0.0.1
+security.fakeLinks = http://www.youtube.com/watch?v=oHg5SJYRHA0,http://meatspin.com/,http://youtube.com/watch?v=Uqot33mczsw,http://youtube.com/watch?v=dZBU6WzBrX8
+
 [loggers]
 keys = root, fc
 

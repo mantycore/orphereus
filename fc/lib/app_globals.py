@@ -3,17 +3,9 @@ from pylons import config
 import sys
 import os
  
-"""
-from fc.lib.miscUtils import getSettingsMap
-from fc.lib.base import *
-from fc.model import *
-from sqlalchemy.orm import eagerload
-from sqlalchemy.orm import class_mapper
-from sqlalchemy.sql import and_, or_, not_
-from fc.lib.constantValues import *
-from fc.lib.settings import *
-from miscUtils import *
-"""
+import logging
+log = logging.getLogger(__name__)
+
 
 class OptHolder(object):
     def __init__(self):
@@ -22,26 +14,28 @@ class OptHolder(object):
         self.templPath= os.path.join(self.appPath, 'fc/templates/')
         self.uploadPath = os.path.join(self.appPath, 'fc/uploads/')
         self.captchaFont = os.path.join(self.appPath, 'fc/cfont.ttf')
-        self.markupFile = os.path.join(self.appPath, 'wakabaparse/mark.def')
-        self.devMode = os.path.exists(os.path.join(self.appPath, 'fc/development.dummy'))           
-
-        #basic IB settings
-        self.hashSecret = 'paranoia' # We will hash it by sha512, so no need to have it huge
-        self.baseDomain='anoma.ch' 
-        self.minPassLength=12
-
-        self.filesPathWeb='http://wut.anoma.ch/img1/'
-        if self.devMode:
-            self.filesPathWeb='http://wut.anoma.ch/img2/'
-                            
-        # Anoma.ch-specific settings
+        self.markupFile = os.path.join(self.appPath, 'wakabaparse/mark.def')                   
+        
+        # Basic IB settings
+        self.devMode = (config['core.devMode'] == 'true')        
+        self.hashSecret = config['core.hashSecret']
+        self.baseDomain = config['core.baseDomain'] 
+        self.minPassLength = int(config['core.minPassLength'])
+        self.filesPathWeb=config['core.filesPathWeb']
+        
+        # Security settings
         self.refControlList = ['anoma.ch', 'anoma.li', 'localhost', '127.0.0.1']
         self.fakeLinks = ['http://www.youtube.com/watch?v=oHg5SJYRHA0', 'http://meatspin.com/', 'http://youtube.com/watch?v=Uqot33mczsw', 'http://youtube.com/watch?v=dZBU6WzBrX8']
-        self.alertEmail='lamo@sms.megafonsib.ru'
-        self.alertServer='smtp.gmail.com'
-        self.alertPort=587
-        self.alertSender='alert@anoma.ch'
-        self.alertPassword='60J266'
+
+        self.alertEmail = config['security.alertEmail'] 
+        self.alertServer = config['security.alertServer']
+        self.alertPort = int(config['security.alertPort'])
+        self.alertSender = config['security.alertSender']
+        self.alertPassword = config['security.alertPassword']
+
+        self.refControlEnabled = (config['security.refControlEnabled'] == 'true') 
+        self.refControlList = config['security.refControlList'].split(',')
+        self.fakeLinks = config['security.fakeLinks'].split(',')
 
 class Globals(object):   
     def __init__(self):

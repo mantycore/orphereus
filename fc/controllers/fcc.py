@@ -1,5 +1,3 @@
-import logging
-
 from fc.lib.base import *
 from fc.model import *
 from sqlalchemy.orm import eagerload
@@ -22,6 +20,7 @@ from fc.lib.constantValues import *
 from fc.lib.settings import *
 from OrphieBaseController import OrphieBaseController
 
+import logging
 log = logging.getLogger(__name__)
 
 def taglistcmp(a, b):
@@ -36,8 +35,7 @@ class FccController(OrphieBaseController):
         c.currentURL = request.path_info
         if c.currentURL[-1] != '/':
             c.currentURL = c.currentURL + '/'
-                    
-        c.modLink = modLink       
+              
         if not self.userInst.isAuthorized():
             return redirect_to(c.currentURL+'authorize')
         if self.userInst.isBanned():
@@ -669,7 +667,7 @@ class FccController(OrphieBaseController):
               pic = meta.Session.query(Picture).filter(Picture.id==post.picid).first()
               if pic and pic.width:
                  oekaki.source = post.id
-                 c.canvas = modLink(pic.path, c.userInst.secid())
+                 c.canvas = h.modLink(pic.path, c.userInst.secid())
                  c.width  = pic.width
                  c.height = pic.height
         meta.Session.save(oekaki)

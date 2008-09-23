@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy import orm
 from fc.model import meta
+
 def init_model(engine):
     sm = orm.sessionmaker(autoflush=True, autocommit=False, bind=engine)
     meta.engine = engine

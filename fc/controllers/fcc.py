@@ -499,7 +499,8 @@ class FccController(OrphieBaseController):
         post.date = datetime.datetime.now()
         
         fileDescriptors = self.processFile(file, options.thumbSize)
-        log.debug(fileDescriptors)        
+        log.debug(fileDescriptors)      
+        pic = False  
         if fileDescriptors:
             pic = fileDescriptors[0]
             fileHolder = fileDescriptors[1] # Object for file auto-removing

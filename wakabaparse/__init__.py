@@ -8,7 +8,7 @@ from fc.lib.constantValues import *
 
 class WakabaParser(object):
     def __init__(self, definition = g.OPT.markupFile, baseProd = 'all'):
-        self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nop','symbol_mark_nou','accent_code','noaccent_code']
+        self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nop','symbol_mark_nou','accent_code','noaccent_code','punctuation']
         self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','inline_spoiler':"span class='spoiler'",'inline_code':'code'}
         self.complex= ['reference','signature','link']
         self.block  = {'block_code':'code','block_spoiler':"div class='spoiler'"}
@@ -27,7 +27,11 @@ class WakabaParser(object):
                 self.PrintTree(parts,Depth + 1)
 
     def link(self, tag, beg, end, parts):
-        return '<a href="%s">%s</a>' % (self.input[beg:end],self.input[beg:end])
+        linkString = self.input[beg:end]
+        linkHref   = linkString
+        if not (linkString.find('anoma.ch') != -1 or linkString.find('anoma.li') != -1):
+        	linkHref = 'http://anonym.to/?' + linkHref
+        return '<a href="%s">%s</a>' % (linkHref,linkString)
         
     def reference(self, tag, beg, end, parts):
         n,i,j,p = parts[0]

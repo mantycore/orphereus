@@ -147,10 +147,13 @@
 %endfor
 <table class="userdelete">
     <tbody>
-        <tr><td> 
-            <input type="hidden" name="task" value="delete" />Delete post [<label><input type="checkbox" name="fileonly" value="on" />Only file</label>]
-            <br />
-            <input value="Delete" type="submit" />
+        <tr><td>
+            <input type="hidden" name="task" value="delete" />
+        	%if c.isAdmin:
+        		Reason: <input type="text" name="reason" size="35" />
+         	%endif  
+            [<label><input type="checkbox" name="fileonly" value="on" />Only file</label>]
+            <input value="Delete post(s)" type="submit" /> 
         </td></tr>
     </tbody>
 </table>

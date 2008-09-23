@@ -17,7 +17,7 @@ beaker.session.secret = somesecret
 sqlalchemy.url = mysql://user:passwd@127.0.0.1/database
 sqlalchemy.pool_recycle = 3600
 
-#basic IB settings
+# Basic IB settings
 core.devMode = true
 # We will hash hashSecret by sha512, so no need to have it long
 core.hashSecret = paranoia 

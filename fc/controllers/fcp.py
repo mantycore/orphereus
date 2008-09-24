@@ -52,6 +52,8 @@ class FcpController(OrphieBaseController):
         session.save()
         
     def logout(self):
+        session.clear()
+        session.save()
         session.delete()        
         redirect_to('/')
         

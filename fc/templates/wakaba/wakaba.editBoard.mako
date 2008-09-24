@@ -68,7 +68,7 @@
                 <tr id="trsection">
                     <td class="postblock">${_('Allow OP to delete his threads')}</td>
                     <td>
-                        <input type="checkbox" name="canDeleteThread" ${c.tag.options.canDeleteThread and "checked" or ""} />
+                        <input type="checkbox" name="canDeleteOwnThreads" ${c.tag.options.canDeleteOwnThreads and "checked" or ""} />
                     </td>
                 </tr>                
                 <tr id="trsection">

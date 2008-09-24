@@ -273,13 +273,13 @@ class FccController(OrphieBaseController):
                     options.maxFileSize = t.options.maxFileSize
                     options.minPicSize = t.options.minPicSize
                     options.thumbSize = t.options.thumbSize
-                    options.canDeleteThread = t.options.canDeleteThread
+                    options.canDeleteOwnThreads = t.options.canDeleteOwnThreads
                     optionsFlag = False                    
                 else:
                     options.imagelessThread = options.imagelessThread & t.options.imagelessThread
                     options.imagelessPost = options.imagelessPost & t.options.imagelessPost
                     options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
-                    options.canDeleteThread = options.canDeleteAllPosts & t.options.canDeleteThread
+                    options.canDeleteOwnThreads = options.canDeleteOwnThreads & t.options.canDeleteOwnThreads
                     options.images = options.images & t.options.images
                     if t.options.maxFileSize < options.maxFileSize:
                         options.maxFileSize = t.options.maxFileSize
@@ -300,7 +300,7 @@ class FccController(OrphieBaseController):
             options.imagelessPost   = True
             options.images   = True
             options.enableSpoilers = True
-            options.canDeleteThread = True
+            options.canDeleteOwnThreads = True
             options.maxFileSize = 2621440
             options.minPicSize = 50
             options.thumbSize = 180

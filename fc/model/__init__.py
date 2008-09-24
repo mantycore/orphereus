@@ -122,7 +122,7 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     sa.Column("minPicSize" , sa.types.Integer, nullable=False),
     sa.Column("thumbSize", sa.types.Integer, nullable=False),
     sa.Column("enableSpoilers", sa.types.Boolean, nullable=False),
-    sa.Column("canDeleteThread", sa.types.Boolean, server_default='1'),
+    sa.Column("canDeleteOwnThreads", sa.types.Boolean, server_default='1'),
     sa.Column("specialRules"  , sa.types.UnicodeText, nullable=True),
     )
 

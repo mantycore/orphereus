@@ -341,7 +341,7 @@ class FccController(OrphieBaseController):
         # We will format all posts same way. Why not?
         #Also, changed to /postid#ipostid instead of /parentid#ipostid.
         #Forget it, changed back.
-        return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid, postid, postid, postid)
+        return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)
         
     def makeThumbnail(self, source, dest, maxSize):
         sourceImage = Image.open(source)

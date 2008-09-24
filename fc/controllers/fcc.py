@@ -740,7 +740,7 @@ class FccController(OrphieBaseController):
                 addLogEntry(LOG_EVENT_POSTS_DELETE, log)
             
             if p.parentid == -1 and not fileonly:
-                if not (postOptions.canDeleteThread or self.userInst.canDeleteAllPosts()):
+                if not (postOptions.canDeleteOwnThreads or self.userInst.canDeleteAllPosts()):
                     return False
                 opPostDeleted = True
                 for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():

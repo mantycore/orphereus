@@ -7,10 +7,10 @@
 <input type="hidden" name="tagLine" value="${c.tagLine}">
 %for thread in c.threads:
     <div id="thread-${thread.id}">
-        <%include file="wakaba.postOp.mako" />
+        <%include file="wakaba.postOp.mako" args="thread=thread"/>
         
-        %for p in thread.Replies:
-			<%include file="wakaba.postReply.mako" />
+        %for post in thread.Replies:
+			<%include file="wakaba.postReply.mako" args="thread=thread, post=post"/>
         %endfor        
     </div>
     <br clear="left" />

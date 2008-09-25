@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+<%page args="thread"/>
+
 %if thread.file:
 <span class="filesize">
     <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}">${h.modLink(thread.file.path, c.userInst.secid())}</a>            

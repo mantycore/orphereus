@@ -597,7 +597,8 @@ class FccController(OrphieBaseController):
 
         #if thePost isn't op-post, using op-post instead
         if thePost and thePost.parentid != -1:
-            thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.parentid).first()
+            redirect_to('/%d#i%d' % (thePost.parentid, thePost.id)) #smart redirect
+            #thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.parentid).first()
             
         if not thePost:
             c.errorText = _("No such post exist.")

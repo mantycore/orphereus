@@ -108,7 +108,7 @@ ${_('On this board:')}
 <li>${_('Imageless threads')}:  ${not c.boardOptions.imagelessThread and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Imageless posts')}:  ${not c.boardOptions.imagelessPost and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Spoiler alerts')}:  ${not c.boardOptions.enableSpoilers and _('not') or ''} ${_('allowed')}</li>
-<li>${_('Op can delete thread')}:  ${not c.boardOptions.canDeleteOwnThreads and _('yes') or _('no')}</li>
+<li>${_('Op can delete thread')}:  ${c.boardOptions.canDeleteOwnThreads and _('yes') or _('no')}</li>
 <li>${_('Enabled extensions')}:  ${c.extLine}</li>
 </ul>
 </div>

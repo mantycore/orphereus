@@ -595,9 +595,9 @@ class FccController(OrphieBaseController):
     def GetThread(self, post, tempid):
         thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
 
-        #if thePost isn't op-post, using op-post instead
+        #if thePost isn't op-post, redirect to op-post instead
         if thePost and thePost.parentid != -1:
-            redirect_to('/%d#i%d' % (thePost.parentid, thePost.id)) #smart redirect
+            redirect_to('/%d#i%d' % (thePost.parentid, thePost.id))
             #thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.parentid).first()
             
         if not thePost:

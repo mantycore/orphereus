@@ -102,12 +102,13 @@
 ${_('On this board:')}
 <ul class="nomargin">
 <li>${_('Minimal picture size')}: ${c.boardOptions.minPicSize}<sup>2</sup></li>
-<li>${_('Maximal file size')}: ${'%.2f' % (c.boardOptions.maxFileSize / 1024.0)} Kbytes</li>
+<li>${_('Maximal file size')}: ${'%.2f' % (c.boardOptions.maxFileSize / 1024.0)} ${_('Kbytes')}</li>
 <li>${_('Thumbnail size')}: ${c.boardOptions.thumbSize}<sup>2</sup></li>
-<li>${_('Images')}:  ${not c.boardOptions.images and _('not') or ''} allowed</li>
+<li>${_('Images')}:  ${not c.boardOptions.images and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Imageless threads')}:  ${not c.boardOptions.imagelessThread and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Imageless posts')}:  ${not c.boardOptions.imagelessPost and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Spoiler alerts')}:  ${not c.boardOptions.enableSpoilers and _('not') or ''} ${_('allowed')}</li>
+<li>${_('Op can delete thread')}:  ${not c.boardOptions.canDeleteOwnThreads and _('yes') or _('no')}</li>
 <li>${_('Enabled extensions')}:  ${c.extLine}</li>
 </ul>
 </div>

@@ -26,6 +26,7 @@ def make_map():
     map.connect('/register/:invite', controller='fcp', action='register')
     map.connect('/youAreBanned', controller='fcp', action='banned')
     map.connect('/Join', controller='fcp', action='showStatic', page = 'Join')    
+
     # Oekaki
     map.connect('/:url/oekakiDraw', controller='fcc', action='oekakiDraw', url='')
     map.connect('/:url/oekakiSave/:tempid', controller='fcp', action='oekakiSave', url='',requirements=dict(tempid='\d+'))
@@ -34,6 +35,7 @@ def make_map():
     map.connect('/userProfile', controller='fcc', action='showProfile')
     #map.connect('/userProfile/messages', controller='fcc', action='showMessages')
     map.connect('/viewLog/:page', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
+
     # Admin subsystem
     map.connect('/holySynod', controller='fca', action='index')
     map.connect('/holySynod/invitePage', controller='fca', action='invitePage')
@@ -51,8 +53,6 @@ def make_map():
     map.connect('/holySynod/manageApplications', controller='fca', action='manageApplications')
     map.connect('/holySynod/viewLog/:page', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
     map.connect('/holySynod/manageMappings/:act/:id/:tagid', controller='fca', action='manageMappings', act='show', id=0, tagid=0, requirements=dict(id='\d+', tagid='\d+'))        
-    #map.connect('/holySynod/managePostMappings', controller='fca', action='managePostMappings')
-    #map.connect('/holySynod/appendTag', controller='fca', action='appendTag')
 
     # Maintenance
     map.connect('/holySynod/service/:actid/:secid', controller='fcm', actid='', secid='', action='mtnAction')    
@@ -67,11 +67,13 @@ def make_map():
     map.connect('/:post/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))
     map.connect('/:post/:tempid', controller='fcc', action='GetThread', tempid=0, requirements=dict(post='\d+',tempid='\d+'))
     map.connect('/:board', controller='fcc', action='PostThread',conditions=dict(method=['POST']))
+
     # Special filters
     #map.connect('/~/:tempid', controller='fcc', action='GetOverview', tempid=0, requirements=dict(tempid='\d+'))
     #map.connect('/~/page/:page', controller='fcc', action='GetOverview', tempid=0, page=0, requirements=dict(page='\d+'))
     #map.connect('/@/:tempid', controller='fcc', action='GetMyThreads', tempid=0, requirements=dict(tempid='\d+'))
     #map.connect('/@/page/:page', controller='fcc', action='GetMyThreads', tempid=0, page=0, requirements=dict(page='\d+'))
+
     # Generic filter
     map.connect('/:board/:tempid', controller='fcc', action='GetBoard', board = '!', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))

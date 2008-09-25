@@ -14,8 +14,9 @@ full_stack = true
 cache_dir = %(here)s/data
 beaker.session.key = fc
 beaker.session.secret = somesecret
-sqlalchemy.url = mysql://user:passwd@127.0.0.1/database
+sqlalchemy.url = mysql://user:passwd@127.0.0.1/database?use_unicode=0&charset=utf8
 sqlalchemy.pool_recycle = 3600
+sqlalchemy.encoding=utf-8
 
 # Basic IB settings
 core.devMode = true

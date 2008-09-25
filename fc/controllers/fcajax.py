@@ -31,14 +31,14 @@ class FcajaxController(OrphieBaseController):
         if not self.userInst.isAuthorized():
             abort(403)
             
-    def getPost(self,post):
+    def getPost(self, post):
         postInst = meta.Session.query(Post).get(post)
         if postInst:
             if postInst.parentid == -1:
                 parent = postInst
             else:
                 parent = meta.Session.query(Post).get(postInst.parentid)
-            #settingsMap = getSettingsMap()
+
             forbiddenTags = getTagsListFromString(g.settingsMap['adminOnlyTags'].value)       
             for t in parent.tags:
                 if t.id in forbiddenTags and not self.userInst.isAdmin():
@@ -46,6 +46,24 @@ class FcajaxController(OrphieBaseController):
             return postInst.message
         else:
             abort(404)
+
+    def getRenderedPost(self, post):
+        postInst = meta.Session.query(Post).get(post)
+        if postInst:
+            if postInst.parentid == -1:
+                parent = postInst
+            else:
+                parent = meta.Session.query(Post).get(postInst.parentid)
+
+            forbiddenTags = getTagsListFromString(g.settingsMap['adminOnlyTags'].value)       
+            for t in parent.tags:
+                if t.id in forbiddenTags and not self.userInst.isAdmin():
+                    abort(403)
+                    
+            #parent.omittedPosts = False
+            return self.render('postReply', thread=parent, post = postInst)
+        else:
+            abort(404)            
             
     def editUserFilter(self,fid,filter):
         userFilter = meta.Session.query(UserFilters).get(fid)

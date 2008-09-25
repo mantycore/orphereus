@@ -97,7 +97,7 @@
             </table>         
             </td>
             
-<td class="adminMenu">
+<td class="reply" style="padding: 10px; vertical-align: top;">
 <div id="smallFont">
 ${_('On this board:')}
 <ul class="nomargin">

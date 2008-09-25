@@ -59,7 +59,9 @@ class OrphieBaseController(BaseController):
             c.boardlist.append(section)
         response.set_cookie('fc', request.cookies['fc'], domain='.'+g.OPT.baseDomain)
                     
-    def render(self, page):
+    def render(self, page, **options):
+        #log.debug(options)
+        #return
         tname = 'std'
         tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
         
@@ -71,7 +73,7 @@ class OrphieBaseController(BaseController):
             pass
         
         if page and os.path.isfile(os.path.join(g.OPT.templPath, tpath)):               
-            return render('/' + tpath)
+            return render('/'+tpath, **options)
         else:
             return _("Template problem: " + page)
             

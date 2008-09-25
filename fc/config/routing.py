@@ -59,9 +59,11 @@ def make_map():
     
     # AJAX
     map.connect('/ajax/getPost/:post', controller='fcajax', action='getPost', requirements=dict(post='\d+'))
+    map.connect('/ajax/getRenderedPost/:post', controller='fcajax', action='getRenderedPost', requirements=dict(post='\d+'))
     map.connect('/ajax/editUserFilter/:fid/:filter', controller='fcajax', action='editUserFilter', requirements=dict(fid='\d+'))
     map.connect('/ajax/deleteUserFilter/:fid', controller='fcajax', action='deleteUserFilter', requirements=dict(fid='\d+'))
     map.connect('/ajax/addUserFilter/:filter', controller='fcajax', action='addUserFilter')
+    
     # Threads
     map.connect('/:post', controller='fcc', action='PostReply',conditions=dict(method=['POST']),requirements=dict(post='\d+'))
     map.connect('/:post/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))

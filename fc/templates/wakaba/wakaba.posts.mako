@@ -78,3 +78,7 @@
 %endif
 
 <br clear="all" />
+
+%if c.userInst.useAjax():
+<script>popup_posts({ajax: true});</script>
+%endif

@@ -1,3 +1,51 @@
+function popup_posts(options){
+  if(!options) options = {}
+  popup_posts.helper = $(document.createElement('blockquote'));
+  popup_posts.helper.css('position','absolute');
+  popup_posts.helper.addClass("reply").addClass("popup_post");
+  popup_posts.helper.hide();
+  popup_posts.cache = {}
+  $(document.body).append(popup_posts.helper)
+  var show_it = function(html){
+    popup_posts.helper.css('left',popup_posts.ev.pageX+10+'px').css('top',popup_posts.ev.pageY+10+'px').show().html(html)
+  }
+  var hide_it = function(){
+    popup_posts.helper.hide()
+  }
+  var load_on = function(e){
+    e.attr('old_html',e.html())
+    e.html("loading...")
+  }
+  var load_off = function(e){
+    e.html(e.attr('old_html'))
+  }
+  
+  $("blockquote a").filter(function(){
+    return $(this).attr('href').match(/^\/-?\d+(\#i\d+)?$/)
+  }).hover(function(ev){
+    var m = $(this).html().match(/\d+$/)
+    if (!m) return false;
+    popup_posts.ev = ev
+    var content = $("#quickReplyNode"+m[0])
+    if (content.size()){
+      if (content[0].tagName == 'BLOCKQUOTE')
+        show_it(content.parent().html().split('<table')[0])
+      else
+        show_it(content.html())
+    }else if (popup_posts.cache[m[0]]){
+      show_it(popup_posts.cache[m[0]]);
+    }else if(options.ajax){
+        var e = $(this)
+        load_on(e)
+        $.get("/ajax/getRenderedPost/"+m[0], function(html){
+          load_off(e)
+          show_it(html);
+          popup_posts.cache[m[0]] = html;
+        });
+    }
+  },hide_it)
+}
+
 function insert(text,notFocus)
 {
     var textarea=document.forms.postform.message;

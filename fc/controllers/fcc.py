@@ -798,6 +798,7 @@ class FccController(OrphieBaseController):
             if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
                 self.userInst.repliesPerThread(repliesPerThread)
             self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
+            self.userInst.useAjax(request.POST.get('useAjax',True))
             homeExcludeTags = self.__getPostTags(request.POST.get('homeExclude',''))
             homeExcludeList = []
             for t in homeExcludeTags:

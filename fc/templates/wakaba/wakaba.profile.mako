@@ -58,7 +58,23 @@
                 <tr>
                     <td class="postblock">${_('Home filter exclusions')}</td>
                     <td><input name='homeExclude' value='${c.homeExclude}'></td>
-                </tr>                
+                </tr>    
+                <tr id="trstyle">
+                    <td class="postblock">${_('By default Go To')}</td>
+                    <td>
+		                <select name='defaultGoto'>
+                            %for dest in c.destinations.keys():
+                           		<option value="${dest}" 
+                    			%if dest == c.userInst.defaultGoto(): 
+                    				"selected"
+                    			%endif
+                    			>
+                            	
+                            	${_(c.destinations[dest])}</option>
+                            %endfor                   
+		                </select>
+                    </td>
+                </tr>                             
                 <tr id="trtempl">
                     <td class="postblock">${_('Template')}</td>
                     <td>

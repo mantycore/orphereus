@@ -15,6 +15,7 @@
         <tbody >
     <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
     <input type="hidden" name="tagLine" value="${c.tagLine}">
+    <input type="hidden" name="curPage" value="${c.curPage}">
     <input type="hidden" name="task" value="post" />
     <input type="hidden" name="akane" />   
     %if not c.board:
@@ -52,13 +53,24 @@
         <tr id="trgetback">
             <td class="postblock">${_('Go to')}</td>
             <td>
-                %if c.returnToThread:
-                    <label><input type="radio" name="gb2" value="board" />board</label>
-                    <label><input type="radio" name="gb2" value="thread" checked="checked" />${_('thread')}</label>
-                %else:
-                    <label><input type="radio" name="gb2" value="board" checked="checked" />${_('board')}</label>
-                    <label><input type="radio" name="gb2" value="thread" />thread</label>                
-                %endif
+                <select name='goto'>
+                    %for dest in c.destinations.keys():
+                    	<option value="${dest}" 
+                    	%if dest == c.userInst.defaultGoto(): 
+                    		"selected"
+                    	%endif
+                    	>
+                    	${_(c.destinations[dest])}
+                    	%if dest == 1 or dest == 2:
+                    		(${c.tagLine}
+                    		%if dest == 2:
+                    			/page/${c.curPage}
+                    		%endif
+                    		)
+                    	%endif
+                    	</option>
+                    %endfor    
+                </select>                 
             </td>
         </tr>        
         %if c.oekaki:

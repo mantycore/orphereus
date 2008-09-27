@@ -31,7 +31,7 @@ class FccController(OrphieBaseController):
     def __before__(self):
         self.userInst = FUser(session.get('uidNumber', -1))
         c.userInst = self.userInst
-        #c.settingsMap = getSettingsMap()
+        c.destinations = destinations
         
         c.currentURL = request.path_info
         if c.currentURL[-1] != '/':
@@ -40,7 +40,7 @@ class FccController(OrphieBaseController):
         if not self.userInst.isAuthorized():
             return redirect_to(c.currentURL+'authorize')
         if self.userInst.isBanned():
-            #abort(500, 'Internal Server Error')    
+            #abort(500, 'Internal Server Error')     # calm hidden ban
             return redirect_to('/youAreBanned')
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
@@ -235,7 +235,8 @@ class FccController(OrphieBaseController):
         else:
             c.oekaki = False
         
-        c.returnToThread = session.get('returnToThread',False)
+        #c.returnTo = session.get('returnTo', False)
+        c.curPage = page
         return self.render('posts')
         
     def getParentID(self, id):
@@ -307,7 +308,7 @@ class FccController(OrphieBaseController):
             options.specialRules = ''
         return options
         
-    def __getPostTags(self, tagstr):
+    def __tagListFromString(self, tagstr):
             tags = []
             tagsl= []
             #maintag = request.POST.get('maintag',False)
@@ -432,7 +433,7 @@ class FccController(OrphieBaseController):
             tags = thread.tags
         else:        
             tagstr = request.POST.get('tags', False)
-            tags = self.__getPostTags(tagstr)
+            tags = self.__tagListFromString(tagstr)
             if not tags:
                 c.errorText = _("You should specify at least one board")
                 return self.render('error') 
@@ -504,8 +505,7 @@ class FccController(OrphieBaseController):
         post.title = filterText(request.POST['title'])
         post.date = datetime.datetime.now()
         
-        fileDescriptors = self.processFile(file, options.thumbSize)
-        log.debug(fileDescriptors)      
+        fileDescriptors = self.processFile(file, options.thumbSize)    
         pic = False  
         if fileDescriptors:
             pic = fileDescriptors[0]
@@ -556,41 +556,82 @@ class FccController(OrphieBaseController):
             fileHolder.disableDeletion()
         meta.Session.save(post)
         meta.Session.commit()
-        returnTo = request.POST.get('gb2', 'board')
-        #response.set_cookie('returnTo', returnTo, expires=3600000)
-        session['returnToThread'] = not (returnTo == 'board')
-        session.save()
-        if returnTo == 'board':
-            redirectAddr = ''
-            tagLine = request.POST.get('tagLine', False)
-            if  tagLine:
-                redirectAddr = tagLine   
-                return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))         
-            
-            #this shit needed only for quick reply. TODO FIXME
-            #if board:
-            #    rboard = u'/'+board+u'/'
-            #else:
-            ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER','')) #fuckin shit!!! XXX FIXME TODO
-            if ref:
-               rboard = ref.groups()[0]
-            else:
-                rboard = u'/'
-                ccc = 0
-                for tag in tags:
-                    rboard += tag.tag                    
-                    ccc+=1
-                    
-                    if ccc != len(tags):
-                        rboard+="+"
-                rboard += u'/'
-                #rboard = u'/'+tags[0].tag+u'/'
-            redirect_to(rboard.encode('utf-8'))
+        self.gotoDestination(post, postid)
+        
+    def gotoDestination(self, post, postid):
+        #returnTo = request.POST.get('gb2', 'board')
+        #session['returnTo'] = not (returnTo == 'board')
+        #session.save()      
+        
+        tagLine = request.POST.get('tagLine', '~')
+        
+        dest = int(request.POST.get('goto', 0))
+        if isNumber(dest):
+            dest = int(dest)
         else:
-            if postid:
-                return redirect_to(action='GetThread',post=post.parentid,board=None)
+            dest = '0'
+            
+        curPage = request.POST.get('curPage', 0)
+        if isNumber(curPage):
+            curPage = int(curPage)
+        else:
+            curPage = 0
+                    
+                    
+        #log.debug('%s %s %s' % (tagLine, str(dest), str(curPage)))
+        redirectAddr = '~'
+        
+        if dest == 4: # destination board
+            if post.parentid == -1:           
+                tags = []
+                for tag in post.tags:
+                    tags.append(tag.tag)
+                postTagline = "+".join(tags)
+                                        
+                redirectAddr = '%s/' % (postTagline) 
             else:
-                return redirect_to(action='GetThread',post=post.id,board=None)          
+                dest = 1    
+        
+        if dest == 0: #current thread
+            if postid:
+                return redirect_to(action='GetThread', post=post.parentid, board=None)
+            else:
+                return redirect_to(action='GetThread', post=post.id, board=None)              
+        elif dest == 1 or dest == 2: # current board
+            if  tagLine:
+                if dest == 1:
+                    curPage = 0
+                redirectAddr = "%s/page/%d" % (tagLine, curPage)   
+            else:
+                """
+                SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT  
+                SHIT !!! this shit needed only for quick reply. TODO FIXME
+                SHIT !!! #if board:
+                SHIT !!! #    rboard = u'/'+board+u'/'
+                SHIT !!! #else:
+                SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT 
+                """
+                ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER','')) #fuckin shit!!! XXX FIXME TODO
+                if ref:
+                   rboard = ref.groups()[0]
+                else:
+                    rboard = u'/'
+                    ccc = 0
+                    for tag in tags:
+                        rboard += tag.tag                    
+                        ccc+=1
+                        
+                        if ccc != len(tags):
+                            rboard+="+"
+                    rboard += u'/'
+                    #rboard = u'/'+tags[0].tag+u'/'
+                return redirect_to(rboard.encode('utf-8'))            
+        elif dest == 3: # overview
+            pass
+        
+        #log.debug(redirectAddr)
+        return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))    
+        
 
     def GetThread(self, post, tempid):
         thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
@@ -788,9 +829,13 @@ class FccController(OrphieBaseController):
             template = request.POST.get('template', self.userInst.template())
             if template in c.templates:
                 self.userInst.template(template)
-            style = request.POST.get('style',self.userInst.style())
+            style = filterText(request.POST.get('style', self.userInst.style()))
             if style in c.styles:
                 self.userInst.style(style)
+            gotodest = filterText(request.POST.get('defaultGoto', self.userInst.defaultGoto()))
+            if isNumber(gotodest) and (int(gotodest) in destinations.keys()):
+                #log.debug(gotodest)
+                self.userInst.defaultGoto(int(gotodest))                
             threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
             if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 100):
                 self.userInst.threadsPerPage(threadsPerPage)
@@ -799,7 +844,7 @@ class FccController(OrphieBaseController):
                 self.userInst.repliesPerThread(repliesPerThread)
             self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
             self.userInst.useAjax(request.POST.get('useAjax',False))
-            homeExcludeTags = self.__getPostTags(request.POST.get('homeExclude',''))
+            homeExcludeTags = self.__tagListFromString(request.POST.get('homeExclude',''))
             homeExcludeList = []
             for t in homeExcludeTags:
                 homeExcludeList.append(t.id)
@@ -820,7 +865,7 @@ class FccController(OrphieBaseController):
                     self.banUser(currentUser, 7777, "Your are entered already existing Security Code. Contact administrator immediately please.")
                     self.banUser(anotherUser, 7777, "Your Security Code was used during profile update by another user. Contact administrator immediately please.")                    
                     c.boardName = _('Error')
-                    c.errorText = _("You entered already existing password. Both accounts was banned. Contact administrator please.")
+                    c.errorText = _("You entered already existing Security Code. Both accounts was banned. Contact administrator please.")
                     return self.render('error')                    
             
             c.profileChanged = True 

@@ -1,3 +1,5 @@
+from pylons.i18n import _, ungettext, N_
+
 #this is default values, real are stored in database
 settingsDef = {
     "title"         : "ANOMA.Ch",
@@ -33,3 +35,10 @@ LOG_EVENT_RICKROLLD     = 0x00080001
 LOG_EVENT_EDITEDPOST    = 0x00090001
 
 disabledEvents = [LOG_EVENT_RICKROLLD, LOG_EVENT_SECURITY_IP]
+
+destinations = {0 : N_("Thread"),
+                1 : N_("First page of current board"),
+                2 : N_("Current page of current board"),                
+                3 : N_("Overview"),
+                4 : N_("First page of destination board"),
+                }

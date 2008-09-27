@@ -14,6 +14,11 @@ import os
 import hashlib
 import re
 import pickle
+from fc.lib.constantValues import *
+from fc.lib.miscUtils import *
+
+import logging
+log = logging.getLogger(__name__)
 
 class FUser(object):
     def __init__(self, uidNumber = -1):
@@ -39,6 +44,7 @@ class FUser(object):
                     self.__user.options.isAdmin = False
                     self.__user.options.hideLongComments = True
                     self.__user.options.useAjax = True
+                    self.__user.options.defaultGoto = 0
                     self.__user.options.homeExclude = pickle.dumps([])
                     meta.Session.commit()                  
                 
@@ -54,6 +60,7 @@ class FUser(object):
                 self.__isAdmin = self.__user.options.isAdmin                
                 self.__hideLongComments = self.__user.options.hideLongComments
                 self.__useAjax = self.__user.options.useAjax
+                self.__defaultGoto = self.__user.options.defaultGoto
                 self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
                 self.__canMakeInvite = self.__user.options.canMakeInvite and self.__isAdmin
                 self.__canChangeRights = self.__user.options.canChangeRights and self.__isAdmin
@@ -90,6 +97,13 @@ class FUser(object):
             self.__user.options.useAjax = value
             self.__useAjax = self.__user.options.useAjax
         return self.__useAjax    
+    def defaultGoto(self, value = None):
+        if value != None and isNumber(value) or value == 0:
+            if (value < 0 or value >= len(destinations)):
+                value = 0
+            self.__user.options.defaultGoto = value
+            self.__defaultGoto = self.__user.options.defaultGoto
+        return self.__defaultGoto    
     def homeExclude(self, value = None):
         if value != None:
             self.__user.options.homeExclude = pickle.dumps(value)

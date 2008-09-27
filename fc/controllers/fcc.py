@@ -81,7 +81,7 @@ class FccController(OrphieBaseController):
             result.append(stack.pop())
         return result
         
-    def buildFilter(self,url):
+    def buildFilter(self, url):
         def buildMyPostsFilter():
             list  = []
             posts = meta.Session.query(Post).filter(Post.uidNumber==self.userInst.uidNumber()).all()
@@ -103,7 +103,7 @@ class FccController(OrphieBaseController):
             else:
                 return arg
          
-        operators = {'+':1,'-':1,'^':2,'&':2}
+        operators = {'+':1, '-':1, '^':2, '&':2}
         filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1)
         tagList = []
         RPN = self.getRPN(url,operators)
@@ -663,8 +663,9 @@ class FccController(OrphieBaseController):
             adminTagsLine = g.settingsMap['adminOnlyTags'].value
             #log.debug(adminTagsLine)
             forbiddenTags = adminTagsLine.split(',')    
-            result = meta.Session().execute("select count(id) from posts")                                        
-            c.totalPostsCount = result.fetchone()[0]   
+            result = meta.Session().execute("select count(id) from posts")    
+            tpc = result.fetchone()[0]                                 
+            c.totalPostsCount = tpc
             
             for b in boards:
                 if not b.tag in forbiddenTags:
@@ -683,7 +684,15 @@ class FccController(OrphieBaseController):
                     else:
                         c.tags.append(bc)
                         c.totalTagsThreads += bc.count
-                        c.totalTagsPosts += bc.postsCount                        
+                        c.totalTagsPosts += bc.postsCount
+                    result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc, 'minid' : tpc - 1000})
+                    c.last1KUsersCount = result.fetchone()[0]
+                    result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc - 1000, 'minid' : tpc - 2000})
+                    c.prev1KUsersCount = result.fetchone()[0]
+                    result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) <= date")
+                    c.lastWeekMessages = result.fetchone()[0]
+                    result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) >= date and DATE_SUB(NOW(), INTERVAL 14 DAY) <= date")
+                    c.prevWeekMessages = result.fetchone()[0]                    
             c.boards = sorted(c.boards, taglistcmp)
             c.tags = sorted(c.tags, taglistcmp)                 
             c.boardName = _('Home')

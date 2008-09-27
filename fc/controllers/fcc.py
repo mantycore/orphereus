@@ -569,15 +569,14 @@ class FccController(OrphieBaseController):
         if isNumber(dest):
             dest = int(dest)
         else:
-            dest = '0'
+            dest = 0
             
         curPage = request.POST.get('curPage', 0)
         if isNumber(curPage):
             curPage = int(curPage)
         else:
             curPage = 0
-                    
-                    
+              
         #log.debug('%s %s %s' % (tagLine, str(dest), str(curPage)))
         redirectAddr = '~'
         
@@ -602,15 +601,15 @@ class FccController(OrphieBaseController):
                 if dest == 1:
                     curPage = 0
                 redirectAddr = "%s/page/%d" % (tagLine, curPage)   
+            """
             else:
-                """
-                SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT  
-                SHIT !!! this shit needed only for quick reply. TODO FIXME
-                SHIT !!! #if board:
-                SHIT !!! #    rboard = u'/'+board+u'/'
-                SHIT !!! #else:
-                SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT 
-                """
+                #SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT  
+                #SHIT !!! this shit needed only for quick reply. TODO FIXME
+                #SHIT !!! #if board:
+                #SHIT !!! #    rboard = u'/'+board+u'/'
+                #SHIT !!! #else:
+                #SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT 
+
                 ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER','')) #fuckin shit!!! XXX FIXME TODO
                 if ref:
                    rboard = ref.groups()[0]
@@ -625,7 +624,8 @@ class FccController(OrphieBaseController):
                             rboard+="+"
                     rboard += u'/'
                     #rboard = u'/'+tags[0].tag+u'/'
-                return redirect_to(rboard.encode('utf-8'))            
+                return redirect_to(rboard.encode('utf-8'))
+            """            
         elif dest == 3: # overview
             pass
         

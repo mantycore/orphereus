@@ -2,12 +2,20 @@ function popup_posts(options){
   if(!options) options = {}
   popup_posts.helper = $(document.createElement('blockquote'));
   popup_posts.helper.css('position','absolute');
-  popup_posts.helper.addClass("reply").addClass("popup_post");
+  popup_posts.helper.addClass("popup_post");
   popup_posts.helper.hide();
   popup_posts.cache = {}
   $(document.body).append(popup_posts.helper)
   var show_it = function(html){
-    popup_posts.helper.css('left',popup_posts.ev.pageX+10+'px').css('top',popup_posts.ev.pageY+10+'px').show().html(html)
+    popup_posts.helper.html(html)
+    popup_posts.helper.find(".reply").removeClass("reply")
+    popup_posts.helper.addClass("highlight reply")
+    var left = popup_posts.ui.offset().left + popup_posts.ui.width()
+    var top  = popup_posts.ui.offset().top - popup_posts.helper.height() - 2
+    popup_posts.helper.css('left',left).css('top',top).show()
+    if(popup_posts.helper.offset().left + popup_posts.helper.width() > $().width()) popup_posts.helper.left($().width - popup_posts.helper.width())
+    if(popup_posts.helper.offset().top < $().scrollTop()) popup_posts.helper.css('top',$().scrollTop())
+    
   }
   var hide_it = function(){
     popup_posts.helper.hide()
@@ -26,6 +34,7 @@ function popup_posts(options){
     var m = $(this).html().match(/\d+$/)
     if (!m) return false;
     popup_posts.ev = ev
+    popup_posts.ui = $(this)
     var content = $("#quickReplyNode"+m[0])
     if (content.size()){
       if (content[0].tagName == 'BLOCKQUOTE')

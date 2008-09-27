@@ -17,7 +17,6 @@
     <input type="hidden" name="tagLine" value="${c.tagLine}">
     <input type="hidden" name="curPage" value="${c.curPage}">
     <input type="hidden" name="task" value="post" />
-    <input type="hidden" name="akane" />   
     %if not c.board:
         <tr id="tremail">
             <td class="postblock">${_('Sage')}</td>

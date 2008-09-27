@@ -7,6 +7,27 @@
 </h2>
 
 <hr style="clear: both;"/>
+
+<div class="theader">
+Vital signs
+<br/><br/>
+<font size="-1">
+LKA: ${c.last1KUsersCount}; 
+PKA: ${c.prev1KUsersCount}
+</font>
+<br/>
+ADK: <span style="color: ${c.last1KUsersCount / (c.prev1KUsersCount + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.last1KUsersCount / (c.prev1KUsersCount + 0.01))}</span>
+<br/><br/>
+<font size="-1">
+LWA: ${c.lastWeekMessages};
+PWA: ${c.prevWeekMessages}
+</font>
+<br/>
+ADW: <span style="color: ${c.lastWeekMessages / (c.prevWeekMessages + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.lastWeekMessages / (c.prevWeekMessages + 0.01))}</span>
+<br/><br/>
+SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPostsCount)}
+</div>
+
 <h3>Boards</h3>
 <span style="float: right;">
 <i>Interesting numbers: ${c.totalPostsCount} [${abs(c.userInst.secid()*c.userInst.secid() - c.totalPostsCount*c.totalPostsCount)}]</i>
@@ -43,23 +64,6 @@
     </tbody>
 </table>
 <br/>
-<div class="theader">
-Vital signs
-<br/><br/>
-<font size="-1">
-LKA: ${c.last1KUsersCount}<br/>
-PKA: ${c.prev1KUsersCount}<br/>
-</font>
-ADK: <span style="color: ${c.last1KUsersCount / (c.prev1KUsersCount + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.last1KUsersCount / (c.prev1KUsersCount + 0.01))}</span>
-<br/><br/>
-<font size="-1">
-LWA: ${c.lastWeekMessages}<br/>
-PWA: ${c.prevWeekMessages}<br/>
-</font>
-ADW: <span style="color: ${c.lastWeekMessages / (c.prevWeekMessages + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.lastWeekMessages / (c.prevWeekMessages + 0.01))}</span>
-<br/><br/>
-SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPostsCount)}
-</div>
 
 <h3>Tags</h3>
 <i>Every small TAG has hidden powers. And it has everything to become a BOARD</i>

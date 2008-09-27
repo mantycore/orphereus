@@ -152,7 +152,8 @@ function getReplyForm(iThreadId)
         var GotoSelect = createElementEx('select', {'name': 'goto', 'id': 'x_replyform_goto'});
         for (i=0;i<origForm.goto.options.length;i++)
         {
-        	var opt = createElementEx('option', {'value':origForm.goto.options[i].value,'selected':origForm.goto.options[i].selected,'text':origForm.goto.options[i].text});
+        	var opt = createElementEx('option', {'value':origForm.goto.options[i].value,'selected':origForm.goto.options[i].selected});
+        	opt.appendChild(document.createTextNode(origForm.goto.options[i].text));
         	GotoSelect.appendChild(opt);
         }
         objGotoLabel.appendChild(GotoSelect);

@@ -131,18 +131,36 @@ function getReplyForm(iThreadId)
         g_objReplyForm.id = 'x_replyform';
         g_objReplyForm.appendChild(createElementEx('input', {'name': 'task', 'value': 'post', 'type': 'hidden'}));
         g_objReplyForm.appendChild(createElementEx('input', {'name': 'akane', 'type': 'hidden'}));
-        g_objReplyForm.appendChild(createElementEx('input', {'name': 'gb2', 'value': 'board', 'type': 'hidden'}));
         g_objReplyForm.appendChild(createElementEx('input', {'name': 'title', 'value': '', 'type': 'hidden'}));
+        
+        var origForm = document.getElementById('postform');
+        g_objReplyForm.appendChild(createElementEx('input', {'name': 'tagLine', 'value': origForm.tagLine.value, 'type': 'hidden'}));
+        g_objReplyForm.appendChild(createElementEx('input', {'name': 'curPage', 'value': origForm.curPage.value, 'type': 'hidden'}));
+
         g_objReplyForm.appendChild(createElementEx('textarea', {'id': 'x_replyform_text', 'name': 'message', 'rows': '5', 'cols': '40'}));
         var objBottomDiv = document.createElement('div');
+        
         var objFileLabel = createElementEx('label', {'for': 'x_replyform_file', 'title': 'File'});
         objFileLabel.appendChild(document.createTextNode('File: '));
         objFileLabel.appendChild(createElementEx('input', {'id': 'x_replyform_file', 'name': 'file', 'size': '20', 'type': 'file'}));
+        
         var objSageLabel = createElementEx('label', {'for': 'x_replyform_sage', 'title': 'sage'});
         objSageLabel.appendChild(createElementEx('input', {'id': 'x_replyform_sage', 'type': 'checkbox', 'name': 'sage'}));
         objSageLabel.appendChild(document.createTextNode('sage'));
+        
+        var objGotoLabel = createElementEx('label', {'for': 'x_replyform_goto', 'title': 'goto'});
+        var GotoSelect = createElementEx('select', {'name': 'goto', 'id': 'x_replyform_goto'});
+        for (i=0;i<origForm.goto.options.length;i++)
+        {
+        	var opt = createElementEx('option', {'value':origForm.goto.options[i].value,'selected':origForm.goto.options[i].selected,'text'origForm.goto.options[i].text});
+        	GotoSelect.appendChild(opt);
+        }
+        objGotoLabel.appendChild(GotoSelect);
+        objGotoLabel.appendChild(document.createTextNode('Go to'));
+        
         objBottomDiv.appendChild(objFileLabel);
         objBottomDiv.appendChild(objSageLabel);
+        objBottomDiv.appendChild(objGotoLabel);
         objBottomDiv.appendChild(createElementEx('input', {'type': 'submit', 'value': 'Post'}));
         var objCloseBtn = document.createElement('button');
         objCloseBtn.addEventListener('click', hideQuickReplyForm, true);
@@ -153,6 +171,7 @@ function getReplyForm(iThreadId)
         objCloseBtn.appendChild(document.createTextNode('Close'));
         objBottomDiv.appendChild(objCloseBtn);
         g_objReplyForm.appendChild(objBottomDiv);
+        
     }
     else
     {

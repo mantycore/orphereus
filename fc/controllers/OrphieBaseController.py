@@ -58,6 +58,16 @@ class OrphieBaseController(BaseController):
         if section:
             c.boardlist.append(section)
         response.set_cookie('fc', request.cookies['fc'], domain='.'+g.OPT.baseDomain)
+               
+    def shrink(html, in_tags = False):
+      eol = re.compile('[\r\n]')
+      spaces_between_tags = re.compile('>\s+<')
+      spaces_in_tags = re.compile('\s+')
+      html = eol.sub(' ', html)
+      html = spaces_between_tags.sub('> <', html)
+      if in_tags:
+        html = spaces_in_tags.sub(' ', html)
+      return html
                     
     def render(self, page, **options):
         #log.debug(options)
@@ -73,7 +83,7 @@ class OrphieBaseController(BaseController):
             pass
         
         if page and os.path.isfile(os.path.join(g.OPT.templPath, tpath)):               
-            return render('/'+tpath, **options)
+            return self.shrink(render('/'+tpath, **options))
         else:
             return _("Template problem: " + page)
             

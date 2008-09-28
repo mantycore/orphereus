@@ -264,7 +264,7 @@ function getFullText(event, thread, post)
 {
     var bq = document.getElementById('postBQId' + post);
     if (!bq) bq = document.getElementById('quickReplyNode' + post);
-
+    $("a.expandPost[href=/" + thread + "#i" + post + "]").html('loading…')
     $.get('/ajax/getPost/' + post, {}, function(response)
     {
       $(bq).html(response);

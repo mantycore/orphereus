@@ -59,7 +59,7 @@
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():
         ${thread.messageShort}
         <br />
-        ${_('Comment is too long.')} <a href="/${thread.id}#i${thread.id}" onClick="getFullText(event,${thread.id},${thread.id});">${_('Full version')}</a>
+        ${_('Comment is too long.')} <a href="/${thread.id}#i${thread.id}" onClick="getFullText(event,${thread.id},${thread.id});" class="expandPost">${_('Full version')}</a>
     %else:
         ${thread.message}
     %endif

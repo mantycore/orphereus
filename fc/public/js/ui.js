@@ -7,15 +7,18 @@ function popup_posts(options){
   popup_posts.cache = {}
   $(document.body).append(popup_posts.helper)
   var show_it = function(html){
-    popup_posts.helper.html(html)
+    popup_posts.helper.html('<table>' + html + '</table>')
     popup_posts.helper.find(".reply").removeClass("reply")
     popup_posts.helper.addClass("highlight reply")
     var left = popup_posts.ui.offset().left + popup_posts.ui.width()
     var top  = popup_posts.ui.offset().top - popup_posts.helper.height() - 2
-    popup_posts.helper.css('left',left).css('top',top).show()
-    if(popup_posts.helper.offset().left + popup_posts.helper.width() > $().width()) popup_posts.helper.left($().width - popup_posts.helper.width())
-    if(popup_posts.helper.offset().top < $().scrollTop()) popup_posts.helper.css('top',$().scrollTop())
     
+    popup_posts.helper.css('left',left).css('top',top).show()
+    // if(popup_posts.helper.offset().top < $().scrollTop()) popup_posts.helper.css('top',$().scrollTop())
+    if((popup_posts.helper.width() < 200) || (popup_posts.helper.offset().left + popup_posts.helper.width() > $(window).width() - 20)){
+      popup_posts.helper.css('left', 10);
+      popup_posts.helper.css('top',popup_posts.ui.offset().top - popup_posts.helper.height() - 4);
+    }
   }
   var hide_it = function(){
     popup_posts.helper.hide()
@@ -48,6 +51,7 @@ function popup_posts(options){
         load_on(e)
         $.get("/ajax/getRenderedPost/"+m[0], function(html){
           load_off(e)
+          html = html.replace(/<\/?table[^>]*>/,'')
           show_it(html);
           popup_posts.cache[m[0]] = html;
         });

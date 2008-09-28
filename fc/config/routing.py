@@ -6,6 +6,7 @@ refer to the routes manual at http://routes.groovie.org/docs/
 """
 from pylons import config
 from routes import Mapper
+from pylons import config
 
 def make_map():
     """Create, configure and return the routes Mapper"""
@@ -17,6 +18,10 @@ def make_map():
     map.connect('error/:action/:id', controller='error')
 
     # CUSTOM ROUTES HERE
+    # debug route
+    if config['core.devMode'] == 'true':
+        map.connect('/uaInfo', controller='fcp', action='uaInfo')
+            
     # Special routes
     #map.connect('', controller='fcc', action='GetOverview')
     map.connect('/authorize', controller='fcp', action='authorize', url='')

@@ -300,3 +300,11 @@ class FcpController(OrphieBaseController):
         c.errorText = _("Excuse me, WTF are you?")
         return self.render('error')
     
+    def uaInfo(self):
+        out = ''
+        response.headers['Content-type'] = "text/plain" 
+        for key in request.environ.keys():
+            if 'HTTP' in key:
+                out += key + ':' +request.environ[key] + '\n'
+        return filterText(out)    
+    

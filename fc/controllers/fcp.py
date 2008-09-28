@@ -304,7 +304,7 @@ class FcpController(OrphieBaseController):
         out = ''
         response.headers['Content-type'] = "text/plain" 
         for key in request.environ.keys():
-            if 'HTTP' in key:
+            if 'HTTP' in key or 'SERVER' in key or 'REMOTE' in key:
                 out += key + ':' +request.environ[key] + '\n'
         return filterText(out)    
     

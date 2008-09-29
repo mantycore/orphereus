@@ -19,6 +19,9 @@ function popup_posts(options){
       popup_posts.helper.css('left', 10);
       popup_posts.helper.css('top',popup_posts.ui.offset().top - popup_posts.helper.height() - 4);
     }
+    var under_link = popup_posts.ui.offset().top + popup_posts.ui.height()
+    if((popup_posts.helper.offset().top < $().scrollTop()) &&
+     (under_link + popup_posts.helper.height() <  $().scrollTop() + $(window).height())) popup_posts.helper.css('top',under_link + 10)
   }
   var hide_it = function(){
     popup_posts.helper.hide()

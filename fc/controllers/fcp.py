@@ -306,6 +306,7 @@ class FcpController(OrphieBaseController):
         for key in request.environ.keys():
             if 'HTTP' in key or 'SERVER' in key or 'REMOTE' in key:
                 out += key + ':' +request.environ[key] + '\n'
-        out += 'test:' + request.POST.get('test','') 
+        out += 'test:' + str(request.POST.get('test','')) 
         return filterText(out)    
+    
     

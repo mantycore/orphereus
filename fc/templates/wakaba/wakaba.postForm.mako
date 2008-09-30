@@ -109,10 +109,10 @@
             </td>
             
 <td class="reply" style="padding: 10px; vertical-align: top;">
-<p>Маленькое объявление: jabber-сборища, результатом деятельности которых и стал этот чан, продолжают существовать.
-Новый адрес: aconf@conference.jabber.ru , пароль - oblavobla. За доступом обращайтесь на rusanon@jabber.org либо 
-johan.liebert@jabber.ru
-</p>
+<p>Маленькое объявление:</p>
+<p>jabber-сборища, результатом деятельности которых и стал этот чан, продолжают существовать.
+Новый адрес: <b>aconf@conference.jabber.ru</b>, пароль - <b>oblavobla</b>. За доступом обращайтесь на rusanon@jabber.org либо 
+johan.liebert@jabber.ru</p>
 <div id="smallFont">
 ${_('On this board:')}
 <ul class="nomargin">

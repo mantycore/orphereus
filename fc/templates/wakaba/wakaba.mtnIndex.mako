@@ -66,7 +66,7 @@ ${_('Update caches')}
 <tr>
 <td>
 <form method="post" action="service/banInactive">
-${_('Ban users without posts (except last 5)')}
+${_('Ban ALL users without posts')}
 <br/>
 <input type="submit" value="Launch">
 </form>

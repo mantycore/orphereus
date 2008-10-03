@@ -35,6 +35,7 @@ class FccController(OrphieBaseController):
         
         if g.OPT.devMode:
             c.log = []
+            c.sum = 0
         
         c.currentURL = request.path_info
         if c.currentURL[-1] != '/':
@@ -55,7 +56,9 @@ class FccController(OrphieBaseController):
             
             ct = time.time()  
             posts = meta.Session.query(Post).filter(Post.uidNumber==self.userInst.uidNumber()).all()
-            c.log.append("57, post: " + str(time.time() - ct))
+            rtime = str(time.time() - ct)
+            c.sum += rtime
+            c.log.append("57, post: " + rtime)
             log.debug(c.log[len(c.log) - 1])
                     
             for p in posts:
@@ -132,7 +135,9 @@ class FccController(OrphieBaseController):
         #I think its not best solution TODO FIXME // Redone this horrible code :P     
         ct = time.time()  
         extensions = meta.Session.query(Extension).all()
-        c.log.append("133, extenstions: " + str(time.time() - ct))
+        rtime = str(time.time() - ct)
+        c.sum += rtime        
+        c.log.append("133, extenstions: " + rtime)
         log.debug(c.log[len(c.log) - 1])
         
         extList = []
@@ -200,7 +205,9 @@ class FccController(OrphieBaseController):
             if count > 1:
                 ct = time.time()  
                 replyCount = thread.replyCount #meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
-                c.log.append("209, replyCount: " + str(time.time() - ct))
+                rtime = str(time.time() - ct)
+                c.sum += rtime                  
+                c.log.append("209, replyCount: " + rtime)
                 log.debug(c.log[len(c.log) - 1])                
                 
                 replyLim   = replyCount - self.userInst.repliesPerThread() 
@@ -210,12 +217,16 @@ class FccController(OrphieBaseController):
                 
                 ct = time.time()  
                 thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc())[replyLim:]
-                c.log.append("217, thread.Replies: " + str(time.time() - ct))
+                rtime = str(time.time() - ct)
+                c.sum += rtime  
+                c.log.append("217, thread.Replies: " + rtime)
                 log.debug(c.log[len(c.log) - 1])                 
             else:
                 ct = time.time()  
                 thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()).all()
-                c.log.append("223, thread.Replies: " + str(time.time() - ct))
+                rtime = str(time.time() - ct)
+                c.sum += rtime  
+                c.log.append("223, thread.Replies: " + rtime)
                 log.debug(c.log[len(c.log) - 1])    
                 
                 thread.omittedPosts = 0
@@ -223,7 +234,9 @@ class FccController(OrphieBaseController):
         if tempid:
             ct = time.time()  
             oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
-            c.log.append("232, oekaki: " + str(time.time() - ct))
+            rtime = str(time.time() - ct)
+            c.sum += rtime  
+            c.log.append("232, oekaki: " + rtime)
             log.debug(c.log[len(c.log) - 1])              
 
             c.oekaki = oekaki
@@ -300,7 +313,9 @@ class FccController(OrphieBaseController):
                     if not t in tagsl:
                         ct = time.time()  
                         tag = meta.Session.query(Tag).filter(Tag.tag==t).first()
-                        c.log.append("308, tag: " + str(time.time() - ct))
+                        rtime = str(time.time() - ct)
+                        c.sum += rtime                          
+                        c.log.append("308, tag: " + rtime)
                         log.debug(c.log[len(c.log) - 1])                         
 
                         if tag:
@@ -313,7 +328,9 @@ class FccController(OrphieBaseController):
     def GetThread(self, post, tempid):
         ct = time.time()  
         thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
-        c.log.append("321, thePost: " + str(time.time() - ct))
+        rtime = str(time.time() - ct)
+        c.sum += rtime                          
+        c.log.append("321, thePost: " + rtime)
         log.debug(c.log[len(c.log) - 1])            
         
         #if thePost isn't op-post, redirect to op-post instead
@@ -334,7 +351,9 @@ class FccController(OrphieBaseController):
         if board == '!':
             ct = time.time()  
             boards = meta.Session.query(Tag).options(eagerload('options')).all()
-            c.log.append("343, boards: " + str(time.time() - ct))
+            rtime = str(time.time() - ct)
+            c.sum += rtime                              
+            c.log.append("343, boards: " + rtime)
             log.debug(c.log[len(c.log) - 1])    
             
             c.boards=[]
@@ -394,14 +413,18 @@ class FccController(OrphieBaseController):
         filter = self.buildFilter(board)
         ct = time.time()  
         tags = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag.in_(filter[1])).all()
-        c.log.append("397, tags: " + str(time.time() - ct))
+        rtime = str(time.time() - ct)
+        c.sum += rtime                        
+        c.log.append("397, tags: " + rtime)
         log.debug(c.log[len(c.log) - 1])            
         return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
         
     def getParentID(self, id):
         ct = time.time()  
         post = meta.Session.query(Post).filter(Post.id==id).first()
-        c.log.append("406, post: " + str(time.time() - ct))
+        rtime = str(time.time() - ct)
+        c.sum += rtime                        
+        c.log.append("406, post: " + rtime)
         log.debug(c.log[len(c.log) - 1])            
         if post:
            return post.parentid
@@ -411,7 +434,9 @@ class FccController(OrphieBaseController):
     def isPostOwner(self, id):
         ct = time.time()  
         post = meta.Session.query(Post).filter(Post.id==id).first()
-        c.log.append("417, post: " + str(time.time() - ct))
+        rtime = str(time.time() - ct)
+        c.sum += rtime                        
+        c.log.append("417, post: " + rtime)
         log.debug(c.log[len(c.log) - 1])             
         if post and post.uidNumber == self.userInst.uidNumber():
            return post.parentid
@@ -421,7 +446,9 @@ class FccController(OrphieBaseController):
     def postOwner(self, id):
         ct = time.time()  
         post = meta.Session.query(Post).filter(Post.id==id).first()
-        c.log.append("427, post: " + str(time.time() - ct))
+        rtime = str(time.time() - ct)
+        c.sum += rtime                        
+        c.log.append("427, post: " + rtime)
         log.debug(c.log[len(c.log) - 1])          
         if post:
            return post.parentid
@@ -467,7 +494,9 @@ class FccController(OrphieBaseController):
            # Make sure its something we want to have
            ct = time.time()  
            extParams = meta.Session.query(Extension).filter(Extension.ext==ext).first()
-           c.log.append("473, extParams: " + str(time.time() - ct))
+           rtime = str(time.time() - ct)
+           c.sum += rtime                           
+           c.log.append("473, extParams: " + rtime)
            log.debug(c.log[len(c.log) - 1])            
 
            if not extParams:
@@ -483,7 +512,9 @@ class FccController(OrphieBaseController):
 
            ct = time.time()  
            pic = meta.Session.query(Picture).filter(Picture.md5==md5).first()
-           c.log.append("489, pic: " + str(time.time() - ct))
+           rtime = str(time.time() - ct)
+           c.sum += rtime                           
+           c.log.append("489, pic: " + rtime)
            log.debug(c.log[len(c.log) - 1])   
 
            if pic:
@@ -526,7 +557,9 @@ class FccController(OrphieBaseController):
         if postid:
             ct = time.time()  
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
-            c.log.append("531, thePost: " + str(time.time() - ct))
+            rtime = str(time.time() - ct)
+            c.sum += rtime                            
+            c.log.append("531, thePost: " + rtime)
             log.debug(c.log[len(c.log) - 1])  
             
             if not thePost:
@@ -537,7 +570,9 @@ class FccController(OrphieBaseController):
             if thePost.parentid != -1:
                 ct = time.time()  
                 thread = meta.Session.query(Post).filter(Post.id==thePost.parentid).one()
-                c.log.append("542, thread: " + str(time.time() - ct))
+                rtime = str(time.time() - ct)
+                c.sum += rtime                                
+                c.log.append("542, thread: " + rtime)
                 log.debug(c.log[len(c.log) - 1])                  
             else:
                thread = thePost
@@ -588,7 +623,9 @@ class FccController(OrphieBaseController):
         if tempid:
            ct = time.time()  
            oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
-           c.log.append("593, oekaki: " + str(time.time() - ct))
+           rtime = str(time.time() - ct)
+           c.sum += rtime                           
+           c.log.append("593, oekaki: " + rtime)
            log.debug(c.log[len(c.log) - 1])            
 
            file = FieldStorageLike(oekaki.path,os.path.join(g.OPT.uploadPath, oekaki.path))
@@ -754,13 +791,17 @@ class FccController(OrphieBaseController):
         if isNumber(url) and enablePicLoading:
            ct = time.time()  
            post = meta.Session.query(Post).filter(Post.id==url).one()
-           c.log.append("758, post: " + str(time.time() - ct))
+           rtime = str(time.time() - ct)
+           c.sum += rtime                
+           c.log.append("758, post: " + rtime)
            log.debug(c.log[len(c.log) - 1])
 
            if post.picid:
               ct = time.time()  
               pic = meta.Session.query(Picture).filter(Picture.id==post.picid).first()
-              c.log.append("764, pic: " + str(time.time() - ct))
+              rtime = str(time.time() - ct)
+              c.sum += rtime                              
+              c.log.append("764, pic: " + rtime)
               log.debug(c.log[len(c.log) - 1])               
 
               if pic and pic.width:
@@ -789,14 +830,25 @@ class FccController(OrphieBaseController):
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
         
     def processDelete(self, postid, fileonly=False, checkOwnage=True):
+        ct = time.time()  
         p = meta.Session.query(Post).get(postid)
+        rtime = str(time.time() - ct)
+        c.sum += rtime                              
+        c.log.append("835, p: " + rtime)
+        log.debug(c.log[len(c.log) - 1]) 
+                 
         opPostDeleted = False
         if p:
             if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
                 # print some error stuff here
                 return False
             if p.parentid>0:
-            	parentp = meta.Session.query(Post).get(p.parentid)
+                ct = time.time()  
+                parentp = meta.Session.query(Post).get(p.parentid)
+                rtime = str(time.time() - ct)
+                c.sum += rtime                              
+                c.log.append("847, parentp: " + rtime)
+                log.debug(c.log[len(c.log) - 1])                 
             postOptions = self.conjunctTagOptions(p.parentid>0 and parentp.tags or p.tags)
             if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
                 tagline = ''

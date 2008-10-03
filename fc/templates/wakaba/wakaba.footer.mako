@@ -9,3 +9,7 @@
 		${l}<br/>
 	%endfor
 %endif
+
+%if g.OPT.devMode and c.sum: 
+<br/>	Sum: ${c.sum}
+%endif

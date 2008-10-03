@@ -702,6 +702,7 @@ class FccController(OrphieBaseController):
                 c.errorText = "Threads without image are not allowed"
                 return self.render('error')
             post.parentid = -1
+            post.replyCount = 0
             post.bumpDate = datetime.datetime.now()
             post.tags = tags
             

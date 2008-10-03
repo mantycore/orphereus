@@ -392,7 +392,10 @@ class FccController(OrphieBaseController):
         c.PostAction = board
         
         filter = self.buildFilter(board)
+        ct = time.time()  
         tags = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag.in_(filter[1])).all()
+        c.log.append("397, tags: " + str(time.time() - ct))
+        log.debug(c.log[len(c.log) - 1])            
         return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
         
     def getParentID(self, id):

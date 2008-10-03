@@ -203,12 +203,12 @@ class FccController(OrphieBaseController):
             
         for thread in c.threads:
             if count > 1:
-                ct = time.time()  
+                #ct = time.time()  
                 replyCount = thread.replyCount #meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
-                rtime = time.time() - ct
-                c.sum += rtime                  
-                c.log.append("209, replyCount: " + str(rtime))
-                log.debug(c.log[len(c.log) - 1])                
+                #rtime = time.time() - ct
+                #c.sum += rtime                  
+                #c.log.append("209, replyCount: " + str(rtime))
+                #log.debug(c.log[len(c.log) - 1])                
                 
                 replyLim   = replyCount - self.userInst.repliesPerThread() 
                 if replyLim < 0:
@@ -923,7 +923,7 @@ class FccController(OrphieBaseController):
                 #log.debug(gotodest)
                 self.userInst.defaultGoto(int(gotodest))                
             threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
-            if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 100):
+            if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 30):
                 self.userInst.threadsPerPage(threadsPerPage)
             repliesPerThread = request.POST.get('repliesPerThread',self.userInst.repliesPerThread())
             if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):

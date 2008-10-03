@@ -33,6 +33,9 @@ class FccController(OrphieBaseController):
         c.userInst = self.userInst
         c.destinations = destinations
         
+        if g.OPT.devMode:
+            c.log = []
+        
         c.currentURL = request.path_info
         if c.currentURL[-1] != '/':
             c.currentURL = c.currentURL + '/'
@@ -46,45 +49,15 @@ class FccController(OrphieBaseController):
             return redirect_to('/')
         self.initEnvironment()
             
-    def getRPN(self,text,operators):
-        whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']
-        stack = []
-        temp  = []
-        result= []
-        for i in text:
-            if i == '(':
-                if temp:
-                    result.append(''.join(temp))
-                    temp = []
-                stack.append('(')
-            elif i == ')':
-                if temp:
-                    result.append(''.join(temp))
-                    temp = []                
-                while (stack and stack[-1] != '('):
-                    result.append(stack.pop())
-                if stack:
-                    stack.pop()
-            elif i in operators:
-                if temp:
-                    result.append(''.join(temp))
-                    temp = []
-                while (stack and (stack[-1] in operators) and (operators[i] <= operators[stack[-1]])):
-                    result.append(stack.pop())
-                stack.append(i)
-            elif not i in whitespace:
-                temp.append(i)
-        if temp:
-            result.append(''.join(temp))
-            temp = []
-        while stack:
-            result.append(stack.pop())
-        return result
-        
     def buildFilter(self, url):
         def buildMyPostsFilter():
             list  = []
+            
+            ct = time.time()  
             posts = meta.Session.query(Post).filter(Post.uidNumber==self.userInst.uidNumber()).all()
+            c.log.append("57, post: " + str(time.time() - ct))
+            log.debug(c.log[len(c.log) - 1])
+                    
             for p in posts:
                 if p.parentid == -1 and not p.id in list:
                     list.append(p.id)
@@ -93,20 +66,21 @@ class FccController(OrphieBaseController):
             return Post.id.in_(list)
             
         def buildArgument(arg):
-            if not isinstance(arg,sqlalchemy.sql.expression.ClauseElement):
+            if not isinstance(arg, sqlalchemy.sql.expression.ClauseElement):
                 if arg == '@':
-                    return (buildMyPostsFilter(),[])
+                    return (buildMyPostsFilter(), [])
                 elif arg == '~':
-                    return (not_(Post.tags.any(Tag.id.in_(self.userInst.homeExclude()))),[])
+                    return (not_(Post.tags.any(Tag.id.in_(self.userInst.homeExclude()))), [])
                 else:
-                    return (Post.tags.any(tag=arg),[arg])
+                    return (Post.tags.any(tag=arg), [arg])
             else:
                 return arg
          
+        log.debug(self.userInst.homeExclude())         
         operators = {'+':1, '-':1, '^':2, '&':2}
         filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1)
         tagList = []
-        RPN = self.getRPN(url,operators)
+        RPN = getRPN(url,operators)
         stack = []
         for i in RPN:
             if i in operators:
@@ -155,22 +129,27 @@ class FccController(OrphieBaseController):
         
         count = threadFilter.count()
         
-        #I think its not best solution TODO FIXME // Redone this horrible code :P       
+        #I think its not best solution TODO FIXME // Redone this horrible code :P     
+        ct = time.time()  
         extensions = meta.Session.query(Extension).all()
+        c.log.append("133, extenstions: " + str(time.time() - ct))
+        log.debug(c.log[len(c.log) - 1])
+        
         extList = []
         for ext in extensions:
             extList.append(ext.ext)
         c.extLine = ', '.join(extList)
             
         if count > 1:
-            p = divmod(count, self.userInst.threadsPerPage())
+            tpp = self.userInst.threadsPerPage()
+            p = divmod(count, tpp)
             c.pages = p[0]
             if p[1]:
                 c.pages += 1
             if (page + 1) > c.pages:
                 page = c.pages - 1
             c.page = page
-            c.threads = threadFilter.order_by(Post.bumpDate.desc())[(page * self.userInst.threadsPerPage()):(page + 1)* self.userInst.threadsPerPage()]
+            c.threads = threadFilter.order_by(Post.bumpDate.desc())[(page * tpp):(page + 1)* tpp]
             if c.pages>15:
                 c.showPagesPartial = True
                 if c.page-5>1:
@@ -219,18 +198,34 @@ class FccController(OrphieBaseController):
             
         for thread in c.threads:
             if count > 1:
+                ct = time.time()  
                 replyCount = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
+                c.log.append("209, replyCount: " + str(time.time() - ct))
+                log.debug(c.log[len(c.log) - 1])                
+                
                 replyLim   = replyCount - self.userInst.repliesPerThread() 
                 if replyLim < 0:
                     replyLim = 0
                 thread.omittedPosts = replyLim
+                
+                ct = time.time()  
                 thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc())[replyLim:]
+                c.log.append("217, thread.Replies: " + str(time.time() - ct))
+                log.debug(c.log[len(c.log) - 1])                 
             else:
+                ct = time.time()  
                 thread.Replies = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()).all()
+                c.log.append("223, thread.Replies: " + str(time.time() - ct))
+                log.debug(c.log[len(c.log) - 1])    
+                
                 thread.omittedPosts = 0
                 
         if tempid:
+            ct = time.time()  
             oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+            c.log.append("232, oekaki: " + str(time.time() - ct))
+            log.debug(c.log[len(c.log) - 1])              
+
             c.oekaki = oekaki
         else:
             c.oekaki = False
@@ -238,28 +233,7 @@ class FccController(OrphieBaseController):
         #c.returnTo = session.get('returnTo', False)
         c.curPage = page
         return self.render('posts')
-        
-    def getParentID(self, id):
-        post = meta.Session.query(Post).filter(Post.id==id).first()
-        if post:
-           return post.parentid
-        else:
-           return False
-    
-    def isPostOwner(self, id):
-        post = meta.Session.query(Post).filter(Post.id==id).first()
-        if post and post.uidNumber == self.userInst.uidNumber():
-           return post.parentid
-        else:
-           return False
-           
-    def postOwner(self, id):
-        post = meta.Session.query(Post).filter(Post.id==id).first()
-        if post:
-           return post.parentid
-        else:
-           return False           
-           
+                   
     def conjunctTagOptions(self, tags):
         options = TagOptions()
         optionsFlag = True
@@ -324,13 +298,132 @@ class FccController(OrphieBaseController):
                 tlist = regex.findall(tagstr)
                 for t in tlist:
                     if not t in tagsl:
+                        ct = time.time()  
                         tag = meta.Session.query(Tag).filter(Tag.tag==t).first()
+                        c.log.append("308, tag: " + str(time.time() - ct))
+                        log.debug(c.log[len(c.log) - 1])                         
+
                         if tag:
                             tags.append(tag)
                         else:
                             tags.append(Tag(t))
                         tagsl.append(t)      
             return tags
+        
+    def GetThread(self, post, tempid):
+        ct = time.time()  
+        thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
+        c.log.append("321, thePost: " + str(time.time() - ct))
+        log.debug(c.log[len(c.log) - 1])            
+        
+        #if thePost isn't op-post, redirect to op-post instead
+        if thePost and thePost.parentid != -1:
+            redirect_to('/%d#i%d' % (thePost.parentid, thePost.id))
+            #thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.parentid).first()
+            
+        if not thePost:
+            c.errorText = _("No such post exist.")
+            return self.render('error')
+            
+        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.id)
+        c.PostAction = thePost.id
+        
+        return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
+
+    def GetBoard(self, board, tempid, page=0):
+        if board == '!':
+            ct = time.time()  
+            boards = meta.Session.query(Tag).options(eagerload('options')).all()
+            c.log.append("343, boards: " + str(time.time() - ct))
+            log.debug(c.log[len(c.log) - 1])    
+            
+            c.boards=[]
+            c.tags=[]
+            c.totalBoardsThreads = 0
+            c.totalTagsThreads = 0
+            c.totalBoardsPosts = 0
+            c.totalTagsPosts = 0            
+            #settingsMap = c.settingsMap
+            adminTagsLine = g.settingsMap['adminOnlyTags'].value
+            #log.debug(adminTagsLine)
+            forbiddenTags = adminTagsLine.split(',')   
+            
+            ct = time.time()  
+                         
+            result = meta.Session().execute("select count(id) from posts")    
+            tpc = result.fetchone()[0]                                 
+            c.totalPostsCount = tpc
+            
+            for b in boards:
+                if not b.tag in forbiddenTags:
+                    bc = empty()
+                    bc.board = b
+                    result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where (p.id = m.postId and m.tagId = :ctid)", {'ctid':b.id})                                        
+                    #filter = self.buildFilter(b.tag)                                        
+                    #bc.count = filter[0].count()
+                    bc.count = result.fetchone()[0]
+                    result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where ((p.id = m.postId or p.parentId = m.postId)and m.tagId = :ctid)", {'ctid':b.id})                    
+                    bc.postsCount = result.fetchone()[0]
+                    if b.options and b.options.persistent:
+                        c.boards.append(bc)
+                        c.totalBoardsThreads += bc.count
+                        c.totalBoardsPosts += bc.postsCount
+                    else:
+                        c.tags.append(bc)
+                        c.totalTagsThreads += bc.count
+                        c.totalTagsPosts += bc.postsCount
+                    result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc, 'minid' : tpc - 1000})
+                    c.last1KUsersCount = result.fetchone()[0]
+                    result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc - 1000, 'minid' : tpc - 2000})
+                    c.prev1KUsersCount = result.fetchone()[0]
+                    result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) <= date")
+                    c.lastWeekMessages = result.fetchone()[0]
+                    result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) >= date and DATE_SUB(NOW(), INTERVAL 14 DAY) <= date")
+                    c.prevWeekMessages = result.fetchone()[0]                    
+            c.boards = sorted(c.boards, taglistcmp)
+            c.tags = sorted(c.tags, taglistcmp)                 
+            c.boardName = _('Home')
+            
+            c.log.append("home: " + str(time.time() - ct))
+            log.debug(c.log[len(c.log) - 1])  
+            return self.render('home') 
+            
+        board = filterText(board)
+        c.PostAction = board
+        
+        filter = self.buildFilter(board)
+        tags = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag.in_(filter[1])).all()
+        return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
+        
+    def getParentID(self, id):
+        ct = time.time()  
+        post = meta.Session.query(Post).filter(Post.id==id).first()
+        c.log.append("406, post: " + str(time.time() - ct))
+        log.debug(c.log[len(c.log) - 1])            
+        if post:
+           return post.parentid
+        else:
+           return False
+    
+    def isPostOwner(self, id):
+        ct = time.time()  
+        post = meta.Session.query(Post).filter(Post.id==id).first()
+        c.log.append("417, post: " + str(time.time() - ct))
+        log.debug(c.log[len(c.log) - 1])             
+        if post and post.uidNumber == self.userInst.uidNumber():
+           return post.parentid
+        else:
+           return False
+           
+    def postOwner(self, id):
+        ct = time.time()  
+        post = meta.Session.query(Post).filter(Post.id==id).first()
+        c.log.append("427, post: " + str(time.time() - ct))
+        log.debug(c.log[len(c.log) - 1])          
+        if post:
+           return post.parentid
+        else:
+           return False          
                     
     def formatPostReference(self, postid, parentid = False): # TODO FIXME: move to parser             
         if not parentid:
@@ -369,7 +462,11 @@ class FccController(OrphieBaseController):
               return ''
           
            # Make sure its something we want to have
+           ct = time.time()  
            extParams = meta.Session.query(Extension).filter(Extension.ext==ext).first()
+           c.log.append("473, extParams: " + str(time.time() - ct))
+           log.debug(c.log[len(c.log) - 1])            
+
            if not extParams:
               return False
 
@@ -381,7 +478,11 @@ class FccController(OrphieBaseController):
            file.file.close()
            localFile.close()
 
+           ct = time.time()  
            pic = meta.Session.query(Picture).filter(Picture.md5==md5).first()
+           c.log.append("489, pic: " + str(time.time() - ct))
+           log.debug(c.log[len(c.log) - 1])   
+
            if pic:
                os.unlink(localFilePath)
                return [pic, False]
@@ -420,14 +521,21 @@ class FccController(OrphieBaseController):
         fileHolder = False
                 
         if postid:
+            ct = time.time()  
             thePost = meta.Session.query(Post).filter(Post.id==postid).first()
+            c.log.append("531, thePost: " + str(time.time() - ct))
+            log.debug(c.log[len(c.log) - 1])  
+            
             if not thePost:
                 c.errorText = _("Can't post into non-existent thread")
                 return self.render('error')           
                  
             # ???
             if thePost.parentid != -1:
-               thread = meta.Session.query(Post).filter(Post.id==thePost.parentid).one()
+                ct = time.time()  
+                thread = meta.Session.query(Post).filter(Post.id==thePost.parentid).one()
+                c.log.append("542, thread: " + str(time.time() - ct))
+                log.debug(c.log[len(c.log) - 1])                  
             else:
                thread = thePost
             tags = thread.tags
@@ -475,7 +583,11 @@ class FccController(OrphieBaseController):
         
         painterMark = False # TODO FIXME : move into parser
         if tempid:
+           ct = time.time()  
            oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+           c.log.append("593, oekaki: " + str(time.time() - ct))
+           log.debug(c.log[len(c.log) - 1])            
+
            file = FieldStorageLike(oekaki.path,os.path.join(g.OPT.uploadPath, oekaki.path))
            painterMark = '<br /><span style="background: #A8A8A8;">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
            if oekaki.source:
@@ -558,11 +670,7 @@ class FccController(OrphieBaseController):
         meta.Session.commit()
         self.gotoDestination(post, postid)
         
-    def gotoDestination(self, post, postid):
-        #returnTo = request.POST.get('gb2', 'board')
-        #session['returnTo'] = not (returnTo == 'board')
-        #session.save()      
-        
+    def gotoDestination(self, post, postid):        
         tagLine = request.POST.get('tagLine', '~')
         
         dest = int(request.POST.get('goto', 0))
@@ -600,32 +708,7 @@ class FccController(OrphieBaseController):
             if  tagLine:
                 if dest == 1:
                     curPage = 0
-                redirectAddr = "%s/page/%d" % (tagLine, curPage)   
-            """
-            else:
-                #SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT  
-                #SHIT !!! this shit needed only for quick reply. TODO FIXME
-                #SHIT !!! #if board:
-                #SHIT !!! #    rboard = u'/'+board+u'/'
-                #SHIT !!! #else:
-                #SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT SHIT 
-
-                ref = re.compile(r'//[^/]+(/[^/]*/?)$').search(request.headers.get('REFERER','')) #fuckin shit!!! XXX FIXME TODO
-                if ref:
-                   rboard = ref.groups()[0]
-                else:
-                    rboard = u'/'
-                    ccc = 0
-                    for tag in tags:
-                        rboard += tag.tag                    
-                        ccc+=1
-                        
-                        if ccc != len(tags):
-                            rboard+="+"
-                    rboard += u'/'
-                    #rboard = u'/'+tags[0].tag+u'/'
-                return redirect_to(rboard.encode('utf-8'))
-            """            
+                redirectAddr = "%s/page/%d" % (tagLine, curPage)          
         elif dest == 3: # overview
             pass
         
@@ -633,77 +716,6 @@ class FccController(OrphieBaseController):
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))    
         
 
-    def GetThread(self, post, tempid):
-        thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post).first()
-
-        #if thePost isn't op-post, redirect to op-post instead
-        if thePost and thePost.parentid != -1:
-            redirect_to('/%d#i%d' % (thePost.parentid, thePost.id))
-            #thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.parentid).first()
-            
-        if not thePost:
-            c.errorText = _("No such post exist.")
-            return self.render('error')
-            
-        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.id)
-        c.PostAction = thePost.id
-        
-        return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
-
-    def GetBoard(self, board, tempid, page=0):
-        if board == '!':
-            boards = meta.Session.query(Tag).options(eagerload('options')).all()
-            c.boards=[]
-            c.tags=[]
-            c.totalBoardsThreads = 0
-            c.totalTagsThreads = 0
-            c.totalBoardsPosts = 0
-            c.totalTagsPosts = 0            
-            #settingsMap = c.settingsMap
-            adminTagsLine = g.settingsMap['adminOnlyTags'].value
-            #log.debug(adminTagsLine)
-            forbiddenTags = adminTagsLine.split(',')    
-            result = meta.Session().execute("select count(id) from posts")    
-            tpc = result.fetchone()[0]                                 
-            c.totalPostsCount = tpc
-            
-            for b in boards:
-                if not b.tag in forbiddenTags:
-                    bc = empty()
-                    bc.board = b
-                    result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where (p.id = m.postId and m.tagId = :ctid)", {'ctid':b.id})                                        
-                    #filter = self.buildFilter(b.tag)                                        
-                    #bc.count = filter[0].count()
-                    bc.count = result.fetchone()[0]
-                    result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where ((p.id = m.postId or p.parentId = m.postId)and m.tagId = :ctid)", {'ctid':b.id})                    
-                    bc.postsCount = result.fetchone()[0]
-                    if b.options and b.options.persistent:
-                        c.boards.append(bc)
-                        c.totalBoardsThreads += bc.count
-                        c.totalBoardsPosts += bc.postsCount
-                    else:
-                        c.tags.append(bc)
-                        c.totalTagsThreads += bc.count
-                        c.totalTagsPosts += bc.postsCount
-                    result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc, 'minid' : tpc - 1000})
-                    c.last1KUsersCount = result.fetchone()[0]
-                    result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc - 1000, 'minid' : tpc - 2000})
-                    c.prev1KUsersCount = result.fetchone()[0]
-                    result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) <= date")
-                    c.lastWeekMessages = result.fetchone()[0]
-                    result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) >= date and DATE_SUB(NOW(), INTERVAL 14 DAY) <= date")
-                    c.prevWeekMessages = result.fetchone()[0]                    
-            c.boards = sorted(c.boards, taglistcmp)
-            c.tags = sorted(c.tags, taglistcmp)                 
-            c.boardName = _('Home')
-            return self.render('home') 
-            
-        board = filterText(board)
-        c.PostAction = board
-        
-        filter = self.buildFilter(board)
-        tags = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag.in_(filter[1])).all()
-        return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
 
     def PostReply(self, post):
         return self.processPost(postid=post)
@@ -736,9 +748,17 @@ class FccController(OrphieBaseController):
         oekaki.path = ''        
         oekaki.source = 0
         if isNumber(url) and enablePicLoading:
+           ct = time.time()  
            post = meta.Session.query(Post).filter(Post.id==url).one()
+           c.log.append("758, post: " + str(time.time() - ct))
+           log.debug(c.log[len(c.log) - 1])
+
            if post.picid:
+              ct = time.time()  
               pic = meta.Session.query(Picture).filter(Picture.id==post.picid).first()
+              c.log.append("764, pic: " + str(time.time() - ct))
+              log.debug(c.log[len(c.log) - 1])               
+
               if pic and pic.width:
                  oekaki.source = post.id
                  c.canvas = h.modLink(pic.path, c.userInst.secid())

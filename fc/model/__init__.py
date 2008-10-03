@@ -1,11 +1,26 @@
 import sqlalchemy as sa
 from sqlalchemy import orm
 from fc.model import meta
+from pylons import config
+
+import logging
+log = logging.getLogger(__name__)
 
 def init_model(engine):
     sm = orm.sessionmaker(autoflush=True, autocommit=False, bind=engine)
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
+    #logging.getLogger( 'sqlalchemy').setLevel( logging.INFO )
+    
+    """
+    gv = config['pylons.g']
+    gv.tagCache = {}
+    tags = meta.Session.query(Tag).all()
+    for tag in tags:
+        gv.tagCache[tag.tag] = tag.id
+        
+    log.debug(gv.tagCache)
+    """        
 
 t_settings = sa.Table("settings", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
@@ -129,6 +144,7 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     )
 
 t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
+    sa.Column("id"          , sa.types.Integer, primary_key=True),                            
     sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('posts.id')),
     sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tags.id')),
     )
@@ -221,3 +237,6 @@ orm.mapper(Setting, t_settings)
 orm.mapper(LogEntry, t_log, properties = {
     'user' : orm.relation(User)
     })
+orm.mapper(TagMapping, t_tagsToPostsMap)
+
+

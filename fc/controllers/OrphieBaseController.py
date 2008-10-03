@@ -95,7 +95,7 @@ class OrphieBaseController(BaseController):
                 user.options.bantime = bantime
                 user.options.banreason = banreason
                 user.options.banDate = datetime.datetime.now() 
-                addLogEntry(LOG_EVENT_USER_BAN,_('Banned user %s for %s days for reason "%s"') % (user.uidNumber, bantime, banreason))
+                addLogEntry(LOG_EVENT_USER_BAN, _('Banned user %s for %s days for reason "%s"') % (user.uidNumber, bantime, banreason))
                 meta.Session.commit()
                 return _('User was banned')
             else:

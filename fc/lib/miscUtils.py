@@ -89,5 +89,40 @@ def getTagsListFromString(string):
             result.append(aTag.id)
     return result
 
+def getRPN(text, operators):
+    whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']
+    stack = []
+    temp  = []
+    result= []
+    for i in text:
+        if i == '(':
+            if temp:
+                result.append(''.join(temp))
+                temp = []
+            stack.append('(')
+        elif i == ')':
+            if temp:
+                result.append(''.join(temp))
+                temp = []                
+            while (stack and stack[-1] != '('):
+                result.append(stack.pop())
+            if stack:
+                stack.pop()
+        elif i in operators:
+            if temp:
+                result.append(''.join(temp))
+                temp = []
+            while (stack and (stack[-1] in operators) and (operators[i] <= operators[stack[-1]])):
+                result.append(stack.pop())
+            stack.append(i)
+        elif not i in whitespace:
+            temp.append(i)
+    if temp:
+        result.append(''.join(temp))
+        temp = []
+    while stack:
+        result.append(stack.pop())
+    return result
+
 
  

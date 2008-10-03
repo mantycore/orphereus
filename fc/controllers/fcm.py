@@ -1,3 +1,4 @@
+#coding: utf8
 import logging
 from fc.lib.base import *
 from fc.model import *
@@ -121,6 +122,21 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog;     
     
+    def banInactive(self):
+        mtnLog = []
+        mtnLog.append(self.createLogEntry('Task', 'Setting auto bans...'))
+        currentTime = datetime.datetime.now()                
+        users = meta.Session.query(User).all()
+        for user in users:
+            postsCount = meta.Session.query(Post).filter(Post.uidNumber == user.uidNumber).count()
+            if postsCount == 0:
+                self.banUser(user, 10000, ("[AUTOMATIC BAN] You haven't any posts. Please, contact johan.liebert@jabber.ru to get you access back"))
+                mtnLog.append(self.createLogEntry('Info', "%d autobanned" % user.uidNumber))
+                
+        meta.Session.commit()
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog;   
+    
     def mtnAction(self, actid, secid):
         secTestPassed = False    
         if not secid:
@@ -169,7 +185,9 @@ class FcmController(OrphieBaseController):
             elif actid == 'destroyTrackers':
                 mtnLog = self.destroyTrackers()     
             elif actid == 'updateCaches':
-                mtnLog = self.updateCaches()                            
+                mtnLog = self.updateCaches()
+            elif actid == 'banInactive':
+                mtnLog = self.banInactive()                                            
             elif actid == 'all':
                 mtnLog = self.clearOekaki()
                 mtnLog += self.destroyInvites()

@@ -6,7 +6,7 @@ ${_('Available actions:')}
 <tr>
 <td>
 <form method="post" action="service/all">
-<span style="color: red; font-weight: bold;">${_('Run all actions')}</span>
+<span style="color: red; font-weight: bold;">${_('Run all actions (without auto bans)')}</span>
 <br/>
 <input type="submit" value="Launch">
 </form>
@@ -63,6 +63,15 @@ ${_('Update caches')}
 </td>
 </tr>
 
+<tr>
+<td>
+<form method="post" action="service/banInactive">
+${_('Ban users without posts (except last 5)')}
+<br/>
+<input type="submit" value="Launch">
+</form>
+</td>
+</tr>
 
 <tr>
 <td>

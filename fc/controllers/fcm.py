@@ -107,12 +107,20 @@ class FcmController(OrphieBaseController):
         return mtnLog;     
     
     def updateCaches(self):
-        posts = meta.Session.query(Post).filter(post.parentId == -1).all()
+        mtnLog = []
+        mtnLog.append(self.createLogEntry('Task', 'Updating caches...'))        
+        posts = meta.Session.query(Post).filter(Post.parentid == -1).all()
         for post in posts:
             repliesCount = meta.Session.query(Post).filter(Post.parentid == post.id).count()
-            post.replyCount = repliesCount 
+            if post.replyCount != repliesCount:
+                warnMsg = self.createLogEntry('Warning', _("Invalid RC: %d, updating") % post.id)
+                mtnLog.append(warnMsg)
+                addLogEntry(LOG_EVENT_INTEGR_RC, warnMsg)                
+                post.replyCount = repliesCount 
         meta.Session.commit()        
-
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog;     
+    
     def mtnAction(self, actid, secid):
         secTestPassed = False    
         if not secid:

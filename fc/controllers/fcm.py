@@ -107,7 +107,7 @@ class FcmController(OrphieBaseController):
         return mtnLog;     
     
     def updateCaches(self):
-        posts = meta.Session.query(Post).all()
+        posts = meta.Session.query(Post).filter(post.parentId == -1).all()
         for post in posts:
             repliesCount = meta.Session.query(Post).filter(Post.parentid == post.id).count()
             post.replyCount = repliesCount 

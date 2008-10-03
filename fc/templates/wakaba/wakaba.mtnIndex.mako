@@ -55,6 +55,17 @@ ${_('Remove old bans')}
 
 <tr>
 <td>
+<form method="post" action="service/updateCaches">
+${_('Update caches')}
+<br/>
+<input type="submit" value="Launch">
+</form>
+</td>
+</tr>
+
+
+<tr>
+<td>
 <form method="post" action="service/integrityChecks">
 <span style="color: red;">${_('Integrity checks')}</span>
 <br/>

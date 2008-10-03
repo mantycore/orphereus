@@ -118,7 +118,8 @@ t_posts = sa.Table("posts", meta.metadata,
     sa.Column("picid"    , sa.types.Integer, sa.ForeignKey('piclist.id')),
     sa.Column("date"     , sa.types.DateTime, nullable=False),
     sa.Column("bumpDate", sa.types.DateTime, nullable=True),
-    sa.Column("spoiler"  , sa.types.Boolean, nullable=True)   
+    sa.Column("spoiler"  , sa.types.Boolean, nullable=True),
+    sa.Column("replyCount" , sa.types.Integer, nullable=False),   
     )
 
 t_tags = sa.Table("tags", meta.metadata,
@@ -144,7 +145,7 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     )
 
 t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
-    sa.Column("id"          , sa.types.Integer, primary_key=True),                            
+#    sa.Column("id"          , sa.types.Integer, primary_key=True),                            
     sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('posts.id')),
     sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tags.id')),
     )
@@ -206,8 +207,8 @@ class Setting(object):
 class LogEntry(object):
     pass
 
-class TagMapping(object):
-    pass
+#class TagMapping(object):
+#    pass
 
 orm.mapper(Captcha, t_captchas)        
 orm.mapper(LoginTracker, t_logins)    
@@ -221,9 +222,11 @@ orm.mapper(User, t_users, properties = {
     })
 
 orm.mapper(Extension, t_extlist)
+
 orm.mapper(Picture, t_piclist, properties = {
     'extlist' : orm.relation(Extension)
     })
+
 orm.mapper(TagOptions, t_tagOptions)
 orm.mapper(Tag, t_tags, properties = {
         'options' : orm.relation(TagOptions, uselist=False, backref='t_tags')
@@ -234,9 +237,11 @@ orm.mapper(Post, t_posts, properties = {
     })
 
 orm.mapper(Setting, t_settings)
+
 orm.mapper(LogEntry, t_log, properties = {
     'user' : orm.relation(User)
     })
-orm.mapper(TagMapping, t_tagsToPostsMap)
+
+#orm.mapper(TagMapping, t_tagsToPostsMap)
 
 

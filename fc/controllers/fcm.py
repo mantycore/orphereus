@@ -105,6 +105,13 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Doing integrity checks.... NOT IMPLEMENTED.'))
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog;     
+    
+    def updateCaches(self):
+        posts = meta.Session.query(Post).all()
+        for post in posts:
+            repliesCount = meta.Session.query(Post).filter(Post.parentid == post.id).count()
+            post.replyCount = repliesCount 
+        meta.Session.commit()        
 
     def mtnAction(self, actid, secid):
         secTestPassed = False    
@@ -152,13 +159,16 @@ class FcmController(OrphieBaseController):
             elif actid == 'integrityChecks':
                 mtnLog = self.integrityChecks()
             elif actid == 'destroyTrackers':
-                mtnLog = self.destroyTrackers()                
+                mtnLog = self.destroyTrackers()     
+            elif actid == 'updateCaches':
+                mtnLog = self.updateCaches()                            
             elif actid == 'all':
                 mtnLog = self.clearOekaki()
                 mtnLog += self.destroyInvites()
                 mtnLog += self.destroyTrackers()
                 mtnLog += self.integrityChecks()
-                mtnLog += self.banRotate()   
+                mtnLog += self.banRotate()
+                mtnLog += self.updateCaches()                   
             
             #for entry in mtnLog:
             #    addLogEntry(LOG_EVENT_MTN_ACT, entry.type + ': ' + entry.message)

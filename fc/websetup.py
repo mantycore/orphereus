@@ -3,6 +3,7 @@ import logging
 
 from paste.deploy import appconfig
 from pylons import config
+from fc.model import * 
 
 from fc.config.environment import load_environment
 

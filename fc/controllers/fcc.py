@@ -199,7 +199,7 @@ class FccController(OrphieBaseController):
         for thread in c.threads:
             if count > 1:
                 ct = time.time()  
-                replyCount = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
+                replyCount = thread.replyCount #meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
                 c.log.append("209, replyCount: " + str(time.time() - ct))
                 log.debug(c.log[len(c.log) - 1])                
                 
@@ -656,6 +656,7 @@ class FccController(OrphieBaseController):
                 return self.render('error') 
                 
             post.parentid = thread.id
+            thread.replyCount += 1
             post.sage = request.POST.get('sage', False)
             if not post.sage:
                 thread.bumpDate = datetime.datetime.now()
@@ -818,7 +819,7 @@ class FccController(OrphieBaseController):
                     return False
                 opPostDeleted = True
                 for post in meta.Session.query(Post).filter(Post.parentid==p.id).all():
-                    self.processDelete(postid=post.id,checkOwnage=False)
+                    self.processDelete(postid=post.id, checkOwnage=False)
                     
             pic = meta.Session.query(Picture).filter(Picture.id==p.picid).first()
             if pic and meta.Session.query(Post).filter(Post.picid==p.picid).count() == 1:
@@ -837,17 +838,18 @@ class FccController(OrphieBaseController):
                 if pic:
                     p.picid = -1
             else:
-                #settingsMap = c.settingsMap        
                 invisBump = (g.settingsMap['invisibleBump'].value == 'false')
-
+                parent = meta.Session.query(Post).filter(Post.id==p.parentid).first()
+                parent.replyCount -= 1
+                        
                 if invisBump and p.parentid != -1:
                     thread = meta.Session.query(Post).filter(Post.parentid==p.parentid).all()
                     if thread and thread[-1].id == p.id:
-                        parent = meta.Session.query(Post).filter(Post.id==p.parentid).first()
                         if len(thread) > 1:
                             parent.bumpDate = thread[-2].date
                         else:
                             parent.bumpDate = parent.date
+                            
                 meta.Session.delete(p)
         meta.Session.commit()
         return opPostDeleted

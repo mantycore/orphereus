@@ -4,12 +4,15 @@
     [<a target="_top" href="/static/donate">Donate</a>]
 </p>
 
-%if g.OPT.devMode and c.log:
-	%for l in c.log:
-		${l}<br/>
-	%endfor
+%if g.OPT.devMode and c.sum: 
+<br/>	Total time: ${c.sum} <br/><br/>
 %endif
 
-%if g.OPT.devMode and c.sum: 
-<br/>	Sum: ${c.sum}
+%if g.OPT.devMode and c.log:
+<font size="-2">
+	%for l in c.log:
+		${l}<br/><br/>
+	%endfor
+</font>	
 %endif
+

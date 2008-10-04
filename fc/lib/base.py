@@ -14,6 +14,7 @@ import fc.lib.helpers as h
 import fc.model as model
 
 from fc.model import meta
+import time
 
 class BaseController(WSGIController):
 
@@ -26,6 +27,77 @@ class BaseController(WSGIController):
             return WSGIController.__call__(self, environ, start_response)
         finally:
             meta.Session.remove()
+            
+    def sqlCount(self, filter, id = ''):
+        if g.OPT.devMode:
+            id += str(filter)
+            ct = time.time()  
+        result = filter.count()
+        if g.OPT.devMode:
+            rtime = time.time() - ct
+            c.sum += rtime
+            c.log.append("%s<br/>%s" %(id, str(rtime)))
+        return result        
+
+    def sqlAll(self, filter, id = ''):
+        if g.OPT.devMode:
+            id += str(filter)
+            ct = time.time()  
+        result = filter.all()
+        if g.OPT.devMode:
+            rtime = time.time() - ct
+            c.sum += rtime
+            c.log.append("%s<br/>%s" %(id, str(rtime)))
+        return result                
+    
+    def sqlOne(self, filter, id = ''):
+        if g.OPT.devMode:
+            id += str(filter)
+            ct = time.time()  
+        result = filter.one()
+        if g.OPT.devMode:
+            rtime = time.time() - ct
+            c.sum += rtime
+            c.log.append("%s<br/>%s" %(id, str(rtime)))
+        return result                 
+    
+    def sqlGet(self, filter, rid,  id = ''): 
+        if g.OPT.devMode:
+            id += str(filter)
+            ct = time.time()  
+        result = filter.get(rid)
+        if g.OPT.devMode:
+            rtime = time.time() - ct
+            c.sum += rtime
+            c.log.append("%s<br/>%s" %(id, str(rtime)))
+        return result
+ 
+    def sqlFirst(self, filter, id = ''):
+        if g.OPT.devMode:
+            id += str(filter)
+            ct = time.time()  
+        result = filter.first()
+        if g.OPT.devMode:
+            rtime = time.time() - ct
+            c.sum += rtime
+            c.log.append("%s<br/>%s" %(id, str(rtime)))
+        return result                
+
+    def sqlSlice(self, filter, a = False, b = False, id = ''):
+        if g.OPT.devMode:
+            id += str(filter)
+            ct = time.time()  
+        if a == False and b:
+            result = filter[:b]
+        elif b == False and a:
+            result = filter[a:]
+        else:
+            result = filter[a:b]
+        if g.OPT.devMode:
+            rtime = time.time() - ct
+            c.sum += rtime
+            c.log.append("%s<br/>%s" %(id, str(rtime)))
+        return result          
 
 # Include the '_' function in the public names
 __all__ = [__name for __name in locals().keys() if not __name.startswith('_') \

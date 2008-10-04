@@ -4,7 +4,6 @@ import logging
 from paste.deploy import appconfig
 from pylons import config
 from fc.model import * 
-from fc.controllers.OrphieBaseController import OrphieBaseController
 
 from fc.config.environment import load_environment
 
@@ -23,6 +22,6 @@ def setup_config(command, filename, section, vars):
     ct = OrphieBaseController()
     if meta.Session.query(User).count() == 0:
         user = User()
-        user.uid = ct.genUid('first')
+        user.uid = ct.hashlib.sha512('first' + hashlib.sha512(config['core.hashSecret']).hexdigest()).hexdigest()
         meta.Session.save(user)
     log.info("Completed")

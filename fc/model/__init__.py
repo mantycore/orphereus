@@ -61,9 +61,9 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     )
 
 t_userFilters = sa.Table("userFilters", meta.metadata,
-    sa.Column("id"    ,sa.types.Integer, primary_key=True),
-    sa.Column("uidNumber",sa.types.Integer, sa.ForeignKey('users.uidNumber')),
-    sa.Column("filter"    , sa.types.String(64), nullable=False)
+    sa.Column("id"        , sa.types.Integer    , primary_key=True),
+    sa.Column("uidNumber" , sa.types.Integer    , sa.ForeignKey('users.uidNumber')),
+    sa.Column("filter"    , sa.types.UnicodeText, nullable=False)
     )
 
 t_log = sa.Table("log", meta.metadata,

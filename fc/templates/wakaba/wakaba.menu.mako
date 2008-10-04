@@ -25,7 +25,7 @@
         <br />
         [
         %for f in c.userInst.filters():
-            <a href="/${f.filter.encode('utf-8')}/">/${f.filter.encode('utf-8')}/</a>
+            <a href="/${f.filter}/">/${f.filter}/</a>
         %endfor
         ]
     %endif

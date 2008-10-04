@@ -19,7 +19,7 @@ def setup_config(command, filename, section, vars):
     meta.metadata.create_all(bind=meta.engine)
     log.info("Successfully setup")
             
-    if meta.Session.query(User).count() == 0:
+    if True or meta.Session.query(User).count() == 0:
         log.info("Adding user with password 'first'")
         log.debug(config['core.hashSecret'])
         user = User()

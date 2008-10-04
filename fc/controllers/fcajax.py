@@ -89,3 +89,15 @@ class FcajaxController(OrphieBaseController):
         meta.Session.commit()
         c.userFilter = userFilter
         return self.render('ajax.addUserFilter') #render('/ajax.addUserFilter.mako')
+	def hideThread(self,post,url):
+        postInst = meta.Session.query(Post).get(post)
+        if postInst:
+            if postInst.parentid == -1:
+            	hideThreads = self.userInst.hideThreads()
+            	if not post in hideThreads:
+            		hideThreads.append(post)
+            		self.userInst.hideThreads(hideThreads)
+            		if url:
+            			return redirect_to(str('/%s' % url.encode('utf-8')))
+            		else:
+            			return ''

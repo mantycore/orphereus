@@ -130,6 +130,8 @@ class FccController(OrphieBaseController):
         if not self.userInst.isAdmin():
             threadFilter = threadFilter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
         
+        threadFilter = threadFilter.filter(not_(Post.id.in_(self.userInst.hideThreads())))
+        
         count = threadFilter.count()
         
         #I think its not best solution TODO FIXME // Redone this horrible code :P     

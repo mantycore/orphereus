@@ -46,8 +46,12 @@ class FUser(object):
                     self.__user.options.useAjax = True
                     self.__user.options.defaultGoto = 0
                     self.__user.options.homeExclude = pickle.dumps([])
+                    self.__user.options.hideThreads = pickle.dumps([])
                     meta.Session.commit()                  
                 
+                if not self.__user.options.hideThreads:
+                    self.__user.options.hideThreads = pickle.dumps([])
+                    meta.Session.commit()
                 if not self.__user.options.homeExclude:
                     self.__user.options.homeExclude = pickle.dumps([])
                     meta.Session.commit()
@@ -65,6 +69,7 @@ class FUser(object):
                 self.__canMakeInvite = self.__user.options.canMakeInvite and self.__isAdmin
                 self.__canChangeRights = self.__user.options.canChangeRights and self.__isAdmin
                 self.__homeExclude = pickle.loads(self.__user.options.homeExclude)
+                self.__hideThreads = pickle.loads(self.__user.options.hideThreads)
                 self.__filters = self.__user.filters
                 self.__valid = True
                 
@@ -109,6 +114,11 @@ class FUser(object):
             self.__user.options.homeExclude = pickle.dumps(value)
             self.__homeExclude = pickle.loads(self.__user.options.homeExclude)
         return self.__homeExclude
+    def hideThreads(self, value = None):
+        if value != None:
+            self.__user.options.hideThreads = pickle.dumps(value)
+            self.__hideThreads = pickle.loads(self.__user.options.hideThreads)
+        return self.__hideThreads     
     def threadsPerPage(self, value = False):
     	if value:
     	    self.__user.options.threadsPerPage = value

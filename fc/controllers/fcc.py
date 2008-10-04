@@ -143,7 +143,7 @@ class FccController(OrphieBaseController):
             if (page + 1) > c.pages:
                 page = c.pages - 1
             c.page = page
-            c.threads = threadFilter.order_by(Post.bumpDate.desc())[(page * tpp):(page + 1)* tpp]
+            c.threads = self.sqlSlice(threadFilter.order_by(Post.bumpDate.desc()), (page * tpp), (page + 1)* tpp)
             if c.pages>15:
                 c.showPagesPartial = True
                 if c.page-5>1:
@@ -159,7 +159,7 @@ class FccController(OrphieBaseController):
         elif count == 1:
             c.page  = False
             c.pages = False
-            c.threads = [threadFilter.one()]
+            c.threads = [self.sqlOne(threadFilter)]
         elif count == 0:
             c.page  = False
             c.pages = False
@@ -192,17 +192,19 @@ class FccController(OrphieBaseController):
             
         for thread in c.threads:
             if count > 1:
-                replyCount = thread.replyCount #meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
-                if not isNumber(replyCount):
+                replyCount = int(thread.replyCount) #meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
+                #if not isNumber(replyCount):
                     #replyCount = 0
-                    log.debug("WARNING!!!" + str(thread.id))              
+                    #log.debug("WARNING!!!" + str(thread.id) + "::" + str(replyCount)  )            
                 
                 replyLim   = replyCount - self.userInst.repliesPerThread() 
                 if replyLim < 0:
                     replyLim = 0
                 thread.omittedPosts = replyLim
                 
-                thread.Replies = self.sqlSlice(meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()), replyLim, False)                 
+                log.debug(replyLim)
+                thread.Replies = self.sqlSlice(meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()), replyLim)
+                log.debug(thread.Replies)                 
             else:
                 thread.Replies = self.sqlAll(meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()))                
                 thread.omittedPosts = 0

@@ -16,6 +16,9 @@ import fc.model as model
 from fc.model import meta
 import time
 
+import logging
+log = logging.getLogger(__name__)
+
 class BaseController(WSGIController):
 
     def __call__(self, environ, start_response):
@@ -83,16 +86,19 @@ class BaseController(WSGIController):
             c.log.append("%s<br/>%s" %(id, str(rtime)))
         return result                
 
-    def sqlSlice(self, filter, a = False, b = False, id = ''):
+    def sqlSlice(self, filter, a = True, b = True, id = ''):
         if g.OPT.devMode:
             id += str(filter)
             ct = time.time()  
-        if a == False and b:
+        if a == True and b != True:
             result = filter[:b]
-        elif b == False and a:
+            log.debug('1')
+        elif b == True and a != True:
             result = filter[a:]
+            log.debug('2')
         else:
             result = filter[a:b]
+            log.debug('3')
         if g.OPT.devMode:
             rtime = time.time() - ct
             c.sum += rtime

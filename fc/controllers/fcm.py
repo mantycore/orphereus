@@ -1,4 +1,3 @@
-#coding: utf8
 import logging
 from fc.lib.base import *
 from fc.model import *
@@ -114,8 +113,8 @@ class FcmController(OrphieBaseController):
         for post in posts:
             repliesCount = meta.Session.query(Post).filter(Post.parentid == post.id).count()
             if post.replyCount != repliesCount:
-                msg = 'Warning', _("Invalid RC: %d, updating") % post.id
-                warnMsg = self.createLogEntry('Info', msg)
+                msg = 'Invalid RC: %d, updating' % post.id
+                warnMsg = self.createLogEntry('Warning', msg)
                 mtnLog.append(warnMsg)
                 addLogEntry(LOG_EVENT_INTEGR_RC, msg)                
                 post.replyCount = repliesCount 

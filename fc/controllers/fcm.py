@@ -115,7 +115,7 @@ class FcmController(OrphieBaseController):
             repliesCount = meta.Session.query(Post).filter(Post.parentid == post.id).count()
             if post.replyCount != repliesCount:
                 msg = 'Warning', _("Invalid RC: %d, updating") % post.id
-                warnMsg = self.createLogEntry(msg)
+                warnMsg = self.createLogEntry('Info', msg)
                 mtnLog.append(warnMsg)
                 addLogEntry(LOG_EVENT_INTEGR_RC, msg)                
                 post.replyCount = repliesCount 

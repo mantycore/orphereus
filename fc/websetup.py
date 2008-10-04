@@ -21,7 +21,7 @@ def setup_config(command, filename, section, vars):
             
     uc = meta.Session.query(User).count()
     log.debug('users: %d' % uc) 
-    if True or uc == 0:
+    if uc == 0:
         log.info("Adding user with password 'first'")
         log.debug(config['core.hashSecret'])
         user = User()

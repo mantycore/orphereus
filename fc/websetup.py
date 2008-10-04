@@ -4,6 +4,7 @@ import logging
 from paste.deploy import appconfig
 from pylons import config
 from fc.model import * 
+import hashlib
 
 from fc.config.environment import load_environment
 

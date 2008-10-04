@@ -966,6 +966,12 @@ class FccController(OrphieBaseController):
         for t in homeExcludeTags:
             homeExcludeList.append(t.tag)
         c.homeExclude = ', '.join(homeExcludeList)
+        c.hiddenThreads  meta.Session.query(Posts).options(eagerload('file')).options(eagerload('tags')).filter(Posts.id.in_(self.userInst.hideThreads())).all()
+        for t in hiddenThreads:
+            tl = []
+            for tag in t.tags:
+                tl.append(tag.tag)
+            t.tagLine = ', '.join(tl)
         c.userInst = self.userInst
         return self.render('profile')
         

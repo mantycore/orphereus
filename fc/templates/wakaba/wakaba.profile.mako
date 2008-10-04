@@ -120,6 +120,15 @@
                 <tr>
                     <td colspan='2'><input name='update' type='button' value='${_('Add')}' onClick="userFiltersAdd(event)"></td>
                 </tr>
+                <tr>
+                    <td colspan='2' style="text-align: center; font-weight: bold;">${_('Hidden threads')}</td>
+                </tr>
+                %for t in c.hiddenThreads:
+                <tr>
+                    <td>${_('Thread %s (%s replies) posted in %s')%(t.id,t.replyCount,t.tagLine)}</td>
+                    <td><a href="/ajax/showThread/${t.id}/1">${_('Show')}</a></td>
+                </tr>
+                %endfor
             </tbody>
         </table>
     </div>

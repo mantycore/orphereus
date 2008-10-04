@@ -38,9 +38,9 @@ class FUser(object):
                     self.__user.options.style = 'photon'
                     self.__user.options.template = 'wakaba'
                     self.__user.options.bantime = 0
-                    self.__user.options.canDeleteAllPosts = 0                       
-                    self.__user.options.canMakeInvite = 0                     
-                    self.__user.options.canChangeRights = 0  
+                    self.__user.options.canDeleteAllPosts = False                       
+                    self.__user.options.canMakeInvite = False                     
+                    self.__user.options.canChangeRights = False
                     self.__user.options.isAdmin = False
                     self.__user.options.hideLongComments = True
                     self.__user.options.useAjax = True

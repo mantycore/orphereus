@@ -967,7 +967,7 @@ class FccController(OrphieBaseController):
             homeExcludeList.append(t.tag)
         c.homeExclude = ', '.join(homeExcludeList)
         c.hiddenThreads = meta.Session.query(Post).options(eagerload('file')).options(eagerload('tags')).filter(Post.id.in_(self.userInst.hideThreads())).all()
-        for t in hiddenThreads:
+        for t in c.hiddenThreads:
             tl = []
             for tag in t.tags:
                 tl.append(tag.tag)

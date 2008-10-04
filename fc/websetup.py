@@ -21,6 +21,6 @@ def setup_config(command, filename, section, vars):
     log.info("Adding user with password 'first'")        
     if meta.Session.query(User).count() == 0:
         user = User()
-        user.uid = ct.hashlib.sha512('first' + hashlib.sha512(config['core.hashSecret']).hexdigest()).hexdigest()
+        user.uid = hashlib.sha512('first' + hashlib.sha512(config['core.hashSecret']).hexdigest()).hexdigest()
         meta.Session.save(user)
     log.info("Completed")

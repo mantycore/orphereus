@@ -56,7 +56,7 @@
 %endfor
 </span>
 <span>
-[<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+c.curPage or ''}">${_('Hide Thread')}</a>]
+[<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide Thread')}</a>]
 </span>
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():

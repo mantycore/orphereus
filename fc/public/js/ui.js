@@ -276,10 +276,13 @@ function getFullText(event, thread, post)
 }
 function userFiltersAdd(event)
 {
-	$.get('/ajax/addUserFilter/' + $('#newFilterInput').get()[0].value, {}, function(response)
+	if ($('#newFilterInput').get()[0].value)
 	{
-		$(response).insertBefore('#newFilterTR')
-	});
+		$.get('/ajax/addUserFilter/' + $('#newFilterInput').get()[0].value, {}, function(response)
+		{
+			$(response).insertBefore('#newFilterTR')
+		});
+	}
 	event.preventDefault();
 }
 function userFiltersEdit(event,fid)

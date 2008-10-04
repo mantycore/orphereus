@@ -86,19 +86,20 @@ class BaseController(WSGIController):
             c.log.append("%s<br/>%s" %(id, str(rtime)))
         return result                
 
-    def sqlSlice(self, filter, a = True, b = True, id = ''):
+    def sqlSlice(self, filter, a = None, b = None, id = ''):
         if g.OPT.devMode:
             id += str(filter)
             ct = time.time()  
-        if a == True and b != True:
+        #log.debug("%s/%s" %(str(a), str(b)))
+        if a == None and b != None:
             result = filter[:b]
-            log.debug('1')
-        elif b == True and a != True:
+            #log.debug('1')
+        elif b == None and a != None:
             result = filter[a:]
-            log.debug('2')
+            #log.debug('2')
         else:
             result = filter[a:b]
-            log.debug('3')
+            #log.debug('3')
         if g.OPT.devMode:
             rtime = time.time() - ct
             c.sum += rtime

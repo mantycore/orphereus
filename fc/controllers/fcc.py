@@ -126,7 +126,8 @@ class FccController(OrphieBaseController):
         
         threadFilter = threadFilter.filter(not_(Post.id.in_(self.userInst.hideThreads())))
         
-        count = self.sqlCount(threadFilter)        
+        count = self.sqlCount(threadFilter)  
+        log.debug("count: %d" % count)      
         extensions = self.sqlAll(meta.Session.query(Extension))
           
         extList = []

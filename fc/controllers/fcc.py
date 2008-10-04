@@ -898,7 +898,8 @@ class FccController(OrphieBaseController):
             else:
                 invisBump = (g.settingsMap['invisibleBump'].value == 'false')
                 parent = meta.Session.query(Post).filter(Post.id==p.parentid).first()
-                parent.replyCount -= 1
+                if parent:
+                    parent.replyCount -= 1
                         
                 if invisBump and p.parentid != -1:
                     thread = meta.Session.query(Post).filter(Post.parentid==p.parentid).all()

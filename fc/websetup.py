@@ -18,10 +18,12 @@ def setup_config(command, filename, section, vars):
     log.info("Creating tables")
     meta.metadata.create_all(bind=meta.engine)
     log.info("Successfully setup")
-    
-    log.info("Adding user with password 'first'")        
+            
     if meta.Session.query(User).count() == 0:
+        log.info("Adding user with password 'first'")
+        log.debug(config['core.hashSecret'])
         user = User()
         user.uid = hashlib.sha512('first' + hashlib.sha512(config['core.hashSecret']).hexdigest()).hexdigest()
+        log.debug(user.uid)        
         meta.Session.save(user)
-    log.info("Completed")
+        log.info("Completed")

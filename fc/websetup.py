@@ -19,7 +19,6 @@ def setup_config(command, filename, section, vars):
     log.info("Successfully setup")
     
     log.info("Adding user with password 'first'")        
-    ct = OrphieBaseController()
     if meta.Session.query(User).count() == 0:
         user = User()
         user.uid = ct.hashlib.sha512('first' + hashlib.sha512(config['core.hashSecret']).hexdigest()).hexdigest()

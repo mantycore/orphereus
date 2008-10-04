@@ -28,4 +28,5 @@ def setup_config(command, filename, section, vars):
         user.uid = hashlib.sha512('first' + hashlib.sha512(config['core.hashSecret']).hexdigest()).hexdigest()
         log.debug(user.uid)        
         meta.Session.save(user)
+        meta.Session.commit()
         log.info("Completed")

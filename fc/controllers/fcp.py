@@ -29,7 +29,6 @@ log = logging.getLogger(__name__)
 
 class FcpController(OrphieBaseController):
     def __before__(self):
-        #settingsMap = getSettingsMap()
         c.title = g.settingsMap['title'].value
         if g.OPT.refControlEnabled:
             ref = request.headers.get('REFERER', False)

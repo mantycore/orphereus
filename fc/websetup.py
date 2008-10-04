@@ -4,7 +4,7 @@ import logging
 from paste.deploy import appconfig
 from pylons import config
 from fc.model import * 
-from fc.controllers import OrphieBaseController
+from fc.controllers.OrphieBaseController import OrphieBaseController
 
 from fc.config.environment import load_environment
 

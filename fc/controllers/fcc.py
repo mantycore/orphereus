@@ -208,7 +208,7 @@ class FccController(OrphieBaseController):
                 #ct = time.time()  
                 replyCount = thread.replyCount #meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
                 if not isNumber(replyCount):
-                    replyCount = 0
+                    #replyCount = 0
                     log.debug("WARNING!!!" + str(thread.id))
                 #rtime = time.time() - ct
                 ##c.sum += rtime                  

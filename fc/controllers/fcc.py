@@ -192,7 +192,7 @@ class FccController(OrphieBaseController):
             
         for thread in c.threads:
             if count > 1:
-                replyCount = int(thread.replyCount) #meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
+                replyCount = thread.replyCount #meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
                 #if not isNumber(replyCount):
                     #replyCount = 0
                     #log.debug("WARNING!!!" + str(thread.id) + "::" + str(replyCount)  )            

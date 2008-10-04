@@ -97,6 +97,7 @@ class FcajaxController(OrphieBaseController):
                 if not post in hideThreads:
                     hideThreads.append(post)
                     self.userInst.hideThreads(hideThreads)
+                    meta.Session.commit()
                     if url:
                         return redirect_to(str('/%s' % url.encode('utf-8')))
                     else:

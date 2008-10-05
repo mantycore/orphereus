@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.main.mako" />
+<%inherit file"wakaba.main.mako" />
 
 <p>Правила Аномы. Вступают в силу с момента опубликования. Имеют обратную силу.</p>
 <h3>I. Обратная связь</h3>

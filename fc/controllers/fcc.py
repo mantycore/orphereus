@@ -344,14 +344,15 @@ class FccController(OrphieBaseController):
                         c.tags.append(bc)
                         c.totalTagsThreads += bc.count
                         c.totalTagsPosts += bc.postsCount
-                    result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc, 'minid' : tpc - 1000})
-                    c.last1KUsersCount = result.fetchone()[0]
-                    result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc - 1000, 'minid' : tpc - 2000})
-                    c.prev1KUsersCount = result.fetchone()[0]
-                    result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) <= date")
-                    c.lastWeekMessages = result.fetchone()[0]
-                    result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) >= date and DATE_SUB(NOW(), INTERVAL 14 DAY) <= date")
-                    c.prevWeekMessages = result.fetchone()[0]                    
+            
+            result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc, 'minid' : tpc - 1000})
+            c.last1KUsersCount = result.fetchone()[0]
+            result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc - 1000, 'minid' : tpc - 2000})
+            c.prev1KUsersCount = result.fetchone()[0]
+            result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) <= date")
+            c.lastWeekMessages = result.fetchone()[0]
+            result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) >= date and DATE_SUB(NOW(), INTERVAL 14 DAY) <= date")
+            c.prevWeekMessages = result.fetchone()[0]                    
             c.boards = sorted(c.boards, taglistcmp)
             c.tags = sorted(c.tags, taglistcmp)                 
             c.boardName = _('Home')

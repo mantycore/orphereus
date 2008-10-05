@@ -319,7 +319,8 @@ class FccController(OrphieBaseController):
             ##log.debug(adminTagsLine)
             forbiddenTags = adminTagsLine.split(',')   
             
-            ct = time.time()  
+            if g.OPT.devMode:
+                ct = time.time()  
                          
             result = meta.Session().execute("select count(id) from posts")    
             tpc = result.fetchone()[0]                                 

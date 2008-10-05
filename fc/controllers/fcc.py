@@ -731,7 +731,7 @@ class FccController(OrphieBaseController):
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
         
     def processDelete(self, postid, fileonly=False, checkOwnage=True):
-        p = self.sqlGett(meta.Session.query(Post), postid)
+        p = self.sqlGet(meta.Session.query(Post), postid)
                  
         opPostDeleted = False
         if p:

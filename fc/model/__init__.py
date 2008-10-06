@@ -2,6 +2,7 @@ import sqlalchemy as sa
 from sqlalchemy import orm
 from fc.model import meta
 from pylons import config
+from fc.lib.constantValues import *
 
 import logging
 log = logging.getLogger(__name__)
@@ -12,6 +13,21 @@ def init_model(engine):
     meta.Session = orm.scoped_session(sm)
     #logging.getLogger( 'sqlalchemy').setLevel( logging.INFO )
     
+    
+    settings = meta.Session.query(Setting).all()
+    settingsMap = {}
+    if settings:
+        for s in settings:
+            if s.name in settingsDef:
+                settingsMap[s.name] = s
+    for s in settingsDef:
+        if not s in settingsMap:
+            settingsMap[s] = Setting()
+            settingsMap[s].name = s
+            settingsMap[s].value = settingsDef[s]
+            meta.Session.save(settingsMap[s])
+            meta.Session.commit()
+    config['pylons.g'].settingsMap = settingsMap    
     """
     gv = config['pylons.g']
     gv.tagCache = {}

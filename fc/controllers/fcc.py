@@ -878,7 +878,7 @@ class FccController(OrphieBaseController):
                 page = c.pages - 1
             c.page = page        
             c.logs = meta.Session.query(LogEntry).filter(not_(LogEntry.event.in_(disabledEvents))).options(eagerload('user')).order_by(LogEntry.date.desc())[page*100:(page+1)*100]
-            rv = re.compile('(\d+.){3}\d+')
+            rv = re.compile('(\d+\.){3}\d+')
             for log in c.logs:
                 log.entry = rv.sub('<font color="red">[IP REMOVED]</font>', log.entry)
             return self.render('logs')

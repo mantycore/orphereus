@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 
 class AngryFileHolder:
     def __init__(self, filename, pic = False):
-        log.debug('holder created')
+        #log.debug('holder created')
         self.__file = filename
         self.__pic = pic
         self.__deleteOnDestroy = True

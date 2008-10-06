@@ -16,26 +16,12 @@ import re
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
-from fc.lib.settings import *
 
 log = logging.getLogger(__name__)
 
 class OrphieBaseController(BaseController):
-    def __init__(self):
-        settings = meta.Session.query(Setting).all()
-        settingsMap = {}
-        if settings:
-            for s in settings:
-                if s.name in settingsDef:
-                    settingsMap[s.name] = s
-        for s in settingsDef:
-            if not s in settingsMap:
-                settingsMap[s] = Setting()
-                settingsMap[s].name = s
-                settingsMap[s].value = settingsDef[s]
-                meta.Session.save(settingsMap[s])
-                meta.Session.commit()
-        g.settingsMap = settingsMap
+    def __before__(self):
+        pass
         
     def initEnvironment(self):
         c.title = g.settingsMap['title'].value   

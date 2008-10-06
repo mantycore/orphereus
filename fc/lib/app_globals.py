@@ -38,6 +38,7 @@ class OptHolder(object):
         self.fakeLinks = config['security.fakeLinks'].split(',')
 
         self.obfuscator = config['security.obfuscator']
+        
 class Globals(object):   
     def __init__(self):
         self.OPT = OptHolder() 

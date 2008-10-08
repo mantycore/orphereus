@@ -56,7 +56,7 @@
                     %for dest in c.destinations.keys():
                     	<option value="${dest}" 
                     	%if dest == c.userInst.defaultGoto(): 
-                    		"selected"
+                    		selected
                     	%endif
                     	>
                     	${_(c.destinations[dest])}

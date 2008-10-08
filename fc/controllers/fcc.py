@@ -812,7 +812,7 @@ class FccController(OrphieBaseController):
                 self.userInst.style(style)
             gotodest = filterText(request.POST.get('defaultGoto', self.userInst.defaultGoto()))
             if isNumber(gotodest) and (int(gotodest) in destinations.keys()):
-                ##log.debug(gotodest)
+                #log.debug(gotodest)
                 self.userInst.defaultGoto(int(gotodest))                
             threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
             if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 30):

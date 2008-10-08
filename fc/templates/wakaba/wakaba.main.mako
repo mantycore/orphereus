@@ -5,7 +5,7 @@
         <title>${c.title} &#151; ${c.boardName}</title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <META NAME="ROBOTS" CONTENT="NOARCHIVE">
-        <link rel="stylesheet" type="text/css" href="${g.OPT.filesPathWeb}../css/photon.css" title="Photon" />
+        <link rel="stylesheet" type="text/css" href="${g.OPT.filesPathWeb}../css/${userInst.style()}.css" title="Photon" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 		<script type="text/javascript" src="${g.OPT.filesPathWeb}../js/ui.js"></script>
 		<script type="text/javascript" src="${g.OPT.filesPathWeb}../js/utils.js"></script>

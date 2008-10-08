@@ -22,6 +22,8 @@ class OptHolder(object):
         self.baseDomain = config['core.baseDomain'] 
         self.minPassLength = int(config['core.minPassLength'])
         self.filesPathWeb=config['core.filesPathWeb']
+        self.templates = config['security.templates'].split(',')
+        self.styles = config['security.styles'].split(',')
         
         # Security settings
         #self.refControlList = ['anoma.ch', 'anoma.li', 'localhost', '127.0.0.1']

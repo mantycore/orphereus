@@ -799,8 +799,8 @@ class FccController(OrphieBaseController):
         return opPostDeleted
         
     def showProfile(self):
-        c.templates = ['wakaba'] # TODO FIXME: init from settingsMap
-        c.styles    = ['photon']
+        c.templates = g.OPT.templates #['wakaba'] # TODO FIXME: init from settingsMap
+        c.styles    = g.OPT.styles #['photon']
         c.profileChanged = False
         c.boardName = _('Profile')
         if request.POST.get('update', False):

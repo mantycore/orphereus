@@ -89,6 +89,9 @@ def make_map():
     
     map.connect('/static/:page', controller='fcc', action='showStatic', page = 'Rules')
 
+    map.connect('/ajax/stat/:confirm', controller='fcc', action='selfBan', confirm = '')
+    map.connect('/holySynod/stat/:confirm', controller='fcc', action='selfBan', confirm = '')
+
     map.connect('*url', controller='fcp', action='UnknownAction')
 
     return map

@@ -26,7 +26,8 @@ log = logging.getLogger(__name__)
 
 class FcajaxController(OrphieBaseController):
     def __before__(self):
-        self.userInst = FUser(session.get('uidNumber',-1))
+        OrphieBaseController.__before__(self)
+        #self.userInst = FUser(session.get('uidNumber',-1))
         c.userInst = self.userInst
         if not self.userInst.isAuthorized():
             abort(403)

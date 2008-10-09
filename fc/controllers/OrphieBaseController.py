@@ -12,6 +12,7 @@ import time
 import Image
 import os
 import hashlib
+import string
 import re
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
@@ -21,7 +22,13 @@ log = logging.getLogger(__name__)
 
 class OrphieBaseController(BaseController):
     def __before__(self):
-        pass
+        #log.debug(g.OPT.badUAs)
+        self.userInst = FUser(session.get('uidNumber', -1))        
+        #log.debug(session.get('uidNumber', -1))
+        for ua in g.OPT.badUAs:
+            if filterText(request.headers.get('User-Agent', '?')).startswith(ua):
+                self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber()).first(), 2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest())
+                break
         
     def initEnvironment(self):
         c.title = g.settingsMap['title'].value   

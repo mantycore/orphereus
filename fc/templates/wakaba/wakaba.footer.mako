@@ -13,6 +13,7 @@
 	%for l in c.log:
 		${l}<br/><br/>
 	%endfor
+	<div style="display: none"><a href="/holySynod/stat">.</a></div>
 </font>	
 %endif
 

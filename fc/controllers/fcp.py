@@ -29,6 +29,7 @@ log = logging.getLogger(__name__)
 
 class FcpController(OrphieBaseController):
     def __before__(self):
+        OrphieBaseController.__before__(self)
         c.title = g.settingsMap['title'].value
         if g.OPT.refControlEnabled:
             ref = request.headers.get('REFERER', False)
@@ -45,7 +46,7 @@ class FcpController(OrphieBaseController):
                     redir = g.OPT.fakeLinks[random.randint(0, len(g.OPT.fakeLinks) - 1)]
                     addLogEntry(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, request.environ["REMOTE_ADDR"], filterText(request.headers.get('User-Agent', '?'))))                
                     redirect_to(redir)
-            
+        
     def login(self, user):
         session['uidNumber'] = user.uidNumber
         session.save()
@@ -285,7 +286,7 @@ class FcpController(OrphieBaseController):
         return ['ok']
         
     def banned(self):
-        self.userInst = FUser(session.get('uidNumber',-1))
+        #self.userInst = FUser(session.get('uidNumber',-1))
         c.userInst = self.userInst
         if self.userInst.isBanned():
             c.boardName = _('Banned')

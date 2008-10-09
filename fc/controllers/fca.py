@@ -22,8 +22,9 @@ from OrphieBaseController import OrphieBaseController
 log = logging.getLogger(__name__)
 
 class FcaController(OrphieBaseController):
-    def __before__(self):    
-        self.userInst = FUser(session.get('uidNumber',-1))
+    def __before__(self):  
+        OrphieBaseController.__before__(self)  
+        #self.userInst = FUser(session.get('uidNumber',-1))
         if not self.userInst.isAuthorized():
             c.currentURL = '/holySynod/'
             return redirect_to('/')

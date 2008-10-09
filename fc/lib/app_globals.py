@@ -39,6 +39,8 @@ class OptHolder(object):
         self.refControlList = config['security.refControlList'].split(',')
         self.fakeLinks = config['security.fakeLinks'].split(',')
 
+        self.badUAs = config['security.badUAs'].split(',')
+
         self.obfuscator = config['security.obfuscator']
         
 class Globals(object):   

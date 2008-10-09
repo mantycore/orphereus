@@ -26,7 +26,7 @@ class Empty:
 
 class FcmController(OrphieBaseController):
     def __before__(self):
-        pass
+        OrphieBaseController.__before__(self)
             
     def createLogEntry(self, type, message):
         act = Empty()
@@ -140,7 +140,7 @@ class FcmController(OrphieBaseController):
     def mtnAction(self, actid, secid):
         secTestPassed = False    
         if not secid:
-            self.userInst = FUser(session.get('uidNumber',-1))
+            #self.userInst = FUser(session.get('uidNumber',-1))
             if not self.userInst.isAuthorized():
                 c.currentURL = '/holySynod/'
                 return redirect_to('/')

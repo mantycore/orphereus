@@ -29,7 +29,8 @@ def taglistcmp(a, b):
 
 class FccController(OrphieBaseController):        
     def __before__(self):
-        self.userInst = FUser(session.get('uidNumber', -1))
+        OrphieBaseController.__before__(self)
+        #self.userInst = FUser(session.get('uidNumber', -1))
         c.userInst = self.userInst
         c.destinations = destinations
         
@@ -49,6 +50,14 @@ class FccController(OrphieBaseController):
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
         self.initEnvironment()
+        
+    def selfBan(self, confirm):
+        if confirm:
+            self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber()).first(), 2, _("[AUTOMATIC BAN] Security alert type 2"))
+            redirect_to('/')
+        else:
+            return self.render('selfBan')
+                            
             
     def buildFilter(self, url):
         def buildMyPostsFilter():

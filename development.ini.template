@@ -26,7 +26,7 @@ core.baseDomain= anoma.ch
 core.minPassLength = 12
 core.filesPathWeb = http://wut.anoma.ch/img1/
 core.templates = wakaba
-core.styles = photon,burichan,gurochan,futaba
+core.styles = photon,burichan,gurochan,futaba,kusaba
 
 # Security settings
 security.alertEmail = lamo@sms.megafonsib.ru

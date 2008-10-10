@@ -30,7 +30,7 @@ def make_map():
     map.connect('/*url/authorize', controller='fcp', action='authorize', url='')
     map.connect('/register/:invite', controller='fcp', action='register')
     map.connect('/youAreBanned', controller='fcp', action='banned')
-    map.connect('/Join', controller='fcp', action='showStatic', page = 'Join')    
+    #map.connect('/Join', controller='fcp', action='showStatic', page = 'Join')    
 
     # Oekaki
     map.connect('/:url/oekakiDraw', controller='fcc', action='oekakiDraw', url='')

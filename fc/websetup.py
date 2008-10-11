@@ -19,8 +19,12 @@ def setup_config(command, filename, section, vars):
     meta.metadata.create_all(bind=meta.engine)
     log.info("Successfully setup")
             
-    uc = meta.Session.query(User).count()
-    log.debug('users: %d' % uc) 
+    try:
+        uc = meta.Session.query(User).count()
+    except:
+        uc = 0
+    log.debug('users: %d' % uc)
+     
     if uc == 0:
         log.info("Adding user with password 'first'")
         log.debug(config['core.hashSecret'])
@@ -29,4 +33,103 @@ def setup_config(command, filename, section, vars):
         log.debug(user.uid)        
         meta.Session.save(user)
         meta.Session.commit()
-        log.info("Completed")
+        
+    try:
+        ec = meta.Session.query(Extension).count()
+    except:
+        ec = 0
+    log.debug('extenions: %d' % ec)  
+    
+    if ec == 0:
+        log.info("Adding extensions")
+        
+        ext = Extension()
+        ext.path = ''
+        ext.thwidth = 0
+        ext.thheight = 0
+        ext.ext = 'jpeg'
+        ext.type = 'image'
+        meta.Session.save(ext)
+
+        
+        ext = Extension()
+        ext.path = ''
+        ext.thwidth = 0
+        ext.thheight = 0
+        ext.ext = 'jpg'
+        ext.type = 'image'
+        meta.Session.save(ext)
+        
+        
+        ext = Extension()
+        ext.path = ''
+        ext.thwidth = 0
+        ext.thheight = 0
+        ext.ext = 'gif'
+        ext.type = 'image'
+        meta.Session.save(ext)
+        
+        
+        ext = Extension()
+        ext.path = ''
+        ext.thwidth = 0
+        ext.thheight = 0
+        ext.ext = 'bmp'
+        ext.type = 'image'
+        meta.Session.save(ext)
+        
+        
+        ext = Extension()
+        ext.path = ''
+        ext.thwidth = 0
+        ext.thheight = 0
+        ext.ext = 'png'
+        ext.type = 'image'
+        meta.Session.save(ext)
+        
+        
+        ext = Extension()
+        ext.path = ''
+        ext.thwidth = 80
+        ext.thheight = 80
+        ext.ext = 'zip'
+        ext.type = 'archive'
+        meta.Session.save(ext)
+        
+        
+        ext = Extension()
+        ext.path = ''
+        ext.thwidth = 80
+        ext.thheight = 80
+        ext.ext = 'mp3'
+        ext.type = 'audio'
+        meta.Session.save(ext)
+        
+    try:
+        tc = meta.Session.query(Tag).count()
+    except:
+        tc = 0
+    log.debug('tags: %d' % tc)  
+    
+    if tc == 0:
+        log.info("Adding tag /b/")
+        
+        tag = Tag('b')
+        tag.options = TagOptions()
+        tag.options.comment = 'Random'
+        tag.options.sectionId = 2
+        tag.options.persistent = True 
+        tag.options.specialRules = ''
+        tag.options.imagelessThread = False 
+        tag.options.imagelessPost = True
+        tag.options.enableSpoilers = False
+        tag.options.canDeleteOwnThreads = True
+        tag.options.images = True
+        tag.options.maxFileSize = 3000000
+        tag.options.minPicSize = 50
+        tag.options.thumbSize = 180    
+        meta.Session.save(tag)
+                
+        meta.Session.commit()          
+    
+    log.info("Completed")

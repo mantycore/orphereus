@@ -29,7 +29,7 @@ class FcajaxController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         #self.userInst = FUser(session.get('uidNumber',-1))
         c.userInst = self.userInst
-        if not self.userInst.isAuthorized():
+        if not self.userInst.isAuthorized() or self.userInst.isBanned():
             abort(403)
             
     def getPost(self, post):

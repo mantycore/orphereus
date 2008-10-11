@@ -909,6 +909,7 @@ class FccController(OrphieBaseController):
             return redirect_to('/')
         
     def search(self, text, page = 0):
+        rawtext = text
         if not text:
             rawtext = request.POST.get('query', '')
             text = filterText(rawtext)

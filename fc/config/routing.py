@@ -30,6 +30,8 @@ def make_map():
     map.connect('/*url/authorize', controller='fcp', action='authorize', url='')
     map.connect('/register/:invite', controller='fcp', action='register')
     map.connect('/youAreBanned', controller='fcp', action='banned')
+    map.connect('/search/:text', controller='fcc', action='search', text='', page=0)
+    map.connect('/search/:text/page/:page', controller='fcc', action='search', text='', page=0, requirements=dict(page='\d+'))
     #map.connect('/Join', controller='fcp', action='showStatic', page = 'Join')    
 
     # Oekaki
@@ -89,6 +91,7 @@ def make_map():
     
     map.connect('/static/:page', controller='fcc', action='showStatic', page = 'Rules')
 
+    # traps for bots
     map.connect('/ajax/stat/:confirm', controller='fcc', action='selfBan', confirm = '')
     map.connect('/holySynod/stat/:confirm', controller='fcc', action='selfBan', confirm = '')
 

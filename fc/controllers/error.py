@@ -3,7 +3,7 @@ import os.path
 
 from paste.urlparser import StaticURLParser
 from pylons.middleware import error_document_template, media_path
-
+from OrphieBaseController import OrphieBaseController
 from fc.lib.base import *
 
 class ErrorController(BaseController):

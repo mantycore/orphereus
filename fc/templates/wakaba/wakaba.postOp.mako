@@ -67,6 +67,6 @@
         ${thread.message}
     %endif
 </blockquote>
-%if thread.omittedPosts:
+%if 'omittedPosts' in dir(thread) and thread.omittedPosts:
     <span class="omittedposts">${_('%s posts omitted.') % thread.omittedPosts } </span>
 %endif

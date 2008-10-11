@@ -120,32 +120,8 @@ class FccController(OrphieBaseController):
             tagList = cl[1]
         return (filter, tagList)
         
-    def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
-        c.board = board
-        c.uidNumber = self.userInst.uidNumber()
-        c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
-        c.isAdmin = self.userInst.isAdmin()
-        
-        #settingsMap = c.settingsMap
-        adminTagsLine = g.settingsMap['adminOnlyTags'].value
-        forbiddenTags = getTagsListFromString(adminTagsLine)
-
-        if not self.userInst.isAdmin():
-            threadFilter = threadFilter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
-        
-        threadFilter = threadFilter.filter(not_(Post.id.in_(self.userInst.hideThreads())))
-        
-        count = self.sqlCount(threadFilter)  
-        #log.debug("count: %d" % count)      
-        extensions = self.sqlAll(meta.Session.query(Extension))
-          
-        extList = []
-        for ext in extensions:
-            extList.append(ext.ext)
-        c.extLine = ', '.join(extList)
-            
+    def paginate(self, count, page, tpp):
         if count > 1:
-            tpp = self.userInst.threadsPerPage()
             p = divmod(count, tpp)
             c.pages = p[0]
             if p[1]:
@@ -153,7 +129,7 @@ class FccController(OrphieBaseController):
             if (page + 1) > c.pages:
                 page = c.pages - 1
             c.page = page
-            c.threads = self.sqlSlice(threadFilter.order_by(Post.bumpDate.desc()), (page * tpp), (page + 1)* tpp)
+
             if c.pages>15:
                 c.showPagesPartial = True
                 if c.page-5>1:
@@ -164,18 +140,51 @@ class FccController(OrphieBaseController):
                 if c.page+5<c.pages-2:
                     c.rightPage = c.page+5 
                 else:
-                    c.rightPage=c.pages-2
-               
+                    c.rightPage=c.pages-2   
         elif count == 1:
             c.page  = False
             c.pages = False
-            c.threads = [self.sqlOne(threadFilter)]
         elif count == 0:
             c.page  = False
-            c.pages = False
-            c.threads = []
-            
-        c.count = count
+            c.pages = False   
+        c.count = count      
+                       
+    def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
+        if isNumber(page):
+            page = int(page)
+        else:
+            page = 0        
+        c.board = board
+        c.uidNumber = self.userInst.uidNumber()
+        c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
+        c.isAdmin = self.userInst.isAdmin()
+
+        # TODO : move into GLOBAL object
+        extensions = self.sqlAll(meta.Session.query(Extension))          
+        extList = []
+        for ext in extensions:
+            extList.append(ext.ext)
+        c.extLine = ', '.join(extList)
+        
+        #settingsMap = c.settingsMap
+        adminTagsLine = g.settingsMap['adminOnlyTags'].value
+        forbiddenTags = getTagsListFromString(adminTagsLine)
+
+        if not self.userInst.isAdmin():
+            threadFilter = threadFilter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
+                
+        count = self.sqlCount(threadFilter)      
+        tpp = self.userInst.threadsPerPage()  
+        self.paginate(count, page, tpp)
+        #log.debug("count: %d" % count)
+        
+        threadFilter = threadFilter.filter(not_(Post.id.in_(self.userInst.hideThreads())))
+        if count > 1:
+            c.threads = self.sqlSlice(threadFilter.order_by(Post.bumpDate.desc()), (page * tpp), (page + 1)* tpp)   
+        elif count == 1:
+            c.threads = [self.sqlOne(threadFilter)]
+        elif count == 0:
+            c.threads = []                    
         
         if tagList and len(tagList) == 1 and tags:
             currentBoard = tags[0]
@@ -372,6 +381,11 @@ class FccController(OrphieBaseController):
             
         board = filterText(board)
         c.PostAction = board
+        
+        if isNumber(page):
+            page = int(page)
+        else:
+            page = 0        
         
         filter = self.buildFilter(board)  
         tags = self.sqlAll(meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag.in_(filter[1])))
@@ -893,4 +907,40 @@ class FccController(OrphieBaseController):
             return self.render('logs')
         else:
             return redirect_to('/')
+        
+    def search(self, text, page = 0):
+        if not text:
+            rawtext = request.POST.get('query', '')
+            text = filterText(rawtext)
+
+        if not text or len(rawtext) < 4:
+            c.boardName = _('Error')
+            c.errorText = _("Query too short (minimal length: 4)")
+            return self.render('error')
+        
+        if isNumber(page):
+            page = int(page)
+        else:
+            page = 0
+        pp = self.userInst.threadsPerPage()
+        
+        c.boardName = _("Search")
+        
+        c.query = text
+        filter = meta.Session.query(Post).filter(Post.message.like('%%%s%%' % text))
+        count = self.sqlCount(filter)
+        #log.debug(count)  
+        self.paginate(count, page, pp)        
+        posts = self.sqlSlice(filter.order_by(Post.date.desc()), (page * pp), (page + 1)* pp)
+        c.posts = []
+        for p in posts:
+            pt = []
+            pt.append(p)
+            if p.parentid == -1:
+                pt.append(p)
+            else:
+               pt.append(self.sqlFirst(meta.Session.query(Post).filter(Post.id == p.parentid)))
+            c.posts.append(pt)
+        
+        return self.render('search')
         

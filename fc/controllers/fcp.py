@@ -296,7 +296,8 @@ class FcpController(OrphieBaseController):
             c.errorText = _("ORLY?")
             return self.render('error')
             
-    def UnknownAction(self):      
+    def UnknownAction(self):
+        c.userInst = self.userInst      
         c.boardName = _('Error')
         c.errorText = _("Excuse me, WTF are you?")
         return self.render('error')

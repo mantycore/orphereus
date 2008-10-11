@@ -148,7 +148,16 @@ class FccController(OrphieBaseController):
             c.page  = False
             c.pages = False   
         c.count = count      
-                       
+                  
+    def excludeHiddenTags(self, filter):
+        adminTagsLine = g.settingsMap['adminOnlyTags'].value
+        forbiddenTags = getTagsListFromString(adminTagsLine)
+
+        if not self.userInst.isAdmin():
+            filter = filter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
+            
+        return filter         
+        
     def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
         if isNumber(page):
             page = int(page)
@@ -167,11 +176,7 @@ class FccController(OrphieBaseController):
         c.extLine = ', '.join(extList)
         
         #settingsMap = c.settingsMap
-        adminTagsLine = g.settingsMap['adminOnlyTags'].value
-        forbiddenTags = getTagsListFromString(adminTagsLine)
-
-        if not self.userInst.isAdmin():
-            threadFilter = threadFilter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
+        threadFilter = self.excludeHiddenTags(threadFilter)
                 
         count = self.sqlCount(threadFilter)      
         tpp = self.userInst.threadsPerPage()  
@@ -929,6 +934,9 @@ class FccController(OrphieBaseController):
         
         c.query = text
         filter = meta.Session.query(Post).filter(Post.message.like('%%%s%%' % text))
+        
+        filter = self.excludeHiddenTags(filter)
+            
         count = self.sqlCount(filter)
         #log.debug(count)  
         self.paginate(count, page, pp)        

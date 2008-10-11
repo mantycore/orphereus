@@ -914,9 +914,9 @@ class FccController(OrphieBaseController):
             rawtext = request.POST.get('query', '')
             text = filterText(rawtext)
 
-        if not text or len(rawtext) < 4:
+        if not text or len(rawtext) < 3:
             c.boardName = _('Error')
-            c.errorText = _("Query too short (minimal length: 4)")
+            c.errorText = _("Query too short (minimal length: 3)")
             return self.render('error')
         
         if isNumber(page):

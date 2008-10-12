@@ -933,9 +933,9 @@ class FccController(OrphieBaseController):
         c.boardName = _("Search")
         
         c.query = text
-        filter = meta.Session.query(Post).filter(Post.message.like('%%%s%%' % text))
-        
+        filter = meta.Session.query(Post)
         filter = self.excludeHiddenTags(filter)
+        filter = filter.filter(Post.message.like('%%%s%%' % text))
             
         count = self.sqlCount(filter)
         #log.debug(count)  

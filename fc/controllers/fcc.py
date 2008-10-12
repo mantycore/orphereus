@@ -946,11 +946,17 @@ class FccController(OrphieBaseController):
         posts = self.sqlSlice(filter.order_by(Post.date.desc()), (page * pp), (page + 1)* pp)
         c.posts = []
         for p in posts:
-            parent = self.sqlFirst(meta.Session.query(Post).filter(Post.id == p.parentid))
+            parent = p
+            if not p.parentid == -1: 
+                parent = self.sqlFirst(meta.Session.query(Post).filter(Post.id == p.parentid))
+            
             exclude = False
-            for t in parent.tags:
-                if t.id in forbiddenTags and not self.userInst.isAdmin():
-                    exclude = True         
+            
+            if not parent.id == p.id:
+                for t in parent.tags:
+                    if t.id in forbiddenTags and not self.userInst.isAdmin():
+                        exclude = True
+                                 
             if not exclude:
                 pt = []
                 pt.append(p)

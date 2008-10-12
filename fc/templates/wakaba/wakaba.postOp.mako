@@ -60,11 +60,11 @@
 </span>
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():
-        ${thread.messageShort}
+        ${h.modMessage(thread.messageShort, c.userInst)}
         <br />
         ${_('Comment is too long.')} <a href="/${thread.id}#i${thread.id}" onClick="getFullText(event,${thread.id},${thread.id});" class="expandPost">${_('Full version')}</a>
     %else:
-        ${thread.message}
+        ${h.modMessage(thread.message, c.userInst)}
     %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:

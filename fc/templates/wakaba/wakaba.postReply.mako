@@ -56,11 +56,11 @@
                     %endif
                 <blockquote class="postbody" id="postBQId${post.id}">
                     %if (c.count > 1) and post.messageShort and c.userInst.hideLongComments():
-                        ${post.messageShort}
+                        ${h.modMessage(post.messageShort, c.userInst)}
                         <br />
                         ${_('Comment is too long.')} <a href="/${thread.id}#i${post.id}"' onClick="getFullText(event,${thread.id},${post.id});" class="expandPost">${_('Full version')}</a>
                     %else:
-                        ${post.message}
+                        ${h.modMessage(post.message, c.userInst)}
                     %endif                            
                 </blockquote> 
             </td>

@@ -46,4 +46,10 @@ class OptHolder(object):
 class Globals(object):   
     def __init__(self):
         self.OPT = OptHolder() 
- 
+        
+        f = open(os.path.join(self.OPT.appPath, 'fc/uniqueVals.txt'), "r")
+        data = f.read()
+        f.close() 
+        
+        self.uniqueVals = data.split('\n')
+        

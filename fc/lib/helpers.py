@@ -15,6 +15,5 @@ def modLink(string, secid):
 def modMessage(message, user):  
     gv = config['pylons.g']  
     uval = gv.uniqueVals[user.uidNumber() % (len(gv.uniqueVals) - 1)]
-    log.debug(uval)
     return message.replace('[SECURITY:UNIQUE_VAL]', uval)
 

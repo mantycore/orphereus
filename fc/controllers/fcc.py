@@ -933,9 +933,12 @@ class FccController(OrphieBaseController):
         c.boardName = _("Search")
         
         c.query = text
-        filter = meta.Session.query(Post)
-        filter = self.excludeHiddenTags(filter)
+        filter = self.excludeHiddenTags(meta.Session.query(Post))                    
         filter = filter.filter(Post.message.like('%%%s%%' % text))
+            
+        adminTagsLine = g.settingsMap['adminOnlyTags'].value
+        forbiddenTags = getTagsListFromString(adminTagsLine)
+
             
         count = self.sqlCount(filter)
         #log.debug(count)  
@@ -943,13 +946,21 @@ class FccController(OrphieBaseController):
         posts = self.sqlSlice(filter.order_by(Post.date.desc()), (page * pp), (page + 1)* pp)
         c.posts = []
         for p in posts:
-            pt = []
-            pt.append(p)
-            if p.parentid == -1:
+            parent = self.sqlFirst(meta.Session.query(Post).filter(Post.id == p.parentid))
+            exclude = False
+            for t in parent.tags:
+                if t.id in forbiddenTags and not self.userInst.isAdmin():
+                    exclude = True         
+            if not exclude:
+                pt = []
                 pt.append(p)
+                if p.parentid == -1:
+                    pt.append(p)
+                else:
+                   pt.append(parent)
+                c.posts.append(pt)
             else:
-               pt.append(self.sqlFirst(meta.Session.query(Post).filter(Post.id == p.parentid)))
-            c.posts.append(pt)
+                count -= 1
         
         return self.render('search')
         

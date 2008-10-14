@@ -15,6 +15,9 @@
         <%include file="wakaba.menu.mako" />
         <%include file="wakaba.logo.mako" />
         <hr />
+		%if c.userInst.useAjax():
+			<script>popup_posts({ajax: true});</script>
+		%endif        
         ${self.body()}
         <%include file="wakaba.menu.mako" />
         <%include file="wakaba.footer.mako" />

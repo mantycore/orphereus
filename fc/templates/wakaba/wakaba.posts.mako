@@ -37,11 +37,11 @@
     <input value="Search" type="submit" />
 </form>
 
+%if c.userInst.useAjax():
+	<script>popup_posts({ajax: true});</script>
+%endif   
 
 <%include file="wakaba.paginator.mako" args="baselink=c.board"/>
 
 <br clear="all" />
 
-%if c.userInst.useAjax():
-<script>popup_posts({ajax: true});</script>
-%endif

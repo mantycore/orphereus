@@ -24,6 +24,7 @@ class OptHolder(object):
         self.filesPathWeb=config['core.filesPathWeb']
         self.templates = config['core.templates'].split(',')
         self.styles = config['core.styles'].split(',')
+        self.secondaryIndex = (config['core.secondaryIndex'] == 'true')
         
         # Security settings
         #self.refControlList = ['anoma.ch', 'anoma.li', 'localhost', '127.0.0.1']
@@ -42,6 +43,9 @@ class OptHolder(object):
         self.badUAs = config['security.badUAs'].split(',')
 
         self.obfuscator = config['security.obfuscator']
+        
+        self.secureLinks = (config['security.secureLinks'] == 'true')
+        self.secureText = (config['security.secureText'] == 'true')
         
 class Globals(object):   
     def __init__(self):

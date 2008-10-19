@@ -5,6 +5,9 @@ from paste.deploy import appconfig
 from pylons import config
 from fc.model import * 
 import hashlib
+from sqlalchemy.orm import eagerload
+from sqlalchemy.orm import class_mapper
+from lib.fuser import FUser
 
 from fc.config.environment import load_environment
 
@@ -32,8 +35,14 @@ def setup_config(command, filename, section, vars):
         user.uid = hashlib.sha512('first' + hashlib.sha512(config['core.hashSecret']).hexdigest()).hexdigest()
         log.debug(user.uid)        
         meta.Session.save(user)
-        meta.Session.commit()
-        
+        meta.Session.commit()     
+        uidNumber = user.uidNumber
+        log.debug(uidNumber)
+        fuser = FUser(uidNumber) # create options
+        user = meta.Session.query(User).options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
+        user.options.isAdmin = True
+        user.options.canChangeRights = True
+        meta.Session.commit()        
     try:
         ec = meta.Session.query(Extension).count()
     except:

@@ -27,10 +27,10 @@
                     ${pt[0].date}
                 </label>
                 <span class="reflink">
-                    <a href="/${pt[1].id}#i${pt[0].id}">#${pt[0].id}</a>;                 
+                    <a href="/${pt[1].id}#i${pt[0].id}">#${g.OPT.secondaryIndex and pt[0].secondaryIndex or pt[0].id}</a>;                 
                                                  
 					${_('Thread')}
-					<a href="/${pt[1].id}#i${pt[1].id}">#${pt[1].id}</a>
+					<a href="/${pt[1].id}#i${pt[1].id}">#${g.OPT.secondaryIndex and pt[1].secondaryIndex or pt[1].id}</a>
 					${_('from')}:
 					%for t in pt[1].tags:
 					    <a href="/${t.tag}/">/${t.tag}/</a> 
@@ -40,14 +40,14 @@
                 %if pt[0].file:
                     <br /><span class="filesize">${_('File:')}     
 
-                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid())}">${h.modLink(pt[0].file.path, c.userInst.secid())}</a> 
+                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid(), g.OPT.secureLinks)}">${h.modLink(pt[0].file.path, c.userInst.secid(), g.OPT.secureLinks)}</a> 
                     (<em>${'%.2f' % (pt[0].file.size / 1024.0)} Kbytes, ${pt[0].file.width}x${pt[0].file.height}</em>)</span>
                     <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid())}">
+                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid(), g.OPT.secureLinks)}">
                     %if pt[0].spoiler:
                         <img src="${g.OPT.filesPathWeb}../images/spoiler.png" class="thumb"/>
                     %elif not '..' in pt[0].file.thumpath:                                     
-                        <img src="${g.OPT.filesPathWeb + h.modLink(pt[0].file.thumpath, c.userInst.secid())}" width="${pt[0].file.thwidth}" height="${pt[0].file.thheight}" class="thumb" />
+                        <img src="${g.OPT.filesPathWeb + h.modLink(pt[0].file.thumpath, c.userInst.secid(), g.OPT.secureLinks)}" width="${pt[0].file.thwidth}" height="${pt[0].file.thheight}" class="thumb" />
                     %else:  
                         <img src="${g.OPT.filesPathWeb + pt[0].file.thumpath}" width="${pt[0].file.thwidth}" height="${pt[0].file.thheight}" class="thumb" />                                
                     %endif 
@@ -57,7 +57,7 @@
                         <img src='${g.OPT.filesPathWeb}../images/picDeleted.png' class="thumb">                                    
                     %endif
                 <blockquote class="postbody" id="postBQId${pt[0].id}">
-                        ${h.modMessage(pt[0].message, c.userInst)}
+                        ${h.modMessage(pt[0].message, c.userInst, g.OPT.secureText)}
                 </blockquote> 
             </td>
         </tr>

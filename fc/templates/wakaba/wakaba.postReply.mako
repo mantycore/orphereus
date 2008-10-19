@@ -26,9 +26,9 @@
                 </label>
                 <span class="reflink">
                     %if c.board:
-                        <a href="/${thread.id}#i${post.id}" onClick="doQuickReplyForm(event,${thread.id},${post.id})">#${post.id}</a>
+                        <a href="/${thread.id}#i${post.id}" onClick="doQuickReplyForm(event,${thread.id},${post.id})">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
                     %else:
-                        <a href="javascript:insert('&gt;&gt;${post.id}')" onClick="doQuickReplyForm(event,${thread.id},${post.id})">#${post.id}</a>
+                        <a href="javascript:insert('&gt;&gt;${post.id}')" onClick="doQuickReplyForm(event,${thread.id},${post.id})">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
                     %endif 
                     %if post.file and post.file.width:
                         [<a href="/${post.id}/oekakiDraw">Draw</a>]
@@ -38,14 +38,14 @@
                 %if post.file:
                     <br /><span class="filesize">${_('File:')}     
 
-                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}">${h.modLink(post.file.path, c.userInst.secid())}</a> 
+                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid(), g.OPT.secureLinks)}">${h.modLink(post.file.path, c.userInst.secid(), g.OPT.secureLinks)}</a> 
                     (<em>${'%.2f' % (post.file.size / 1024.0)} Kbytes, ${post.file.width}x${post.file.height}</em>)</span>
                     <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}">
+                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid(), g.OPT.secureLinks)}">
                     %if post.spoiler:
                         <img src="${g.OPT.filesPathWeb}../images/spoiler.png" class="thumb"/>
                     %elif not '..' in post.file.thumpath:                                     
-                        <img src="${g.OPT.filesPathWeb + h.modLink(post.file.thumpath, c.userInst.secid())}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" />
+                        <img src="${g.OPT.filesPathWeb + h.modLink(post.file.thumpath, c.userInst.secid(), g.OPT.secureLinks)}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" />
                     %else:  
                         <img src="${g.OPT.filesPathWeb + post.file.thumpath}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" />                                
                     %endif 
@@ -56,11 +56,11 @@
                     %endif
                 <blockquote class="postbody" id="postBQId${post.id}">
                     %if (c.count > 1) and post.messageShort and c.userInst.hideLongComments():
-                        ${h.modMessage(post.messageShort, c.userInst)}
+                        ${h.modMessage(post.messageShort, c.userInst, g.OPT.secureText)}
                         <br />
                         ${_('Comment is too long.')} <a href="/${thread.id}#i${post.id}"' onClick="getFullText(event,${thread.id},${post.id});" class="expandPost">${_('Full version')}</a>
                     %else:
-                        ${h.modMessage(post.message, c.userInst)}
+                        ${h.modMessage(post.message, c.userInst, g.OPT.secureText)}
                     %endif                            
                 </blockquote> 
             </td>

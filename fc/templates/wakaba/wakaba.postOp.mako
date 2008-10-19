@@ -3,15 +3,15 @@
 
 %if thread.file:
 <span class="filesize">
-    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}">${h.modLink(thread.file.path, c.userInst.secid())}</a>            
+    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid(), g.OPT.secureLinks)}">${h.modLink(thread.file.path, c.userInst.secid(),g.OPT.secureLinks)}</a>            
     (<em>${'%.2f' % (thread.file.size / 1024.0)} Kbytes, ${thread.file.width}x${thread.file.height}</em>)
 </span>
 <span class="thumbnailmsg"></span><br />                       
-<a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}">
+<a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid(), g.OPT.secureLinks)}">
 %if thread.spoiler:
     <img src="${g.OPT.filesPathWeb}../images/spoiler.png" class="thumb"/>
 %elif not '..' in thread.file.thumpath:
-    <img src="${g.OPT.filesPathWeb + h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
+    <img src="${g.OPT.filesPathWeb + h.modLink(thread.file.thumpath, c.userInst.secid(),g.OPT.secureLinks)}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
 %else:
     <img src="${g.OPT.filesPathWeb+thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
 %endif   
@@ -38,9 +38,9 @@
 </label>
 <span class="reflink">
     %if c.board:
-        <a href="/${thread.id}#i${thread.id}" onClick="doQuickReplyForm(event,${thread.id},${thread.id})">#${thread.id}</a>
+        <a href="/${thread.id}#i${thread.id}" onClick="doQuickReplyForm(event,${thread.id},${thread.id})">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
     %else:
-        <a href="javascript:insert('&gt;&gt;${thread.id}')" onClick="doQuickReplyForm(event,${thread.id},${thread.id})">#${thread.id}</a>
+        <a href="javascript:insert('&gt;&gt;${thread.id}')" onClick="doQuickReplyForm(event,${thread.id},${thread.id})">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
     %endif 
 </span>
 &nbsp;
@@ -60,11 +60,11 @@
 </span>
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():
-        ${h.modMessage(thread.messageShort, c.userInst)}
+        ${h.modMessage(thread.messageShort, c.userInst, g.OPT.secureText)}
         <br />
         ${_('Comment is too long.')} <a href="/${thread.id}#i${thread.id}" onClick="getFullText(event,${thread.id},${thread.id});" class="expandPost">${_('Full version')}</a>
     %else:
-        ${h.modMessage(thread.message, c.userInst)}
+        ${h.modMessage(thread.message, c.userInst, g.OPT.secureText)}
     %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:

@@ -66,7 +66,7 @@ def make_map():
     
     # AJAX
     map.connect('/ajax/hideThread/:post/*url', controller='fcajax', action='hideThread', requirements=dict(post='\d+'))
-    map.connect('/ajax/showThread/:post/:redirect', controller='fcajax', action='showThread', redirect=0, requirements=dict(post='\d+'))
+    map.connect('/ajax/showThread/:post/:redirect', controller='fcajax', action='showThread', redirect='', requirements=dict(post='\d+'))
     map.connect('/ajax/getPost/:post', controller='fcajax', action='getPost', requirements=dict(post='\d+'))
     map.connect('/ajax/getRenderedPost/:post', controller='fcajax', action='getRenderedPost', requirements=dict(post='\d+'))
     map.connect('/ajax/editUserFilter/:fid/:filter', controller='fcajax', action='editUserFilter', requirements=dict(fid='\d+'))

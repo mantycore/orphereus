@@ -27,9 +27,6 @@ class OptHolder(object):
         self.secondaryIndex = (config['core.secondaryIndex'] == 'true')
         
         # Security settings
-        #self.refControlList = ['anoma.ch', 'anoma.li', 'localhost', '127.0.0.1']
-        #self.fakeLinks = ['http://www.youtube.com/watch?v=oHg5SJYRHA0', 'http://meatspin.com/', 'http://youtube.com/watch?v=Uqot33mczsw', 'http://youtube.com/watch?v=dZBU6WzBrX8']
-
         self.alertEmail = config['security.alertEmail'] 
         self.alertServer = config['security.alertServer']
         self.alertPort = int(config['security.alertPort'])
@@ -40,7 +37,10 @@ class OptHolder(object):
         self.refControlList = config['security.refControlList'].split(',')
         self.fakeLinks = config['security.fakeLinks'].split(',')
 
+        self.checkUAs = (config['security.checkUAs'] == 'true')
         self.badUAs = config['security.badUAs'].split(',')
+        
+        self.spiderTrap = (config['security.spiderTrap'] == 'true') 
 
         self.obfuscator = config['security.obfuscator']
         

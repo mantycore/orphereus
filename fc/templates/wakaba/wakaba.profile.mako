@@ -125,11 +125,12 @@
                 </tr>
                 %for t in c.hiddenThreads:
                 <tr>
-                    <td>${_('Thread %s (%s replies) posted in %s')%(t.id,t.replyCount,t.tagLine)}</td>
-                    <td><a href="/ajax/showThread/${t.id}/1">${_('Show')}</a></td>
+                    <td>${_('Thread <a href=/%s>#%s</a> (%s replies) posted in %s') % (t.id, t.id, t.replyCount, t.tagLine)}</td>
+                    <td><a href="/ajax/showThread/${t.id}/userProfile">${_('Unhide')}</a></td>
                 </tr>
                 %endfor
             </tbody>
         </table>
     </div>
 </form>
+<br clear="all" />

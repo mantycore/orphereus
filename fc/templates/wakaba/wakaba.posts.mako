@@ -6,13 +6,18 @@
 <form action="/${c.PostAction}/delete" method="post">
 <input type="hidden" name="tagLine" value="${c.tagLine}">
 %for thread in c.threads:
-    <div id="thread-${thread.id}">
-        <%include file="wakaba.postOp.mako" args="thread=thread"/>
-        
-        %for post in thread.Replies:
-			<%include file="wakaba.postReply.mako" args="thread=thread, post=post"/>
-        %endfor        
-    </div>
+	%if not thread.hidden:
+	    <div id="thread-${thread.id}">
+	        <%include file="wakaba.postOp.mako" args="thread=thread"/>
+	        
+	        %for post in thread.Replies:
+				<%include file="wakaba.postReply.mako" args="thread=thread, post=post"/>
+	        %endfor        
+	    </div>
+    %else:
+		${_('<b>Hidden</b> thread <a href=/%s>#%s</a> (%s replies) posted in %s') % (thread.id, thread.id, thread.replyCount, thread.tagLine)}
+        [<a href="/ajax/showThread/${thread.id}/${c.tagLine}">${_('Unhide')}</a>]
+    %endif
     <br clear="left" />
     <hr />
 %endfor

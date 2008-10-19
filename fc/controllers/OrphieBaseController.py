@@ -22,13 +22,13 @@ log = logging.getLogger(__name__)
 
 class OrphieBaseController(BaseController):
     def __before__(self):
-        #log.debug(g.OPT.badUAs)
         self.userInst = FUser(session.get('uidNumber', -1))        
         #log.debug(session.get('uidNumber', -1))
-        for ua in g.OPT.badUAs and self.userInst.isValid():
-            if filterText(request.headers.get('User-Agent', '?')).startswith(ua):
-                self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber()).first(), 2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest())
-                break
+        if g.OPT.checkUAs and self.userInst.isValid():
+            for ua in g.OPT.badUAs:
+                if filterText(request.headers.get('User-Agent', '?')).startswith(ua):
+                    self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber()).first(), 2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest())
+                    break
         
     def initEnvironment(self):
         c.title = g.settingsMap['title'].value   

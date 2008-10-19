@@ -42,7 +42,8 @@ security.badUAs = Wget,Offline Explorer,Web Downloader,WebCopier,WebZIP,Teleport
 security.obfuscator=http://anonym.to/?
 security.secureLinks = true
 security.secureText = true
-
+security.checkUAs = true
+security.spiderTrap = true
 
 [loggers]
 keys = root, fc

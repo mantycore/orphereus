@@ -11,23 +11,26 @@ def init_model(engine):
     sm = orm.sessionmaker(autoflush=True, autocommit=False, bind=engine)
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
-    #logging.getLogger( 'sqlalchemy').setLevel( logging.INFO )
+    #logging.getLogger('sqlalchemy').setLevel(logging.ERROR)
     
-    
-    settings = meta.Session.query(Setting).all()
-    settingsMap = {}
-    if settings:
-        for s in settings:
-            if s.name in settingsDef:
-                settingsMap[s.name] = s
-    for s in settingsDef:
-        if not s in settingsMap:
-            settingsMap[s] = Setting()
-            settingsMap[s].name = s
-            settingsMap[s].value = settingsDef[s]
-            meta.Session.save(settingsMap[s])
-            meta.Session.commit()
-    config['pylons.g'].settingsMap = settingsMap    
+    settings = False
+    try:
+        settings = meta.Session.query(Setting).all()
+        settingsMap = {}
+        if settings:
+            for s in settings:
+                if s.name in settingsDef:
+                    settingsMap[s.name] = s
+        for s in settingsDef:
+            if not s in settingsMap:
+                settingsMap[s] = Setting()
+                settingsMap[s].name = s
+                settingsMap[s].value = settingsDef[s]
+                meta.Session.save(settingsMap[s])
+                meta.Session.commit()
+        config['pylons.g'].settingsMap = settingsMap                   
+    except:
+        pass             
     """
     gv = config['pylons.g']
     gv.tagCache = {}

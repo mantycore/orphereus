@@ -112,7 +112,7 @@ class FcajaxController(OrphieBaseController):
                     hideThreads.remove(post)
                     self.userInst.hideThreads(hideThreads)
                     meta.Session.commit()
-                    if redirect:
-                        return redirect_to('/userProfile')
-                    else:
-                        return ''
+        if redirect:
+            return redirect_to(str('/%s' %redirect.encode('utf-8')))
+        else:
+            return ''

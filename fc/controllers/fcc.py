@@ -52,12 +52,14 @@ class FccController(OrphieBaseController):
         self.initEnvironment()
         
     def selfBan(self, confirm):
-        if confirm:
-            self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber()).first(), 2, _("[AUTOMATIC BAN] Security alert type 2"))
-            redirect_to('/')
+        if g.OPT.spiderTrap:
+            if confirm:
+                self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber()).first(), 2, _("[AUTOMATIC BAN] Security alert type 2"))
+                redirect_to('/')
+            else:
+                return self.render('selfBan')
         else:
-            return self.render('selfBan')
-                            
+            return redirect_to('/')
             
     def buildFilter(self, url):
         def buildMyPostsFilter():
@@ -162,7 +164,8 @@ class FccController(OrphieBaseController):
         if isNumber(page):
             page = int(page)
         else:
-            page = 0        
+            page = 0
+        
         c.board = board
         c.uidNumber = self.userInst.uidNumber()
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
@@ -177,13 +180,13 @@ class FccController(OrphieBaseController):
         
         #settingsMap = c.settingsMap
         threadFilter = self.excludeHiddenTags(threadFilter)
-                
+        #threadFilter = threadFilter.filter(not_(Post.id.in_(self.userInst.hideThreads())))
+                        
         count = self.sqlCount(threadFilter)      
         tpp = self.userInst.threadsPerPage()  
         self.paginate(count, page, tpp)
         #log.debug("count: %d" % count)
         
-        threadFilter = threadFilter.filter(not_(Post.id.in_(self.userInst.hideThreads())))
         if count > 1:
             c.threads = self.sqlSlice(threadFilter.order_by(Post.bumpDate.desc()), (page * tpp), (page + 1)* tpp)   
         elif count == 1:
@@ -214,7 +217,15 @@ class FccController(OrphieBaseController):
         c.boardOptions = self.conjunctTagOptions(tags)
         c.tagList = ' '.join(tagList)
             
+        hiddenThreads = self.userInst.hideThreads()
         for thread in c.threads:
+            thread.hidden = (str(thread.id) in hiddenThreads)
+            if thread.hidden:
+                tl = []
+                for tag in thread.tags:
+                    tl.append(tag.tag)
+                thread.tagLine = ', '.join(tl)     
+                            
             if count > 1:
                 replyCount = thread.replyCount #meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
                 #if not isNumber(replyCount):
@@ -230,6 +241,12 @@ class FccController(OrphieBaseController):
             else:
                 thread.Replies = self.sqlAll(meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()))                
                 thread.omittedPosts = 0
+                thread.hidden = False
+                       
+            #log.debug(thread.id)
+            #log.debug(self.userInst.hideThreads())
+            #log.debug(str(thread.id) in self.userInst.hideThreads())
+            #log.debug(thread.hidden)
                 
         if tempid:  
             oekaki = self.sqlFirst(meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid))            

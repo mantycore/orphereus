@@ -5,7 +5,9 @@
     <a href="/@/" title="${_('Related threads')}">/@/</a>
     <a href="/!/" title="${_('Home')}">/!/</a>    
     ]    
-<div style="display: none"><a href="/ajax/stat/${c.userInst.secid()}">...</a><a href="/ajax/stat">.</a></div>        
+%if g.OPT.spiderTrap:    
+<div style="display: none"><a href="/ajax/stat/${c.userInst.secid()}">...</a><a href="/ajax/stat">.</a></div>
+%endif        
     %for section in c.boardlist:
         [
         %for board in section:

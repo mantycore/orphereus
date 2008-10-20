@@ -752,7 +752,7 @@ class FccController(OrphieBaseController):
                
               if pic and pic.width:
                  oekaki.source = post.id
-                 c.canvas = h.modLink(pic.path, c.userInst.secid())
+                 c.canvas = h.modLink(pic.path, c.userInst.secid(), g.OPT.secureLinks)
                  c.width  = pic.width
                  c.height = pic.height
         meta.Session.save(oekaki)

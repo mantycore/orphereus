@@ -28,6 +28,7 @@ core.filesPathWeb = http://wut.anoma.ch/img1/
 core.templates = wakaba
 core.styles = photon,burichan,gurochan,futaba,kusaba
 core.secondaryIndex = false
+core.vitalSigns = true
 
 # Security settings
 security.alertEmail = lamo@sms.megafonsib.ru

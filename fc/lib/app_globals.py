@@ -25,6 +25,8 @@ class OptHolder(object):
         self.templates = config['core.templates'].split(',')
         self.styles = config['core.styles'].split(',')
         self.secondaryIndex = (config['core.secondaryIndex'] == 'true')
+        self.vitalSigns = (config['core.vitalSigns'] == 'true')
+        
         
         # Security settings
         self.alertEmail = config['security.alertEmail'] 

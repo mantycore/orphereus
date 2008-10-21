@@ -29,6 +29,11 @@ core.templates = wakaba
 core.styles = photon,burichan,gurochan,futaba,kusaba
 core.secondaryIndex = false
 core.vitalSigns = true
+core.allowPosting = true
+core.allowAnonymous = false
+core.allowAnonymousPosting = false
+core.allowRegistration = false
+
 
 # Security settings
 security.alertEmail = lamo@sms.megafonsib.ru

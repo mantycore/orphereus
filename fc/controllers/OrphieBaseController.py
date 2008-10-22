@@ -22,7 +22,8 @@ log = logging.getLogger(__name__)
 
 class OrphieBaseController(BaseController):
     def __before__(self):
-        self.userInst = FUser(session.get('uidNumber', -1))        
+        self.userInst = FUser(session.get('uidNumber', -1))
+        c.userInst = self.userInst
         #log.debug(session.get('uidNumber', -1))
         if g.OPT.checkUAs and self.userInst.isValid():
             for ua in g.OPT.badUAs:

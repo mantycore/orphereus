@@ -221,6 +221,7 @@ class FcpController(OrphieBaseController):
         return self.render('login')
         
     def register(self, invite):
+        
         if 'invite' not in session:
             invite_q = meta.Session.query(Invite).filter(Invite.invite==invite).first()
             if invite_q:
@@ -228,15 +229,38 @@ class FcpController(OrphieBaseController):
                 meta.Session.commit()
                 session['invite'] = invite
                 session['iid'] = invite_q.id
+                session['openReg'] = False
                 session.save()
+            elif g.OPT.allowRegistration:
+                 session['invite'] = invite
+                 session['iid'] = False
+                 session['openReg'] = True
+                 session.save()
             else:
                 c.currentURL = '/'
                 return self.render('login')
-                
+        c.openReg = session['openReg']
+        c.captcha = None
+        captchaOk = True
+        if session['openReg']:
+            captchaOk = False
+            if session.get('cid',False):
+                captcha = meta.Session.query(Captcha).get(session['cid'])
+                captchaOk = (captcha.text == request.POST.get('captcha', False))
+                session['cid'] = None
+                session.save()
+                meta.Session.delete(captcha)
+                meta.Session.commit()
+            if not captchaOk:
+                captcha = self.createCaptcha()
+                session['cid'] = captcha.id
+                session.save()
+                c.captcha = captcha
+         
         key = request.POST.get('key','').encode('utf-8')
         key2 = request.POST.get('key2','').encode('utf-8')
             
-        if key:
+        if key and captchaOk:
             if len(key)>=g.OPT.minPassLength and key == key2:      
                 uid = self.genUid(key) 
                 user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==uid).first()

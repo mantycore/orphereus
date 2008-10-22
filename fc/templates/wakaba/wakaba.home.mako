@@ -8,6 +8,7 @@
 
 <hr style="clear: both;"/>
 
+%if g.OPT.vitalSigns:
 <div class="theader">
 Vital signs
 <br/><br/>
@@ -27,11 +28,14 @@ ADW: <span style="color: ${c.lastWeekMessages / (c.prevWeekMessages + 0.01) > 1.
 <br/><br/>
 SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPostsCount)}
 </div>
+%endif
 
 <h3>Boards</h3>
+%if not c.userInst.Anonymous:
 <span style="float: right;">
 <i>Interesting numbers: ${c.totalPostsCount} [${abs(c.userInst.secid()*c.userInst.secid() - c.totalPostsCount*c.totalPostsCount)}]</i>
 </span>
+%endif
 <i>Let my BOARDS go!</i>
 <table width="100%" class="hlTable">
     <thead>

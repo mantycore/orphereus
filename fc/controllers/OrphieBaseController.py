@@ -50,7 +50,7 @@ class OrphieBaseController(BaseController):
             section.append(bc) #b.tag)
         if section:
             c.boardlist.append(section)
-        response.set_cookie('fc', request.cookies['fc'], domain='.'+g.OPT.baseDomain)
+        response.set_cookie('fc', request.cookies.get('fc',''), domain='.'+g.OPT.baseDomain)
          
     def render(self, page, **options):
         #log.debug(options)

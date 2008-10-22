@@ -67,6 +67,8 @@ class FcajaxController(OrphieBaseController):
             abort(404)            
             
     def editUserFilter(self,fid,filter):
+        if self.userInst.Anonymous:
+            abort(403)
         userFilter = meta.Session.query(UserFilters).get(fid)
         if not userFilter or userFilter.uidNumber != self.userInst.uidNumber():
             abort(404)
@@ -75,6 +77,8 @@ class FcajaxController(OrphieBaseController):
         return userFilter.filter
     
     def deleteUserFilter(self,fid):
+        if self.userInst.Anonymous:
+            abort(403)
         userFilter = meta.Session.query(UserFilters).get(fid)
         if not userFilter or userFilter.uidNumber != self.userInst.uidNumber():
             abort(404)
@@ -83,6 +87,8 @@ class FcajaxController(OrphieBaseController):
         return ''
         
     def addUserFilter(self,filter):
+        if self.userInst.Anonymous:
+            abort(403)
         userFilter = UserFilters()
         userFilter.uidNumber = self.userInst.uidNumber()
         userFilter.filter = filterText(filter)
@@ -92,6 +98,8 @@ class FcajaxController(OrphieBaseController):
         return self.render('ajax.addUserFilter') #render('/ajax.addUserFilter.mako')
     
     def hideThread(self,post,url):
+        if self.userInst.Anonymous:
+            abort(403)
         postInst = meta.Session.query(Post).get(post)
         if postInst:
             if postInst.parentid == -1:
@@ -106,6 +114,8 @@ class FcajaxController(OrphieBaseController):
             return ''
     
     def showThread(self,post,redirect):
+        if self.userInst.Anonymous:
+            abort(403)
         postInst = meta.Session.query(Post).get(post)
         if postInst:
             if postInst.parentid == -1:

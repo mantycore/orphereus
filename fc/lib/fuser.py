@@ -24,10 +24,17 @@ class FUser(object):
     def __init__(self, uidNumber = -1):
         self.__uidNumber = uidNumber
         self.__valid = False
-        
-        if uidNumber>-1:
-            self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
-                        
+        if uidNumber>-1 or g.OPT.allowAnonymous:
+            self.__user = None
+            self.Anonymous = False
+            if uidNumber>-1:
+                self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
+            
+            if not self.__user and g.OPT.allowAnonymous:
+                self.__user = User()
+                self.__user.uidNumber = -1
+                self.Anonymous = True
+            
             if self.__user:
                 self.__valid = True                
 
@@ -139,6 +146,8 @@ class FUser(object):
     	    self.__user.options.template = value
     	    self.__template = value
         return self.__template
+    def canPost(self):
+        return g.OPT.allowPosting and ((self.Anonymous and g.OPT.allowAnonymousPosting) or not self.Anonymous)
     def canDeleteAllPosts(self):
         return self.__canDeleteAllPosts
     def canMakeInvite(self):

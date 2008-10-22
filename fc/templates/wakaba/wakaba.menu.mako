@@ -2,7 +2,9 @@
 <div class="adminbar">
     [
     <a href="/~/" title="${_('Overview')}">/~/</a>
+    %if not c.userInst.Anonymous:
     <a href="/@/" title="${_('Related threads')}">/@/</a>
+    %endif
     <a href="/!/" title="${_('Home')}">/!/</a>    
     ]    
 %if g.OPT.spiderTrap:    
@@ -15,16 +17,25 @@
         %endfor
         ]
     %endfor
+    %if not c.userInst.Anonymous:
 	[<a href="/userProfile/">${_('Profile')}</a>]
+    %endif
     %if c.userInst.isAdmin():
         [<a href="/holySynod/">${_('Holy Synod')}</a>]
     %endif 
     %if g.settingsMap['usersCanViewLogs'].value == 'true':
         [<a href="/viewLog/">${_('Logs')}</a>]
     %endif     
-    [<a href="http://anoma.ch:3210">${_('Anoma-FM')}</a>]    
+    [<a href="http://anoma.ch:3210">${_('Anoma-FM')}</a>]
+    %if not c.userInst.Anonymous:
     [<a href="/logout/">${_('Logout')}</a>]
-    %if c.userInst.filters():
+    %else:
+    [<a href="/authorize">${_('Login')}</a>]
+    %if g.OPT.allowRegistration:
+    [<a href="/register/register">${_('Register')}</a>]
+    %endif 
+    %endif
+    %if not c.userInst.Anonymous and c.userInst.filters():
         <br />
         [
         %for f in c.userInst.filters():

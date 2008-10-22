@@ -38,16 +38,20 @@
 </label>
 <span class="reflink">
     %if c.board:
-        <a href="/${thread.id}#i${thread.id}" onClick="doQuickReplyForm(event,${thread.id},${thread.id})">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
+        <a href="/${thread.id}#i${thread.id}" ${c.canPost and """onClick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
     %else:
-        <a href="javascript:insert('&gt;&gt;${thread.id}')" onClick="doQuickReplyForm(event,${thread.id},${thread.id})">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
+        <a href="javascript:insert('&gt;&gt;${thread.id}')" ${c.canPost and """onClick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
     %endif 
 </span>
 &nbsp;
 <span class="replytothread">
+    %if c.canPost:
     [<a href="/${thread.id}">Reply</a>]
     %if thread.file and thread.file.width:
      [<a href="/${thread.id}/oekakiDraw">Draw</a>]
+    %endif
+    %else:
+    [<a href="/${thread.id}">View thread</a>]
     %endif
 </span>
 <span>${_('Posted in')} :
@@ -55,9 +59,11 @@
     <a href="/${t.tag}/">/${t.tag}/</a> 
 %endfor
 </span>
+%if not c.userInst.Anonymous:
 <span>
 [<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide Thread')}</a>]
 </span>
+%endif
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():
         ${h.modMessage(thread.messageShort, c.userInst, g.OPT.secureText)}

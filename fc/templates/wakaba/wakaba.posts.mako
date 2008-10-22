@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
+%if c.canPost:
 <%include file="wakaba.postForm.mako" />
+%endif
 
 <form action="/${c.PostAction}/delete" method="post">
 <input type="hidden" name="tagLine" value="${c.tagLine}">

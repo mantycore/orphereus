@@ -47,6 +47,7 @@ class FccController(OrphieBaseController):
         if self.userInst.isBanned():
             #abort(500, 'Internal Server Error')     # calm hidden ban
             return redirect_to('/youAreBanned')
+        c.canPost = self.userInst.canPost()
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
         self.initEnvironment()
@@ -523,6 +524,10 @@ class FccController(OrphieBaseController):
                    
     def processPost(self, postid=0, board=u''):
         fileHolder = False
+        
+        if not self.userInst.canPost():
+            c.errorText = _("Posting is disabled")
+            return self.render('error')
                 
         if postid:
             thePost = self.sqlFirst(meta.Session.query(Post).filter(Post.id==postid))
@@ -721,6 +726,10 @@ class FccController(OrphieBaseController):
         return self.processPost(board=board)            
 
     def oekakiDraw(self,url):
+        if not self.userInst.canPost():
+            c.errorText = _("Posting is disabled")
+            return self.render('error')
+                                            
         c.url = url
         c.canvas = False
         c.width  = request.POST.get('oekaki_x','300')
@@ -844,6 +853,10 @@ class FccController(OrphieBaseController):
         return opPostDeleted
         
     def showProfile(self):
+        if self.userInst.Anonymous:
+            c.errorText = _("Profile is not avaiable to Anonymous users.")
+            return self.render('error')
+                                            
         c.templates = g.OPT.templates #['wakaba'] # TODO FIXME: init from settingsMap
         c.styles    = g.OPT.styles #['photon']
         c.profileChanged = False

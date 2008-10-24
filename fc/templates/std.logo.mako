@@ -1,9 +1,10 @@
-<div class="logo" style="text-align: center;">  
-    %if c.boardName:
-        ${c.boardName}
-    %endif
+<div class="title"> 
+%if c.boardName:
+    ${c.boardName}
+%endif
+%if g.OPT.devMode:
+    <br><span style="text-align: center; font-size: 70%;"><i>Development Sandbox</i></span>
+%endif
 </div>
 
-%if g.OPT.devMode:
-    <h2 style="text-align: center;"><i>Development Sandbox</i></h2>
-%endif
+

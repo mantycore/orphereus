@@ -312,7 +312,7 @@ class FcpController(OrphieBaseController):
     def banned(self):
         #self.userInst = FUser(session.get('uidNumber',-1))
         c.userInst = self.userInst
-        if self.userInst.isBanned():
+        if self.userInst.isValid() and self.userInst.isBanned():
             c.boardName = _('Banned')
             return self.render('banned')
         else:

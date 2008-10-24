@@ -7,7 +7,7 @@
 		<p><input name="code" type="password" size=60 style="text-align: center"></p>
         %if c.showCaptcha:
             <p class="postblock">${_('Too many login attempts. Enter CAPTCHA please')}</p>
-            <div><img src='/captcha/${c.captid}'></div>
+            <div><img src='/captcha/${c.captid}' style="border: #964600 2px solid;"></div>
             <p><input name="captcha" size=32 style="text-align: center"></p>
             <p><input name="captid" type="hidden" value="${c.captid}"></p>
         %endif

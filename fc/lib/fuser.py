@@ -24,6 +24,9 @@ class FUser(object):
     def __init__(self, uidNumber = -1):
         self.__uidNumber = uidNumber
         self.__valid = False
+        if not g.OPT.allowAnonymous:
+            self.Anonymous = False
+            
         if uidNumber>-1 or g.OPT.allowAnonymous:
             self.__user = None
             self.Anonymous = False

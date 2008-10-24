@@ -20,7 +20,7 @@ def init_model(engine):
         settingsMap = {}
         if settings:
             for s in settings:
-                log.debug(s.name+ ' : ' +s.value)
+                #log.debug(s.name+ ' : ' +s.value)
                 if s.name in settingsDef:
                     settingsMap[s.name] = s
         for s in settingsDef: 

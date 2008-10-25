@@ -13,4 +13,6 @@
         %endif
 		<p><input type="submit" value="${_('OK')}"></p>
 	</form>
+	<br/>
+	<a href="http://arch.anoma.ch/"><strong>Archive of teh Internets</strong></a>	
 </div>

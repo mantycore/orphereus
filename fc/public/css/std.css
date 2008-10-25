@@ -1,11 +1,19 @@
-body {background-color: #eb6d00; color: #FFffFF; margin: 0 0 0 0; font-family: Verdana;}
+body {background-color: #e9e9e9; color: #662f00; margin: 0 0 0 0; font-family: Verdana;}
 a {
-        color: #ffFFff;
+        color: #662f00;
 }
 a:hover {
-        color: #febc83;
+        color: #eb6d00;
 }
-.title{float: right; clear: both; font-weight: bold; font-size: 130%; padding: 10px; background-color: #964600;}
+.title{
+	float: right; 
+	clear: both; 
+	font-weight: 
+	bold; font-size: 130%; 
+	padding: 10px; 
+	background-color: #cacaca; 
+	color: #6b6b6b;
+}
 
 input, textarea
 {

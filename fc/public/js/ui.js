@@ -44,17 +44,19 @@ function popup_posts(options){
         show_it(content.parent().html().split('<table')[0])
       else
         show_it(content.html())
+    }else if(popup_posts.cache[m[0]] == 404){
+      return;
     }else if (popup_posts.cache[m[0]]){
       show_it(popup_posts.cache[m[0]]);
     }else if(options.ajax){
         var e = $(this)
         load_on(e)
-        $.get("/ajax/getRenderedPost/"+m[0], function(html){
+        $.ajax({type: 'get', url: "/ajax/getRenderedPost/"+m[0], success: function(html){
           load_off(e)
           html = html.replace(/<\/?table[^>]*>/,'')
           show_it(html);
           popup_posts.cache[m[0]] = html;
-        });
+        }, error: function(a,b) {popup_posts.cache[m[0]] = 404; e.html("Post not found") } });
     }
   }
   
@@ -68,7 +70,6 @@ function popup_posts(options){
     }).hover(hover_it,hide_it)    
   }
 }
-
 
 function insert(text,notFocus)
 {

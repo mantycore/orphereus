@@ -33,10 +33,7 @@ function popup_posts(options){
   var load_off = function(e){
     e.html(e.attr('old_html'))
   }
-  
-  $("blockquote a").filter(function(){
-    return $(this).attr('href').match(/^\/-?\d+(\#i\d+)?$/)
-  }).hover(function(ev){
+  var hover_it = function(ev){
     var m = $(this).html().match(/\d+$/)
     if (!m) return false;
     popup_posts.ev = ev
@@ -59,8 +56,19 @@ function popup_posts(options){
           popup_posts.cache[m[0]] = html;
         });
     }
-  },hide_it)
+  }
+  
+  $("blockquote a").filter(function(){
+    return $(this).attr('href').match(/^\/-?\d+(\#i\d+)?$/)
+  }).hover(hover_it,hide_it)
+  
+  popup_posts.repair = function(links){
+    links.filter(function(){
+      return $(this).attr('href').match(/^\/-?\d+(\#i\d+)?$/)
+    }).hover(hover_it,hide_it)    
+  }
 }
+
 
 function insert(text,notFocus)
 {
@@ -271,8 +279,9 @@ function getFullText(event, thread, post)
     $.get('/ajax/getPost/' + post, {}, function(response)
     {
       $(bq).html(response);
-    });
-    event.preventDefault();
+	  popup_posts.repair($(bq).find("a"))
+    });	
+    event.preventDefault();	
 }
 function userFiltersAdd(event)
 {

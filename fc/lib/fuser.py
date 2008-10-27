@@ -93,7 +93,7 @@ class FUser(object):
     def uidNumber(self):
         return self.__uidNumber
     def secid(self):
-        return (2*self.__uidNumber + 3) * (self.__uidNumber + 10) * (self.__uidNumber - 1)
+        return (2*self.__uidNumber + 6) * (self.__uidNumber + 5) * (self.__uidNumber - 1)
         #(2*x+3)*(x+10)*(x-1)=
     def uid(self, value=None):        
         if value != None and not meta.Session.query(User).options(eagerload('options')).filter(User.uid==value).first():

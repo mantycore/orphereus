@@ -32,7 +32,7 @@ SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPos
 </div>
 </%def>
 
-s${vitalSigns()}
+${vitalSigns()}
 %endif
 
 <%def name="stats()" cached="True" cache_timeout="180" cache_type="memory">

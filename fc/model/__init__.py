@@ -16,7 +16,7 @@ def init_model(engine):
     settings = False
     try:
         settings = meta.Session.query(Setting).all()
-        log.debug(settingsDef)
+        #log.debug(settingsDef)
         settingsMap = {}
         if settings:
             for s in settings:
@@ -25,7 +25,7 @@ def init_model(engine):
                     settingsMap[s.name] = s
         for s in settingsDef: 
             if not s in settingsMap:
-                log.debug(s) 
+                #log.debug(s) 
                 settingsMap[s] = Setting()
                 settingsMap[s].name = s
                 settingsMap[s].value = settingsDef[s]

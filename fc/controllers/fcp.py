@@ -208,7 +208,7 @@ class FcpController(OrphieBaseController):
             if user and captchaOk:
                 meta.Session.delete(tracker)
                 self.login(user)
-                log.debug('logged in')
+                #log.debug('logged in')
             else:
                 tracker.attempts += 1    
                 tracker.lastAttempt = datetime.datetime.now()  

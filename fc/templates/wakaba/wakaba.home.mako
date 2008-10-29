@@ -30,6 +30,7 @@ SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPos
 </div>
 %endif
 
+<%def name="stats()" cached="True" cache_timeout="1" cache_type="memory">
 <h3>Boards</h3>
 %if not c.userInst.Anonymous:
 <span style="float: right;">
@@ -41,8 +42,8 @@ SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPos
     <thead>
         <tr>
             <td style="width: 200px;">${_('Name')}</td>
-            <td style="width: 40px;">${_('Threads')}</td>            
-            <td style="width: 40px;">${_('Posts')}</td>              
+            <td style="width: 40px;">${_('Threads')}</td>
+            <td style="width: 40px;">${_('Posts')}</td>
             <td>${_('Description')}</td>
         </tr>
     </thead>
@@ -50,8 +51,8 @@ SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPos
 %for b in c.boards:
         <tr>
             <td><a href="/${b.board.tag}/"><div class="hovblock">${b.board.tag}</div></a></td>
-            <td>${b.count}</td>          
-            <td>${b.postsCount}</td>               
+            <td>${b.count}</td>
+            <td>${b.postsCount}</td>
             <td>
             %if b.board.options and b.board.options.comment:
                 ${b.board.options.comment}
@@ -61,8 +62,8 @@ SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPos
 %endfor 
         <tr>
             <td><div class="hovblock"><b>${_('Total')}</b></div></td>
-            <td><div class="hovblock">${c.totalBoardsThreads}</div></td>            
-            <td><div class="hovblock">${c.totalBoardsPosts}</div></td>                   
+            <td><div class="hovblock">${c.totalBoardsThreads}</div></td>
+            <td><div class="hovblock">${c.totalBoardsPosts}</div></td>
             <td></td>  
         </tr>   
     </tbody>
@@ -76,7 +77,7 @@ SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPos
         <tr>
             <td style="width: 200px;">${_('Name')}</td>
             <td style="width: 40px;">${_('Threads')}</td>
-            <td style="width: 40px;">${_('Posts')}</td>                
+            <td style="width: 40px;">${_('Posts')}</td>
             <td>${_('Description')}</td>
         </tr>
     </thead>
@@ -95,8 +96,8 @@ SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPos
 %endfor    
         <tr>
             <td><div class="hovblock"><b>${_('Total')}</b></div></td>
-            <td><div class="hovblock">${c.totalTagsThreads}</div></td>   
-            <td><div class="hovblock">${c.totalTagsPosts}</div></td>                   
+            <td><div class="hovblock">${c.totalTagsThreads}</div></td>
+            <td><div class="hovblock">${c.totalTagsPosts}</div></td>
             <td></td>  
         </tr>   
     </tbody>
@@ -104,3 +105,6 @@ SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPos
 
 <hr />
 <br clear="all" />
+</%def>
+
+${stats()}

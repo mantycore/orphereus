@@ -31,7 +31,6 @@ class OptHolder(object):
         self.allowAnonymousPosting = (config['core.allowAnonymousPosting'] == 'true')
         self.allowRegistration = (config['core.allowRegistration'] == 'true')
         
-        
         # Security settings
         self.alertEmail = config['security.alertEmail'] 
         self.alertServer = config['security.alertServer']

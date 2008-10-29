@@ -30,7 +30,7 @@ SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPos
 </div>
 %endif
 
-<%def name="stats()" cached="True" cache_timeout="1" cache_type="memory">
+<%def name="stats()" cached="True" cache_timeout="60" cache_type="memory">
 <h3>Boards</h3>
 %if not c.userInst.Anonymous:
 <span style="float: right;">

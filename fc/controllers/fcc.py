@@ -347,55 +347,76 @@ class FccController(OrphieBaseController):
         return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
 
     def GetBoard(self, board, tempid, page=0):
-        if board == '!':  
-            boards = self.sqlAll(meta.Session.query(Tag).options(eagerload('options')))
-             
-            c.boards=[]
-            c.tags=[]
-            c.totalBoardsThreads = 0
-            c.totalTagsThreads = 0
-            c.totalBoardsPosts = 0
-            c.totalTagsPosts = 0            
+        if board == '!':
+            def getTotalPosts():
+                result = meta.Session().execute("select count(id) from posts")
+                return result.fetchone()[0]
+            
+            def mainStats():
+                boards = self.sqlAll(meta.Session.query(Tag).options(eagerload('options')))
+                ret = empty()
+                ret.boards=[]
+                ret.tags=[]
+                ret.totalBoardsThreads = 0
+                ret.totalTagsThreads = 0
+                ret.totalBoardsPosts = 0
+                ret.totalTagsPosts = 0
+                for b in boards:
+                    if not b.tag in forbiddenTags:
+                        bc = empty()
+                        bc.board = b
+                        result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where (p.id = m.postId and m.tagId = :ctid)", {'ctid':b.id})                                        
+                        #filter = self.buildFilter(b.tag)                                        
+                        #bc.count = filter[0].count()
+                        bc.count = result.fetchone()[0]
+                        result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where ((p.id = m.postId or p.parentId = m.postId)and m.tagId = :ctid)", {'ctid':b.id})                    
+                        bc.postsCount = result.fetchone()[0]
+                        if b.options and b.options.persistent:
+                            ret.boards.append(bc)
+                            ret.totalBoardsThreads += bc.count
+                            ret.totalBoardsPosts += bc.postsCount
+                        else:
+                            ret.tags.append(bc)
+                            ret.totalTagsThreads += bc.count
+                            ret.totalTagsPosts += bc.postsCount
+                return ret
+            
+            def vitalSigns():
+                ret = empty()
+                tpc = c.totalPostsCount
+                result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc, 'minid' : tpc - 1000})
+                ret.last1KUsersCount = result.fetchone()[0]
+                result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc - 1000, 'minid' : tpc - 2000})
+                ret.prev1KUsersCount = result.fetchone()[0]
+                result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) <= date")
+                ret.lastWeekMessages = result.fetchone()[0]
+                result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) >= date and DATE_SUB(NOW(), INTERVAL 14 DAY) <= date")
+                ret.prevWeekMessages = result.fetchone()[0]
+                return ret
+            
             adminTagsLine = g.settingsMap['adminOnlyTags'].value
-            ##log.debug(adminTagsLine)
             forbiddenTags = adminTagsLine.split(',')   
             
             if g.OPT.devMode:
-                ct = time.time()  
-                         
-            result = meta.Session().execute("select count(id) from posts")    
-            tpc = result.fetchone()[0]                                 
-            c.totalPostsCount = tpc
+                ct = time.time()
+                
+            cch = cache.get_cache('home_stats')
+            c.totalPostsCount = cch.get_value(key="totalPosts", createfunc=getTotalPosts, type="memory", expiretime=150)
             
-            for b in boards:
-                if not b.tag in forbiddenTags:
-                    bc = empty()
-                    bc.board = b
-                    result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where (p.id = m.postId and m.tagId = :ctid)", {'ctid':b.id})                                        
-                    #filter = self.buildFilter(b.tag)                                        
-                    #bc.count = filter[0].count()
-                    bc.count = result.fetchone()[0]
-                    result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where ((p.id = m.postId or p.parentId = m.postId)and m.tagId = :ctid)", {'ctid':b.id})                    
-                    bc.postsCount = result.fetchone()[0]
-                    if b.options and b.options.persistent:
-                        c.boards.append(bc)
-                        c.totalBoardsThreads += bc.count
-                        c.totalBoardsPosts += bc.postsCount
-                    else:
-                        c.tags.append(bc)
-                        c.totalTagsThreads += bc.count
-                        c.totalTagsPosts += bc.postsCount
+            mstat= cch.get_value(key="mainStats", createfunc=mainStats, type="memory", expiretime=150)
+            c.boards = sorted(mstat.boards, taglistcmp)
+            c.tags = sorted(mstat.tags, taglistcmp)
+            c.totalBoardsThreads = mstat.totalBoardsThreads
+            c.totalTagsThreads = mstat.totalTagsThreads
+            c.totalBoardsPosts = mstat.totalBoardsPosts
+            c.totalTagsPosts = mstat.totalTagsPosts
             
-            result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc, 'minid' : tpc - 1000})
-            c.last1KUsersCount = result.fetchone()[0]
-            result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc - 1000, 'minid' : tpc - 2000})
-            c.prev1KUsersCount = result.fetchone()[0]
-            result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) <= date")
-            c.lastWeekMessages = result.fetchone()[0]
-            result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) >= date and DATE_SUB(NOW(), INTERVAL 14 DAY) <= date")
-            c.prevWeekMessages = result.fetchone()[0]                    
-            c.boards = sorted(c.boards, taglistcmp)
-            c.tags = sorted(c.tags, taglistcmp)                 
+            vts = cch.get_value(key="vitalSigns", createfunc=vitalSigns, type="memory", expiretime=180)
+            c.last1KUsersCount = vts.last1KUsersCount
+            c.prev1KUsersCount = vts.prev1KUsersCount
+            c.lastWeekMessages = vts.lastWeekMessages
+            c.prevWeekMessages = vts.prevWeekMessages
+            
             c.boardName = _('Home')
             
             if g.OPT.devMode:

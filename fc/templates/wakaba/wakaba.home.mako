@@ -9,6 +9,8 @@
 <hr style="clear: both;"/>
 
 %if g.OPT.vitalSigns:
+
+<%def name="vitalSigns()" cached="True" cache_timeout="60" cache_type="memory">
 <div class="theader">
 Vital signs
 <br/><br/>
@@ -28,9 +30,12 @@ ADW: <span style="color: ${c.lastWeekMessages / (c.prevWeekMessages + 0.01) > 1.
 <br/><br/>
 SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPostsCount)}
 </div>
+</%def>
+
+s${vitalSigns()}
 %endif
 
-<%def name="stats()" cached="True" cache_timeout="60" cache_type="memory">
+<%def name="stats()" cached="True" cache_timeout="180" cache_type="memory">
 <h3>Boards</h3>
 %if not c.userInst.Anonymous:
 <span style="float: right;">

@@ -8,7 +8,8 @@ function popup_posts(options){
   $(document.body).append(popup_posts.helper)
   var show_it = function(html){
     popup_posts.helper.html('<table>' + html + '</table>')
-    popup_posts.helper.find(".reply").removeClass("reply").removeClass("highlight")
+    popup_posts.helper.find(".reply").removeClass("reply")
+    popup_posts.helper.find(".highlight").removeClass("highlight")
     popup_posts.helper.addClass("highlight reply")
     var left = popup_posts.ui.offset().left + popup_posts.ui.width()
     var top  = popup_posts.ui.offset().top - popup_posts.helper.height() - 2

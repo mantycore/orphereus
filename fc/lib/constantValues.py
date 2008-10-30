@@ -42,4 +42,5 @@ destinations = {0 : N_("Thread"),
                 2 : N_("Current page of current board"),                
                 3 : N_("Overview"),
                 4 : N_("First page of destination board"),
+                5 : N_("Referrer"),
                 }

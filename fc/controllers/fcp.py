@@ -215,7 +215,7 @@ class FcpController(OrphieBaseController):
 
             meta.Session.commit()
             #log.debug(c.currentURL)
-            redirect_to(c.currentURL)                
+            redirect_to(c.currentURL.encode('utf-8'))
         
         c.boardName = _('Login')
         return self.render('login')

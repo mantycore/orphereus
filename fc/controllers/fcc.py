@@ -734,6 +734,8 @@ class FccController(OrphieBaseController):
                 redirectAddr = "%s/page/%d" % (tagLine, curPage)          
         elif dest == 3: # overview
             pass
+        elif dest == 5: #referrer
+            return redirect_to(request.headers.get('REFERER',''))
         
         ##log.debug(redirectAddr)
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))    

@@ -22,7 +22,7 @@
                     %endif
                     <span class="replytitle">${post.title}</span>
                     <span class="commentpostername"></span>
-                    ${post.date}
+                     ${h.modTime(post, c.userInst.secid(), g.OPT.secureTime)}
                 </label>
                 <span class="reflink">
                     %if c.board:

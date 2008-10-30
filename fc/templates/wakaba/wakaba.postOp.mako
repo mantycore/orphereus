@@ -32,9 +32,8 @@
         <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>                     
     %endif
     </div>
-    <span class="filetitle">${thread.title}</span>  
-    <span class="postername"></span>
-    ${thread.date}
+    <span class="filetitle">${thread.title}</span>
+    ${h.modTime(thread, c.userInst.secid(), g.OPT.secureTime)}
 </label>
 <span class="reflink">
     %if c.board:

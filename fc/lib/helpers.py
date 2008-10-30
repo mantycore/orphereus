@@ -5,6 +5,7 @@ available to Controllers. This module is available to both as 'h'.
 """
 from webhelpers import *
 from pylons import config
+import datetime
 
 def modLink(string, secid, f):
     if f:
@@ -22,4 +23,10 @@ def modMessage(message, user, f):
         return message.replace('[SECURITY:UNIQUE_VAL]', uval)
     else:
         return message
+    
+def modTime(post, user, f):
+    if f:
+         return post.date - datetime.timedelta(seconds=((-1)**user)*int(user/2))
+    else:
+        return post.date
 

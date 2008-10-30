@@ -30,10 +30,11 @@ def modMessage(message, user, f):
 def modTime(post, user, f):
     if f:
         user += 78
-        log.debug(user)
-        log.debug(post.date)
-        log.debug(((-1)**user)*int(user/2))
-        return post.date - datetime.timedelta(seconds=((-1)**user)*int(user/2))
+        #log.debug(user)
+        #log.debug(post.date)
+        #log.debug(((-1)**user)*int(user/2))
+        x = user.uidNumber()
+        return post.date - datetime.timedelta(seconds=((-1)**x)*int(x/2))
     else:
         return post.date
 

@@ -22,7 +22,7 @@
                     %endif
                     <span class="replytitle">${post.title}</span>
                     <span class="commentpostername"></span>
-                     ${h.modTime(post, c.userInst.secid(), g.OPT.secureTime)}
+                     ${h.modTime(post, c.userInst, g.OPT.secureTime)}
                 </label>
                 <span class="reflink">
                     %if c.board:

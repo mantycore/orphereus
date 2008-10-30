@@ -33,7 +33,7 @@
     %endif
     </div>
     <span class="filetitle">${thread.title}</span>
-    ${h.modTime(thread, c.userInst.secid(), g.OPT.secureTime)}
+    ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
 </label>
 <span class="reflink">
     %if c.board:

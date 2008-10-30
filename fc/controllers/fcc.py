@@ -213,7 +213,7 @@ class FccController(OrphieBaseController):
             if board == '~':
                 c.boardName = _('Overview')
             if board == '@':
-                c.boardName = _('Related threads')             
+                c.boardName = _('Related threads')
                 
         c.boardOptions = self.conjunctTagOptions(tags)
         c.tagList = ' '.join(tagList)
@@ -250,7 +250,7 @@ class FccController(OrphieBaseController):
             #log.debug(thread.hidden)
                 
         if tempid:  
-            oekaki = self.sqlFirst(meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid))            
+            oekaki = self.sqlFirst(meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid))
             c.oekaki = oekaki
         else:
             c.oekaki = False

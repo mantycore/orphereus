@@ -29,7 +29,6 @@ def modMessage(message, user, f):
     
 def modTime(post, user, f):
     if f:
-        user += 78
         #log.debug(user)
         #log.debug(post.date)
         #log.debug(((-1)**user)*int(user/2))

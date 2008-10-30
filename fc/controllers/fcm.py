@@ -1,4 +1,3 @@
-import logging
 from fc.lib.base import *
 from fc.model import *
 from sqlalchemy.orm import eagerload
@@ -19,6 +18,7 @@ from fc.lib.constantValues import *
 from fc.lib.settings import *
 from OrphieBaseController import OrphieBaseController
 
+import logging
 log = logging.getLogger(__name__)
 
 class Empty:

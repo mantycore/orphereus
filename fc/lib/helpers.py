@@ -7,6 +7,9 @@ from webhelpers import *
 from pylons import config
 import datetime
 
+import logging
+log = logging.getLogger(__name__)
+
 def modLink(string, secid, f):
     if f:
         p1 = string[0:4]
@@ -26,7 +29,11 @@ def modMessage(message, user, f):
     
 def modTime(post, user, f):
     if f:
-         return post.date - datetime.timedelta(seconds=((-1)**user)*int(user/2))
+        user += 78
+        log.debug(user)
+        log.debug(post.date)
+        log.debug(((-1)**user)*int(user/2))
+        return post.date - datetime.timedelta(seconds=((-1)**user)*int(user/2))
     else:
         return post.date
 

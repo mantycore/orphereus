@@ -27,7 +27,7 @@ def filterText(text):
     return text.replace('<','&lt;').replace('>','&gt;').replace("'",'&#39;').replace('"','&quot;').replace('(c)','&copy;').replace('--','&#151;').replace('(tm)','&#153;').replace('...','&#8230;')
 
 def isNumber(n):
-    if n and isinstance(n, int):
+    if isinstance(n, int):
         return True
     if n and isinstance(n, basestring):
         if re.match("^[-+]?[0-9]+$", n):

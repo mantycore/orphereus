@@ -2,7 +2,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>${c.title} &#151; ${c.boardName}</title>
+        <title>
+${c.title}
+%if c.boardName:
+    &#151; ${c.boardName}
+    %if c.page:
+      (${c.page})
+    %endif
+%endif        
+        </title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <META NAME="ROBOTS" CONTENT="NOARCHIVE">
         <link rel="stylesheet" type="text/css" href="${g.OPT.filesPathWeb}../css/${c.userInst.style()}.css" title="Photon" />

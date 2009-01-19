@@ -70,7 +70,7 @@ def adminAlert(alertStr):
     server.close()    
     
 def checkAdminIP():
-    if request.environ["REMOTE_ADDR"] != '127.0.0.1':
+    if g.OPT.useAnalBarriering and request.environ["REMOTE_ADDR"] != '127.0.0.1':
         msg = _("Access attempt from %s for admin account!") % request.environ["REMOTE_ADDR"]
         addLogEntry(LOG_EVENT_SECURITY_IP, msg)
         adminAlert(msg)

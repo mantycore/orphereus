@@ -51,6 +51,8 @@ security.secureText = true
 security.secureTime = true
 security.checkUAs = true
 security.spiderTrap = true
+security.interestingNumbers = true
+security.useAnalBarriering = true
 
 [loggers]
 keys = root, fc

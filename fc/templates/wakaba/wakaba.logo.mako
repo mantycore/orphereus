@@ -5,5 +5,8 @@
 	${c.title}
 	%if c.boardName:
 		&#151; ${c.boardName}
+		%if c.page:
+		  (${c.page})
+		%endif
 	%endif
 </div>

@@ -27,8 +27,12 @@ PWA: ${c.prevWeekMessages}
 </font>
 <br/>
 ADW: <span style="color: ${c.lastWeekMessages / (c.prevWeekMessages + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.lastWeekMessages / (c.prevWeekMessages + 0.01))}</span>
+
+%if g.OPT.interestingNumbers:
 <br/><br/>
 SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPostsCount)}
+%endif
+
 </div>
 </%def>
 
@@ -37,11 +41,12 @@ ${vitalSigns()}
 
 <%def name="stats()" cached="True" cache_timeout="180" cache_type="memory">
 <h3>Boards</h3>
-%if not c.userInst.Anonymous:
+%if g.OPT.interestingNumbers and not c.userInst.Anonymous:
 <span style="float: right;">
 <i>Interesting numbers: ${c.totalPostsCount} [${abs(c.userInst.secid()*c.userInst.secid() - c.totalPostsCount*c.totalPostsCount)}]</i>
 </span>
 %endif
+
 <i>Let my BOARDS go!</i>
 <table width="100%" class="hlTable">
     <thead>

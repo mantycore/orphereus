@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
-<b>Found:</b> ${c.count}<br/>
+<b>Found:</b> ${c.count}
+
+<br/>
 <form action="/search" method="post">
     <input type="text" name="query" size="20" value="${c.query}"/>
     <input value="Search again" type="submit" />
 </form>
-<br/>
 
 <%include file="wakaba.paginator.mako" args="baselink='search/%s' % c.query"/>
 
@@ -65,6 +66,12 @@
 </table>
 	 
 %endfor 
+
+<br/>
+<form action="/search" method="post">
+    <input type="text" name="query" size="20" value="${c.query}"/>
+    <input value="Search again" type="submit" />
+</form>
 
 %if c.userInst.useAjax():
 	<script>popup_posts({ajax: true});</script>

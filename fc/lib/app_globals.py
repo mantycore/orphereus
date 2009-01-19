@@ -52,6 +52,8 @@ class OptHolder(object):
         self.secureLinks = (config['security.secureLinks'] == 'true')
         self.secureText = (config['security.secureText'] == 'true')
         self.secureTime = (config['security.secureTime'] == 'true')
+        self.interestingNumbers = (config['security.interestingNumbers'] == 'true')
+        self.useAnalBarriering = (config['security.useAnalBarriering'] == 'true')
         
 class Globals(object):   
     def __init__(self):

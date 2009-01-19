@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
+<%include file="wakaba.paginator.mako" args="baselink=c.board"/>
+
+<hr/>
+
 %if c.canPost:
 <%include file="wakaba.postForm.mako" />
 %endif
+
+<hr/>
 
 <form action="/${c.PostAction}/delete" method="post">
 <input type="hidden" name="tagLine" value="${c.tagLine}">

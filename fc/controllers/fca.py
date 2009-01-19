@@ -165,9 +165,13 @@ class FcaController(OrphieBaseController):
         
     def editUserByPost(self, pid):
         post = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==pid).order_by(Post.id.asc()).first()
-        reason = request.POST.get("UIDViewReason", 'No reason given!')
-        addLogEntry(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '<a href='/%s#i%s'>%s</a>'. Reason: %s" % (post.uidNumber, post.parentid > 0 and post.parentid or post.id, pid, pid, reason))
-        return redirect_to('/holySynod/manageUsers/edit/%s' % post.uidNumber)        
+        if post:
+            reason = request.POST.get("UIDViewReason", 'No reason given!')
+            addLogEntry(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '<a href='/%s#i%s'>%s</a>'. Reason: %s" % (post.uidNumber, post.parentid > 0 and post.parentid or post.id, pid, pid, reason))
+            return redirect_to('/holySynod/manageUsers/edit/%s' % post.uidNumber)
+        else:
+            c.errorText = _("Post not found")
+            return self.render('error')
         
     def editUser(self,uid):
         c.boardName = 'Edit user %s' % uid

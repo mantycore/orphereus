@@ -21,7 +21,7 @@
                 <a name="i${pt[0].id}"></a>
                 <label>
                     %if pt[0].sage:
-                        <img src='${g.OPT.staticPathWeb}/images/sage.png'>
+                        <img src='${g.OPT.staticPathWeb}images/sage.png'>
                     %endif
                     <span class="replytitle">${pt[0].title}</span>
                     <span class="commentpostername"></span>
@@ -46,7 +46,7 @@
                     <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
                     <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid(), g.OPT.secureLinks)}">
                     %if pt[0].spoiler:
-                        <img src="${g.OPT.staticPathWeb}/images/spoiler.png" class="thumb"/>
+                        <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb"/>
                     %elif not '..' in pt[0].file.thumpath:                                     
                         <img src="${g.OPT.filesPathWeb + h.modLink(pt[0].file.thumpath, c.userInst.secid(), g.OPT.secureLinks)}" width="${pt[0].file.thwidth}" height="${pt[0].file.thheight}" class="thumb" />
                     %else:  
@@ -55,7 +55,7 @@
                     </a>
                     %elif pt[0].picid == -1:
                         <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-                        <img src='${g.OPT.staticPathWeb}/images/picDeleted.png' class="thumb">                                    
+                        <img src='${g.OPT.staticPathWeb}images/picDeleted.png' class="thumb">                                    
                     %endif
                 <blockquote class="postbody" id="postBQId${pt[0].id}">
                         ${h.modMessage(pt[0].message, c.userInst, g.OPT.secureText)}

@@ -13,11 +13,11 @@ ${c.title}
         </title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <META NAME="ROBOTS" CONTENT="NOARCHIVE">
-        <link rel="stylesheet" type="text/css" href="${g.OPT.staticPathWeb}/css/${c.userInst.style()}.css" title="Photon" />
+        <link rel="stylesheet" type="text/css" href="${g.OPT.staticPathWeb}css/${c.userInst.style()}.css" title="Photon" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-		<script type="text/javascript" src="${g.OPT.staticPathWeb}/js/ui.js"></script>
-		<script type="text/javascript" src="${g.OPT.staticPathWeb}/js/utils.js"></script>
-		<script type="text/javascript" src="${g.OPT.staticPathWeb}/js/jquery-1.2.6.js"></script>
+		<script type="text/javascript" src="${g.OPT.staticPathWeb}js/ui.js"></script>
+		<script type="text/javascript" src="${g.OPT.staticPathWeb}js/utils.js"></script>
+		<script type="text/javascript" src="${g.OPT.staticPathWeb}js/jquery-1.2.6.js"></script>
     </head>
     <body>
         <%include file="wakaba.menu.mako" />

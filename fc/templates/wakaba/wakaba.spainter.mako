@@ -1,10 +1,10 @@
 <html>
 <head>
 <title>Shi-Painter</title>
-<script language="javascript" type="text/javascript" src="${g.OPT.filesPathWeb}../sp.js"></script>
+<script language="javascript" type="text/javascript" src="${g.OPT.staticPathWeb}/sp.js"></script>
 </head>
 <body>
-<applet code="c.ShiPainter.class" name="paintbbs" archive="${g.OPT.filesPathWeb}../spainter.jar,${g.OPT.filesPathWeb}../res/${c.oekakiToolString}.zip" WIDTH="100%" height="100%" MAYSCRIPT>
+<applet code="c.ShiPainter.class" name="paintbbs" archive="${g.OPT.staticPathWeb}/spainter.jar,${g.OPT.staticPathWeb}/res/${c.oekakiToolString}.zip" WIDTH="100%" height="100%" MAYSCRIPT>
 <param name="image_width" value="${c.width}">
 <param name="image_height" value="${c.height}">
 %if c.canvas:
@@ -20,9 +20,9 @@
 <param name="send_header_timer" value="true" />
 
 
-<param name="dir_resource" value="${g.OPT.filesPathWeb}../res/">
-<param name="tt.zip" value="${g.OPT.filesPathWeb}../res/tt.zip">
-<param name="res.zip" value="${g.OPT.filesPathWeb}../res/res_${c.oekakiToolString}.zip">
+<param name="dir_resource" value="${g.OPT.staticPathWeb}/res/">
+<param name="tt.zip" value="${g.OPT.staticPathWeb}/res/tt.zip">
+<param name="res.zip" value="${g.OPT.staticPathWeb}/res/res_${c.oekakiToolString}.zip">
 
 <param name="tools" value="${c.oekakiToolString}">
 

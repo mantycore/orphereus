@@ -21,6 +21,7 @@ class OptHolder(object):
         self.hashSecret = config['core.hashSecret']
         self.baseDomain = config['core.baseDomain'] 
         self.minPassLength = int(config['core.minPassLength'])
+        self.staticPathWeb=config['core.staticPathWeb']
         self.filesPathWeb=config['core.filesPathWeb']
         self.templates = config['core.templates'].split(',')
         self.styles = config['core.styles'].split(',')

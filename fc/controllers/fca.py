@@ -244,7 +244,7 @@ class FcaController(OrphieBaseController):
                                     
                                 self.processDelete(post.id, False, False, reason)
                             addLogEntry(LOG_EVENT_USER_DELETE,_('Removed legacy of %s for "%s" [%s]') % (user.uidNumber, reason, ', '.join(removed)))
-                        #meta.Session.delete(user)
+                        meta.Session.delete(user)
                         addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
                         c.message = "User deleted"
                         return self.render('manageUsers')

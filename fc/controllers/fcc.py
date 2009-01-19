@@ -749,12 +749,16 @@ class FccController(OrphieBaseController):
         
         for i in request.POST:
             if re.compile("^\d+$").match(request.POST[i]):
-                opPostDeleted = opPostDeleted or self.processDelete(request.POST[i], fileonly, True, reason)
+                res = self.processDelete(request.POST[i], fileonly, True, reason)
+                opPostDeleted = opPostDeleted or res 
      
         tagLine = request.POST.get('tagLine', False)
-        if opPostDeleted and tagLine:
-            redirectAddr = tagLine   
-            
+        if opPostDeleted: 
+            if tagLine:
+                redirectAddr = tagLine
+            else:   
+                redirectAddr = '~'
+                
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
         
     def showProfile(self):

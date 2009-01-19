@@ -33,11 +33,7 @@ class FccController(OrphieBaseController):
         #self.userInst = FUser(session.get('uidNumber', -1))
         c.userInst = self.userInst
         c.destinations = destinations
-        
-        if g.OPT.devMode:
-            c.log = []
-            c.sum = 0
-                            
+                                    
         c.currentURL = request.path_info
         if c.currentURL[-1] != '/':
             c.currentURL = c.currentURL + '/'
@@ -258,54 +254,6 @@ class FccController(OrphieBaseController):
         #c.returnTo = session.get('returnTo', False)
         c.curPage = page
         return self.render('posts')
-                   
-    def conjunctTagOptions(self, tags):
-        options = TagOptions()
-        optionsFlag = True
-        rulesList = []
-        for t in tags:
-            if t.options:
-                if optionsFlag:
-                    options.imagelessThread = t.options.imagelessThread
-                    options.imagelessPost   = t.options.imagelessPost
-                    options.images   = t.options.images
-                    options.enableSpoilers = t.options.enableSpoilers
-                    options.maxFileSize = t.options.maxFileSize
-                    options.minPicSize = t.options.minPicSize
-                    options.thumbSize = t.options.thumbSize
-                    options.canDeleteOwnThreads = t.options.canDeleteOwnThreads
-                    optionsFlag = False                    
-                else:
-                    options.imagelessThread = options.imagelessThread & t.options.imagelessThread
-                    options.imagelessPost = options.imagelessPost & t.options.imagelessPost
-                    options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
-                    options.canDeleteOwnThreads = options.canDeleteOwnThreads & t.options.canDeleteOwnThreads
-                    options.images = options.images & t.options.images
-                    if t.options.maxFileSize < options.maxFileSize:
-                        options.maxFileSize = t.options.maxFileSize
-                    if t.options.minPicSize > options.minPicSize:
-                        options.minPicSize = t.options.minPicSize
-                    if t.options.thumbSize < options.thumbSize:
-                        options.thumbSize = t.options.thumbSize
-                                            
-                tagRulesList = t.options.specialRules.split(';') 
-                for rule in tagRulesList:
-                    if rule and not rule in rulesList:
-                        rulesList.append(rule)      
-                        
-        options.rulesList = rulesList
-        
-        if optionsFlag:
-            options.imagelessThread = True
-            options.imagelessPost   = True
-            options.images   = True
-            options.enableSpoilers = True
-            options.canDeleteOwnThreads = True
-            options.maxFileSize = 2621440
-            options.minPicSize = 50
-            options.thumbSize = 180
-            options.specialRules = ''
-        return options
         
     def __tagListFromString(self, tagstr):
             tags = []
@@ -797,83 +745,17 @@ class FccController(OrphieBaseController):
         redirectAddr = post
              
         opPostDeleted = False
+        reason = filterText(request.POST.get('reason', '???'))
+        
         for i in request.POST:
             if re.compile("^\d+$").match(request.POST[i]):
-                opPostDeleted = opPostDeleted or self.processDelete(request.POST[i], fileonly)
+                opPostDeleted = opPostDeleted or self.processDelete(request.POST[i], fileonly, True, reason)
      
         tagLine = request.POST.get('tagLine', False)
         if opPostDeleted and tagLine:
             redirectAddr = tagLine   
             
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
-        
-    def processDelete(self, postid, fileonly=False, checkOwnage=True):
-        p = self.sqlGet(meta.Session.query(Post), postid)
-                 
-        opPostDeleted = False
-        if p:
-            if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
-                # print some error stuff here
-                return False
-            if p.parentid>0:  
-                parentp = self.sqlGet(meta.Session.query(Post), p.parentid)
-            postOptions = self.conjunctTagOptions(p.parentid>0 and parentp.tags or p.tags)
-            if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
-                tagline = ''
-                taglist = []
-                reason = filterText(request.POST.get('reason', '???'))
-                if p.parentid>0:
-                    for tag in parentp.tags:
-                    	taglist.append(tag.tag)
-                    tagline = ', '.join(taglist)
-                    log = _("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (p.id, p.uidNumber, p.parentid, tagline, reason)
-                else:
-                    for tag in p.tags:
-                    	taglist.append(tag.tag)
-                    tagline = ', '.join(taglist)                   
-                    log = _("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (p.id, p.uidNumber, tagline, reason)
-                addLogEntry(LOG_EVENT_POSTS_DELETE, log)
-            
-            if p.parentid == -1 and not fileonly:
-                if not (postOptions.canDeleteOwnThreads or self.userInst.canDeleteAllPosts()):
-                    return False
-                opPostDeleted = True
-                for post in self.sqlAll(meta.Session.query(Post).filter(Post.parentid==p.id)):
-                    self.processDelete(postid=post.id, checkOwnage=False)
-                    
-            pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==p.picid))
-            if pic and self.sqlCount(meta.Session.query(Post).filter(Post.picid==p.picid)) == 1:
-                filePath = os.path.join(g.OPT.uploadPath, pic.path)
-                thumPath = os.path.join(g.OPT.uploadPath, pic.thumpath)
-                
-                if os.path.isfile(filePath):
-                    os.unlink(filePath)
-                    
-                ext = self.sqlFirst(meta.Session.query(Extension).filter(Extension.id==pic.extid))
-                if not ext.path:
-                    if os.path.isfile(thumPath): os.unlink(thumPath)
-                meta.Session.delete(pic)
-           
-            if fileonly and postOptions.imagelessPost: 
-                if pic:
-                    p.picid = -1
-            else:
-                invisBump = (g.settingsMap['invisibleBump'].value == 'false')
-                parent = self.sqlFirst(meta.Session.query(Post).filter(Post.id==p.parentid))
-                if parent:
-                    parent.replyCount -= 1
-                        
-                if invisBump and p.parentid != -1:
-                    thread = self.sqlAll(meta.Session.query(Post).filter(Post.parentid==p.parentid))
-                    if thread and thread[-1].id == p.id:
-                        if len(thread) > 1:
-                            parent.bumpDate = thread[-2].date
-                        else:
-                            parent.bumpDate = parent.date
-                            
-                meta.Session.delete(p)
-        meta.Session.commit()
-        return opPostDeleted
         
     def showProfile(self):
         if self.userInst.Anonymous:

@@ -82,7 +82,8 @@
                 <tr>
                     <td class="postblock">${_('Reason')}</td>
                     <td>
-                        <input type="text" name="deletereason" size="35" value="" />
+                        <input type="text" name="deletereason" size="35" value="" /><br/>
+                        <input type="checkbox" name="deleteLegacy" /> Remove all users's posts
                     </td>
                 </tr>
                 <tr>
@@ -103,7 +104,7 @@
                     <td>
                         <input type="text" name="lookupreason" size="35" value="" />
                     </td>
-                </tr>                
+                </tr>
                 <tr>
                     <td colspan='2'><input type='submit' name='lookup' value='${_('Look up')}'></td>
                 </tr>              

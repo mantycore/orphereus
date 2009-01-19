@@ -30,7 +30,7 @@ class FcaController(OrphieBaseController):
             return redirect_to('/')
         self.initEnvironment()
         if not self.userInst.isAdmin():
-            c.errorText = "No way! You aren't holy enough!"
+            c.errorText = _("No way! You aren't holy enough!")
             return redirect_to('/')
         c.userInst = self.userInst
         if not checkAdminIP():
@@ -230,9 +230,21 @@ class FcaController(OrphieBaseController):
 		        c.message = _('NOT IMPLEMENTED YET')
             elif request.POST.get('delete',False):
                 reason = filterText(request.POST.get('deletereason',''))
+                deleteLegacy = request.POST.get('deleteLegacy', False)
                 if self.userInst.canChangeRights():
                     if len(reason)>1:
-                        meta.Session.delete(user)
+                        if deleteLegacy:
+                            posts = self.sqlAll(meta.Session.query(Post).filter(Post.uidNumber==user.uidNumber))
+                            removed = []
+                            for post in posts:
+                                if post.parentid == -1:
+                                    removed.append(str(post.id))
+                                else:
+                                    removed.append("%d/%d" % (post.id, post.parentid))
+                                    
+                                self.processDelete(post.id, False, False, reason)
+                            addLogEntry(LOG_EVENT_USER_DELETE,_('Removed legacy of %s for "%s" [%s]') % (user.uidNumber, reason, ', '.join(removed)))
+                        #meta.Session.delete(user)
                         addLogEntry(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
                         c.message = "User deleted"
                         return self.render('manageUsers')

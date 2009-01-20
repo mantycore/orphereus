@@ -308,23 +308,6 @@ class FcaController(OrphieBaseController):
         c.boardName = 'Applications management'
         return self.render('manageApplications')  
         
-    def invitePage(self):
-        return self.render('invitePage') 
-        
-    def makeInvite(self):         
-        if not self.userInst.canMakeInvite():
-            c.errorText = "No way! You aren't holy enough!"
-            return self.render('error') 
-        c.boardName = 'Invites'
-        invite = Invite()
-        invite.date = datetime.datetime.now()
-        invite.invite = self.genInviteId()
-        meta.Session.save(invite)
-        meta.Session.commit()
-        addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, filterText(request.POST.get('inviteReason','???'))))
-        c.inviteLink = "<a href='/register/%s'>INVITE</a>" % invite.invite
-        return self.render('newInvite')
-        
     def viewLog(self, page):
         c.boardName = 'Logs'
         page = int(page)
@@ -390,3 +373,25 @@ class FcaController(OrphieBaseController):
             redirect_to('/holySynod/manageMappings/show/%d' % id)
         else:
             redirect_to('/holySynod/manageMappings')
+            
+    def invitePage(self):
+        return self.render('invitePage') 
+        
+    def makeInvite(self):
+        if not self.userInst.canMakeInvite():
+            c.errorText = "No way! You aren't holy enough!"
+            return self.render('error')
+        
+        c.boardName = _('Invite creation')
+        c.inviteCode = False
+        reason = request.POST.get('inviteReason', False)
+        if reason and len(reason) > 1:
+            reason = filterText(reason)
+            invite = Invite()
+            invite.date = datetime.datetime.now()
+            invite.invite = self.genInviteId()
+            meta.Session.save(invite)
+            meta.Session.commit()
+            addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, reason))
+            c.inviteCode = invite.invite
+        return self.render('newInvite')

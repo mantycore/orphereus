@@ -45,7 +45,6 @@ def make_map():
 
     # Admin subsystem
     map.connect('/holySynod', controller='fca', action='index')
-    map.connect('/holySynod/invitePage', controller='fca', action='invitePage')
     map.connect('/holySynod/makeInvite', controller='fca', action='makeInvite')
     map.connect('/holySynod/manageSettings', controller='fca', action='manageSettings')
     map.connect('/holySynod/manageExtensions', controller='fca', action='manageExtensions')

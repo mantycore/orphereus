@@ -10,6 +10,6 @@
 -->
 <a href="/holySynod/viewLog">${_('View logs')}</a><br />
 %if c.userInst.canMakeInvite():
-<a href="/holySynod/invitePage">${_('Generate invite')}</a><br />
+<a href="/holySynod/makeInvite">${_('Generate invite')}</a><br />
 %endif
 <a href="/holySynod/service">${_('Maintenance')}</a><br />

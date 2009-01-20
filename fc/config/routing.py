@@ -72,6 +72,9 @@ def make_map():
     map.connect('/ajax/editUserFilter/:fid/:filter', controller='fcajax', action='editUserFilter', requirements=dict(fid='\d+'))
     map.connect('/ajax/deleteUserFilter/:fid', controller='fcajax', action='deleteUserFilter', requirements=dict(fid='\d+'))
     map.connect('/ajax/addUserFilter/:filter', controller='fcajax', action='addUserFilter')
+    map.connect('/ajax/getRepliesCountForThread/:post', controller='fcajax', action='getRepliesCountForThread', requirements=dict(post='\d+'))
+    map.connect('/ajax/getThreadIds/:post', controller='fcajax', action='getThreadIds', requirements=dict(post='\d+'))
+    map.connect('/ajax/getUserSettings', controller='fcajax', action='getUserSettings')
     
     # Threads
     map.connect('/:post', controller='fcc', action='PostReply',conditions=dict(method=['POST']),requirements=dict(post='\d+'))

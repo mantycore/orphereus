@@ -747,8 +747,9 @@ class FccController(OrphieBaseController):
         opPostDeleted = False
         reason = filterText(request.POST.get('reason', '???'))
         
+        retest = re.compile("^\d+$")
         for i in request.POST:
-            if re.compile("^\d+$").match(request.POST[i]):
+            if retest.match(request.POST[i]):
                 res = self.processDelete(request.POST[i], fileonly, True, reason)
                 opPostDeleted = opPostDeleted or res 
      

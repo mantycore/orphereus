@@ -160,3 +160,12 @@ class FUser(object):
         return self.__user.options.bantime
     def banreason(self):
         return self.__user.options.banreason 
+    def optionsDump(self):
+        optionsNames = dir(self.__user.options)
+        ret = {}
+        retest = re.compile("^(<.*(at (0x){0,1}[0-9a-fA-F]+)+.*>)|(__.*__)$")
+        for name in optionsNames:
+            attr = str(getattr(self.__user.options, name))
+            if not (retest.match(name) or retest.match(attr)): # or (name.startswith('__') and name.endswith('__'))):
+                ret[name] = attr
+        return ret

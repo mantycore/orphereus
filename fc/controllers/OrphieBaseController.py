@@ -76,8 +76,7 @@ class OrphieBaseController(BaseController):
             return _("Template problem: " + page)
             
     def showStatic(self, page):
-        c.page = page
-        c.boardName = page
+        c.boardName = _(page)
         return self.render('static.%s' % page) #render('/%s.static.mako' % self.userInst.template())
         
     def genUid(self, key):

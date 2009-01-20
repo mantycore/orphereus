@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
+<!-- ${_("markup")} -->
+
 <div style="text-align: center;">    
 <h2 style="margin: 0;">Orphie-Mark</h2>
 <i>(Разметка)</i>

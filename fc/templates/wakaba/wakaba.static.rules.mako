@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
+<!-- ${_("rules")} -->
+
 <h2>Основные правила Аномы:</h2>
 <font style="font-size: 110%">
 <ol>

@@ -21,7 +21,6 @@
                         <img src='${g.OPT.staticPathWeb}images/sage.png'>
                     %endif
                     <span class="replytitle">${post.title}</span>
-                    <span class="commentpostername"></span>
                      ${h.modTime(post, c.userInst, g.OPT.secureTime)}
                 </label>
                 <span class="reflink">

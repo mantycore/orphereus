@@ -7,7 +7,11 @@
             <tbody>
                 %if c.message:
                     <tr id="trmessage">
-                        <td colspan=2>${c.message}</td>
+                        <td colspan=2>
+                            <span class="theader">
+                                ${c.message}
+                            </span>
+                        </td>
                     </tr>
                 %endif
                 <tr>
@@ -94,7 +98,7 @@
                     <td colspan=2>${_('Look up posts')}</td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('Quantity')}</td>
+                    <td class="postblock">${_('Quantity of last posts to view')}</td>
                     <td>
                         <input type="text" name="quantity" size="35" value="100" />
                     </td>

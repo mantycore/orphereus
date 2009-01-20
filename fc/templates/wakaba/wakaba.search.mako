@@ -24,7 +24,6 @@
                         <img src='${g.OPT.staticPathWeb}images/sage.png'>
                     %endif
                     <span class="replytitle">${pt[0].title}</span>
-                    <span class="commentpostername"></span>
                     ${pt[0].date}
                 </label>
                 <span class="reflink">

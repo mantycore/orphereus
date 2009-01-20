@@ -226,9 +226,22 @@ class FcaController(OrphieBaseController):
                     c.message = _('User was unbanned')
                 else:
                     c.message = _('This user is not banned')
-            elif request.POST.get('lookup',False):
-		        c.message = _('NOT IMPLEMENTED YET')
-            elif request.POST.get('delete',False):
+            elif request.POST.get('lookup', False):
+                reason = filterText(request.POST.get('lookupreason',''))
+                quantity = int(request.POST.get('quantity', '0'))
+                if isNumber(quantity) and int(quantity) > 0:
+                    if len(reason) > 1:
+                        c.posts = meta.Session.query(Post).filter(Post.uidNumber==user.uidNumber).order_by(Post.date.desc())[:quantity]
+                        addLogEntry(LOG_EVENT_USER_DELETE,_('Performed posts lookup for user %s for "%s", quantity: %s') % (user.uidNumber, reason, quantity))
+                        if c.posts:
+                            return self.render('postsLookup')
+                        else:
+                            c.message = _('No posts found')
+                    else:
+                        c.message = _('You should specify lookup reason')
+                else:
+                    c.message = _('Incorrect quantity value')
+            elif request.POST.get('delete', False):
                 reason = filterText(request.POST.get('deletereason',''))
                 deleteLegacy = request.POST.get('deleteLegacy', False)
                 if self.userInst.canChangeRights():

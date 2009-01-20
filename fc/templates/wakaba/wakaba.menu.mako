@@ -27,6 +27,7 @@
         [<a href="/viewLog/">${_('Logs')}</a>]
     %endif     
     [<a href="http://anoma.ch:3210">${_('Anoma-FM')}</a>]
+    [<a target="_blank" href="/static/donate">Donate</a>]
     %if not c.userInst.Anonymous:
     [<a href="/logout/">${_('Logout')}</a>]
     %else:

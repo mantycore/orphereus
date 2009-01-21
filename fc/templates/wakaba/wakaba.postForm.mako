@@ -125,6 +125,7 @@ ${_('On this board:')}
 <li>${_('Spoiler alerts')}:  ${not c.boardOptions.enableSpoilers and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Op can delete thread')}:  ${c.boardOptions.canDeleteOwnThreads and _('yes') or _('no')}</li>
 <li>${_('Enabled extensions')}:<br/>  ${c.extLine}</li>
+<li>${_('Final Anonymity')}:  ${_('turned')} ${not g.OPT.enableFinalAnonymity and _('off') or 'on'}</li>
 </ul>
 </div>
 %if c.boardOptions.rulesList:

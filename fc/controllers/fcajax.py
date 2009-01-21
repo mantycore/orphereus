@@ -19,7 +19,6 @@ from wakabaparse import WakabaParser
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
-from fc.lib.settings import *
 from OrphieBaseController import OrphieBaseController
 
 log = logging.getLogger(__name__)

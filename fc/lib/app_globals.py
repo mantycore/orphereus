@@ -14,10 +14,10 @@ class OptHolder(object):
         self.templPath= os.path.join(self.appPath, 'fc/templates/')
         self.uploadPath = os.path.join(self.appPath, 'fc/uploads/')
         self.captchaFont = os.path.join(self.appPath, 'fc/cfont.ttf')
-        self.markupFile = os.path.join(self.appPath, 'wakabaparse/mark.def')                   
+        self.markupFile = os.path.join(self.appPath, 'wakabaparse/mark.def')
         
         # Basic IB settings
-        self.devMode = (config['core.devMode'] == 'true')        
+        self.devMode = (config['core.devMode'] == 'true')
         self.hashSecret = config['core.hashSecret']
         self.baseDomain = config['core.baseDomain'] 
         self.minPassLength = int(config['core.minPassLength'])
@@ -55,6 +55,10 @@ class OptHolder(object):
         self.secureTime = (config['security.secureTime'] == 'true')
         self.interestingNumbers = (config['security.interestingNumbers'] == 'true')
         self.useAnalBarriering = (config['security.useAnalBarriering'] == 'true')
+        
+        self.enableFinalAnonymity = (config['security.enableFinalAnonymity'] == 'true')
+        self.finalAHoursDelay = int(config['security.finalAHoursDelay'])
+        self.hlAnonymizedPosts = (config['security.hlAnonymizedPosts'] == 'true')
         
 class Globals(object):   
     def __init__(self):

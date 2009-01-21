@@ -42,7 +42,7 @@ function popup_posts(options){
     var content = $("#quickReplyNode"+m[0])
     if (content.size()){
       if (content[0].tagName == 'BLOCKQUOTE')
-        show_it(content.parent().html().toLowerCase().split('<table')[0])
+        show_it(content.parent().html().split(/<table|<TABLE/)[0])
       else
         show_it(content.html())
     }else if(popup_posts.cache[m[0]] == 404){

@@ -16,7 +16,6 @@ import re
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
-from fc.lib.settings import *
 from OrphieBaseController import OrphieBaseController
 
 log = logging.getLogger(__name__)
@@ -365,8 +364,12 @@ class FcaController(OrphieBaseController):
                         return self.render('error')
                 elif act == 'add':
                     tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
-                    addLogEntry(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))                        
-                    post.tags.append(tag) 
+                    if tag:
+                        addLogEntry(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))                        
+                        post.tags.append(tag)
+                    else:
+                        c.errorText = _("Non-existent tag")
+                        return self.render('error')   
                 
                 meta.Session.commit()
                 

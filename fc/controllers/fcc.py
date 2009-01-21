@@ -17,7 +17,6 @@ from wakabaparse import WakabaParser
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
-from fc.lib.settings import *
 from fc.lib.fileHolder import AngryFileHolder
 from OrphieBaseController import OrphieBaseController
 
@@ -740,7 +739,7 @@ class FccController(OrphieBaseController):
 #        return render('/spainter.mako')
         return self.render('spainter')
         
-    def DeletePost(self, post):
+    def DeletePost(self, board):
         fileonly = 'fileonly' in request.POST
         redirectAddr = post
              
@@ -761,6 +760,37 @@ class FccController(OrphieBaseController):
                 redirectAddr = '~'
                 
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
+    
+    def Anonimyze(self, post):
+        postid = request.POST.get('postId', False)
+        if postid and isNumber(postid):
+            c.FAResult = self.processAnomymize(int(postid))
+        else:
+            c.boardName = _('Final Anonymization')
+            c.FAResult = False
+            c.postId = post
+        return self.render('finalAnonymization')
+    
+    def processAnomymize(self, postid):
+        if not g.OPT.enableFinalAnonymity:
+            return _("Final Anonymity is disabled")
+        
+        post = self.sqlGet(meta.Session.query(Post), postid)
+        
+        if post:
+            if post.uidNumber != self.userInst.uidNumber():
+                return _("You are not author of this post")
+            else:
+                delay = g.OPT.finalAHoursDelay
+                timeDelta = datetime.timedelta(hours=delay)
+                if post.date < datetime.datetime.now() - timeDelta:
+                    post.uidNumber = 0
+                    meta.Session.commit()
+                    return True
+                else:
+                    return _("Can't anomymize this post now, it will be allowed after %s" % str(post.date + timeDelta))
+        else:
+            return _("Nothing to anonymize")
         
     def showProfile(self):
         if self.userInst.Anonymous:

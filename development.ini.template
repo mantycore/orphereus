@@ -54,6 +54,9 @@ security.checkUAs = true
 security.spiderTrap = true
 security.interestingNumbers = true
 security.useAnalBarriering = true
+security.enableFinalAnonymity = true
+security.finalAHoursDelay = 24 
+security.hlAnonymizedPosts = true
 
 [loggers]
 keys = root, fc

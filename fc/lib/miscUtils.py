@@ -8,7 +8,6 @@ from sqlalchemy.orm import eagerload
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.sql import and_, or_, not_
 from fc.lib.constantValues import *
-from fc.lib.settings import *
 import smtplib
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEBase import MIMEBase

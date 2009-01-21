@@ -27,6 +27,9 @@
     %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
         <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
     %endif
+    %if g.OPT.enableFinalAnonymity:
+        <a href="/${thread.id}/anonymize">[FA]</a>
+    %endif
     %if c.isAdmin:
         <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>
         <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>                     
@@ -41,6 +44,9 @@
     %else:
         <a href="javascript:insert('&gt;&gt;${thread.id}')" ${c.canPost and """onClick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
     %endif 
+    %if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
+        <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
+    %endif    
 </span>
 &nbsp;
 <span class="replytothread">

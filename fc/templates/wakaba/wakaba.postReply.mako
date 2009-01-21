@@ -12,7 +12,10 @@
                     <div style="display:none" class="delete">
                     %if post.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                         <input type="checkbox" name="delete-${post.id}" value="${post.id}" />
-                    %endif                              
+                    %endif
+                    %if g.OPT.enableFinalAnonymity:
+                        <a href="/${post.id}/anonymize">[FA]</a>
+                    %endif
                     %if c.isAdmin:
                         <a href="/holySynod/manageUsers/editAttempt/${post.id}">[User]</a>     
                     %endif
@@ -31,7 +34,10 @@
                     %endif 
                     %if c.canPost and post.file and post.file.width:
                         [<a href="/${post.id}/oekakiDraw">Draw</a>]
-                    %endif                                                      
+                    %endif
+                    %if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
+                        <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
+                    %endif
                 </span>
                 &nbsp;  
                 %if post.file:

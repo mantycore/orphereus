@@ -27,13 +27,14 @@ def modMessage(message, user, f):
     else:
         return message
     
-def modTime(post, user, f):
+def modifyTime(sourceTime, user, f):
     if f:
-        #log.debug(user)
-        #log.debug(post.date)
-        #log.debug(((-1)**user)*int(user/2))
         x = user.uidNumber()
-        return post.date - datetime.timedelta(seconds=((-1)**x)*int(x/2))
+        return sourceTime - datetime.timedelta(seconds=((-1)**x)*int(x/2))
     else:
-        return post.date
+        return sourceTime
+    
+def modTime(post, user, f):
+    return modifyTime(post.date, user, f)
+
 

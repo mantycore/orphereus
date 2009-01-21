@@ -788,7 +788,7 @@ class FccController(OrphieBaseController):
                     meta.Session.commit()
                     return True
                 else:
-                    return _("Can't anomymize this post now, it will be allowed after %s" % str(post.date + timeDelta))
+                    return _("Can't anomymize this post now, it will be allowed after %s" % str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta))
         else:
             return _("Nothing to anonymize")
         

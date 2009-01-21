@@ -2,8 +2,9 @@
 <%inherit file="wakaba.main.mako" />
 
 <%include file="wakaba.paginator.mako" args="baselink=c.board"/>
-
+%if c.pages:
 <hr/>
+%endif
 
 %if c.canPost:
 <%include file="wakaba.postForm.mako" />

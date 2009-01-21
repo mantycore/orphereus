@@ -281,7 +281,10 @@ class FccController(OrphieBaseController):
         
         #if thePost isn't op-post, redirect to op-post instead
         if thePost and thePost.parentid != -1:
-            redirect_to('/%d#i%d' % (thePost.parentid, thePost.id))
+            if not tempid:
+                redirect_to('/%d#i%d' % (thePost.parentid, thePost.id))
+            else:
+                redirect_to('/%d/%d' % (thePost.parentid, tempid))
             #thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.parentid).first()
             
         if not thePost:

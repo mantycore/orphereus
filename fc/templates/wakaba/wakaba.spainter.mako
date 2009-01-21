@@ -11,7 +11,7 @@
   <param name="image_canvas" value="${g.OPT.filesPathWeb + c.canvas}" />
 %endif
 
-<param name="image_size" value="200" />
+<param name="image_size" value="512" />
 <param name="compress_level" value="15" />
 <param name="url_save" value="/${c.url}/oekakiSave/${c.tempid}" />
 <param name="url_exit" value="/${c.url}/${c.tempid}" />

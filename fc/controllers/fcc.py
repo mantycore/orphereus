@@ -741,7 +741,7 @@ class FccController(OrphieBaseController):
         
     def DeletePost(self, board):
         fileonly = 'fileonly' in request.POST
-        redirectAddr = post
+        redirectAddr = board
              
         opPostDeleted = False
         reason = filterText(request.POST.get('reason', '???'))

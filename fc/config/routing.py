@@ -76,18 +76,12 @@ def make_map():
     map.connect('/ajax/getUserSettings', controller='fcajax', action='getUserSettings')
     
     # Threads
-    map.connect('/:board', controller='fcc', action='PostThread', conditions=dict(method=['POST']))
-    map.connect('/:post', controller='fcc', action='PostReply', conditions=dict(method=['POST']), requirements=dict(post='\d+'))    
-    map.connect('/:board/delete', controller='fcc', action='DeletePost', conditions=dict(method=['POST']))
-    map.connect('/:post/:tempid', controller='fcc', action='GetThread', tempid=0, requirements=dict(post='\d+',tempid='\d+'))    
+    map.connect('/:post', controller='fcc', action='PostReply', conditions=dict(method=['POST']), requirements=dict(post='\d+'))
+    map.connect('/:board/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))
     map.connect('/:post/anonymize', controller='fcc', action='Anonimyze', requirements=dict(post='\d+'))    
-
-    # Special filters
-    #map.connect('/~/:tempid', controller='fcc', action='GetOverview', tempid=0, requirements=dict(tempid='\d+'))
-    #map.connect('/~/page/:page', controller='fcc', action='GetOverview', tempid=0, page=0, requirements=dict(page='\d+'))
-    #map.connect('/@/:tempid', controller='fcc', action='GetMyThreads', tempid=0, requirements=dict(tempid='\d+'))
-    #map.connect('/@/page/:page', controller='fcc', action='GetMyThreads', tempid=0, page=0, requirements=dict(page='\d+'))
-
+    map.connect('/:post/:tempid', controller='fcc', action='GetThread', tempid=0, requirements=dict(post='\d+',tempid='\d+'))
+    map.connect('/:board', controller='fcc', action='PostThread',conditions=dict(method=['POST']))
+    
     # Generic filter
     map.connect('/:board/:tempid', controller='fcc', action='GetBoard', board = '!', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))

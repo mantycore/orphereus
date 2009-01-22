@@ -64,13 +64,12 @@
     <a href="/${t.tag}/">/${t.tag}/</a> 
 %endfor
 </span>
+&nbsp;
 %if not c.userInst.Anonymous:
 <span>
 [<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide Thread')}</a>]
 </span>
 %endif
-
-&nbsp;
 
 <span class="replytothread">
     %if c.canPost:

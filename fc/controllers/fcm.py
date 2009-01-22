@@ -226,12 +226,30 @@ class FcmController(OrphieBaseController):
             elif actid == 'banInactive':
                 mtnLog = self.banInactive()                                            
             elif actid == 'all':
-                mtnLog = self.clearOekaki()
-                mtnLog += self.destroyInvites()
-                mtnLog += self.destroyTrackers()
-                mtnLog += self.integrityChecks()
-                mtnLog += self.banRotate()
-                mtnLog += self.updateCaches()                   
+                try:
+                    mtnLog = self.clearOekaki()
+                except:
+                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in clearOekaki()'))  
+                try:
+                    mtnLog += self.destroyInvites()
+                except:
+                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in destroyInvites()'))
+                try:
+                    mtnLog += self.destroyTrackers()
+                except:
+                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in destroyTrackers()'))
+                try:
+                    mtnLog += self.integrityChecks()
+                except:
+                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in integrityChecks()'))
+                try:                    
+                    mtnLog += self.banRotate()
+                except:
+                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in banRotate()'))
+                try:                    
+                    mtnLog += self.updateCaches()
+                except:
+                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in updateCaches()'))
             
             #for entry in mtnLog:
             #    addLogEntry(LOG_EVENT_MTN_ACT, entry.type + ': ' + entry.message)

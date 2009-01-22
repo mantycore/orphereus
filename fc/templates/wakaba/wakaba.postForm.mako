@@ -126,6 +126,7 @@ ${_('On this board:')}
 <li>${_('Op can delete thread')}:  ${c.boardOptions.canDeleteOwnThreads and _('yes') or _('no')}</li>
 <li>${_('Enabled extensions')}:<br/>  ${c.extLine}</li>
 <li>${_('Final Anonymity')}:  ${_('turned')} ${not g.OPT.enableFinalAnonymity and _('off') or 'on'}</li>
+<li><a href="/static/markup" target="_blank">${_('Markup and features')}</a></li>
 </ul>
 </div>
 %if c.boardOptions.rulesList:

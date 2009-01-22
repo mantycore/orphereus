@@ -89,6 +89,8 @@ class OrphieBaseController(BaseController):
         if len(banreason)>1:
             if isNumber(bantime) and int(bantime) > 0:
                 bantime = int(bantime)
+                if bantime > 10000:
+                    bantime = 10000
                 user.options.bantime = bantime
                 user.options.banreason = banreason
                 user.options.banDate = datetime.datetime.now() 

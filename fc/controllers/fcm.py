@@ -89,6 +89,8 @@ class FcmController(OrphieBaseController):
         for user in users:
             bantime = user.options.bantime
             banDate = user.options.banDate
+            if bantime > 10000:
+                bantime = 10000
             if banDate and bantime>0 and banDate < currentTime - datetime.timedelta(days=bantime):
                 unbanMessage = ("Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
                 mtnLog.append(self.createLogEntry('Info', unbanMessage))

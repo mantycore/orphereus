@@ -57,10 +57,10 @@
             <td align="left"><span class="spoiler">спойлер</span></td>
         </tr>
         <tr>
-            <td align="left">%%<br/>блок спойлера<br/>%%</td>
+            <td align="left">%%<br/>блок<br/>спойлера<br/>%%</td>
             <td align="left">
                 <div class="spoiler">
-                <p> спойлер </p>
+                <p>блок<br/>спойлера</p>
                 </div>
             </td>
         </tr>
@@ -81,7 +81,7 @@
             <td align="left"><font color=#406010>> > текст</font><br/>или<br/><font color=#789922>> текст</font></td>
         </tr>
         <tr>
-            <td align="left">&nbsp;текст<br/>&nbsp;текст</td>
+            <td align="left">блок<br/>кода</td>
             <td align="left"><tt>блок<br/>кода</tt></td>
         </tr>
         <tr>

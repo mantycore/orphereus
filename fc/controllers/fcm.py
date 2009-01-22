@@ -72,9 +72,10 @@ class FcmController(OrphieBaseController):
             if tracker.lastAttempt < currentTime - datetime.timedelta(days=1):
                 mtnLog.append(self.createLogEntry('Info', "Deleted ip tracker for <b>%s</b> with <b>%d</b> attempts" % (tracker.ip, tracker.attempts)))                
                 if tracker.cid:
-                    captcha = meta.Session.query(Captcha).filter(Captcha.id==tracker.cid).first()            
-                    meta.Session.delete(captcha)
-                    mtnLog.append(self.createLogEntry('Info', "Deleted captcha <b>#%d</b>" % (captcha.id)))                
+                    captcha = meta.Session.query(Captcha).filter(Captcha.id==tracker.cid).first()
+                    if captcha:
+                        meta.Session.delete(captcha)
+                        mtnLog.append(self.createLogEntry('Info', "Deleted captcha <b>#%d</b>" % (captcha.id)))                
                     
                 meta.Session.delete(tracker)
         meta.Session.commit()

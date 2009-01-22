@@ -190,7 +190,7 @@ class FccController(OrphieBaseController):
                 #log.debug(oldThread)
                 if oldThread:
                     oldThread.mixed = True
-                    c.threads[1] = oldThread
+                    c.threads.insert(1, oldThread)
                     
         elif count == 1:
             c.threads = [self.sqlOne(threadFilter)]

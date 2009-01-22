@@ -5,11 +5,11 @@ from sqlalchemy.orm import class_mapper
 from sqlalchemy.sql import and_, or_, not_
 import os
 import cgi
-import shutil
 import datetime
 import time
 import Image
 import os
+import shutil
 import hashlib
 import re
 from fc.lib.fuser import FUser
@@ -101,7 +101,43 @@ class FcmController(OrphieBaseController):
 
     def integrityChecks(self):
         mtnLog = []
-        mtnLog.append(self.createLogEntry('Task', 'Doing integrity checks.... NOT IMPLEMENTED.'))
+        mtnLog.append(self.createLogEntry('Task', 'Doing integrity checks...'))
+
+        mtnLog.append(self.createLogEntry('Task', 'Cheking for orphaned files...'))
+        files = os.listdir(g.OPT.uploadPath)
+
+        junkPath= g.OPT.uploadPath + '/junk'
+        if not os.path.exists(junkPath):
+            os.mkdir(junkPath)
+        
+        ccJunkFiles = 0
+        ccJunkThumbnails = 0
+        for fn in sorted(files):
+            name = fn.split('.')[0]
+            if os.path.isfile(fn) and name and len(name) > 0:
+                isThumb = (name[-1] == 's')
+                
+                if isThumb:
+                    thumbIds = meta.Session.query(Picture).filter(Picture.thumpath == fn).all()
+                    if not thumbIds:
+                        mtnLog.append(self.createLogEntry('Info', 'Unbound thumbnail %s moved into junk directory' % fn))
+                        shutil.move('%s/%s' % (g.OPT.uploadPath, fn), junkPath)
+                        ccJunkThumbnails += 1
+                else:
+                    picIds = meta.Session.query(Picture).filter(Picture.path == fn).all()
+                    if not picIds:
+                        mtnLog.append(self.createLogEntry('Info', 'Unbound picture %s moved into junk directory' % fn))
+                        shutil.move('%s/%s' % (g.OPT.uploadPath, fn), junkPath)
+                        ccJunkFiles += 1
+                        
+        if (ccJunkFiles > 0 or ccJunkThumbnails > 0):
+            addLogEntry(LOG_EVENT_INTEGR, "%d files and %d thumbnails moved into junk directory" % (ccJunkFiles, ccJunkThumbnails))
+        
+        mtnLog.append(self.createLogEntry('Task', 'Orpaned files check completed'))
+        mtnLog.append(self.createLogEntry('Task', 'Cheking for orphaned database entries...'))
+        mtnLog.append(self.createLogEntry('Task', 'NOT IMPLEMENTED'))
+        mtnLog.append(self.createLogEntry('Task', 'Orpaned database entries check completed'))
+        
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog;     
     
@@ -115,7 +151,7 @@ class FcmController(OrphieBaseController):
                 msg = 'Invalid RC: %d (actual: %d, cached: %d), updating' % (post.id, repliesCount, post.replyCount)
                 warnMsg = self.createLogEntry('Warning', msg)
                 mtnLog.append(warnMsg)
-                addLogEntry(LOG_EVENT_INTEGR_RC, msg)                
+                addLogEntry(LOG_EVENT_INTEGR_RC, msg)
                 post.replyCount = repliesCount 
         meta.Session.commit()        
         mtnLog.append(self.createLogEntry('Task', 'Done'))

@@ -168,7 +168,7 @@ class FccController(OrphieBaseController):
         c.isAdmin = self.userInst.isAdmin()
 
         # TODO : move into GLOBAL object
-        extensions = self.sqlAll(meta.Session.query(Extension))          
+        extensions = self.sqlAll(meta.Session.query(Extension))
         extList = []
         for ext in extensions:
             extList.append(ext.ext)
@@ -184,11 +184,18 @@ class FccController(OrphieBaseController):
         #log.debug("count: %d" % count)
         
         if count > 1:
-            c.threads = self.sqlSlice(threadFilter.order_by(Post.bumpDate.desc()), (page * tpp), (page + 1)* tpp)   
+            c.threads = self.sqlSlice(threadFilter.order_by(Post.bumpDate.desc()), (page * tpp), (page + 1)* tpp)
+            if self.userInst.mixOldThreads():
+                oldThread = self.sqlFirst(threadFilter.filter(Post.bumpDate < c.threads[-1].bumpDate).order_by(sqlalchemy.func.random()))
+                #log.debug(oldThread)
+                if oldThread:
+                    oldThread.mixed = True
+                    c.threads[1] = oldThread
+                    
         elif count == 1:
             c.threads = [self.sqlOne(threadFilter)]
         elif count == 0:
-            c.threads = []                    
+            c.threads = []
         
         if tagList and len(tagList) == 1 and tags:
             currentBoard = tags[0]
@@ -822,7 +829,8 @@ class FccController(OrphieBaseController):
             if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
                 self.userInst.repliesPerThread(repliesPerThread)
             self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
-            self.userInst.useAjax(request.POST.get('useAjax',False))
+            self.userInst.useAjax(request.POST.get('useAjax', False))
+            self.userInst.mixOldThreads(request.POST.get('mixOldThreads', False))
             homeExcludeTags = self.__tagListFromString(request.POST.get('homeExclude',''))
             homeExcludeList = []
             for t in homeExcludeTags:
@@ -835,6 +843,11 @@ class FccController(OrphieBaseController):
             newuid = self.genUid(key)
             olduid = self.userInst.uid()
             if key == key2 and newuid != olduid and len(key) >= g.OPT.minPassLength:
+                currentKey = request.POST.get('currentKey','').encode('utf-8')
+                if not self.genUid(currentKey) == self.userInst.uid():
+                        c.boardName = _('Error')
+                        c.errorText = _("You have entered incorrect current security code!")
+                        return self.render('error')
                 anotherUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==newuid))
                 if not anotherUser:
                     self.userInst.uid(newuid)
@@ -845,7 +858,7 @@ class FccController(OrphieBaseController):
                     self.banUser(anotherUser, 7777, "Your Security Code was used during profile update by another user. Contact administrator immediately please.")                    
                     c.boardName = _('Error')
                     c.errorText = _("You entered already existing Security Code. Both accounts was banned. Contact administrator please.")
-                    return self.render('error')                    
+                    return self.render('error')
             
             c.profileChanged = True 
             c.profileMsg += _(' Profile was updated.')           

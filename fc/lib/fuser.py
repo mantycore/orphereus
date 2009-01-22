@@ -53,6 +53,7 @@ class FUser(object):
                     self.__user.options.isAdmin = False
                     self.__user.options.hideLongComments = True
                     self.__user.options.useAjax = True
+                    self.__user.options.mixOldThreads = True
                     self.__user.options.defaultGoto = 0
                     self.__user.options.homeExclude = pickle.dumps([])
                     self.__user.options.hideThreads = pickle.dumps([])
@@ -73,6 +74,7 @@ class FUser(object):
                 self.__isAdmin = self.__user.options.isAdmin                
                 self.__hideLongComments = self.__user.options.hideLongComments
                 self.__useAjax = self.__user.options.useAjax
+                self.__mixOldThreads = self.__user.options.mixOldThreads
                 self.__defaultGoto = self.__user.options.defaultGoto
                 self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
                 self.__canMakeInvite = self.__user.options.canMakeInvite and self.__isAdmin
@@ -95,10 +97,10 @@ class FUser(object):
     def secid(self):
         return (2*self.__uidNumber + 6) * (self.__uidNumber + 5) * (self.__uidNumber - 1)
         #(2*x+3)*(x+10)*(x-1)=
-    def uid(self, value=None):        
+    def uid(self, value=None):
         if value != None and not meta.Session.query(User).options(eagerload('options')).filter(User.uid==value).first():
             self.__user.uid = value
-        return self.__user.uid        
+        return self.__user.uid
     def filters(self):
         return self.__filters
     def hideLongComments(self, value=None):
@@ -106,11 +108,16 @@ class FUser(object):
             self.__user.options.hideLongComments = value
             self.__hideLongComments = self.__user.options.hideLongComments
         return self.__hideLongComments
+    def mixOldThreads(self, value=None):
+        if value != None:
+            self.__user.options.mixOldThreads = value
+            self.__mixOldThreads = self.__user.options.mixOldThreads
+        return self.__mixOldThreads
     def useAjax(self, value=None):
         if value != None:
             self.__user.options.useAjax = value
             self.__useAjax = self.__user.options.useAjax
-        return self.__useAjax    
+        return self.__useAjax
     def defaultGoto(self, value = None):
         if value != None and isNumber(value) or value == 0:
             if (value < 0 or value >= len(destinations)):

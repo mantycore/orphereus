@@ -23,12 +23,16 @@
                     <td><input value='${c.userInst.uid()}' readonly></td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Current Security Code')}</td>
+                    <td><input name='currentKey' value='' type='password'></td>
+                </tr>
+                <tr>
                     <td class="postblock">${_('New Security Code')}</td>
-                    <td><input name='key' value=''></td>
-                </tr>                  
+                    <td><input name='key' value=''  type='password'></td>
+                </tr>
                 <tr>
                     <td class="postblock">${_('Repeat Security Code')}</td>
-                    <td><input name='key2' value=''></td>
+                    <td><input name='key2' value=''  type='password'></td>
                 </tr>
                 <tr>
                     <td colspan='2' style="font-size: 80%;">
@@ -50,7 +54,11 @@
                 <tr>
                     <td class="postblock">${_('Use AJAX hints')}</td>
                     <td><input type="checkbox" name='useAjax' ${c.userInst.useAjax() and "checked" or ""}></td>
-                </tr>                
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Mix old threads into boards')}</td>
+                    <td><input type="checkbox" name='mixOldThreads' ${c.userInst.mixOldThreads() and "checked" or ""}></td>
+                </tr>
                 <tr>
                     <td class="postblock">${_('Hide long comments')}</td>
                     <td><input type="checkbox" name='hideLongComments' ${c.userInst.hideLongComments() and "checked" or ""}></td>

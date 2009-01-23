@@ -80,7 +80,6 @@ class FccController(OrphieBaseController):
             else:
                 return arg
          
-        log.debug(url)
         #log.debug(self.userInst.homeExclude())
         operators = {'+':1, '-':1, '^':2, '&':2}
         filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1)
@@ -591,8 +590,8 @@ class FccController(OrphieBaseController):
                if painterMark:
                    fullMessage += painterMark
                
-               #XXX: not best solution
-               if not re.compile("<p>.{0,3}%s</p>" % post.message, re.DOTALL).match(fullMessage):
+               #FIXME: not best solution
+               if not fullMessage[5:].startswith(post.message):
                    post.messageRaw = post.message
                    
                post.message = fullMessage

@@ -60,7 +60,7 @@
                         <img src='${g.OPT.staticPathWeb}images/picDeleted.png' class="thumb">                                    
                     %endif
                 <blockquote class="postbody" id="postBQId${post.id}">
-                    %if (c.count > 1) and post.messageShort and c.userInst.hideLongComments():
+                    %if (c.count > 1) and post.messageShort and c.userInst.hideLongComments() and getattr(thread, 'enableShortMessages', True):
                         ${h.modMessage(post.messageShort, c.userInst, g.OPT.secureText)}
                         <br />
                         ${_('Comment is too long.')} <a href="/${thread.id}#i${post.id}"' onClick="getFullText(event,${thread.id},${post.id});" class="expandPost">${_('Full version')}</a>

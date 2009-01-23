@@ -61,6 +61,7 @@ class FcajaxController(OrphieBaseController):
                     abort(403)
                     
             #parent.omittedPosts = False
+            parent.enableShortMessages=False
             return self.render('postReply', thread=parent, post = postInst)
         else:
             abort(404)            

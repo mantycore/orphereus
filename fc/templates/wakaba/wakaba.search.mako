@@ -7,6 +7,7 @@
 <form action="/search" method="post">
     <input type="text" name="query" size="20" value="${c.query}"/>
     <input value="Search again" type="submit" />
+    [<a href="/static/markup#search" target="_blank">Help</a>]
 </form>
 
 <%include file="wakaba.paginator.mako" args="baselink='search/%s' % c.query"/>

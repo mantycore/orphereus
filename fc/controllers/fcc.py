@@ -80,9 +80,11 @@ class FccController(OrphieBaseController):
             else:
                 return arg
          
-        #log.debug(self.userInst.homeExclude())         
+        log.debug(url)
+        #log.debug(self.userInst.homeExclude())
         operators = {'+':1, '-':1, '^':2, '&':2}
         filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1)
+        filteringExpression = False
         tagList = []
         RPN = getRPN(url,operators)
         stack = []
@@ -114,9 +116,10 @@ class FccController(OrphieBaseController):
                 stack.append(buildArgument(i))
         if stack and isinstance(stack[0][0],sqlalchemy.sql.expression.ClauseElement):
             cl = stack.pop()
-            filter = filter.filter(cl[0])
+            filteringExpression = cl[0]
+            filter = filter.filter(filteringExpression)
             tagList = cl[1]
-        return (filter, tagList)
+        return (filter, tagList, filteringExpression)
         
     def paginate(self, count, page, tpp):
         if count > 1:
@@ -152,7 +155,11 @@ class FccController(OrphieBaseController):
         forbiddenTags = getTagsListFromString(adminTagsLine)
 
         if not self.userInst.isAdmin():
-            filter = filter.filter(not_(Post.tags.any(Tag.id.in_(forbiddenTags))))
+            blocker = Post.tags.any(Tag.id.in_(forbiddenTags))
+            filter = filter.filter(not_(
+                                   or_(blocker,
+                                        Post.parentPost.has(blocker),
+                                   )))
             
         return filter         
         
@@ -582,8 +589,12 @@ class FccController(OrphieBaseController):
                parsedMessage = parser.parseWakaba(post.message,self,lines=maxLinesInPost,maxLen=cutSymbols)
                fullMessage = parsedMessage[0]
                if painterMark:
-                   fullMessage += painterMark                 
-
+                   fullMessage += painterMark
+               
+               #XXX: not best solution
+               if not re.compile("<p>.{0,3}%s</p>" % post.message, re.DOTALL).match(fullMessage):
+                   post.messageRaw = post.message
+                   
                post.message = fullMessage
                post.messageShort = parsedMessage[1]
            else:
@@ -914,45 +925,51 @@ class FccController(OrphieBaseController):
             page = int(page)
         else:
             page = 0
+            
         pp = self.userInst.threadsPerPage()
-        
-        c.boardName = _("Search")
-        
+        c.boardName = _("Search")        
         c.query = text
-        filter = self.excludeHiddenTags(meta.Session.query(Post))                    
+        
+        tagfilter = False
+        filteredQueryRe = re.compile("^(([^:]+):){1}(.+)$").match(text)
+        if filteredQueryRe:
+            groups = filteredQueryRe.groups()
+            filterName = groups[1]
+            text = groups[2]
+            tagfilter = self.buildFilter(filterName)[2]
+            
+        base = meta.Session.query(Post)
+        if tagfilter:
+            base = meta.Session.query(Post)
+            
+            base = base.filter(or_(tagfilter,
+                                        Post.parentPost.has(tagfilter),
+                                   ))
+        
+        filter = self.excludeHiddenTags(base)
         filter = filter.filter(Post.message.like('%%%s%%' % text))
             
         adminTagsLine = g.settingsMap['adminOnlyTags'].value
         forbiddenTags = getTagsListFromString(adminTagsLine)
-
-            
+        
         count = self.sqlCount(filter)
         #log.debug(count)  
-        self.paginate(count, page, pp)        
+        self.paginate(count, page, pp)
         posts = self.sqlSlice(filter.order_by(Post.date.desc()), (page * pp), (page + 1)* pp)
+        
         c.posts = []
         for p in posts:
             parent = p
             if not p.parentid == -1: 
-                parent = self.sqlFirst(meta.Session.query(Post).filter(Post.id == p.parentid))
-            
-            exclude = False
-            
-            if not parent.id == p.id:
-                for t in parent.tags:
-                    if t.id in forbiddenTags and not self.userInst.isAdmin():
-                        exclude = True
-                                 
-            if not exclude:
-                pt = []
+                parent = p.parentPost #self.sqlFirst(meta.Session.query(Post).filter(Post.id == p.parentid))
+                
+            pt = []
+            pt.append(p)
+            if p.parentid == -1:
                 pt.append(p)
-                if p.parentid == -1:
-                    pt.append(p)
-                else:
-                   pt.append(parent)
-                c.posts.append(pt)
             else:
-                count -= 1
+               pt.append(parent)
+            c.posts.append(pt)
         
         return self.render('search')
         

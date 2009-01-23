@@ -134,9 +134,10 @@ t_oekaki = sa.Table("oekaki", meta.metadata,
 t_posts = sa.Table("posts", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("secondaryIndex",sa.types.Integer, nullable=True),
-    sa.Column("parentid" , sa.types.Integer, nullable=False),
+    sa.Column("parentid" , sa.types.Integer, sa.ForeignKey('posts.id')),
     sa.Column("message"  , sa.types.UnicodeText, nullable=True),
     sa.Column("messageShort", sa.types.UnicodeText, nullable=True),
+    sa.Column("messageRaw"  , sa.types.UnicodeText, nullable=True),
     sa.Column("title"    , sa.types.UnicodeText, nullable=True),
     sa.Column("sage"     , sa.types.Boolean, nullable=True),
     sa.Column("uidNumber",sa.types.Integer,nullable=True),
@@ -149,7 +150,9 @@ t_posts = sa.Table("posts", meta.metadata,
 
 t_tags = sa.Table("tags", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("tag"      , sa.types.UnicodeText, nullable=False)
+    sa.Column("tag"      , sa.types.UnicodeText, nullable=False),
+    sa.Column("replyCount" , sa.types.Integer, nullable=False, server_default='0'),
+    sa.Column("threadCount" , sa.types.Integer, nullable=False, server_default='0'),
     )
 
 t_tagOptions = sa.Table("tagOptions", meta.metadata,
@@ -258,7 +261,8 @@ orm.mapper(Tag, t_tags, properties = {
     })
 orm.mapper(Post, t_posts, properties = {
     'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
-    'file': orm.relation(Picture)
+    'file': orm.relation(Picture),
+    'parentPost' : orm.relation(Post, remote_side=[t_posts.c.id]),
     })
 
 orm.mapper(Setting, t_settings)

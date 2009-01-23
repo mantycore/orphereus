@@ -60,8 +60,8 @@ class FcajaxController(OrphieBaseController):
                 if t.id in forbiddenTags and not self.userInst.isAdmin():
                     abort(403)
                     
-            #parent.omittedPosts = False
-            parent.enableShortMessages=False
+            #uncomment to disable folding for big posts
+            #parent.enableShortMessages=False
             return self.render('postReply', thread=parent, post = postInst)
         else:
             abort(404)            

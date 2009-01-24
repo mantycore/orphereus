@@ -8,9 +8,8 @@
 
 %if c.canPost:
 <%include file="wakaba.postForm.mako" />
-%endif
-
 <hr/>
+%endif
 
 <form action="/${c.PostAction}/delete" method="post">
 <input type="hidden" name="tagLine" value="${c.tagLine}">

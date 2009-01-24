@@ -1,4 +1,3 @@
-%if c.boardlist:
 <div class="adminbar">
     [
     <a href="/~/" title="${_('Overview')}">/~/</a>
@@ -7,6 +6,8 @@
     %endif
     <a href="/!/" title="${_('Home')}">/!/</a>    
     ]    
+    
+%if c.boardlist:
 %if g.OPT.spiderTrap:    
 <div style="display: none"><a href="/ajax/stat/${c.userInst.secid()}">...</a><a href="/ajax/stat">.</a></div>
 %endif        
@@ -26,7 +27,13 @@
     %if g.settingsMap['usersCanViewLogs'].value == 'true':
         [<a href="/viewLog/">${_('Logs')}</a>]
     %endif     
-    [<a href="http://anoma.ch:3210">${_('Anoma-FM')}</a>]
+    %if c.menuLinks:
+        %for link in c.menuLinks:
+        [<a href="${link[0]}">${link[1]}</a>]
+        %endfor
+    %endif
+%endif
+
     [<a target="_blank" href="/static/donate">Donate</a>]
     %if not c.userInst.Anonymous:
     [<a href="/logout/">${_('Logout')}</a>]
@@ -45,4 +52,3 @@
         ]
     %endif
 </div>
-%endif

@@ -17,17 +17,17 @@
          </i></p>
         
 	<span class="postblock">${_('Enter your security code')}</span>
-        <p><input name="key" type="password" size=60></p> 
+        <p><input name="key" type="password" size=60 style="text-align: center"></p> 
         <span class="postblock">${_('Re-enter security code')}</span>
-        <p><input name="key2" type="password" size=60></p>                
+        <p><input name="key2" type="password" size=60 style="text-align: center"></p>                
         <i>${_('Security code should be at least %d symbols') % g.OPT.minPassLength}</i>
         %if c.captcha:
         <br>
         <span class="postblock">${_('Enter captcha')}</span>
         <div><img src='/captcha/${c.captcha.id}'></div>
-        <p><input name="captcha" type="text" size=60></p>   
+        <p><input name="captcha" type="text" size=60 style="text-align: center"></p>   
         %endif             
-        <p><input type="submit" value="${_('OK')}"></p>                
+        <p><input type="submit" value="${_('OK')}"></p>
 	</form>
     
 </div>

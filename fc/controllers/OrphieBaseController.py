@@ -36,7 +36,7 @@ class OrphieBaseController(BaseController):
                     break
         
     def initEnvironment(self):
-        c.title = g.settingsMap['title'].value   
+        c.title = g.settingsMap['title'].value
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
         c.boardlist = []
         sectionId = 0
@@ -56,6 +56,14 @@ class OrphieBaseController(BaseController):
         if section:
             c.boardlist.append(section)
         response.set_cookie('fc', request.cookies.get('fc',''), domain='.'+g.OPT.baseDomain)
+        
+        c.menuLinks = []
+        linksstr = g.settingsMap['additionalLinks'].value
+        links = linksstr.split(',')
+        if links:
+            for link in links:
+                c.menuLinks.append(link.split('|'))
+        
          
     def render(self, page, **options):
         #log.debug(options)
@@ -183,17 +191,20 @@ class OrphieBaseController(BaseController):
             if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
                 tagline = ''
                 taglist = []
+                logEntry = ""
                 if p.parentid>0:
                     for tag in parentp.tags:
                         taglist.append(tag.tag)
                     tagline = ', '.join(taglist)
-                    log = _("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (p.id, p.uidNumber, p.parentid, tagline, reason)
+                    logEntry = _("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (p.id, p.uidNumber, p.parentid, tagline, reason)
                 else:
                     for tag in p.tags:
                         taglist.append(tag.tag)
                     tagline = ', '.join(taglist)                   
-                    log = _("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (p.id, p.uidNumber, tagline, reason)
-                addLogEntry(LOG_EVENT_POSTS_DELETE, log)
+                    logEntry = _("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (p.id, p.uidNumber, tagline, reason)
+                if fileonly:
+                    logEntry += " %s" % _("(file only)")
+                addLogEntry(LOG_EVENT_POSTS_DELETE, logEntry)
             
             if p.parentid == -1 and not fileonly:
                 if not (postOptions.canDeleteOwnThreads or self.userInst.canDeleteAllPosts()):

@@ -45,6 +45,8 @@ class FcpController(OrphieBaseController):
                     redir = g.OPT.fakeLinks[random.randint(0, len(g.OPT.fakeLinks) - 1)]
                     addLogEntry(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, request.environ["REMOTE_ADDR"], filterText(request.headers.get('User-Agent', '?'))))                
                     redirect_to(redir)
+        if (self.userInst and self.userInst.isValid()) or g.OPT.allowAnonymous:
+            self.initEnvironment()
         
     def login(self, user):
         session['uidNumber'] = user.uidNumber

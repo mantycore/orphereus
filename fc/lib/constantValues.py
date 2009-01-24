@@ -10,7 +10,8 @@ settingsDef = {
     "adminOnlyTags" : 'synod,logs',
     "maxLinesInPost": '15',
     "cutSymbols"    : '5000',
-    "usersCanViewLogs"  : 'false'
+    "usersCanViewLogs"  : 'false',
+    "additionalLinks" : ''
 }
 
 LOG_EVENT_SECURITY_IP   = 0x00000001

@@ -88,6 +88,9 @@ class FcajaxController(OrphieBaseController):
     def getUserSettings(self):
         return str(self.userInst.optionsDump())
     
+    def getUploadsPath(self):
+        return g.OPT.filesPathWeb
+    
     def editUserFilter(self,fid,filter):
         if self.userInst.Anonymous:
             abort(403)

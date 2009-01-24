@@ -74,6 +74,7 @@ def make_map():
     map.connect('/ajax/getRepliesCountForThread/:post', controller='fcajax', action='getRepliesCountForThread', requirements=dict(post='\d+'))
     map.connect('/ajax/getThreadIds/:post', controller='fcajax', action='getThreadIds', requirements=dict(post='\d+'))
     map.connect('/ajax/getUserSettings', controller='fcajax', action='getUserSettings')
+    map.connect('/ajax/getUploadsPath', controller='fcajax', action='getUploadsPath')
     
     # Threads
     map.connect('/:post', controller='fcc', action='PostReply', conditions=dict(method=['POST']), requirements=dict(post='\d+'))

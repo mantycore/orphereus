@@ -1,4 +1,3 @@
-<br/>
 <p class="footer">
 [<a href="https://${g.OPT.baseDomain}"> Paranoia mode </a>] <br/>
 %if False:

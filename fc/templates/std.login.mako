@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 <%inherit file="std.main.mako" />
 
+%if not h.templateExists(c.actuator+'std.login.mako'):
 <div class="postarea">
 	<form id="postform" action="${c.currentURL}authorize" method="post">
 		<span class="postblock">${_('Enter your security code')}</span>
@@ -13,6 +14,14 @@
         %endif
 		<p><input type="submit" value="${_('OK')}"></p>
 	</form>
-	<br/>
-	<a href="http://arch.anoma.ch/"><strong>Archive of teh Internets</strong></a>	
+</div>	
+%else:
+    <%include file="${c.actuator+'std.login.mako'}" />
+%endif
+
+<div style="text-align: center;">
+%if h.templateExists(c.actuator+'std.login_bottom.mako'):
+   <%include file="${c.actuator+'std.login_bottom.mako'}" />
+%endif
 </div>
+

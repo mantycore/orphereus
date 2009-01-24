@@ -6,6 +6,7 @@ available to Controllers. This module is available to both as 'h'.
 from webhelpers import *
 from pylons import config
 import datetime
+import os
 
 import logging
 log = logging.getLogger(__name__)
@@ -21,7 +22,7 @@ def modLink(string, secid, f):
 
 def modMessage(message, user, f):  
     if f:
-        gv = config['pylons.g']  
+        gv = config['pylons.g']
         uval = gv.uniqueVals[user.uidNumber() % (len(gv.uniqueVals) - 1)]
         return message.replace('[SECURITY:UNIQUE_VAL]', uval)
     else:
@@ -37,4 +38,5 @@ def modifyTime(sourceTime, user, f):
 def modTime(post, user, f):
     return modifyTime(post.date, user, f)
 
-
+def templateExists(relName):
+    return os.path.exists(os.path.join(config['pylons.g'].OPT.templPath, relName))

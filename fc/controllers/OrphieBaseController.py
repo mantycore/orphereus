@@ -66,19 +66,19 @@ class OrphieBaseController(BaseController):
         
          
     def render(self, page, **options):
-        #log.debug(options)
-        #return
         tname = 'std'
         tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
+        c.actuator = "actuators/%s/" % (g.OPT.actuator)
         
         try:
             if self.userInst and not self.userInst.isBanned():
                 tname = self.userInst.template()
                 tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
+                c.actuator = "%s/actuators/%s/" % (tname, g.OPT.actuator)
         except: #userInst not defined or user banned
             pass
         
-        if page and os.path.isfile(os.path.join(g.OPT.templPath, tpath)):               
+        if page and os.path.isfile(os.path.join(g.OPT.templPath, tpath)): 
             return render('/'+tpath, **options)
         else:
             return _("Template problem: " + page)

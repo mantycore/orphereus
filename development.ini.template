@@ -21,9 +21,10 @@ sqlalchemy.encoding=utf-8
 # Basic IB settings
 core.devMode = true
 # We will hash hashSecret by sha512, so no need to have it long
-core.hashSecret = paranoia 
+core.hashSecret = smallSecret 
 core.baseDomain= anoma.ch
 core.minPassLength = 12
+core.uploadPath = /var/OrphieUploads/
 core.staticPathWeb = http://wut.anoma.ch/
 core.filesPathWeb = http://wut.anoma.ch/img1/
 core.templates = wakaba

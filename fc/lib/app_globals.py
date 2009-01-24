@@ -17,6 +17,9 @@ class OptHolder(object):
         self.markupFile = os.path.join(self.appPath, 'wakabaparse/mark.def')
         
         # Basic IB settings
+        proposedPath = config['core.uploadPath']
+        if os.path.exists(proposedPath):
+            self.uploadPath = proposedPath
         self.devMode = (config['core.devMode'] == 'true')
         self.hashSecret = config['core.hashSecret']
         self.baseDomain = config['core.baseDomain'] 

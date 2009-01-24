@@ -591,7 +591,8 @@ class FccController(OrphieBaseController):
                    fullMessage += painterMark
                
                #FIXME: not best solution
-               if not fullMessage[5:].startswith(post.message):
+               #if not fullMessage[5:].startswith(post.message):
+               if not post.message in fullMessage:
                    post.messageRaw = post.message
                    
                post.message = fullMessage

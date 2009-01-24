@@ -29,7 +29,9 @@
     %endif     
     %if c.menuLinks:
         %for link in c.menuLinks:
-        [<a href="${link[0]}">${link[1]}</a>]
+            % if isinstance(link, list) and len(link) == 2:
+            [<a href="${link[0]}">${link[1]}</a>]
+            %endif
         %endfor
     %endif
 %endif

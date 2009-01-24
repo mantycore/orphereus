@@ -117,6 +117,7 @@ class OrphieBaseController(BaseController):
             meta.Session.delete(pic)
             if commit:
                 meta.Session.commit()
+        return pic
             
     def conjunctTagOptions(self, tags):
         options = TagOptions()
@@ -201,7 +202,7 @@ class OrphieBaseController(BaseController):
                 for post in self.sqlAll(meta.Session.query(Post).filter(Post.parentid==p.id)):
                     self.processDelete(postid=post.id, checkOwnage=False)
                     
-            self.deletePicture(p, False)
+            pic = self.deletePicture(p, False)
             
             if fileonly and postOptions.imagelessPost: 
                 if pic:

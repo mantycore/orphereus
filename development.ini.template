@@ -27,6 +27,7 @@ core.minPassLength = 12
 core.uploadPath = /var/OrphieUploads/
 core.staticPathWeb = http://wut.anoma.ch/
 core.filesPathWeb = http://wut.anoma.ch/img1/
+core.actuator = anomach
 core.templates = wakaba
 core.styles = photon,burichan,gurochan,futaba,kusaba
 core.secondaryIndex = false

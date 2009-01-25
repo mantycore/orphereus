@@ -113,28 +113,28 @@ class FcmController(OrphieBaseController):
         for opt in userOpts:            
             user = meta.Session.query(User).filter(User.uidNumber==opt.uidNumber).first()
             if not user:
-                mtnLog.append(self.createLogEntry('Warning', 'Orphaned userOptions for %d' % opt.uidNumber))
+                mtnLog.append(self.createLogEntry('Warning', 'Orphaned userOptions for %s' % str(opt.uidNumber)))
         
         mtnLog.append(self.createLogEntry('Task', 'User filters...'))
         userFl = meta.Session.query(UserFilters).all()
         for fl in userFl:            
             user = meta.Session.query(User).filter(User.uidNumber==opt.uidNumber).first()
             if not user:
-                mtnLog.append(self.createLogEntry('Warning', 'Orphaned userFilters for %d' % fl.uidNumber))
+                mtnLog.append(self.createLogEntry('Warning', 'Orphaned userFilters for %s' % str(fl.uidNumber)))
 
         mtnLog.append(self.createLogEntry('Task', 'Tag options...'))
         tagOpts = meta.Session.query(TagOptions).all()
         for opt in tagOpts:            
             tag = meta.Session.query(Tag).filter(Tag.id==opt.tagId).first()
             if not tag:
-                mtnLog.append(self.createLogEntry('Warning', 'Orphaned tagOptions for %d' % opt.tagId))
+                mtnLog.append(self.createLogEntry('Warning', 'Orphaned tagOptions for %s' % str(opt.tagId)))
 
         mtnLog.append(self.createLogEntry('Task', 'Pictures...'))
         pictures = meta.Session.query(Picture).all()
         for pic in pictures:            
             post = meta.Session.query(Post).filter(Post.picid == pic.id).first()
             if not post:
-                mtnLog.append(self.createLogEntry('Warning', 'Orphaned picture with id %d' % pic.id))
+                mtnLog.append(self.createLogEntry('Warning', 'Orphaned picture with id %s' % str(pic.id)))
 
         mtnLog.append(self.createLogEntry('Task', 'Orpaned database entries check completed'))
         

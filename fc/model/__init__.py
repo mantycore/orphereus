@@ -246,7 +246,7 @@ orm.mapper(UserOptions, t_userOptions)
 orm.mapper(UserFilters, t_userFilters)
 orm.mapper(User, t_users, properties = {    
         'options' : orm.relation(UserOptions, uselist=False, backref='t_users', cascade="all, delete, delete-orphan"),
-        'filters' : orm.relation(UserFilters, backref='t_users', cascade="all, delete, delete-orphan")
+        'filters' : orm.relation(UserFilters, backref='t_users', cascade="all, delete") #, delete-orphan
     })
 
 orm.mapper(Extension, t_extlist)
@@ -261,7 +261,7 @@ orm.mapper(Tag, t_tags, properties = {
     })
 orm.mapper(Post, t_posts, properties = {
     'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
-    'file': orm.relation(Picture, cascade="all, delete, delete-orphan" ),
+    'file': orm.relation(Picture, cascade="all, delete" ), #, delete-orphan
     'parentPost' : orm.relation(Post, remote_side=[t_posts.c.id]),
     })
 

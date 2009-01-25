@@ -52,7 +52,7 @@
                     %elif not '..' in post.file.thumpath:                                     
                         <img src="${g.OPT.filesPathWeb + h.modLink(post.file.thumpath, c.userInst.secid(), g.OPT.secureLinks)}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" />
                     %else:  
-                        <img src="${g.OPT.filesPathWeb + post.file.thumpath}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" />                                
+                        <img src="${g.OPT.staticPathWeb + post.file.thumpath}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" />                                
                     %endif 
                     </a>
                     %elif post.picid == -1:

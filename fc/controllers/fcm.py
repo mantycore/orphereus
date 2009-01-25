@@ -136,7 +136,7 @@ class FcmController(OrphieBaseController):
                 msg = 'Orphaned tagOptions %d for %s, removing' % (opt.id, str(opt.tagId))
                 mtnLog.append(self.createLogEntry('Warning', msg))
                 addLogEntry(LOG_EVENT_INTEGR, msg)
-                meta.Session.delete(tag)
+                meta.Session.delete(opt)
 
         mtnLog.append(self.createLogEntry('Task', 'Pictures...'))
         pictures = meta.Session.query(Picture).all()

@@ -246,7 +246,7 @@ orm.mapper(UserOptions, t_userOptions)
 orm.mapper(UserFilters, t_userFilters)
 orm.mapper(User, t_users, properties = {    
         'options' : orm.relation(UserOptions, uselist=False, backref='t_users', cascade="all, delete, delete-orphan"),
-        'filters' : orm.relation(UserFilters, cascade="all, delete, delete-orphan")
+        'filters' : orm.relation(UserFilters, backref='t_users', cascade="all, delete, delete-orphan")
     })
 
 orm.mapper(Extension, t_extlist)

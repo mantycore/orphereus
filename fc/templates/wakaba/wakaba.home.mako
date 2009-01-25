@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
-<h2 style="clear: both;">
-<span style="float: right;"><a href="/static/rules">Rules</a></span>
-<span><a href="/static/markup">Markup and features</a></span>
-</h2>
+%if h.templateExists(c.actuatorTest+'wakaba.homeTop.mako'):
+    <%include file="${c.actuator+'wakaba.homeTop.mako'}" />
+%endif
 
 <hr style="clear: both;"/>
 

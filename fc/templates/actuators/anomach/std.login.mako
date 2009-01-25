@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-<div style="position: relative; top: -40px; text-align: center;"><img src="${g.OPT.staticPathWeb}hello.png" alt="oh hi"/></div>
+<div class="postarea" style="">
+    <img src="${g.OPT.staticPathWeb}hello.png" alt="oh hi"/>
 
-<div class="postarea">
     <form id="postform" action="${c.currentURL}authorize" method="post">
         <span class="postblock">
         ${_('Enter your security code')}

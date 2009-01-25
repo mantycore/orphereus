@@ -39,4 +39,8 @@ def modTime(post, user, f):
     return modifyTime(post.date, user, f)
 
 def templateExists(relName):
+    #log.debug(config['pylons.g'].OPT.templPath)
+    #log.debug(relName)
+    #log.debug(os.path.join(config['pylons.g'].OPT.templPath, relName))
+    #log.debug(os.path.exists(os.path.join(config['pylons.g'].OPT.templPath, relName)))
     return os.path.exists(os.path.join(config['pylons.g'].OPT.templPath, relName))

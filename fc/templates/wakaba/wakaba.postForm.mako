@@ -109,12 +109,13 @@
             </td>
             
 <td class="reply" style="padding: 10px; vertical-align: top;">
-<p>Маленькое объявление:</p>
-<p>jabber-сборища, результатом деятельности которых и стал этот чан, продолжают существовать.
-Новый адрес: <b>aconf@conference.jabber.ru</b>, пароль - <b>oblavobla</b>. За доступом обращайтесь на rusanon@jabber.org 
-<s>либо johan.liebert@jabber.ru</s></p>
+
+%if h.templateExists(c.actuatorTest+'wakaba.postFormAdv.mako'):
+    <%include file="${c.actuator+'wakaba.postFormAdv.mako'}" />
+%endif
+
 <div id="smallFont">
-${_('On this board:')}
+<b>${_('On this board:')}</b>
 <ul class="nomargin">
 <li>${_('Minimum picture size')}: ${c.boardOptions.minPicSize}<sup>2</sup></li>
 <li>${_('Maximum file size')}: ${'%.2f' % (c.boardOptions.maxFileSize / 1024.0)} ${_('Kbytes')}</li>

@@ -5,7 +5,7 @@
         <title>${c.boardName}</title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <META NAME="ROBOTS" CONTENT="NOARCHIVE">
-        <link rel="stylesheet" type="text/css" href="${g.OPT.staticPathWeb}css/std.css" title="Anoma std::" />
+        <link rel="stylesheet" type="text/css" href="${g.OPT.staticPathWeb}css/std_gray.css" title="Anoma std::" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     </head>
     <body>

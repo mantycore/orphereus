@@ -1,4 +1,4 @@
-body {background-color: #ffffff; color: #3b3b3b; margin: 0 0 0 0; font-family: Verdana;}
+body {background-color: #e9e9e9; color: #3b3b3b; margin: 0 0 0 0; font-family: Verdana;}
 a {
         color: #6b6b6b;
 }
@@ -44,7 +44,11 @@ input:focus, textarea
 	margin: 2em 0 0 0;
 }
 
-.postarea { text-align: center }
+.postarea {
+position: relative;
+top: -40px;
+text-align: center;
+}
 
 .errorMessage{
 	margin: 80px 0px 0px 0px;
@@ -62,4 +66,9 @@ input:focus, textarea
 	color:#880000 ;
 	font-weight: bold;
 	border-left: solid 50px #880000;
+}
+
+#postform {
+position: relative; 
+top: 10px;
 }

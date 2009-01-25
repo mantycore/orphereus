@@ -69,12 +69,13 @@ class OrphieBaseController(BaseController):
         tname = 'std'
         tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
         c.actuator = "actuators/%s/" % (g.OPT.actuator)
+        c.actuatorTest = c.actuator
         
         try:
             if self.userInst and not self.userInst.isBanned():
                 tname = self.userInst.template()
                 tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
-                c.actuator = "%s/actuators/%s/" % (tname, g.OPT.actuator)
+                c.actuatorTest = "%s/actuators/%s/" % (tname, g.OPT.actuator)
         except: #userInst not defined or user banned
             pass
         

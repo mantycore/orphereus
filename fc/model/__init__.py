@@ -228,6 +228,8 @@ class Post(object):
 class Tag(object):
     def __init__(self, tag): # xxx???  Liebert
         self.tag = tag
+        self.replyCount = 0
+        self.threadCount = 0
 
 class TagOptions(object):
     pass

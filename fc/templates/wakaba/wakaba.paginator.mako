@@ -44,7 +44,7 @@
         %endif
     %endfor
     
-    %if c.page < c.pages:
+    %if c.page < c.pages-1:
         [<a href='/${baselink}/page/${c.page + 1}/'>&gt;&gt;</a>]
     %endif
 %endif

@@ -173,7 +173,7 @@ class FccController(OrphieBaseController):
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = self.userInst.isAdmin()
 
-        # TODO : move into GLOBAL object
+        #TODO: ?move into GLOBAL object
         extensions = self.sqlAll(meta.Session.query(Extension))
         extList = []
         for ext in extensions:
@@ -275,13 +275,8 @@ class FccController(OrphieBaseController):
                 tlist = regex.findall(tagstr)
                 for t in tlist:
                     if not t in tagsl:
-                        ct = time.time()  
                         tag = self.sqlFirst(meta.Session.query(Tag).filter(Tag.tag==t))
-                        rtime = time.time() - ct
-                        #c.sum += rtime                          
-                        #c.log.append("308, tag: " + str(rtime))
-                        #log.debug(c.log[len(c.log) - 1])                         
-
+                        
                         if tag:
                             tags.append(tag)
                         else:
@@ -312,8 +307,8 @@ class FccController(OrphieBaseController):
     def GetBoard(self, board, tempid, page=0):
         if board == '!':
             def getTotalPosts():
-                result = meta.Session().execute("select count(id) from posts")
-                return result.fetchone()[0]
+                return meta.Session().query(Post).count() #.execute("select count(id) from posts")
+                #return result.fetchone()[0]
             
             def mainStats():
                 boards = self.sqlAll(meta.Session.query(Tag).options(eagerload('options')))
@@ -327,7 +322,20 @@ class FccController(OrphieBaseController):
                 for b in boards:
                     if not b.tag in forbiddenTags:
                         bc = empty()
+                        bc.count = b.threadCount
+                        bc.postsCount = b.replyCount
                         bc.board = b
+
+                        if b.options and b.options.persistent:
+                            ret.boards.append(bc)
+                            ret.totalBoardsThreads += bc.count
+                            ret.totalBoardsPosts += bc.postsCount
+                        else:
+                            ret.tags.append(bc)
+                            ret.totalTagsThreads += bc.count
+                            ret.totalTagsPosts += bc.postsCount
+
+                        """
                         result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where (p.id = m.postId and m.tagId = :ctid)", {'ctid':b.id})                                        
                         #filter = self.buildFilter(b.tag)                                        
                         #bc.count = filter[0].count()
@@ -342,6 +350,7 @@ class FccController(OrphieBaseController):
                             ret.tags.append(bc)
                             ret.totalTagsThreads += bc.count
                             ret.totalTagsPosts += bc.postsCount
+                        """
                 return ret
             
             def vitalSigns():
@@ -362,11 +371,22 @@ class FccController(OrphieBaseController):
             
             if g.OPT.devMode:
                 ct = time.time()
-                
-            cch = cache.get_cache('home_stats')
-            c.totalPostsCount = cch.get_value(key="totalPosts", createfunc=getTotalPosts, type="memory", expiretime=150)
             
-            mstat= cch.get_value(key="mainStats", createfunc=mainStats, type="memory", expiretime=150)
+            c.totalPostsCount = 0
+            mstat = False
+            vts = False
+            chTime = g.OPT.statsCacheTime
+            
+            if chTime > 0: 
+                cch = cache.get_cache('home_stats')
+                c.totalPostsCount = cch.get_value(key="totalPosts", createfunc=getTotalPosts, type="memory", expiretime=chTime)
+                mstat = cch.get_value(key="mainStats", createfunc=mainStats, type="memory", expiretime=chTime)
+                vts = cch.get_value(key="vitalSigns", createfunc=vitalSigns, type="memory", expiretime=chTime)
+            else:
+                c.totalPostsCount = getTotalPosts()
+                mstat = mainStats()
+                vts = vitalSigns()
+            
             c.boards = sorted(mstat.boards, taglistcmp)
             c.tags = sorted(mstat.tags, taglistcmp)
             c.totalBoardsThreads = mstat.totalBoardsThreads
@@ -374,7 +394,6 @@ class FccController(OrphieBaseController):
             c.totalBoardsPosts = mstat.totalBoardsPosts
             c.totalTagsPosts = mstat.totalTagsPosts
             
-            vts = cch.get_value(key="vitalSigns", createfunc=vitalSigns, type="memory", expiretime=180)
             c.last1KUsersCount = vts.last1KUsersCount
             c.prev1KUsersCount = vts.prev1KUsersCount
             c.lastWeekMessages = vts.lastWeekMessages
@@ -654,6 +673,17 @@ class FccController(OrphieBaseController):
             post.replyCount = 0
             post.bumpDate = datetime.datetime.now()
             post.tags = tags
+        
+        newThread = True
+        taglist = post.tags
+        if not taglist:
+            taglist = thread.tags
+            newThread = False
+            
+        for tag in taglist:
+            tag.replyCount += 1
+            if newThread:
+                tag.threadCount += 1
             
         if fileHolder:
             fileHolder.disableDeletion()
@@ -809,7 +839,8 @@ class FccController(OrphieBaseController):
                     meta.Session.commit()
                     return True
                 else:
-                    return _("Can't anomymize this post now, it will be allowed after %s" % str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta))
+                    params = (str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta), str(datetime.datetime.now()))
+                    return _("Can't anomymize this post now, it will be allowed after %s (now: %s)" % params)
         else:
             return _("Nothing to anonymize")
         

@@ -11,6 +11,9 @@
         %endif
     %endfor
 %else:
+    %if c.page > 0:
+        [<a href='/${baselink}/page/${c.page - 1}/'>&lt;&lt;</a>]
+    %endif
     %for pg in range(0,2):
         %if pg == c.page:
             [${pg}]
@@ -39,7 +42,11 @@
         %else:
             [<a href='/${baselink}/page/${pg}/'>${pg}</a>]
         %endif
-    %endfor    
+    %endfor
+    
+    %if c.page < c.pages:
+        [<a href='/${baselink}/page/${c.page + 1}/'>&gt;&gt;</a>]
+    %endif
 %endif
 </td></tr></tbody></table>
 %endif

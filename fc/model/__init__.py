@@ -23,6 +23,7 @@ def init_model(engine):
                 #log.debug(s.name+ ' : ' +s.value)
                 if s.name in settingsDef:
                     settingsMap[s.name] = s
+        
         for s in settingsDef: 
             if not s in settingsMap:
                 #log.debug(s) 
@@ -31,7 +32,9 @@ def init_model(engine):
                 settingsMap[s].value = settingsDef[s]
                 meta.Session.save(settingsMap[s])
                 meta.Session.commit()
-        config['pylons.g'].settingsMap = settingsMap                   
+        config['pylons.g'].settingsMap = settingsMap
+        
+        
     except:
         pass             
     """

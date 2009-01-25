@@ -158,7 +158,36 @@ class FcmController(OrphieBaseController):
                 post.replyCount = repliesCount 
         meta.Session.commit()        
         mtnLog.append(self.createLogEntry('Task', 'Done'))
-        return mtnLog;     
+        return mtnLog;
+    
+    def updateStats(self):
+        mtnLog = []
+        mtnLog.append(self.createLogEntry('Task', 'Updating statistics...'))        
+        tags = meta.Session.query(Tag).all()
+        for tag in tags:
+            condition = Post.tags.any(Tag.id == tag.id)
+            threadCount = meta.Session.query(Post).filter(Post.parentid == -1).filter(condition).count()
+            #log.debug("%s:%s" % (tag.tag, threadCount))
+            
+            if tag.threadCount != threadCount:
+                msg = 'Invalid tag TC: %s (actual: %d, cached: %d), updating' % (tag.tag, threadCount, tag.threadCount)
+                warnMsg = self.createLogEntry('Warning', msg)
+                mtnLog.append(warnMsg)
+                addLogEntry(LOG_EVENT_INTEGR_RC, msg)
+                tag.threadCount = threadCount
+            
+            replyCount = meta.Session.query(Post).filter(or_(condition, Post.parentPost.has(condition))).count()
+            #log.debug("%s:%s" % (tag.tag, replyCount))
+            
+            if tag.replyCount != replyCount:
+                msg = 'Invalid tag RC: %s (actual: %d, cached: %d), updating' % (tag.tag, replyCount, tag.replyCount)
+                warnMsg = self.createLogEntry('Warning', msg)
+                mtnLog.append(warnMsg)
+                addLogEntry(LOG_EVENT_INTEGR_RC, msg)
+                tag.replyCount = replyCount
+        meta.Session.commit()
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog;
     
     def banInactive(self):
         mtnLog = []
@@ -224,8 +253,10 @@ class FcmController(OrphieBaseController):
                 mtnLog = self.destroyTrackers()     
             elif actid == 'updateCaches':
                 mtnLog = self.updateCaches()
+            elif actid == 'updateStats':
+                mtnLog = self.updateStats()
             elif actid == 'banInactive':
-                mtnLog = self.banInactive()                                            
+                mtnLog = self.banInactive()
             elif actid == 'all':
                 try:
                     mtnLog = self.clearOekaki()

@@ -9,7 +9,7 @@
 
 %if g.OPT.vitalSigns:
 
-<%def name="vitalSigns()" cached="True" cache_timeout="60" cache_type="memory">
+<%def name="vitalSigns()" cached=${g.OPT.statsCacheTime>0} cache_timeout=${g.OPT.statsCacheTime} cache_type="memory">
 <div class="theader">
 Vital signs
 <br/><br/>
@@ -38,7 +38,7 @@ SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPos
 ${vitalSigns()}
 %endif
 
-<%def name="stats()" cached="True" cache_timeout="180" cache_type="memory">
+<%def name="stats()" cached=${g.OPT.statsCacheTime>0} cache_timeout=${g.OPT.statsCacheTime} cache_type="memory">
 <h3>Boards</h3>
 %if g.OPT.interestingNumbers and not c.userInst.Anonymous:
 <span style="float: right;">

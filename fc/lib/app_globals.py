@@ -35,6 +35,7 @@ class OptHolder(object):
         self.allowAnonymous = (config['core.allowAnonymous'] == 'true')
         self.allowAnonymousPosting = (config['core.allowAnonymousPosting'] == 'true')
         self.allowRegistration = (config['core.allowRegistration'] == 'true')
+        self.statsCacheTime = int(config['core.statsCacheTime'])
         
         # Security settings
         self.alertEmail = config['security.alertEmail'] 

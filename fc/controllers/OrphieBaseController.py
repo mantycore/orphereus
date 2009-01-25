@@ -185,23 +185,29 @@ class OrphieBaseController(BaseController):
                 # print some error stuff here
                 return False
             
+            threadRemove = True
+            tags = p.tags
             if p.parentid>0:  
-                parentp = self.sqlGet(meta.Session.query(Post), p.parentid)
+                parentp = p.parentPost #self.sqlGet(meta.Session.query(Post), p.parentid)
+                tags = parentp.tags
+                threadRemove = False
+            
+            tagline = ''
+            taglist = []
+            for tag in tags:
+                taglist.append(tag.tag)
                 
+                tag.replyCount -= 1
+                if threadRemove:
+                    tag.threadCount -= 1
+            tagline = ', '.join(taglist)
+
             postOptions = self.conjunctTagOptions(p.parentid>0 and parentp.tags or p.tags)
             if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
-                tagline = ''
-                taglist = []
                 logEntry = ""
                 if p.parentid>0:
-                    for tag in parentp.tags:
-                        taglist.append(tag.tag)
-                    tagline = ', '.join(taglist)
                     logEntry = _("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (p.id, p.uidNumber, p.parentid, tagline, reason)
                 else:
-                    for tag in p.tags:
-                        taglist.append(tag.tag)
-                    tagline = ', '.join(taglist)                   
                     logEntry = _("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (p.id, p.uidNumber, tagline, reason)
                 if fileonly:
                     logEntry += " %s" % _("(file only)")

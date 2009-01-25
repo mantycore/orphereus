@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.admin.mako" />
-${_('Available actions:')}
+
+<h3>${_('Obligatory actions')}</h3>
 <table width="100%" class="hlTable">
 
 <tr>
 <td>
 <form method="post" action="service/all">
-<span style="color: red; font-weight: bold;">${_('Run all actions (without auto bans)')}</span>
+<span style="color: red; font-weight: bold;">${_('Run all actions')}</span>
 <br/>
 <input type="submit" value="Launch">
 </form>
@@ -65,16 +66,6 @@ ${_('Update caches')}
 
 <tr>
 <td>
-<form method="post" action="service/banInactive">
-${_('Ban ALL users without posts')}
-<br/>
-<input type="submit" value="Launch">
-</form>
-</td>
-</tr>
-
-<tr>
-<td>
 <form method="post" action="service/integrityChecks">
 <span style="color: red;">${_('Integrity checks')}</span>
 <br/>
@@ -84,3 +75,30 @@ ${_('Ban ALL users without posts')}
 </tr>
 
 </table>
+
+
+<h3>${_('Optional actions')}</h3>
+<table width="100%" class="hlTable">
+
+<tr>
+<td>
+<form method="post" action="service/updateStats">
+${_('Update statistics')}
+<br/>
+<input type="submit" value="Launch">
+</form>
+</td>
+</tr>
+
+<tr>
+<td>
+<form method="post" action="service/banInactive">
+${_('Ban ALL users without posts')}
+<br/>
+<input type="submit" value="Launch">
+</form>
+</td>
+</tr>
+
+</table>
+

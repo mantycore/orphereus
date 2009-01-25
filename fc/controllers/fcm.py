@@ -143,7 +143,10 @@ class FcmController(OrphieBaseController):
         for pic in pictures:            
             post = meta.Session.query(Post).filter(Post.picid == pic.id).first()
             if not post:
-                mtnLog.append(self.createLogEntry('Warning', 'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)))
+                msg = 'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
+                mtnLog.append(self.createLogEntry('Warning', msg))
+                addLogEntry(LOG_EVENT_INTEGR, msg)
+                meta.Session.delete(pic)
 
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Orpaned database entries check completed'))
@@ -165,13 +168,17 @@ class FcmController(OrphieBaseController):
                 if isThumb:
                     thumbIds = meta.Session.query(Picture).filter(Picture.thumpath == fn).all()
                     if not thumbIds:
-                        mtnLog.append(self.createLogEntry('Info', 'Unbound thumbnail %s moved into junk directory' % fn))
+                        msg = 'Unbound thumbnail %s moved into junk directory' % fn
+                        mtnLog.append(self.createLogEntry('Info', msg))
+                        addLogEntry(LOG_EVENT_INTEGR, msg)
                         shutil.move('%s/%s' % (g.OPT.uploadPath, fn), junkPath)
                         ccJunkThumbnails += 1
                 else:
                     picIds = meta.Session.query(Picture).filter(Picture.path == fn).all()
                     if not picIds:
-                        mtnLog.append(self.createLogEntry('Info', 'Unbound picture %s moved into junk directory' % fn))
+                        msg = 'Unbound picture %s moved into junk directory' % fn
+                        mtnLog.append(self.createLogEntry('Info', msg))
+                        addLogEntry(LOG_EVENT_INTEGR, msg)
                         shutil.move('%s/%s' % (g.OPT.uploadPath, fn), junkPath)
                         ccJunkFiles += 1
                         

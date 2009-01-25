@@ -38,7 +38,7 @@ LOG_EVENT_EDITEDPOST    = 0x00090001
 LOG_EVENT_INTEGR        = 0x00100000
 LOG_EVENT_INTEGR_RC     = 0x00100001
 
-disabledEvents = [LOG_EVENT_RICKROLLD, LOG_EVENT_SECURITY_IP]
+disabledEvents = [LOG_EVENT_RICKROLLD, LOG_EVENT_SECURITY_IP, LOG_EVENT_INTEGR]
 
 destinations = {0 : N_("Thread"),
                 1 : N_("First page of current board"),

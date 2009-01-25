@@ -238,9 +238,6 @@ class Setting(object):
 class LogEntry(object):
     pass
 
-#class TagMapping(object):
-#    pass
-
 orm.mapper(Captcha, t_captchas)        
 orm.mapper(LoginTracker, t_logins)    
 orm.mapper(Oekaki, t_oekaki)
@@ -248,8 +245,8 @@ orm.mapper(Invite, t_invites)
 orm.mapper(UserOptions, t_userOptions)
 orm.mapper(UserFilters, t_userFilters)
 orm.mapper(User, t_users, properties = {    
-        'options' : orm.relation(UserOptions, uselist=False, backref='t_users'),
-        'filters' : orm.relation(UserFilters)
+        'options' : orm.relation(UserOptions, uselist=False, backref='t_users', cascade="all, delete, delete-orphan"),
+        'filters' : orm.relation(UserFilters, cascade="all, delete, delete-orphan")
     })
 
 orm.mapper(Extension, t_extlist)
@@ -260,11 +257,11 @@ orm.mapper(Picture, t_piclist, properties = {
 
 orm.mapper(TagOptions, t_tagOptions)
 orm.mapper(Tag, t_tags, properties = {
-        'options' : orm.relation(TagOptions, uselist=False, backref='t_tags')
+        'options' : orm.relation(TagOptions, uselist=False, backref='t_tags', cascade="all, delete, delete-orphan")
     })
 orm.mapper(Post, t_posts, properties = {
     'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
-    'file': orm.relation(Picture),
+    'file': orm.relation(Picture, cascade="all, delete, delete-orphan" ),
     'parentPost' : orm.relation(Post, remote_side=[t_posts.c.id]),
     })
 
@@ -274,6 +271,8 @@ orm.mapper(LogEntry, t_log, properties = {
     'user' : orm.relation(User)
     })
 
+#class TagMapping(object):
+#    pass
 #orm.mapper(TagMapping, t_tagsToPostsMap)
 
 

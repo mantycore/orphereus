@@ -106,6 +106,38 @@ class FcmController(OrphieBaseController):
         mtnLog = []
         mtnLog.append(self.createLogEntry('Task', 'Doing integrity checks...'))
 
+        mtnLog.append(self.createLogEntry('Task', 'Cheking for orphaned database entries...'))
+        
+        mtnLog.append(self.createLogEntry('Task', 'User options...'))
+        userOpts = meta.Session.query(UserOptions).all()
+        for opt in userOpts:            
+            user = meta.Session.query(User).filter(User.uidNumber==opt.uidNumber).first()
+            if not user:
+                mtnLog.append(self.createLogEntry('Warning', 'Orphaned userOptions for %d' % opt.uidNumber))
+        
+        mtnLog.append(self.createLogEntry('Task', 'User filters...'))
+        userFl = meta.Session.query(UserFilters).all()
+        for fl in userFl:            
+            user = meta.Session.query(User).filter(User.uidNumber==opt.uidNumber).first()
+            if not user:
+                mtnLog.append(self.createLogEntry('Warning', 'Orphaned userFilters for %d' % fl.uidNumber))
+
+        mtnLog.append(self.createLogEntry('Task', 'Tag options...'))
+        tagOpts = meta.Session.query(TagOptions).all()
+        for opt in tagOpts:            
+            tag = meta.Session.query(Tag).filter(Tag.id==opt.tagId).first()
+            if not tag:
+                mtnLog.append(self.createLogEntry('Warning', 'Orphaned tagOptions for %d' % opt.tagId))
+
+        mtnLog.append(self.createLogEntry('Task', 'Pictures...'))
+        pictures = meta.Session.query(Picture).all()
+        for pic in pictures:            
+            post = meta.Session.query(Post).filter(Post.picid == pic.id).first()
+            if not post:
+                mtnLog.append(self.createLogEntry('Warning', 'Orphaned picture with id %d' % pic.id))
+
+        mtnLog.append(self.createLogEntry('Task', 'Orpaned database entries check completed'))
+        
         mtnLog.append(self.createLogEntry('Task', 'Cheking for orphaned files...'))
         files = os.listdir(g.OPT.uploadPath)
 
@@ -137,9 +169,6 @@ class FcmController(OrphieBaseController):
             addLogEntry(LOG_EVENT_INTEGR, "%d files and %d thumbnails moved into junk directory" % (ccJunkFiles, ccJunkThumbnails))
         
         mtnLog.append(self.createLogEntry('Task', 'Orpaned files check completed'))
-        mtnLog.append(self.createLogEntry('Task', 'Cheking for orphaned database entries...'))
-        mtnLog.append(self.createLogEntry('Task', 'NOT IMPLEMENTED'))
-        mtnLog.append(self.createLogEntry('Task', 'Orpaned database entries check completed'))
         
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog;     

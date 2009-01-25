@@ -113,7 +113,9 @@ class FcmController(OrphieBaseController):
         for opt in userOpts:            
             user = meta.Session.query(User).filter(User.uidNumber==opt.uidNumber).first()
             if not user:
-                mtnLog.append(self.createLogEntry('Warning', 'Orphaned userOptions %d for %s, removing' % (opt.optid, str(opt.uidNumber))))
+                msg = 'Orphaned userOptions %d for %s, removing' % (opt.optid, str(opt.uidNumber))
+                mtnLog.append(self.createLogEntry('Warning', msg))
+                addLogEntry(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(opt)
         
         mtnLog.append(self.createLogEntry('Task', 'User filters...'))
@@ -121,7 +123,9 @@ class FcmController(OrphieBaseController):
         for fl in userFl:            
             user = meta.Session.query(User).filter(User.uidNumber==opt.uidNumber).first()
             if not user:
-                mtnLog.append(self.createLogEntry('Warning', 'Orphaned userFilters %d for %s, removing' % (fl.id, str(fl.uidNumber))))
+                msg = 'Orphaned userFilters %d for %s, removing' % (fl.id, str(fl.uidNumber))
+                mtnLog.append(self.createLogEntry('Warning', msg))
+                addLogEntry(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(fl)
 
         mtnLog.append(self.createLogEntry('Task', 'Tag options...'))
@@ -129,7 +133,9 @@ class FcmController(OrphieBaseController):
         for opt in tagOpts:            
             tag = meta.Session.query(Tag).filter(Tag.id==opt.tagId).first()
             if not tag:
-                mtnLog.append(self.createLogEntry('Warning', 'Orphaned tagOptions for %s, removing' % (opt.id, str(opt.tagId))))
+                msg = 'Orphaned tagOptions %d for %s, removing' % (opt.id, str(opt.tagId))
+                mtnLog.append(self.createLogEntry('Warning', msg))
+                addLogEntry(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(tag)
 
         mtnLog.append(self.createLogEntry('Task', 'Pictures...'))

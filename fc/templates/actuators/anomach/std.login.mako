@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 <div class="postarea" style="">
-    <img src="${g.OPT.staticPathWeb}hello.png" alt="oh hi"/>
+    <img src="${g.OPT.staticPathWeb}ohhi.png" alt="oh hi"/>
 
     <form id="postform" action="${c.currentURL}authorize" method="post">
         <span class="postblock">

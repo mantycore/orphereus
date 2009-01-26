@@ -594,7 +594,7 @@ class FccController(OrphieBaseController):
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
-        post.message = filterText(request.POST.get('message', '')).replace('&gt;&gt;','>>') #XXX: TODO: this must be fixed in parser
+        post.message = filterText(request.POST.get('message', '')).replace('&gt;','>') #XXX: TODO: this must be fixed in parser
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!

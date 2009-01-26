@@ -589,7 +589,7 @@ class FccController(OrphieBaseController):
         
         post = Post()
         tempid = request.POST.get('tempid', False)
-        post.message = request.POST.get('message', '')
+        post.message = filterText(request.POST.get('message', '')) #XXX: TODO: this must be fixed in parser
         tempid = request.POST.get('tempid', False)
         
         painterMark = False # TODO FIXME : move into parser

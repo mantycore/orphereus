@@ -589,7 +589,18 @@ class FccController(OrphieBaseController):
         
         post = Post()
         tempid = request.POST.get('tempid', False)
-        post.message = filterText(request.POST.get('message', '')) #XXX: TODO: this must be fixed in parser
+        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        post.message = filterText(request.POST.get('message', '')).replace('&gt;&gt;','>>') #XXX: TODO: this must be fixed in parser
+        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        
         tempid = request.POST.get('tempid', False)
         
         painterMark = False # TODO FIXME : move into parser

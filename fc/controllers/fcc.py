@@ -184,8 +184,13 @@ class FccController(OrphieBaseController):
         threadFilter = self.excludeHiddenTags(threadFilter)
         #threadFilter = threadFilter.filter(not_(Post.id.in_(self.userInst.hideThreads())))
                         
-        count = self.sqlCount(threadFilter)      
-        tpp = self.userInst.threadsPerPage()  
+        count = self.sqlCount(threadFilter)
+        tpp = self.userInst.threadsPerPage()
+        
+        if page*tpp >= count:
+            c.errorText = _("Incorrect page")
+            return self.render('error')
+        
         self.paginate(count, page, tpp)
         #log.debug("count: %d" % count)
         

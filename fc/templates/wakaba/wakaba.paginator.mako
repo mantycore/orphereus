@@ -2,6 +2,10 @@
 
 %if c.pages:
 <table border="1"><tbody><tr><td>
+%if c.page > 0:
+    [<a href='/${baselink}/page/${c.page - 1}/'>&lt;&lt;</a>]
+%endif
+
 %if not c.showPagesPartial:
     %for pg in range(0,c.pages):
         %if pg == c.page:
@@ -11,9 +15,6 @@
         %endif
     %endfor
 %else:
-    %if c.page > 0:
-        [<a href='/${baselink}/page/${c.page - 1}/'>&lt;&lt;</a>]
-    %endif
     %for pg in range(0,2):
         %if pg == c.page:
             [${pg}]
@@ -43,10 +44,9 @@
             [<a href='/${baselink}/page/${pg}/'>${pg}</a>]
         %endif
     %endfor
-    
-    %if c.page < c.pages-1:
-        [<a href='/${baselink}/page/${c.page + 1}/'>&gt;&gt;</a>]
-    %endif
+%endif
+%if c.page < c.pages-1:
+    [<a href='/${baselink}/page/${c.page + 1}/'>&gt;&gt;</a>]
 %endif
 </td></tr></tbody></table>
 %endif

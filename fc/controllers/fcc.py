@@ -733,7 +733,7 @@ class FccController(OrphieBaseController):
         elif dest == 3: # overview
             pass
         elif dest == 5: #referrer
-            return redirect_to(request.headers.get('REFERER',''))
+            return redirect_to(request.headers.get('REFERER', str(tagLine)))
         
         ##log.debug(redirectAddr)
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))    

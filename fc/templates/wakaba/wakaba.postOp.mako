@@ -23,7 +23,7 @@
 <a name="i${thread.id}"></a>
 <label>
     &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Delete"/></a>
-    <div style="display:none" class="delete">       
+    <span style="display:none" class="delete">       
     %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
         <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
         %if g.OPT.enableFinalAnonymity:
@@ -34,7 +34,7 @@
         <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>
         <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>                     
     %endif
-    </div>
+    </span>
     <span class="filetitle">${thread.title}</span>
     
     <span

@@ -30,6 +30,7 @@ def make_app(global_conf, full_stack=True, **app_conf):
         [app:<name>] section of the Paste ini file (where <name>
         defaults to main).
     """
+    
     # Configure the Pylons environment
     load_environment(global_conf, app_conf)
 

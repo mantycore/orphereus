@@ -34,7 +34,7 @@ def setup_config(command, filename, section, vars):
         user = User()
         user.uid = hashlib.sha512('first' + hashlib.sha512(config['core.hashSecret']).hexdigest()).hexdigest()
         log.debug(user.uid)        
-        meta.Session.save(user)
+        meta.Session.add(user)
         meta.Session.commit()     
         uidNumber = user.uidNumber
         log.debug(uidNumber)
@@ -58,7 +58,7 @@ def setup_config(command, filename, section, vars):
         ext.thheight = 0
         ext.ext = 'jpeg'
         ext.type = 'image'
-        meta.Session.save(ext)
+        meta.Session.add(ext)
 
         
         ext = Extension()
@@ -67,7 +67,7 @@ def setup_config(command, filename, section, vars):
         ext.thheight = 0
         ext.ext = 'jpg'
         ext.type = 'image'
-        meta.Session.save(ext)
+        meta.Session.add(ext)
         
         
         ext = Extension()
@@ -76,7 +76,7 @@ def setup_config(command, filename, section, vars):
         ext.thheight = 0
         ext.ext = 'gif'
         ext.type = 'image'
-        meta.Session.save(ext)
+        meta.Session.add(ext)
         
         
         ext = Extension()
@@ -85,7 +85,7 @@ def setup_config(command, filename, section, vars):
         ext.thheight = 0
         ext.ext = 'bmp'
         ext.type = 'image'
-        meta.Session.save(ext)
+        meta.Session.add(ext)
         
         
         ext = Extension()
@@ -94,7 +94,7 @@ def setup_config(command, filename, section, vars):
         ext.thheight = 0
         ext.ext = 'png'
         ext.type = 'image'
-        meta.Session.save(ext)
+        meta.Session.add(ext)
         
         
         ext = Extension()
@@ -103,7 +103,7 @@ def setup_config(command, filename, section, vars):
         ext.thheight = 80
         ext.ext = 'zip'
         ext.type = 'archive'
-        meta.Session.save(ext)
+        meta.Session.add(ext)
         
         
         ext = Extension()
@@ -112,7 +112,7 @@ def setup_config(command, filename, section, vars):
         ext.thheight = 80
         ext.ext = 'mp3'
         ext.type = 'audio'
-        meta.Session.save(ext)
+        meta.Session.add(ext)
         
     try:
         tc = meta.Session.query(Tag).count()
@@ -128,7 +128,7 @@ def setup_config(command, filename, section, vars):
         tag.options.comment = 'Random'
         tag.options.sectionId = 2
         tag.options.persistent = True 
-        tag.options.specialRules = ''
+        tag.options.specialRules = u''
         tag.options.imagelessThread = False 
         tag.options.imagelessPost = True
         tag.options.enableSpoilers = False
@@ -137,7 +137,7 @@ def setup_config(command, filename, section, vars):
         tag.options.maxFileSize = 3000000
         tag.options.minPicSize = 50
         tag.options.thumbSize = 180    
-        meta.Session.save(tag)
+        meta.Session.add(tag)
                 
         meta.Session.commit()          
     

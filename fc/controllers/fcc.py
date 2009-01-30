@@ -13,6 +13,7 @@ import Image
 import os
 import hashlib
 import re
+from beaker.cache import CacheManager
 from wakabaparse import WakabaParser
 from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
@@ -383,10 +384,12 @@ class FccController(OrphieBaseController):
             chTime = g.OPT.statsCacheTime
             
             if chTime > 0: 
-                cch = cache.get_cache('home_stats')
-                c.totalPostsCount = cch.get_value(key="totalPosts", createfunc=getTotalPosts, type="memory", expiretime=chTime)
-                mstat = cch.get_value(key="mainStats", createfunc=mainStats, type="memory", expiretime=chTime)
-                vts = cch.get_value(key="vitalSigns", createfunc=vitalSigns, type="memory", expiretime=chTime)
+                cm = CacheManager(type='memory')
+                #cch = cache.get_cache('home_stats')
+                cch = cm.get_cache('home_stats')
+                c.totalPostsCount = cch.get_value(key="totalPosts", createfunc=getTotalPosts, expiretime=chTime)
+                mstat = cch.get_value(key="mainStats", createfunc=mainStats, expiretime=chTime)
+                vts = cch.get_value(key="vitalSigns", createfunc=vitalSigns, expiretime=chTime)
             else:
                 c.totalPostsCount = getTotalPosts()
                 mstat = mainStats()
@@ -524,7 +527,7 @@ class FccController(OrphieBaseController):
            pic.extid = extParams.id
            pic.size = os.stat(localFilePath)[6]
            pic.md5 = md5
-           meta.Session.save(pic)
+           meta.Session.add(pic)
            meta.Session.commit()
            return [pic, AngryFileHolder(localFilePath, pic)]
         else:
@@ -561,7 +564,7 @@ class FccController(OrphieBaseController):
             maxTagLen = int(g.settingsMap['maxTagLen'].value)
             disabledTagsLine = g.settingsMap['disabledTags'].value
             
-            if len(tags)>maxTagsCount:
+            if len(tags) > maxTagsCount:
                 c.errorText = _("Too many tags. Maximum allowed: %s") % (maxTagsCount)
                 return self.render('error') 
                 
@@ -588,21 +591,20 @@ class FccController(OrphieBaseController):
             return self.render('error')
         
         post = Post()
-        tempid = request.POST.get('tempid', False)
+        #tempid = request.POST.get('tempid', False)
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
-        post.message = filterText(request.POST.get('message', '')).replace('&gt;','>') #XXX: TODO: this must be fixed in parser
+        post.message = filterText(request.POST.get('message', u'')).replace('&gt;','>') #XXX: TODO: this must be fixed in parser
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         
-        tempid = request.POST.get('tempid', False)
-        
+        tempid = request.POST.get('tempid', False)        
         painterMark = False # TODO FIXME : move into parser
         if tempid: 
            oekaki = self.sqlFirst(meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid))
@@ -638,7 +640,7 @@ class FccController(OrphieBaseController):
         elif painterMark:
             post.message = painterMark 
                
-        post.title = filterText(request.POST['title'])
+        post.title = filterText(request.POST.get('title', u''))
         post.date = datetime.datetime.now()
         
         fileDescriptors = self.processFile(file, options.thumbSize)    
@@ -703,7 +705,7 @@ class FccController(OrphieBaseController):
             
         if fileHolder:
             fileHolder.disableDeletion()
-        meta.Session.save(post)
+        meta.Session.add(post)
         meta.Session.commit()
         self.gotoDestination(post, postid)
         
@@ -801,7 +803,7 @@ class FccController(OrphieBaseController):
                  c.canvas = h.modLink(pic.path, c.userInst.secid(), g.OPT.secureLinks)
                  c.width  = pic.width
                  c.height = pic.height
-        meta.Session.save(oekaki)
+        meta.Session.add(oekaki)
         meta.Session.commit()
 #        return render('/spainter.mako')
         return self.render('spainter')
@@ -889,7 +891,7 @@ class FccController(OrphieBaseController):
             self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
             self.userInst.useAjax(request.POST.get('useAjax', False))
             self.userInst.mixOldThreads(request.POST.get('mixOldThreads', False))
-            homeExcludeTags = self.__tagListFromString(request.POST.get('homeExclude',''))
+            homeExcludeTags = self.__tagListFromString(request.POST.get('homeExclude', u''))
             homeExcludeList = []
             for t in homeExcludeTags:
                 homeExcludeList.append(t.id)
@@ -901,7 +903,7 @@ class FccController(OrphieBaseController):
             newuid = self.genUid(key)
             olduid = self.userInst.uid()
             if key == key2 and newuid != olduid and len(key) >= g.OPT.minPassLength:
-                currentKey = request.POST.get('currentKey','').encode('utf-8')
+                currentKey = request.POST.get('currentKey', '').encode('utf-8')
                 if not self.genUid(currentKey) == self.userInst.uid():
                         c.boardName = _('Error')
                         c.errorText = _("You have entered incorrect current security code!")
@@ -960,7 +962,7 @@ class FccController(OrphieBaseController):
     def search(self, text, page = 0):
         rawtext = text
         if not text:
-            rawtext = request.POST.get('query', '')
+            rawtext = request.POST.get('query', u'')
             text = filterText(rawtext)
 
         if not text or len(rawtext) < 3:

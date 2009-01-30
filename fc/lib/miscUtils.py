@@ -48,7 +48,7 @@ def addLogEntry(event,entry):
     logEntry.date = datetime.datetime.now()
     logEntry.event = event
     logEntry.entry = entry
-    meta.Session.save(logEntry)
+    meta.Session.add(logEntry)
     meta.Session.commit()
     
 def adminAlert(alertStr):

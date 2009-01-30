@@ -77,13 +77,13 @@ class FcaController(OrphieBaseController):
         
     def editBoard(self,tag):
         c.boardName = 'Edit board'
-        c.message = ''
+        c.message = u''
         c.tag = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==tag).first()
         if not c.tag:
             c.tag = Tag(tag)
         if not c.tag.options:
             c.tag.options = TagOptions()
-            c.tag.options.comment = ''
+            c.tag.options.comment = u''
             c.tag.options.sectionId = 0
             c.tag.options.persistent = False
             c.tag.options.imagelessThread = True
@@ -94,7 +94,7 @@ class FcaController(OrphieBaseController):
             c.tag.options.maxFileSize = 3145728
             c.tag.options.minPicSize = 50
             c.tag.options.thumbSize = 180
-            c.tag.options.specialRules = ''
+            c.tag.options.specialRules = u''
         if request.POST.get('tag',False):
             newtag = request.POST.get('tag',False)
             newtagre = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""").match(newtag)
@@ -106,9 +106,9 @@ class FcaController(OrphieBaseController):
                         oldtag = c.tag.tag
                         c.tag.tag = newtag
                     else:
-                        oldtag = ''
-                    c.tag.options.comment = filterText(request.POST.get('comment',''))
-                    c.tag.options.specialRules = filterText(request.POST.get('specialRules',''))                    
+                        oldtag = u''
+                    c.tag.options.comment = filterText(request.POST.get('comment', u''))
+                    c.tag.options.specialRules = filterText(request.POST.get('specialRules', u''))                    
                     c.tag.options.sectionId = request.POST.get('sectionId',0)
                     c.tag.options.persistent = request.POST.get('persistent',False)
                     c.tag.options.imagelessThread = request.POST.get('imagelessThread',False)
@@ -130,7 +130,7 @@ class FcaController(OrphieBaseController):
                             meta.Session.commit()                              
                             return redirect_to('/holySynod/manageBoards/')                       
                     elif not c.tag.id:                    
-                        meta.Session.save(c.tag)                        
+                        meta.Session.add(c.tag)                        
                         
                     c.message = _("Updated board")    
                     addLogEntry(LOG_EVENT_BOARD_EDIT, "Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))                        
@@ -208,13 +208,13 @@ class FcaController(OrphieBaseController):
                     banreason = user.options.banreason
                     bantime = user.options.bantime
                     user.options.bantime = 0
-                    user.options.banreason = ''
+                    user.options.banreason = u''
                     addLogEntry(LOG_EVENT_USER_UNBAN,_('Unbanned user %s (%s days for reason "%s")') % (user.uidNumber,bantime,banreason))
                     c.message = _('User was unbanned')
                 else:
                     c.message = _('This user is not banned')
             elif request.POST.get('lookup', False):
-                reason = filterText(request.POST.get('lookupreason',''))
+                reason = filterText(request.POST.get('lookupreason', u''))
                 quantity = int(request.POST.get('quantity', '0'))
                 if isNumber(quantity) and int(quantity) > 0:
                     if len(reason) > 1:
@@ -229,7 +229,7 @@ class FcaController(OrphieBaseController):
                 else:
                     c.message = _('Incorrect quantity value')
             elif request.POST.get('delete', False):
-                reason = filterText(request.POST.get('deletereason',''))
+                reason = filterText(request.POST.get('deletereason', u''))
                 deleteLegacy = request.POST.get('deleteLegacy', False)
                 if self.userInst.canChangeRights():
                     if len(reason)>1:
@@ -281,7 +281,7 @@ class FcaController(OrphieBaseController):
             c.ext.thheight = request.POST.get('thheight',0)
             c.ext.type = filterText(request.POST.get('type','image'))
             if not c.ext.id:
-                meta.Session.save(c.ext)
+                meta.Session.add(c.ext)
             meta.Session.commit()
             addLogEntry(LOG_EVENT_EXTENSION_EDIT,_('Edited extension %s') % c.ext.ext)
             c.message = _('Extension edited')
@@ -320,7 +320,7 @@ class FcaController(OrphieBaseController):
                     id = int(id)
                 
             if tagid == 0:
-                tagName = filterText(request.POST.get('tagName', ''))
+                tagName = filterText(request.POST.get('tagName', u''))
                 if tagName:
                     tag = meta.Session.query(Tag).filter(Tag.tag==tagName).first()
                     if tag:
@@ -385,7 +385,7 @@ class FcaController(OrphieBaseController):
             invite = Invite()
             invite.date = datetime.datetime.now()
             invite.invite = self.genInviteId()
-            meta.Session.save(invite)
+            meta.Session.add(invite)
             meta.Session.commit()
             addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, reason))
             c.inviteCode = invite.invite

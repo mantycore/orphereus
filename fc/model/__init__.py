@@ -30,7 +30,7 @@ def init_model(engine):
                 settingsMap[s] = Setting()
                 settingsMap[s].name = s
                 settingsMap[s].value = settingsDef[s]
-                meta.Session.save(settingsMap[s])
+                meta.Session.add(settingsMap[s])
                 meta.Session.commit()
         config['pylons.g'].settingsMap = settingsMap
         

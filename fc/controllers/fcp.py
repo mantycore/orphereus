@@ -62,7 +62,7 @@ class FcpController(OrphieBaseController):
         meta.Session.commit() 
         captcha = Captcha()
         captcha.text = self.randomStr()
-        meta.Session.save(captcha)
+        meta.Session.add(captcha)
         meta.Session.commit()                
 
         return captcha
@@ -164,7 +164,7 @@ class FcpController(OrphieBaseController):
             tracker.ip = ip
             tracker.attempts = 0
             tracker.lastAttempt = datetime.datetime.now()              
-            meta.Session.save(tracker)  
+            meta.Session.add(tracker)  
             meta.Session.commit()
             #log.debug('new tracker')
                     
@@ -258,8 +258,8 @@ class FcpController(OrphieBaseController):
                 session.save()
                 c.captcha = captcha
          
-        key = request.POST.get('key','').encode('utf-8')
-        key2 = request.POST.get('key2','').encode('utf-8')
+        key = request.POST.get('key', '').encode('utf-8')
+        key2 = request.POST.get('key2', '').encode('utf-8')
             
         if key and captchaOk:
             if len(key)>=g.OPT.minPassLength and key == key2:      
@@ -275,7 +275,7 @@ class FcpController(OrphieBaseController):
             
                 user = User()
                 user.uid = uid
-                meta.Session.save(user)
+                meta.Session.add(user)
                 addLogEntry(LOG_EVENT_INVITE_USED, "Used invite #%d" % (session['iid']))                
                 meta.Session.commit()
                 del session['invite']
@@ -333,7 +333,7 @@ class FcpController(OrphieBaseController):
         for key in request.environ.keys():
             if 'HTTP' in key or 'SERVER' in key or 'REMOTE' in key:
                 out += key + ':' +request.environ[key] + '\n'
-        out += 'test:' + str(request.POST.get('test','')) 
+        out += 'test:' + str(request.POST.get('test', '')) 
         return filterText(out)    
     
     

@@ -173,7 +173,7 @@ class OrphieBaseController(BaseController):
             options.maxFileSize = 2621440
             options.minPicSize = 50
             options.thumbSize = 180
-            options.specialRules = ''
+            options.specialRules = u''
         return options
     
     def processDelete(self, postid, fileonly=False, checkOwnage=True, reason = "???"):
@@ -192,7 +192,7 @@ class OrphieBaseController(BaseController):
                 tags = parentp.tags
                 threadRemove = False
             
-            tagline = ''
+            tagline = u''
             taglist = []
             for tag in tags:
                 taglist.append(tag.tag)

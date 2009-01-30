@@ -117,7 +117,7 @@ class FcajaxController(OrphieBaseController):
         userFilter = UserFilters()
         userFilter.uidNumber = self.userInst.uidNumber()
         userFilter.filter = filterText(filter)
-        meta.Session.save(userFilter)
+        meta.Session.add(userFilter)
         meta.Session.commit()
         c.userFilter = userFilter
         return self.render('ajax.addUserFilter') #render('/ajax.addUserFilter.mako')

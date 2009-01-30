@@ -53,7 +53,7 @@ class WakabaParser(object):
     def signature(self, tag, beg, end, parts):
         valid = {} 
         invalid = {} 
-        result = ''
+        result = u''
         for nn, i, j, p in parts:
             pid = self.calledBy.isPostOwner(self.input[i:j])
             if pid == -1:
@@ -68,7 +68,7 @@ class WakabaParser(object):
                     invalid[self.input[i:j]]=pid
         if invalid:
             result += '<span class="badsignature">##'    
-            sep = ''
+            sep = u''
             for i in invalid:
                 result += sep + '<a href="/%s#i%s">%s</a>' % (invalid[i],i,i)
                 sep = ','
@@ -79,7 +79,7 @@ class WakabaParser(object):
                 result += '<span class="signature">'
             else:
                 result += '<span class="signature">##'        
-            sep = ''
+            sep = u''
             for i in valid:
                 result += sep + '<a href="/%s#i%s">%s</a>' % (valid[i],i,i)
                 sep = ','
@@ -121,7 +121,7 @@ class WakabaParser(object):
             self.formatInHTML(clparts)
             n += 1
         self.closeTag(depth + 1)
-        return ''
+        return u''
     def block_list(self, tag, beg, end, parts):
         fNL = (parts[0][3][1][0] == 'numlist')
         if fNL:
@@ -142,10 +142,10 @@ class WakabaParser(object):
                 self.formatInHTML(clparts)
             self.closeTag()
         self.closeTag()
-        return ''
+        return u''
         
     def formatInHTML(self, Nodes):
-        result = ''
+        result = u''
         fP = False
         fC = False
         for tag, beg, end, parts in Nodes:
@@ -214,13 +214,13 @@ class WakabaParser(object):
         self.lines = 0
         self.linesCutted = 0
         self.linesFlag = False
-        self.result = ''
-        self.short = ''
+        self.result = u''
+        self.short = u''
         self.tags = []
         taglist = TextTools.tag(self.input, self.parser)
         result = self.formatInHTML(taglist[1])
         if self.short and self.linesCutted == self.lines:
-            self.short = ''
+            self.short = u''
         return (self.result,self.short)
 
     def getTagList(self, message):

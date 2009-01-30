@@ -97,7 +97,7 @@ class FcmController(OrphieBaseController):
                 mtnLog.append(self.createLogEntry('Info', unbanMessage))
                 addLogEntry(LOG_EVENT_MTN_UNBAN, unbanMessage)
                 user.options.bantime = 0
-                user.options.banreason = ''
+                user.options.banreason = u''
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog;        

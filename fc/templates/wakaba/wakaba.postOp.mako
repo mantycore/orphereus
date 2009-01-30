@@ -55,18 +55,16 @@
     %if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
         <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
     %endif    
-</span>
 
-&nbsp;
-
-<span>${_('Posted in')}:
+    &nbsp;
+    ${_('Posted in')}:
 %for t in thread.tags:
     <a href="/${t.tag}/">/${t.tag}/</a> 
 %endfor
-</span>
-&nbsp;
+
+
+    &nbsp;
 %if not c.userInst.Anonymous:
-<span>
 [<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide Thread')}</a>]
 </span>
 %endif

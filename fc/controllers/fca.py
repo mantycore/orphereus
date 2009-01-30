@@ -261,12 +261,13 @@ class FcaController(OrphieBaseController):
         c.extensions = meta.Session.query(Extension).order_by(Extension.type).all()
         return self.render('manageExtensions')
         
-    def editExtension(self,ext):
+    def editExtension(self, ext):
         if not ext:
             ext = ''
-        ext = filterText(request.POST.get('ext',ext))
+        ext = filterText(request.POST.get('ext', ext))
         if len(ext) > 10:
             ext = ''
+            
         c.ext = meta.Session.query(Extension).filter(Extension.ext==ext).first()
         if not c.ext:
             c.ext = Extension()
@@ -275,15 +276,16 @@ class FcaController(OrphieBaseController):
             c.ext.thwidth = 0
             c.ext.thheight= 0
             c.ext.type = 'image'
-        if request.POST.get('ext',False):
-            c.ext.path = filterText(request.POST.get('path',''))
-            c.ext.thwidth = request.POST.get('thwidth',0)
-            c.ext.thheight = request.POST.get('thheight',0)
-            c.ext.type = filterText(request.POST.get('type','image'))
+            
+        if request.POST.get('ext', False):
+            c.ext.path = filterText(request.POST.get('path', ''))
+            c.ext.thwidth = request.POST.get('thwidth', 0)
+            c.ext.thheight = request.POST.get('thheight', 0)
+            c.ext.type = filterText(request.POST.get('type', 'image'))
             if not c.ext.id:
                 meta.Session.add(c.ext)
             meta.Session.commit()
-            addLogEntry(LOG_EVENT_EXTENSION_EDIT,_('Edited extension %s') % c.ext.ext)
+            addLogEntry(LOG_EVENT_EXTENSION_EDIT, _('Edited extension %s') % c.ext.ext)
             c.message = _('Extension edited')
         return self.render('editExtension')
         

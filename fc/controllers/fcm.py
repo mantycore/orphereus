@@ -61,7 +61,7 @@ class FcmController(OrphieBaseController):
                 meta.Session.delete(invite)
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
-        return mtnLog;
+        return mtnLog
         
     def destroyTrackers(self):
         mtnLog = []
@@ -80,7 +80,7 @@ class FcmController(OrphieBaseController):
                 meta.Session.delete(tracker)
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
-        return mtnLog;        
+        return mtnLog
         
     def banRotate(self):
         mtnLog = []
@@ -100,7 +100,7 @@ class FcmController(OrphieBaseController):
                 user.options.banreason = u''
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
-        return mtnLog;        
+        return mtnLog
 
     def integrityChecks(self):
         mtnLog = []
@@ -188,11 +188,11 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Orpaned files check completed'))
         
         mtnLog.append(self.createLogEntry('Task', 'Done'))
-        return mtnLog;     
+        return mtnLog
     
     def updateCaches(self):
         mtnLog = []
-        mtnLog.append(self.createLogEntry('Task', 'Updating caches...'))        
+        mtnLog.append(self.createLogEntry('Task', 'Updating caches...'))
         posts = meta.Session.query(Post).filter(Post.parentid == -1).all()
         for post in posts:
             repliesCount = meta.Session.query(Post).filter(Post.parentid == post.id).count()
@@ -204,11 +204,11 @@ class FcmController(OrphieBaseController):
                 post.replyCount = repliesCount 
         meta.Session.commit()        
         mtnLog.append(self.createLogEntry('Task', 'Done'))
-        return mtnLog;
+        return mtnLog
     
     def updateStats(self):
         mtnLog = []
-        mtnLog.append(self.createLogEntry('Task', 'Updating statistics...'))        
+        mtnLog.append(self.createLogEntry('Task', 'Updating statistics...'))
         tags = meta.Session.query(Tag).all()
         for tag in tags:
             condition = Post.tags.any(Tag.id == tag.id)
@@ -233,7 +233,7 @@ class FcmController(OrphieBaseController):
                 tag.replyCount = replyCount
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
-        return mtnLog;
+        return mtnLog
     
     def banInactive(self):
         mtnLog = []
@@ -248,7 +248,23 @@ class FcmController(OrphieBaseController):
                 
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
-        return mtnLog;   
+        return mtnLog
+    
+    def removeEmptyTags(self):
+        mtnLog = []
+        mtnLog.append(self.createLogEntry('Task', 'Removing empty tags...'))
+        tags = meta.Session.query(Tag).all()
+        for tag in tags:
+            log.debug(tag.tag)
+            if not tag.options or not tag.options.persistent:
+                threadCount = meta.Session.query(Post).filter(Post.parentid == -1).filter(Post.tags.any(Tag.id == tag.id)).count()
+                if threadCount == 0:
+                    mtnLog.append(self.createLogEntry('Info', "Removed tag %s" % tag.tag))
+                    meta.Session.delete(tag)
+                
+        meta.Session.commit()
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog
     
     def mtnAction(self, actid, secid):
         secTestPassed = False    
@@ -303,6 +319,8 @@ class FcmController(OrphieBaseController):
                 mtnLog = self.updateStats()
             elif actid == 'banInactive':
                 mtnLog = self.banInactive()
+            elif actid == 'removeEmptyTags':
+                mtnLog = self.removeEmptyTags()
             elif actid == 'all':
                 try:
                     mtnLog = self.clearOekaki()

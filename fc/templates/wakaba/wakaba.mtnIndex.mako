@@ -92,6 +92,16 @@ ${_('Update statistics')}
 
 <tr>
 <td>
+<form method="post" action="service/removeEmptyTags">
+${_('Remove empty tags')}
+<br/>
+<input type="submit" value="Launch">
+</form>
+</td>
+</tr>
+
+<tr>
+<td>
 <form method="post" action="service/banInactive">
 ${_('Ban ALL users without posts')}
 <br/>

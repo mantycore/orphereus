@@ -13,6 +13,4 @@
 </ol>
 </font>
 
-<font style="font-size: 75%">Двинутые любители бюрократии найдут утешение, нажав на <a href="/static/rulesFull">эту надпись</a>.</font>
-
 <hr />

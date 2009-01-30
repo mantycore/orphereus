@@ -24,9 +24,10 @@
                         <img src="${g.OPT.staticPathWeb}images/sage.png" alt="Sage"/>
                     %endif
                     <span class="replytitle">${post.title}</span>
-                     ${h.modTime(post, c.userInst, g.OPT.secureTime)}
                 </label>
                 <span class="reflink">
+                     ${h.modTime(post, c.userInst, g.OPT.secureTime)}
+                     
                     %if c.board:
                         <a href="/${thread.id}#i${post.id}" ${c.canPost and """onClick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,post.id) or ""}>#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
                     %else:

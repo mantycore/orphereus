@@ -36,17 +36,17 @@
     %endif
     </span>
     <span class="filetitle">${thread.title}</span>
-    
-    <span
+</label>
+
+<span class="reflink">
+    <span 
     %if getattr(thread, 'mixed', False):
      style="color: red;"
     %endif
     >
     ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
     </span>
-</label>
-
-<span class="reflink">
+    
     %if c.board:
         <a href="/${thread.id}#i${thread.id}" ${c.canPost and """onClick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
     %else:

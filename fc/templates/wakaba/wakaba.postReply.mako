@@ -9,7 +9,7 @@
                 <a name="i${post.id}"></a>
                 <label>
                     &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Del" /></a>
-                    <div style="display:none" class="delete">
+                    <span style="display:none" class="delete">
                     %if post.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                         <input type="checkbox" name="delete-${post.id}" value="${post.id}" />
                         %if g.OPT.enableFinalAnonymity:
@@ -19,7 +19,7 @@
                     %if c.isAdmin:
                         <a href="/holySynod/manageUsers/editAttempt/${post.id}">[User]</a>     
                     %endif
-                    </div>
+                    </span>
                     %if post.sage:
                         <img src="${g.OPT.staticPathWeb}images/sage.png" alt="Sage"/>
                     %endif

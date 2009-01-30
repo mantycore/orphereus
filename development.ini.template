@@ -37,6 +37,7 @@ core.allowAnonymous = false
 core.allowAnonymousPosting = false
 core.allowRegistration = false
 core.statsCacheTime = 180
+core.permissiveFileSizeConjunction = true
 
 # Board defaults
 defaults.thumbSize = 200

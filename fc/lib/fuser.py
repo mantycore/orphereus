@@ -44,7 +44,7 @@ class FUser(object):
                     self.__user.options = UserOptions()
                     self.__user.options.threadsPerPage = 10
                     self.__user.options.repliesPerThread = 10
-                    self.__user.options.style = 'photon'
+                    self.__user.options.style = g.OPT.styles[0]
                     self.__user.options.template = 'wakaba'
                     self.__user.options.bantime = 0
                     self.__user.options.canDeleteAllPosts = False                       

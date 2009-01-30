@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+%if not c.board and c.tagLine:
+    [<a href="/${c.tagLine}">${_('Back')}</a>]
+    <hr/>
+%endif
+
 %if not c.board:
     <div class="theader">${_('Reply')}</div>
 %else:
@@ -8,6 +13,7 @@
 
 <div id="newThreadPlaceholder">
 <div class="postarea" id="postFormDiv">
+
 <table>
 <tr>
 <td>
@@ -126,7 +132,10 @@
 <li>${_('Spoiler alerts')}:  ${not c.boardOptions.enableSpoilers and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Op can delete thread')}:  ${c.boardOptions.canDeleteOwnThreads and _('yes') or _('no')}</li>
 <li>${_('Enabled extensions')}:<br/>  ${c.extLine}</li>
-<li>${_('Final Anonymity')}:  ${_('turned')} ${not g.OPT.enableFinalAnonymity and _('off') or 'on'}</li>
+<li>${_('Final Anonymity')}:  ${_('turned')} ${not g.OPT.enableFinalAnonymity and _('off') or _('on')} 
+${g.OPT.enableFinalAnonymity and g.OPT.hlAnonymizedPosts and _('(with marks)') or ''}
+${g.OPT.enableFinalAnonymity and not g.OPT.hlAnonymizedPosts and _('(without marks)') or ''}
+</li>
 <li><a href="/static/markup" target="_blank">${_('Markup and features')}</a></li>
 </ul>
 </div>

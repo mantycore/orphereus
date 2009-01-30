@@ -212,9 +212,10 @@ dl.menu dd {
 dl.menu dd.hidden {
 	display: none;
 }
+
 .signature {
-        background: #00FF00;
-        color: #00AA00;
+background: #97E67E;
+color: #2d4626;
 }
 .signature a {
         color: #006600;
@@ -224,8 +225,8 @@ dl.menu dd.hidden {
 }
 
 .badsignature {
-        background: #FF0000;
-        color: #AA0000;
+background: #E67962;
+color: #683329;
 }
 .badsignature a {
         color: #660000;

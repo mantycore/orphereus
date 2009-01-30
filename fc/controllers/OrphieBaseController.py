@@ -152,8 +152,11 @@ class OrphieBaseController(BaseController):
                     options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
                     options.canDeleteOwnThreads = options.canDeleteOwnThreads & t.options.canDeleteOwnThreads
                     options.images = options.images & t.options.images
-                    if t.options.maxFileSize < options.maxFileSize:
+                    
+                    perm = g.OPT.permissiveFileSizeConjunction
+                    if (perm and t.options.maxFileSize > options.maxFileSize) or (not perm and t.options.maxFileSize < options.maxFileSize):
                         options.maxFileSize = t.options.maxFileSize
+                    
                     if t.options.minPicSize > options.minPicSize:
                         options.minPicSize = t.options.minPicSize
                     if t.options.thumbSize < options.thumbSize:

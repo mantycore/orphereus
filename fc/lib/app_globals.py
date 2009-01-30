@@ -37,6 +37,7 @@ class OptHolder(object):
         self.allowRegistration = (config['core.allowRegistration'] == 'true')
         self.statsCacheTime = int(config['core.statsCacheTime'])
         
+        self.permissiveFileSizeConjunction = (config['core.permissiveFileSizeConjunction'] == 'true')
         #default board settings
         self.defThumbSize = int(config['defaults.thumbSize'])
         self.defMinPicSize = int(config['defaults.minPicSize'])

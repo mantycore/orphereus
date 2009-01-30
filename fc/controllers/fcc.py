@@ -252,9 +252,9 @@ class FccController(OrphieBaseController):
                     replyLim = 0
                 thread.omittedPosts = replyLim
                 
-                thread.Replies = self.sqlSlice(meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()), replyLim)                 
+                thread.Replies = self.sqlSlice(meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()), replyLim)
             else:
-                thread.Replies = self.sqlAll(meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()))                
+                thread.Replies = self.sqlAll(meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()))
                 thread.omittedPosts = 0
                 thread.hidden = False
                        

@@ -12,7 +12,7 @@
 %endif
 
 <form action="/${c.PostAction}/delete" method="post">
-<input type="hidden" name="tagLine" value="${c.tagLine}">
+<input type="hidden" name="tagLine" value="${c.tagLine}" />
 %for thread in c.threads:
 	%if not thread.hidden:
 	    <div id="thread-${thread.id}">

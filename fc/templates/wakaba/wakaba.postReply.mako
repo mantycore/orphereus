@@ -21,7 +21,7 @@
                     %endif
                     </div>
                     %if post.sage:
-                        <img src="${g.OPT.staticPathWeb}images/sage.png"/>
+                        <img src="${g.OPT.staticPathWeb}images/sage.png" alt="Sage"/>
                     %endif
                     <span class="replytitle">${post.title}</span>
                      ${h.modTime(post, c.userInst, g.OPT.secureTime)}
@@ -52,7 +52,7 @@
                     %elif not '..' in post.file.thumpath:                                     
                         <img src="${g.OPT.filesPathWeb + h.modLink(post.file.thumpath, c.userInst.secid(), g.OPT.secureLinks)}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" alt="Preview"/>
                     %else:  
-                        <img src="${g.OPT.staticPathWeb + post.file.thumpath}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" />                                
+                        <img src="${g.OPT.staticPathWeb + post.file.thumpath}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" alt="Preview" />                                
                     %endif 
                     </a>
                     %elif post.picid == -1:

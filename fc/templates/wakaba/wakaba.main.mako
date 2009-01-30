@@ -12,7 +12,7 @@ ${c.title}
 %endif        
         </title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <META NAME="ROBOTS" CONTENT="NOARCHIVE">
+        <META NAME="ROBOTS" CONTENT="NOARCHIVE" />
         <link rel="stylesheet" type="text/css" href="${g.OPT.staticPathWeb}css/${c.userInst.style()}.css" title="Photon" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 		<script type="text/javascript" src="${g.OPT.staticPathWeb}js/ui.js"></script>

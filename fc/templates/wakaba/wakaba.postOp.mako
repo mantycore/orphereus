@@ -9,16 +9,16 @@
 <span class="thumbnailmsg"></span><br />                       
 <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid(), g.OPT.secureLinks)}">
 %if thread.spoiler:
-    <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb"/>
+    <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb" alt="Spoiler"/>
 %elif not '..' in thread.file.thumpath:
-    <img src="${g.OPT.filesPathWeb + h.modLink(thread.file.thumpath, c.userInst.secid(),g.OPT.secureLinks)}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
+    <img src="${g.OPT.filesPathWeb + h.modLink(thread.file.thumpath, c.userInst.secid(),g.OPT.secureLinks)}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />             
 %else:
-    <img src="${g.OPT.staticPathWeb+thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" />             
+    <img src="${g.OPT.staticPathWeb+thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" alt="Preview"/>             
 %endif   
 </a>
 %elif thread.picid == -1:
     <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-    <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" />             
+    <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>             
 %endif
 <a name="i${thread.id}"></a>
 <label>

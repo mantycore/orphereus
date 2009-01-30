@@ -345,6 +345,8 @@ class FcaController(OrphieBaseController):
                 if act == 'del' and tagid > 0:
                     if len(post.tags) > 1:
                         tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
+                        tag.threadCount -= 1
+                        tag.replyCount -= post.replyCount
                         addLogEntry(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))                        
                         post.tags.remove(tag)  
                     else:
@@ -355,6 +357,8 @@ class FcaController(OrphieBaseController):
                     if tag:
                         addLogEntry(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))                        
                         post.tags.append(tag)
+                        tag.threadCount += 1
+                        tag.replyCount += post.replyCount
                     else:
                         c.errorText = _("Non-existent tag")
                         return self.render('error')   

@@ -56,10 +56,7 @@
         <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
     %endif    
 
-</span>
-%endif
-
-<span class="replytothread">
+    &nbsp;
     ${_('Posted in')}:
 %for t in thread.tags:
     <a href="/${t.tag}/">/${t.tag}/</a> 
@@ -69,7 +66,10 @@
     &nbsp;
 %if not c.userInst.Anonymous:
 [<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide Thread')}</a>]
+<!-- </span> -->
+%endif
 
+<!-- <span class="replytothread"> -->
     %if c.canPost:
     %if thread.file and thread.file.width:
      [<a href="/${thread.id}/oekakiDraw">Draw</a>]

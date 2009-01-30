@@ -86,14 +86,14 @@ class FcaController(OrphieBaseController):
             c.tag.options.comment = u''
             c.tag.options.sectionId = 0
             c.tag.options.persistent = False
-            c.tag.options.imagelessThread = True
-            c.tag.options.imagelessPost = True
-            c.tag.options.images = True
-            c.tag.options.enableSpoilers = False
-            c.tag.options.canDeleteOwnThreads = True
-            c.tag.options.maxFileSize = 3145728
-            c.tag.options.minPicSize = 50
-            c.tag.options.thumbSize = 180
+            c.tag.options.imagelessThread = g.OPT.defImagelessThread
+            c.tag.options.imagelessPost = g.OPT.defImagelessPost
+            c.tag.options.images = g.OPT.defImages
+            c.tag.options.enableSpoilers = g.OPT.defEnableSpoilers
+            c.tag.options.canDeleteOwnThreads = g.OPT.defCanDeleteOwnThreads
+            c.tag.options.maxFileSize = g.OPT.defMaxFileSize
+            c.tag.options.minPicSize = g.OPT.defMinPicSize
+            c.tag.options.thumbSize = g.OPT.defThumbSize
             c.tag.options.specialRules = u''
         if request.POST.get('tag',False):
             newtag = request.POST.get('tag',False)

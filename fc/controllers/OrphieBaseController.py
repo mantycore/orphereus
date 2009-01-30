@@ -145,7 +145,7 @@ class OrphieBaseController(BaseController):
                     options.minPicSize = t.options.minPicSize
                     options.thumbSize = t.options.thumbSize
                     options.canDeleteOwnThreads = t.options.canDeleteOwnThreads
-                    optionsFlag = False                    
+                    optionsFlag = False
                 else:
                     options.imagelessThread = options.imagelessThread & t.options.imagelessThread
                     options.imagelessPost = options.imagelessPost & t.options.imagelessPost
@@ -165,16 +165,16 @@ class OrphieBaseController(BaseController):
                         rulesList.append(rule)      
                         
         options.rulesList = rulesList
-        
+            
         if optionsFlag:
-            options.imagelessThread = True
-            options.imagelessPost   = True
-            options.images   = True
-            options.enableSpoilers = True
-            options.canDeleteOwnThreads = True
-            options.maxFileSize = 2621440
-            options.minPicSize = 50
-            options.thumbSize = 180
+            options.imagelessThread = g.OPT.defImagelessThread
+            options.imagelessPost   = g.OPT.defImagelessPost
+            options.images = g.OPT.defImages
+            options.enableSpoilers = g.OPT.defEnableSpoilers
+            options.canDeleteOwnThreads = g.OPT.defCanDeleteOwnThreads
+            options.maxFileSize = g.OPT.defMaxFileSize
+            options.minPicSize = g.OPT.defMinPicSize
+            options.thumbSize = g.OPT.defThumbSize
             options.specialRules = u''
         return options
     

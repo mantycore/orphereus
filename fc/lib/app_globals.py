@@ -37,6 +37,16 @@ class OptHolder(object):
         self.allowRegistration = (config['core.allowRegistration'] == 'true')
         self.statsCacheTime = int(config['core.statsCacheTime'])
         
+        #default board settings
+        self.defThumbSize = int(config['defaults.thumbSize'])
+        self.defMinPicSize = int(config['defaults.minPicSize'])
+        self.defMaxFileSize = int(config['defaults.maxFileSize'])
+        self.defImagelessThread = (config['defaults.imagelessThread'] == 'true')
+        self.defImagelessPost = (config['defaults.imagelessPost'] == 'true')
+        self.defImages = (config['defaults.images'] == 'true')
+        self.defEnableSpoilers = (config['defaults.enableSpoilers'] == 'true')
+        self.defCanDeleteOwnThreads = (config['defaults.canDeleteOwnThreads'] == 'true')
+        
         # Security settings
         self.alertEmail = config['security.alertEmail'] 
         self.alertServer = config['security.alertServer']

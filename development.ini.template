@@ -38,6 +38,16 @@ core.allowAnonymousPosting = false
 core.allowRegistration = false
 core.statsCacheTime = 180
 
+# Board defaults
+defaults.thumbSize = 200
+defaults.minPicSize = 50
+defaults.maxFileSize = 2621440
+defaults.imagelessThread = true
+defaults.imagelessPost = true
+defaults.images = true
+defaults.enableSpoilers = false
+defaults.canDeleteOwnThreads = true
+
 # Security settings
 security.alertEmail = lamo@sms.megafonsib.ru
 security.alertServer = smtp.gmail.com

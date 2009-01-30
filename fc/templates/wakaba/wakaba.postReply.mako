@@ -8,7 +8,7 @@
             <td class="reply" id="reply${post.id}">
                 <a name="i${post.id}"></a>
                 <label>
-                    &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='${g.OPT.staticPathWeb}images/delete.gif' border=0 alt='x' title='Del'></a>
+                    &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Del" /></a>
                     <div style="display:none" class="delete">
                     %if post.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                         <input type="checkbox" name="delete-${post.id}" value="${post.id}" />
@@ -57,7 +57,7 @@
                     </a>
                     %elif post.picid == -1:
                         <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-                        <img src='${g.OPT.staticPathWeb}images/picDeleted.png' class="thumb">                                    
+                        <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" />                                    
                     %endif
                 <blockquote class="postbody" id="postBQId${post.id}">
                     %if (c.count > 1) and post.messageShort and c.userInst.hideLongComments() and getattr(thread, 'enableShortMessages', True):

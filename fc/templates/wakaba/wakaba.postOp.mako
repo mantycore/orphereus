@@ -18,11 +18,11 @@
 </a>
 %elif thread.picid == -1:
     <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-    <img src='${g.OPT.staticPathWeb}images/picDeleted.png' class="thumb" >             
+    <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" />             
 %endif
 <a name="i${thread.id}"></a>
 <label>
-    &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src='${g.OPT.staticPathWeb}images/delete.gif' border=0 alt='x' title='Delete'></a>
+    &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Delete"/></a>
     <div style="display:none" class="delete">       
     %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
         <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />

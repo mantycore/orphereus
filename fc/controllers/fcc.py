@@ -362,6 +362,7 @@ class FccController(OrphieBaseController):
             def vitalSigns():
                 ret = empty()
                 tpc = c.totalPostsCount
+                #TODO: eliminate plain sql
                 result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc, 'minid' : tpc - 1000})
                 ret.last1KUsersCount = result.fetchone()[0]
                 result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc - 1000, 'minid' : tpc - 2000})

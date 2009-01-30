@@ -78,11 +78,13 @@ class OrphieBaseController(BaseController):
                 c.actuatorTest = "%s/actuators/%s/" % (tname, g.OPT.actuator)
         except: #userInst not defined or user banned
             pass
-        
-        if page and os.path.isfile(os.path.join(g.OPT.templPath, tpath)): 
+
+        fpath = os.path.join(g.OPT.templPath, tpath)
+        #TODO: it may be excessive
+        if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/')== fpath.replace('\\', '/'): 
             return render('/'+tpath, **options)
         else:
-            return _("Template problem: " + page)
+            abort(404) #return _("Template problem: " + page)
             
     def showStatic(self, page):
         c.boardName = _(page)
@@ -204,7 +206,7 @@ class OrphieBaseController(BaseController):
 
             postOptions = self.conjunctTagOptions(p.parentid>0 and parentp.tags or p.tags)
             if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
-                logEntry = ""
+                logEntry = u''
                 if p.parentid>0:
                     logEntry = _("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (p.id, p.uidNumber, p.parentid, tagline, reason)
                 else:

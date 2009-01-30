@@ -12,7 +12,7 @@ class ErrorController(BaseController):
         params = dict(prefix=request.environ.get('SCRIPT_NAME', ''),
                  code=cgi.escape(request.params.get('code', '')),
                  message=cgi.escape(request.params.get('message', '')),
-                 errorPic="%s/error.png" % g.OPT.staticPathWeb,
+                 errorPic="%serror.png" % g.OPT.staticPathWeb,
                  )
         #page = error_document_template % params
         #return page

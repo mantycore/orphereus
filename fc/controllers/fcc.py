@@ -474,10 +474,10 @@ class FccController(OrphieBaseController):
            # We should check whether we got this file already or not
            # If we dont have it, we add it
            name = str(long(time.time() * 10**7))
-           ext  = file.filename.rsplit('.',1)[:0:-1]
+           ext  = file.filename.rsplit('.', 1)[:0:-1]
            
            if ext:
-              ext = ext[0].lstrip(os.sep)
+              ext = ext[0].lstrip(os.sep).lower()
            else:
               # Panic, no extention found
               ext = ''
@@ -488,7 +488,7 @@ class FccController(OrphieBaseController):
            extParams = self.sqlFirst(meta.Session.query(Extension).filter(Extension.ext==ext))
            
            if not extParams:
-              return False
+              return [_(u'Extension "%s" is disallowed') % ext, False]
 
            localFilePath = os.path.join(g.OPT.uploadPath, name + '.' + ext)
            localFile = open(localFilePath,'w+b')
@@ -516,7 +516,7 @@ class FccController(OrphieBaseController):
                      thumbFilePath = extParams.path
                      size = [0, 0, extParams.thwidth, extParams.thheight]
            except:
-                return [-1, AngryFileHolder(localFilePath)]
+                return [_(u"Broken picture. Maybe it is interlaced PNG?"), AngryFileHolder(localFilePath)]
               
            pic = Picture()
            pic.path = name + '.' + ext
@@ -651,17 +651,17 @@ class FccController(OrphieBaseController):
             fileHolder = fileDescriptors[1] # Object for file auto-removing
         
         if pic:
-            if pic == -1:
-                c.errorText = _("Broken picture. Maybe it is interlaced PNG?")
-                return self.render('error')      
+            if isinstance(pic, basestring) or isinstance(pic, unicode):
+                c.errorText = pic
+                return self.render('error')
             if pic.size > options.maxFileSize:
-                c.errorText = "File size exceeds the limit"           
+                c.errorText = _("File size (%d) exceeds the limit (%d)") % (pic.size, options.maxFileSize)
                 return self.render('error') 
             if pic.height and (pic.height < options.minPicSize or pic.width < options.minPicSize):
-                c.errorText = "Image is too small"             
+                c.errorText = _("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize)
                 return self.render('error') 
             if not options.images:
-                c.errorText = "Files are not allowed on this board"
+                c.errorText = _("Files are not allowed on this board")
                 return self.render('error') 
             post.picid = pic.id
             

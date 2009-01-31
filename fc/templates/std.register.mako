@@ -23,7 +23,7 @@
         <i>${_('Security code should be at least %d symbols') % g.OPT.minPassLength}</i>
         
         %if c.captcha:
-            <br>
+            <br/>
             <span class="postblock">${_('Enter captcha')}</span>
             <div><img src="/captcha/${c.captcha.id}" alt="Captcha"/></div>
             <p><input name="captcha" type="text" size="60"/></p>

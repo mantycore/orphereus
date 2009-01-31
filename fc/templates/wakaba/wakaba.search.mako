@@ -74,7 +74,7 @@
 </form>
 
 %if c.userInst.useAjax():
-	<script>popup_posts({ajax: true});</script>
+	<script type="text/javascript">popup_posts({ajax: true});</script>
 %endif   
 
 <%include file="wakaba.paginator.mako" args="baselink='search/%s' % c.query"/>

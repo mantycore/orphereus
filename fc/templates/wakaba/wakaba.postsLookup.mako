@@ -25,6 +25,6 @@
 </table>
 
 %if c.userInst.useAjax():
-    <script>popup_posts({ajax: true});</script>
+    <script type="text/javascript">popup_posts({ajax: true});</script>
 %endif
 

@@ -24,7 +24,7 @@
         %if c.captcha:
         <br>
         <span class="postblock">${_('Enter captcha')}</span>
-        <div><img src='/captcha/${c.captcha.id}/'></div>
+        <div><img src="/captcha/${c.captcha.id}/" alt="Captcha"/></div>
         <p><input name="captcha" type="text" size="60" style="text-align: center"/></p>   
         %endif             
         <p><input type="submit" value="${_('OK')}"/></p>

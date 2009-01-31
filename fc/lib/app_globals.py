@@ -6,7 +6,6 @@ import os
 import logging
 log = logging.getLogger(__name__)
 
-
 class OptHolder(object):
     def __init__(self):
         #in most cases you don't need to change these paths

@@ -22,7 +22,7 @@ def modLink(string, secid, f):
 
 def modMessage(message, user, f):  
     if f:
-        gv = config['pylons.g']
+        gv = config['pylons.app_globals']
         uval = gv.uniqueVals[user.uidNumber() % (len(gv.uniqueVals) - 1)]
         return message.replace('[SECURITY:UNIQUE_VAL]', uval)
     else:
@@ -43,4 +43,4 @@ def templateExists(relName):
     #log.debug(relName)
     #log.debug(os.path.join(config['pylons.g'].OPT.templPath, relName))
     #log.debug(os.path.exists(os.path.join(config['pylons.g'].OPT.templPath, relName)))
-    return os.path.exists(os.path.join(config['pylons.g'].OPT.templPath, relName))
+    return os.path.exists(os.path.join(config['pylons.app_globals'].OPT.templPath, relName))

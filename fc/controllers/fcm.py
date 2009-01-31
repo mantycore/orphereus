@@ -242,10 +242,12 @@ class FcmController(OrphieBaseController):
         users = meta.Session.query(User).all()
         for user in users:
             postsCount = meta.Session.query(Post).filter(Post.uidNumber == user.uidNumber).count()
-            if postsCount == 0 and user.options.bantime == 0:
-                self.banUser(user, 10000, ("[AUTOMATIC BAN] You haven't any posts. Please, contact johan.liebert@jabber.ru to get you access back"))
-                mtnLog.append(self.createLogEntry('Info', "%d autobanned" % user.uidNumber))
-                
+            if user.options:
+                if postsCount == 0 and user.options.bantime == 0:
+                    self.banUser(user, 10000, ("[AUTOMATIC BAN] You haven't any posts. Please, contact johan.liebert@jabber.ru to get you access back"))
+                    mtnLog.append(self.createLogEntry('Info', "%d autobanned" % user.uidNumber))
+            else:
+                mtnLog.append(self.createLogEntry('Warning', "User %d haven't options object" % user.uidNumber))
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog

@@ -25,9 +25,9 @@
                     %endif
                     <span class="replytitle">${post.title}</span>
                 </label>
-                <span class="reflink">
                      ${h.modTime(post, c.userInst, g.OPT.secureTime)}
-                     
+                
+                    <span class="reflink">
                     %if c.board:
                         <a href="/${thread.id}#i${post.id}" ${c.canPost and """onClick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,post.id) or ""}>#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
                     %else:
@@ -36,10 +36,12 @@
                     %if c.canPost and post.file and post.file.width:
                         [<a href="/${post.id}/oekakiDraw">Draw</a>]
                     %endif
+                    
                     %if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
                         <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
                     %endif
-                </span>
+                    </span>
+
                 &nbsp;  
                 %if post.file:
                     <br /><span class="filesize">${_('File:')}     

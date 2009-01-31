@@ -38,7 +38,6 @@
     <span class="filetitle">${thread.title}</span>
 </label>
 
-<span class="reflink">
     <span 
     %if getattr(thread, 'mixed', False):
      style="color: red;"
@@ -46,12 +45,13 @@
     >
     ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
     </span>
-    
+    <span class="reflink">
     %if c.board:
         <a href="/${thread.id}#i${thread.id}" ${c.canPost and """onClick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
     %else:
         <a href="javascript:insert('&gt;&gt;${thread.id}')" ${c.canPost and """onClick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
-    %endif 
+    %endif
+    </span> 
     %if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
         <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
     %endif    
@@ -63,7 +63,7 @@
 %endfor
 
 
-    &nbsp;
+&nbsp;
 %if not c.userInst.Anonymous:
 [<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide Thread')}</a>]
 <!-- </span> -->
@@ -78,7 +78,9 @@
     %else:
     [<a href="/${thread.id}">View thread</a>]
     %endif
-</span>
+<!-- </span>-->
+
+
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():
         ${h.modMessage(thread.messageShort, c.userInst, g.OPT.secureText)}

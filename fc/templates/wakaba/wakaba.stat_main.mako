@@ -18,7 +18,7 @@
     <tbody>
 %for b in c.boards:
         <tr>
-            <td><a href="/${b.board.tag}/"><div class="hovblock">${b.board.tag}</div></a></td>
+            <td><div class="hovblock"><a href="/${b.board.tag}/">${b.board.tag}</a></div></td>
             <td>${b.count}</td>
             <td>${b.postsCount}</td>
             <td>
@@ -52,7 +52,7 @@
     <tbody>
 %for b in c.tags:
         <tr>
-            <td><a href="/${b.board.tag}/"><div class="hovblock">${b.board.tag}</div></a></td>
+            <td><div class="hovblock"><a href="/${b.board.tag}/">${b.board.tag}</a></div></td>
             <td>${b.count}</td>     
             <td>${b.postsCount}</td>    
             <td>

@@ -57,8 +57,8 @@ class OrphieBaseController(BaseController):
             c.boardlist.append(section)
         log.debug(request.cookies.get('fc',''))
         log.debug(request.cookies)
-        #request.cookies.get('fc','')
-        response.set_cookie('fc', "testtesttest", domain='.'+g.OPT.baseDomain)
+        sessCookie = request.cookies.get('fc','')
+        response.set_cookie('fc', str(sessCookie), domain='.'+g.OPT.baseDomain)
         
         c.menuLinks = []
         linksstr = g.settingsMap['additionalLinks'].value

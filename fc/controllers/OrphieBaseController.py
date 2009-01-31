@@ -55,7 +55,10 @@ class OrphieBaseController(BaseController):
             section.append(bc) #b.tag)
         if section:
             c.boardlist.append(section)
-        response.set_cookie('fc', request.cookies.get('fc',''), domain='.'+g.OPT.baseDomain)
+        log.debug(request.cookies.get('fc',''))
+        log.debug(request.cookies)
+        #request.cookies.get('fc','')
+        response.set_cookie('fc', "testtesttest", domain='.'+g.OPT.baseDomain)
         
         c.menuLinks = []
         linksstr = g.settingsMap['additionalLinks'].value

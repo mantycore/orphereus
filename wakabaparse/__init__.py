@@ -9,11 +9,13 @@ from fc.lib.constantValues import *
 class WakabaParser(object):
     def __init__(self, definition = g.OPT.markupFile, baseProd = 'all'):
         self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nop','symbol_mark_nou','accent_code','noaccent_code','punctuation']
-        self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','inline_spoiler':"span class='spoiler'",'inline_code':'code'}
+        self.simple = {'strong':'strong',' emphasis':'em', 'strikeout':'del', 'inline_spoiler':'span', 'inline_code':'code'}
         self.complex= ['reference','signature','link']
-        self.block  = {'block_code':'code','block_spoiler':"div class='spoiler'"}
+        self.block  = {'block_code':'code', 'block_spoiler': 'div'}
         self.line   = ['inline_full','text']
         self.mline  = ['block_cite','block_list']
+        # now it's working only for self.simple and self.block
+        self.attrs =  {'block_spoiler' : 'class="spoiler"', 'inline_spoiler' : 'class="spoiler"'}
         self.input  = u''
         self.calledBy = None
         self.baseProd = baseProd
@@ -22,7 +24,7 @@ class WakabaParser(object):
         
     def PrintTree(self, Node, Depth):
         for tag, beg, end, parts in Node:
-            print ''.ljust(Depth,"\t") + tag + '=' + self.input[beg:end]
+            print ''.ljust(Depth, "\t") + tag + '=' + self.input[beg:end]
             if parts:
                 self.PrintTree(parts,Depth + 1)
 
@@ -88,7 +90,7 @@ class WakabaParser(object):
 
     def openTag(self, tag, quantity=1):
         tagName = tag.split()[0]
-        for i in range(0,quantity):
+        for i in range(0, quantity):
             self.result += "<%s>" % tag
             self.tags.append(tagName)
 
@@ -153,7 +155,10 @@ class WakabaParser(object):
                 result += filterText(self.input[beg:end])
             elif tag in self.simple and parts:
                 tagName = tag.split()[0]
-                result += '<' + self.simple[tag]+ '>' + self.formatInHTML(parts) + '</' + self.simple[tagName]+ '>'
+                result += '<%s' % self.simple[tag]
+                if tag in self.attrs.keys():
+                    result += ' %s' % self.attrs[tag] 
+                result += '>%s</%s>' % (self.formatInHTML(parts), self.simple[tagName])
             elif tag in self.complex:
                 result += getattr(self,tag)(tag, beg, end, parts)
 
@@ -171,7 +176,10 @@ class WakabaParser(object):
                         for t in self.tags[::-1]:
                             self.short += "</%s>" % t
             elif tag in self.block:
-                self.openTag(self.block[tag])
+                tagToOpen = self.block[tag]
+                if tag in self.attrs.keys():
+                    tagToOpen += ' %s' % self.attrs[tag] 
+                self.openTag(tagToOpen)
                 if parts:
                     self.formatInHTML(parts)
                 self.closeTag()

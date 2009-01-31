@@ -23,7 +23,9 @@ class FieldStorageLike(object):
         self.file = open(filepath,'rb')
 
 def filterText(text):
-    return text.replace('<','&lt;').replace('>','&gt;').replace("'",'&#39;').replace('"','&quot;').replace('(c)','&copy;').replace('--','&#151;').replace('(tm)','&#153;').replace('...','&#8230;')
+    return text.replace('<','&lt;').replace('>','&gt;').replace("'",'&#39;') \
+               .replace('"','&quot;').replace('(c)','&copy;').replace('--','&#151;') \
+               .replace('(tm)','&#153;').replace('...','&#8230;')
 
 def isNumber(n):
     if isinstance(n, int):

@@ -59,7 +59,7 @@ ${vitalSigns()}
     <tbody>
 %for b in c.boards:
         <tr>
-            <td><div class="hovblock"><a href="/${b.board.tag}/">${b.board.tag}</a></div></td>
+            <td><div class="hovblock"><a style="display: block;" href="/${b.board.tag}/">${b.board.tag}</a></div></td>
             <td>${b.count}</td>
             <td>${b.postsCount}</td>
             <td>
@@ -93,7 +93,7 @@ ${vitalSigns()}
     <tbody>
 %for b in c.tags:
         <tr>
-            <td><div class="hovblock"><a href="/${b.board.tag}/">${b.board.tag}</a></div></td>
+            <td><div class="hovblock"><a style="display: block;" href="/${b.board.tag}/">${b.board.tag}</a></div></td>
             <td>${b.count}</td>     
             <td>${b.postsCount}</td>    
             <td>

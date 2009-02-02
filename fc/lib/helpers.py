@@ -44,3 +44,4 @@ def templateExists(relName):
     #log.debug(os.path.join(config['pylons.g'].OPT.templPath, relName))
     #log.debug(os.path.exists(os.path.join(config['pylons.g'].OPT.templPath, relName)))
     return os.path.exists(os.path.join(config['pylons.app_globals'].OPT.templPath, relName))
+

@@ -42,7 +42,7 @@
                     </td>
                 </tr>                
                 <tr>
-                    <td colspan='2'><input type='submit' name='access' value='${_('Update')}' ${not c.userInst.canChangeRights() and "disabled" or ""}></td>
+                    <td colspan="2"><input type="submit" name="access" value="${_('Update')}" ${not c.userInst.canChangeRights() and "disabled" or ""}/></td>
                 </tr>
                 <tr>
                     <td colspan=2>${_('Ban')}</td>
@@ -61,7 +61,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan='2'><input type='submit' name='unban' value='${_('Unban')}'></td>
+                    <td colspan="2"><input type="submit" name="unban" value="${_('Unban')}"></td>
                 </tr>
                 %else:
                 <tr>
@@ -77,7 +77,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan='2'><input type='submit' name='ban' value='${_('Ban')}'></td>
+                    <td colspan='2'><input type="submit" name="ban" value="${_('Ban')}" /></td>
                 </tr>
                 %endif
                 <tr>
@@ -91,7 +91,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan='2'><input type='submit' name='delete' value='${_('Delete')}' ${not c.userInst.canChangeRights() and "disabled" or ""}></td>
+                    <td colspan="2"><input type="submit" name="delete" value="${_('Delete')}" ${not c.userInst.canChangeRights() and "disabled" or ""}></td>
                 </tr>                  
                 
                 <tr>
@@ -110,8 +110,23 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan='2'><input type='submit' name='lookup' value='${_('Look up')}'></td>
-                </tr>              
+                    <td colspan="2"><input type="submit" name="lookup" value="${_('Look up')}"></td>
+                </tr>
+                
+                <tr>
+                    <td colspan=2>${_('Change security code')}</td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('New Security Code')}</td>
+                    <td><input name="key" value="" size="35" type="password" /></td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Repeat Security Code')}</td>
+                    <td><input name="key2" value="" size="35" type="password" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" name="passwd" value="${_('Change')}"/></td>
+                </tr>
             </tbody>
         </table>
     </form>                 

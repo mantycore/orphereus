@@ -899,27 +899,15 @@ class FccController(OrphieBaseController):
             self.userInst.homeExclude(homeExcludeList)
 
             c.profileMsg = _('Password was NOT changed.')
+            
             key = request.POST.get('key','').encode('utf-8')
             key2 = request.POST.get('key2','').encode('utf-8')
-            newuid = self.genUid(key)
-            olduid = self.userInst.uid()
-            if key == key2 and newuid != olduid and len(key) >= g.OPT.minPassLength:
-                currentKey = request.POST.get('currentKey', '').encode('utf-8')
-                if not self.genUid(currentKey) == self.userInst.uid():
-                        c.boardName = _('Error')
-                        c.errorText = _("You have entered incorrect current security code!")
-                        return self.render('error')
-                anotherUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==newuid))
-                if not anotherUser:
-                    self.userInst.uid(newuid)
-                    c.profileMsg = _('Password was successfully changed.')
-                else:
-                    currentUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==olduid))                
-                    self.banUser(currentUser, 7777, "Your are entered already existing Security Code. Contact administrator immediately please.")
-                    self.banUser(anotherUser, 7777, "Your Security Code was used during profile update by another user. Contact administrator immediately please.")                    
-                    c.boardName = _('Error')
-                    c.errorText = _("You entered already existing Security Code. Both accounts was banned. Contact administrator please.")
-                    return self.render('error')
+            currentKey = request.POST.get('currentKey', '').encode('utf-8')
+            
+            # XXX: temporary code. Methods from OrphieBaseController must be moved into model
+            passwdRet = self.passwd(key, key2, False, currentKey)
+            if passwdRet != True and passwdRet != False:
+                return passwdRet
             
             c.profileChanged = True 
             c.profileMsg += _(' Profile was updated.')           

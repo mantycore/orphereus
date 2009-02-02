@@ -3,6 +3,7 @@ from sqlalchemy import orm
 from fc.model import meta
 from pylons import config
 from fc.lib.constantValues import *
+import hashlib
 
 import logging
 log = logging.getLogger(__name__)
@@ -208,7 +209,9 @@ class Invite(object):
     pass
 
 class User(object):
-    pass
+    def genUid(key):
+        return hashlib.sha512(key + hashlib.sha512(config['pylons.app_globals'].OPT.hashSecret).hexdigest()).hexdigest()
+    genUid = staticmethod(genUid)
     
 class UserOptions(object):
     pass

@@ -228,6 +228,18 @@ class FcaController(OrphieBaseController):
                         c.message = _('You should specify lookup reason')
                 else:
                     c.message = _('Incorrect quantity value')
+            elif request.POST.get('passwd', False):
+                key = request.POST.get('key','').encode('utf-8')
+                key2 = request.POST.get('key2','').encode('utf-8')
+                # XXX: temporary code. Methods from OrphieBaseController must be moved into model
+                passwdRet = self.passwd(key, key2, True)
+                meta.Session.commit()
+                if passwdRet == False:
+                    c.message = _('Incorrect security codes')
+                elif passwdRet != True: 
+                    return passwdRet
+                else:
+                    c.message = _('Security code changed')
             elif request.POST.get('delete', False):
                 reason = filterText(request.POST.get('deletereason', u''))
                 deleteLegacy = request.POST.get('deleteLegacy', False)

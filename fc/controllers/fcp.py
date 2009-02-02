@@ -187,11 +187,11 @@ class FcpController(OrphieBaseController):
             c.captid = tracker.cid
                 
         if request.POST.get('code', False):
-            code = self.genUid(request.POST['code'].encode('utf-8')) 
+            code = User.genUid(request.POST['code'].encode('utf-8')) 
             user = meta.Session.query(User).filter(User.uid==code).first()
-                       
-            #log.debug(code)            
-
+            
+            #log.debug(code)
+            
             captid = request.POST.get('captid', False)
             captval = request.POST.get('captcha', False)      
             #log.debug("%s:%s" %(captid, captval))
@@ -263,7 +263,7 @@ class FcpController(OrphieBaseController):
             
         if key and captchaOk:
             if len(key)>=g.OPT.minPassLength and key == key2:      
-                uid = self.genUid(key) 
+                uid = User.genUid(key) 
                 user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==uid).first()
                 if user:
                     self.banUser(user, 7777, "Your Security Code was used during registration by another user. Contact administrator immediately please.")

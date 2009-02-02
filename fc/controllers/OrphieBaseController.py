@@ -55,8 +55,8 @@ class OrphieBaseController(BaseController):
             section.append(bc) #b.tag)
         if section:
             c.boardlist.append(section)
-        log.debug(request.cookies.get('fc',''))
-        log.debug(request.cookies)
+        #log.debug(request.cookies.get('fc',''))
+        #log.debug(request.cookies)
         sessCookie = request.cookies.get('fc','')
         response.set_cookie('fc', str(sessCookie), domain='.'+g.OPT.baseDomain)
         
@@ -92,10 +92,7 @@ class OrphieBaseController(BaseController):
     def showStatic(self, page):
         c.boardName = _(page)
         return self.render('static.%s' % page) #render('/%s.static.mako' % self.userInst.template())
-        
-    def genUid(self, key):
-        return hashlib.sha512(key + hashlib.sha512(g.OPT.hashSecret).hexdigest()).hexdigest()    
-
+    
     def genInviteId(self):
         return hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(g.OPT.hashSecret).hexdigest()).hexdigest()  
         
@@ -250,3 +247,31 @@ class OrphieBaseController(BaseController):
                 meta.Session.delete(p)
         meta.Session.commit()
         return opPostDeleted
+    
+    def passwd(self, key, key2, adminRights = False, currentKey = False):
+        newuid = User.genUid(key)
+        olduid = self.userInst.uid()
+        if key == key2 and newuid != olduid and len(key) >= g.OPT.minPassLength:
+            if not (adminRights or User.genUid(currentKey) == self.userInst.uid()):
+                c.boardName = _('Error')
+                c.errorText = _("You have entered incorrect current security code!")
+                return self.render('error')
+            
+            anotherUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==newuid))
+            if not anotherUser:
+                self.userInst.uid(newuid)
+                c.profileMsg = _('Password was successfully changed.')
+                return True
+            else:
+                if not adminRights:
+                    currentUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==olduid))                
+                    self.banUser(currentUser, 7777, "Your are entered already existing Security Code. Contact administrator immediately please.")
+                    self.banUser(anotherUser, 7777, "Your Security Code was used during profile update by another user. Contact administrator immediately please.")                    
+                    c.boardName = _('Error')
+                    c.errorText = _("You entered already existing Security Code. Both accounts was banned. Contact administrator please.")
+                    return self.render('error')
+                else:
+                    c.boardName = _('Error')
+                    c.errorText = _("You entered already existing Security Code.")
+                    return self.render('error')
+        return False

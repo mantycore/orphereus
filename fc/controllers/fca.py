@@ -232,7 +232,7 @@ class FcaController(OrphieBaseController):
                 key = request.POST.get('key','').encode('utf-8')
                 key2 = request.POST.get('key2','').encode('utf-8')
                 # XXX: temporary code. Methods from OrphieBaseController must be moved into model
-                passwdRet = self.passwd(key, key2, True)
+                passwdRet = self.passwd(key, key2, True, False, user)
                 meta.Session.commit()
                 if passwdRet == False:
                     c.message = _('Incorrect security codes')

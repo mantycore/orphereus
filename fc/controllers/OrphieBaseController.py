@@ -248,18 +248,24 @@ class OrphieBaseController(BaseController):
         meta.Session.commit()
         return opPostDeleted
     
-    def passwd(self, key, key2, adminRights = False, currentKey = False):
+    def passwd(self, key, key2, adminRights = False, currentKey = False, user = False):
         newuid = User.genUid(key)
         olduid = self.userInst.uid()
+        if user:
+            olduid = user.uid
+        
         if key == key2 and newuid != olduid and len(key) >= g.OPT.minPassLength:
-            if not (adminRights or User.genUid(currentKey) == self.userInst.uid()):
+            if not (adminRights or User.genUid(currentKey) == olduid):
                 c.boardName = _('Error')
                 c.errorText = _("You have entered incorrect current security code!")
                 return self.render('error')
             
             anotherUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==newuid))
             if not anotherUser:
-                self.userInst.uid(newuid)
+                if not user:
+                    self.userInst.uid(newuid)
+                else:
+                    user.uid = newuid
                 c.profileMsg = _('Password was successfully changed.')
                 return True
             else:

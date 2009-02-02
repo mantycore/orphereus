@@ -236,9 +236,10 @@ class FcaController(OrphieBaseController):
                 meta.Session.commit()
                 if passwdRet == False:
                     c.message = _('Incorrect security codes')
-                elif passwdRet != True: 
+                elif passwdRet != True:
                     return passwdRet
                 else:
+                    addLogEntry(LOG_EVENT_USER_PASSWD,_('Changed password for user "%s"') % (user.uidNumber))
                     c.message = _('Security code changed')
             elif request.POST.get('delete', False):
                 reason = filterText(request.POST.get('deletereason', u''))

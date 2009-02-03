@@ -59,7 +59,11 @@
     &nbsp;
     ${_('Posted in')}:
 %for t in thread.tags:
-    <a href="/${t.tag}/" title="${t.options.comment}">/${t.tag}/</a>
+    <a href="/${t.tag}/" 
+    %if tag.options:
+        title="${t.options.comment}"
+    %endif
+    >/${t.tag}/</a>
 %endfor
 
 

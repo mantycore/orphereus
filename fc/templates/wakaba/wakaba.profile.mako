@@ -116,9 +116,9 @@
                     <td colspan="2" style="text-align: center; font-weight: bold;">${_('User filters')}</td>
                 </tr>                
                 %for f in c.userInst.filters():
-                <tr id='filterId${f.id}'>
-                    <td class="postblock">[<a href='' onClick="userFiltersEdit(event,${f.id});">Edit</a>] [<a href='' onClick="userFiltersDelete(event,${f.id});">Del</a>]</td>
-                    <td><input id='filterId${f.id}Input' name='filterId${f.id}' value='${f.filter}'></td>
+                <tr id="filterId${f.id}">
+                    <td class="postblock">[<a href="" onclick="userFiltersEdit(event,${f.id});">Edit</a>] [<a href='' onClick="userFiltersDelete(event,${f.id});">Del</a>]</td>
+                    <td><input id='filterId${f.id}Input' name='filterId${f.id}' value='${f.filter}' /></td>
                 </tr>
                 %endfor
                 <tr id="newFilterTR">
@@ -126,7 +126,7 @@
                     <td><input id="newFilterInput" name="newFilter" value="" /></td>
                 </tr>  
                 <tr>
-                    <td colspan="2"><input name="update" type="button" value="${_('Add')}" onClick="userFiltersAdd(event)" /></td>
+                    <td colspan="2"><input name="update" type="button" value="${_('Add')}" onclick="userFiltersAdd(event)" /></td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center; font-weight: bold;">${_('Hidden threads')}</td>

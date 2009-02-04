@@ -10,6 +10,7 @@ from sqlalchemy.orm import class_mapper
 from lib.fuser import FUser
 
 from fc.config.environment import load_environment
+import fc.lib.app_globals as app_globals
 
 log = logging.getLogger(__name__)
 
@@ -33,9 +34,9 @@ def setup_config(command, filename, section, vars):
         log.debug(config['core.hashSecret'])
         user = User()
         user.uid = hashlib.sha512('first' + hashlib.sha512(config['core.hashSecret']).hexdigest()).hexdigest()
-        log.debug(user.uid)        
+        log.debug(user.uid)
         meta.Session.add(user)
-        meta.Session.commit()     
+        meta.Session.commit()
         uidNumber = user.uidNumber
         log.debug(uidNumber)
         fuser = FUser(uidNumber) # create options
@@ -136,9 +137,9 @@ def setup_config(command, filename, section, vars):
         tag.options.images = True
         tag.options.maxFileSize = 3000000
         tag.options.minPicSize = 50
-        tag.options.thumbSize = 180    
+        tag.options.thumbSize = 180
         meta.Session.add(tag)
                 
-        meta.Session.commit()          
+        meta.Session.commit()
     
     log.info("Completed")

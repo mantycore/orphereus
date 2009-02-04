@@ -58,10 +58,10 @@
                         <img src="${g.OPT.staticPathWeb + post.file.thumpath}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" alt="Preview" />                                
                     %endif 
                     </a>
-                    %elif post.picid == -1:
-                        <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-                        <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb"  alt="Removed" />                                    
-                    %endif
+                %elif post.picid == -1:
+                    <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
+                    <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb"  alt="Removed" />                                    
+                %endif
                 <blockquote class="postbody" id="postBQId${post.id}">
                     %if (c.count > 1) and post.messageShort and c.userInst.hideLongComments() and getattr(thread, 'enableShortMessages', True):
                         ${h.modMessage(post.messageShort, c.userInst, g.OPT.secureText)}
@@ -69,7 +69,10 @@
                         ${_('Comment is too long.')} <a href="/${thread.id}#i${post.id}" onclick="getFullText(event,${thread.id},${post.id});" class="expandPost">${_('Full version')}</a>
                     %else:
                         ${h.modMessage(post.message, c.userInst, g.OPT.secureText)}
-                    %endif                            
+                    %endif
+                    %if post.messageInfo:
+                        ${post.messageInfo}
+                    %endif
                 </blockquote> 
             </td>
         </tr>

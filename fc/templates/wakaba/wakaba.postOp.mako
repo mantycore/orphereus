@@ -93,6 +93,9 @@
     %else:
         ${h.modMessage(thread.message, c.userInst, g.OPT.secureText)}
     %endif
+    %if thread.messageInfo:
+        ${thread.messageInfo}
+    %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:
     <span class="omittedposts">${_('%s posts omitted.') % thread.omittedPosts } </span>

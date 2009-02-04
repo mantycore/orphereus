@@ -584,7 +584,11 @@ class FccController(OrphieBaseController):
            meta.Session.delete(oekaki) # TODO: Is it really needed to destroy oekaki IDs?
         else:
            file = request.POST.get('file',False)
-           
+        if painterMark:
+            if post.messageInfo:
+                post.messageInfo += painterMark
+            else:
+                post.messageInfo = painterMark
         if post.message:
            if len(post.message) <= 15000:
                parser = WakabaParser(g.OPT.markupFile)
@@ -592,9 +596,6 @@ class FccController(OrphieBaseController):
                cutSymbols = int(g.settingsMap["cutSymbols"].value)
                parsedMessage = parser.parseWakaba(post.message,self,lines=maxLinesInPost,maxLen=cutSymbols)
                fullMessage = parsedMessage[0]
-               
-               if painterMark:
-                   fullMessage += painterMark
                
                post.messageShort = parsedMessage[1]
                #FIXME: not best solution

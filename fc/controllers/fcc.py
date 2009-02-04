@@ -592,6 +592,7 @@ class FccController(OrphieBaseController):
                cutSymbols = int(g.settingsMap["cutSymbols"].value)
                parsedMessage = parser.parseWakaba(post.message,self,lines=maxLinesInPost,maxLen=cutSymbols)
                fullMessage = parsedMessage[0]
+               
                if painterMark:
                    fullMessage += painterMark
                

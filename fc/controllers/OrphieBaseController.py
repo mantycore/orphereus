@@ -281,3 +281,36 @@ class OrphieBaseController(BaseController):
                     c.errorText = _("You entered already existing Security Code.")
                     return self.render('error')
         return False
+    
+    def getParentID(self, id):  
+        post = self.sqlFirst(meta.Session.query(Post).filter(Post.id==id))
+        if post:
+           return post.parentid
+        else:
+           return False
+    
+    def isPostOwner(self, id):
+        post = self.sqlFirst(meta.Session.query(Post).filter(Post.id==id))
+        if post and post.uidNumber == self.userInst.uidNumber():
+           return post.parentid
+        else:
+           return False
+           
+    def postOwner(self, id):
+        post = self.sqlFirst(meta.Session.query(Post).filter(Post.id==id))
+        if post:
+           return post.parentid
+        else:
+           return False
+                    
+    def formatPostReference(self, postid, parentid = False): # TODO FIXME: move to parser             
+        if not parentid:
+            parentid = self.getParentID(postid)
+            
+        #if parentid == -1:
+        #    return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
+        #else:
+        # We will format all posts same way. Why not?
+        #Also, changed to /postid#ipostid instead of /parentid#ipostid.
+        #Forget it, changed back.
+        return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)

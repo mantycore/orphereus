@@ -110,5 +110,15 @@ ${_('Ban ALL users without posts')}
 </td>
 </tr>
 
+<tr>
+<td>
+<form method="post" action="service/reparse">
+${_('Reparse posts which can be reparsed')}
+<br/>
+<input type="submit" value="Launch">
+</form>
+</td>
+</tr>
+
 </table>
 

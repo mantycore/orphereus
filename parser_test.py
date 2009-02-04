@@ -2,11 +2,11 @@ from wakabaparse import WakabaParser
 import os
 import sys
 import time
-testlist = ['test_sanity','test_symbols','test_links','test_all_inline','test_all_inline_complex','test_marksymbols','blocks'
-       ,'test_spoiler_inline','test_spoiler_block','test_spoiler_mixed','all','test_links_complex']
+testlist = ['test_sanity','test_links','test_all_inline','test_all_inline_complex','test_marksymbols','blocks'
+       ,'test_spoiler_inline','test_spoiler_block','test_spoiler_mixed','all','test_links_complex', 'test_symbols']
 
 t1 = time.time()
-parser = WakabaParser()
+parser = WakabaParser("wakabaparse/mark.def")
 print "Parser loaded in %s seconds" % (time.time() - t1)
 
 if len(sys.argv) > 1:

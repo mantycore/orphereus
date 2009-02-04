@@ -16,6 +16,7 @@ from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
+from wakabaparse import WakabaParser
 
 import logging
 log = logging.getLogger(__name__)
@@ -268,6 +269,28 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog
     
+    def reparse(self):
+        mtnLog = []
+        mtnLog.append(self.createLogEntry('Task', 'Reparsing...'))
+        posts = meta.Session.query(Post).all()
+        for post in posts:
+            log.debug(post.id)
+            if post.messageRaw:
+               parser = WakabaParser(g.OPT.markupFile)
+               maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
+               cutSymbols = int(g.settingsMap["cutSymbols"].value)
+               parsedMessage = parser.parseWakaba(post.messageRaw, self, lines=maxLinesInPost,maxLen=cutSymbols)
+               fullMessage = parsedMessage[0]
+               #if painterMark:
+               #    fullMessage += painterMark
+               mtnLog.append(self.createLogEntry('Info', "Reparsed post %d" % post.id))
+               post.message = fullMessage
+               post.messageShort = parsedMessage[1]
+                
+        meta.Session.commit()
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog
+    
     def mtnAction(self, actid, secid):
         secTestPassed = False    
         if not secid:
@@ -323,6 +346,8 @@ class FcmController(OrphieBaseController):
                 mtnLog = self.banInactive()
             elif actid == 'removeEmptyTags':
                 mtnLog = self.removeEmptyTags()
+            elif actid == 'reparse':
+                mtnLog = self.reparse()
             elif actid == 'all':
                 try:
                     mtnLog = self.clearOekaki()

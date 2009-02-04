@@ -29,9 +29,9 @@
                 
                     <span class="reflink">
                     %if c.board:
-                        <a href="/${thread.id}#i${post.id}" ${c.canPost and """onClick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,post.id) or ""}>#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
+                        <a href="/${thread.id}#i${post.id}" ${c.canPost and """onclick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,post.id) or ""}>#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
                     %else:
-                        <a href="javascript:insert('&gt;&gt;${post.id}')" ${c.canPost and """onClick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,post.id) or ""}>#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
+                        <a href="javascript:insert('&gt;&gt;${post.id}')" ${c.canPost and """onclick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,post.id) or ""}>#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
                     %endif 
                     %if c.canPost and post.file and post.file.width:
                         [<a href="/${post.id}/oekakiDraw">Draw</a>]

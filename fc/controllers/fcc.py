@@ -425,40 +425,7 @@ class FccController(OrphieBaseController):
         filter = self.buildFilter(board)  
         tags = self.sqlAll(meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag.in_(filter[1])))
         return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
-        
-    def getParentID(self, id):  
-        post = self.sqlFirst(meta.Session.query(Post).filter(Post.id==id))
-        if post:
-           return post.parentid
-        else:
-           return False
     
-    def isPostOwner(self, id):
-        post = self.sqlFirst(meta.Session.query(Post).filter(Post.id==id))
-        if post and post.uidNumber == self.userInst.uidNumber():
-           return post.parentid
-        else:
-           return False
-           
-    def postOwner(self, id):
-        post = self.sqlFirst(meta.Session.query(Post).filter(Post.id==id))
-        if post:
-           return post.parentid
-        else:
-           return False          
-                    
-    def formatPostReference(self, postid, parentid = False): # TODO FIXME: move to parser             
-        if not parentid:
-            parentid = self.getParentID(postid)
-            
-        #if parentid == -1:
-        #    return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
-        #else:
-        # We will format all posts same way. Why not?
-        #Also, changed to /postid#ipostid instead of /parentid#ipostid.
-        #Forget it, changed back.
-        return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)
-        
     def makeThumbnail(self, source, dest, maxSize):
         sourceImage = Image.open(source)
         size = sourceImage.size
@@ -620,7 +587,7 @@ class FccController(OrphieBaseController):
            
         if post.message:
            if len(post.message) <= 15000:
-               parser = WakabaParser()
+               parser = WakabaParser(g.OPT.markupFile)
                maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
                cutSymbols = int(g.settingsMap["cutSymbols"].value)
                parsedMessage = parser.parseWakaba(post.message,self,lines=maxLinesInPost,maxLen=cutSymbols)
@@ -628,13 +595,13 @@ class FccController(OrphieBaseController):
                if painterMark:
                    fullMessage += painterMark
                
+               post.messageShort = parsedMessage[1]
                #FIXME: not best solution
                #if not fullMessage[5:].startswith(post.message):
-               if not post.message in fullMessage:
+               if (not post.message in fullMessage) or post.messageShort:
                    post.messageRaw = post.message
                    
                post.message = fullMessage
-               post.messageShort = parsedMessage[1]
            else:
                c.errorText = _('Message is too long')
                return self.render('error') 

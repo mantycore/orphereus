@@ -188,7 +188,7 @@ class FccController(OrphieBaseController):
         count = self.sqlCount(threadFilter)
         tpp = self.userInst.threadsPerPage()
         
-        if page*tpp >= count:
+        if page*tpp >= count and count > 0:
             c.errorText = _("Incorrect page")
             return self.render('error')
         

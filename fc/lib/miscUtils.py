@@ -13,6 +13,7 @@ from email.MIMEMultipart import MIMEMultipart
 from email.MIMEBase import MIMEBase
 from email.MIMEText import MIMEText
 from email import Encoders
+from pylons import config
 
 class empty(object):
     pass
@@ -20,7 +21,7 @@ class empty(object):
 class FieldStorageLike(object):
     def __init__(self,filename,filepath):
         self.filename = filename
-        self.file = open(filepath,'rb')
+        self.file = open(filepath, 'rb')
 
 def filterText(text):
     return text.replace('<','&lt;').replace('>','&gt;').replace("'",'&#39;') \
@@ -39,11 +40,13 @@ def isNumber(n):
         return False
         
 def currentUID():
-    if c.userInst:
-        return c.userInst.uidNumber()
-    else:
-        return -1        
-        
+    try:
+        if c.userInst:
+            return c.userInst.uidNumber()
+    except:
+        pass
+    return -1
+    
 def addLogEntry(event,entry):
     logEntry = LogEntry()
     logEntry.uidNumber = currentUID()
@@ -54,21 +57,23 @@ def addLogEntry(event,entry):
     meta.Session.commit()
     
 def adminAlert(alertStr):
+    g = config['pylons.app_globals']
     server = smtplib.SMTP(g.OPT.alertServer, g.OPT.alertPort)
-    if g.OPT.alertPort == 587:
+    if g.OPT.alertPort == 587: #fix for google
         server.ehlo()
         server.starttls()
         server.ehlo()    
     server.login(g.OPT.alertSender, g.OPT.alertPassword)
 
-    msg = MIMEMultipart()
-    msg['From'] = g.OPT.alertSender
-    msg['To'] = g.OPT.alertEmail
-    msg['Subject'] = _(g.OPT.baseDomain + (' ALERT by %d: ' % currentUID()))
-    msg.attach(MIMEText(alertStr))
+    for mail in g.OPT.alertEmail:
+        msg = MIMEMultipart()
+        msg['From'] = g.OPT.alertSender
+        msg['To'] = mail 
+        msg['Subject'] =  '%s: Security alert by %d: ' % (g.OPT.baseDomain, currentUID())
+        msg.attach(MIMEText(alertStr))
    
-    server.sendmail(g.OPT.alertSender, g.OPT.alertEmail, msg.as_string())
-    server.close()    
+        server.sendmail(g.OPT.alertSender, mail, msg.as_string())
+    server.close()
     
 def checkAdminIP():
     if g.OPT.useAnalBarriering and request.environ["REMOTE_ADDR"] != '127.0.0.1':

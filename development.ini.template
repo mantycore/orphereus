@@ -50,11 +50,11 @@ defaults.enableSpoilers = false
 defaults.canDeleteOwnThreads = true
 
 # Security settings
-security.alertEmail = lamo@sms.megafonsib.ru
+security.alertEmail = user1@sms.provider.ru,user2@sms.provider.ru
 security.alertServer = smtp.gmail.com
 security.alertPort = 587
 security.alertSender= alert@anoma.ch
-security.alertPassword= 60J266
+security.alertPassword= blablabla
 security.refControlEnabled = true
 security.refControlList = anoma.ch,anoma.li,localhost,127.0.0.1
 security.fakeLinks = http://www.youtube.com/watch?v=oHg5SJYRHA0,http://meatspin.com/,http://youtube.com/watch?v=Uqot33mczsw,http://youtube.com/watch?v=dZBU6WzBrX8

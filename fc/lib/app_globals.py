@@ -48,7 +48,7 @@ class OptHolder(object):
         self.defCanDeleteOwnThreads = (config['defaults.canDeleteOwnThreads'] == 'true')
         
         # Security settings
-        self.alertEmail = config['security.alertEmail'] 
+        self.alertEmail = config['security.alertEmail'].split(',')
         self.alertServer = config['security.alertServer']
         self.alertPort = int(config['security.alertPort'])
         self.alertSender = config['security.alertSender']

@@ -8,6 +8,7 @@ from pylons import config
 import fc.lib.app_globals as app_globals
 import fc.lib.helpers
 from fc.config.routing import make_map
+from fc.lib.miscUtils import adminAlert
 
 from sqlalchemy import engine_from_config
 from fc.model import init_model
@@ -45,4 +46,5 @@ def load_environment(global_conf, app_conf):
 
     engine = engine_from_config(config, 'sqlalchemy.')
     init_model(engine)
+    #adminAlert("Orphie-kun: Hello, I'm respawned")
     # CONFIGURATION OPTIONS HERE

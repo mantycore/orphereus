@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import misc
 import re
 import random

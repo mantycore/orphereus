@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def main(bot, args):
     """rooms (only for owner)\nList rooms.\nSee also: join, leave"""
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def main(bot, args):
     "leave <room> [password] (only for owner)\nLeave a room.\nSee also: join, rooms"""
 

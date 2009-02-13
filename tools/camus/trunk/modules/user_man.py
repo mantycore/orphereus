@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def main(bot, args):
     """man [page]\nShow manual page.\nSee also: help"""
 

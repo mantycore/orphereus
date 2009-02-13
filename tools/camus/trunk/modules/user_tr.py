@@ -10,7 +10,8 @@ def main(bot, args):
         return translate(args[0], args[1], ' '.join(args[2:]))
 
 def translate(from_l, to_l, text):
-    text = urllib.quote(text.encode('utf-8'))
+    #text = urllib.quote(text.encode('utf-8'))
+    text = urllib.quote(text)
     data = misc.readUrl('http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q=%s&langpair=%s%%7C%s' %(text, from_l, to_l))
     if not data: return 'can\'t get data'
     

@@ -197,7 +197,7 @@ class JabberBot:
         text = misc.force_unicode(mess.getBody())
         # Checking command
         if text:
-            if text[0] == '%':
+            if (text[0] == '%') or (text[0] == '!'):
                 text = text[1:]
                 text = text.encode('utf-8')
             else:

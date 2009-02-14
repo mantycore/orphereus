@@ -25,8 +25,8 @@ if [ ! -f "${MAINRRD}" ] ; then
 fi
 
 if [ ! -f "${HIRESRRD}" ] ; then
-    echo "RRD file : ${MAINRRD} does not exist...Creating Now..."
-    CreateRRD "${MAINRRD}" 30
+    echo "RRD file : ${HIRESRRD} does not exist...Creating Now..."
+    CreateRRD "${HIRESRRD}" 30
 fi
 
 listeners=`/opt/pyapps/C.C./graph/state.py`
@@ -36,7 +36,7 @@ MAX=`echo $listeners | awk '{print $2}'`
 echo "Curr $CURR Max $MAX"
 
 rrdupdate "${MAINRRD}" -tcurr:max N:"${CURR}":"${MAX}"
-rrdupdate "${HIRES}" -tcurr:max N:"${CURR}":"${MAX}"
+rrdupdate "${HIRESRRD}" -tcurr:max N:"${CURR}":"${MAX}"
 
 # $1 = ImageFile , $2 = Time in secs to go back , $3 = RRDfil , $4 = GraphText 
 CreateGraph ()
@@ -56,6 +56,6 @@ CreateGraph ()
 }
 
 
-CreateGraph "${RRDIMG}/list_hour.png" 3600 "${HIRES}" "Anoma-FM [last hour]" #86400
+CreateGraph "${RRDIMG}/list_hour.png" 3600 "${HIRESRRD}" "Anoma-FM [last hour]" #86400
 CreateGraph "${RRDIMG}/list_day.png" 86400 "${MAINRRD}" "Anoma-FM [last day]" #86400
 CreateGraph "${RRDIMG}/list_week.png" 604800 "${MAINRRD}" "Anoma-FM [last week]" #86400

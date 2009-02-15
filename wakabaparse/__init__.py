@@ -164,7 +164,8 @@ class WakabaParser(object):
         fC = False
         for tag, beg, end, parts in Nodes:
             if tag in self.plain:
-                result += filterText(self.input[beg:end])
+                #result += filterText(self.input[beg:end])
+                result += self.input[beg:end]
             elif tag in self.simple and parts:
                 tagName = tag.split()[0]
                 result += '<%s>%s' %(self.simple[tag], self.formatInHTML(parts)) 
@@ -177,7 +178,8 @@ class WakabaParser(object):
                 if parts:
                     self.result += self.formatInHTML(parts)
                 else:
-                    self.result += filterText(self.input[beg:end])
+                    #self.result += filterText(self.input[beg:end])
+                    self.result += self.input[beg:end]
                 if not self.linesFlag and (self.lines > self.maxLines or len(self.result) > self.maxLen):
                     self.linesFlag = True
                     self.short = self.result

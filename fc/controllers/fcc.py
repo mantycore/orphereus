@@ -636,21 +636,24 @@ class FccController(OrphieBaseController):
                 return self.render('error') 
             post.picid = pic.id
             
-            if fileHolder:
-                audio = EasyID3(fileHolder.path())
-                trackInfo = '<span class="postInfo">Id3 info:</span><br/>'
-                for tag in audio.keys():
-                    log.debug(tag)
-                    log.debug(audio[tag])
-                    value = audio[tag]
-                    if value and isinstance(value, list) and tag in id3FieldsNames.keys():
-                        value = ' '.join(value) 
-                        trackInfo += u'<span class="postInfo"><b>%s</b>: %s</span><br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
-                
-                if not post.messageInfo:
-                    post.messageInfo = trackInfo
-                else:
-                    post.messageInfo += '<br/>%s' % trackInfo
+            try:
+                if fileHolder:
+                    audio = EasyID3(fileHolder.path())
+                    trackInfo = '<span class="postInfo">Id3 info:</span><br/>'
+                    for tag in audio.keys():
+                        log.debug(tag)
+                        log.debug(audio[tag])
+                        value = audio[tag]
+                        if value and isinstance(value, list) and tag in id3FieldsNames.keys():
+                            value = ' '.join(value) 
+                            trackInfo += u'<span class="postInfo"><b>%s</b>: %s</span><br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
+                    
+                    if not post.messageInfo:
+                        post.messageInfo = trackInfo
+                    else:
+                        post.messageInfo += '<br/>%s' % trackInfo
+            except:
+                pass
             #try:
             #except:
             #    pass

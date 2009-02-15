@@ -20,6 +20,8 @@ from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from fc.lib.fileHolder import AngryFileHolder
 from OrphieBaseController import OrphieBaseController
+from mutagen.easyid3 import EasyID3
+
 
 import logging
 log = logging.getLogger(__name__)
@@ -633,6 +635,25 @@ class FccController(OrphieBaseController):
                 c.errorText = _("Files are not allowed on this board")
                 return self.render('error') 
             post.picid = pic.id
+            
+            if fileHolder:
+                audio = EasyID3(fileHolder.path())
+                trackInfo = '<span class="postInfo">Id3 info:</span><br/>'
+                for tag in audio.keys():
+                    log.debug(tag)
+                    log.debug(audio[tag])
+                    value = audio[tag]
+                    if value and isinstance(value, list) and tag in id3FieldsNames.keys():
+                        value = ' '.join(value) 
+                        trackInfo += u'<span class="postInfo"><b>%s</b>: %s</span><br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
+                
+                if not post.messageInfo:
+                    post.messageInfo = trackInfo
+                else:
+                    post.messageInfo += '<br/>%s' % trackInfo
+            #try:
+            #except:
+            #    pass
             
         post.uidNumber = self.userInst.uidNumber()
         

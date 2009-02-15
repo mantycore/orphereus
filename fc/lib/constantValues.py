@@ -14,6 +14,12 @@ settingsDef = {
     "additionalLinks" : ''
 }
 
+id3FieldsNames = {
+"album" : N_("Album"),
+"title" : N_("Title"),
+"artist" : N_("Artist"),
+}
+
 LOG_EVENT_SECURITY_IP   = 0x00000001
 LOG_EVENT_INVITE        = 0x00010001
 LOG_EVENT_INVITE_USED   = 0x00010002

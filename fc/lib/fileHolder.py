@@ -12,6 +12,9 @@ class AngryFileHolder:
         
     def disableDeletion(self):
         self.__deleteOnDestroy = False
+        
+    def path(self):
+        return self.__file
 
     def __del__(self):
         if self.__deleteOnDestroy:

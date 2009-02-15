@@ -580,7 +580,7 @@ class FccController(OrphieBaseController):
            oekaki = self.sqlFirst(meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid))
 
            file = FieldStorageLike(oekaki.path,os.path.join(g.OPT.uploadPath, oekaki.path))
-           painterMark = '<br /><span style="background: #A8A8A8;">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
+           painterMark = u'<span class="postInfo">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
            if oekaki.source:
               painterMark += ", source " + self.formatPostReference(oekaki.source) #<a href="">&lt;&lt;%s</a>" % oekaki.source
            meta.Session.delete(oekaki) # TODO: Is it really needed to destroy oekaki IDs?

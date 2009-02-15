@@ -51,10 +51,10 @@
     %else:
         <a href="javascript:insert('&gt;&gt;${thread.id}')" ${c.canPost and """onclick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
     %endif
-    </span> 
     %if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
         <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
-    %endif    
+    %endif
+    </span> 
 
     &nbsp;
     ${_('Posted in')}:

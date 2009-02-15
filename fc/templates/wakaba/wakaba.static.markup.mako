@@ -77,8 +77,18 @@
             <td align="left"><ol><li>текст</li><li>текст</li></ol></td>
         </tr>
         <tr>
-            <td align="left">> > текст<br/>или<br/>> текст</td>
-            <td align="left"><font color=#406010>> > текст</font><br/>или<br/><font color=#789922>> текст</font></td>
+            <td align="left">&gt; текст<br/>или<br/>&gt;&gt; текст</td>
+            <td align="left">
+                <blockquote class="postbody">
+                    <blockquote> &gt; текст 
+                    </blockquote>
+                    или
+                    <blockquote>
+                    <blockquote>&gt; &gt; текст</blockquote>
+                    </blockquote>
+
+                </blockquote>
+            </td>
         </tr>
         <tr>
             <td align="left">блок<br/>кода</td>

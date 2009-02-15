@@ -83,6 +83,7 @@ class FccController(OrphieBaseController):
          
         #log.debug(self.userInst.homeExclude())
         operators = {'+':1, '-':1, '^':2, '&':2}
+        url = url.replace('&amp;', '&')
         filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1)
         filteringExpression = False
         tagList = []
@@ -277,6 +278,7 @@ class FccController(OrphieBaseController):
             tags = []
             tagsl= []
             if tagstr:
+                tagstr = tagstr.replace('&amp;', '&')
                 regex = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""")
                 tlist = regex.findall(tagstr)
                 for t in tlist:
@@ -607,9 +609,7 @@ class FccController(OrphieBaseController):
            else:
                c.errorText = _('Message is too long')
                return self.render('error') 
-        elif painterMark:
-            post.message = painterMark 
-               
+        
         post.title = filterText(request.POST.get('title', u''))
         post.date = datetime.datetime.now()
         
@@ -636,7 +636,7 @@ class FccController(OrphieBaseController):
             
         post.uidNumber = self.userInst.uidNumber()
         
-        if not post.message and not post.picid:
+        if not post.message and not post.picid and not post.messageInfo:
             c.errorText = "At least message or file should be specified"
             return self.render('error') 
         

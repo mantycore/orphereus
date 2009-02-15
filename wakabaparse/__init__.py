@@ -43,7 +43,8 @@ class WakabaParser(object):
         if not (trusted):
             linkHref = g.OPT.obfuscator + linkHref
             
-        return '<a href="%s">%s</a>' % (linkHref.replace("&", "&amp;"), linkString.replace("&", "&amp;"))
+        #return '<a href="%s">%s</a>' % (linkHref.replace("&", "&amp;"), linkString.replace("&", "&amp;"))
+        return '<a href="%s">%s</a>' % (linkHref, linkString)
         
     def reference(self, tag, beg, end, parts):
         n,i,j,p = parts[0]

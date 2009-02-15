@@ -56,16 +56,6 @@ ${_('Remove old bans')}
 
 <tr>
 <td>
-<form method="post" action="service/updateCaches">
-${_('Update caches')}
-<br/>
-<input type="submit" value="Launch">
-</form>
-</td>
-</tr>
-
-<tr>
-<td>
 <form method="post" action="service/integrityChecks">
 <span style="color: red;">${_('Integrity checks')}</span>
 <br/>
@@ -79,6 +69,16 @@ ${_('Update caches')}
 
 <h3>${_('Optional actions')}</h3>
 <table width="100%" class="hlTable">
+
+<tr>
+<td>
+<form method="post" action="service/updateCaches">
+${_('Update caches')}
+<br/>
+<input type="submit" value="Launch">
+</form>
+</td>
+</tr>
 
 <tr>
 <td>

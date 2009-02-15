@@ -369,10 +369,10 @@ class FcmController(OrphieBaseController):
                     mtnLog += self.banRotate()
                 except:
                     addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in banRotate()'))
-                try:                    
-                    mtnLog += self.updateCaches()
-                except:
-                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in updateCaches()'))
+                #try:                    
+                #    mtnLog += self.updateCaches()
+                #except:
+                #    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in updateCaches()'))
             
             #for entry in mtnLog:
             #    addLogEntry(LOG_EVENT_MTN_ACT, entry.type + ': ' + entry.message)

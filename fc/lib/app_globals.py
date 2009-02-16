@@ -48,6 +48,7 @@ class OptHolder(object):
         self.defCanDeleteOwnThreads = (config['defaults.canDeleteOwnThreads'] == 'true')
         
         # Security settings
+        self.useXRealIP = (config['security.useXRealIP'] == 'true') 
         self.alertEmail = config['security.alertEmail'].split(',')
         self.alertServer = config['security.alertServer']
         self.alertPort = int(config['security.alertPort'])

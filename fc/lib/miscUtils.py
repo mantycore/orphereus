@@ -75,9 +75,14 @@ def adminAlert(alertStr):
         server.sendmail(g.OPT.alertSender, mail, msg.as_string())
     server.close()
     
+def getUserIp():
+    if g.OPT.useXRealIP: 
+        return request.headers["X-Real-IP"]
+    return request.environ["REMOTE_ADDR"]
+
 def checkAdminIP():
-    if g.OPT.useAnalBarriering and request.environ["REMOTE_ADDR"] != '127.0.0.1':
-        msg = _("Access attempt from %s for admin account!") % request.environ["REMOTE_ADDR"]
+    if g.OPT.useAnalBarriering and getUserIp() != '127.0.0.1':
+        msg = _("Access attempt from %s for admin account!") % getUserIp()
         addLogEntry(LOG_EVENT_SECURITY_IP, msg)
         adminAlert(msg)
         session['uidNumber'] = -1

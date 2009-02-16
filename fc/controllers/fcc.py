@@ -365,7 +365,6 @@ class FccController(OrphieBaseController):
             
             def vitalSigns():
                 ret = empty()
-                log.debug("ok")
                 tpc = c.totalPostsCount
                 uniqueUidsExpr = meta.Session().query(Post.uidNumber).distinct()
                 ret.last1KUsersCount = uniqueUidsExpr.filter(and_(Post.id <= tpc, Post.id >= tpc - 1000)).count()

@@ -86,7 +86,7 @@ class FcmController(OrphieBaseController):
     def banRotate(self):
         mtnLog = []
         mtnLog.append(self.createLogEntry('Task', 'Removing bans...'))
-        currentTime = datetime.datetime.now()                
+        currentTime = datetime.datetime.now()
         users = meta.Session.query(User).all()
         for user in users:
             bantime = user.options.bantime

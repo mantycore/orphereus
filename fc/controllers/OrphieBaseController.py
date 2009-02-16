@@ -231,16 +231,18 @@ class OrphieBaseController(BaseController):
                 if pic:
                     p.picid = -1
             else:
-                invisBump = (g.settingsMap['invisibleBump'].value == 'false')
+                invisBumpDisabled = (g.settingsMap['invisibleBump'].value == 'false')
                 parent = self.sqlFirst(meta.Session.query(Post).filter(Post.id==p.parentid))
                 if parent:
                     parent.replyCount -= 1
                         
-                if invisBump and p.parentid != -1:
+                if invisBumpDisabled and p.parentid != -1:
                     thread = self.sqlAll(meta.Session.query(Post).filter(Post.parentid==p.parentid))
-                    if thread and thread[-1].id == p.id:
+                    if thread and thread[-1].id == p.id: #wut?
+                        prevPost = thread[-2]
                         if len(thread) > 1:
-                            parent.bumpDate = thread[-2].date
+                            if not prevPost.sage:
+                                parent.bumpDate = prevPost.date
                         else:
                             parent.bumpDate = parent.date
                             

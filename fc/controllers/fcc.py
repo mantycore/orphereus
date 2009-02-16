@@ -365,8 +365,18 @@ class FccController(OrphieBaseController):
             
             def vitalSigns():
                 ret = empty()
+                log.debug("ok")
                 tpc = c.totalPostsCount
-                #TODO: eliminate plain sql
+                uniqueUidsExpr = meta.Session().query(Post.uidNumber).distinct()
+                ret.last1KUsersCount = uniqueUidsExpr.filter(and_(Post.id <= tpc, Post.id >= tpc - 1000)).count()
+                ret.prev1KUsersCount = uniqueUidsExpr.filter(and_(Post.id <= tpc - 1000, Post.id >= tpc - 2000)).count()
+            
+                currentTime = datetime.datetime.now()
+                firstBnd = currentTime - datetime.timedelta(days=7)
+                secondBnd = currentTime - datetime.timedelta(days=14)
+                ret.lastWeekMessages = meta.Session().query(Post.id).filter(Post.date >= firstBnd).count()
+                ret.prevWeekMessages = meta.Session().query(Post.id).filter(and_(Post.date <= firstBnd, Post.date >= secondBnd)).count()
+                """
                 result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc, 'minid' : tpc - 1000})
                 ret.last1KUsersCount = result.fetchone()[0]
                 result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc - 1000, 'minid' : tpc - 2000})
@@ -375,6 +385,7 @@ class FccController(OrphieBaseController):
                 ret.lastWeekMessages = result.fetchone()[0]
                 result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) >= date and DATE_SUB(NOW(), INTERVAL 14 DAY) <= date")
                 ret.prevWeekMessages = result.fetchone()[0]
+                """
                 return ret
             
             adminTagsLine = g.settingsMap['adminOnlyTags'].value

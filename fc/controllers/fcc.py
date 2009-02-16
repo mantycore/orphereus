@@ -836,35 +836,44 @@ class FccController(OrphieBaseController):
     
     def Anonimyze(self, post):
         postid = request.POST.get('postId', False)
+        batch = request.POST.get('batchFA', False)
         if postid and isNumber(postid):
-            c.FAResult = self.processAnomymize(int(postid))
+            c.FAResult = self.processAnomymize(int(postid), batch)
         else:
             c.boardName = _('Final Anonymization')
             c.FAResult = False
             c.postId = post
         return self.render('finalAnonymization')
     
-    def processAnomymize(self, postid):
+    def processAnomymize(self, postid, batch):
         if not g.OPT.enableFinalAnonymity:
             return _("Final Anonymity is disabled")
         
+        result = []
         post = self.sqlGet(meta.Session.query(Post), postid)
-        
         if post:
-            if post.uidNumber != self.userInst.uidNumber():
-                return _("You are not author of this post")
+            posts = []
+            if not batch:
+                posts = [post]
             else:
-                delay = g.OPT.finalAHoursDelay
-                timeDelta = datetime.timedelta(hours=delay)
-                if post.date < datetime.datetime.now() - timeDelta:
-                    post.uidNumber = 0
-                    meta.Session.commit()
-                    return True
+                posts = self.sqlAll(meta.Session.query(Post).filter(and_(Post.uidNumber == self.userInst.uidNumber(), Post.date <= post.date)))
+            for post in posts:
+                if post.uidNumber != self.userInst.uidNumber():
+                    result.append(_("You are not author of this post"))
                 else:
-                    params = (str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta), str(datetime.datetime.now()))
-                    return _("Can't anomymize this post now, it will be allowed after %s (now: %s)" % params)
+                    delay = g.OPT.finalAHoursDelay
+                    timeDelta = datetime.timedelta(hours=delay)
+                    if post.date < datetime.datetime.now() - timeDelta:
+                        post.uidNumber = 0
+                        result.append(_("Post #%d successfully anonymized") % post.id)
+                    else:
+                        params = (str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta), str(datetime.datetime.now()))
+                        result.append(_("Can't anomymize this post now, it will be allowed after %s (now: %s)" % params))
+            meta.Session.commit()
         else:
-            return _("Nothing to anonymize")
+            result = [_("Nothing to anonymize")]
+        
+        return result
         
     def showProfile(self):
         if self.userInst.Anonymous:

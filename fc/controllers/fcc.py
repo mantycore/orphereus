@@ -859,7 +859,7 @@ class FccController(OrphieBaseController):
                 posts = self.sqlAll(meta.Session.query(Post).filter(and_(Post.uidNumber == self.userInst.uidNumber(), Post.date <= post.date)))
             for post in posts:
                 if post.uidNumber != self.userInst.uidNumber():
-                    result.append(_("You are not author of this post"))
+                    result.append(_("You are not author of post #%s") % post.id)
                 else:
                     delay = g.OPT.finalAHoursDelay
                     timeDelta = datetime.timedelta(hours=delay)
@@ -867,8 +867,8 @@ class FccController(OrphieBaseController):
                         post.uidNumber = 0
                         result.append(_("Post #%d successfully anonymized") % post.id)
                     else:
-                        params = (str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta), str(datetime.datetime.now()))
-                        result.append(_("Can't anomymize this post now, it will be allowed after %s (now: %s)" % params))
+                        params = (post.id, str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta), str(datetime.datetime.now()))
+                        result.append(_("Can't anomymize post #%d now, it will be allowed after %s (now: %s)" % params))
             meta.Session.commit()
         else:
             result = [_("Nothing to anonymize")]

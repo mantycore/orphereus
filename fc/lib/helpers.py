@@ -7,18 +7,40 @@ from webhelpers import *
 from pylons import config
 import datetime
 import os
+import miscUtils as utils
 
 import logging
 log = logging.getLogger(__name__)
 
-def modLink(string, secid, f):
-    if f:
-        p1 = string[0:4]
-        p2 = string[4:8]
-        p3 = string[8:len(string)]
-        return p1 + str(secid) + p2 + p3
-    else:
-        return string
+def expandName(name):
+    #log.debug("expanding: %s" % name)
+    if name: 
+        parts = name.split('.')
+        if parts and utils.isNumber(parts[-2].replace('s', '')): #TODO: is the second condition really needed?
+            ext = parts[-1].lower() 
+            prefix = name[0:4]
+            #log.debug('%s/%s/%s' % (ext, prefix, name))
+            return '%s/%s/%s' % (ext, prefix, name)
+    #log.debug('passed: %s' % name)
+    return name
+
+def modLink(filePath, secid, hidePrefixes = False):
+    #log.debug("mod: %s" % (filePath))
+    if filePath and config['pylons.app_globals'].OPT.secureLinks:
+        baseName = os.path.basename(filePath)
+        prefix = os.path.dirname(filePath)
+        #log.debug(baseName)
+        #log.debug(prefix)
+        if utils.isNumber(baseName.split('.')[-2].replace('s', '')):
+            p1 = baseName[0:4]
+            p2 = baseName[4:8]
+            p3 = baseName[8:len(baseName)]
+            retval = '%s%s%s%s' % (p1, str(secid), p2, p3)
+            if prefix and not hidePrefixes:
+                retval = prefix + '/' + retval
+            return retval
+    #log.debug('not modified: %s' % filePath)
+    return filePath
 
 def modMessage(message, user, f):  
     if f:

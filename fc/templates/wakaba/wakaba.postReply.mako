@@ -46,16 +46,14 @@
                 %if post.file:
                     <br /><span class="filesize">${_('File:')}     
 
-                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid(), g.OPT.secureLinks)}">${h.modLink(post.file.path, c.userInst.secid(), g.OPT.secureLinks)}</a> 
+                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}">${h.modLink(post.file.path, c.userInst.secid(), True)}</a> 
                     (<em>${'%.2f' % (post.file.size / 1024.0)} Kbytes, ${post.file.width}x${post.file.height}</em>)</span>
                     <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid(), g.OPT.secureLinks)}">
+                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}">
                     %if post.spoiler:
                         <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb" alt="Spoiler"/>
-                    %elif not '..' in post.file.thumpath:                                     
-                        <img src="${g.OPT.filesPathWeb + h.modLink(post.file.thumpath, c.userInst.secid(), g.OPT.secureLinks)}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" alt="Preview"/>
-                    %else:  
-                        <img src="${g.OPT.staticPathWeb + post.file.thumpath}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" alt="Preview" />                                
+                    %else:                                     
+                        <img src="${g.OPT.filesPathWeb + h.modLink(post.file.thumpath, c.userInst.secid())}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb" alt="Preview"/>                                
                     %endif 
                     </a>
                 %elif post.picid == -1:

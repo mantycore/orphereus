@@ -120,5 +120,15 @@ ${_('Reparse posts which can be reparsed')}
 </td>
 </tr>
 
+<tr>
+<td>
+<form method="post" action="service/sortUploads">
+${_('Sort uploads')}
+<br/>
+<input type="submit" value="Launch">
+</form>
+</td>
+</tr>
+
 </table>
 

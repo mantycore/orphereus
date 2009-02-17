@@ -107,7 +107,9 @@ t_extlist = sa.Table("extlist", meta.metadata,
     sa.Column("thwidth"  , sa.types.Integer, nullable=False),
     sa.Column("thheight" , sa.types.Integer, nullable=False),
     sa.Column("ext"      , sa.types.String(16), nullable=False),
-    sa.Column("type"     , sa.types.String(16), nullable=False)
+    sa.Column("type"     , sa.types.String(16), nullable=False),
+    sa.Column("enabled"  , sa.types.Boolean, server_default='1'),
+    sa.Column("newWindow", sa.types.Boolean, server_default='1'),
     )
 
 t_piclist = sa.Table("piclist", meta.metadata,
@@ -267,7 +269,7 @@ orm.mapper(Tag, t_tags, properties = {
     })
 orm.mapper(Post, t_posts, properties = {
     'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
-    'file': orm.relation(Picture, cascade="all, delete" ), #, delete-orphan - NOT needed
+    'file': orm.relation(Picture), #, cascade="all, delete" ), #, delete-orphan - NOT needed
     'parentPost' : orm.relation(Post, remote_side=[t_posts.c.id]),
     })
 

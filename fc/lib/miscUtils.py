@@ -2,7 +2,7 @@ import re
 import os
 import logging
 import datetime
-from fc.lib.base import *
+from pylons import c, cache, config, g, request, response, session
 from fc.model import *
 from sqlalchemy.orm import eagerload
 from sqlalchemy.orm import class_mapper

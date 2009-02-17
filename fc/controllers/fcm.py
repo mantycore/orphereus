@@ -102,7 +102,7 @@ class FcmController(OrphieBaseController):
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog
-
+    
     def integrityChecks(self):
         mtnLog = []
         mtnLog.append(self.createLogEntry('Task', 'Doing integrity checks...'))
@@ -153,34 +153,43 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Orpaned database entries check completed'))
         
         mtnLog.append(self.createLogEntry('Task', 'Cheking for orphaned files...'))
-        files = os.listdir(g.OPT.uploadPath)
+        
 
-        junkPath= g.OPT.uploadPath + '/junk'
+        junkPath= os.path.join(g.OPT.uploadPath, 'junk')
         if not os.path.exists(junkPath):
             os.mkdir(junkPath)
         
+        files = [] #os.listdir(g.OPT.uploadPath)
+        for dir, subdirs, flist in os.walk(g.OPT.uploadPath):
+            for file in flist:
+                name = os.path.join(dir+'/'+file)
+                if not 'junk' in name:
+                    files.append(name)
+                
         ccJunkFiles = 0
         ccJunkThumbnails = 0
         for fn in sorted(files):
-            name = fn.split('.')[0]
+            fullname = os.path.basename(fn)
+            name = fullname.split('.')[0]
+            log.debug(fn)
             if os.path.isfile(fn) and name and len(name) > 0:
                 isThumb = (name[-1] == 's')
                 
                 if isThumb:
-                    thumbIds = meta.Session.query(Picture).filter(Picture.thumpath == fn).all()
+                    thumbIds = meta.Session.query(Picture).filter(Picture.thumpath.like('%%%s' % fullname)).all()
                     if not thumbIds:
-                        msg = 'Unbound thumbnail %s moved into junk directory' % fn
+                        msg = 'Orphaned thumbnail %s moved into junk directory' % fn
                         mtnLog.append(self.createLogEntry('Info', msg))
                         addLogEntry(LOG_EVENT_INTEGR, msg)
-                        shutil.move('%s/%s' % (g.OPT.uploadPath, fn), junkPath)
+                        shutil.move(fn, junkPath)
                         ccJunkThumbnails += 1
                 else:
-                    picIds = meta.Session.query(Picture).filter(Picture.path == fn).all()
+                    picIds = meta.Session.query(Picture).filter(Picture.path.like('%%%s' % fullname)).all()
                     if not picIds:
-                        msg = 'Unbound picture %s moved into junk directory' % fn
+                        msg = 'Orphaned picture %s moved into junk directory' % fn
                         mtnLog.append(self.createLogEntry('Info', msg))
                         addLogEntry(LOG_EVENT_INTEGR, msg)
-                        shutil.move('%s/%s' % (g.OPT.uploadPath, fn), junkPath)
+                        shutil.move(fn, junkPath)
                         ccJunkFiles += 1
                         
         if (ccJunkFiles > 0 or ccJunkThumbnails > 0):
@@ -188,6 +197,44 @@ class FcmController(OrphieBaseController):
         
         mtnLog.append(self.createLogEntry('Task', 'Orpaned files check completed'))
         
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
+        return mtnLog
+    
+    def sortUploads(self):
+        mtnLog = []
+        mtnLog.append(self.createLogEntry('Task', 'Sorting uploads directory...'))
+        
+        def moveFile(fname):
+            expanded = h.expandName(fname) 
+            if expanded != fname:
+                source = os.path.join(g.OPT.uploadPath, fname)
+                target = os.path.join(g.OPT.uploadPath, expanded)
+                if not os.path.exists(source):
+                    msg = 'Warning: %s not exists' % (source)
+                    mtnLog.append(self.createLogEntry('Info', msg))
+                    addLogEntry(LOG_EVENT_INTEGR, msg)
+                    return False
+                targetDir = os.path.dirname(target)
+                if not os.path.exists(targetDir):
+                    os.makedirs(targetDir)
+                shutil.move(source, target)
+                msg = 'File %s moved into %s' % (fname, expanded)
+                mtnLog.append(self.createLogEntry('Info', msg))
+                addLogEntry(LOG_EVENT_INTEGR, msg)
+                return True
+            return False
+        
+        posts = meta.Session.query(Post).options(eagerload('file')).all()
+        for post in posts:
+            if post.file:
+                fname = post.file.path
+                if moveFile(fname):
+                    post.file.path = h.expandName(fname)
+                tfname = post.file.thumpath
+                log.debug(tfname)
+                if moveFile(tfname):
+                    post.file.thumpath = h.expandName(tfname)
+                meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog
     
@@ -348,6 +395,8 @@ class FcmController(OrphieBaseController):
                 mtnLog = self.removeEmptyTags()
             elif actid == 'reparse':
                 mtnLog = self.reparse()
+            elif actid == 'sortUploads':
+                mtnLog = self.sortUploads()
             elif actid == 'all':
                 try:
                     mtnLog = self.clearOekaki()

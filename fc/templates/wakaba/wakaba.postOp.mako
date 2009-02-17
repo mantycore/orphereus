@@ -3,17 +3,15 @@
 
 %if thread.file:
 <span class="filesize">
-    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid(), g.OPT.secureLinks)}">${h.modLink(thread.file.path, c.userInst.secid(),g.OPT.secureLinks)}</a>            
+    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}">${h.modLink(thread.file.path, c.userInst.secid(), True)}</a>            
     (<em>${'%.2f' % (thread.file.size / 1024.0)} Kbytes, ${thread.file.width}x${thread.file.height}</em>)
 </span>
 <span class="thumbnailmsg"></span><br />                       
-<a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid(), g.OPT.secureLinks)}">
+<a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}">
 %if thread.spoiler:
     <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb" alt="Spoiler"/>
-%elif not '..' in thread.file.thumpath:
-    <img src="${g.OPT.filesPathWeb + h.modLink(thread.file.thumpath, c.userInst.secid(),g.OPT.secureLinks)}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />             
 %else:
-    <img src="${g.OPT.staticPathWeb+thread.file.thumpath}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb" alt="Preview"/>             
+    <img src="${g.OPT.filesPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />             
 %endif   
 </a>
 %elif thread.picid == -1:

@@ -115,7 +115,9 @@ class OrphieBaseController(BaseController):
         
     def deletePicture(self, post, commit = True):
         pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
-        if pic and self.sqlCount(meta.Session.query(Post).filter(Post.picid==post.picid)) == 1:
+        refcount = self.sqlCount(meta.Session.query(Post).filter(Post.picid==post.picid))
+        log.debug(refcount)
+        if pic and refcount == 1:
             filePath = os.path.join(g.OPT.uploadPath, pic.path)
             thumPath = os.path.join(g.OPT.uploadPath, pic.thumpath)
             
@@ -239,10 +241,8 @@ class OrphieBaseController(BaseController):
                 if invisBumpDisabled and p.parentid != -1:
                     thread = self.sqlAll(meta.Session.query(Post).filter(Post.parentid==p.parentid))
                     if thread and thread[-1].id == p.id: #wut?
-                        prevPost = thread[-2]
-                        if len(thread) > 1:
-                            if not prevPost.sage:
-                                parent.bumpDate = prevPost.date
+                        if len(thread) > 1 and not thread[-2].sage:
+                            parent.bumpDate = thread[-2].date
                         else:
                             parent.bumpDate = parent.date
                             

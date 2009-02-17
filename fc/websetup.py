@@ -99,7 +99,7 @@ def setup_config(command, filename, section, vars):
         
         
         ext = Extension()
-        ext.path = ''
+        ext.path = '../generic/archive.png'
         ext.thwidth = 80
         ext.thheight = 80
         ext.ext = 'zip'
@@ -108,13 +108,29 @@ def setup_config(command, filename, section, vars):
         
         
         ext = Extension()
-        ext.path = ''
+        ext.path = '../generic/archive.png'
+        ext.thwidth = 80
+        ext.thheight = 80
+        ext.ext = '7z'
+        ext.type = 'archive'
+        meta.Session.add(ext)
+        
+        
+        ext = Extension()
+        ext.path = '../generic/sound.png'
         ext.thwidth = 80
         ext.thheight = 80
         ext.ext = 'mp3'
         ext.type = 'audio'
         meta.Session.add(ext)
         
+        ext = Extension()
+        ext.path = '../generic/sound.png'
+        ext.thwidth = 80
+        ext.thheight = 80
+        ext.ext = 'ogg'
+        ext.type = 'audio'
+        meta.Session.add(ext)
     try:
         tc = meta.Session.query(Tag).count()
     except:

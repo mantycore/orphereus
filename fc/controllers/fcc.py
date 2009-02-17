@@ -451,7 +451,7 @@ class FccController(OrphieBaseController):
            return []
                
     def processFile(self, file, thumbSize=250):
-        if isinstance(file, cgi.FieldStorage) or isinstance(file,FieldStorageLike):
+        if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
            # We should check whether we got this file already or not
            # If we dont have it, we add it
            name = str(long(time.time() * 10**7))
@@ -471,8 +471,15 @@ class FccController(OrphieBaseController):
            if not extParams:
               return [_(u'Extension "%s" is disallowed') % ext, False]
 
-           localFilePath = os.path.join(g.OPT.uploadPath, name + '.' + ext)
-           localFile = open(localFilePath,'w+b')
+           relativeFilePath = h.expandName('%s.%s' % (name, ext))
+           localFilePath = os.path.join(g.OPT.uploadPath, relativeFilePath)
+           targetDir = os.path.dirname(localFilePath)
+           #log.debug(localFilePath)
+           #log.debug(targetDir)
+           if not os.path.exists(targetDir):
+               os.makedirs(targetDir)
+           
+           localFile = open(localFilePath, 'w+b')
            shutil.copyfileobj(file.file, localFile)
            localFile.seek(0)
            md5 = hashlib.md5(localFile.read()).hexdigest()
@@ -487,11 +494,11 @@ class FccController(OrphieBaseController):
 
            try:
                 if extParams.type == 'image':
-                   thumbFilePath = name + 's.' + ext
+                   thumbFilePath = h.expandName('%ss.%s' % (name, ext))
                    size = self.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize,thumbSize))
                 else:
                    if extParams.type == 'image-jpg':
-                      thumbFilePath = name + 's.jpg'
+                      thumbFilePath = h.expandName('%ss.jpg' % (name))
                       size = self.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize,thumbSize))
                    else:
                      thumbFilePath = extParams.path
@@ -500,7 +507,7 @@ class FccController(OrphieBaseController):
                 return [_(u"Broken picture. Maybe it is interlaced PNG?"), AngryFileHolder(localFilePath)]
               
            pic = Picture()
-           pic.path = name + '.' + ext
+           pic.path = relativeFilePath
            pic.thumpath = thumbFilePath
            pic.width = size[0]
            pic.height = size[1]
@@ -531,7 +538,7 @@ class FccController(OrphieBaseController):
                  
             # ???
             if thePost.parentid != -1: 
-                thread = self.sqlOne(meta.Session.query(Post).filter(Post.id==thePost.parentid))         
+                thread = self.sqlOne(meta.Session.query(Post).filter(Post.id==thePost.parentid))
             else:
                thread = thePost
             tags = thread.tags
@@ -630,7 +637,7 @@ class FccController(OrphieBaseController):
         if fileDescriptors:
             pic = fileDescriptors[0]
             fileHolder = fileDescriptors[1] # Object for file auto-removing
-        
+             
         if pic:
             if isinstance(pic, basestring) or isinstance(pic, unicode):
                 c.errorText = pic
@@ -649,7 +656,7 @@ class FccController(OrphieBaseController):
             try:
                 if fileHolder:
                     audio = EasyID3(fileHolder.path())
-                    trackInfo = '<span class="postInfo">Id3 info:</span><br/>'
+                    trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
                     for tag in audio.keys():
                         #log.debug(tag)
                         #log.debug(audio[tag])
@@ -804,7 +811,7 @@ class FccController(OrphieBaseController):
                
               if pic and pic.width:
                  oekaki.source = post.id
-                 c.canvas = h.modLink(pic.path, c.userInst.secid(), g.OPT.secureLinks)
+                 c.canvas = h.modLink(pic.path, c.userInst.secid())
                  c.width  = pic.width
                  c.height = pic.height
         meta.Session.add(oekaki)

@@ -41,16 +41,14 @@
                 %if pt[0].file:
                     <br /><span class="filesize">${_('File:')}     
 
-                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid(), g.OPT.secureLinks)}">${h.modLink(pt[0].file.path, c.userInst.secid(), g.OPT.secureLinks)}</a> 
+                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid(), True)}">${h.modLink(pt[0].file.path, c.userInst.secid())}</a> 
                     (<em>${'%.2f' % (pt[0].file.size / 1024.0)} Kbytes, ${pt[0].file.width}x${pt[0].file.height}</em>)</span>
                     <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid(), g.OPT.secureLinks)}">
+                    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid())}">
                     %if pt[0].spoiler:
                         <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb"/>
-                    %elif not '..' in pt[0].file.thumpath:                                     
-                        <img src="${g.OPT.filesPathWeb + h.modLink(pt[0].file.thumpath, c.userInst.secid(), g.OPT.secureLinks)}" width="${pt[0].file.thwidth}" height="${pt[0].file.thheight}" class="thumb" />
-                    %else:  
-                        <img src="${g.OPT.filesPathWeb + pt[0].file.thumpath}" width="${pt[0].file.thwidth}" height="${pt[0].file.thheight}" class="thumb" />                                
+                    %else:                                     
+                        <img src="${g.OPT.filesPathWeb + h.modLink(pt[0].file.thumpath, c.userInst.secid())}" width="${pt[0].file.thwidth}" height="${pt[0].file.thheight}" class="thumb" />
                     %endif 
                     </a>
                     %elif pt[0].picid == -1:

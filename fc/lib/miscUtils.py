@@ -3,6 +3,7 @@ import os
 import logging
 import datetime
 from pylons import c, cache, config, g, request, response, session
+from pylons.i18n import _, ungettext, N_
 from fc.model import *
 from sqlalchemy.orm import eagerload
 from sqlalchemy.orm import class_mapper

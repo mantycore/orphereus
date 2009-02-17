@@ -170,7 +170,7 @@ class FcmController(OrphieBaseController):
         for dir, subdirs, flist in os.walk(g.OPT.uploadPath):
             for file in flist:
                 name = os.path.join(dir+'/'+file)
-                if not 'junk' in name:
+                if not '.svn' in dir and not 'junk' in name:
                     files.append(name)
                 
         ccJunkFiles = 0
@@ -244,7 +244,7 @@ class FcmController(OrphieBaseController):
                     movedTCC += 1
         
         if movedCC or movedTCC:
-            msg = '%d files and %d thumbnail moved' % (movedCC, movedTCC)
+            msg = '%d files and %d thumbnails moved' % (movedCC, movedTCC)
             mtnLog.append(self.createLogEntry('Info', msg))
             addLogEntry(LOG_EVENT_INTEGR, msg)
         mtnLog.append(self.createLogEntry('Task', 'Done'))

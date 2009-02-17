@@ -116,7 +116,6 @@ class OrphieBaseController(BaseController):
     def deletePicture(self, post, commit = True):
         pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
         refcount = self.sqlCount(meta.Session.query(Post).filter(Post.picid==post.picid))
-        log.debug(refcount)
         if pic and refcount == 1:
             filePath = os.path.join(g.OPT.uploadPath, pic.path)
             thumPath = os.path.join(g.OPT.uploadPath, pic.thumpath)

@@ -40,6 +40,12 @@ def modLink(filePath, secid, hidePrefixes = False):
                 retval = prefix + '/' + retval
             return retval
     #log.debug('not modified: %s' % filePath)
+    
+    if hidePrefixes:
+         baseName = os.path.basename(filePath)
+         if baseName:
+            return baseName
+         
     return filePath
 
 def modMessage(message, user, f):  

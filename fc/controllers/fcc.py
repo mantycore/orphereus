@@ -657,14 +657,16 @@ class FccController(OrphieBaseController):
                 if fileHolder:
                     audio = EasyID3(fileHolder.path())
                     trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
-                    for tag in audio.keys():
+                    taglist = sorted(audio.keys())
+                    taglist.reverse()
+                    tagsToShow = taglist
+                    for tag in tagsToShow:
                         #log.debug(tag)
                         #log.debug(audio[tag])
                         value = audio[tag]
                         if value and isinstance(value, list) and tag in id3FieldsNames.keys():
                             value = ' '.join(value) 
-                            trackInfo += u'<span class="postInfo"><b>%s</b>: %s</span><br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
-                    
+                            trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
                     if not post.messageInfo:
                         post.messageInfo = trackInfo
                     else:

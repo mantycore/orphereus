@@ -200,10 +200,11 @@ class FcpController(OrphieBaseController):
                 if captcha:
                     captchaOk = (captcha.text == captval)
                     meta.Session.delete(captcha)
+                    meta.Session.commit()
                     if not captchaOk:
-                        #log.debug('recreated captcha')                    
+                        #log.debug('recreated captcha')
                         captcha = self.createCaptcha()
-                        tracker.cid = captcha.id                    
+                        tracker.cid = captcha.id
                     #log.debug('captdel')
                 
             if user and captchaOk:

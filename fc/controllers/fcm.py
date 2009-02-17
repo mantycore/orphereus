@@ -79,6 +79,13 @@ class FcmController(OrphieBaseController):
                         mtnLog.append(self.createLogEntry('Info', "Deleted captcha <b>#%d</b>" % (captcha.id)))                
                     
                 meta.Session.delete(tracker)
+                
+        captchas = meta.Session.query(Captcha).all()
+        for ct in captchas:
+            tracker = meta.Session.query(LoginTracker).filter(LoginTracker.cid == ct.id).first()
+            if not tracker:
+                mtnLog.append(self.createLogEntry('Info', "Deleted captcha <b>#%d</b>" % (ct.id)))
+                meta.Session.delete(ct)
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog
@@ -218,24 +225,30 @@ class FcmController(OrphieBaseController):
                 if not os.path.exists(targetDir):
                     os.makedirs(targetDir)
                 shutil.move(source, target)
-                msg = 'File %s moved into %s' % (fname, expanded)
-                mtnLog.append(self.createLogEntry('Info', msg))
-                addLogEntry(LOG_EVENT_INTEGR, msg)
                 return True
             return False
         
+        movedCC = 0
+        movedTCC = 0
         posts = meta.Session.query(Post).options(eagerload('file')).all()
         for post in posts:
             if post.file:
                 fname = post.file.path
                 if moveFile(fname):
                     post.file.path = h.expandName(fname)
+                    movedCC += 1
                 tfname = post.file.thumpath
-                log.debug(tfname)
+                #log.debug(tfname)
                 if moveFile(tfname):
                     post.file.thumpath = h.expandName(tfname)
-                meta.Session.commit()
+                    movedTCC += 1
+        
+        if movedCC or movedTCC:
+            msg = '%d files and %d thumbnail moved' % (movedCC, movedTCC)
+            mtnLog.append(self.createLogEntry('Info', msg))
+            addLogEntry(LOG_EVENT_INTEGR, msg)
         mtnLog.append(self.createLogEntry('Task', 'Done'))
+        meta.Session.commit()
         return mtnLog
     
     def updateCaches(self):

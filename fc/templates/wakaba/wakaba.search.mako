@@ -47,8 +47,10 @@
                     <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid())}">
                     %if pt[0].spoiler:
                         <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb"/>
-                    %else:                                     
+                    %elif not '..' in pt[0].file.thumpath:                                     
                         <img src="${g.OPT.filesPathWeb + h.modLink(pt[0].file.thumpath, c.userInst.secid())}" width="${pt[0].file.thwidth}" height="${pt[0].file.thheight}" class="thumb" />
+                    %else:
+                        <img src="${g.OPT.staticPathWeb + h.modLink(pt[0].file.thumpath, c.userInst.secid())}" width="${pt[0].file.thwidth}" height="${pt[0].file.thheight}" class="thumb" />
                     %endif 
                     </a>
                     %elif pt[0].picid == -1:

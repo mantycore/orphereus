@@ -10,8 +10,10 @@
 <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}">
 %if thread.spoiler:
     <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb" alt="Spoiler"/>
-%else:
+%elif not '..' in thread.file.thumpath:
     <img src="${g.OPT.filesPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />             
+%else:   
+    <img src="${g.OPT.staticPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />             
 %endif   
 </a>
 %elif thread.picid == -1:

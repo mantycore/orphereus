@@ -6,7 +6,7 @@ margin-bottom: 0px }
 .postarea table { margin: 0px auto; text-align: left }
 .thumb { 
 border: none; float: left; margin: 2px 20px }
-.nothumb { float: left; background: #eee; border: 2px dashed #aaa; 
+.nothumb { float: left; background: #111; border: 2px dashed #222; 
 text-align: center; margin: 2px 20px; padding: 1em 0.5em 1em 0.5em; }
 .reply blockquote, blockquote :last-child { 
 margin-bottom: 0em }
@@ -32,9 +32,9 @@ a {
 	color:#AFB9C5;
 
 }
-a:visited {
+/*a:visited {
 	color:#9DA6B0;
-}
+}*/
 
 a:hover {
 	color:#EEEEEE;
@@ -69,9 +69,9 @@ div.delete {
         /*width:100%;*/
 }
 
-.theader, .passvalid {
+.theader, .passvalid, .replymode, .catalogmode {
         background:#0010E0;
-	-moz-border-radius: 6px 6px 0 0;
+	-moz-border-radius: 6px 6px 6px 6px;
         width:100%;
 	background-color: #49525D;
         text-align:center;
@@ -82,7 +82,6 @@ div.delete {
 }
 .rules {
         font-size:11px;
-        font-family:sans-serif;
 }
 .postblock {
 	background-color: #8C9FB4;
@@ -98,7 +97,6 @@ div.delete {
 .footer {
        text-align:center;
         font-size:10px;
-        font-family:sans-serif;
 	clear: both;
 	padding-top: 10px;
 }
@@ -129,7 +127,6 @@ div.delete {
 }
 .row1 {
 	background:#9AD2F6;
-	font-family:sans-serif;
 	font-size:12px;
 	color:#000000;
 }
@@ -143,6 +140,10 @@ div.delete {
 	color:#FFFFFF;
 }
 .reflink {
+             color:#EEEEEE;
+}
+.reflink a:hover {
+             color:#EEEEEE;
 }
 .filesize {
 	font-size:12px;
@@ -151,22 +152,16 @@ div.delete {
 }
 .filetitle {
 	background:inherit;
-	font-size:18px;
-	color:#0F0C5D;
+              color:#0F0C4B;
 	font-weight:800;
 }
 .postername {
-	/*
 	background:inherit;
-	font-size:15px;
-	color:#117743;
+	color:#C3E8F3;
 	font-weight:800;
-	*/
 }
 .postertrip {
-	/*
 	color:#228854;
-	*/
 }
 .oldpost, .notabene {
         background:inherit;
@@ -201,23 +196,17 @@ blockquote {
 }
 .replytitle {
         background:inherit;
-        font-size:18px;
-        color:#0F0C5D;
+        color:#908CE1;
         font-weight:800;
 }
 .commentpostername {
-	/*
         background:inherit;
-        font-size:15px;
-        font-family:serif;
-        color:#117743;
+        color:#EEEEEE;
         font-weight:800;
-*/
 }
 .thumbnailmsg {
 	background:inherit;
 	font-size:9px;
-	font-family:sans-serif;
 	color:#000000;
 }
 hr {
@@ -314,6 +303,9 @@ dl.menu dd.hidden {
 .spoiler blockquote:hover {
 	color:#789922 !important;
 }
+blockquote a:hover{
+color: #6B7B8D;
+}
 .errorMessage{
 	background:#EEaaaa;
 	text-align:center;
@@ -340,12 +332,6 @@ input, textarea {
 	border-left: 1px solid #49525D;
 	border-right: 1px solid #B6C2CF;
 }
-
-.postername, .postertrip, .commentpostername {
-	display: inline; visibility: visible; font-weight: bold; color: #339;
-}
-.postertrip {
-	color: #993;
 }
 .hidden-thread {
 	color: #666; padding: 5px 0 0 28px; min-height: 24px; vertical-align: middle; background: url('images/hidden.png') no-repeat left center;
@@ -384,7 +370,11 @@ div a.show-hide-thread:hover {
 	-moz-border-radius: 6px;
 }
 #x_replyform textarea {
-	width: 100%; border: 1px #EEAA88; solid;
+	width: 100%; background-color: #EEEEEE;
+	border-top: 1px solid #49525D;
+	border-bottom: 1px solid #B6C2CF;
+	border-left: 1px solid #49525D;
+	border-right: 1px solid #B6C2CF;
 }
 #x_replyform div {
 	overflow: hidden; margin-top: 5px;
@@ -393,15 +383,31 @@ div a.show-hide-thread:hover {
 	float: left; margin-right: 10px;
 }
 #x_replyform input[type="text"], #x_replyform input[type="password"] {
-	border: 1px #EEAA88; solid;
+	background-color: #EEEEEE;
+	border-top: 1px solid #49525D;
+	border-bottom: 1px solid #B6C2CF;
+	border-left: 1px solid #49525D;
+	border-right: 1px solid #B6C2CF;
 }
 #x_replyform input[type="file"] > input[type="text"] {
-	border: 1px #EEAA88; solid;
+	background-color: #EEEEEE;
+	border-top: 1px solid #49525D;
+	border-bottom: 1px solid #B6C2CF;
+	border-left: 1px solid #49525D;
+	border-right: 1px solid #B6C2CF;
 } 
-#x_replyform input[type="submit"] {
+#x_replyform input[type="submit"] {background-color: #EEEEEE;
+	border-top: 1px solid #49525D;
+	border-bottom: 1px solid #B6C2CF;
+	border-left: 1px solid #49525D;
+	border-right: 1px solid #B6C2CF;
 
 }
-#x_replyform button {
+#x_replyform button {background-color: #EEEEEE;
+	border-top: 1px solid #49525D;
+	border-bottom: 1px solid #B6C2CF;
+	border-left: 1px solid #49525D;
+	border-right: 1px solid #B6C2CF;
 	
 }
 .logline {background: #DDDDDD;}

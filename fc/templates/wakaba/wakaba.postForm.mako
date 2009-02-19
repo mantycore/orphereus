@@ -153,7 +153,7 @@ ${_('Board-specific rules:')}
 </table>
 %if c.oekaki:
             <div id="trfile" class="theader">
-                <img src="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}">
+                <img src="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" alt="Oekaki preview">
             </div>
 %endif     
 </div>

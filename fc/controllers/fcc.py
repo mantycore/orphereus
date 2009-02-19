@@ -818,7 +818,6 @@ class FccController(OrphieBaseController):
                  c.height = pic.height
         meta.Session.add(oekaki)
         meta.Session.commit()
-#        return render('/spainter.mako')
         return self.render('spainter')
         
     def DeletePost(self, board):

@@ -302,12 +302,16 @@ class FcpController(OrphieBaseController):
                 headers = header.split('&')
                 type = filterText(headers[0].split('=')[1])
                 time = headers[1].split('=')[1]
-                localFilePath = os.path.join(g.OPT.uploadPath, tempid + '.' + type)
+                expandedName = h.expandName('%s.%s' % (tempid, type))
+                localFilePath = os.path.join(g.OPT.uploadPath, expandedName)
+                targetDir = os.path.dirname(localFilePath)
+                if not os.path.exists(targetDir):
+                   os.makedirs(targetDir)
                 localFile = open(localFilePath,'wb')
                 localFile.write(body)
                 localFile.close()
                 oekaki.time = time
-                oekaki.path = tempid + '.' + type
+                oekaki.path = expandedName
                 meta.Session.commit()
         return ['ok']
         

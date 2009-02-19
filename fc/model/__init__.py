@@ -23,7 +23,7 @@ from UserFilters import *
 from UserOptions import *
 
 def init_model(engine):
-    sm = orm.sessionmaker(autoflush=True, autocommit=False, bind=engine)
+    sm = orm.sessionmaker(autoflush=False, autocommit=False, bind=engine)
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
     

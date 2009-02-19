@@ -466,7 +466,7 @@ class FccController(OrphieBaseController):
           
            # Make sure its something we want to have
 
-           extParams = self.sqlFirst(meta.Session.query(Extension).filter(Extension.ext==ext))
+           extParams = self.sqlFirst(Extension.query.filter(Extension.ext==ext))
            
            if not extParams:
               return [_(u'Extension "%s" is disallowed') % ext, False]
@@ -486,7 +486,7 @@ class FccController(OrphieBaseController):
            file.file.close()
            localFile.close()
 
-           pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.md5==md5))
+           pic = self.sqlFirst(Picture.query.filter(Picture.md5==md5))
 
            if pic:
                os.unlink(localFilePath)
@@ -530,7 +530,7 @@ class FccController(OrphieBaseController):
             return self.render('error')
                 
         if postid:
-            thePost = self.sqlFirst(meta.Session.query(Post).filter(Post.id==postid))
+            thePost = self.sqlFirst(Post.query.filter(Post.id==postid))
          
             if not thePost:
                 c.errorText = _("Can't post into non-existent thread")

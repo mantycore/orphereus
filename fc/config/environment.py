@@ -10,8 +10,12 @@ import fc.lib.helpers
 from fc.config.routing import make_map
 from fc.lib.miscUtils import adminAlert
 
+#from fc.model import meta
 from sqlalchemy import engine_from_config
 from fc.model import init_model
+
+import logging
+log = logging.getLogger(__name__)
 
 def load_environment(global_conf, app_conf):
     # Pylons paths
@@ -45,6 +49,8 @@ def load_environment(global_conf, app_conf):
         default_filters=['escape'])
 
     engine = engine_from_config(config, 'sqlalchemy.')
+    #meta.init_meta(engine)
+    #log.debug(meta.Session)
     init_model(engine)
     #adminAlert("Orphie-kun: Hello, I'm respawned")
     # CONFIGURATION OPTIONS HERE

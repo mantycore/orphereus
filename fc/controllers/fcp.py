@@ -158,20 +158,12 @@ class FcpController(OrphieBaseController):
             c.currentURL = '/'
         
         ip = getUserIp()
-        tracker = meta.Session.query(LoginTracker).filter(LoginTracker.ip==ip).first()
-        if not tracker:
-            tracker = LoginTracker()
-            tracker.ip = ip
-            tracker.attempts = 0
-            tracker.lastAttempt = datetime.datetime.now()              
-            meta.Session.add(tracker)  
-            meta.Session.commit()
-            #log.debug('new tracker')
-                    
+        tracker = LoginTracker.getTracker(ip)
+        
         captchaOk = True
         captcha = False
 
-        if tracker.attempts>=2:
+        if tracker.attempts >= 2:
             c.showCaptcha = True
             captchaOk = False
             

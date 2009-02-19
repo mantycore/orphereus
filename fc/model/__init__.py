@@ -8,36 +8,41 @@ import hashlib
 import logging
 log = logging.getLogger(__name__)
 
+from LoginTracker import *
+
 def init_model(engine):
     sm = orm.sessionmaker(autoflush=True, autocommit=False, bind=engine)
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
-    #logging.getLogger('sqlalchemy').setLevel(logging.ERROR)
     
+    #create mappings
+    meta.Session.mapper(LoginTracker, t_logins)
+    
+    #init settings
     settings = False
-    try:
-        settings = meta.Session.query(Setting).all()
-        #log.debug(settingsDef)
-        settingsMap = {}
-        if settings:
-            for s in settings:
-                #log.debug(s.name+ ' : ' +s.value)
-                if s.name in settingsDef:
-                    settingsMap[s.name] = s
+    #try:
+    settings = meta.Session.query(Setting).all()
+    #log.debug(settingsDef)
+    settingsMap = {}
+    if settings:
+        for s in settings:
+            #log.debug(s.name+ ' : ' +s.value)
+            if s.name in settingsDef:
+                settingsMap[s.name] = s
+    
+    for s in settingsDef: 
+        if not s in settingsMap:
+            #log.debug(s) 
+            settingsMap[s] = Setting()
+            settingsMap[s].name = s
+            settingsMap[s].value = settingsDef[s]
+            meta.Session.add(settingsMap[s])
+            meta.Session.commit()
+    config['pylons.app_globals'].settingsMap = settingsMap
         
-        for s in settingsDef: 
-            if not s in settingsMap:
-                #log.debug(s) 
-                settingsMap[s] = Setting()
-                settingsMap[s].name = s
-                settingsMap[s].value = settingsDef[s]
-                meta.Session.add(settingsMap[s])
-                meta.Session.commit()
-        config['pylons.app_globals'].settingsMap = settingsMap
         
-        
-    except:
-        pass             
+    #except:
+    #    pass             
     """
     gv = config['pylons.g']
     gv.tagCache = {}
@@ -185,13 +190,6 @@ t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
     sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tags.id')),
     )
     
-t_logins = sa.Table("loginStats", meta.metadata,
-    sa.Column("id"          , sa.types.Integer, primary_key=True),
-    sa.Column("ip"          , sa.types.String(16), nullable=False),
-    sa.Column("attempts"    , sa.types.Integer, nullable=False),    
-    sa.Column("cid"         , sa.types.Integer, nullable=True), 
-    sa.Column("lastAttempt" , sa.types.DateTime, nullable=True)
-    )    
     
 t_captchas = sa.Table("captchas", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
@@ -202,8 +200,7 @@ t_captchas = sa.Table("captchas", meta.metadata,
 class Captcha(object):
     pass
     
-class LoginTracker(object):
-    pass
+
     
 class Oekaki(object):
     pass
@@ -247,7 +244,7 @@ class LogEntry(object):
     pass
 
 orm.mapper(Captcha, t_captchas)        
-orm.mapper(LoginTracker, t_logins)    
+#orm.mapper(LoginTracker, t_logins)    
 orm.mapper(Oekaki, t_oekaki)
 orm.mapper(Invite, t_invites)
 orm.mapper(UserOptions, t_userOptions)

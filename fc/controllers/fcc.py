@@ -63,7 +63,7 @@ class FccController(OrphieBaseController):
     def buildFilter(self, url):
         def buildMyPostsFilter():
             list  = []  
-            posts = self.sqlAll(meta.Session.query(Post).filter(Post.uidNumber==self.userInst.uidNumber()))
+            posts = self.sqlAll(Post.query.filter(Post.uidNumber==self.userInst.uidNumber()))
                     
             for p in posts:
                 if p.parentid == -1 and not p.id in list:
@@ -86,7 +86,7 @@ class FccController(OrphieBaseController):
         #log.debug(self.userInst.homeExclude())
         operators = {'+':1, '-':1, '^':2, '&':2}
         url = url.replace('&amp;', '&')
-        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==-1)
+        filter = Post.query.options(eagerload('file')).filter(Post.parentid==-1)
         filteringExpression = False
         tagList = []
         RPN = getRPN(url,operators)
@@ -245,7 +245,7 @@ class FccController(OrphieBaseController):
                 thread.tagLine = ', '.join(tl)     
                             
             if count > 1:
-                replyCount = thread.replyCount #meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).count()
+                replyCount = thread.replyCount #Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).count()
                 #if not isNumber(replyCount):
                     #replyCount = 0
                     #log.debug("WARNING!!!" + str(thread.id) + "::" + str(replyCount)  )            
@@ -255,9 +255,9 @@ class FccController(OrphieBaseController):
                     replyLim = 0
                 thread.omittedPosts = replyLim
                 
-                thread.Replies = self.sqlSlice(meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()), replyLim)
+                thread.Replies = self.sqlSlice(Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()), replyLim)
             else:
-                thread.Replies = self.sqlAll(meta.Session.query(Post).options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()))
+                thread.Replies = self.sqlAll(Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()))
                 thread.omittedPosts = 0
                 thread.hidden = False
                        
@@ -295,7 +295,7 @@ class FccController(OrphieBaseController):
             return tags
         
     def GetThread(self, post, tempid):  
-        thePost = self.sqlFirst(meta.Session.query(Post).options(eagerload('file')).filter(Post.id==post))
+        thePost = self.sqlFirst(Post.query.options(eagerload('file')).filter(Post.id==post))
         
         #if thePost isn't op-post, redirect to op-post instead
         if thePost and thePost.parentid != -1:
@@ -303,13 +303,13 @@ class FccController(OrphieBaseController):
                 redirect_to('/%d/%d' % (thePost.parentid, int(tempid)))
             else:
                 redirect_to('/%d#i%d' % (thePost.parentid, thePost.id))
-            #thePost = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.parentid).first()
+            #thePost = Post.query.options(eagerload('file')).filter(Post.id==thePost.parentid).first()
             
         if not thePost:
             c.errorText = _("No such post exist.")
             return self.render('error')
             
-        filter = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==thePost.id)
+        filter = Post.query.options(eagerload('file')).filter(Post.id==thePost.id)
         c.PostAction = thePost.id
         
         return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
@@ -517,7 +517,7 @@ class FccController(OrphieBaseController):
            pic.size = os.stat(localFilePath)[6]
            pic.md5 = md5
            meta.Session.add(pic)
-           #meta.Session.commit()
+           meta.Session.commit()
            return [pic, AngryFileHolder(localFilePath, pic)]
         else:
            return False
@@ -538,7 +538,7 @@ class FccController(OrphieBaseController):
                  
             # ???
             if thePost.parentid != -1: 
-                thread = self.sqlOne(meta.Session.query(Post).filter(Post.id==thePost.parentid))
+                thread = self.sqlOne(Post.query.filter(Post.id==thePost.parentid))
             else:
                thread = thePost
             tags = thread.tags
@@ -806,7 +806,7 @@ class FccController(OrphieBaseController):
         oekaki.path = ''        
         oekaki.source = 0
         if isNumber(url) and enablePicLoading: 
-           post = self.sqlOne(meta.Session.query(Post).filter(Post.id==url))
+           post = self.sqlOne(Post.query.filter(Post.id==url))
 
            if post.picid:
               pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
@@ -858,13 +858,13 @@ class FccController(OrphieBaseController):
             return _("Final Anonymity is disabled")
         
         result = []
-        post = self.sqlGet(meta.Session.query(Post), postid)
+        post = self.sqlGet(Post.query, postid)
         if post:
             posts = []
             if not batch:
                 posts = [post]
             else:
-                posts = self.sqlAll(meta.Session.query(Post).filter(and_(Post.uidNumber == self.userInst.uidNumber(), Post.date <= post.date)))
+                posts = self.sqlAll(Post.query.filter(and_(Post.uidNumber == self.userInst.uidNumber(), Post.date <= post.date)))
             for post in posts:
                 if post.uidNumber != self.userInst.uidNumber():
                     result.append(_("You are not author of post #%s") % post.id)
@@ -938,7 +938,7 @@ class FccController(OrphieBaseController):
         for t in homeExcludeTags:
             homeExcludeList.append(t.tag)
         c.homeExclude = ', '.join(homeExcludeList)
-        c.hiddenThreads = self.sqlAll(meta.Session.query(Post).options(eagerload('file')).options(eagerload('tags')).filter(Post.id.in_(self.userInst.hideThreads())))
+        c.hiddenThreads = self.sqlAll(Post.query.options(eagerload('file')).options(eagerload('tags')).filter(Post.id.in_(self.userInst.hideThreads())))
         for t in c.hiddenThreads:
             tl = []
             for tag in t.tags:
@@ -996,9 +996,9 @@ class FccController(OrphieBaseController):
             text = groups[2]
             tagfilter = self.buildFilter(filterName)[2]
             
-        base = meta.Session.query(Post)
+        base = Post.query
         if tagfilter:
-            base = meta.Session.query(Post)
+            base = Post.query
             
             base = base.filter(or_(tagfilter,
                                         Post.parentPost.has(tagfilter),
@@ -1019,7 +1019,7 @@ class FccController(OrphieBaseController):
         for p in posts:
             parent = p
             if not p.parentid == -1: 
-                parent = p.parentPost #self.sqlFirst(meta.Session.query(Post).filter(Post.id == p.parentid))
+                parent = p.parentPost #self.sqlFirst(Post.query.filter(Post.id == p.parentid))
                 
             pt = []
             pt.append(p)

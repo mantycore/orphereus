@@ -121,7 +121,7 @@ class FcaController(OrphieBaseController):
                     c.tag.options.thumbSize = request.POST.get('thumbSize',250)
                     
                     if request.POST.get('deleteBoard', False) and c.tag.id:
-                        count = meta.Session.query(Post).filter(Post.tags.any(tag=tag)).count()
+                        count = Post.query.filter(Post.tags.any(tag=tag)).count()
                         if count>0:
                             c.message = _("Board must be empty for deletion")                        
                         else:
@@ -163,7 +163,7 @@ class FcaController(OrphieBaseController):
         return self.render('editUserAttempt')
         
     def editUserByPost(self, pid):
-        post = meta.Session.query(Post).options(eagerload('file')).filter(Post.id==pid).order_by(Post.id.asc()).first()
+        post = Post.query.options(eagerload('file')).filter(Post.id==pid).order_by(Post.id.asc()).first()
         if post:
             reason = request.POST.get("UIDViewReason", 'No reason given!')
             addLogEntry(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '<a href='/%s#i%s'>%s</a>'. Reason: %s" % (post.uidNumber, post.parentid > 0 and post.parentid or post.id, pid, pid, reason))
@@ -218,7 +218,7 @@ class FcaController(OrphieBaseController):
                 quantity = int(request.POST.get('quantity', '0'))
                 if isNumber(quantity) and int(quantity) > 0:
                     if len(reason) > 1:
-                        c.posts = meta.Session.query(Post).filter(Post.uidNumber==user.uidNumber).order_by(Post.date.desc())[:quantity]
+                        c.posts = Post.query.filter(Post.uidNumber==user.uidNumber).order_by(Post.date.desc())[:quantity]
                         addLogEntry(LOG_EVENT_USER_DELETE,_('Performed posts lookup for user %s for "%s", quantity: %s') % (user.uidNumber, reason, quantity))
                         if c.posts:
                             return self.render('postsLookup')
@@ -247,7 +247,7 @@ class FcaController(OrphieBaseController):
                 if self.userInst.canChangeRights():
                     if len(reason)>1:
                         if deleteLegacy:
-                            posts = self.sqlAll(meta.Session.query(Post).filter(Post.uidNumber==user.uidNumber))
+                            posts = self.sqlAll(Post.query.filter(Post.uidNumber==user.uidNumber))
                             removed = []
                             for post in posts:
                                 if post.parentid == -1:
@@ -346,7 +346,7 @@ class FcaController(OrphieBaseController):
     
         if act == 'show':      
             if id and id > 0:
-                post = meta.Session.query(Post).filter(Post.id==id).first()  
+                post = Post.query.filter(Post.id==id).first()  
                 if post and post.parentid == -1:
                     c.post = post      
                 else:
@@ -355,7 +355,7 @@ class FcaController(OrphieBaseController):
             
             return self.render('adminMappings')                                              
         elif act in ['del', 'add']:                 
-            post = meta.Session.query(Post).filter(Post.id==id).first()  
+            post = Post.query.filter(Post.id==id).first()  
             if post and post.parentid == -1:        
                 if act == 'del' and tagid > 0:
                     if len(post.tags) > 1:

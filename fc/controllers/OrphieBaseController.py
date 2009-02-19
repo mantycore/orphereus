@@ -115,7 +115,7 @@ class OrphieBaseController(BaseController):
         
     def deletePicture(self, post, commit = True):
         pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
-        refcount = self.sqlCount(meta.Session.query(Post).filter(Post.picid==post.picid))
+        refcount = self.sqlCount(Post.query.filter(Post.picid==post.picid))
         if pic and refcount == 1:
             filePath = os.path.join(g.OPT.uploadPath, pic.path)
             thumPath = os.path.join(g.OPT.uploadPath, pic.thumpath)
@@ -183,7 +183,7 @@ class OrphieBaseController(BaseController):
         return options
     
     def processDelete(self, postid, fileonly=False, checkOwnage=True, reason = "???"):
-        p = self.sqlGet(meta.Session.query(Post), postid)
+        p = self.sqlGet(Post.query, postid)
                  
         opPostDeleted = False
         if p:
@@ -194,7 +194,7 @@ class OrphieBaseController(BaseController):
             threadRemove = True
             tags = p.tags
             if p.parentid>0:  
-                parentp = p.parentPost #self.sqlGet(meta.Session.query(Post), p.parentid)
+                parentp = p.parentPost #self.sqlGet(Post.query, p.parentid)
                 tags = parentp.tags
                 threadRemove = False
             
@@ -223,7 +223,7 @@ class OrphieBaseController(BaseController):
                 if not (postOptions.canDeleteOwnThreads or self.userInst.canDeleteAllPosts()):
                     return False
                 opPostDeleted = True
-                for post in self.sqlAll(meta.Session.query(Post).filter(Post.parentid==p.id)):
+                for post in self.sqlAll(Post.query.filter(Post.parentid==p.id)):
                     self.processDelete(postid=post.id, checkOwnage=False)
                     
             pic = self.deletePicture(p, False)
@@ -233,12 +233,12 @@ class OrphieBaseController(BaseController):
                     p.picid = -1
             else:
                 invisBumpDisabled = (g.settingsMap['invisibleBump'].value == 'false')
-                parent = self.sqlFirst(meta.Session.query(Post).filter(Post.id==p.parentid))
+                parent = self.sqlFirst(Post.query.filter(Post.id==p.parentid))
                 if parent:
                     parent.replyCount -= 1
                         
                 if invisBumpDisabled and p.parentid != -1:
-                    thread = self.sqlAll(meta.Session.query(Post).filter(Post.parentid==p.parentid))
+                    thread = self.sqlAll(Post.query.filter(Post.parentid==p.parentid))
                     if thread and thread[-1].id == p.id: #wut?
                         if len(thread) > 1 and not thread[-2].sage:
                             parent.bumpDate = thread[-2].date
@@ -284,21 +284,21 @@ class OrphieBaseController(BaseController):
         return False
     
     def getParentID(self, id):  
-        post = self.sqlFirst(meta.Session.query(Post).filter(Post.id==id))
+        post = self.sqlFirst(Post.query.filter(Post.id==id))
         if post:
            return post.parentid
         else:
            return False
     
     def isPostOwner(self, id):
-        post = self.sqlFirst(meta.Session.query(Post).filter(Post.id==id))
+        post = self.sqlFirst(Post.query.filter(Post.id==id))
         if post and post.uidNumber == self.userInst.uidNumber():
            return post.parentid
         else:
            return False
            
     def postOwner(self, id):
-        post = self.sqlFirst(meta.Session.query(Post).filter(Post.id==id))
+        post = self.sqlFirst(Post.query.filter(Post.id==id))
         if post:
            return post.parentid
         else:

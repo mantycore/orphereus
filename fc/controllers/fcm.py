@@ -149,7 +149,7 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Pictures...'))
         pictures = meta.Session.query(Picture).all()
         for pic in pictures:            
-            post = meta.Session.query(Post).filter(Post.picid == pic.id).first()
+            post = Post.query.filter(Post.picid == pic.id).first()
             if not post:
                 msg = 'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
                 mtnLog.append(self.createLogEntry('Warning', msg))
@@ -230,7 +230,7 @@ class FcmController(OrphieBaseController):
         
         movedCC = 0
         movedTCC = 0
-        posts = meta.Session.query(Post).options(eagerload('file')).all()
+        posts = Post.query.options(eagerload('file')).all()
         for post in posts:
             if post.file:
                 fname = post.file.path
@@ -254,9 +254,9 @@ class FcmController(OrphieBaseController):
     def updateCaches(self):
         mtnLog = []
         mtnLog.append(self.createLogEntry('Task', 'Updating caches...'))
-        posts = meta.Session.query(Post).filter(Post.parentid == -1).all()
+        posts = Post.query.filter(Post.parentid == -1).all()
         for post in posts:
-            repliesCount = meta.Session.query(Post).filter(Post.parentid == post.id).count()
+            repliesCount = Post.query.filter(Post.parentid == post.id).count()
             if post.replyCount != repliesCount:
                 msg = 'Invalid RC: %d (actual: %d, cached: %d), updating' % (post.id, repliesCount, post.replyCount)
                 warnMsg = self.createLogEntry('Warning', msg)
@@ -273,7 +273,7 @@ class FcmController(OrphieBaseController):
         tags = meta.Session.query(Tag).all()
         for tag in tags:
             condition = Post.tags.any(Tag.id == tag.id)
-            threadCount = meta.Session.query(Post).filter(Post.parentid == -1).filter(condition).count()
+            threadCount = Post.query.filter(Post.parentid == -1).filter(condition).count()
             #log.debug("%s:%s" % (tag.tag, threadCount))
             
             if tag.threadCount != threadCount:
@@ -283,7 +283,7 @@ class FcmController(OrphieBaseController):
                 addLogEntry(LOG_EVENT_INTEGR_RC, msg)
                 tag.threadCount = threadCount
             
-            replyCount = meta.Session.query(Post).filter(or_(condition, Post.parentPost.has(condition))).count()
+            replyCount = Post.query.filter(or_(condition, Post.parentPost.has(condition))).count()
             #log.debug("%s:%s" % (tag.tag, replyCount))
             
             if tag.replyCount != replyCount:
@@ -302,7 +302,7 @@ class FcmController(OrphieBaseController):
         currentTime = datetime.datetime.now()                
         users = meta.Session.query(User).all()
         for user in users:
-            postsCount = meta.Session.query(Post).filter(Post.uidNumber == user.uidNumber).count()
+            postsCount = Post.query.filter(Post.uidNumber == user.uidNumber).count()
             if user.options:
                 if postsCount == 0 and user.options.bantime == 0:
                     self.banUser(user, 10000, ("[AUTOMATIC BAN] You haven't any posts. Please, contact johan.liebert@jabber.ru to get you access back"))
@@ -320,7 +320,7 @@ class FcmController(OrphieBaseController):
         for tag in tags:
             log.debug(tag.tag)
             if not tag.options or not tag.options.persistent:
-                threadCount = meta.Session.query(Post).filter(Post.parentid == -1).filter(Post.tags.any(Tag.id == tag.id)).count()
+                threadCount = Post.query.filter(Post.parentid == -1).filter(Post.tags.any(Tag.id == tag.id)).count()
                 if threadCount == 0:
                     mtnLog.append(self.createLogEntry('Info', "Removed tag %s" % tag.tag))
                     meta.Session.delete(tag)
@@ -332,7 +332,7 @@ class FcmController(OrphieBaseController):
     def reparse(self):
         mtnLog = []
         mtnLog.append(self.createLogEntry('Task', 'Reparsing...'))
-        posts = meta.Session.query(Post).all()
+        posts = Post.query.all()
         for post in posts:
             log.debug(post.id)
             if post.messageRaw:

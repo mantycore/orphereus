@@ -32,12 +32,12 @@ class FcajaxController(OrphieBaseController):
             abort(403)
             
     def getPost(self, post):
-        postInst = meta.Session.query(Post).get(post)
+        postInst = Post.query.get(post)
         if postInst:
             if postInst.parentid == -1:
                 parent = postInst
             else:
-                parent = meta.Session.query(Post).get(postInst.parentid)
+                parent = Post.query.get(postInst.parentid)
 
             forbiddenTags = getTagsListFromString(g.settingsMap['adminOnlyTags'].value)       
             for t in parent.tags:
@@ -48,12 +48,12 @@ class FcajaxController(OrphieBaseController):
             abort(404)
 
     def getRenderedPost(self, post):
-        postInst = meta.Session.query(Post).get(post)
+        postInst = Post.query.get(post)
         if postInst:
             if postInst.parentid == -1:
                 parent = postInst
             else:
-                parent = meta.Session.query(Post).get(postInst.parentid)
+                parent = Post.query.get(postInst.parentid)
 
             forbiddenTags = getTagsListFromString(g.settingsMap['adminOnlyTags'].value)       
             for t in parent.tags:
@@ -67,16 +67,16 @@ class FcajaxController(OrphieBaseController):
             abort(404)            
     
     def getRepliesCountForThread(self, post):
-        postInst = meta.Session.query(Post).get(post)
+        postInst = Post.query.get(post)
         if postInst and postInst.parentid == -1:
-            return str(meta.Session.query(Post).filter(Post.parentid == postInst.id).count())
+            return str(Post.query.filter(Post.parentid == postInst.id).count())
         else:
             abort(404)
     
     def getThreadIds(self, post):
-        postInst = meta.Session.query(Post).get(post)
+        postInst = Post.query.get(post)
         if postInst and postInst.parentid == -1:
-            replies = meta.Session.query(Post).filter(Post.parentid == postInst.id).all()
+            replies = Post.query.filter(Post.parentid == postInst.id).all()
             ret = [str(post)]
             if replies:
                 for reply in replies:
@@ -125,7 +125,7 @@ class FcajaxController(OrphieBaseController):
     def hideThread(self,post,url):
         if self.userInst.Anonymous:
             abort(403)
-        postInst = meta.Session.query(Post).get(post)
+        postInst = Post.query.get(post)
         if postInst:
             if postInst.parentid == -1:
                 hideThreads = self.userInst.hideThreads()
@@ -141,7 +141,7 @@ class FcajaxController(OrphieBaseController):
     def showThread(self,post,redirect):
         if self.userInst.Anonymous:
             abort(403)
-        postInst = meta.Session.query(Post).get(post)
+        postInst = Post.query.get(post)
         if postInst:
             if postInst.parentid == -1:
                 hideThreads = self.userInst.hideThreads()

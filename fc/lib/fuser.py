@@ -33,22 +33,27 @@ class FUser(object):
                 self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
             
             if not self.__user and g.OPT.allowAnonymous:
-                self.__user = User()
+                self.__user = empty()
+                self.__user.options = None
                 self.__user.uidNumber = -1
+                self.__user.filters = ()
                 self.Anonymous = True
             
             if self.__user:
                 self.__valid = True                
 
                 if not self.__user.options:
-                    self.__user.options = UserOptions()
+                    if uidNumber>-1:
+                        self.__user.options = UserOptions()
+                    else:
+                        self.__user.options = empty()
                     self.__user.options.threadsPerPage = 10
                     self.__user.options.repliesPerThread = 10
                     self.__user.options.style = config['pylons.app_globals'].OPT.styles[0]
                     self.__user.options.template = 'wakaba'
                     self.__user.options.bantime = 0
-                    self.__user.options.canDeleteAllPosts = False                       
-                    self.__user.options.canMakeInvite = False                     
+                    self.__user.options.canDeleteAllPosts = False
+                    self.__user.options.canMakeInvite = False
                     self.__user.options.canChangeRights = False
                     self.__user.options.isAdmin = False
                     self.__user.options.hideLongComments = True

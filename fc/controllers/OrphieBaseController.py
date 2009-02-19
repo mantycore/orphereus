@@ -132,7 +132,7 @@ class OrphieBaseController(BaseController):
         return pic
             
     def conjunctTagOptions(self, tags):
-        options = TagOptions()
+        options = empty()
         optionsFlag = True
         rulesList = []
         for t in tags:

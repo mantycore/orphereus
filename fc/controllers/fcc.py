@@ -580,6 +580,7 @@ class FccController(OrphieBaseController):
             return self.render('error')
         
         post = Post()
+        post.parentid = 0
         #tempid = request.POST.get('tempid', False)
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!
         # VERY-VERY BIG CROCK OF SHIT !!!!!!!

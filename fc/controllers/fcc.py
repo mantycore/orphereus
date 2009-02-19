@@ -596,7 +596,7 @@ class FccController(OrphieBaseController):
         tempid = request.POST.get('tempid', False)        
         painterMark = False # TODO FIXME : move into parser
         if tempid: 
-           oekaki = self.sqlFirst(meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid))
+           oekaki = self.sqlFirst(Oekaki.query.filter(Oekaki.tempid==tempid))
 
            file = FieldStorageLike(oekaki.path,os.path.join(g.OPT.uploadPath, oekaki.path))
            painterMark = u'<span class="postInfo">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))

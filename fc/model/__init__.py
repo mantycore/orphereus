@@ -60,9 +60,8 @@ def init_model(engine):
         'user' : orm.relation(User)
         })
     
-    #init settings
+def init_globals():
     settings = False
-    #try:
     settings = meta.Session.query(Setting).all()
     #log.debug(settingsDef)
     settingsMap = {}
@@ -82,9 +81,6 @@ def init_model(engine):
             meta.Session.commit()
     config['pylons.app_globals'].settingsMap = settingsMap
         
-        
-    #except:
-    #    pass             
     """
     gv = config['pylons.g']
     gv.tagCache = {}

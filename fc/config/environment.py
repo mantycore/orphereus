@@ -12,12 +12,12 @@ from fc.lib.miscUtils import adminAlert
 
 #from fc.model import meta
 from sqlalchemy import engine_from_config
-from fc.model import init_model
+from fc.model import init_model, init_globals
 
 import logging
 log = logging.getLogger(__name__)
 
-def load_environment(global_conf, app_conf):
+def load_environment(global_conf, app_conf, setupMode):
     # Pylons paths
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     paths = dict(root=root,
@@ -31,7 +31,7 @@ def load_environment(global_conf, app_conf):
 
     #config['pylons.strict_c'] = False
     #config['pylons.c_attach_args'] = True
-
+    
     #config['pylons.g'] = app_globals.Globals()
     config['pylons.app_globals'] = app_globals.Globals()
     config['pylons.h'] = fc.lib.helpers
@@ -49,8 +49,8 @@ def load_environment(global_conf, app_conf):
         default_filters=['escape'])
 
     engine = engine_from_config(config, 'sqlalchemy.')
-    #meta.init_meta(engine)
-    #log.debug(meta.Session)
     init_model(engine)
+    
+    if not setupMode:
+        init_globals()
     #adminAlert("Orphie-kun: Hello, I'm respawned")
-    # CONFIGURATION OPTIONS HERE

@@ -517,7 +517,7 @@ class FccController(OrphieBaseController):
            pic.size = os.stat(localFilePath)[6]
            pic.md5 = md5
            meta.Session.add(pic)
-           meta.Session.commit()
+           #meta.Session.commit()
            return [pic, AngryFileHolder(localFilePath, pic)]
         else:
            return False

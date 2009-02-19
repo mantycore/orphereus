@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 def setup_config(command, filename, section, vars):
     """Place any commands to setup fc here"""
     conf = appconfig('config:' + filename)
-    load_environment(conf.global_conf, conf.local_conf)
+    load_environment(conf.global_conf, conf.local_conf, True)
     from fc.model import meta
     log.info("Creating tables")
     meta.metadata.create_all(bind=meta.engine)

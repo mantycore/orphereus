@@ -22,5 +22,6 @@ t_piclist = sa.Table("piclist", meta.metadata,
     sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extlist.id'))
     )
 
+#TODO: rewrite Picture
 class Picture(object):
     pass

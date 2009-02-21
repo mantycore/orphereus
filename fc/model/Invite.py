@@ -14,6 +14,7 @@ t_invites = sa.Table("invites", meta.metadata,
     sa.Column("invite"   , sa.types.String(128), nullable=False),
     sa.Column("date"     , sa.types.DateTime,  nullable=False)
     )
-
+    
+#TODO: rewrite Invite
 class Invite(object):
     pass

@@ -135,6 +135,4 @@ def getRPN(text, operators):
     while stack:
         result.append(stack.pop())
     return result
-
-
  

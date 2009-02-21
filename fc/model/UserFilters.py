@@ -15,5 +15,6 @@ t_userFilters = sa.Table("userFilters", meta.metadata,
     sa.Column("filter"    , sa.types.UnicodeText, nullable=False)
     )
 
+#TODO: rewrite UserFilters
 class UserFilters(object):
     pass

@@ -17,5 +17,6 @@ t_log = sa.Table("log", meta.metadata,
     sa.Column("entry" , sa.types.UnicodeText, nullable=False)
     )
 
+#TODO: rewrite LogEntry
 class LogEntry(object):
     pass

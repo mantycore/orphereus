@@ -15,5 +15,6 @@ t_settings = sa.Table("settings", meta.metadata,
     sa.Column("value"    , sa.types.UnicodeText, nullable=False)
     )
 
+#TODO: rewrite Setting
 class Setting(object):
     pass

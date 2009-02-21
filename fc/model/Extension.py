@@ -20,5 +20,6 @@ t_extlist = sa.Table("extlist", meta.metadata,
     sa.Column("newWindow", sa.types.Boolean, server_default='1'),
     )
 
+#TODO: rewrite Extension
 class Extension(object):
     pass

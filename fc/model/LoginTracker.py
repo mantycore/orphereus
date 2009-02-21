@@ -23,6 +23,7 @@ class LoginTracker(object):
         self.attempts = 0
         self.lastAttempt =  datetime.datetime.now()
         
+    @staticmethod
     def getTracker(ip):
         tracker = LoginTracker.query.filter(LoginTracker.ip==ip).first()
         if not tracker:
@@ -30,4 +31,3 @@ class LoginTracker(object):
             meta.Session.add(tracker)
             meta.Session.commit()
         return tracker
-    getTracker = staticmethod(getTracker)

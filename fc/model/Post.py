@@ -27,5 +27,6 @@ t_posts = sa.Table("posts", meta.metadata,
     sa.Column("replyCount" , sa.types.Integer, nullable=False, server_default='0'),   
     )
 
+#TODO: rewrite Post
 class Post(object):
     pass

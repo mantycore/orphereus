@@ -21,5 +21,6 @@ t_oekaki = sa.Table("oekaki", meta.metadata,
     sa.Column("timeStamp", sa.types.DateTime, nullable=False)
     )
 
+#TODO: rewrite Oekaki
 class Oekaki(object):
     pass

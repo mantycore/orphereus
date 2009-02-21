@@ -16,6 +16,7 @@ t_users = sa.Table("users", meta.metadata,
     sa.Column("uid"      , sa.types.String(128), nullable=False)
     )
 
+#TODO: rewrite User
 class User(object):
     def genUid(key):
         return hashlib.sha512(key + hashlib.sha512(config['pylons.app_globals'].OPT.hashSecret).hexdigest()).hexdigest()

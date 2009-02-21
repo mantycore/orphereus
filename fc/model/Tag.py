@@ -22,6 +22,7 @@ t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
     sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tags.id')),
     )
 
+#TODO: rewrite Tag
 class Tag(object):
     def __init__(self, tag): # xxx???  Liebert
         self.tag = tag

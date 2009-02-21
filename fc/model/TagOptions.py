@@ -26,6 +26,7 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     sa.Column("specialRules"  , sa.types.UnicodeText, nullable=True),
     )
 
+#TODO: rewrite TagOptions
 class TagOptions(object):
     def __init__(self):
         self.sectionId = 0

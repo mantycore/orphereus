@@ -113,12 +113,10 @@ class FcpController(OrphieBaseController):
         
     def register(self, invite):
         if 'invite' not in session:
-            invite_q = meta.Session.query(Invite).filter(Invite.invite==invite).first()
-            if invite_q:
-                meta.Session.delete(invite_q)
-                meta.Session.commit()
+            iid = Invite.getId(invite)
+            if iid:
                 session['invite'] = invite
-                session['iid'] = invite_q.id
+                session['iid'] = iid
                 session['openReg'] = False
                 session.save()
             elif g.OPT.allowRegistration:
@@ -165,7 +163,7 @@ class FcpController(OrphieBaseController):
                 user = User()
                 user.uid = uid
                 meta.Session.add(user)
-                addLogEntry(LOG_EVENT_INVITE_USED, "Used invite #%d" % (session['iid']))                
+                addLogEntry(LOG_EVENT_INVITE_USED, _("Utilized invite #%d") % (session['iid']))
                 meta.Session.commit()
                 del session['invite']
                 del session['iid']

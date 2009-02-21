@@ -92,10 +92,7 @@ class OrphieBaseController(BaseController):
     def showStatic(self, page):
         c.boardName = _(page)
         return self.render('static.%s' % page) #render('/%s.static.mako' % self.userInst.template())
-    
-    def genInviteId(self):
-        return hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(g.OPT.hashSecret).hexdigest()).hexdigest()  
-        
+            
     def banUser(self, user, bantime, banreason):
         if len(banreason)>1:
             if isNumber(bantime) and int(bantime) > 0:

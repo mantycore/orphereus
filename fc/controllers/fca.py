@@ -389,7 +389,7 @@ class FcaController(OrphieBaseController):
         
     def makeInvite(self):
         if not self.userInst.canMakeInvite():
-            c.errorText = "No way! You aren't holy enough!"
+            c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
         
         c.boardName = _('Invite creation')
@@ -397,11 +397,8 @@ class FcaController(OrphieBaseController):
         reason = request.POST.get('inviteReason', False)
         if reason and len(reason) > 1:
             reason = filterText(reason)
-            invite = Invite()
-            invite.date = datetime.datetime.now()
-            invite.invite = self.genInviteId()
-            meta.Session.add(invite)
-            meta.Session.commit()
+            invite = Invite.create(g.OPT.hashSecret)
+
             addLogEntry(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, reason))
             c.inviteCode = invite.invite
         return self.render('newInvite')

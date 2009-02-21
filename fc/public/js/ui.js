@@ -169,18 +169,28 @@ function getReplyForm(iThreadId)
         var GotoSelect = createElementEx('select', {'name': 'goto', 'id': 'x_replyform_goto'});
         for (i=0;i<origForm.goto.options.length;i++)
         {
-        	var opt = createElementEx('option', {'value':origForm.goto.options[i].value});
-        	opt.appendChild(document.createTextNode(origForm.goto.options[i].text));
-        	if (origForm.goto.options[i].selected)
-			opt.selected = true;
-        	GotoSelect.appendChild(opt);
+            var opt = createElementEx('option', {'value':origForm.goto.options[i].value});
+            opt.appendChild(document.createTextNode(origForm.goto.options[i].text));
+            if (origForm.goto.options[i].selected)
+            opt.selected = true;
+            GotoSelect.appendChild(opt);
         }
         objGotoLabel.appendChild(document.createTextNode('Go to'));
-        objGotoLabel.appendChild(GotoSelect);        
+        objGotoLabel.appendChild(GotoSelect);
         
         objBottomDiv.appendChild(objFileLabel);
         objBottomDiv.appendChild(objSageLabel);
         objBottomDiv.appendChild(objGotoLabel);
+        // new form fields:
+        if($("#trcaptcha").size()){
+          var captcha_label = $("<label style='float:none' id='x_replyform_captcha_label'>" + $("#trcaptcha td:first").html() + "</label>");
+          var captcha_img = $("#trcaptcha img").clone().attr("id","x_replyform_captcha_img");
+          var captcha_input = $("#trcaptcha input").clone().attr("id","x_replyform_captcha_input");
+          var password_label = $("<label style='float:none' id='x_replyform_password_label'>" + $("#trrempass td:first").html() + "</label>");
+          var password_input = $("#trrempass input").clone().attr("id","x_replyform_password_input");;
+          $([captcha_label, captcha_img, captcha_input, password_label, password_input]).each(function() {$(objBottomDiv).append(this)})
+        }
+        // end of new form fields
         objBottomDiv.appendChild(createElementEx('input', {'type': 'submit', 'value': 'Post'}));
         var objCloseBtn = document.createElement('button');
         objCloseBtn.addEventListener('click', hideQuickReplyForm, true);
@@ -204,6 +214,7 @@ function getReplyForm(iThreadId)
     }
     return g_objReplyForm;
 }
+
 function doQuickReplyForm(objEvent,iThreadId,iPostId)
 {
     if (!iThreadId)

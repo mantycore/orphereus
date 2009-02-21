@@ -395,3 +395,7 @@ div a.show-hide-thread:hover {
 .postInfo{
 background: #A8A8A8;
 }
+
+#x_replyform_goto{margin: 0px 4px 0px 4px; width: 120px}
+#x_replyform_captcha_input{margin: 0px 4px 0px 4px; width: 70px}
+#x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}

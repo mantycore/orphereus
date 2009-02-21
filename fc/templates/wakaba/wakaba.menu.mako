@@ -40,7 +40,11 @@
     %if not c.userInst.Anonymous:
     [<a href="/logout/">${_('Logout')}</a>]
     %else:
-    [<a href="/authorize">${_('Login')}</a>]
+        %if c.currentURL:
+            [<a href="${c.currentURL}authorize">${_('Login')}</a>]
+        %else:
+            [<a href="/authorize">${_('Login')}</a>]
+        %endif
     %if g.OPT.allowRegistration:
     [<a href="/register/register">${_('Register')}</a>]
     %endif 

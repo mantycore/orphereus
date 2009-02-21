@@ -333,3 +333,24 @@ window.onload=function(e)
         highlight(match[1]);
     }
 }  
+
+function click_expands(){
+  var f_true = function() {return true};
+  var show_image = function() {
+    if (this.src.match(/generic/)) return true;
+    if (this.src != this.parentNode.href){
+      this._width = this.width
+      this._height = this.height
+      this._src = this.src
+      this.removeAttribute('width');
+      this.removeAttribute('height');
+      this.src = this.parentNode.href;
+    }else{
+      this.width = this._width
+      this.height = this._height
+      this.src = this._src
+    }
+    return false;
+  }
+  $("a img.thumb").click(show_image) 
+}

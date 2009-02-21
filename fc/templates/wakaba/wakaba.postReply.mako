@@ -12,7 +12,7 @@
                     <span style="display:none" class="delete">
                     %if post.uidNumber == c.uidNumber or c.enableAllPostDeletion:
                         <input type="checkbox" name="delete-${post.id}" value="${post.id}" />
-                        %if g.OPT.enableFinalAnonymity:
+                        %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous:
                             <a href="/${post.id}/anonymize">[FA]</a>
                         %endif
                     %endif

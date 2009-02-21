@@ -55,6 +55,7 @@ class OrphieBaseController(BaseController):
             section.append(bc) #b.tag)
         if section:
             c.boardlist.append(section)
+
         #log.debug(request.cookies.get('fc',''))
         #log.debug(request.cookies)
         sessCookie = request.cookies.get('fc','')
@@ -66,8 +67,21 @@ class OrphieBaseController(BaseController):
         if links:
             for link in links:
                 c.menuLinks.append(link.split('|'))
-        
-         
+                
+        if self.userInst.Anonymous:
+            anonCaptId = session.get('anonCaptId', False)
+            if not anonCaptId or not Captcha.exists(anonCaptId):
+                captcha = Captcha.create()
+                session['anonCaptId'] = captcha.id
+                session.save()
+                c.captcha = captcha
+            else:
+                c.captcha = Captcha.getCaptcha(anonCaptId)
+                
+        remPassCookie = request.cookies.get('orhpieRemPass', randomStr())
+        c.remPass = remPassCookie
+        response.set_cookie('orhpieRemPass', str(remPassCookie), max_age=3600)
+            
     def render(self, page, **options):
         tname = 'std'
         tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
@@ -109,25 +123,7 @@ class OrphieBaseController(BaseController):
                 return _('You should specify ban time in days')
         else:
             return _('You should specify ban reason')
-        
-    def deletePicture(self, post, commit = True):
-        pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
-        refcount = self.sqlCount(Post.query.filter(Post.picid==post.picid))
-        if pic and refcount == 1:
-            filePath = os.path.join(g.OPT.uploadPath, pic.path)
-            thumPath = os.path.join(g.OPT.uploadPath, pic.thumpath)
-            
-            if os.path.isfile(filePath):
-                os.unlink(filePath)
-                
-            ext = self.sqlFirst(meta.Session.query(Extension).filter(Extension.id==pic.extid))
-            if not ext.path:
-                if os.path.isfile(thumPath): os.unlink(thumPath)
-            meta.Session.delete(pic)
-            if commit:
-                meta.Session.commit()
-        return pic
-            
+    
     def conjunctTagOptions(self, tags):
         options = empty()
         optionsFlag = True
@@ -179,11 +175,32 @@ class OrphieBaseController(BaseController):
             options.specialRules = u''
         return options
     
-    def processDelete(self, postid, fileonly=False, checkOwnage=True, reason = "???"):
+    def deletePicture(self, post, commit = True):
+        pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
+        refcount = self.sqlCount(Post.query.filter(Post.picid==post.picid))
+        if pic and refcount == 1:
+            filePath = os.path.join(g.OPT.uploadPath, pic.path)
+            thumPath = os.path.join(g.OPT.uploadPath, pic.thumpath)
+            
+            if os.path.isfile(filePath):
+                os.unlink(filePath)
+                
+            ext = self.sqlFirst(meta.Session.query(Extension).filter(Extension.id==pic.extid))
+            if not ext.path:
+                if os.path.isfile(thumPath): os.unlink(thumPath)
+            meta.Session.delete(pic)
+            if commit:
+                meta.Session.commit()
+        return pic
+    
+    def processDelete(self, postid, fileonly=False, checkOwnage=True, reason = "???", rempPass = False):        
         p = self.sqlGet(Post.query, postid)
-                 
+        
         opPostDeleted = False
         if p:
+            if self.userInst.Anonymous and p.removemd5 != rempPass:
+                return False
+        
             if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
                 # print some error stuff here
                 return False

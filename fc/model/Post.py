@@ -24,7 +24,8 @@ t_posts = sa.Table("posts", meta.metadata,
     sa.Column("date"     , sa.types.DateTime, nullable=False),
     sa.Column("bumpDate", sa.types.DateTime, nullable=True),
     sa.Column("spoiler"  , sa.types.Boolean, nullable=True),
-    sa.Column("replyCount" , sa.types.Integer, nullable=False, server_default='0'),   
+    sa.Column("replyCount" , sa.types.Integer, nullable=False, server_default='0'),
+    sa.Column("removemd5"  , sa.types.String(32), nullable=True),
     )
 
 #TODO: rewrite Post

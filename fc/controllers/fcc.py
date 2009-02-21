@@ -434,7 +434,7 @@ class FccController(OrphieBaseController):
         if isNumber(page):
             page = int(page)
         else:
-            page = 0        
+            page = 0
         
         filter = self.buildFilter(board)  
         tags = self.sqlAll(meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag.in_(filter[1])))
@@ -528,13 +528,28 @@ class FccController(OrphieBaseController):
         if not self.userInst.canPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')
-                
+        
+        remPass = False
+        if self.userInst.Anonymous:
+            captchaOk = False
+            anonCaptId = session.get('anonCaptId', False)
+            captcha = Captcha.getCaptcha(anonCaptId)
+            
+            if captcha:
+                captchaOk = captcha.test(request.POST.get('captcha', False))
+            
+            if not captchaOk:
+                c.errorText = _("Incorrect Captcha value")
+                return self.render('error')
+            
+            remPass = request.POST.get('remPass', False)
+        
         if postid:
             thePost = self.sqlFirst(Post.query.filter(Post.id==postid))
          
             if not thePost:
                 c.errorText = _("Can't post into non-existent thread")
-                return self.render('error')           
+                return self.render('error')
                  
             # ???
             if thePost.parentid != -1: 
@@ -580,19 +595,15 @@ class FccController(OrphieBaseController):
             return self.render('error')
         
         post = Post()
+        if remPass:
+            post.removemd5 = hashlib.md5(remPass).hexdigest()
         post.parentid = 0
-        #tempid = request.POST.get('tempid', False)
-        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
-        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
-        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
-        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
-        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        
+        # VERY-VERY BIG CROCK OF SHIT !!!
+        # VERY-VERY BIG CROCK OF SHIT !!!
         post.message = filterText(request.POST.get('message', u'')).replace('&gt;','>') #XXX: TODO: this must be fixed in parser
-        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
-        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
-        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
-        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
-        # VERY-VERY BIG CROCK OF SHIT !!!!!!!
+        # VERY-VERY BIG CROCK OF SHIT !!!
+        # VERY-VERY BIG CROCK OF SHIT !!!!
         
         tempid = request.POST.get('tempid', False)        
         painterMark = False # TODO FIXME : move into parser
@@ -681,7 +692,7 @@ class FccController(OrphieBaseController):
         post.uidNumber = self.userInst.uidNumber()
         
         if not post.message and not post.picid and not post.messageInfo:
-            c.errorText = "At least message or file should be specified"
+            c.errorText = _("At least message or file should be specified")
             return self.render('error') 
         
         if options.enableSpoilers:
@@ -699,7 +710,7 @@ class FccController(OrphieBaseController):
                 thread.bumpDate = datetime.datetime.now()
         else:
             if not post.picid and not options.imagelessThread:
-                c.errorText = "Threads without image are not allowed"
+                c.errorText = _("Threads without image are not allowed")
                 return self.render('error')
             post.parentid = -1
             post.replyCount = 0
@@ -782,7 +793,7 @@ class FccController(OrphieBaseController):
         if not self.userInst.canPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')
-                                            
+        
         c.url = url
         c.canvas = False
         c.width  = request.POST.get('oekaki_x','300')
@@ -822,16 +833,23 @@ class FccController(OrphieBaseController):
         return self.render('spainter')
         
     def DeletePost(self, board):
+        if not self.userInst.canPost:
+            c.errorText = _("Deletion disabled")
+            return self.render('error') 
+        
         fileonly = 'fileonly' in request.POST
         redirectAddr = board
              
         opPostDeleted = False
         reason = filterText(request.POST.get('reason', '???'))
         
+        if self.userInst.Anonymous:
+            remPass = hashlib.md5(request.POST.get('remPass', '')).hexdigest()
+        
         retest = re.compile("^\d+$")
         for i in request.POST:
             if retest.match(request.POST[i]):
-                res = self.processDelete(request.POST[i], fileonly, True, reason)
+                res = self.processDelete(request.POST[i], fileonly, True, reason, remPass)
                 opPostDeleted = opPostDeleted or res 
      
         tagLine = request.POST.get('tagLine', False)
@@ -857,6 +875,9 @@ class FccController(OrphieBaseController):
     def processAnomymize(self, postid, batch):
         if not g.OPT.enableFinalAnonymity:
             return _("Final Anonymity is disabled")
+        
+        if self.userInst.Anonymous:
+            return _("Final Anonymity available only for registered users")
         
         result = []
         post = self.sqlGet(Post.query, postid)

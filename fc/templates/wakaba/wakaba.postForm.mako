@@ -51,10 +51,29 @@
             <tr id="trtags">
                 <td class="postblock">${_('Boards')}</td>
                 <td>
-                    <input type="text" name="tags" size="35" value='${c.tagList}' />
+                    <input type="text" name="tags" size="35" value="${c.tagList}" />
                 </td>
             </tr>
         %endif
+        
+        %if c.captcha:
+            <tr id="trcaptcha">
+                <td class="postblock">${_('Captcha')}</td>
+                <td>
+                    <img src="/captcha/${c.captcha.id}" alt="Captcha"/><br/>
+                    <input type="text" name="captcha" size="35"/>
+                </td>
+            </tr>
+        %endif
+        %if c.userInst.Anonymous:
+            <tr id="trrempass">
+                <td class="postblock">${_('Password')}</td>
+                <td>
+                    <input type="password" name="remPass" size="35" value="${c.remPass}" />
+                </td>
+            </tr>
+        %endif
+        
         <tr id="trgetback">
             <td class="postblock">${_('Go to')}</td>
             <td>

@@ -172,7 +172,33 @@ class FcpController(OrphieBaseController):
                 redirect_to('/')
         c.boardName = _('Register')
         return self.render('register')
-        
+
+    def banned(self):
+        #self.userInst = FUser(session.get('uidNumber',-1))
+        c.userInst = self.userInst
+        if self.userInst.isValid() and self.userInst.isBanned():
+            c.boardName = _('Banned')
+            return self.render('banned')
+        else:
+            c.boardName = _('Error')
+            c.errorText = _("ORLY?")
+            return self.render('error')
+            
+    def UnknownAction(self):
+        c.userInst = self.userInst      
+        c.boardName = _('Error')
+        c.errorText = _("Excuse me, WTF are you?")
+        return self.render('error')
+    
+    def uaInfo(self):
+        out = ''
+        response.headers['Content-type'] = "text/plain" 
+        for key in request.environ.keys():
+            if 'HTTP' in key or 'SERVER' in key or 'REMOTE' in key:
+                out += key + ':' +request.environ[key] + '\n'
+        out += 'test:' + str(request.POST.get('test', '')) 
+        return filterText(out)
+
     def oekakiSave(self, environ, start_response, url, tempid):
         start_response('200 OK', [('Content-Type','text/plain'),('Content-Length','2')])
         oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
@@ -200,31 +226,3 @@ class FcpController(OrphieBaseController):
                 oekaki.path = expandedName
                 meta.Session.commit()
         return ['ok']
-        
-    def banned(self):
-        #self.userInst = FUser(session.get('uidNumber',-1))
-        c.userInst = self.userInst
-        if self.userInst.isValid() and self.userInst.isBanned():
-            c.boardName = _('Banned')
-            return self.render('banned')
-        else:
-            c.boardName = _('Error')
-            c.errorText = _("ORLY?")
-            return self.render('error')
-            
-    def UnknownAction(self):
-        c.userInst = self.userInst      
-        c.boardName = _('Error')
-        c.errorText = _("Excuse me, WTF are you?")
-        return self.render('error')
-    
-    def uaInfo(self):
-        out = ''
-        response.headers['Content-type'] = "text/plain" 
-        for key in request.environ.keys():
-            if 'HTTP' in key or 'SERVER' in key or 'REMOTE' in key:
-                out += key + ':' +request.environ[key] + '\n'
-        out += 'test:' + str(request.POST.get('test', '')) 
-        return filterText(out)    
-    
-    

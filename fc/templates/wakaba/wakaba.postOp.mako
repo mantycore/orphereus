@@ -26,7 +26,7 @@
     <span style="display:none" class="delete">       
     %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
         <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
-        %if g.OPT.enableFinalAnonymity:
+        %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous:
             <a href="/${thread.id}/anonymize">[FA]</a>
         %endif
     %endif

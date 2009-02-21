@@ -42,7 +42,6 @@ class Captcha(object):
         meta.Session.delete(self)
         meta.Session.commit()
         return ret
-
     
     @staticmethod
     def create(): 
@@ -54,6 +53,10 @@ class Captcha(object):
     @staticmethod
     def getCaptcha(id):
         return Captcha.query.filter(Captcha.id==id).first()
+    
+    @staticmethod
+    def exists(id):
+        return (Captcha.query.filter(Captcha.id==id).count() == 1)
     
     @staticmethod
     def createHatchingTexture(density, width, height, fill): # cool procedure, found in google

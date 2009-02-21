@@ -34,7 +34,7 @@ def randomStr():
 
 class Captcha(object):
     def __init__(self, text):
-        self.text = "aa" #text
+        self.text = text
         self.timestamp =  datetime.datetime.now()
     
     def test(self, text):
@@ -120,11 +120,12 @@ class Captcha(object):
                 ht = Captcha.createHatchingTexture(0.5, pw, ph, tcolor)
                 textPic = Image.blend(textPic, ht, 0.3)
             
-                f = StringIO.StringIO()
-                textPic.save(f, "PNG")
-                pic = f.getvalue()
+            f = StringIO.StringIO()
+            textPic.save(f, "PNG")
+            pic = f.getvalue()
+            if captcha:
                 captcha.content = pic
                 meta.Session.commit()
-                out = pic
+            out = pic
                 
         return str(out)

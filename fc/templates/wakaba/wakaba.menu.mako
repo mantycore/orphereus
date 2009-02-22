@@ -41,7 +41,7 @@
     [<a href="/logout/">${_('Logout')}</a>]
     %else:
         %if c.currentURL:
-            [<a href="${c.currentURL}authorize">${_('Login')}</a>]
+            [<a href="${'%sauthorize' % c.currentURL}">${_('Login')}</a>]
         %else:
             [<a href="/authorize">${_('Login')}</a>]
         %endif

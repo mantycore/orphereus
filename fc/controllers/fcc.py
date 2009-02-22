@@ -36,12 +36,12 @@ class FccController(OrphieBaseController):
         c.userInst = self.userInst
         c.destinations = destinations
                                     
-        c.currentURL = request.path_info
-        if c.currentURL[-1] != '/':
-            c.currentURL = c.currentURL + '/'
+        c.currentURL = request.path_info.decode('utf-8')
+        if not c.currentURL.endswith('/'):
+            c.currentURL = u'%s/' % c.currentURL
               
         if not self.userInst.isAuthorized():
-            return redirect_to(c.currentURL+'authorize')
+            return redirect_to(('%sauthorize' % c.currentURL).encode('utf-8'))
         if self.userInst.isBanned():
             #abort(500, 'Internal Server Error')     # calm hidden ban
             return redirect_to('/youAreBanned')

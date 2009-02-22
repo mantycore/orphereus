@@ -54,9 +54,9 @@ class FcpController(OrphieBaseController):
         
     def authorize(self, url):
         if url:
-            c.currentURL = '/%s/' % url #.encode('utf-8')
+            c.currentURL = u'/%s/' % url #.encode('utf-8')
         else:
-            c.currentURL = '/'
+            c.currentURL = u'/'
         
         ip = getUserIp()
         tracker = LoginTracker.getTracker(ip)
@@ -105,7 +105,7 @@ class FcpController(OrphieBaseController):
                 tracker.lastAttempt = datetime.datetime.now()  
 
             meta.Session.commit()
-            #log.debug(c.currentURL)
+            #log.debug("redir: %s" % c.currentURL)
             redirect_to(c.currentURL.encode('utf-8'))
         
         c.boardName = _('Login')

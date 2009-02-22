@@ -356,7 +356,7 @@ class FcmController(OrphieBaseController):
         if not secid:
             #self.userInst = FUser(session.get('uidNumber',-1))
             if not self.userInst.isAuthorized():
-                c.currentURL = '/holySynod/'
+                c.currentURL = u'/holySynod/'
                 return redirect_to('/')
             self.initEnvironment()
             if not self.userInst.isAdmin():

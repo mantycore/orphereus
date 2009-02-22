@@ -141,6 +141,7 @@ div.delete {
 	padding: 0;
 	margin: 0;
 	-moz-border-radius: 5px;
+	position: relative;
 }
 blockquote {
 	margin: .5em .5em .5em 1em;
@@ -370,7 +371,10 @@ background: #A8A8A8;
 #x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
 
 .img_loading{
-left:50px;
-margin-top:50px;
-position:absolute;
+	left:5px;
+	margin-top:5px;
+	position:absolute;
+	background:#EEDACB;
+	color:#333333;
+	border: 2px dashed #EE6600;
 }

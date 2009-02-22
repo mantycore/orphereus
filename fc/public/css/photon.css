@@ -15,203 +15,202 @@ margin-bottom: 0em }
 .userdelete { float: right; text-align: center; white-space: nowrap }
 .replypage .replylink { display: none }
 html, body {
-	background-color: #EEEEEE;
-	color: #333333;
-	font-family: "Trebuchet MS",Trebuchet,tahoma,serif;
+    background-color: #EEEEEE;
+    color: #333333;
+    font-family: "Trebuchet MS",Trebuchet,tahoma,serif;
 }
 a {
-	color: #FF6600;
+    color: #FF6600;
 }
 a:hover {
-	color: #0066FF;
+    color: #0066FF;
 }
 div.delete { 
 }
 .adminbar {
-	clear:both;
-	float:left;
-	font-size: .8em;
+    clear:both;
+    float:left;
+    font-size: .8em;
 }
 .adminbar a {
-	font-weight: bold;
+    font-weight: bold;
 }
 .logo {
-	clear:both;
-	text-align:left;
-	font-size:2em;
-	font-weight: bold;
-	color:#FF6600;
-	/*width:100%;*/
+    clear:both;
+    text-align:left;
+    font-size:2em;
+    font-weight: bold;
+    color:#FF6600;
+    /*width:100%;*/
 }
 .theader, .passvalid {
-	background:#DDDDDD;
-	text-align:center;
-	padding:2px;
-	color:#2266AA;
-	clear: both;
-	font-weight: bold;
-	margin-bottom: .5em;
-	border: solid 1px #CCCCCC;
-	-moz-border-radius: 5px;
+    background:#DDDDDD;
+    text-align:center;
+    padding:2px;
+    color:#2266AA;
+    clear: both;
+    font-weight: bold;
+    margin-bottom: .5em;
+    border: solid 1px #CCCCCC;
+    -moz-border-radius: 5px;
 }
 .postarea {
 }
 .rules {
 }
 .postblock {
-	background:transparent;
-	color:#002244;
-	font-weight:bold;
+    background:transparent;
+    color:#002244;
+    font-weight:bold;
 }
 .footer {
-	text-align:center;
-	font-size:12px;
-	font-family:serif;
-	margin: 2em 0 0 0;
+    text-align:center;
+    font-size:12px;
+    font-family:serif;
+    margin: 2em 0 0 0;
 }
 .dellist {
-	font-weight: bold;
-	text-align:center;
+    font-weight: bold;
+    text-align:center;
 }
 .delbuttons {
-	text-align:center;
-	padding-bottom:4px;
+    text-align:center;
+    padding-bottom:4px;
 }
 .managehead {
-	background:#DDDDDD;
-	color:#002244;
-	padding:0px;
+    background:#DDDDDD;
+    color:#002244;
+    padding:0px;
 }
 .postlists {
-	background:#FFFFFF;
-	width:100%;
-	padding:0px;
-	color:#800000;
+    background:#FFFFFF;
+    width:100%;
+    padding:0px;
+    color:#800000;
 }
 .row1 {
-	background:#DDDDDD;
-	color:#002244;
+    background:#DDDDDD;
+    color:#002244;
 }
 .row2 {
-	background:#CCCCCC;
-	color:#002244;
+    background:#CCCCCC;
+    color:#002244;
 }
 .unkfunc {
-	background:inherit;
-	color:#789922;
+    background:inherit;
+    color:#789922;
 }
 .reflink {
-	font-size: .8em;
-	font-weight: bold;
+    font-size: .8em;
+    font-weight: bold;
 }
 .filesize {
-	text-decoration:none;
-	color: #666666;
-	font-size: .8em;
+    text-decoration:none;
+    color: #666666;
+    font-size: .8em;
 }
 .filetitle {
-	background:inherit;
-	font-size:1.2em;
-	color:#002244;
-	font-weight:bold;
+    background:inherit;
+    font-size:1.2em;
+    color:#002244;
+    font-weight:bold;
 }
 .postername {
-	/*
-	color:#004A99;
-	font-weight:bold;
-	display:none;
-	*/
+    /*
+    color:#004A99;
+    font-weight:bold;
+    display:none;
+    */
 }
 .postertrip {
-	/*
-	color:#FF3300;
-	display:none;
-	*/
+    /*
+    color:#FF3300;
+    display:none;
+    */
 }
 .oldpost, .notabene {
-	color:#CC1105;
-	font-weight:bold;
+    color:#CC1105;
+    font-weight:bold;
 }
 .omittedposts {
-	color:#666666;
+    color:#666666;
 }
 .reply {
-	background:#DDDDDD;
-	border: solid 1px #CCCCCC;
-	padding: 0;
-	margin: 0;
-	-moz-border-radius: 5px;
-	position: relative;
+    background:#DDDDDD;
+    border: solid 1px #CCCCCC;
+    padding: 0;
+    margin: 0;
+    -moz-border-radius: 5px;
 }
 blockquote {
-	margin: .5em .5em .5em 1em;
+    margin: .5em .5em .5em 1em;
 }
 
 .reply blockquote {
-	margin: .5em;
+    margin: .5em;
 }
 .doubledash {
-	display: none;
- 	vertical-align:top;
-	clear:both;
-	float:left;
+    display: none;
+    vertical-align:top;
+    clear:both;
+    float:left;
 }
 .replytitle {
-	font-size: 1.2em;
-	color:#002244;
-	font-weight:bold;
+    font-size: 1.2em;
+    color:#002244;
+    font-weight:bold;
 }
 .commentpostername {
-	/*
-	color:#004A99;
-	font-weight:800;
-	display:none;
-	*/
+    /*
+    color:#004A99;
+    font-weight:800;
+    display:none;
+    */
 }
 .thumbnailmsg {
-	font-size: .6em;
-	color:#666666;
+    font-size: .6em;
+    color:#666666;
 }
 hr {
-	border-style: solid none none none;
-	border-width: 1px;
-	border-color: #BBBBBB;
+    border-style: solid none none none;
+    border-width: 1px;
+    border-color: #BBBBBB;
 }
 table {
-	border-style: none;
+    border-style: none;
 }
 table td {
-	border-style: none;
+    border-style: none;
 }
 .nothumb {
-	background-color: #FFFFFF;
-	border-style: dotted;
-	margin: .3em .5em;
+    background-color: #FFFFFF;
+    border-style: dotted;
+    margin: .3em .5em;
 }
 .abbrev {
-	color:#666666;
+    color:#666666;
 }
 .highlight {
-	background:#EEDACB;
-	color:#333333;
-	border: 2px dashed #EE6600;
+    background:#EEDACB;
+    color:#333333;
+    border: 2px dashed #EE6600;
 }
 dl.menu dt {
-	background:#DDDDDD;
-	border: solid 1px #CCCCCC;
-	-moz-border-radius: 5px;
-	margin-top: 1em;
-	padding-left: .5em;
-	cursor: pointer;
-	
+    background:#DDDDDD;
+    border: solid 1px #CCCCCC;
+    -moz-border-radius: 5px;
+    margin-top: 1em;
+    padding-left: .5em;
+    cursor: pointer;
+    
 }
 dl.menu dd {
-	margin-left: .5em;
-	padding-left: .5em;
-	border-left: solid 1px #CCCCCC;
+    margin-left: .5em;
+    padding-left: .5em;
+    border-left: solid 1px #CCCCCC;
 }
 dl.menu dd.hidden {
-	display: none;
+    display: none;
 }
 
 .signature {
@@ -253,29 +252,29 @@ color: #683329;
         color: #CCCCCC !important;
 }
 .spoiler blockquote{
-	background: #CCCCCC !important;
-	color: #CCCCCC !important;
+    background: #CCCCCC !important;
+    color: #CCCCCC !important;
 }
 .spoiler:hover {
         background: #CCCCCC !important;
         color: #333333 !important;
 }
 .spoiler:hover blockquote{
-	color:#789922 !important;
+    color:#789922 !important;
 }
 .spoiler blockquote:hover {
-	color:#789922 !important;
+    color:#789922 !important;
 }
 .errorMessage{
-	background:#EEaaaa;
-	text-align:center;
-	padding:2px;
-	color:#880000;
-	clear: both;
-	font-weight: bold;
-	margin-bottom: .5em;
-	border: solid 1px #FF0000;
-	-moz-border-radius: 5px;
+    background:#EEaaaa;
+    text-align:center;
+    padding:2px;
+    color:#880000;
+    clear: both;
+    font-weight: bold;
+    margin-bottom: .5em;
+    border: solid 1px #FF0000;
+    -moz-border-radius: 5px;
 }
 .adminMenu{
 vertical-align:top;
@@ -287,13 +286,13 @@ background: #DEDEDE;
 }
 
 .postername, .postertrip, .commentpostername {
-	display: inline; visibility: visible; font-weight: bold; color: #339;
+    display: inline; visibility: visible; font-weight: bold; color: #339;
 }
 .postertrip {
-	color: #993;
+    color: #993;
 }
 .hidden-thread {
-	color: #666; padding: 5px 0 0 28px; min-height: 24px; vertical-align: middle; background: url('images/hidden.png') no-repeat left center;
+    color: #666; padding: 5px 0 0 28px; min-height: 24px; vertical-align: middle; background: url('images/hidden.png') no-repeat left center;
 }
 form > div + br[clear="left"] {
 display: block; height: 1px;
@@ -308,45 +307,45 @@ label, label input {
 vertical-align: middle;
 }
 a.loading {
-	padding-left: 16px;
-	background: url('images/loading.gif') no-repeat left center;
+    padding-left: 16px;
+    background: url('images/loading.gif') no-repeat left center;
 }
 .x_unfoldreply td {
-	border-color: #999;
+    border-color: #999;
 }
 .x_qrattached:hover {
-	border-bottom: 1px #ccc dotted;
+    border-bottom: 1px #ccc dotted;
 }
 div a.show-hide-thread {
-	display: block; float: right; font-size: 70%; text-decoration: none;
+    display: block; float: right; font-size: 70%; text-decoration: none;
 }
 div a.show-hide-thread:hover {
-	text-decoration: underline; color: #f33;
+    text-decoration: underline; color: #f33;
 }
 #x_replyform {
-	display: block; border: 1px #ccc solid; margin: 0 2px 2px 2px; padding: 5px; 
-	background-color: #ddd; -moz-border-radius: 5px;
+    display: block; border: 1px #ccc solid; margin: 0 2px 2px 2px; padding: 5px; 
+    background-color: #ddd; -moz-border-radius: 5px;
 }
 #x_replyform textarea {
-	width: 100%; border: 1px #888 solid;
+    width: 100%; border: 1px #888 solid;
 }
 #x_replyform div {
-	overflow: hidden; margin-top: 5px;
+    overflow: hidden; margin-top: 5px;
 }
 #x_replyform label {
-	float: left; margin-right: 10px;
+    float: left; margin-right: 10px;
 }
 #x_replyform input[type="text"], #x_replyform input[type="password"] {
-	border: 1px #888 solid;
+    border: 1px #888 solid;
 }
 #x_replyform input[type="file"] > input[type="text"] {
-	border: 1px #888 solid;
+    border: 1px #888 solid;
 } 
 #x_replyform input[type="submit"] {
-	border: 1px #666 solid; margin-left: 10px;
+    border: 1px #666 solid; margin-left: 10px;
 }
 #x_replyform button {
-	border: 1px #666 solid; margin-left: 10px;
+    border: 1px #666 solid; margin-left: 10px;
 }
 .logline {background: #DDDDDD;}
 .nomargin{margin: 0;}
@@ -371,11 +370,13 @@ background: #A8A8A8;
 #x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
 
 .img_loading{
-	left:5px;
-	margin-top:5px;
-	position:absolute;
-	background:#EEDACB;
-	color:#333333;
-	border: 2px dashed #EE6600;
-	z-index: 10;
+    /*left:5px;
+    position:absolute;
+*/
+    margin-top:5px;
+    margin-left: -80px;
+    background:#EEDACB;
+    color:#333333;
+    border: 2px dashed #EE6600;
+    z-index: 10;
 }

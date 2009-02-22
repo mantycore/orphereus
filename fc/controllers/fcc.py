@@ -814,7 +814,7 @@ class FccController(OrphieBaseController):
         else:
             oekaki.type = 'Shi pro'
             c.oekakiToolString = 'pro'
-        oekaki.uidNumber = session['uidNumber']
+        oekaki.uidNumber = session.get('uidNumber', -1)
         oekaki.path = ''        
         oekaki.source = 0
         if isNumber(url) and enablePicLoading: 

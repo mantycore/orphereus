@@ -335,7 +335,7 @@ window.onload=function(e)
 }  
 
 function click_expands(options){
-  if(!options) options = {max_width: 800, max_height: 600})
+  if(!options) options = {max_width: 800, max_height: 600}
   var show_image = function() {
     if (this.src.match(/generic/)) return true;
     

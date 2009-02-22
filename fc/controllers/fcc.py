@@ -843,6 +843,7 @@ class FccController(OrphieBaseController):
         opPostDeleted = False
         reason = filterText(request.POST.get('reason', '???'))
         
+        remPass = ''
         if self.userInst.Anonymous:
             remPass = hashlib.md5(request.POST.get('remPass', '')).hexdigest()
         

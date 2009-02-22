@@ -12,7 +12,6 @@ from fc.model import meta
 t_oekaki = sa.Table("oekaki", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("tempid"   , sa.types.String(20), nullable=False),
-    sa.Column("picid"    , sa.types.Integer, nullable=False),
     sa.Column("time"     , sa.types.Integer, nullable=False),
     sa.Column("source"   , sa.types.Integer, nullable=False),
     sa.Column("uidNumber",sa.types.Integer, nullable=False),
@@ -21,6 +20,30 @@ t_oekaki = sa.Table("oekaki", meta.metadata,
     sa.Column("timeStamp", sa.types.DateTime, nullable=False)
     )
 
-#TODO: rewrite Oekaki
 class Oekaki(object):
-    pass
+    def __init__(self, tempid, uidNumber, type, source):
+        self.timeStamp = datetime.datetime.now()
+        self.time = -1
+        self.path = ''
+        self.type = type
+        self.uidNumber = uidNumber
+        self.source = source
+        self.tempid = tempid
+    
+    @staticmethod
+    def create(tempid, uidNumber, type, source):
+        oekaki = Oekaki(tempid, uidNumber, type, source)
+        meta.Session.add(oekaki)
+        meta.Session.commit()
+    
+    @staticmethod
+    def get(tempid):
+        return Oekaki.query.filter(Oekaki.tempid==tempid).first()
+    
+    def setPathAndTime(self, path, time):
+        self.path = path
+        self.time = time
+        meta.Session.commit()
+    
+    def delete(self):
+        meta.Session.delete(self)

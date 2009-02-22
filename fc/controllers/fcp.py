@@ -201,7 +201,7 @@ class FcpController(OrphieBaseController):
 
     def oekakiSave(self, environ, start_response, url, tempid):
         start_response('200 OK', [('Content-Type','text/plain'),('Content-Length','2')])
-        oekaki = meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+        oekaki = Oekaki.get(tempid) #meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
         cl = int(request.environ['CONTENT_LENGTH'])
         if oekaki and cl:
             id = request.environ['wsgi.input'].read(1)
@@ -222,7 +222,5 @@ class FcpController(OrphieBaseController):
                 localFile = open(localFilePath,'wb')
                 localFile.write(body)
                 localFile.close()
-                oekaki.time = time
-                oekaki.path = expandedName
-                meta.Session.commit()
+                oekaki.setPathAndTime(expandedName, time)
         return ['ok']

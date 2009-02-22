@@ -267,7 +267,7 @@ class FccController(OrphieBaseController):
             #log.debug(thread.hidden)
                 
         if tempid:  
-            oekaki = self.sqlFirst(meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid))
+            oekaki = Oekaki.get(tempid) #self.sqlFirst(meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid))
             c.oekaki = oekaki
         else:
             c.oekaki = False
@@ -608,13 +608,13 @@ class FccController(OrphieBaseController):
         tempid = request.POST.get('tempid', False)        
         painterMark = False # TODO FIXME : move into parser
         if tempid: 
-           oekaki = self.sqlFirst(Oekaki.query.filter(Oekaki.tempid==tempid))
+           oekaki = Oekaki.get(tempid) #self.sqlFirst(Oekaki.query.filter(Oekaki.tempid==tempid))
 
-           file = FieldStorageLike(oekaki.path,os.path.join(g.OPT.uploadPath, oekaki.path))
+           file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
            painterMark = u'<span class="postInfo">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
            if oekaki.source:
               painterMark += ", source " + self.formatPostReference(oekaki.source) #<a href="">&lt;&lt;%s</a>" % oekaki.source
-           meta.Session.delete(oekaki) # TODO: Is it really needed to destroy oekaki IDs?
+           oekaki.delete()
         else:
            file = request.POST.get('file',False)
         if painterMark:
@@ -798,25 +798,22 @@ class FccController(OrphieBaseController):
         c.canvas = False
         c.width  = request.POST.get('oekaki_x','300')
         c.height = request.POST.get('oekaki_y','300')
-        enablePicLoading = not (request.POST.get('oekaki_type','Reply') == 'New');        
+        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
+        
         if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width)<=10 or int(c.height)<=10):
            c.width = 300
-           c.height = 300            
+           c.height = 300
         c.tempid = str(long(time.time() * 10**7))
-        oekaki = Oekaki()
-        oekaki.tempid = c.tempid
-        oekaki.picid = -1
-        oekaki.time = -1
-        oekaki.timeStamp = datetime.datetime.now()
+        
+        oekType = ''
         if request.POST.get('oekaki_painter','shiNormal') == 'shiNormal':
-            oekaki.type = 'Shi normal'
+            oekType = 'Shi normal'
             c.oekakiToolString = 'normal';
         else:
-            oekaki.type = 'Shi pro'
+            oekType = 'Shi pro'
             c.oekakiToolString = 'pro'
-        oekaki.uidNumber = session.get('uidNumber', -1)
-        oekaki.path = ''        
-        oekaki.source = 0
+        
+        oekSource = 0
         if isNumber(url) and enablePicLoading: 
            post = self.sqlOne(Post.query.filter(Post.id==url))
 
@@ -824,12 +821,11 @@ class FccController(OrphieBaseController):
               pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
                
               if pic and pic.width:
-                 oekaki.source = post.id
+                 oekSource = post.id
                  c.canvas = h.modLink(pic.path, c.userInst.secid())
                  c.width  = pic.width
                  c.height = pic.height
-        meta.Session.add(oekaki)
-        meta.Session.commit()
+        oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource)
         return self.render('spainter')
         
     def DeletePost(self, board):

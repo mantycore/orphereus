@@ -334,14 +334,29 @@ window.onload=function(e)
     }
 }  
 
-function click_expands(){
-  var f_true = function() {return true};
+function click_expands(options = {max_width: 800, max_height: 600}){
+  if(!options) options = {max_width: 800, max_height: 600})
   var show_image = function() {
     if (this.src.match(/generic/)) return true;
+    
+    if(options.max_height || options.max_width){
+      var filesize = $(this).parent().parent().find("span.filesize em").html()
+      var matcher = false
+      if (matcher = filesize.match(/(\d+)x(\d+)/)){
+        if (options.max_width  && options.max_width  < parseInt(matcher[1])) return true;
+        if (options.max_height && options.max_height < parseInt(matcher[2])) return true;
+      }
+    }
+    
     if (this.src != this.parentNode.href){
       this._width = this.width
       this._height = this.height
       this._src = this.src
+      
+      var loader = $("<span class='loading'>loading…</span>")
+      $(this).parent().append(loader)
+      $(this).load(function() {loader.remove()})
+
       this.removeAttribute('width');
       this.removeAttribute('height');
       this.src = this.parentNode.href;
@@ -354,3 +369,4 @@ function click_expands(){
   }
   $("a img.thumb").click(show_image) 
 }
+

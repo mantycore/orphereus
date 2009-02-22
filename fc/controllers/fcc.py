@@ -906,9 +906,9 @@ class FccController(OrphieBaseController):
         if self.userInst.Anonymous:
             c.errorText = _("Profile is not avaiable to Anonymous users.")
             return self.render('error')
-                                            
-        c.templates = g.OPT.templates #['wakaba'] # TODO FIXME: init from settingsMap
-        c.styles    = g.OPT.styles #['photon']
+        
+        c.templates = g.OPT.templates
+        c.styles    = g.OPT.styles
         c.profileChanged = False
         c.boardName = _('Profile')
         if request.POST.get('update', False):

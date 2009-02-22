@@ -353,7 +353,7 @@ function click_expands(options){
       this._height = this.height
       this._src = this.src
       
-      var loader = $("<span class='loading'>loading…</span>")
+      var loader = $("<span class='img_loading'>loading…</span>")
       $(this).parent().append(loader)
       $(this).load(function() {loader.remove()})
 

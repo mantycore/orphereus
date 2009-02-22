@@ -370,13 +370,10 @@ background: #A8A8A8;
 #x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
 
 .img_loading{
-    /*left:5px;
-    position:absolute;
-*/
-    margin-top:5px;
-    margin-left: -80px;
+    margin-top: 15px;
+    margin-left: -120px;
+    z-index: 10;
     background:#EEDACB;
     color:#333333;
     border: 2px dashed #EE6600;
-    z-index: 10;
 }

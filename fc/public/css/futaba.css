@@ -353,3 +353,12 @@ background: #A8A8A8;
 #x_replyform_goto{margin: 0px 4px 0px 4px; width: 120px}
 #x_replyform_captcha_input{margin: 0px 4px 0px 4px; width: 70px}
 #x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
+
+.img_loading{
+    margin-top: 15px;
+    margin-left: -120px;
+    z-index: 10;
+    background:#F0E0D6;
+    color:#800000;
+    border: 2px dashed #EEAA88;
+}

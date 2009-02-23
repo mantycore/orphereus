@@ -42,7 +42,7 @@ def isNumber(n):
 def currentUID():
     try:
         if c.userInst:
-            return c.userInst.uidNumber()
+            return c.userInst.uidNumber
     except:
         pass
     return -1

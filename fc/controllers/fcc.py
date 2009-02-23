@@ -38,12 +38,12 @@ class FccController(OrphieBaseController):
         if not c.currentURL.endswith('/'):
             c.currentURL = u'%s/' % c.currentURL
 
-        if not self.userInst.isAuthorized():
+        if not self.userIsAuthorized():
             return redirect_to(('%sauthorize' % c.currentURL).encode('utf-8'))
         if self.userInst.isBanned():
             #abort(500, 'Internal Server Error')     # calm hidden ban
             return redirect_to('/youAreBanned')
-        c.canPost = self.userInst.canPost()
+        c.canPost = self.canPost()
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
         self.initEnvironment()
@@ -51,7 +51,7 @@ class FccController(OrphieBaseController):
     def selfBan(self, confirm):
         if g.OPT.spiderTrap:
             if confirm:
-                self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber()).first(), 2, _("[AUTOMATIC BAN] Security alert type 2"))
+                self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber).first(), 2, _("[AUTOMATIC BAN] Security alert type 2"))
                 redirect_to('/')
             else:
                 return self.render('selfBan')
@@ -61,7 +61,7 @@ class FccController(OrphieBaseController):
     def buildFilter(self, url):
         def buildMyPostsFilter():
             list  = []
-            posts = self.sqlAll(Post.query.filter(Post.uidNumber==self.userInst.uidNumber()))
+            posts = self.sqlAll(Post.query.filter(Post.uidNumber==self.userInst.uidNumber))
 
             for p in posts:
                 if p.parentid == -1 and not p.id in list:
@@ -142,7 +142,7 @@ class FccController(OrphieBaseController):
             page = 0
 
         c.board = board
-        c.uidNumber = self.userInst.uidNumber()
+        c.uidNumber = self.userInst.uidNumber
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = self.userInst.isAdmin()
 
@@ -490,7 +490,7 @@ class FccController(OrphieBaseController):
     def processPost(self, postid=0, board=u''):
         fileHolder = False
 
-        if not self.userInst.canPost():
+        if not self.canPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')
 
@@ -654,7 +654,7 @@ class FccController(OrphieBaseController):
             #except:
             #    pass
 
-        post.uidNumber = self.userInst.uidNumber()
+        post.uidNumber = self.userInst.uidNumber
 
         if not post.message and not post.picid and not post.messageInfo:
             c.errorText = _("At least message or file should be specified")
@@ -755,7 +755,7 @@ class FccController(OrphieBaseController):
         return self.processPost(board=board)
 
     def oekakiDraw(self,url):
-        if not self.userInst.canPost():
+        if not self.canPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')
 
@@ -794,7 +794,7 @@ class FccController(OrphieBaseController):
         return self.render('spainter')
 
     def DeletePost(self, board):
-        if not self.userInst.canPost:
+        if not self.canPost:
             c.errorText = _("Deletion disabled")
             return self.render('error')
 
@@ -848,9 +848,9 @@ class FccController(OrphieBaseController):
             if not batch:
                 posts = [post]
             else:
-                posts = self.sqlAll(Post.query.filter(and_(Post.uidNumber == self.userInst.uidNumber(), Post.date <= post.date)))
+                posts = self.sqlAll(Post.query.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date <= post.date)))
             for post in posts:
-                if post.uidNumber != self.userInst.uidNumber():
+                if post.uidNumber != self.userInst.uidNumber:
                     result.append(_("You are not author of post #%s") % post.id)
                 else:
                     delay = g.OPT.finalAHoursDelay

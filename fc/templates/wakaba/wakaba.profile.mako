@@ -20,7 +20,7 @@
                 </tr>
                 <tr id="truid">
                     <td class="postblock">${_('UID')}</td>
-                    <td><input value="${c.userInst.uid()}" readonly /></td>
+                    <td><input value="${c.userInst.uid}" readonly /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Current Security Code')}</td>
@@ -122,7 +122,7 @@
                 <tr>
                     <td colspan="2" style="text-align: center; font-weight: bold;">${_('User filters')}</td>
                 </tr>
-                %for f in c.userInst.filters():
+                %for f in c.userInst.filters:
                 <tr id="filterId${f.id}">
                     <td class="postblock">[<a href="" onclick="userFiltersEdit(event,${f.id});">Edit</a>] [<a href='' onClick="userFiltersDelete(event,${f.id});">Del</a>]</td>
                     <td><input id='filterId${f.id}Input' name='filterId${f.id}' value='${f.filter}' /></td>

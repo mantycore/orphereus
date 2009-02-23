@@ -353,7 +353,7 @@ class FcmController(OrphieBaseController):
     def mtnAction(self, actid, secid):
         secTestPassed = False
         if not secid:
-            if not self.userInst.isAuthorized():
+            if not self.userIsAuthorized():
                 c.currentURL = u'/holySynod/'
                 return redirect_to('/')
             self.initEnvironment()

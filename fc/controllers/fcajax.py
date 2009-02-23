@@ -26,7 +26,7 @@ class FcajaxController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         c.userInst = self.userInst
-        if not self.userInst.isAuthorized() or self.userInst.isBanned():
+        if not self.userIsAuthorized or self.userInst.isBanned():
             abort(403)
 
     def getPost(self, post):
@@ -93,7 +93,7 @@ class FcajaxController(OrphieBaseController):
         if self.userInst.Anonymous:
             abort(403)
         userFilter = meta.Session.query(UserFilters).get(fid)
-        if not userFilter or userFilter.uidNumber != self.userInst.uidNumber():
+        if not userFilter or userFilter.uidNumber != self.userInst.uidNumber:
             abort(404)
         userFilter.filter = filterText(filter)
         meta.Session.commit()
@@ -103,7 +103,7 @@ class FcajaxController(OrphieBaseController):
         if self.userInst.Anonymous:
             abort(403)
         userFilter = meta.Session.query(UserFilters).get(fid)
-        if not userFilter or userFilter.uidNumber != self.userInst.uidNumber():
+        if not userFilter or userFilter.uidNumber != self.userInst.uidNumber:
             abort(404)
         meta.Session.delete(userFilter)
         meta.Session.commit()
@@ -113,7 +113,7 @@ class FcajaxController(OrphieBaseController):
         if self.userInst.Anonymous:
             abort(403)
         userFilter = UserFilters()
-        userFilter.uidNumber = self.userInst.uidNumber()
+        userFilter.uidNumber = self.userInst.uidNumber
         userFilter.filter = filterText(filter)
         meta.Session.add(userFilter)
         meta.Session.commit()

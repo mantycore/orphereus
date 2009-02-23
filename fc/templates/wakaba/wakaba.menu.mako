@@ -4,13 +4,13 @@
     %if not c.userInst.Anonymous:
     <a href="/@/" title="${_('Related threads')}">/@/</a>
     %endif
-    <a href="/!/" title="${_('Home')}">/!/</a>    
-    ]    
-    
+    <a href="/!/" title="${_('Home')}">/!/</a>
+    ]
+
 %if c.boardlist:
-%if g.OPT.spiderTrap:    
+%if g.OPT.spiderTrap:
 <div style="display: none"><a href="/ajax/stat/${c.userInst.secid()}">...</a><a href="/ajax/stat">.</a></div>
-%endif        
+%endif
     %for section in c.boardlist:
         [
         %for board in section:
@@ -19,14 +19,14 @@
         ]
     %endfor
     %if not c.userInst.Anonymous:
-	[<a href="/userProfile/">${_('Profile')}</a>]
+  [<a href="/userProfile/">${_('Profile')}</a>]
     %endif
     %if c.userInst.isAdmin():
         [<a href="/holySynod/">${_('Holy Synod')}</a>]
-    %endif 
+    %endif
     %if g.settingsMap['usersCanViewLogs'].value == 'true':
         [<a href="/viewLog/">${_('Logs')}</a>]
-    %endif     
+    %endif
     %if c.menuLinks:
         %for link in c.menuLinks:
             % if isinstance(link, list) and len(link) == 2:
@@ -47,12 +47,12 @@
         %endif
     %if g.OPT.allowRegistration:
     [<a href="/register/register">${_('Register')}</a>]
-    %endif 
     %endif
-    %if not c.userInst.Anonymous and c.userInst.filters():
+    %endif
+    %if not c.userInst.Anonymous and c.userInst.filters:
         <br />
         [
-        %for f in c.userInst.filters():
+        %for f in c.userInst.filters:
             <a href="/${f.filter}/">/${f.filter}/</a>
         %endfor
         ]

@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 class FcaController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        if not self.userInst.isAuthorized():
+        if not self.userIsAuthorized():
             c.currentURL = u'/holySynod/'
             return redirect_to('/')
         self.initEnvironment()

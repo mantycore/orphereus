@@ -14,10 +14,10 @@ log = logging.getLogger(__name__)
 
 def expandName(name):
     #log.debug("expanding: %s" % name)
-    if name: 
+    if name:
         parts = name.split('.')
         if parts and utils.isNumber(parts[-2].replace('s', '')): #TODO: is the second condition really needed?
-            ext = parts[-1].lower() 
+            ext = parts[-1].lower()
             prefix = name[0:4]
             #log.debug('%s/%s/%s' % (ext, prefix, name))
             return '%s/%s/%s' % (ext, prefix, name)
@@ -40,29 +40,29 @@ def modLink(filePath, secid, hidePrefixes = False):
                 retval = prefix + '/' + retval
             return retval
     #log.debug('not modified: %s' % filePath)
-    
+
     if hidePrefixes:
          baseName = os.path.basename(filePath)
          if baseName:
             return baseName
-         
+
     return filePath
 
-def modMessage(message, user, f):  
+def modMessage(message, user, f):
     if f:
         gv = config['pylons.app_globals']
-        uval = gv.uniqueVals[user.uidNumber() % (len(gv.uniqueVals) - 1)]
+        uval = gv.uniqueVals[user.uidNumber % (len(gv.uniqueVals) - 1)]
         return message.replace('[SECURITY:UNIQUE_VAL]', uval)
     else:
         return message
-    
+
 def modifyTime(sourceTime, user, f):
     if f:
-        x = user.uidNumber()
+        x = user.uidNumber
         return sourceTime - datetime.timedelta(seconds=((-1)**x)*int(x/2))
     else:
         return sourceTime
-    
+
 def modTime(post, user, f):
     return modifyTime(post.date, user, f)
 

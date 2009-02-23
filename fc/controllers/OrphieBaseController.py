@@ -14,8 +14,8 @@ import os
 import hashlib
 import string
 import re
-from fc.lib.fuser import *
 from fc.lib.miscUtils import *
+from fc.lib.FakeUser import FakeUser
 from fc.lib.constantValues import *
 
 log = logging.getLogger(__name__)
@@ -26,11 +26,11 @@ class OrphieBaseController(BaseController):
             c.log = []
             c.sum = 0
 
-
+        self.userInst = False
         uid = session.get('uidNumber', -1)
         if uid > 0:
-            self.userInst = FUser(uid)
-        else:
+            self.userInst = User.getUser(uid, g.OPT)
+        if not self.userInst:
             self.userInst = FakeUser()
 
         c.userInst = self.userInst
@@ -38,8 +38,13 @@ class OrphieBaseController(BaseController):
         if g.OPT.checkUAs and self.userInst.isValid():
             for ua in g.OPT.badUAs:
                 if filterText(request.headers.get('User-Agent', '?')).startswith(ua):
-                    self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber()).first(), 2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest())
+                    self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber).first(), 2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest())
                     break
+    def canPost(self):
+        return g.OPT.allowPosting and self.userInst and ((self.userInst.Anonymous and g.OPT.allowAnonymousPosting) or not self.userInst.Anonymous)
+
+    def userIsAuthorized(self):
+        return self.userInst.isValid() and (session.get('uidNumber', -1) == self.userInst.uidNumber)
 
     def initEnvironment(self):
         c.title = g.settingsMap['title'].value
@@ -238,7 +243,7 @@ class OrphieBaseController(BaseController):
             if self.userInst.Anonymous and p.removemd5 != rempPass:
                 return False
 
-            if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
+            if checkOwnage and not (p.uidNumber == self.userInst.uidNumber or self.userInst.canDeleteAllPosts()):
                 # print some error stuff here
                 return False
 
@@ -260,7 +265,7 @@ class OrphieBaseController(BaseController):
             tagline = ', '.join(taglist)
 
             postOptions = self.conjunctTagOptions(p.parentid>0 and parentp.tags or p.tags)
-            if checkOwnage and not p.uidNumber == self.userInst.uidNumber():
+            if checkOwnage and not p.uidNumber == self.userInst.uidNumber:
                 logEntry = u''
                 if p.parentid>0:
                     logEntry = _("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (p.id, p.uidNumber, p.parentid, tagline, reason)
@@ -302,7 +307,7 @@ class OrphieBaseController(BaseController):
 
     def passwd(self, key, key2, adminRights = False, currentKey = False, user = False):
         newuid = User.genUid(key)
-        olduid = self.userInst.uid()
+        olduid = self.userInst.uid
         if user:
             olduid = user.uid
 
@@ -315,7 +320,7 @@ class OrphieBaseController(BaseController):
             anotherUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==newuid))
             if not anotherUser:
                 if not user:
-                    self.userInst.uid(newuid)
+                    self.userInst.setUid(newuid)
                 else:
                     user.uid = newuid
                 c.profileMsg = _('Password was successfully changed.')
@@ -343,7 +348,7 @@ class OrphieBaseController(BaseController):
 
     def isPostOwner(self, id):
         post = self.sqlFirst(Post.query.filter(Post.id==id))
-        if post and post.uidNumber == self.userInst.uidNumber():
+        if post and post.uidNumber == self.userInst.uidNumber:
            return post.parentid
         else:
            return False

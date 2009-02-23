@@ -15,10 +15,10 @@
 <h1>${_('You are banned!')}</h1>
 ${_('You are banned for %s days for following reason:<br/>%s') % (c.userInst.bantime(),c.userInst.banreason())}
 <br/><br/>
-${_('Your UID Number: %d') % (c.userInst.uidNumber())}
+${_('Your UID Number: %d') % (c.userInst.uidNumber)}
 <br/>
 Your UID:<br/>
-<input type="text" value="${_('%s') % (c.userInst.uid())}">
+<input type="text" value="${_('%s') % (c.userInst.uid)}">
 <br/>
 
 <form action="/logout">

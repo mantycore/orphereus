@@ -15,6 +15,7 @@ log = logging.getLogger(__name__)
 from fc.model import meta
 from fc.model.UserOptions import UserOptions
 from fc.lib.miscUtils import isNumber
+from fc.lib.constantValues import destinations
 
 t_users = sa.Table("users", meta.metadata,
     sa.Column("uidNumber",sa.types.Integer, primary_key=True),
@@ -25,13 +26,33 @@ t_users = sa.Table("users", meta.metadata,
 class User(object):
     # user ID
     @staticmethod
+    def getUser(uidNumber, globalOptHolder = False):
+        ret = User.query.options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
+        if globalOptHolder:
+            if not ret.options:
+                ret.options = UserOptions()
+                UserOptions.initDefaultOptions(ret.options, globalOptHolder)
+                meta.Session.commit()
+
+            if not ret.options.hideThreads:
+                ret.options.hideThreads = pickle.dumps([])
+                meta.Session.commit()
+            if not ret.options.homeExclude:
+                ret.options.homeExclude = pickle.dumps([])
+                meta.Session.commit()
+
+        if ret:
+            ret.Anonymous = False
+        return ret
+
+    @staticmethod
     def genUid(key):
         return hashlib.sha512(key + hashlib.sha512(config['pylons.app_globals'].OPT.hashSecret).hexdigest()).hexdigest()
 
-    def getUidNumber(self):
-        return self.uidNumber
+    def isValid(self):
+        return True
 
-    def getUid(self, value=None):
+    def setUid(self, value=None):
         if value != None and not User.query.options(eagerload('options')).filter(User.uid==value).first():
             self.uid = value
         return self.uid
@@ -41,9 +62,6 @@ class User(object):
         #(2*x+3)*(x+10)*(x-1)=
 
     # Board customization
-    def getFilters(self):
-        return self.filters
-
     def hideLongComments(self, value=None):
         if value != None:
             self.options.hideLongComments = value
@@ -89,7 +107,7 @@ class User(object):
             self.options.template = value
         return self.options.template
 
-    def defaultGoto(self, destinations, value = None):
+    def defaultGoto(self, value = None):
         if value != None and isNumber(value) or value == 0:
             if (value < 0 or value >= len(destinations)):
                 value = 0

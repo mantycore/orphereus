@@ -15,7 +15,7 @@ ${_('Current members of Holy Synod')}
 </tr>
 %for u in c.admins:
     <tr
-    %if u.uidNumber == c.userInst.uidNumber():
+    %if u.uidNumber == c.userInst.uidNumber:
     style="font-weight: bold;"
     %endif
     >

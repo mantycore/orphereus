@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
+<%include file="wakaba.paginator.mako" args="baselink='viewLog'"/>
+<hr/>
 
 %if c.logs:
 <table width="100%" class="hlTable">
@@ -30,5 +32,7 @@
 </table>
 %endif
 
+<hr/>
 <%include file="wakaba.paginator.mako" args="baselink='viewLog'"/>
+<hr/>
 

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.admin.mako" />
 
+<%include file="wakaba.paginator.mako" args="baselink='holySynod/viewLog'"/>
+
 %if c.logs:
 <table width="100%" class="hlTable">
     <thead>
@@ -25,4 +27,3 @@
 %endif
 
 <%include file="wakaba.paginator.mako" args="baselink='holySynod/viewLog'"/>
-

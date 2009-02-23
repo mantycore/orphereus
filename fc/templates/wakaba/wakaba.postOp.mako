@@ -20,7 +20,7 @@
 >
 %if thread.spoiler:
     <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb" alt="Spoiler"/>
-%elif thread.file.extension.type == 'image':
+%elif 'image' in thread.file.extension.type:
     <img src="${g.OPT.filesPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />
 %else:
     <img src="${g.OPT.staticPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />

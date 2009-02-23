@@ -23,14 +23,6 @@
     </tbody>
 </table>
 %endif
-%if c.pages:
-<table border="1"><tbody><tr><td>
-    %for pg in range(0,c.pages):
-        %if pg == c.page:
-            [${pg}]
-        %else:
-            [<a href='/holySynod/viewLog/${pg}'>${pg}</a>]
-        %endif
-    %endfor
-</td></tr></tbody></table>
-%endif
+
+<%include file="wakaba.paginator.mako" args="baselink='holySynod/viewLog'"/>
+

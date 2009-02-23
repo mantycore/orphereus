@@ -25,7 +25,7 @@ class OrphieBaseController(BaseController):
         if g.OPT.devMode:
             c.log = []
             c.sum = 0
-                    
+
         self.userInst = FUser(session.get('uidNumber', -1))
         c.userInst = self.userInst
         #log.debug(session.get('uidNumber', -1))
@@ -34,7 +34,7 @@ class OrphieBaseController(BaseController):
                 if filterText(request.headers.get('User-Agent', '?')).startswith(ua):
                     self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber()).first(), 2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest())
                     break
-        
+
     def initEnvironment(self):
         c.title = g.settingsMap['title'].value
         boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
@@ -60,14 +60,14 @@ class OrphieBaseController(BaseController):
         #log.debug(request.cookies)
         sessCookie = request.cookies.get('fc','')
         response.set_cookie('fc', str(sessCookie), domain='.'+g.OPT.baseDomain)
-        
+
         c.menuLinks = []
         linksstr = g.settingsMap['additionalLinks'].value
         links = linksstr.split(',')
         if links:
             for link in links:
                 c.menuLinks.append(link.split('|'))
-                
+
         if self.userInst.Anonymous:
             anonCaptId = session.get('anonCaptId', False)
             if not anonCaptId or not Captcha.exists(anonCaptId):
@@ -77,17 +77,17 @@ class OrphieBaseController(BaseController):
                 c.captcha = captcha
             else:
                 c.captcha = Captcha.getCaptcha(anonCaptId)
-                
+
         remPassCookie = request.cookies.get('orhpieRemPass', randomStr())
         c.remPass = remPassCookie
         response.set_cookie('orhpieRemPass', str(remPassCookie), max_age=3600)
-            
+
     def render(self, page, **options):
         tname = 'std'
         tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
         c.actuator = "actuators/%s/" % (g.OPT.actuator)
         c.actuatorTest = c.actuator
-        
+
         try:
             if self.userInst and not self.userInst.isBanned():
                 tname = self.userInst.template()
@@ -98,15 +98,45 @@ class OrphieBaseController(BaseController):
 
         fpath = os.path.join(g.OPT.templPath, tpath)
         #TODO: it may be excessive
-        if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/')== fpath.replace('\\', '/'): 
+        if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/')== fpath.replace('\\', '/'):
             return render('/'+tpath, **options)
         else:
             abort(404) #return _("Template problem: " + page)
-            
+
     def showStatic(self, page):
         c.boardName = _(page)
         return self.render('static.%s' % page) #render('/%s.static.mako' % self.userInst.template())
-            
+
+    def paginate(self, count, page, tpp):
+        if count > 1:
+            p = divmod(count, tpp)
+            c.pages = p[0]
+            if p[1]:
+                c.pages += 1
+            if (page + 1) > c.pages:
+                page = c.pages - 1
+            c.page = page
+
+            if c.pages>15:
+                c.showPagesPartial = True
+                if c.page-5>1:
+                    c.leftPage = c.page-5
+                else:
+                    c.leftPage=2
+
+                if c.page+5<c.pages-2:
+                    c.rightPage = c.page+5
+                else:
+                    c.rightPage=c.pages-2
+        elif count == 1:
+            c.page  = False
+            c.pages = False
+        elif count == 0:
+            c.page  = False
+            c.pages = False
+        c.count = count
+
+
     def banUser(self, user, bantime, banreason):
         if len(banreason)>1:
             if isNumber(bantime) and int(bantime) > 0:
@@ -115,7 +145,7 @@ class OrphieBaseController(BaseController):
                     bantime = 10000
                 user.options.bantime = bantime
                 user.options.banreason = banreason
-                user.options.banDate = datetime.datetime.now() 
+                user.options.banDate = datetime.datetime.now()
                 addLogEntry(LOG_EVENT_USER_BAN, _('Banned user %s for %s days for reason "%s"') % (user.uidNumber, bantime, banreason))
                 meta.Session.commit()
                 return _('User was banned')
@@ -123,7 +153,7 @@ class OrphieBaseController(BaseController):
                 return _('You should specify ban time in days')
         else:
             return _('You should specify ban reason')
-    
+
     def conjunctTagOptions(self, tags):
         options = empty()
         optionsFlag = True
@@ -146,23 +176,23 @@ class OrphieBaseController(BaseController):
                     options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
                     options.canDeleteOwnThreads = options.canDeleteOwnThreads & t.options.canDeleteOwnThreads
                     options.images = options.images & t.options.images
-                    
+
                     perm = g.OPT.permissiveFileSizeConjunction
                     if (perm and t.options.maxFileSize > options.maxFileSize) or (not perm and t.options.maxFileSize < options.maxFileSize):
                         options.maxFileSize = t.options.maxFileSize
-                    
+
                     if t.options.minPicSize > options.minPicSize:
                         options.minPicSize = t.options.minPicSize
                     if t.options.thumbSize < options.thumbSize:
                         options.thumbSize = t.options.thumbSize
-                                            
-                tagRulesList = t.options.specialRules.split(';') 
+
+                tagRulesList = t.options.specialRules.split(';')
                 for rule in tagRulesList:
                     if rule and not rule in rulesList:
-                        rulesList.append(rule)      
-                        
+                        rulesList.append(rule)
+
         options.rulesList = rulesList
-            
+
         if optionsFlag:
             options.imagelessThread = g.OPT.defImagelessThread
             options.imagelessPost   = g.OPT.defImagelessPost
@@ -174,17 +204,17 @@ class OrphieBaseController(BaseController):
             options.thumbSize = g.OPT.defThumbSize
             options.specialRules = u''
         return options
-    
+
     def deletePicture(self, post, commit = True):
         pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
         refcount = self.sqlCount(Post.query.filter(Post.picid==post.picid))
         if pic and refcount == 1:
             filePath = os.path.join(g.OPT.uploadPath, pic.path)
             thumPath = os.path.join(g.OPT.uploadPath, pic.thumpath)
-            
+
             if os.path.isfile(filePath):
                 os.unlink(filePath)
-                
+
             ext = pic.extension
             if not ext.path:
                 if os.path.isfile(thumPath):
@@ -193,31 +223,31 @@ class OrphieBaseController(BaseController):
             if commit:
                 meta.Session.commit()
         return pic
-    
-    def processDelete(self, postid, fileonly=False, checkOwnage=True, reason = "???", rempPass = False):        
+
+    def processDelete(self, postid, fileonly=False, checkOwnage=True, reason = "???", rempPass = False):
         p = self.sqlGet(Post.query, postid)
-        
+
         opPostDeleted = False
         if p:
             if self.userInst.Anonymous and p.removemd5 != rempPass:
                 return False
-        
+
             if checkOwnage and not (p.uidNumber == self.userInst.uidNumber() or self.userInst.canDeleteAllPosts()):
                 # print some error stuff here
                 return False
-            
+
             threadRemove = True
             tags = p.tags
-            if p.parentid>0:  
+            if p.parentid>0:
                 parentp = p.parentPost #self.sqlGet(Post.query, p.parentid)
                 tags = parentp.tags
                 threadRemove = False
-            
+
             tagline = u''
             taglist = []
             for tag in tags:
                 taglist.append(tag.tag)
-                
+
                 tag.replyCount -= 1
                 if threadRemove:
                     tag.threadCount -= 1
@@ -233,17 +263,17 @@ class OrphieBaseController(BaseController):
                 if fileonly:
                     logEntry += " %s" % _("(file only)")
                 addLogEntry(LOG_EVENT_POSTS_DELETE, logEntry)
-            
+
             if p.parentid == -1 and not fileonly:
                 if not (postOptions.canDeleteOwnThreads or self.userInst.canDeleteAllPosts()):
                     return False
                 opPostDeleted = True
                 for post in self.sqlAll(Post.query.filter(Post.parentid==p.id)):
                     self.processDelete(postid=post.id, checkOwnage=False)
-                    
+
             pic = self.deletePicture(p, False)
-            
-            if fileonly and postOptions.imagelessPost: 
+
+            if fileonly and postOptions.imagelessPost:
                 if pic:
                     p.picid = -1
             else:
@@ -251,7 +281,7 @@ class OrphieBaseController(BaseController):
                 parent = self.sqlFirst(Post.query.filter(Post.id==p.parentid))
                 if parent:
                     parent.replyCount -= 1
-                        
+
                 if invisBumpDisabled and p.parentid != -1:
                     thread = self.sqlAll(Post.query.filter(Post.parentid==p.parentid))
                     if thread and thread[-1].id == p.id: #wut?
@@ -259,23 +289,23 @@ class OrphieBaseController(BaseController):
                             parent.bumpDate = thread[-2].date
                         else:
                             parent.bumpDate = parent.date
-                            
+
                 meta.Session.delete(p)
         meta.Session.commit()
         return opPostDeleted
-    
+
     def passwd(self, key, key2, adminRights = False, currentKey = False, user = False):
         newuid = User.genUid(key)
         olduid = self.userInst.uid()
         if user:
             olduid = user.uid
-        
+
         if key == key2 and newuid != olduid and len(key) >= g.OPT.minPassLength:
             if not (adminRights or User.genUid(currentKey) == olduid):
                 c.boardName = _('Error')
                 c.errorText = _("You have entered incorrect current security code!")
                 return self.render('error')
-            
+
             anotherUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==newuid))
             if not anotherUser:
                 if not user:
@@ -286,9 +316,9 @@ class OrphieBaseController(BaseController):
                 return True
             else:
                 if not adminRights:
-                    currentUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==olduid))                
+                    currentUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==olduid))
                     self.banUser(currentUser, 7777, "Your are entered already existing Security Code. Contact administrator immediately please.")
-                    self.banUser(anotherUser, 7777, "Your Security Code was used during profile update by another user. Contact administrator immediately please.")                    
+                    self.banUser(anotherUser, 7777, "Your Security Code was used during profile update by another user. Contact administrator immediately please.")
                     c.boardName = _('Error')
                     c.errorText = _("You entered already existing Security Code. Both accounts was banned. Contact administrator please.")
                     return self.render('error')
@@ -297,32 +327,32 @@ class OrphieBaseController(BaseController):
                     c.errorText = _("You entered already existing Security Code.")
                     return self.render('error')
         return False
-    
-    def getParentID(self, id):  
+
+    def getParentID(self, id):
         post = self.sqlFirst(Post.query.filter(Post.id==id))
         if post:
            return post.parentid
         else:
            return False
-    
+
     def isPostOwner(self, id):
         post = self.sqlFirst(Post.query.filter(Post.id==id))
         if post and post.uidNumber == self.userInst.uidNumber():
            return post.parentid
         else:
            return False
-           
+
     def postOwner(self, id):
         post = self.sqlFirst(Post.query.filter(Post.id==id))
         if post:
            return post.parentid
         else:
            return False
-                    
-    def formatPostReference(self, postid, parentid = False): # TODO FIXME: move to parser             
+
+    def formatPostReference(self, postid, parentid = False): # TODO FIXME: move to parser
         if not parentid:
             parentid = self.getParentID(postid)
-            
+
         #if parentid == -1:
         #    return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
         #else:

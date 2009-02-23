@@ -22,7 +22,6 @@ t_extlist = sa.Table("extlist", meta.metadata,
     sa.Column("newWindow", sa.types.Boolean, server_default='1'),
     )
 
-#TODO: rewrite Extension
 class Extension(object):
     def __init__(self, name, enabled, newWindow, type, path, thwidth, thheight):
         self.ext = name

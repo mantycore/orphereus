@@ -124,35 +124,6 @@ class FccController(OrphieBaseController):
             tagList = cl[1]
         return (filter, tagList, filteringExpression)
 
-    def paginate(self, count, page, tpp):
-        if count > 1:
-            p = divmod(count, tpp)
-            c.pages = p[0]
-            if p[1]:
-                c.pages += 1
-            if (page + 1) > c.pages:
-                page = c.pages - 1
-            c.page = page
-
-            if c.pages>15:
-                c.showPagesPartial = True
-                if c.page-5>1:
-                    c.leftPage = c.page-5
-                else:
-                    c.leftPage=2
-
-                if c.page+5<c.pages-2:
-                    c.rightPage = c.page+5
-                else:
-                    c.rightPage=c.pages-2
-        elif count == 1:
-            c.page  = False
-            c.pages = False
-        elif count == 0:
-            c.page  = False
-            c.pages = False
-        c.count = count
-
     def excludeHiddenTags(self, filter):
         adminTagsLine = g.settingsMap['adminOnlyTags'].value
         forbiddenTags = getTagsListFromString(adminTagsLine)
@@ -177,7 +148,7 @@ class FccController(OrphieBaseController):
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = self.userInst.isAdmin()
 
-        #TODO: ?move into GLOBAL object
+        #TODO: move into GLOBAL object???
         extensions = Extension.getList(True)
         extList = []
         for ext in extensions:
@@ -972,14 +943,10 @@ class FccController(OrphieBaseController):
             c.boardName = 'Logs'
             page = int(page)
             count = self.sqlCount(meta.Session.query(LogEntry).filter(not_(LogEntry.event.in_(disabledEvents))))
-            p = divmod(count, 100)
-            c.pages = p[0]
-            if p[1]:
-                c.pages += 1
-            if (page + 1) > c.pages:
-                page = c.pages - 1
-            c.page = page
-            c.logs = meta.Session.query(LogEntry).filter(not_(LogEntry.event.in_(disabledEvents))).options(eagerload('user')).order_by(LogEntry.date.desc())[page*100:(page+1)*100]
+            tpp = 3
+            self.paginate(count, page, tpp)
+            filter = meta.Session.query(LogEntry).filter(not_(LogEntry.event.in_(disabledEvents))).options(eagerload('user')).order_by(LogEntry.date.desc())
+            c.logs = filter[page*tpp:(page+1)*tpp]
             rv = re.compile('(\d+\.){3}\d+')
             for log in c.logs:
                 log.entry = rv.sub('<font color="red">[IP REMOVED]</font>', log.entry)

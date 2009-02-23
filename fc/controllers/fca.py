@@ -341,14 +341,9 @@ class FcaController(OrphieBaseController):
         c.boardName = 'Logs'
         page = int(page)
         count = meta.Session.query(LogEntry).count()
-        p = divmod(count, 100)
-        c.pages = p[0]
-        if p[1]:
-            c.pages += 1
-        if (page + 1) > c.pages:
-            page = c.pages - 1
-        c.page = page
-        c.logs = meta.Session.query(LogEntry).options(eagerload('user')).order_by(LogEntry.date.desc())[page*100:(page+1)*100]
+        tpp = 3
+        self.paginate(count, page, tpp)
+        c.logs = meta.Session.query(LogEntry).options(eagerload('user')).order_by(LogEntry.date.desc())[page*tpp:(page+1)*tpp]
         return self.render('adminLogs')
 
     def manageMappings(self, act, id, tagid):

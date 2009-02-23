@@ -41,7 +41,8 @@ def make_map():
     # User subsystem
     map.connect('/userProfile', controller='fcc', action='showProfile')
     #map.connect('/userProfile/messages', controller='fcc', action='showMessages')
-    map.connect('/viewLog/:page', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
+    map.connect('/viewLog', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
+    map.connect('/viewLog/page/:page', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
 
     # Admin subsystem
     map.connect('/holySynod', controller='fca', action='index')
@@ -57,7 +58,8 @@ def make_map():
     map.connect('/holySynod/manageUsers/edit/:uid', controller='fca', action='editUser', requirements=dict(uid='\d+'))
     map.connect('/holySynod/manageQuestions', controller='fca', action='manageQuestions')
     map.connect('/holySynod/manageApplications', controller='fca', action='manageApplications')
-    map.connect('/holySynod/viewLog/:page', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
+    map.connect('/holySynod/viewLog', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
+    map.connect('/holySynod/viewLog/page/:page', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
     map.connect('/holySynod/manageMappings/:act/:id/:tagid', controller='fca', action='manageMappings', act='show', id=0, tagid=0, requirements=dict(id='\d+', tagid='\d+'))
 
     # Maintenance

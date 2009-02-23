@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.admin.mako" />
 
+<form id="postform" method="post">
+%if not c.showCount:
+<input type="submit" value="${_('Show statistics')}" name="showCount"/>
+%endif
 <a href="/holySynod/manageExtensions/edit">${_('Add new extension')}</a>
+</form>
+
 <hr />
+
 <table class="hlTable">
     <thead>
         <tr>
@@ -12,6 +19,9 @@
             <td>${_('Thumb Path')}</td>
             <td>${_('Enabled')}</td>
             <td>${_('New window')}</td>
+            %if c.showCount:
+            <td>${_('Files posted')}</td>
+            %endif
         </tr>
     </thead>
     <tbody>
@@ -23,6 +33,9 @@
             <td>${e.path}</td>
             <td>${e.enabled and "yes"}</td>
             <td>${e.newWindow and "yes"}</td>
+            %if c.showCount:
+            <td>${e.count()}</td>
+            %endif
         </tr>
     %endfor
     </tbody>

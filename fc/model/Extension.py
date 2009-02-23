@@ -38,9 +38,11 @@ class Extension(object):
         self.thheight = thheight
         meta.Session.commit()
 
+    def count(self):
+        return Picture.query.filter(Picture.extension.has(Extension.id == self.id)).count()
+
     def delete(self):
-        boundPictures = Picture.query.filter(Picture.extension.has(Extension.id == self.id)).count()
-        if boundPictures == 0:
+        if self.count() == 0:
             meta.Session.delete(self)
             meta.Session.commit()
             return True

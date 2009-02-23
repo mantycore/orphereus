@@ -272,6 +272,7 @@ class FcaController(OrphieBaseController):
 
     def manageExtensions(self):
         c.extensions = Extension.getList(True)
+        c.showCount = request.POST.get('showCount', False)
         return self.render('manageExtensions')
 
     def editExtension(self, name):

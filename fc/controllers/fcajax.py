@@ -16,7 +16,6 @@ import os
 import hashlib
 import re
 from wakabaparse import WakabaParser
-from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
@@ -26,11 +25,10 @@ log = logging.getLogger(__name__)
 class FcajaxController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        #self.userInst = FUser(session.get('uidNumber',-1))
         c.userInst = self.userInst
         if not self.userInst.isAuthorized() or self.userInst.isBanned():
             abort(403)
-            
+
     def getPost(self, post):
         postInst = Post.query.get(post)
         if postInst:
@@ -39,7 +37,7 @@ class FcajaxController(OrphieBaseController):
             else:
                 parent = Post.query.get(postInst.parentid)
 
-            forbiddenTags = getTagsListFromString(g.settingsMap['adminOnlyTags'].value)       
+            forbiddenTags = getTagsListFromString(g.settingsMap['adminOnlyTags'].value)
             for t in parent.tags:
                 if t.id in forbiddenTags and not self.userInst.isAdmin():
                     abort(403)
@@ -55,24 +53,24 @@ class FcajaxController(OrphieBaseController):
             else:
                 parent = Post.query.get(postInst.parentid)
 
-            forbiddenTags = getTagsListFromString(g.settingsMap['adminOnlyTags'].value)       
+            forbiddenTags = getTagsListFromString(g.settingsMap['adminOnlyTags'].value)
             for t in parent.tags:
                 if t.id in forbiddenTags and not self.userInst.isAdmin():
                     abort(403)
-                    
+
             #uncomment to disable folding for big posts
             #parent.enableShortMessages=False
             return self.render('postReply', thread=parent, post = postInst)
         else:
-            abort(404)            
-    
+            abort(404)
+
     def getRepliesCountForThread(self, post):
         postInst = Post.query.get(post)
         if postInst and postInst.parentid == -1:
             return str(Post.query.filter(Post.parentid == postInst.id).count())
         else:
             abort(404)
-    
+
     def getThreadIds(self, post):
         postInst = Post.query.get(post)
         if postInst and postInst.parentid == -1:
@@ -84,13 +82,13 @@ class FcajaxController(OrphieBaseController):
             return ','.join(ret)
         else:
             abort(404)
-    
+
     def getUserSettings(self):
         return str(self.userInst.optionsDump())
-    
+
     def getUploadsPath(self):
         return g.OPT.filesPathWeb
-    
+
     def editUserFilter(self,fid,filter):
         if self.userInst.Anonymous:
             abort(403)
@@ -100,7 +98,7 @@ class FcajaxController(OrphieBaseController):
         userFilter.filter = filterText(filter)
         meta.Session.commit()
         return userFilter.filter
-    
+
     def deleteUserFilter(self,fid):
         if self.userInst.Anonymous:
             abort(403)
@@ -110,7 +108,7 @@ class FcajaxController(OrphieBaseController):
         meta.Session.delete(userFilter)
         meta.Session.commit()
         return ''
-        
+
     def addUserFilter(self,filter):
         if self.userInst.Anonymous:
             abort(403)
@@ -121,7 +119,7 @@ class FcajaxController(OrphieBaseController):
         meta.Session.commit()
         c.userFilter = userFilter
         return self.render('ajax.addUserFilter') #render('/ajax.addUserFilter.mako')
-    
+
     def hideThread(self,post,url):
         if self.userInst.Anonymous:
             abort(403)
@@ -137,7 +135,7 @@ class FcajaxController(OrphieBaseController):
             return redirect_to(str('/%s' % url.encode('utf-8')))
         else:
             return ''
-    
+
     def showThread(self,post,redirect):
         if self.userInst.Anonymous:
             abort(403)

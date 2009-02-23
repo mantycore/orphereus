@@ -13,7 +13,6 @@ import Image
 import os
 import hashlib
 import re
-from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
@@ -23,7 +22,6 @@ log = logging.getLogger(__name__)
 class FcaController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        #self.userInst = FUser(session.get('uidNumber',-1))
         if not self.userInst.isAuthorized():
             c.currentURL = u'/holySynod/'
             return redirect_to('/')

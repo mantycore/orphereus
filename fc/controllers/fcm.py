@@ -12,7 +12,6 @@ import os
 import shutil
 import hashlib
 import re
-from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
@@ -354,7 +353,6 @@ class FcmController(OrphieBaseController):
     def mtnAction(self, actid, secid):
         secTestPassed = False
         if not secid:
-            #self.userInst = FUser(session.get('uidNumber',-1))
             if not self.userInst.isAuthorized():
                 c.currentURL = u'/holySynod/'
                 return redirect_to('/')

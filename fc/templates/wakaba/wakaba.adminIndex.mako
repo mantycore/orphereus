@@ -19,7 +19,7 @@ ${_('Current members of Holy Synod')}
     style="font-weight: bold;"
     %endif
     >
-        <td><a style="display: block;" href='/holySynod/manageUsers/edit/${u.uidNumber}'>${u.uidNumber}</a></td>
+        <td><div class="hovblock"><a style="display: block;" href='/holySynod/manageUsers/edit/${u.uidNumber}'>${u.uidNumber}</a></div></td>
         <td>${u.canDeleteAllPosts() and "+" or ""}</td>
         <td>${u.canMakeInvite() and "+" or ""}</td>
         <td>${u.canChangeSettings() and "+" or ""}</td>

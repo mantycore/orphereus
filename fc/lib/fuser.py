@@ -31,36 +31,129 @@ class FakeUser(object):
             self.Anonymous = True
 
             self.__user = empty()
-            self.__user.options = None
             self.__user.uidNumber = -1
             self.__user.filters = ()
 
             self.__user.options = empty()
             UserOptions.initDefaultOptions(self.__user.options, g.OPT)
 
+    def isValid(self):
+        return self.__valid
+
+    def isAuthorized(self):
+        return self.isValid() and (session.get('uidNumber', -1) == self.__uidNumber)
+
+    def canPost(self):
+        return g.OPT.allowPosting and ((self.Anonymous and g.OPT.allowAnonymousPosting) or not self.Anonymous)
+
+    def uidNumber(self):
+        return self.__user.uidNumber
+
+    def uid(self, value=None):
+        return self.__user.uid
+
+    def defaultGoto(self, value = None):
+        return self.__user.options.defaultGoto
+
+    def filters(self):
+        return self.__user.options.filters
+
+    def isBanned(self):
+        return False
+
+    def isAdmin(self):
+        return False
+
+    def secid(self):
+        return 0
+
+    def hideLongComments(self, value=None):
+        return self.__user.options.hideLongComments
+
+    def mixOldThreads(self, value=None):
+        return self.__user.options.mixOldThreads
+
+    def useAjax(self, value=None):
+        return self.__user.options.useAjax
+
+    def homeExclude(self, value = None):
+        return pickle.loads(self.__user.options.homeExclude)
+
+    def hideThreads(self, value = None):
+        return pickle.loads(self.__user.options.hideThreads)
+
+    def threadsPerPage(self, value = False):
+        return self.__user.options.threadsPerPage
+
+    def repliesPerThread(self, value = False):
+        return self.__user.options.repliesPerThread
+
+    def style(self, value = False):
+        return self.__user.options.style
+
+    def template(self, value = False):
+        return self.__user.options.template
+
+    def canDeleteAllPosts(self):
+        return False
+
+    def canMakeInvite(self):
+        return False
+
+    def canChangeRights(self):
+        return False
+
+    def bantime(self):
+        return 0
+
+    def banreason(self):
+        return u''
+
+    def optionsDump(self):
+        return UserOptions.optionsDump(self.options)
+
+    def canChangeSettings(self):
+        return False
+
+    def canManageBoards(self):
+        return False
+
+    def canManageUsers(self):
+        return False
+
+    def canManageExtensions(self):
+        return False
+
+    def canManageMappings(self):
+        return False
+
+    def canRunMaintenance(self):
+        return False
+
+    def expandImages(self):
+        return self.__user.options.expandImages
+
+    def maxExpandWidth(self):
+        return self.__user.options.maxExpandWidth
+
+    def maxExpandHeight(self):
+        return self.__user.options.maxExpandHeight
+
 
 class FUser(object):
-    def __init__(self, uidNumber = -1):
+    def __init__(self, uidNumber):
         self.__uidNumber = uidNumber
         self.__valid = False
         self.Anonymous = False
 
-        if uidNumber>-1 or g.OPT.allowAnonymous:
+        if uidNumber>-1:
             self.__user = None
-            self.Anonymous = False
-            if uidNumber>-1:
-                self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
-
-            if not self.__user and g.OPT.allowAnonymous:
-                self.__user = empty()
-                self.__user.options = None
-                self.__user.uidNumber = -1
-                self.__user.filters = ()
-                self.Anonymous = True
+            self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
 
             if self.__user:
                 self.__valid = True
 
+            """
                 if not self.__user.options:
                     if uidNumber>-1:
                         self.__user.options = UserOptions()
@@ -75,8 +168,7 @@ class FUser(object):
                 if not self.__user.options.homeExclude:
                     self.__user.options.homeExclude = pickle.dumps([])
                     meta.Session.commit()
-
-                self.__valid = True
+            """
 
     def isValid(self):
         return self.__valid

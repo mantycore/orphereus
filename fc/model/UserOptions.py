@@ -3,6 +3,8 @@ from sqlalchemy import orm
 
 from fc.model import meta
 import datetime
+import re
+import pickle
 
 import logging
 log = logging.getLogger(__name__)
@@ -34,6 +36,17 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
 #TODO: rewrite UserOptions
 class UserOptions(object):
     @staticmethod
+    def optionsDump(optionsObject):
+        optionsNames = dir(optionsObject)
+        ret = {}
+        retest = re.compile("^(<.*(at (0x){0,1}[0-9a-fA-F]+)+.*>)|(__.*__)$")
+        for name in optionsNames:
+            attr = str(getattr(optionsObject, name))
+            if not (retest.match(name) or retest.match(attr)):
+                ret[name] = attr
+        return ret
+
+    @staticmethod
     def initDefaultOptions(optionsObject, globalOptHolder):
         optionsObject.style = globalOptHolder.styles[0]
         optionsObject.template = globalOptHolder.templates[0]
@@ -48,5 +61,8 @@ class UserOptions(object):
         optionsObject.useAjax = True
         optionsObject.mixOldThreads = True
         optionsObject.defaultGoto = 0
+        optionsObject.expandImages = True
+        optionsObject.maxExpandWidth = 1024
+        optionsObject.maxExpandHeight = 768
         optionsObject.homeExclude = pickle.dumps([])
         optionsObject.hideThreads = pickle.dumps([])

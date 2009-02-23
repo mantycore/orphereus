@@ -1,59 +1,59 @@
-﻿body { margin: 0; padding: 8px; margin-bottom: auto; }
+body { margin: 0; padding: 8px; margin-bottom: auto; }
 blockquote blockquote { margin-left: 0em }
-form { 
+form {
 margin-bottom: 0px }
 .postarea { text-align: center }
 .postarea table { margin: 0px auto; text-align: left }
-.thumb { 
+.thumb {
 border: none; float: left; margin: 2px 20px }
-.nothumb { float: left; background: #111; border: 2px dashed #222; 
+.nothumb { float: left; background: #111; border: 2px dashed #222;
 text-align: center; margin: 2px 20px; padding: 1em 0.5em 1em 0.5em; }
-.reply blockquote, blockquote :last-child { 
+.reply blockquote, blockquote :last-child {
 margin-bottom: 0em }
 .reflink a { color: inherit; text-decoration: none }
-.reply .filesize { margin-left: 20px } 
+.reply .filesize { margin-left: 20px }
 .userdelete { float: right; text-align: center; white-space: nowrap }
 .replypage .replylink { display: none }
 html {
-	padding: 0px;
-	margin: 0px;
-	background-color: #6B7B8D;
+    padding: 0px;
+    margin: 0px;
+    background-color: #6B7B8D;
 
 }
 body {
-	padding: 8px;
-	margin: 0px;
-	background-color: #6B7B8D;
-	color: #FFFFFF;
-	font-family: "Trebuchet MS", serif;
+    padding: 8px;
+    margin: 0px;
+    background-color: #6B7B8D;
+    color: #FFFFFF;
+    font-family: "Trebuchet MS", serif;
 }
 
 a {
-	color:#AFB9C5;
+    color:#AFB9C5;
 
 }
 /*a:visited {
-	color:#9DA6B0;
+    color:#9DA6B0;
 }*/
 
 a:hover {
-	color:#EEEEEE;
+    color:#EEEEEE;
 }
 form {
-	margin: 0px;
+    margin: 0px;
 }
 ol ul, ul ol, ul ul, ol ol {
-	margin-top: 0;
-	margin-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 ol p:first-child, ul p:first-child {
-	margin-top: 0;
+    margin-top: 0;
 }
 ol p:last-child, ul p:last-child {
-	margin-bottom: 0;
+    margin-bottom: 0;
 }
 
-div.delete { 
+div.delete {
 }
 .adminbar {
         text-align:right;
@@ -71,9 +71,9 @@ div.delete {
 
 .theader, .passvalid, .replymode, .catalogmode {
         background:#0010E0;
-	-moz-border-radius: 6px 6px 6px 6px;
+    -moz-border-radius: 6px 6px 6px 6px;
         width:100%;
-	background-color: #49525D;
+    background-color: #49525D;
         text-align:center;
         font-weight:bold;
 }
@@ -84,51 +84,51 @@ div.delete {
         font-size:11px;
 }
 .postblock {
-	background-color: #8C9FB4;
-	color: #49525D;
-	font-weight: bold;
-	font-size: .8em;
-	margin: 3px;
-	padding: 3px;
-	-moz-border-radius: 4px;
-	font-weight: bold;
+    background-color: #8C9FB4;
+    color: #49525D;
+    font-weight: bold;
+    font-size: .8em;
+    margin: 3px;
+    padding: 3px;
+    -moz-border-radius: 4px;
+    font-weight: bold;
 
 }
 .footer {
        text-align:center;
         font-size:10px;
-	clear: both;
-	padding-top: 10px;
+    clear: both;
+    padding-top: 10px;
 }
 .footer a {
-	font-size:10px;
+    font-size:10px;
 }
 .dellist {
-	background:inherit;
-	text-align:center;
+    background:inherit;
+    text-align:center;
 }
 .delbuttons {
-	background:inherit;
-	text-align:center;
-	padding-bottom:4px;
+    background:inherit;
+    text-align:center;
+    padding-bottom:4px;
 }
 .managehead {
-	background:#0F8FE1;
-	color:#000000;
-	font-family:sans-serif;
-	font-size:14px;
-	padding:0px;
+    background:#0F8FE1;
+    color:#000000;
+    font-family:sans-serif;
+    font-size:14px;
+    padding:0px;
 }
 .postlists {
-	background:#FFFFFF;
-	width:100%;
-	padding:0px;
-	color:#000000;
+    background:#FFFFFF;
+    width:100%;
+    padding:0px;
+    color:#000000;
 }
 .row1 {
-	background:#9AD2F6;
-	font-size:12px;
-	color:#000000;
+    background:#9AD2F6;
+    font-size:12px;
+    color:#000000;
 }
 .row2 {
         background:#FFFFFF;
@@ -136,8 +136,8 @@ div.delete {
         color:#000000;
 }
 .unkfunc {
-	background:#C4C2EE;
-	color:#FFFFFF;
+    background:#C4C2EE;
+    color:#FFFFFF;
 }
 .reflink {
              color:#EEEEEE;
@@ -146,22 +146,22 @@ div.delete {
              color:#EEEEEE;
 }
 .filesize {
-	font-size:12px;
-	text-decoration:underline;
-	padding-left:3em;
+    font-size:12px;
+    text-decoration:underline;
+    padding-left:3em;
 }
 .filetitle {
-	background:inherit;
+    background:inherit;
               color:#0F0C4B;
-	font-weight:800;
+    font-weight:800;
 }
 .postername {
-	background:inherit;
-	color:#C3E8F3;
-	font-weight:800;
+    background:inherit;
+    color:#C3E8F3;
+    font-weight:800;
 }
 .postertrip {
-	color:#228854;
+    color:#228854;
 }
 .oldpost, .notabene {
         background:inherit;
@@ -176,23 +176,23 @@ div.delete {
         font-weight:800;
 }
 .reply {
-	background-color: #49525D;
-	padding: 4px;
-	margin-bottom: 2em;
-	clear: both;
-	-moz-border-radius: 6px;
+    background-color: #49525D;
+    padding: 4px;
+    margin-bottom: 2em;
+    clear: both;
+    -moz-border-radius: 6px;
 }
 blockquote {
-	margin: .5em .5em .5em 1em;
+    margin: .5em .5em .5em 1em;
 }
 
 .reply blockquote {
-	margin: .5em;
+    margin: .5em;
 }
 .doubledash {
- 	vertical-align:top;
-	clear:both;
-	float:left;
+    vertical-align:top;
+    clear:both;
+    float:left;
 }
 .replytitle {
         background:inherit;
@@ -205,50 +205,53 @@ blockquote {
         font-weight:800;
 }
 .thumbnailmsg {
-	background:inherit;
-	font-size:9px;
-	color:#000000;
+    background:inherit;
+    font-size:9px;
+    color:#000000;
 }
 hr {
-	border-style: solid none none none;
-	border-width: 1px;
-	border-color: #BBBBBB;
+    border-style: solid none none none;
+    border-width: 1px;
+    border-color: #BBBBBB;
 }
 table {
-	border-style: none;
+    border-style: none;
 }
 table td {
-	border-style: none;
+    border-style: none;
 }
 .nothumb {
-	background-color: #FFFFFF;
-	border-style: dotted;
-	margin: .3em .5em;
+    background-color: #FFFFFF;
+    border-style: dotted;
+    margin: .3em .5em;
 }
 .abbrev {
         color:#707070;
 }
 .highlight {
-	background-color:#FFFFFF;
-	border: 2px solid #34345C;
-	color: #49525D;
-	-moz-border-radius: 6px;
+    background-color:#FFFFFF;
+    border: 2px solid #34345C;
+    color: #49525D;
+    -moz-border-radius: 6px;
+}
+.highlight a{
+color: #5A6A7C;
 }
 dl.menu dt {
-	background:#DDDDDD;
-	border: solid 1px #CCCCCC;
-	margin-top: 1em;
-	padding-left: .5em;
-	cursor: pointer;
-	
+    background:#DDDDDD;
+    border: solid 1px #CCCCCC;
+    margin-top: 1em;
+    padding-left: .5em;
+    cursor: pointer;
+
 }
 dl.menu dd {
-	margin-left: .5em;
-	padding-left: .5em;
-	border-left: solid 1px #CCCCCC;
+    margin-left: .5em;
+    padding-left: .5em;
+    border-left: solid 1px #CCCCCC;
 }
 dl.menu dd.hidden {
-	display: none;
+    display: none;
 }
 .signature {
         background: #001100;
@@ -273,48 +276,48 @@ dl.menu dd.hidden {
 }
 
 .postbody blockquote {
-	background:#FFFFFF;
-	color:#6B7B8D;
+    background:#FFFFFF;
+    color:#6B7B8D;
 }
 .postbody blockquote blockquote{
-	background:#FFFFFF;
-	color:#7d8d9E;
+    background:#FFFFFF;
+    color:#7d8d9E;
 }
 .postbody blockquote blockquote blockquote{
         color:#204010;
         margin:0;
-	background:#FFFFFF;
+    background:#FFFFFF;
 }
 .spoiler {
-	background: #C4C2EE;
-	color: #C4C2EE;
+    background: #C4C2EE;
+    color: #C4C2EE;
 }
 .spoiler blockquote{
-	background: #C4C2EE; !important;
-	color: #C4C2EE; !important;
+    background: #C4C2EE; !important;
+    color: #C4C2EE; !important;
 }
 .spoiler:hover {
-	background: #C4C2EE;
-	color: #000000;
+    background: #C4C2EE;
+    color: #000000;
 }
 .spoiler:hover blockquote{
-	color:#789922 !important;
+    color:#789922 !important;
 }
 .spoiler blockquote:hover {
-	color:#789922 !important;
+    color:#789922 !important;
 }
 blockquote a:hover{
-color: #6B7B8D;
+color: #8D9DAF;
 }
 .errorMessage{
-	background:#EEaaaa;
-	text-align:center;
-	padding:2px;
-	color:#880000;
-	clear: both;
-	font-weight: bold;
-	margin-bottom: .5em;
-	border: solid 1px #117743;
+    background:#EEaaaa;
+    text-align:center;
+    padding:2px;
+    color:#880000;
+    clear: both;
+    font-weight: bold;
+    margin-bottom: .5em;
+    border: solid 1px #117743;
 }
 .adminMenu{
 vertical-align:top;
@@ -322,19 +325,19 @@ background:#D6DAF0;
 }
 
 .hlTable td{
-	background-color: #49525D;
+    background-color: #49525D;
 
 }
 input, textarea {
-	background-color: #EEEEEE;
-	border-top: 1px solid #49525D;
-	border-bottom: 1px solid #B6C2CF;
-	border-left: 1px solid #49525D;
-	border-right: 1px solid #B6C2CF;
+    background-color: #EEEEEE;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
 }
 }
 .hidden-thread {
-	color: #666; padding: 5px 0 0 28px; min-height: 24px; vertical-align: middle; background: url('images/hidden.png') no-repeat left center;
+    color: #666; padding: 5px 0 0 28px; min-height: 24px; vertical-align: middle; background: url('images/hidden.png') no-repeat left center;
 }
 form > div + br[clear="left"] {
 display: block; height: 1px;
@@ -343,72 +346,72 @@ display: block; height: 1px;
 font-size: 80%; color: #666;
 }
 .reply label span {
-font-size: 125%; 
+font-size: 125%;
 }
 label, label input {
 vertical-align: middle;
 }
 a.loading {
-	padding-left: 16px;
-	background: url('images/loading.gif') no-repeat left center;
+    padding-left: 16px;
+    background: url('images/loading.gif') no-repeat left center;
 }
 .x_unfoldreply td {
-	border-color: #EEAA88;
+    border-color: #EEAA88;
 }
 .x_qrattached:hover {
-	border-bottom: 1px #ccc dotted;
+    border-bottom: 1px #ccc dotted;
 }
 div a.show-hide-thread {
-	display: block; float: right; font-size: 70%; text-decoration: none;
+    display: block; float: right; font-size: 70%; text-decoration: none;
 }
 div a.show-hide-thread:hover {
-	text-decoration: underline; color: #f33;
+    text-decoration: underline; color: #f33;
 }
 #x_replyform {
-	display: block; border: 1px #117743; solid; margin: 0 2px 2px 2px; padding: 5px; 
-	background-color: #49525D;
-	-moz-border-radius: 6px;
+    display: block; border: 1px #117743; solid; margin: 0 2px 2px 2px; padding: 5px;
+    background-color: #49525D;
+    -moz-border-radius: 6px;
 }
 #x_replyform textarea {
-	width: 100%; background-color: #EEEEEE;
-	border-top: 1px solid #49525D;
-	border-bottom: 1px solid #B6C2CF;
-	border-left: 1px solid #49525D;
-	border-right: 1px solid #B6C2CF;
+    width: 100%; background-color: #EEEEEE;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
 }
 #x_replyform div {
-	overflow: hidden; margin-top: 5px;
+    overflow: hidden; margin-top: 5px;
 }
 #x_replyform label {
-	float: left; margin-right: 10px;
+    float: left; margin-right: 10px;
 }
 #x_replyform input[type="text"], #x_replyform input[type="password"] {
-	background-color: #EEEEEE;
-	border-top: 1px solid #49525D;
-	border-bottom: 1px solid #B6C2CF;
-	border-left: 1px solid #49525D;
-	border-right: 1px solid #B6C2CF;
+    background-color: #EEEEEE;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
 }
 #x_replyform input[type="file"] > input[type="text"] {
-	background-color: #EEEEEE;
-	border-top: 1px solid #49525D;
-	border-bottom: 1px solid #B6C2CF;
-	border-left: 1px solid #49525D;
-	border-right: 1px solid #B6C2CF;
-} 
+    background-color: #EEEEEE;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
+}
 #x_replyform input[type="submit"] {background-color: #EEEEEE;
-	border-top: 1px solid #49525D;
-	border-bottom: 1px solid #B6C2CF;
-	border-left: 1px solid #49525D;
-	border-right: 1px solid #B6C2CF;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
 
 }
 #x_replyform button {background-color: #EEEEEE;
-	border-top: 1px solid #49525D;
-	border-bottom: 1px solid #B6C2CF;
-	border-left: 1px solid #49525D;
-	border-right: 1px solid #B6C2CF;
-	
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
+
 }
 .logline {background: #DDDDDD;}
 .nomargin{margin: 0;}

@@ -14,7 +14,7 @@ import os
 import hashlib
 import string
 import re
-from fc.lib.fuser import FUser
+from fc.lib.fuser import *
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 
@@ -26,7 +26,13 @@ class OrphieBaseController(BaseController):
             c.log = []
             c.sum = 0
 
-        self.userInst = FUser(session.get('uidNumber', -1))
+
+        uid = session.get('uidNumber', -1)
+        if uid > 0:
+            self.userInst = FUser(uid)
+        else:
+            self.userInst = FakeUser()
+
         c.userInst = self.userInst
         #log.debug(session.get('uidNumber', -1))
         if g.OPT.checkUAs and self.userInst.isValid():

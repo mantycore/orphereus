@@ -15,7 +15,6 @@ import hashlib
 import re
 from beaker.cache import CacheManager
 from wakabaparse import WakabaParser
-from fc.lib.fuser import FUser
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from fc.lib.fileHolder import AngryFileHolder
@@ -32,7 +31,6 @@ def taglistcmp(a, b):
 class FccController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        #self.userInst = FUser(session.get('uidNumber', -1))
         c.userInst = self.userInst
         c.destinations = destinations
 
@@ -156,10 +154,8 @@ class FccController(OrphieBaseController):
         c.extLine = ', '.join(extList)
 
         threadFilter = self.excludeHiddenTags(threadFilter)
-
         count = self.sqlCount(threadFilter)
         tpp = self.userInst.threadsPerPage()
-
         if page*tpp >= count and count > 0:
             c.errorText = _("Incorrect page")
             return self.render('error')

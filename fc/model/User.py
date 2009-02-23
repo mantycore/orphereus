@@ -106,14 +106,7 @@ class User(object):
         return 768
 
     def optionsDump(self):
-        optionsNames = dir(self.options)
-        ret = {}
-        retest = re.compile("^(<.*(at (0x){0,1}[0-9a-fA-F]+)+.*>)|(__.*__)$")
-        for name in optionsNames:
-            attr = str(getattr(self.options, name))
-            if not (retest.match(name) or retest.match(attr)):
-                ret[name] = attr
-        return ret
+        return UserOptions.optionsDump(self.options)
 
     # access
     def isBanned(self):

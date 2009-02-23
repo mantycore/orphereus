@@ -943,7 +943,7 @@ class FccController(OrphieBaseController):
             c.boardName = 'Logs'
             page = int(page)
             count = self.sqlCount(meta.Session.query(LogEntry).filter(not_(LogEntry.event.in_(disabledEvents))))
-            tpp = 3
+            tpp = 50
             self.paginate(count, page, tpp)
             filter = meta.Session.query(LogEntry).filter(not_(LogEntry.event.in_(disabledEvents))).options(eagerload('user')).order_by(LogEntry.date.desc())
             c.logs = filter[page*tpp:(page+1)*tpp]

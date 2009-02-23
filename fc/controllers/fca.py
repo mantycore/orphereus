@@ -341,7 +341,7 @@ class FcaController(OrphieBaseController):
         c.boardName = 'Logs'
         page = int(page)
         count = meta.Session.query(LogEntry).count()
-        tpp = 3
+        tpp = 50
         self.paginate(count, page, tpp)
         c.logs = meta.Session.query(LogEntry).options(eagerload('user')).order_by(LogEntry.date.desc())[page*tpp:(page+1)*tpp]
         return self.render('adminLogs')

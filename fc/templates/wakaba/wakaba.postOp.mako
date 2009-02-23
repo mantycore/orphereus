@@ -3,27 +3,37 @@
 
 %if thread.file:
 <span class="filesize">
-    <a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}">${h.modLink(thread.file.path, c.userInst.secid(), True)}</a>            
+    <a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}"
+    %if thread.file.extension.newWindow:
+        target="_blank"
+    %endif
+    >
+    ${h.modLink(thread.file.path, c.userInst.secid(), True)}</a>
     (<em>${'%.2f' % (thread.file.size / 1024.0)} Kbytes, ${thread.file.width}x${thread.file.height}</em>)
 </span>
-<span class="thumbnailmsg"></span><br />                       
-<a target="_blank" href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}">
+
+<span class="thumbnailmsg"></span><br />
+<a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}"
+%if thread.file.extension.newWindow:
+    target="_blank"
+%endif
+>
 %if thread.spoiler:
     <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb" alt="Spoiler"/>
 %elif not '..' in thread.file.thumpath:
-    <img src="${g.OPT.filesPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />             
-%else:   
-    <img src="${g.OPT.staticPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />             
-%endif   
+    <img src="${g.OPT.filesPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />
+%else:
+    <img src="${g.OPT.staticPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />
+%endif
 </a>
 %elif thread.picid == -1:
     <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-    <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>             
+    <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>
 %endif
 <a name="i${thread.id}"></a>
 <label>
     &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Delete"/></a>
-    <span style="display:none" class="delete">       
+    <span style="display:none" class="delete">
     %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
         <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
         %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous:
@@ -32,13 +42,13 @@
     %endif
     %if c.isAdmin:
         <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>
-        <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>                     
+        <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>
     %endif
     </span>
     <span class="filetitle">${thread.title}</span>
 </label>
 
-    <span 
+    <span
     %if getattr(thread, 'mixed', False):
      style="color: red;"
     %endif
@@ -54,12 +64,12 @@
     %if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
         <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
     %endif
-    </span> 
+    </span>
 
     &nbsp;
     ${_('Posted in')}:
 %for t in thread.tags:
-    <a href="/${t.tag}/" 
+    <a href="/${t.tag}/"
     %if t.options:
         title="${t.options.comment}"
     %endif

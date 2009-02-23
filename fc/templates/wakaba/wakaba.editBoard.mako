@@ -7,7 +7,11 @@
             <tbody>
                 %if c.message:
                     <tr id="trmessage">
-                        <td colspan=2>${c.message}</td>
+                        <td colspan=2>
+                            <span class="theader">
+                                ${c.message}
+                            </span>
+                        </td>
                     </tr>
                 %endif
                 <tr id="trtag">
@@ -28,7 +32,7 @@
                     <td>
                         <input type="text" name="specialRules" size="35" value="${c.tag.options.specialRules}" />
                     </td>
-                </tr>                
+                </tr>
                 <tr id="trsection">
                     <td class="postblock">${_('Section')}</td>
                     <td>
@@ -64,13 +68,13 @@
                     <td>
                         <input type="checkbox" name="spoilers" ${c.tag.options.enableSpoilers and "checked" or ""} />
                     </td>
-                </tr>           
+                </tr>
                 <tr id="trsection">
                     <td class="postblock">${_('Allow OP to delete his threads')}</td>
                     <td>
                         <input type="checkbox" name="canDeleteOwnThreads" ${c.tag.options.canDeleteOwnThreads and "checked" or ""} />
                     </td>
-                </tr>                
+                </tr>
                 <tr id="trsection">
                     <td class="postblock">${_('Max filesize (bytes)')}</td>
                     <td>
@@ -94,11 +98,11 @@
                     <td>
                         <input type="checkbox" name="deleteBoard"} />
                     </td>
-                </tr>                
+                </tr>
                 <tr>
                     <td colspan='2'><input type='submit' value='${_('Update')}'></td>
-                </tr>                           
+                </tr>
             </tbody>
         </table>
-    </form>                 
+    </form>
 </div>

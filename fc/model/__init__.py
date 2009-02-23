@@ -43,7 +43,7 @@ def init_model(engine):
     
     meta.Session.mapper(Extension, t_extlist)
     meta.Session.mapper(Picture, t_piclist, properties = {
-        'extlist' : orm.relation(Extension)
+        'extension' : orm.relation(Extension)
         })
     
     meta.Session.mapper(TagOptions, t_tagOptions)

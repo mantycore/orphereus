@@ -21,7 +21,7 @@ def make_map():
     # debug route
     if config['core.devMode'] == 'true':
         map.connect('/uaInfo', controller='fcp', action='uaInfo')
-            
+
     # Special routes
     #map.connect('', controller='fcc', action='GetOverview')
     map.connect('/authorize', controller='fcp', action='authorize', url='')
@@ -32,12 +32,12 @@ def make_map():
     map.connect('/youAreBanned', controller='fcp', action='banned')
     map.connect('/search/:text', controller='fcc', action='search', text='', page=0)
     map.connect('/search/:text/page/:page', controller='fcc', action='search', text='', page=0, requirements=dict(page='\d+'))
-    #map.connect('/Join', controller='fcp', action='showStatic', page = 'Join')    
+    #map.connect('/Join', controller='fcp', action='showStatic', page = 'Join')
 
     # Oekaki
     map.connect('/:url/oekakiDraw', controller='fcc', action='oekakiDraw', url='')
     map.connect('/:url/oekakiSave/:tempid', controller='fcp', action='oekakiSave', url='',requirements=dict(tempid='\d+'))
-    
+
     # User subsystem
     map.connect('/userProfile', controller='fcc', action='showProfile')
     #map.connect('/userProfile/messages', controller='fcc', action='showMessages')
@@ -48,21 +48,21 @@ def make_map():
     map.connect('/holySynod/makeInvite', controller='fca', action='makeInvite')
     map.connect('/holySynod/manageSettings', controller='fca', action='manageSettings')
     map.connect('/holySynod/manageExtensions', controller='fca', action='manageExtensions')
-    map.connect('/holySynod/manageExtensions/edit/:ext', controller='fca', ext='', action='editExtension')
+    map.connect('/holySynod/manageExtensions/edit/:name', controller='fca', name='', action='editExtension')
     map.connect('/holySynod/manageBoards', controller='fca', action='manageBoards')
     map.connect('/holySynod/manageBoards/edit/:tag', controller='fca', tag='', action='editBoard')
     map.connect('/holySynod/manageUsers', controller='fca', action='manageUsers')
-    map.connect('/holySynod/manageUsers/editAttempt/:pid', controller='fca', action='editUserAttempt', requirements=dict(pid='\d+'))    
-    map.connect('/holySynod/manageUsers/editUserByPost/:pid', controller='fca', action='editUserByPost', requirements=dict(pid='\d+'))        
+    map.connect('/holySynod/manageUsers/editAttempt/:pid', controller='fca', action='editUserAttempt', requirements=dict(pid='\d+'))
+    map.connect('/holySynod/manageUsers/editUserByPost/:pid', controller='fca', action='editUserByPost', requirements=dict(pid='\d+'))
     map.connect('/holySynod/manageUsers/edit/:uid', controller='fca', action='editUser', requirements=dict(uid='\d+'))
     map.connect('/holySynod/manageQuestions', controller='fca', action='manageQuestions')
     map.connect('/holySynod/manageApplications', controller='fca', action='manageApplications')
     map.connect('/holySynod/viewLog/:page', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
-    map.connect('/holySynod/manageMappings/:act/:id/:tagid', controller='fca', action='manageMappings', act='show', id=0, tagid=0, requirements=dict(id='\d+', tagid='\d+'))        
+    map.connect('/holySynod/manageMappings/:act/:id/:tagid', controller='fca', action='manageMappings', act='show', id=0, tagid=0, requirements=dict(id='\d+', tagid='\d+'))
 
     # Maintenance
-    map.connect('/holySynod/service/:actid/:secid', controller='fcm', actid='', secid='', action='mtnAction')    
-    
+    map.connect('/holySynod/service/:actid/:secid', controller='fcm', actid='', secid='', action='mtnAction')
+
     # AJAX
     map.connect('/ajax/hideThread/:post/*url', controller='fcajax', action='hideThread', requirements=dict(post='\d+'))
     map.connect('/ajax/showThread/:post/:redirect', controller='fcajax', action='showThread', redirect='', requirements=dict(post='\d+'))
@@ -75,18 +75,18 @@ def make_map():
     map.connect('/ajax/getThreadIds/:post', controller='fcajax', action='getThreadIds', requirements=dict(post='\d+'))
     map.connect('/ajax/getUserSettings', controller='fcajax', action='getUserSettings')
     map.connect('/ajax/getUploadsPath', controller='fcajax', action='getUploadsPath')
-    
+
     # Threads
     map.connect('/:post', controller='fcc', action='PostReply', conditions=dict(method=['POST']), requirements=dict(post='\d+'))
     map.connect('/:board/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))
-    map.connect('/:post/anonymize', controller='fcc', action='Anonimyze', requirements=dict(post='\d+'))    
+    map.connect('/:post/anonymize', controller='fcc', action='Anonimyze', requirements=dict(post='\d+'))
     map.connect('/:post/:tempid', controller='fcc', action='GetThread', tempid=0, requirements=dict(post='\d+',tempid='\d+'))
     map.connect('/:board', controller='fcc', action='PostThread',conditions=dict(method=['POST']))
-    
+
     # Generic filter
     map.connect('/:board/:tempid', controller='fcc', action='GetBoard', board = '!', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))
-    
+
     map.connect('/static/:page', controller='fcc', action='showStatic', page = 'Rules')
 
     # traps for bots

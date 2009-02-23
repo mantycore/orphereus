@@ -2,7 +2,7 @@ from pylons.i18n import _, ungettext, N_
 
 #this is default values, real are stored in database
 settingsDef = {
-    "title"         : "ANOMA.Ch",
+    "title"         : "Orphereus",
     "invisibleBump" : 'true',
     "maxTagsCount"  : '5',
     "maxTagLen"     : '6',
@@ -11,7 +11,7 @@ settingsDef = {
     "maxLinesInPost": '15',
     "cutSymbols"    : '5000',
     "usersCanViewLogs"  : 'false',
-    "additionalLinks" : ''
+    "additionalLinks" : 'http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma'
 }
 
 id3FieldsNames = {
@@ -49,7 +49,7 @@ disabledEvents = [LOG_EVENT_RICKROLLD, LOG_EVENT_SECURITY_IP, LOG_EVENT_INTEGR]
 
 destinations = {0 : N_("Thread"),
                 1 : N_("First page of current board"),
-                2 : N_("Current page of current board"),                
+                2 : N_("Current page of current board"),
                 3 : N_("Overview"),
                 4 : N_("First page of destination board"),
                 5 : N_("Referrer"),

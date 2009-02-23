@@ -17,7 +17,7 @@
 %if not thread.hidden:
     <div id="thread-${thread.id}">
         <%include file="wakaba.postOp.mako" args="thread=thread"/>
-        
+
         %for post in thread.Replies:
            <%include file="wakaba.postReply.mako" args="thread=thread, post=post"/>
         %endfor
@@ -34,15 +34,15 @@
     <tbody>
         <tr><td>
             <input type="hidden" name="task" value="delete" />
-        	%if c.isAdmin:
-        		Reason: <input type="text" name="reason" size="35" />
-         	%endif
-         	
+          %if c.isAdmin:
+            Reason: <input type="text" name="reason" size="35" />
+           %endif
+
             %if c.userInst.Anonymous:
                 Password: <input type="password" name="remPass" size="10" value="${c.remPass}" />
             %endif
             [<label><input type="checkbox" name="fileonly" value="on" />Only file</label>]
-            <input value="Delete post(s)" type="submit" /> 
+            <input value="Delete post(s)" type="submit" />
         </td></tr>
     </tbody>
 </table>

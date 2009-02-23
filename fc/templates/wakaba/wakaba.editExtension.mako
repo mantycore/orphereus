@@ -7,17 +7,46 @@
             <tbody>
                 %if c.message:
                     <tr id="trmessage">
-                        <td colspan=2>${c.message}</td>
+                        <td colspan=2>
+                            <span class="theader">
+                                ${c.message}
+                            </span>
+                        </td>
                     </tr>
                 %endif
                 <tr>
                     <td class="postblock">${_('Extension')}</td>
                     <td>
-                        <input type="text" name="ext" size="35" value="${c.ext.ext}" />
+                        <input type="text" name="ext" size="35" value="${c.ext.ext}"
+                        %if c.exists:
+                            readonly
+                        %endif
+                        />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Posting enabled')}</td>
+                    <td>
+                        <input type="checkbox" name="enabled" ${c.ext.enabled and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Open links in new window')}</td>
+                    <td>
+                        <input type="checkbox" name="newWindow" ${c.ext.newWindow and "checked" or ""} />
                     </td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('Thumbnail path')}</td>
+                    <td class="postblock">${_('Type')}</td>
+                    <td>
+                        <input type="text" name="type" size="35" value="${c.ext.type}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">
+                        ${_('Thumbnail path')}
+                        <div style="font-size: 50%;"><i>${_('Relative to <b>staticPathWeb</b> from config')}</i></div>
+                    </td>
                     <td>
                         <input type="text" name="path" size="35" value="${c.ext.path}" />
                     </td>
@@ -35,15 +64,16 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('Type')}</td>
-                    <td>
-                        <input type="text" name="type" size="35" value="${c.ext.type}" />
+                    <td colspan="2">
+                        %if c.exists:
+                            <input type="submit" value="${_('Update')}" />
+                            <input type="submit" value="${_('Delete')}" name="delete" />
+                        %else:
+                            <input type="submit" value="${_('Create')}" />
+                        %endif
                     </td>
                 </tr>
-                <tr>
-                    <td colspan='2'><input type='submit' value='${_('Update')}'></td>
-                </tr>                           
             </tbody>
         </table>
-    </form>                 
+    </form>
 </div>

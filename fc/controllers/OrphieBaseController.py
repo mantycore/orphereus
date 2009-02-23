@@ -185,9 +185,10 @@ class OrphieBaseController(BaseController):
             if os.path.isfile(filePath):
                 os.unlink(filePath)
                 
-            ext = self.sqlFirst(meta.Session.query(Extension).filter(Extension.id==pic.extid))
+            ext = pic.extension
             if not ext.path:
-                if os.path.isfile(thumPath): os.unlink(thumPath)
+                if os.path.isfile(thumPath):
+                    os.unlink(thumPath)
             meta.Session.delete(pic)
             if commit:
                 meta.Session.commit()

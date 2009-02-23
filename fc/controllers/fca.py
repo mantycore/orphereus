@@ -21,8 +21,8 @@ from OrphieBaseController import OrphieBaseController
 log = logging.getLogger(__name__)
 
 class FcaController(OrphieBaseController):
-    def __before__(self):  
-        OrphieBaseController.__before__(self)  
+    def __before__(self):
+        OrphieBaseController.__before__(self)
         #self.userInst = FUser(session.get('uidNumber',-1))
         if not self.userInst.isAuthorized():
             c.currentURL = u'/holySynod/'
@@ -33,17 +33,17 @@ class FcaController(OrphieBaseController):
             return redirect_to('/')
         c.userInst = self.userInst
         if not checkAdminIP():
-            return redirect_to('/')            
-            
+            return redirect_to('/')
+
     def index(self):
         c.boardName = 'Index'
         c.admins = meta.Session.query(User).join('options').filter(or_(UserOptions.isAdmin==True,UserOptions.canDeleteAllPosts==True)).all()
-        return self.render('adminIndex') 
-        
+        return self.render('adminIndex')
+
     def manageSettings(self):
         c.boardName = 'Settings management'
         #settingsMap = getSettingsMap()
-        
+
         if request.POST.get('update', False):
             for s in request.POST:
                 if s in settingsDef:
@@ -51,13 +51,13 @@ class FcaController(OrphieBaseController):
                         addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s, g.settingsMap[s].value,request.POST[s]))
                         val = filterText(request.POST[s])
                         setting = meta.Session.query(Setting).filter(Setting.name==s).first()
-                        setting.value = val                        
+                        setting.value = val
                         g.settingsMap[s].value = val
             meta.Session.commit()
             c.message = _('Updated settings')
         #c.settings = settingsMap
-        return self.render('manageSettings') 
-        
+        return self.render('manageSettings')
+
     def manageBoards(self):
         c.boardName = 'Boards management'
         boards = meta.Session.query(Tag).options(eagerload('options')).all()
@@ -74,7 +74,7 @@ class FcaController(OrphieBaseController):
             bs[key] = c.boards[key]
         c.boards = bs
         return self.render('manageBoards')
-        
+
     def editBoard(self,tag):
         c.boardName = 'Edit board'
         c.message = u''
@@ -108,7 +108,7 @@ class FcaController(OrphieBaseController):
                     else:
                         oldtag = u''
                     c.tag.options.comment = filterText(request.POST.get('comment', u''))
-                    c.tag.options.specialRules = filterText(request.POST.get('specialRules', u''))                    
+                    c.tag.options.specialRules = filterText(request.POST.get('specialRules', u''))
                     c.tag.options.sectionId = request.POST.get('sectionId',0)
                     c.tag.options.persistent = request.POST.get('persistent',False)
                     c.tag.options.imagelessThread = request.POST.get('imagelessThread',False)
@@ -119,36 +119,36 @@ class FcaController(OrphieBaseController):
                     c.tag.options.maxFileSize = request.POST.get('maxFileSize',3145728)
                     c.tag.options.minPicSize = request.POST.get('minPicSize',0)
                     c.tag.options.thumbSize = request.POST.get('thumbSize',250)
-                    
+
                     if request.POST.get('deleteBoard', False) and c.tag.id:
                         count = Post.query.filter(Post.tags.any(tag=tag)).count()
                         if count>0:
-                            c.message = _("Board must be empty for deletion")                        
+                            c.message = _("Board must be empty for deletion")
                         else:
-                            meta.Session.delete(c.tag)        
+                            meta.Session.delete(c.tag)
                             addLogEntry(LOG_EVENT_BOARD_EDIT, "Deleted board %s %s" % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))
-                            meta.Session.commit()                              
-                            return redirect_to('/holySynod/manageBoards/')                       
-                    elif not c.tag.id:                    
-                        meta.Session.add(c.tag)                        
-                        
-                    c.message = _("Updated board")    
-                    addLogEntry(LOG_EVENT_BOARD_EDIT, "Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))                        
-                    meta.Session.commit()                       
-                                        
+                            meta.Session.commit()
+                            return redirect_to('/holySynod/manageBoards/')
+                    elif not c.tag.id:
+                        meta.Session.add(c.tag)
+
+                    c.message = _("Updated board")
+                    addLogEntry(LOG_EVENT_BOARD_EDIT, "Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
+                    meta.Session.commit()
+
                 else:
                     c.message = _("Board %s already exists!") % newtag
             else:
                 c.message = _("Board name should be non-empty and should contain only valid symbols")
         return self.render('editBoard')
-        
+
     def manageUsers(self):
         c.boardName = 'Users management'
         uid = request.POST.get("uid", False)
-        if uid:            
+        if uid:
             user = False
             if isNumber(uid):
-                user = meta.Session.query(User).filter(User.uidNumber==uid).first()               
+                user = meta.Session.query(User).filter(User.uidNumber==uid).first()
             else:
                 user = meta.Session.query(User).filter(User.uid==uid).first()
             if user:
@@ -156,12 +156,12 @@ class FcaController(OrphieBaseController):
             else:
                 c.message = _('No such user exists.')
         return self.render('manageUsers')
-        
+
     def editUserAttempt(self, pid):
         c.boardName = 'User edit attemption'
         c.pid = pid
         return self.render('editUserAttempt')
-        
+
     def editUserByPost(self, pid):
         post = Post.query.options(eagerload('file')).filter(Post.id==pid).order_by(Post.id.asc()).first()
         if post:
@@ -171,7 +171,7 @@ class FcaController(OrphieBaseController):
         else:
             c.errorText = _("Post not found")
             return self.render('error')
-        
+
     def editUser(self,uid):
         c.boardName = 'Edit user %s' % uid
         user = meta.Session.query(User).options(eagerload('options')).get(uid)
@@ -186,15 +186,15 @@ class FcaController(OrphieBaseController):
                 isAdmin = request.POST.get('isAdmin',False) and True or False
                 if user.options.isAdmin != isAdmin:
                     user.options.isAdmin = isAdmin
-                    addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s isAdmin to %s') % (user.uidNumber,isAdmin))                
+                    addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s isAdmin to %s') % (user.uidNumber,isAdmin))
                 canMakeInvite = request.POST.get('canMakeInvite',False) and True or False
                 if user.options.canMakeInvite != canMakeInvite:
                     user.options.canMakeInvite = canMakeInvite
-                    addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canMakeInvite to %s') % (user.uidNumber,canMakeInvite))                
+                    addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canMakeInvite to %s') % (user.uidNumber,canMakeInvite))
                 canChangeRights = request.POST.get('canChangeRights',False) and True or False
                 if user.options.canChangeRights != canChangeRights:
                     user.options.canChangeRights = canChangeRights
-                    addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canChangeRights to %s') % (user.uidNumber,canChangeRights))                                    
+                    addLogEntry(LOG_EVENT_USER_ACCESS,_('Changed user %s canChangeRights to %s') % (user.uidNumber,canChangeRights))
                 c.message = _('User access was changed')
             elif request.POST.get('ban', False):
                 if user.options.bantime > 0:
@@ -254,7 +254,7 @@ class FcaController(OrphieBaseController):
                                     removed.append(str(post.id))
                                 else:
                                     removed.append("%d/%d" % (post.id, post.parentid))
-                                    
+
                                 self.processDelete(post.id, False, False, reason)
                             addLogEntry(LOG_EVENT_USER_DELETE,_('Removed legacy of %s for "%s" [%s]') % (user.uidNumber, reason, ', '.join(removed)))
                         meta.Session.delete(user)
@@ -269,47 +269,73 @@ class FcaController(OrphieBaseController):
         else:
             c.errorText = _('No such user exists.')
             return self.render('error')
-            
+
     def manageExtensions(self):
-        c.extensions = meta.Session.query(Extension).order_by(Extension.type).all()
+        c.extensions = Extension.getList(True)
         return self.render('manageExtensions')
-        
-    def editExtension(self, ext):
+
+    def editExtension(self, name):
+        if not name:
+            name = ''
+
+        name = filterText(request.POST.get('ext', name))
+        if len(name) > 10:
+            c.errorText = _('Too long extension')
+            return self.render('error')
+
+        c.exists = True
+        ext = Extension.getExtension(name)
+
         if not ext:
-            ext = ''
-        ext = filterText(request.POST.get('ext', ext))
-        if len(ext) > 10:
-            ext = ''
-            
-        c.ext = meta.Session.query(Extension).filter(Extension.ext==ext).first()
-        if not c.ext:
-            c.ext = Extension()
-            c.ext.ext = ext
+            c.exists = False
+            c.ext = empty()
+            c.ext.ext = name
             c.ext.path = ''
             c.ext.thwidth = 0
             c.ext.thheight= 0
             c.ext.type = 'image'
-            
-        if request.POST.get('ext', False):
-            c.ext.path = filterText(request.POST.get('path', ''))
-            c.ext.thwidth = request.POST.get('thwidth', 0)
-            c.ext.thheight = request.POST.get('thheight', 0)
-            c.ext.type = filterText(request.POST.get('type', 'image'))
-            if not c.ext.id:
-                meta.Session.add(c.ext)
-            meta.Session.commit()
-            addLogEntry(LOG_EVENT_EXTENSION_EDIT, _('Edited extension %s') % c.ext.ext)
-            c.message = _('Extension edited')
+            c.ext.enabled = True
+            c.ext.newWindow = True
+        else:
+            c.ext = ext
+
+        name = request.POST.get('ext', False)
+        if name:
+            if not request.POST.get('delete', False):
+                path = filterText(request.POST.get('path', ''))
+                enabled = request.POST.get('enabled', False)
+                newWindow = request.POST.get('newWindow', False)
+                type = filterText(request.POST.get('type', 'image'))
+                thwidth = request.POST.get('thwidth', 0)
+                thheight = request.POST.get('thheight', 0)
+                if not ext:
+                    ext = Extension.create(name, enabled, newWindow, type, path, thwidth, thheight)
+                    addLogEntry(LOG_EVENT_EXTENSION_EDIT, _('Created extension %s') % ext.ext)
+                    c.exists = True
+                    c.message = _('Extension created')
+                else:
+                    ext.setData(enabled, newWindow, type, path, thwidth, thheight)
+                    addLogEntry(LOG_EVENT_EXTENSION_EDIT, _('Edited extension %s') % ext.ext)
+                    c.message = _('Extension edited')
+            elif ext:
+                extName = ext.ext
+                if ext.delete():
+                    addLogEntry(LOG_EVENT_EXTENSION_EDIT, _('Deleted extension %s') % extName)
+                    c.message = _('Extension deleted')
+                    c.exists = False
+                else:
+                    c.message = _("Can't delete extension. Uploaded files with this extension exists.")
+
         return self.render('editExtension')
-        
+
     def manageQuestions(self):
         c.boardName = 'Questions management'
-        return self.render('manageQuestions')   
-        
+        return self.render('manageQuestions')
+
     def manageApplications(self):
         c.boardName = 'Applications management'
-        return self.render('manageApplications')  
-        
+        return self.render('manageApplications')
+
     def viewLog(self, page):
         c.boardName = 'Logs'
         page = int(page)
@@ -320,78 +346,78 @@ class FcaController(OrphieBaseController):
             c.pages += 1
         if (page + 1) > c.pages:
             page = c.pages - 1
-        c.page = page        
+        c.page = page
         c.logs = meta.Session.query(LogEntry).options(eagerload('user')).order_by(LogEntry.date.desc())[page*100:(page+1)*100]
         return self.render('adminLogs')
 
     def manageMappings(self, act, id, tagid):
-        if isNumber(id) and isNumber(tagid):         
+        if isNumber(id) and isNumber(tagid):
             id = int(id)
             tagid = int(tagid)
-            
+
             if id == 0:
                 id = filterText(request.POST.get('postId', ''))
                 if id and isNumber(id):
                     id = int(id)
-                
+
             if tagid == 0:
                 tagName = filterText(request.POST.get('tagName', u''))
                 if tagName:
                     tag = meta.Session.query(Tag).filter(Tag.tag==tagName).first()
                     if tag:
-                        tagid = tag.id                
+                        tagid = tag.id
         else:
-            c.errorText = _("Incorrect input values")            
-            return self.render('error')        
-    
-        if act == 'show':      
+            c.errorText = _("Incorrect input values")
+            return self.render('error')
+
+        if act == 'show':
             if id and id > 0:
-                post = Post.query.filter(Post.id==id).first()  
+                post = Post.query.filter(Post.id==id).first()
                 if post and post.parentid == -1:
-                    c.post = post      
+                    c.post = post
                 else:
                     c.errorText = _("This is not op-post")
-                    return self.render('error')   
-            
-            return self.render('adminMappings')                                              
-        elif act in ['del', 'add']:                 
-            post = Post.query.filter(Post.id==id).first()  
-            if post and post.parentid == -1:        
+                    return self.render('error')
+
+            return self.render('adminMappings')
+        elif act in ['del', 'add']:
+            post = Post.query.filter(Post.id==id).first()
+            if post and post.parentid == -1:
                 if act == 'del' and tagid > 0:
                     if len(post.tags) > 1:
                         tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
                         tag.threadCount -= 1
                         tag.replyCount -= post.replyCount
-                        addLogEntry(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))                        
-                        post.tags.remove(tag)  
+                        addLogEntry(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))
+                        post.tags.remove(tag)
                     else:
                         c.errorText = "Can't delete last tag!"
                         return self.render('error')
                 elif act == 'add':
                     tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
                     if tag:
-                        addLogEntry(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))                        
+                        addLogEntry(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))
                         post.tags.append(tag)
                         tag.threadCount += 1
                         tag.replyCount += post.replyCount
                     else:
                         c.errorText = _("Non-existent tag")
-                        return self.render('error')   
-                
+                        return self.render('error')
+
                 meta.Session.commit()
-                
+
             redirect_to('/holySynod/manageMappings/show/%d' % id)
         else:
             redirect_to('/holySynod/manageMappings')
-            
+
     def invitePage(self):
-        return self.render('invitePage') 
-        
+        return self.render('invitePage')
+
     def makeInvite(self):
         if not self.userInst.canMakeInvite():
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
-        
+
         c.boardName = _('Invite creation')
         c.inviteCode = False
         reason = request.POST.get('inviteReason', False)

@@ -40,8 +40,10 @@
             <a href="/${thread.id}/anonymize">[FA]</a>
         %endif
     %endif
-    %if c.isAdmin:
+    %if c.userInst.isAdmin() and c.userInst.canManageUsers():
         <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>
+    %endif
+    %if c.userInst.isAdmin() and c.userInst.canManageMappings():
         <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>
     %endif
     </span>

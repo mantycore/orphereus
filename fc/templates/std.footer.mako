@@ -3,6 +3,6 @@
 %if False:
     [<a href="/Join/">Join us</a>] <br/>
 %endif
-<br/>    
-    - <a target="_top" href="http://orphereus.anoma.ch/">Orphereus 0.9</a> -<br/>
+<br/>
+    - <a target="_top" href="http://orphereus.anoma.ch/">Orphereus 1.0 alpha</a> -<br/>
 </p>

@@ -37,7 +37,7 @@ class FcaController(OrphieBaseController):
 
     def index(self):
         c.boardName = 'Index'
-        c.admins = meta.Session.query(User).join('options').filter(or_(UserOptions.isAdmin==True,UserOptions.canDeleteAllPosts==True)).all()
+        c.admins = User.getAdmins()
         return self.render('adminIndex')
 
     def manageSettings(self):
@@ -63,7 +63,171 @@ class FcaController(OrphieBaseController):
             c.message = _('Settings updated')
         return self.render('manageSettings')
 
+    def viewLog(self, page):
+        c.boardName = 'Logs'
+        page = int(page)
+        count = LogEntry.count()
+        tpp = 50
+        self.paginate(count, page, tpp)
+        c.logs = LogEntry.getRange(page*tpp, (page+1)*tpp)
+        return self.render('adminLogs')
+
+    def invitePage(self):
+        if not self.userInst.canMakeInvite():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
+        return self.render('invitePage')
+
+    def makeInvite(self):
+        if not self.userInst.canMakeInvite():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
+        c.boardName = _('Invite creation')
+        c.inviteCode = False
+        reason = request.POST.get('inviteReason', False)
+        if reason and len(reason) > 1:
+            reason = filterText(reason)
+            invite = Invite.create(g.OPT.hashSecret)
+
+            toLog(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, reason))
+            c.inviteCode = invite.invite
+        return self.render('newInvite')
+
+    def manageExtensions(self):
+        if not self.userInst.canManageExtensions():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
+        c.extensions = Extension.getList(False)
+        c.showCount = request.POST.get('showCount', False)
+        return self.render('manageExtensions')
+
+    def editExtension(self, name):
+        if not self.userInst.canManageExtensions():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+        if not name:
+            name = ''
+
+        name = filterText(request.POST.get('ext', name))
+        if len(name) > 10:
+            c.errorText = _('Too long extension')
+            return self.render('error')
+
+        c.exists = True
+        ext = Extension.getExtension(name)
+
+        if not ext:
+            c.exists = False
+            c.ext = empty()
+            c.ext.ext = name
+            c.ext.path = ''
+            c.ext.thwidth = 0
+            c.ext.thheight= 0
+            c.ext.type = 'image'
+            c.ext.enabled = True
+            c.ext.newWindow = True
+        else:
+            c.ext = ext
+
+        name = request.POST.get('ext', False)
+        if name:
+            if not request.POST.get('delete', False):
+                path = filterText(request.POST.get('path', ''))
+                enabled = request.POST.get('enabled', False)
+                newWindow = request.POST.get('newWindow', False)
+                type = filterText(request.POST.get('type', 'image'))
+                thwidth = request.POST.get('thwidth', 0)
+                thheight = request.POST.get('thheight', 0)
+                if not ext:
+                    ext = Extension.create(name, enabled, newWindow, type, path, thwidth, thheight)
+                    toLog(LOG_EVENT_EXTENSION_EDIT, _('Created extension %s') % ext.ext)
+                    c.exists = True
+                    c.message = _('Extension created')
+                else:
+                    ext.setData(enabled, newWindow, type, path, thwidth, thheight)
+                    toLog(LOG_EVENT_EXTENSION_EDIT, _('Edited extension %s') % ext.ext)
+                    c.message = _('Extension edited')
+            elif ext:
+                extName = ext.ext
+                if ext.delete():
+                    toLog(LOG_EVENT_EXTENSION_EDIT, _('Deleted extension %s') % extName)
+                    c.message = _('Extension deleted')
+                    c.exists = False
+                else:
+                    c.message = _("Can't delete extension. Uploaded files with this extension exists.")
+        return self.render('editExtension')
+
+    def manageMappings(self, act, id, tagid):
+        if not self.userInst.canManageMappings():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+        if isNumber(id) and isNumber(tagid):
+            id = int(id)
+            tagid = int(tagid)
+
+            if id == 0:
+                id = filterText(request.POST.get('postId', ''))
+                if id and isNumber(id):
+                    id = int(id)
+
+            if tagid == 0:
+                tagName = filterText(request.POST.get('tagName', u''))
+                if tagName:
+                    tag = meta.Session.query(Tag).filter(Tag.tag==tagName).first()
+                    if tag:
+                        tagid = tag.id
+        else:
+            c.errorText = _("Incorrect input values")
+            return self.render('error')
+
+        if act == 'show':
+            if id and id > 0:
+                post = Post.query.filter(Post.id==id).first()
+                if post and post.parentid == -1:
+                    c.post = post
+                else:
+                    c.errorText = _("This is not op-post")
+                    return self.render('error')
+
+            return self.render('adminMappings')
+        elif act in ['del', 'add']:
+            post = Post.query.filter(Post.id==id).first()
+            if post and post.parentid == -1:
+                if act == 'del' and tagid > 0:
+                    if len(post.tags) > 1:
+                        tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
+                        tag.threadCount -= 1
+                        tag.replyCount -= post.replyCount
+                        toLog(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))
+                        post.tags.remove(tag)
+                    else:
+                        c.errorText = "Can't delete last tag!"
+                        return self.render('error')
+                elif act == 'add':
+                    tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
+                    if tag:
+                        toLog(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))
+                        post.tags.append(tag)
+                        tag.threadCount += 1
+                        tag.replyCount += post.replyCount
+                    else:
+                        c.errorText = _("Non-existent tag")
+                        return self.render('error')
+
+                meta.Session.commit()
+
+            redirect_to('/holySynod/manageMappings/show/%d' % id)
+        else:
+            redirect_to('/holySynod/manageMappings')
+
     def manageBoards(self):
+        if not self.userInst.canManageBoards():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
         c.boardName = 'Boards management'
         boards = meta.Session.query(Tag).options(eagerload('options')).all()
         c.boards = {999:[]}
@@ -81,6 +245,9 @@ class FcaController(OrphieBaseController):
         return self.render('manageBoards')
 
     def editBoard(self,tag):
+        if not self.userInst.canManageBoards():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
         c.boardName = 'Edit board'
         c.message = u''
         c.tag = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==tag).first()
@@ -148,6 +315,10 @@ class FcaController(OrphieBaseController):
         return self.render('editBoard')
 
     def manageUsers(self):
+        if not self.userInst.canManageUsers():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
         c.boardName = 'Users management'
         uid = request.POST.get("uid", False)
         if uid:
@@ -163,11 +334,19 @@ class FcaController(OrphieBaseController):
         return self.render('manageUsers')
 
     def editUserAttempt(self, pid):
+        if not self.userInst.canManageUsers():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
         c.boardName = 'User edit attemption'
         c.pid = pid
         return self.render('editUserAttempt')
 
     def editUserByPost(self, pid):
+        if not self.userInst.canManageUsers():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
         post = Post.query.options(eagerload('file')).filter(Post.id==pid).order_by(Post.id.asc()).first()
         if post:
             reason = request.POST.get("UIDViewReason", 'No reason given!')
@@ -178,6 +357,10 @@ class FcaController(OrphieBaseController):
             return self.render('error')
 
     def editUser(self,uid):
+        if not self.userInst.canManageUsers():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
         c.boardName = 'Edit user %s' % uid
         user = meta.Session.query(User).options(eagerload('options')).get(uid)
         if user:
@@ -275,65 +458,6 @@ class FcaController(OrphieBaseController):
             c.errorText = _('No such user exists.')
             return self.render('error')
 
-    def manageExtensions(self):
-        c.extensions = Extension.getList(True)
-        c.showCount = request.POST.get('showCount', False)
-        return self.render('manageExtensions')
-
-    def editExtension(self, name):
-        if not name:
-            name = ''
-
-        name = filterText(request.POST.get('ext', name))
-        if len(name) > 10:
-            c.errorText = _('Too long extension')
-            return self.render('error')
-
-        c.exists = True
-        ext = Extension.getExtension(name)
-
-        if not ext:
-            c.exists = False
-            c.ext = empty()
-            c.ext.ext = name
-            c.ext.path = ''
-            c.ext.thwidth = 0
-            c.ext.thheight= 0
-            c.ext.type = 'image'
-            c.ext.enabled = True
-            c.ext.newWindow = True
-        else:
-            c.ext = ext
-
-        name = request.POST.get('ext', False)
-        if name:
-            if not request.POST.get('delete', False):
-                path = filterText(request.POST.get('path', ''))
-                enabled = request.POST.get('enabled', False)
-                newWindow = request.POST.get('newWindow', False)
-                type = filterText(request.POST.get('type', 'image'))
-                thwidth = request.POST.get('thwidth', 0)
-                thheight = request.POST.get('thheight', 0)
-                if not ext:
-                    ext = Extension.create(name, enabled, newWindow, type, path, thwidth, thheight)
-                    toLog(LOG_EVENT_EXTENSION_EDIT, _('Created extension %s') % ext.ext)
-                    c.exists = True
-                    c.message = _('Extension created')
-                else:
-                    ext.setData(enabled, newWindow, type, path, thwidth, thheight)
-                    toLog(LOG_EVENT_EXTENSION_EDIT, _('Edited extension %s') % ext.ext)
-                    c.message = _('Extension edited')
-            elif ext:
-                extName = ext.ext
-                if ext.delete():
-                    toLog(LOG_EVENT_EXTENSION_EDIT, _('Deleted extension %s') % extName)
-                    c.message = _('Extension deleted')
-                    c.exists = False
-                else:
-                    c.message = _("Can't delete extension. Uploaded files with this extension exists.")
-
-        return self.render('editExtension')
-
     def manageQuestions(self):
         c.boardName = 'Questions management'
         return self.render('manageQuestions')
@@ -342,90 +466,4 @@ class FcaController(OrphieBaseController):
         c.boardName = 'Applications management'
         return self.render('manageApplications')
 
-    def viewLog(self, page):
-        c.boardName = 'Logs'
-        page = int(page)
-        count = LogEntry.count()
-        tpp = 50
-        self.paginate(count, page, tpp)
-        c.logs = LogEntry.getRange(page*tpp, (page+1)*tpp)
-        return self.render('adminLogs')
 
-    def manageMappings(self, act, id, tagid):
-        if isNumber(id) and isNumber(tagid):
-            id = int(id)
-            tagid = int(tagid)
-
-            if id == 0:
-                id = filterText(request.POST.get('postId', ''))
-                if id and isNumber(id):
-                    id = int(id)
-
-            if tagid == 0:
-                tagName = filterText(request.POST.get('tagName', u''))
-                if tagName:
-                    tag = meta.Session.query(Tag).filter(Tag.tag==tagName).first()
-                    if tag:
-                        tagid = tag.id
-        else:
-            c.errorText = _("Incorrect input values")
-            return self.render('error')
-
-        if act == 'show':
-            if id and id > 0:
-                post = Post.query.filter(Post.id==id).first()
-                if post and post.parentid == -1:
-                    c.post = post
-                else:
-                    c.errorText = _("This is not op-post")
-                    return self.render('error')
-
-            return self.render('adminMappings')
-        elif act in ['del', 'add']:
-            post = Post.query.filter(Post.id==id).first()
-            if post and post.parentid == -1:
-                if act == 'del' and tagid > 0:
-                    if len(post.tags) > 1:
-                        tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
-                        tag.threadCount -= 1
-                        tag.replyCount -= post.replyCount
-                        toLog(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))
-                        post.tags.remove(tag)
-                    else:
-                        c.errorText = "Can't delete last tag!"
-                        return self.render('error')
-                elif act == 'add':
-                    tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
-                    if tag:
-                        toLog(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))
-                        post.tags.append(tag)
-                        tag.threadCount += 1
-                        tag.replyCount += post.replyCount
-                    else:
-                        c.errorText = _("Non-existent tag")
-                        return self.render('error')
-
-                meta.Session.commit()
-
-            redirect_to('/holySynod/manageMappings/show/%d' % id)
-        else:
-            redirect_to('/holySynod/manageMappings')
-
-    def invitePage(self):
-        return self.render('invitePage')
-
-    def makeInvite(self):
-        if not self.userInst.canMakeInvite():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
-
-        c.boardName = _('Invite creation')
-        c.inviteCode = False
-        reason = request.POST.get('inviteReason', False)
-        if reason and len(reason) > 1:
-            reason = filterText(reason)
-            invite = Invite.create(g.OPT.hashSecret)
-
-            toLog(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, reason))
-            c.inviteCode = invite.invite
-        return self.render('newInvite')

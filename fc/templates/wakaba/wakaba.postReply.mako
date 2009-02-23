@@ -16,7 +16,7 @@
                             <a href="/${post.id}/anonymize">[FA]</a>
                         %endif
                     %endif
-                    %if c.isAdmin:
+                    %if c.userInst.isAdmin() and c.userInst.canManageUsers():
                         <a href="/holySynod/manageUsers/editAttempt/${post.id}">[User]</a>
                     %endif
                     </span>

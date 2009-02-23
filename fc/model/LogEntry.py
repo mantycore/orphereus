@@ -35,8 +35,6 @@ class LogEntry(object):
 
     @staticmethod
     def getRange(start, end, filterList = False):
-        log.debug(start)
-        log.debug(end)
         filter = LogEntry.query.options(eagerload('user')).order_by(LogEntry.date.desc())
         if filterList:
             filter = filter.filter(not_(LogEntry.event.in_(filterList)))

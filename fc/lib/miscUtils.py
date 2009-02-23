@@ -13,7 +13,6 @@ from email.MIMEBase import MIMEBase
 from email.MIMEText import MIMEText
 from email import Encoders
 
-from fc.model import LogEntry
 from fc.lib.constantValues import *
 
 class empty(object):
@@ -49,6 +48,7 @@ def currentUID():
     return -1
 
 def toLog(event, text, commit = True):
+    from fc.model import LogEntry
     LogEntry.create(currentUID(), event, filterText(text), commit)
 
 def adminAlert(alertStr):

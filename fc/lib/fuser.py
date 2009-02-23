@@ -71,121 +71,106 @@ class FUser(object):
                     self.__user.options.homeExclude = pickle.dumps([])
                     meta.Session.commit()
 
-                #it could be replaced by __user.* ... But it can reduce performance in case of using AutoCommit... So I'm using additional fields
-                self.__threadsPerPage = self.__user.options.threadsPerPage #session['options']['threadsPerPage']
-                self.__repliesPerThread = self.__user.options.repliesPerThread #session['options']['repliesPerThread']
-                self.__style = self.__user.options.style #session['options']['style']
-                self.__template =  self.__user.options.template #session['options']['template']
-                self.__isAdmin = self.__user.options.isAdmin
-                self.__hideLongComments = self.__user.options.hideLongComments
-                self.__useAjax = self.__user.options.useAjax
-                self.__mixOldThreads = self.__user.options.mixOldThreads
-                self.__defaultGoto = self.__user.options.defaultGoto
-                self.__canDeleteAllPosts = self.__user.options.canDeleteAllPosts
-                self.__canMakeInvite = self.__user.options.canMakeInvite and self.__isAdmin
-                self.__canChangeRights = self.__user.options.canChangeRights and self.__isAdmin
-                self.__homeExclude = pickle.loads(self.__user.options.homeExclude)
-                self.__hideThreads = pickle.loads(self.__user.options.hideThreads)
-                self.__filters = self.__user.filters
                 self.__valid = True
 
     def isValid(self):
         return self.__valid
+
     def isAuthorized(self):
         return self.isValid() and (session.get('uidNumber', -1) == self.__uidNumber)
-    def isBanned(self):
-        return self.__user.options.bantime > 0
-    def isAdmin(self):
-        return self.__isAdmin
-    def uidNumber(self):
-        return self.__uidNumber
-    def secid(self):
-        return (2*self.__uidNumber + 6) * (self.__uidNumber + 5) * (self.__uidNumber - 1)
-        #(2*x+3)*(x+10)*(x-1)=
-    def uid(self, value=None):
-        if value != None and not meta.Session.query(User).options(eagerload('options')).filter(User.uid==value).first():
-            self.__user.uid = value
-        return self.__user.uid
-    def filters(self):
-        return self.__filters
-    def hideLongComments(self, value=None):
-        if value != None:
-            self.__user.options.hideLongComments = value
-            self.__hideLongComments = self.__user.options.hideLongComments
-        return self.__hideLongComments
-    def mixOldThreads(self, value=None):
-        if value != None:
-            self.__user.options.mixOldThreads = value
-            self.__mixOldThreads = self.__user.options.mixOldThreads
-        return self.__mixOldThreads
-    def useAjax(self, value=None):
-        if value != None:
-            self.__user.options.useAjax = value
-            self.__useAjax = self.__user.options.useAjax
-        return self.__useAjax
-    def defaultGoto(self, value = None):
-        if value != None and isNumber(value) or value == 0:
-            if (value < 0 or value >= len(destinations)):
-                value = 0
-            self.__user.options.defaultGoto = value
-            self.__defaultGoto = self.__user.options.defaultGoto
-        return self.__defaultGoto
-    def homeExclude(self, value = None):
-        if value != None:
-            self.__user.options.homeExclude = pickle.dumps(value)
-            self.__homeExclude = pickle.loads(self.__user.options.homeExclude)
-        return self.__homeExclude
-    def hideThreads(self, value = None):
-        if value != None:
-            self.__user.options.hideThreads = pickle.dumps(value)
-            self.__hideThreads = pickle.loads(self.__user.options.hideThreads)
-        return self.__hideThreads
-    def threadsPerPage(self, value = False):
-        if value:
-            self.__user.options.threadsPerPage = value
-            self.__threadsPerPage = value
-        return self.__threadsPerPage
-    def repliesPerThread(self, value = False):
-        if value:
-            self.__user.options.repliesPerThread = value
-            self.__repliesPerThread = value
-        return self.__repliesPerThread
-    def style(self, value = False):
-        if value:
-            self.__user.options.style = value
-            self.__style = value
-        return self.__style
-    def template(self, value = False):
-        if value:
-            self.__user.options.template = value
-            self.__template = value
-        return self.__template
+
     def canPost(self):
         return g.OPT.allowPosting and ((self.Anonymous and g.OPT.allowAnonymousPosting) or not self.Anonymous)
+
+    def uidNumber(self):
+        return self.__user.getUidNumber()
+
+    def uid(self, value=None):
+        return self.__user.getUid(value)
+#========================
+    def defaultGoto(self, value = None):
+        return self.__user.defaultGoto(destinations, value)
+
+    def filters(self):
+        return self.__user.getFilters()
+
+    def isBanned(self):
+        return self.__user.isBanned()
+
+    def isAdmin(self):
+        return self.__user.isAdmin()
+
+    def secid(self):
+        return self.__user.secid()
+
+    def hideLongComments(self, value=None):
+        return self.__user.hideLongComments(value)
+
+    def mixOldThreads(self, value=None):
+        return self.__user.mixOldThreads(value)
+
+    def useAjax(self, value=None):
+        return self.__user.useAjax(value)
+
+    def homeExclude(self, value = None):
+        return self.__user.homeExclude(value)
+
+    def hideThreads(self, value = None):
+        return self.__user.hideThreads(value)
+
+    def threadsPerPage(self, value = False):
+        return self.__user.threadsPerPage(value)
+
+    def repliesPerThread(self, value = False):
+        return self.__user.repliesPerThread(value)
+
+    def style(self, value = False):
+        return self.__user.style(value)
+
+    def template(self, value = False):
+        return self.__user.template(value)
+
     def canDeleteAllPosts(self):
-        return self.__canDeleteAllPosts
+        return self.__user.canDeleteAllPosts()
+
     def canMakeInvite(self):
-        return self.__canMakeInvite
+        return self.__user.canMakeInvite()
+
     def canChangeRights(self):
-        return self.__canChangeRights
-    def canChangeSettings(self):
-        return self.__isAdmin #XXX: temp
-    def expandImages(self):
-        return True
-    def maxExpandWidth(self):
-        return 1024
-    def maxExpandHeight(self):
-        return 768
+        return self.__user.canChangeRights()
+
     def bantime(self):
-        return self.__user.options.bantime
+        return self.__user.bantime()
+
     def banreason(self):
-        return self.__user.options.banreason
+        return self.__user.banreason()
+
     def optionsDump(self):
-        optionsNames = dir(self.__user.options)
-        ret = {}
-        retest = re.compile("^(<.*(at (0x){0,1}[0-9a-fA-F]+)+.*>)|(__.*__)$")
-        for name in optionsNames:
-            attr = str(getattr(self.__user.options, name))
-            if not (retest.match(name) or retest.match(attr)): # or (name.startswith('__') and name.endswith('__'))):
-                ret[name] = attr
-        return ret
+        return self.__user.optionsDump()
+
+    def canChangeSettings(self):
+        return self.__user.canChangeSettings()
+
+    def canManageBoards(self):
+        return self.__user.canManageBoards()
+
+    def canManageUsers(self):
+        return self.__user.canManageBoards()
+
+    def canManageExtensions(self):
+        return self.__user.canManageExtensions()
+
+    def canManageMappings(self):
+        return self.__user.canManageMappings()
+
+    def canRunMaintenance(self):
+        return self.__user.canRunMaintenance()
+
+    def expandImages(self):
+        return self.__user.expandImages()
+
+    def maxExpandWidth(self):
+        return self.__user.maxExpandWidth()
+
+    def maxExpandHeight(self):
+        return self.__user.maxExpandHeight()

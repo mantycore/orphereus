@@ -4,15 +4,30 @@ ${_('Current members of Holy Synod')}
 <table class="hlTable">
 <tr>
 <td>Number</td>
-<td colspan=4>UID</td>
+<td colspan>Mod</td>
+<td colspan>Invites</td>
+<td colspan>Opt</td>
+<td colspan>Boards</td>
+<td colspan>Users</td>
+<td colspan>Ext</td>
+<td colspan>Mapping</td>
+<td colspan>Maint</td>
 </tr>
 %for u in c.admins:
-    <tr>
-        <td>${u.uidNumber}</td>    
-        <td><a href='/holySynod/manageUsers/edit/${u.uidNumber}'>${"\r\n".join([u.uid[0:64],u.uid[64:128]])}</a></td>
-        <td>${u.options.canDeleteAllPosts and "Mod" or ""}</td>
-        <td>${u.options.isAdmin and "Admin" or ""}</td>
-        <td>${u.options.canMakeInvite and "Invites" or ""}</td>        
+    <tr
+    %if u.uidNumber == c.userInst.uidNumber():
+    style="font-weight: bold;"
+    %endif
+    >
+        <td><a style="display: block;" href='/holySynod/manageUsers/edit/${u.uidNumber}'>${u.uidNumber}</a></td>
+        <td>${u.canDeleteAllPosts() and "+" or ""}</td>
+        <td>${u.canMakeInvite() and "+" or ""}</td>
+        <td>${u.canChangeSettings() and "+" or ""}</td>
+        <td>${u.canManageBoards() and "+" or ""}</td>
+        <td>${u.canManageUsers() and "+" or ""}</td>
+        <td>${u.canManageExtensions() and "+" or ""}</td>
+        <td>${u.canManageMappings() and "+" or ""}</td>
+        <td>${u.canRunMaintenance() and "+" or ""}</td>
     </tr>
 %endfor
 </table>

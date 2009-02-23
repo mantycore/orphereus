@@ -31,8 +31,8 @@
             <td>${e.type}</td>
             <td>${e.thwidth}&#215;${e.thheight}</td>
             <td>${e.path}</td>
-            <td>${e.enabled and "yes"}</td>
-            <td>${e.newWindow and "yes"}</td>
+            <td>${e.enabled and _("yes") or _("no")}</td>
+            <td>${e.newWindow and _("yes") or _("no")}</td>
             %if c.showCount:
             <td>${e.count()}</td>
             %endif

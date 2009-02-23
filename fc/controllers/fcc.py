@@ -943,8 +943,6 @@ class FccController(OrphieBaseController):
             tpp = 50
             self.paginate(count, page, tpp)
             c.logs = LogEntry.getRange(page*tpp, (page+1)*tpp, disabledEvents)
-            log.debug(c.logs)
-            log.debug(count)
             rv = re.compile('(\d+\.){3}\d+')
             for le in c.logs:
                 le.entry = rv.sub('<font color="red">[IP REMOVED]</font>', le.entry)

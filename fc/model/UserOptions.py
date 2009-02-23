@@ -33,4 +33,20 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
 
 #TODO: rewrite UserOptions
 class UserOptions(object):
-    pass
+    @staticmethod
+    def initDefaultOptions(optionsObject, globalOptHolder):
+        optionsObject.style = globalOptHolder.styles[0]
+        optionsObject.template = globalOptHolder.templates[0]
+        optionsObject.threadsPerPage = 10
+        optionsObject.repliesPerThread = 10
+        optionsObject.bantime = 0
+        optionsObject.canDeleteAllPosts = False
+        optionsObject.canMakeInvite = False
+        optionsObject.canChangeRights = False
+        optionsObject.isAdmin = False
+        optionsObject.hideLongComments = True
+        optionsObject.useAjax = True
+        optionsObject.mixOldThreads = True
+        optionsObject.defaultGoto = 0
+        optionsObject.homeExclude = pickle.dumps([])
+        optionsObject.hideThreads = pickle.dumps([])

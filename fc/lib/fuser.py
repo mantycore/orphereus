@@ -20,6 +20,25 @@ from fc.lib.miscUtils import *
 import logging
 log = logging.getLogger(__name__)
 
+class FakeUser(object):
+    def __init__(self):
+        self.__uidNumber = -1
+        self.__valid = False
+        self.Anonymous = False
+
+        if g.OPT.allowAnonymous:
+            self.__valid = True
+            self.Anonymous = True
+
+            self.__user = empty()
+            self.__user.options = None
+            self.__user.uidNumber = -1
+            self.__user.filters = ()
+
+            self.__user.options = empty()
+            UserOptions.initDefaultOptions(self.__user.options, g.OPT)
+
+
 class FUser(object):
     def __init__(self, uidNumber = -1):
         self.__uidNumber = uidNumber
@@ -47,21 +66,7 @@ class FUser(object):
                         self.__user.options = UserOptions()
                     else:
                         self.__user.options = empty()
-                    self.__user.options.threadsPerPage = 10
-                    self.__user.options.repliesPerThread = 10
-                    self.__user.options.style = config['pylons.app_globals'].OPT.styles[0]
-                    self.__user.options.template = 'wakaba'
-                    self.__user.options.bantime = 0
-                    self.__user.options.canDeleteAllPosts = False
-                    self.__user.options.canMakeInvite = False
-                    self.__user.options.canChangeRights = False
-                    self.__user.options.isAdmin = False
-                    self.__user.options.hideLongComments = True
-                    self.__user.options.useAjax = True
-                    self.__user.options.mixOldThreads = True
-                    self.__user.options.defaultGoto = 0
-                    self.__user.options.homeExclude = pickle.dumps([])
-                    self.__user.options.hideThreads = pickle.dumps([])
+                    UserOptions.initDefaultOptions(self.__user.options, g.OPT)
                     meta.Session.commit()
 
                 if not self.__user.options.hideThreads:

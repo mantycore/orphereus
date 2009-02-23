@@ -139,6 +139,9 @@ class User(object):
     def canMakeInvite(self):
         return self.options.canMakeInvite
 
+    def canChangeRights(self):
+        return self.options.canChangeRights
+
     #TODO: XXX: temporary code
     def canChangeSettings(self):
         return self.options.isAdmin

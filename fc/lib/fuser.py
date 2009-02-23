@@ -25,22 +25,22 @@ class FUser(object):
         self.__uidNumber = uidNumber
         self.__valid = False
         self.Anonymous = False
-            
+
         if uidNumber>-1 or g.OPT.allowAnonymous:
             self.__user = None
             self.Anonymous = False
             if uidNumber>-1:
                 self.__user = meta.Session.query(User).options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
-            
+
             if not self.__user and g.OPT.allowAnonymous:
                 self.__user = empty()
                 self.__user.options = None
                 self.__user.uidNumber = -1
                 self.__user.filters = ()
                 self.Anonymous = True
-            
+
             if self.__user:
-                self.__valid = True                
+                self.__valid = True
 
                 if not self.__user.options:
                     if uidNumber>-1:
@@ -62,21 +62,21 @@ class FUser(object):
                     self.__user.options.defaultGoto = 0
                     self.__user.options.homeExclude = pickle.dumps([])
                     self.__user.options.hideThreads = pickle.dumps([])
-                    meta.Session.commit()                  
-                
+                    meta.Session.commit()
+
                 if not self.__user.options.hideThreads:
                     self.__user.options.hideThreads = pickle.dumps([])
                     meta.Session.commit()
                 if not self.__user.options.homeExclude:
                     self.__user.options.homeExclude = pickle.dumps([])
                     meta.Session.commit()
-                
+
                 #it could be replaced by __user.* ... But it can reduce performance in case of using AutoCommit... So I'm using additional fields
                 self.__threadsPerPage = self.__user.options.threadsPerPage #session['options']['threadsPerPage']
                 self.__repliesPerThread = self.__user.options.repliesPerThread #session['options']['repliesPerThread']
                 self.__style = self.__user.options.style #session['options']['style']
                 self.__template =  self.__user.options.template #session['options']['template']
-                self.__isAdmin = self.__user.options.isAdmin                
+                self.__isAdmin = self.__user.options.isAdmin
                 self.__hideLongComments = self.__user.options.hideLongComments
                 self.__useAjax = self.__user.options.useAjax
                 self.__mixOldThreads = self.__user.options.mixOldThreads
@@ -88,7 +88,7 @@ class FUser(object):
                 self.__hideThreads = pickle.loads(self.__user.options.hideThreads)
                 self.__filters = self.__user.filters
                 self.__valid = True
-                
+
     def isValid(self):
         return self.__valid
     def isAuthorized(self):
@@ -129,7 +129,7 @@ class FUser(object):
                 value = 0
             self.__user.options.defaultGoto = value
             self.__defaultGoto = self.__user.options.defaultGoto
-        return self.__defaultGoto    
+        return self.__defaultGoto
     def homeExclude(self, value = None):
         if value != None:
             self.__user.options.homeExclude = pickle.dumps(value)
@@ -139,39 +139,47 @@ class FUser(object):
         if value != None:
             self.__user.options.hideThreads = pickle.dumps(value)
             self.__hideThreads = pickle.loads(self.__user.options.hideThreads)
-        return self.__hideThreads     
+        return self.__hideThreads
     def threadsPerPage(self, value = False):
-    	if value:
-    	    self.__user.options.threadsPerPage = value
-            self.__threadsPerPage = value        
+        if value:
+            self.__user.options.threadsPerPage = value
+            self.__threadsPerPage = value
         return self.__threadsPerPage
     def repliesPerThread(self, value = False):
-    	if value:
-    	    self.__user.options.repliesPerThread = value
-    	    self.__repliesPerThread = value        
+        if value:
+            self.__user.options.repliesPerThread = value
+            self.__repliesPerThread = value
         return self.__repliesPerThread
     def style(self, value = False):
-    	if value:
-    	    self.__user.options.style = value
-    	    self.__style = value        
+        if value:
+            self.__user.options.style = value
+            self.__style = value
         return self.__style
     def template(self, value = False):
-    	if value:
-    	    self.__user.options.template = value
-    	    self.__template = value
+        if value:
+            self.__user.options.template = value
+            self.__template = value
         return self.__template
     def canPost(self):
         return g.OPT.allowPosting and ((self.Anonymous and g.OPT.allowAnonymousPosting) or not self.Anonymous)
     def canDeleteAllPosts(self):
         return self.__canDeleteAllPosts
     def canMakeInvite(self):
-        return self.__canMakeInvite    
+        return self.__canMakeInvite
     def canChangeRights(self):
-        return self.__canChangeRights            
-    def bantime(self):   
+        return self.__canChangeRights
+    def canChangeSettings(self):
+        return self.__isAdmin #XXX: temp
+    def expandImages(self):
+        return True
+    def maxExpandWidth(self):
+        return 1024
+    def maxExpandHeight(self):
+        return 768
+    def bantime(self):
         return self.__user.options.bantime
     def banreason(self):
-        return self.__user.options.banreason 
+        return self.__user.options.banreason
     def optionsDump(self):
         optionsNames = dir(self.__user.options)
         ret = {}

@@ -14,6 +14,20 @@ settingsDef = {
     "additionalLinks" : 'http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma'
 }
 
+settingsDescription = {
+    "title"         : (N_("Board title"), str),
+    "invisibleBump" : (N_("Invisible bumps"), bool),
+    "maxTagsCount"  : (N_("Max tags per thread"), int),
+    "maxTagLen"     : (N_("Max tag length"), int),
+    "disabledTags"  : (N_("Disallowed tag names"), list),
+    "adminOnlyTags" : (N_("Admin-only tags"), list),
+    "maxLinesInPost": (N_("Cut post after X lines"), int),
+    "cutSymbols"    : (N_("Cut post after Y symbols"), int),
+    "usersCanViewLogs"  : (N_("Logs available to users"), bool),
+    "additionalLinks" : (N_("Additional links"), list),
+
+}
+
 id3FieldsNames = {
 "album" : N_("Album"),
 "title" : N_("Title"),

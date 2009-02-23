@@ -155,9 +155,7 @@ class FccController(OrphieBaseController):
             extList.append(ext.ext)
         c.extLine = ', '.join(extList)
 
-        #settingsMap = c.settingsMap
         threadFilter = self.excludeHiddenTags(threadFilter)
-        #threadFilter = threadFilter.filter(not_(Post.id.in_(self.userInst.hideThreads())))
 
         count = self.sqlCount(threadFilter)
         tpp = self.userInst.threadsPerPage()
@@ -938,7 +936,6 @@ class FccController(OrphieBaseController):
         return self.render('profile')
 
     def viewLog(self,page):
-        #settingsMap = c.settingsMap
         if g.settingsMap['usersCanViewLogs'].value == 'true':
             c.boardName = 'Logs'
             page = int(page)

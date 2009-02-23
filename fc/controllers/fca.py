@@ -42,20 +42,22 @@ class FcaController(OrphieBaseController):
 
     def manageSettings(self):
         c.boardName = 'Settings management'
-        #settingsMap = getSettingsMap()
+        c.settingsDescription = settingsDescription
 
         if request.POST.get('update', False):
+            if not self.userInst.canChangeSettings():
+                c.errorText = _("No way! You aren't holy enough!")
+                return self.render('error')
+
             for s in request.POST:
                 if s in settingsDef:
-                    if g.settingsMap[s].value != request.POST[s]:
-                        addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s, g.settingsMap[s].value,request.POST[s]))
-                        val = filterText(request.POST[s])
-                        setting = meta.Session.query(Setting).filter(Setting.name==s).first()
-                        setting.value = val
+                    val = filterText(request.POST[s])
+                    if g.settingsMap[s].value != val:
+                        addLogEntry(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s, g.settingsMap[s].value, val))
+                        Setting.getSetting(s).setValue(val)
                         g.settingsMap[s].value = val
-            meta.Session.commit()
-            c.message = _('Updated settings')
-        #c.settings = settingsMap
+
+            c.message = _('Settings updated')
         return self.render('manageSettings')
 
     def manageBoards(self):

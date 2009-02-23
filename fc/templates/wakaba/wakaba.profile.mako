@@ -9,15 +9,15 @@
                 %if c.profileChanged:
                     <tr>
                         <td colspan="2" style="text-align: center;">
-                        	<span class="theader">
-                        		${c.profileMsg}
-                        	</span>
+                          <span class="theader">
+                            ${c.profileMsg}
+                          </span>
                         </td>
-                    </tr>                    
-                %endif   
+                    </tr>
+                %endif
                 <tr>
                     <td colspan="2" style="text-align: center; font-weight: bold;">${_('Security')}</td>
-                </tr>                   
+                </tr>
                 <tr id="truid">
                     <td class="postblock">${_('UID')}</td>
                     <td><input value="${c.userInst.uid()}" readonly /></td>
@@ -36,13 +36,13 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="font-size: 80%;">
-                    	${_('Security code should be at least %d symbols') % g.OPT.minPassLength}<br/>                  
-                    	${_("Leave this fields empty if you don't wish to change your security code and UID")}
+                      ${_('Security code should be at least %d symbols') % g.OPT.minPassLength}<br/>
+                      ${_("Leave this fields empty if you don't wish to change your security code and UID")}
                     </td>
-                </tr>                                                     
+                </tr>
                 <tr>
                     <td colspan="2" style="text-align: center; font-weight: bold;">${_('Customization')}</td>
-                </tr>                   
+                </tr>
                 <tr id="trtpp">
                     <td class="postblock">${_('Threads per page')}</td>
                     <td><input name="threadsPerPage" value="${c.userInst.threadsPerPage()}" /></td>
@@ -62,36 +62,40 @@
                 <tr>
                     <td class="postblock">${_('Hide long comments')}</td>
                     <td><input type="checkbox" name="hideLongComments" ${c.userInst.hideLongComments() and "checked" or ""} /></td>
-                </tr>                
+                </tr>
                 <tr>
                     <td class="postblock">${_('Home filter exclusions')}</td>
                     <td><input name="homeExclude" value="${c.homeExclude}" /></td>
-                </tr>    
+                </tr>
                 <tr id="trstyle">
                     <td class="postblock">${_('By default Go To')}</td>
                     <td>
-		                <select name="defaultGoto">
+                    <select name="defaultGoto">
                             %for dest in c.destinations.keys():
-                           		<option value="${dest}" 
-                    			%if dest == c.userInst.defaultGoto(): 
-                    				selected
-                    			%endif
-                    			>
-                            	
-                            	${_(c.destinations[dest])}</option>
-                            %endfor                   
-		                </select>
+                               <option value="${dest}"
+                                 %if dest == c.userInst.defaultGoto():
+                                    selected
+                                 %endif
+                               >
+
+                              ${_(c.destinations[dest])}</option>
+                            %endfor
+                    </select>
                     </td>
-                </tr>                             
+                </tr>
                 <tr id="trtempl">
                     <td class="postblock">${_('Template')}</td>
                     <td>
                         <select name name="template">
-                            <option>${c.userInst.template()}</option>
+
                             %for t in c.templates:
-                                %if t != c.userInst.template():
-                                    <option>${t}</option>
-                                %endif 
+                               <option value="${t}"
+                                 %if t == c.userInst.template():
+                                    selected
+                                 %endif
+                               >
+
+                              ${t}</option>
                             %endfor
                         </select>
                     </td>
@@ -100,21 +104,24 @@
                     <td class="postblock">${_('Style')}</td>
                     <td>
                         <select name="style">
-                            <option>${c.userInst.style()}</option>
-                            %for s in c.styles:
-                                %if s != c.userInst.style():
-                                    <option>${s}</option>
-                                %endif
+                            %for style in c.styles:
+                               <option value="${style}"
+                                 %if style == c.userInst.style():
+                                    selected
+                                 %endif
+                               >
+
+                              ${style}</option>
                             %endfor
-                        </select>                            
+                        </select>
                     </td>
-                </tr>                              
+                </tr>
                 <tr>
                     <td colspan="2"><input name="update" type="submit" value="${_('Update')}" /></td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center; font-weight: bold;">${_('User filters')}</td>
-                </tr>                
+                </tr>
                 %for f in c.userInst.filters():
                 <tr id="filterId${f.id}">
                     <td class="postblock">[<a href="" onclick="userFiltersEdit(event,${f.id});">Edit</a>] [<a href='' onClick="userFiltersDelete(event,${f.id});">Del</a>]</td>
@@ -124,7 +131,7 @@
                 <tr id="newFilterTR">
                     <td class="postblock">${_('New filter')}</td>
                     <td><input id="newFilterInput" name="newFilter" value="" /></td>
-                </tr>  
+                </tr>
                 <tr>
                     <td colspan="2"><input name="update" type="button" value="${_('Add')}" onclick="userFiltersAdd(event)" /></td>
                 </tr>

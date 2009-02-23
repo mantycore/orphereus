@@ -58,7 +58,9 @@
 %if c.userInst.useAjax():
     popup_posts({ajax: true});
 %endif
-    click_expands();
+%if c.userInst.expandImages():
+    click_expands({max_width: ${c.userInst.maxExpandWidth()}, max_height: ${c.userInst.maxExpandHeight()}});
+%endif
 </script>
 
 <%include file="wakaba.paginator.mako" args="baselink=c.board"/>

@@ -15,6 +15,11 @@ t_settings = sa.Table("settings", meta.metadata,
     sa.Column("value"    , sa.types.UnicodeText, nullable=False)
     )
 
-#TODO: rewrite Setting
 class Setting(object):
-    pass
+    @staticmethod
+    def getSetting(name):
+        return Setting.query().filter(Setting.name==name).first()
+
+    def setValue(self, value):
+        self.value = value
+        meta.Session.commit()

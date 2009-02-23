@@ -160,7 +160,7 @@ class FUser(object):
         return self.__user.canManageBoards()
 
     def canManageUsers(self):
-        return self.__user.canManageBoards()
+        return self.__user.canManageUsers()
 
     def canManageExtensions(self):
         return self.__user.canManageExtensions()

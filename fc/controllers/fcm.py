@@ -57,7 +57,7 @@ class FcmController(OrphieBaseController):
             if invite.date < currentTime - datetime.timedelta(weeks=1):
                 msg1 = "Deleted invite <b>#%d</b>" % (invite.id)
                 msg2 = " from date <b>%s</b> with id <font size='-2'>%s</font>" % (invite.date, invite.invite)
-                addLogEntry(LOG_EVENT_MTN_DELINVITE, msg1)
+                toLog(LOG_EVENT_MTN_DELINVITE, msg1)
                 mtnLog.append(self.createLogEntry('Info', msg1+msg2))
                 meta.Session.delete(invite)
         meta.Session.commit()
@@ -103,7 +103,7 @@ class FcmController(OrphieBaseController):
             if banDate and bantime>0 and banDate < currentTime - datetime.timedelta(days=bantime):
                 unbanMessage = ("Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
                 mtnLog.append(self.createLogEntry('Info', unbanMessage))
-                addLogEntry(LOG_EVENT_MTN_UNBAN, unbanMessage)
+                toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
                 user.options.bantime = 0
                 user.options.banreason = u''
         meta.Session.commit()
@@ -123,7 +123,7 @@ class FcmController(OrphieBaseController):
             if not user:
                 msg = 'Orphaned userOptions %d for %s, removing' % (opt.optid, str(opt.uidNumber))
                 mtnLog.append(self.createLogEntry('Warning', msg))
-                addLogEntry(LOG_EVENT_INTEGR, msg)
+                toLog(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(opt)
         
         mtnLog.append(self.createLogEntry('Task', 'User filters...'))
@@ -133,7 +133,7 @@ class FcmController(OrphieBaseController):
             if not user:
                 msg = 'Orphaned userFilters %d for %s, removing' % (fl.id, str(fl.uidNumber))
                 mtnLog.append(self.createLogEntry('Warning', msg))
-                addLogEntry(LOG_EVENT_INTEGR, msg)
+                toLog(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(fl)
 
         mtnLog.append(self.createLogEntry('Task', 'Tag options...'))
@@ -143,7 +143,7 @@ class FcmController(OrphieBaseController):
             if not tag:
                 msg = 'Orphaned tagOptions %d for %s, removing' % (opt.id, str(opt.tagId))
                 mtnLog.append(self.createLogEntry('Warning', msg))
-                addLogEntry(LOG_EVENT_INTEGR, msg)
+                toLog(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(opt)
 
         mtnLog.append(self.createLogEntry('Task', 'Pictures...'))
@@ -153,7 +153,7 @@ class FcmController(OrphieBaseController):
             if not post:
                 msg = 'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
                 mtnLog.append(self.createLogEntry('Warning', msg))
-                addLogEntry(LOG_EVENT_INTEGR, msg)
+                toLog(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(pic)
 
         meta.Session.commit()
@@ -187,7 +187,7 @@ class FcmController(OrphieBaseController):
                     if not thumbIds:
                         msg = 'Orphaned thumbnail %s moved into junk directory' % fn
                         mtnLog.append(self.createLogEntry('Info', msg))
-                        addLogEntry(LOG_EVENT_INTEGR, msg)
+                        toLog(LOG_EVENT_INTEGR, msg)
                         shutil.move(fn, junkPath)
                         ccJunkThumbnails += 1
                 else:
@@ -195,12 +195,12 @@ class FcmController(OrphieBaseController):
                     if not picIds:
                         msg = 'Orphaned picture %s moved into junk directory' % fn
                         mtnLog.append(self.createLogEntry('Info', msg))
-                        addLogEntry(LOG_EVENT_INTEGR, msg)
+                        toLog(LOG_EVENT_INTEGR, msg)
                         shutil.move(fn, junkPath)
                         ccJunkFiles += 1
                         
         if (ccJunkFiles > 0 or ccJunkThumbnails > 0):
-            addLogEntry(LOG_EVENT_INTEGR, "%d files and %d thumbnails moved into junk directory" % (ccJunkFiles, ccJunkThumbnails))
+            toLog(LOG_EVENT_INTEGR, "%d files and %d thumbnails moved into junk directory" % (ccJunkFiles, ccJunkThumbnails))
         
         mtnLog.append(self.createLogEntry('Task', 'Orpaned files check completed'))
         
@@ -219,7 +219,7 @@ class FcmController(OrphieBaseController):
                 if not os.path.exists(source):
                     msg = 'Warning: %s not exists' % (source)
                     mtnLog.append(self.createLogEntry('Info', msg))
-                    addLogEntry(LOG_EVENT_INTEGR, msg)
+                    toLog(LOG_EVENT_INTEGR, msg)
                     return False
                 targetDir = os.path.dirname(target)
                 if not os.path.exists(targetDir):
@@ -246,7 +246,7 @@ class FcmController(OrphieBaseController):
         if movedCC or movedTCC:
             msg = '%d files and %d thumbnails moved' % (movedCC, movedTCC)
             mtnLog.append(self.createLogEntry('Info', msg))
-            addLogEntry(LOG_EVENT_INTEGR, msg)
+            toLog(LOG_EVENT_INTEGR, msg)
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         meta.Session.commit()
         return mtnLog
@@ -261,7 +261,7 @@ class FcmController(OrphieBaseController):
                 msg = 'Invalid RC: %d (actual: %d, cached: %d), updating' % (post.id, repliesCount, post.replyCount)
                 warnMsg = self.createLogEntry('Warning', msg)
                 mtnLog.append(warnMsg)
-                addLogEntry(LOG_EVENT_INTEGR_RC, msg)
+                toLog(LOG_EVENT_INTEGR_RC, msg)
                 post.replyCount = repliesCount 
         meta.Session.commit()        
         mtnLog.append(self.createLogEntry('Task', 'Done'))
@@ -280,7 +280,7 @@ class FcmController(OrphieBaseController):
                 msg = 'Invalid tag TC: %s (actual: %d, cached: %d), updating' % (tag.tag, threadCount, tag.threadCount)
                 warnMsg = self.createLogEntry('Warning', msg)
                 mtnLog.append(warnMsg)
-                addLogEntry(LOG_EVENT_INTEGR_RC, msg)
+                toLog(LOG_EVENT_INTEGR_RC, msg)
                 tag.threadCount = threadCount
             
             replyCount = Post.query.filter(or_(condition, Post.parentPost.has(condition))).count()
@@ -290,7 +290,7 @@ class FcmController(OrphieBaseController):
                 msg = 'Invalid tag RC: %s (actual: %d, cached: %d), updating' % (tag.tag, replyCount, tag.replyCount)
                 warnMsg = self.createLogEntry('Warning', msg)
                 mtnLog.append(warnMsg)
-                addLogEntry(LOG_EVENT_INTEGR_RC, msg)
+                toLog(LOG_EVENT_INTEGR_RC, msg)
                 tag.replyCount = replyCount
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
@@ -385,7 +385,7 @@ class FcmController(OrphieBaseController):
             c.boardName = 'Index'
             return self.render('mtnIndex')        
         else:
-            addLogEntry(LOG_EVENT_MTN_BEGIN, _('Maintenance started'))
+            toLog(LOG_EVENT_MTN_BEGIN, _('Maintenance started'))
             mtnLog = []
             c.boardName = 'Maintenance log'
             if actid == 'clearOekaki':
@@ -414,31 +414,31 @@ class FcmController(OrphieBaseController):
                 try:
                     mtnLog = self.clearOekaki()
                 except:
-                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in clearOekaki()'))  
+                    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in clearOekaki()'))  
                 try:
                     mtnLog += self.destroyInvites()
                 except:
-                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in destroyInvites()'))
+                    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in destroyInvites()'))
                 try:
                     mtnLog += self.destroyTrackers()
                 except:
-                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in destroyTrackers()'))
+                    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in destroyTrackers()'))
                 try:
                     mtnLog += self.integrityChecks()
                 except:
-                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in integrityChecks()'))
+                    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in integrityChecks()'))
                 try:                    
                     mtnLog += self.banRotate()
                 except:
-                    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in banRotate()'))
+                    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in banRotate()'))
                 #try:                    
                 #    mtnLog += self.updateCaches()
                 #except:
-                #    addLogEntry(LOG_EVENT_MTN_ERROR, _('Critical error in updateCaches()'))
+                #    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in updateCaches()'))
             
             #for entry in mtnLog:
-            #    addLogEntry(LOG_EVENT_MTN_ACT, entry.type + ': ' + entry.message)
+            #    toLog(LOG_EVENT_MTN_ACT, entry.type + ': ' + entry.message)
                 
             c.mtnLog = mtnLog
-            addLogEntry(LOG_EVENT_MTN_END, _('Maintenance ended'))
+            toLog(LOG_EVENT_MTN_END, _('Maintenance ended'))
             return self.render('mtnLog')

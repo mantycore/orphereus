@@ -16,10 +16,26 @@ t_settings = sa.Table("settings", meta.metadata,
     )
 
 class Setting(object):
-    @staticmethod
-    def getSetting(name):
-        return Setting.query().filter(Setting.name==name).first()
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
 
     def setValue(self, value):
         self.value = value
         meta.Session.commit()
+
+    @staticmethod
+    def create(name, value):
+        setting = Setting(name, value)
+        meta.Session.add(setting)
+        meta.Session.commit()
+        return setting
+
+    @staticmethod
+    def getAll():
+        return Setting.query().all()
+
+    @staticmethod
+    def getSetting(name):
+        return Setting.query().filter(Setting.name==name).first()
+

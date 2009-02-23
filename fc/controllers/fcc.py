@@ -935,18 +935,19 @@ class FccController(OrphieBaseController):
         c.userInst = self.userInst
         return self.render('profile')
 
-    def viewLog(self,page):
+    def viewLog(self, page):
         if g.settingsMap['usersCanViewLogs'].value == 'true':
             c.boardName = 'Logs'
             page = int(page)
-            count = self.sqlCount(meta.Session.query(LogEntry).filter(not_(LogEntry.event.in_(disabledEvents))))
+            count = LogEntry.count(disabledEvents)
             tpp = 50
             self.paginate(count, page, tpp)
-            filter = meta.Session.query(LogEntry).filter(not_(LogEntry.event.in_(disabledEvents))).options(eagerload('user')).order_by(LogEntry.date.desc())
-            c.logs = filter[page*tpp:(page+1)*tpp]
+            c.logs = LogEntry.getRange(page*tpp, (page+1)*tpp, disabledEvents)
+            log.debug(c.logs)
+            log.debug(count)
             rv = re.compile('(\d+\.){3}\d+')
-            for log in c.logs:
-                log.entry = rv.sub('<font color="red">[IP REMOVED]</font>', log.entry)
+            for le in c.logs:
+                le.entry = rv.sub('<font color="red">[IP REMOVED]</font>', le.entry)
             return self.render('logs')
         else:
             return redirect_to('/')

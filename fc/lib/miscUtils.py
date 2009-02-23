@@ -1,20 +1,20 @@
+from pylons import config
+from pylons import c, cache, config, g, request, response, session
+from pylons.i18n import _, ungettext, N_
+
 import re
 import os
 import logging
 import datetime
-from pylons import c, cache, config, g, request, response, session
-from pylons.i18n import _, ungettext, N_
-from fc.model import *
-from sqlalchemy.orm import eagerload
-from sqlalchemy.orm import class_mapper
-from sqlalchemy.sql import and_, or_, not_
-from fc.lib.constantValues import *
+
 import smtplib
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEBase import MIMEBase
 from email.MIMEText import MIMEText
 from email import Encoders
-from pylons import config
+
+from fc.model import LogEntry
+from fc.lib.constantValues import *
 
 class empty(object):
     pass
@@ -39,7 +39,7 @@ def isNumber(n):
             return False
     else:
         return False
-        
+
 def currentUID():
     try:
         if c.userInst:
@@ -47,59 +47,44 @@ def currentUID():
     except:
         pass
     return -1
-    
-def addLogEntry(event,entry):
-    logEntry = LogEntry()
-    logEntry.uidNumber = currentUID()
-    logEntry.date = datetime.datetime.now()
-    logEntry.event = event
-    logEntry.entry = entry
-    meta.Session.add(logEntry)
-    meta.Session.commit()
-    
+
+def toLog(event, text, commit = True):
+    LogEntry.create(currentUID(), event, filterText(text), commit)
+
 def adminAlert(alertStr):
     g = config['pylons.app_globals']
     server = smtplib.SMTP(g.OPT.alertServer, g.OPT.alertPort)
     if g.OPT.alertPort == 587: #fix for google
         server.ehlo()
         server.starttls()
-        server.ehlo()    
+        server.ehlo()
     server.login(g.OPT.alertSender, g.OPT.alertPassword)
 
     for mail in g.OPT.alertEmail:
         msg = MIMEMultipart()
         msg['From'] = g.OPT.alertSender
-        msg['To'] = mail 
+        msg['To'] = mail
         msg['Subject'] =  '%s: Security alert by %d: ' % (g.OPT.baseDomain, currentUID())
         msg.attach(MIMEText(alertStr))
-   
+
         server.sendmail(g.OPT.alertSender, mail, msg.as_string())
     server.close()
-    
+
 def getUserIp():
-    if g.OPT.useXRealIP: 
+    if g.OPT.useXRealIP:
         return request.headers["X-Real-IP"]
     return request.environ["REMOTE_ADDR"]
 
 def checkAdminIP():
     if g.OPT.useAnalBarriering and getUserIp() != '127.0.0.1':
         msg = _("Access attempt from %s for admin account!") % getUserIp()
-        addLogEntry(LOG_EVENT_SECURITY_IP, msg)
+        toLog(LOG_EVENT_SECURITY_IP, msg)
         adminAlert(msg)
         session['uidNumber'] = -1
         session.save()
         return False
     else:
         return True
-
-def getTagsListFromString(string):
-    result = []
-    tags = string.split(',')
-    for tag in tags:
-        aTag = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==tag).first()
-        if aTag:
-            result.append(aTag.id)
-    return result
 
 def getRPN(text, operators):
     whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']
@@ -115,7 +100,7 @@ def getRPN(text, operators):
         elif i == ')':
             if temp:
                 result.append(''.join(temp))
-                temp = []                
+                temp = []
             while (stack and stack[-1] != '('):
                 result.append(stack.pop())
             if stack:
@@ -135,4 +120,4 @@ def getRPN(text, operators):
     while stack:
         result.append(stack.pop())
     return result
- 
+

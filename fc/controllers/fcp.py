@@ -30,7 +30,7 @@ class FcpController(OrphieBaseController):
                     
                 if (rickroll):
                     redir = g.OPT.fakeLinks[random.randint(0, len(g.OPT.fakeLinks) - 1)]
-                    addLogEntry(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, getUserIp(), filterText(request.headers.get('User-Agent', '?'))))
+                    toLog(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, getUserIp(), filterText(request.headers.get('User-Agent', '?'))))
                     redirect_to(redir)
 
         if (self.userInst and self.userInst.isValid()) or g.OPT.allowAnonymous:
@@ -163,7 +163,7 @@ class FcpController(OrphieBaseController):
                 user = User()
                 user.uid = uid
                 meta.Session.add(user)
-                addLogEntry(LOG_EVENT_INVITE_USED, _("Utilized invite #%d") % (session['iid']))
+                toLog(LOG_EVENT_INVITE_USED, _("Utilized invite #%d") % (session['iid']))
                 meta.Session.commit()
                 del session['invite']
                 del session['iid']

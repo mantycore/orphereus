@@ -2,16 +2,16 @@ from pylons.i18n import _, ungettext, N_
 
 #this is default values, real are stored in database
 settingsDef = {
-    "title"         : "Orphereus",
-    "invisibleBump" : 'true',
-    "maxTagsCount"  : '5',
-    "maxTagLen"     : '6',
-    "disabledTags"  : 'logout,authorize,register,youAreBanned,userProfile,holySynod',
-    "adminOnlyTags" : 'synod,logs',
-    "maxLinesInPost": '15',
-    "cutSymbols"    : '5000',
-    "usersCanViewLogs"  : 'false',
-    "additionalLinks" : 'http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma'
+    "title"         : u'Orphereus',
+    "invisibleBump" : u'true',
+    "maxTagsCount"  : u'5',
+    "maxTagLen"     : u'6',
+    "disabledTags"  : u'logout,authorize,register,youAreBanned,userProfile,holySynod',
+    "adminOnlyTags" : u'synod,logs',
+    "maxLinesInPost": u'15',
+    "cutSymbols"    : u'5000',
+    "usersCanViewLogs"  : u'false',
+    "additionalLinks" : u'http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma'
 }
 
 settingsDescription = {

@@ -146,7 +146,7 @@ class OrphieBaseController(BaseController):
                 user.options.bantime = bantime
                 user.options.banreason = banreason
                 user.options.banDate = datetime.datetime.now()
-                addLogEntry(LOG_EVENT_USER_BAN, _('Banned user %s for %s days for reason "%s"') % (user.uidNumber, bantime, banreason))
+                toLog(LOG_EVENT_USER_BAN, _('Banned user %s for %s days for reason "%s"') % (user.uidNumber, bantime, banreason))
                 meta.Session.commit()
                 return _('User was banned')
             else:
@@ -262,7 +262,7 @@ class OrphieBaseController(BaseController):
                     logEntry = _("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (p.id, p.uidNumber, tagline, reason)
                 if fileonly:
                     logEntry += " %s" % _("(file only)")
-                addLogEntry(LOG_EVENT_POSTS_DELETE, logEntry)
+                toLog(LOG_EVENT_POSTS_DELETE, logEntry)
 
             if p.parentid == -1 and not fileonly:
                 if not (postOptions.canDeleteOwnThreads or self.userInst.canDeleteAllPosts()):

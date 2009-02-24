@@ -17,7 +17,7 @@ ${_('Current members of Holy Synod')}
 %for u in c.admins:
     <tr
     %if u.uidNumber == c.userInst.uidNumber:
-    style="font-weight: bold;"
+    class="highlight"
     %endif
     >
         <td><div class="hovblock"><a style="display: block;" href='/holySynod/manageUsers/edit/${u.uidNumber}'>${u.uidNumber}</a></div></td>

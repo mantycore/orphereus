@@ -35,7 +35,7 @@
                     <td><input name="key2" value=""  type="password" /></td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="font-size: 80%;">
+                    <td colspan="2" style="font-size: 70%; font-style:italic;">
                       ${_('Security code should be at least %d symbols') % g.OPT.minPassLength}<br/>
                       ${_("Leave this fields empty if you don't wish to change your security code and UID")}
                     </td>
@@ -68,12 +68,18 @@
                     <td><input type="checkbox" name="expandImages" ${c.userInst.expandImages() and "checked" or ""} /></td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('Max width to expand')}</td>
-                    <td><input name="maxExpandWidth" value="${c.userInst.maxExpandWidth()}" /></td>
+                    <td class="postblock">${_('Max size to expand')}
+                    <div style="font-size: 60%; font-style:italic;">(Max side will be used)</div>
+                    </td>
+                    <td>
+                    <input name="maxExpandWidth" value="${c.userInst.maxExpandWidth()}" size="5"/>
+                    &#215;
+                    <input name="maxExpandHeight" value="${c.userInst.maxExpandHeight()}"  size="5" />
+                    </td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Max height to expand')}</td>
-                    <td><input name="maxExpandHeight" value="${c.userInst.maxExpandHeight()}" /></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Home filter exclusions')}</td>

@@ -47,13 +47,9 @@
                     <td class="postblock">${_('Threads per page')}</td>
                     <td><input name="threadsPerPage" value="${c.userInst.threadsPerPage()}" /></td>
                 </tr>
-                <tr id="trppt">
+                <tr id="trrpt">
                     <td class="postblock">${_('Replies per thread')}</td>
                     <td><input name="repliesPerThread" value="${c.userInst.repliesPerThread()}" /></td>
-                </tr>
-                <tr>
-                    <td class="postblock">${_('Use AJAX hints')}</td>
-                    <td><input type="checkbox" name="useAjax" ${c.userInst.useAjax() and "checked" or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Mix old threads into boards')}</td>
@@ -62,6 +58,22 @@
                 <tr>
                     <td class="postblock">${_('Hide long comments')}</td>
                     <td><input type="checkbox" name="hideLongComments" ${c.userInst.hideLongComments() and "checked" or ""} /></td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Use AJAX hints')}</td>
+                    <td><input type="checkbox" name="useAjax" ${c.userInst.useAjax() and "checked" or ""} /></td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Expand images in threads')}</td>
+                    <td><input type="checkbox" name="expandImages" ${c.userInst.expandImages() and "checked" or ""} /></td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Max width to expand')}</td>
+                    <td><input name="maxExpandWidth" value="${c.userInst.maxExpandWidth()}" /></td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Max height to expand')}</td>
+                    <td><input name="maxExpandHeight" value="${c.userInst.maxExpandHeight()}" /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Home filter exclusions')}</td>

@@ -858,7 +858,6 @@ class FccController(OrphieBaseController):
                 self.userInst.style(style)
             gotodest = filterText(request.POST.get('defaultGoto', self.userInst.defaultGoto()))
             if isNumber(gotodest) and (int(gotodest) in destinations.keys()):
-                #log.debug(gotodest)
                 self.userInst.defaultGoto(int(gotodest))
             threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
             if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 30):
@@ -868,6 +867,13 @@ class FccController(OrphieBaseController):
                 self.userInst.repliesPerThread(repliesPerThread)
             self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
             self.userInst.useAjax(request.POST.get('useAjax', False))
+            self.userInst.expandImages(request.POST.get('expandImages', False))
+            maxExpandWidth = request.POST.get('maxExpandWidth', self.userInst.maxExpandWidth())
+            if isNumber(maxExpandWidth) and (0 < int(maxExpandWidth) < 4096):
+                self.userInst.maxExpandWidth(maxExpandWidth)
+            maxExpandHeight = request.POST.get('maxExpandHeight', self.userInst.maxExpandHeight())
+            if isNumber(maxExpandHeight) and (0 < int(maxExpandHeight) < 4096):
+                self.userInst.maxExpandHeight(maxExpandHeight)
             self.userInst.mixOldThreads(request.POST.get('mixOldThreads', False))
             homeExcludeTags = self.__tagListFromString(request.POST.get('homeExclude', u''))
             homeExcludeList = []

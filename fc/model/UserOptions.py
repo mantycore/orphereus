@@ -25,12 +25,15 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("banDate", sa.types.DateTime, nullable=True),
     sa.Column("hideLongComments", sa.types.Boolean, nullable=True),
     sa.Column("useAjax", sa.types.Boolean, nullable=True),
+    sa.Column("expandImages", sa.types.Boolean, nullable=True, server_default='1'),
+    sa.Column("maxExpandWidth", sa.types.Integer, nullable=True, server_default='1024'),
+    sa.Column("maxExpandHeight", sa.types.Integer, nullable=True, server_default='768'),
     sa.Column("mixOldThreads", sa.types.Boolean, nullable=True),
     sa.Column("defaultGoto", sa.types.Integer, nullable=True),
     sa.Column("isAdmin"  , sa.types.Boolean, nullable=True),
     sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable=True),
     sa.Column("canMakeInvite", sa.types.Boolean, nullable=True),
-    sa.Column("canChangeRights", sa.types.Boolean, nullable=True)
+    sa.Column("canChangeRights", sa.types.Boolean, nullable=True),
     )
 
 class UserOptions(object):

@@ -170,22 +170,22 @@ class User(object):
             self.options.hideThreads = pickle.dumps(value)
         return pickle.loads(self.options.hideThreads)
 
-    def threadsPerPage(self, value = False):
-        if value:
+    def threadsPerPage(self, value = None):
+        if value != None and isNumber(value) or value == 0:
             self.options.threadsPerPage = value
         return self.options.threadsPerPage
 
-    def repliesPerThread(self, value = False):
-        if value:
+    def repliesPerThread(self, value = None):
+        if value != None and isNumber(value) or value == 0:
             self.options.repliesPerThread = value
         return self.options.repliesPerThread
 
-    def style(self, value = False):
+    def style(self, value = None):
         if value:
             self.options.style = value
         return self.options.style
 
-    def template(self, value = False):
+    def template(self, value = None):
         if value:
             self.options.template = value
         return self.options.template
@@ -197,14 +197,20 @@ class User(object):
             self.options.defaultGoto = value
         return self.options.defaultGoto
 
-    def expandImages(self):
-        return True
+    def expandImages(self, value = None):
+        if value != None:
+            self.options.expandImages = value
+        return self.options.expandImages
 
-    def maxExpandWidth(self):
-        return 1024
+    def maxExpandWidth(self, value = None):
+        if value != None and isNumber(value) or value == 0:
+            self.options.maxExpandWidth = value
+        return self.options.maxExpandWidth
 
-    def maxExpandHeight(self):
-        return 768
+    def maxExpandHeight(self, value = None):
+        if value != None and isNumber(value) or value == 0:
+            self.options.maxExpandHeight = value
+        return self.options.maxExpandHeight
 
     def optionsDump(self):
         return UserOptions.optionsDump(self.options)

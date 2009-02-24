@@ -319,6 +319,7 @@ class FcaController(OrphieBaseController):
 
         c.boardName = 'Users management'
         uid = request.POST.get("uid", False)
+        log.debug(uid)
         if uid:
             user = False
             if isNumber(uid):
@@ -360,27 +361,32 @@ class FcaController(OrphieBaseController):
             return self.render('error')
 
         c.boardName = 'Edit user %s' % uid
-        user = User.getByUid(uid) #meta.Session.query(User).options(eagerload('options')).get(uid)
+        user = User.getUser(uid) #meta.Session.query(User).options(eagerload('options')).get(uid)
         if user:
             c.user = user
             c.userInst = self.userInst
             if request.POST.get('access', False) and self.userInst.canChangeRights():
-                canDeleteAllPosts = request.POST.get('canDeleteAllPosts',False) and True or False
-                if user.options.canDeleteAllPosts != canDeleteAllPosts:
-                    user.options.canDeleteAllPosts = canDeleteAllPosts
-                    toLog(LOG_EVENT_USER_ACCESS,_('Changed user %s canDeleteAllPosts to %s') % (user.uidNumber,canDeleteAllPosts))
+                #Basic admin right
                 isAdmin = request.POST.get('isAdmin',False) and True or False
                 if user.options.isAdmin != isAdmin:
                     user.options.isAdmin = isAdmin
                     toLog(LOG_EVENT_USER_ACCESS,_('Changed user %s isAdmin to %s') % (user.uidNumber,isAdmin))
-                canMakeInvite = request.POST.get('canMakeInvite',False) and True or False
-                if user.options.canMakeInvite != canMakeInvite:
-                    user.options.canMakeInvite = canMakeInvite
-                    toLog(LOG_EVENT_USER_ACCESS,_('Changed user %s canMakeInvite to %s') % (user.uidNumber,canMakeInvite))
-                canChangeRights = request.POST.get('canChangeRights',False) and True or False
-                if user.options.canChangeRights != canChangeRights:
-                    user.options.canChangeRights = canChangeRights
-                    toLog(LOG_EVENT_USER_ACCESS,_('Changed user %s canChangeRights to %s') % (user.uidNumber,canChangeRights))
+
+                def setRight(name):
+                    right = request.POST.get(name, False) and True or False
+                    if getattr(user.options, name) != right:
+                        setattr(user.options, name, right)
+                        toLog(LOG_EVENT_USER_ACCESS,_('Changed right "%s" for user #%s to %s') % ( name, user.uidNumber, right))
+
+                setRight("canDeleteAllPosts")
+                setRight("canMakeInvite")
+                setRight("canChangeRights")
+                setRight("canChangeSettings")
+                setRight("canManageBoards")
+                setRight("canManageUsers")
+                setRight("canManageExtensions")
+                setRight("canManageMappings")
+                setRight("canRunMaintenance")
                 c.message = _('User access was changed')
             elif request.POST.get('ban', False):
                 if user.options.bantime > 0:

@@ -242,21 +242,20 @@ class User(object):
     def canChangeRights(self):
         return self.options.canChangeRights
 
-    #TODO: XXX: temporary code
     def canChangeSettings(self):
-        return self.options.isAdmin
+        return self.options.canChangeSettings
 
     def canManageBoards(self):
-        return self.options.isAdmin
+        return self.options.canManageBoards
 
     def canManageUsers(self):
-        return self.options.isAdmin
+        return self.options.canManageUsers or self.options.canChangeRights
 
     def canManageExtensions(self):
-        return self.options.isAdmin
+        return self.options.canManageExtensions
 
     def canManageMappings(self):
-        return self.options.isAdmin
+        return self.options.canManageMappings
 
     def canRunMaintenance(self):
-        return self.options.isAdmin
+        return self.options.canRunMaintenance

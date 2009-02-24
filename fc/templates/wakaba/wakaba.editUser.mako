@@ -18,35 +18,84 @@
                     <td colspan=2>${_('Access')}</td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('Can delete posts')}</td>
+                    <td class="postblock"><u>${_('Admin')}<u></td>
                     <td>
-                        <input type="checkbox" name="canDeleteAllPosts" ${not c.userInst.canChangeRights() and "disabled" or ""} ${c.user.options.canDeleteAllPosts and "checked" or ""} />
+                        <input type="checkbox" name="isAdmin" ${not c.userInst.canChangeRights() and "disabled" or ""}
+                        ${c.user.options.isAdmin and "checked" or ""} />
                     </td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('Admin')}</td>
+                    <td class="postblock">${_('Can delete posts')}</td>
                     <td>
-                        <input type="checkbox" name="isAdmin" ${not c.userInst.canChangeRights() and "disabled" or ""} ${c.user.options.isAdmin and "checked" or ""} />
+                        <input type="checkbox" name="canDeleteAllPosts" ${not c.userInst.canChangeRights() and "disabled" or ""}
+                        ${c.user.options.canDeleteAllPosts and "checked" or ""} />
                     </td>
-                </tr>     
+                </tr>
                 <tr>
                     <td class="postblock">${_('Can make invite')}</td>
                     <td>
-                        <input type="checkbox" name="canMakeInvite" ${not c.userInst.canChangeRights() and "disabled" or ""} ${c.user.options.canMakeInvite and "checked" or ""} />
+                        <input type="checkbox" name="canMakeInvite" ${not c.userInst.canChangeRights() and "disabled" or ""}
+                        ${c.user.options.canMakeInvite and "checked" or ""} />
                     </td>
-                </tr>  
+                </tr>
+
                 <tr>
-                    <td class="postblock">${_('CAN CHANGE USER RIGHTS')}</td>
+                    <td class="postblock">${_('Can change settings')}</td>
+                    <td>
+                        <input type="checkbox" name="canChangeSettings" ${not c.userInst.canChangeRights() and "disabled" or ""}
+                        ${c.user.options.canChangeSettings and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Can manage boards')}</td>
+                    <td>
+                        <input type="checkbox" name="canManageBoards" ${not c.userInst.canChangeRights() and "disabled" or ""}
+                        ${c.user.options.canManageBoards and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Can manage extensions')}</td>
+                    <td>
+                        <input type="checkbox" name="canManageExtensions" ${not c.userInst.canChangeRights() and "disabled" or ""}
+                        ${c.user.options.canManageExtensions and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Can manage mappings')}</td>
+                    <td>
+                        <input type="checkbox" name="canManageMappings" ${not c.userInst.canChangeRights() and "disabled" or ""}
+                        ${c.user.options.canManageMappings and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Can run maintenance')}</td>
+                    <td>
+                        <input type="checkbox" name="canRunMaintenance" ${not c.userInst.canChangeRights() and "disabled" or ""}
+                        ${c.user.options.canRunMaintenance and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Can manage users')}
+                    <div style="font-size: 60%; font-style:italic;">(Suppresses by canChangeRights)</div>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="canManageUsers" ${not c.userInst.canChangeRights() and "disabled" or ""}
+                        ${c.user.options.canManageUsers and "checked" or ""} />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="postblock"><u>${_('CAN CHANGE USER RIGHTS')}</u></td>
                     <td>
                         <input type="checkbox" name="canChangeRights" ${not c.userInst.canChangeRights() and "disabled" or ""} ${c.user.options.canChangeRights and "checked" or ""} />
                     </td>
-                </tr>                
+                </tr>
                 <tr>
                     <td colspan="2"><input type="submit" name="access" value="${_('Update')}" ${not c.userInst.canChangeRights() and "disabled" or ""}/></td>
                 </tr>
                 <tr>
                     <td colspan=2>${_('Ban')}</td>
-                </tr>                
+                </tr>
                 %if c.user.options.bantime:
                 <tr>
                     <td class="postblock">${_('Bantime (days)')}</td>
@@ -92,8 +141,8 @@
                 </tr>
                 <tr>
                     <td colspan="2"><input type="submit" name="delete" value="${_('Delete')}" ${not c.userInst.canChangeRights() and "disabled" or ""}></td>
-                </tr>                  
-                
+                </tr>
+
                 <tr>
                     <td colspan=2>${_('Look up posts')}</td>
                 </tr>
@@ -112,7 +161,7 @@
                 <tr>
                     <td colspan="2"><input type="submit" name="lookup" value="${_('Look up')}"></td>
                 </tr>
-                
+
                 <tr>
                     <td colspan=2>${_('Change security code')}</td>
                 </tr>
@@ -129,5 +178,5 @@
                 </tr>
             </tbody>
         </table>
-    </form>                 
+    </form>
 </div>

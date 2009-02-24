@@ -34,6 +34,12 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable=True),
     sa.Column("canMakeInvite", sa.types.Boolean, nullable=True),
     sa.Column("canChangeRights", sa.types.Boolean, nullable=True),
+    sa.Column("canChangeSettings", sa.types.Boolean, nullable=True),
+    sa.Column("canManageBoards", sa.types.Boolean, nullable=True),
+    sa.Column("canManageUsers", sa.types.Boolean, nullable=True),
+    sa.Column("canManageExtensions", sa.types.Boolean, nullable=True),
+    sa.Column("canManageMappings", sa.types.Boolean, nullable=True),
+    sa.Column("canRunMaintenance", sa.types.Boolean, nullable=True),
     )
 
 class UserOptions(object):
@@ -55,9 +61,6 @@ class UserOptions(object):
         optionsObject.threadsPerPage = 10
         optionsObject.repliesPerThread = 10
         optionsObject.bantime = 0
-        optionsObject.canDeleteAllPosts = False
-        optionsObject.canMakeInvite = False
-        optionsObject.canChangeRights = False
         optionsObject.isAdmin = False
         optionsObject.hideLongComments = True
         optionsObject.useAjax = True
@@ -68,3 +71,12 @@ class UserOptions(object):
         optionsObject.maxExpandHeight = 768
         optionsObject.homeExclude = pickle.dumps([])
         optionsObject.hideThreads = pickle.dumps([])
+        optionsObject.canDeleteAllPosts = False
+        optionsObject.canMakeInvite = False
+        optionsObject.canChangeRights = False
+        optionsObject.canChangeSettings = False
+        optionsObject.canManageBoards = False
+        optionsObject.canManageUsers = False
+        optionsObject.canManageExtensions = False
+        optionsObject.canManageMappings = False
+        optionsObject.canRunMaintenance = False

@@ -88,7 +88,7 @@
                 <tr id="trstyle">
                     <td class="postblock">${_('By default Go To')}</td>
                     <td>
-                    <select name="defaultGoto">
+                    <select name="defaultGoto" style="width: 170px;">
                             %for dest in c.destinations.keys():
                                <option value="${dest}"
                                  %if dest == c.userInst.defaultGoto():
@@ -102,7 +102,7 @@
                     </td>
                 </tr>
                 <tr id="trtempl">
-                    <td class="postblock">${_('Template')}</td>
+                    <td class="postblock" style="width: 170px;">${_('Template')}</td>
                     <td>
                         <select name name="template">
 
@@ -119,7 +119,7 @@
                     </td>
                 </tr>
                 <tr id="trstyle">
-                    <td class="postblock">${_('Style')}</td>
+                    <td class="postblock" style="width: 170px;">${_('Style')}</td>
                     <td>
                         <select name="style">
                             %for style in c.styles:

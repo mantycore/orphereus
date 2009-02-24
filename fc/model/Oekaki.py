@@ -29,21 +29,22 @@ class Oekaki(object):
         self.uidNumber = uidNumber
         self.source = source
         self.tempid = tempid
-    
+
     @staticmethod
     def create(tempid, uidNumber, type, source):
         oekaki = Oekaki(tempid, uidNumber, type, source)
         meta.Session.add(oekaki)
         meta.Session.commit()
-    
+
     @staticmethod
     def get(tempid):
         return Oekaki.query.filter(Oekaki.tempid==tempid).first()
-    
+
     def setPathAndTime(self, path, time):
         self.path = path
         self.time = time
         meta.Session.commit()
-    
+
     def delete(self):
         meta.Session.delete(self)
+        meta.Session.commit()

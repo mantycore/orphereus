@@ -1,7 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy import orm
 from fc.model import meta
-from pylons import config
 from fc.lib.constantValues import *
 
 import logging
@@ -60,7 +59,9 @@ def init_model(engine):
         'user' : orm.relation(User)
         })
 
-def init_globals():
+def init_globals(globalObject):
+    meta.globj = globalObject
+
     settings = False
     settings = Setting.getAll()
     settingsMap = {}
@@ -75,7 +76,7 @@ def init_globals():
             option = Setting.create(s, settingsDef[s])
             settingsMap[s] = option
 
-    config['pylons.app_globals'].settingsMap = settingsMap
+    meta.globj.settingsMap = settingsMap
 
     """
     gv = config['pylons.g']

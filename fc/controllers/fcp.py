@@ -80,7 +80,7 @@ class FcpController(OrphieBaseController):
 
         if request.POST.get('code', False):
             code = User.genUid(request.POST['code'].encode('utf-8'))
-            user = meta.Session.query(User).filter(User.uid==code).first()
+            user = User.getByUid(code)
             #log.debug(code)
 
             captid = request.POST.get('captid', False)
@@ -96,9 +96,10 @@ class FcpController(OrphieBaseController):
                         tracker.cid = captcha.id
 
             if user and captchaOk:
-                meta.Session.delete(tracker)
+                if tracker:
+                    tracker.delete()
                 if captcha:
-                    meta.Session.delete(captcha)
+                    captcha.delete()
                 self.login(user)
             else:
                 tracker.attempts += 1
@@ -151,20 +152,17 @@ class FcpController(OrphieBaseController):
         if key and captchaOk:
             if len(key)>=g.OPT.minPassLength and key == key2:
                 uid = User.genUid(key)
-                user = meta.Session.query(User).options(eagerload('options')).filter(User.uid==uid).first()
+                user = User.getByUid(uid)
                 if user:
-                    self.banUser(user, 7777, "Your Security Code was used during registration by another user. Contact administrator immediately please.")
+                    user.ban(7777, _("Your Security Code was used during registration by another user. Contact administrator immediately please."), -1)
                     del session['invite']
                     del session['iid']
                     c.boardName = _('Error')
                     c.errorText = _("You entered already existing password. Previous account was banned. Contact administrator please.")
                     return self.render('error')
 
-                user = User()
-                user.uid = uid
-                meta.Session.add(user)
+                user = User.create(uid)
                 toLog(LOG_EVENT_INVITE_USED, _("Utilized invite #%d") % (session['iid']))
-                meta.Session.commit()
                 del session['invite']
                 del session['iid']
                 session.save()

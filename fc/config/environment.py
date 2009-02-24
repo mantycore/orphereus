@@ -31,15 +31,15 @@ def load_environment(global_conf, app_conf, setupMode):
 
     #config['pylons.strict_c'] = False
     #config['pylons.c_attach_args'] = True
-    
+
     #config['pylons.g'] = app_globals.Globals()
     config['pylons.app_globals'] = app_globals.Globals()
     config['pylons.h'] = fc.lib.helpers
     config['routes.map'] = make_map()
-    
+
     # Customize templating options via this variable
     #tmpl_options = config['buffet.template_options']
-    
+
     config['pylons.app_globals'].mako_lookup = TemplateLookup(
         directories=paths['templates'],
         error_handler=handle_mako_error,
@@ -50,7 +50,7 @@ def load_environment(global_conf, app_conf, setupMode):
 
     engine = engine_from_config(config, 'sqlalchemy.')
     init_model(engine)
-    
+
     if not setupMode:
-        init_globals()
+        init_globals(config['pylons.app_globals'])
     #adminAlert("Orphie-kun: Hello, I'm respawned")

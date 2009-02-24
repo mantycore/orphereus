@@ -38,12 +38,12 @@ class FccController(OrphieBaseController):
         if not c.currentURL.endswith('/'):
             c.currentURL = u'%s/' % c.currentURL
 
-        if not self.userIsAuthorized():
+        if not self.currentUserIsAuthorized():
             return redirect_to(('%sauthorize' % c.currentURL).encode('utf-8'))
         if self.userInst.isBanned():
             #abort(500, 'Internal Server Error')     # calm hidden ban
             return redirect_to('/youAreBanned')
-        c.canPost = self.canPost()
+        c.currentUserCanPost = self.currentUserCanPost()
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
         self.initEnvironment()
@@ -51,7 +51,7 @@ class FccController(OrphieBaseController):
     def selfBan(self, confirm):
         if g.OPT.spiderTrap:
             if confirm:
-                self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber).first(), 2, _("[AUTOMATIC BAN] Security alert type 2"))
+                self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 2"), -1)
                 redirect_to('/')
             else:
                 return self.render('selfBan')
@@ -232,7 +232,7 @@ class FccController(OrphieBaseController):
             #log.debug(thread.hidden)
 
         if tempid:
-            oekaki = Oekaki.get(tempid) #self.sqlFirst(meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid))
+            oekaki = Oekaki.get(tempid)
             c.oekaki = oekaki
         else:
             c.oekaki = False
@@ -309,23 +309,6 @@ class FccController(OrphieBaseController):
                             ret.tags.append(bc)
                             ret.totalTagsThreads += bc.count
                             ret.totalTagsPosts += bc.postsCount
-
-                        """
-                        result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where (p.id = m.postId and m.tagId = :ctid)", {'ctid':b.id})
-                        #filter = self.buildFilter(b.tag)
-                        #bc.count = filter[0].count()
-                        bc.count = result.fetchone()[0]
-                        result = meta.Session().execute("select count(p.id) from posts as p, tagsToPostsMap as m where ((p.id = m.postId or p.parentId = m.postId)and m.tagId = :ctid)", {'ctid':b.id})
-                        bc.postsCount = result.fetchone()[0]
-                        if b.options and b.options.persistent:
-                            ret.boards.append(bc)
-                            ret.totalBoardsThreads += bc.count
-                            ret.totalBoardsPosts += bc.postsCount
-                        else:
-                            ret.tags.append(bc)
-                            ret.totalTagsThreads += bc.count
-                            ret.totalTagsPosts += bc.postsCount
-                        """
                 return ret
 
             def vitalSigns():
@@ -340,16 +323,6 @@ class FccController(OrphieBaseController):
                 secondBnd = currentTime - datetime.timedelta(days=14)
                 ret.lastWeekMessages = meta.Session().query(Post.id).filter(Post.date >= firstBnd).count()
                 ret.prevWeekMessages = meta.Session().query(Post.id).filter(and_(Post.date <= firstBnd, Post.date >= secondBnd)).count()
-                """
-                result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc, 'minid' : tpc - 1000})
-                ret.last1KUsersCount = result.fetchone()[0]
-                result = meta.Session().execute("select count(distinct uidNumber) from posts where id <= :maxid and id >= :minid", {'maxid' : tpc - 1000, 'minid' : tpc - 2000})
-                ret.prev1KUsersCount = result.fetchone()[0]
-                result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) <= date")
-                ret.lastWeekMessages = result.fetchone()[0]
-                result = meta.Session().execute("select count(id) from posts where DATE_SUB(NOW(), INTERVAL 7 DAY) >= date and DATE_SUB(NOW(), INTERVAL 14 DAY) <= date")
-                ret.prevWeekMessages = result.fetchone()[0]
-                """
                 return ret
 
             adminTagsLine = g.settingsMap['adminOnlyTags'].value
@@ -490,7 +463,7 @@ class FccController(OrphieBaseController):
     def processPost(self, postid=0, board=u''):
         fileHolder = False
 
-        if not self.canPost():
+        if not self.currentUserCanPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')
 
@@ -573,7 +546,7 @@ class FccController(OrphieBaseController):
         tempid = request.POST.get('tempid', False)
         painterMark = False # TODO FIXME : move into parser
         if tempid:
-           oekaki = Oekaki.get(tempid) #self.sqlFirst(Oekaki.query.filter(Oekaki.tempid==tempid))
+           oekaki = Oekaki.get(tempid)
 
            file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
            painterMark = u'<span class="postInfo">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
@@ -755,7 +728,7 @@ class FccController(OrphieBaseController):
         return self.processPost(board=board)
 
     def oekakiDraw(self,url):
-        if not self.canPost():
+        if not self.currentUserCanPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')
 
@@ -794,7 +767,7 @@ class FccController(OrphieBaseController):
         return self.render('spainter')
 
     def DeletePost(self, board):
-        if not self.canPost:
+        if not self.currentUserCanPost():
             c.errorText = _("Deletion disabled")
             return self.render('error')
 
@@ -908,10 +881,15 @@ class FccController(OrphieBaseController):
             key2 = request.POST.get('key2','').encode('utf-8')
             currentKey = request.POST.get('currentKey', '').encode('utf-8')
 
-            # XXX: temporary code. Methods from OrphieBaseController must be moved into model
-            passwdRet = self.passwd(key, key2, False, currentKey)
-            if passwdRet != True and passwdRet != False:
-                return passwdRet
+            passwdRet = self.userInst.passwd(key, key2, False, currentKey)
+            if passwdRet == True:
+                c.profileMsg = _('Password was successfully changed.')
+            elif passwdRet == False:
+                c.message = _('Incorrect security codes')
+            else:
+                c.boardName = _('Error')
+                c.errorText = passwdRet
+                return self.render('error')
 
             c.profileChanged = True
             c.profileMsg += _(' Profile was updated.')
@@ -952,9 +930,10 @@ class FccController(OrphieBaseController):
             rawtext = request.POST.get('query', u'')
             text = filterText(rawtext)
 
-        if not text or len(rawtext) < 3:
+        minLen = 3
+        if not text or len(rawtext) < minLen:
             c.boardName = _('Error')
-            c.errorText = _("Query too short (minimal length: 3)")
+            c.errorText = _("Query too short (minimal length: %d)") % minLen
             return self.render('error')
 
         if isNumber(page):
@@ -997,7 +976,7 @@ class FccController(OrphieBaseController):
         for p in posts:
             parent = p
             if not p.parentid == -1:
-                parent = p.parentPost #self.sqlFirst(Post.query.filter(Post.id == p.parentid))
+                parent = p.parentPost
 
             pt = []
             pt.append(p)

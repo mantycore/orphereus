@@ -6,7 +6,7 @@
 <hr/>
 %endif
 
-%if c.canPost:
+%if c.currentUserCanPost:
 <%include file="wakaba.postForm.mako" />
 <hr/>
 %endif

@@ -17,4 +17,6 @@ t_userFilters = sa.Table("userFilters", meta.metadata,
 
 #TODO: rewrite UserFilters
 class UserFilters(object):
-    pass
+    def __init__(self, uidNumber, filter):
+        self.uidNumber = uidNumber
+        self.filter = filter

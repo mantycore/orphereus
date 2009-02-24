@@ -36,28 +36,32 @@ class Captcha(object):
     def __init__(self, text):
         self.text = text
         self.timestamp =  datetime.datetime.now()
-    
+
+    def delete(self):
+        meta.Session.delete(self)
+        meta.Session.commit()
+
     def test(self, text):
         ret = (self.text == text)
         meta.Session.delete(self)
         meta.Session.commit()
         return ret
-    
+
     @staticmethod
-    def create(): 
+    def create():
         captcha = Captcha(randomStr())
         meta.Session.add(captcha)
         meta.Session.commit()
         return captcha
-    
+
     @staticmethod
     def getCaptcha(id):
         return Captcha.query.filter(Captcha.id==id).first()
-    
+
     @staticmethod
     def exists(id):
         return (Captcha.query.filter(Captcha.id==id).count() == 1)
-    
+
     @staticmethod
     def createHatchingTexture(density, width, height, fill): # cool procedure, found in google
         # create image and drawing surface
@@ -80,11 +84,11 @@ class Captcha(object):
             y2 = y + random.randint(-doubleSpacer, doubleSpacer)
             hatchDraw.line((x1, y1, x2, y2), fill=fill)
         return hatchImage
-    
+
     @staticmethod
     def picture(cid, font):
-        captcha = Captcha.query.filter(Captcha.id==cid).first()  
-        
+        captcha = Captcha.query.filter(Captcha.id==cid).first()
+
         out = ""
         if captcha and captcha.content:
             out = captcha.content
@@ -92,18 +96,18 @@ class Captcha(object):
             text = "Wrong ID"
             if captcha:
                 text = captcha.text
-            
+
             pw = 300
             ph = 80
-            
+
             textPic = Image.new('RGBA', (pw, ph), 'orange')
             draw = ImageDraw.Draw(textPic)
             font = ImageFont.truetype(font, 64)
             w = font.getsize(text)[0]
-            h = font.getsize(text)[1]      
+            h = font.getsize(text)[1]
             tcolor = (random.randrange(50, 150), random.randrange(50, 150), random.randrange(50, 150))
             draw.text(((pw - w)/2 + random.randrange(-20, 20), (ph - h)/2 + random.randrange(-10, 10)), text, font=font, fill=tcolor)
-            
+
             if captcha:
                 noisePic = Image.new('RGBA', (pw, ph), 'yellow')
                 draw = ImageDraw.Draw(noisePic)
@@ -112,7 +116,7 @@ class Captcha(object):
                     x1 = random.randrange(0, pw)
                     y1 = random.randrange(0, ph)
                     x2 = random.randrange(x1, pw)
-                    y2 = random.randrange(y1, ph)   
+                    y2 = random.randrange(y1, ph)
                     fcolor=(random.randrange(50,250), random.randrange(50,250), random.randrange(50,250))
                     ocolor=(random.randrange(50,250), random.randrange(50,250), random.randrange(50,250))
                     draw.ellipse((x1, y1, x2, y2), fill=tcolor, outline=ocolor)
@@ -122,7 +126,7 @@ class Captcha(object):
                 textPic = Image.blend(textPic, noisePic, 0.6)
                 ht = Captcha.createHatchingTexture(0.5, pw, ph, tcolor)
                 textPic = Image.blend(textPic, ht, 0.3)
-            
+
             f = StringIO.StringIO()
             textPic.save(f, "PNG")
             pic = f.getvalue()
@@ -130,5 +134,5 @@ class Captcha(object):
                 captcha.content = pic
                 meta.Session.commit()
             out = pic
-                
+
         return str(out)

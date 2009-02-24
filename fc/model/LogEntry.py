@@ -10,6 +10,7 @@ import logging
 log = logging.getLogger(__name__)
 
 from fc.model import meta
+from fc.lib.miscUtils import filterText
 
 t_log = sa.Table("log", meta.metadata,
     sa.Column("id"    , sa.types.Integer, primary_key=True),
@@ -42,7 +43,7 @@ class LogEntry(object):
 
     @staticmethod
     def create(uidNumber, event, text, commit = True):
-        logEntry = LogEntry(uidNumber, event, text)
+        logEntry = LogEntry(uidNumber, event, filterText(text))
         meta.Session.add(logEntry)
         if commit:
             meta.Session.commit()

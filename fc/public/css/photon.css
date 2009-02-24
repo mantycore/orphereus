@@ -1,17 +1,17 @@
 body { margin: 0; padding: 8px; margin-bottom: auto; }
 blockquote blockquote { margin-left: 0em }
-form { 
+form {
 margin-bottom: 0px }
 .postarea { text-align: center }
 .postarea table { margin: 0px auto; text-align: left }
-.thumb { 
+.thumb {
 border: none; float: left; margin: 2px 20px }
-.nothumb { float: left; background: #eee; border: 2px dashed #aaa; 
+.nothumb { float: left; background: #eee; border: 2px dashed #aaa;
 text-align: center; margin: 2px 20px; padding: 1em 0.5em 1em 0.5em; }
-.reply blockquote, blockquote :last-child { 
+.reply blockquote, blockquote :last-child {
 margin-bottom: 0em }
 .reflink a { color: inherit; text-decoration: none }
-.reply .filesize { margin-left: 20px } 
+.reply .filesize { margin-left: 20px }
 .userdelete { float: right; text-align: center; white-space: nowrap }
 .replypage .replylink { display: none }
 html, body {
@@ -25,7 +25,7 @@ a {
 a:hover {
     color: #0066FF;
 }
-div.delete { 
+div.delete {
 }
 .adminbar {
     clear:both;
@@ -202,7 +202,7 @@ dl.menu dt {
     margin-top: 1em;
     padding-left: .5em;
     cursor: pointer;
-    
+
 }
 dl.menu dd {
     margin-left: .5em;
@@ -301,7 +301,7 @@ display: block; height: 1px;
 font-size: 80%; color: #666;
 }
 .reply label span {
-font-size: 125%; 
+font-size: 125%;
 }
 label, label input {
 vertical-align: middle;
@@ -323,7 +323,7 @@ div a.show-hide-thread:hover {
     text-decoration: underline; color: #f33;
 }
 #x_replyform {
-    display: block; border: 1px #ccc solid; margin: 0 2px 2px 2px; padding: 5px; 
+    display: block; border: 1px #ccc solid; margin: 0 2px 2px 2px; padding: 5px;
     background-color: #ddd; -moz-border-radius: 5px;
 }
 #x_replyform textarea {
@@ -340,7 +340,7 @@ div a.show-hide-thread:hover {
 }
 #x_replyform input[type="file"] > input[type="text"] {
     border: 1px #888 solid;
-} 
+}
 #x_replyform input[type="submit"] {
     border: 1px #666 solid; margin-left: 10px;
 }
@@ -370,8 +370,7 @@ background: #A8A8A8;
 #x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
 
 .img_loading{
-    margin-top: 15px;
-    margin-left: -120px;
+    position:absolute;
     z-index: 10;
     background:#EEDACB;
     color:#333333;

@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 class FcaController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        if not self.userIsAuthorized():
+        if not self.currentUserIsAuthorized():
             c.currentURL = u'/holySynod/'
             return redirect_to('/')
         self.initEnvironment()
@@ -388,7 +388,7 @@ class FcaController(OrphieBaseController):
                 else:
                     banreason = filterText(request.POST.get('banreason','???'))
                     bantime = request.POST.get('bantime','0')
-                    c.message = self.banUser(user, bantime, banreason)
+                    c.message = user.ban(bantime, banreason, self.userInst.uidNumber)
             elif request.POST.get('unban',False):
                 if user.options.bantime > 0:
                     banreason = user.options.banreason
@@ -418,15 +418,17 @@ class FcaController(OrphieBaseController):
                 key = request.POST.get('key','').encode('utf-8')
                 key2 = request.POST.get('key2','').encode('utf-8')
                 # XXX: temporary code. Methods from OrphieBaseController must be moved into model
-                passwdRet = self.passwd(key, key2, True, False, user)
-                meta.Session.commit()
-                if passwdRet == False:
-                    c.message = _('Incorrect security codes')
-                elif passwdRet != True:
-                    return passwdRet
-                else:
+                passwdRet = user.passwd(key, key2, True, False)
+                if passwdRet == True:
+                    c.message = _('Password was successfully changed.')
                     toLog(LOG_EVENT_USER_PASSWD,_('Changed password for user "%s"') % (user.uidNumber))
                     c.message = _('Security code changed')
+                elif passwdRet == False:
+                    c.message = _('Incorrect security codes')
+                else:
+                    c.boardName = _('Error')
+                    c.errorText = passwdRet
+                    return self.render('error')
             elif request.POST.get('delete', False):
                 reason = filterText(request.POST.get('deletereason', u''))
                 deleteLegacy = request.POST.get('deleteLegacy', False)

@@ -49,7 +49,7 @@ def currentUID():
 
 def toLog(event, text, commit = True):
     from fc.model import LogEntry
-    LogEntry.create(currentUID(), event, filterText(text), commit)
+    LogEntry.create(currentUID(), event, text, commit)
 
 def adminAlert(alertStr):
     g = config['pylons.app_globals']

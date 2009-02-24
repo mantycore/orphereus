@@ -29,22 +29,17 @@ class OrphieBaseController(BaseController):
         self.userInst = False
         uid = session.get('uidNumber', -1)
         if uid > 0:
-            self.userInst = User.getUser(uid, g.OPT)
+            self.userInst = User.getUser(uid)
         if not self.userInst:
             self.userInst = FakeUser()
 
         c.userInst = self.userInst
         #log.debug(session.get('uidNumber', -1))
-        if g.OPT.checkUAs and self.userInst.isValid():
+        if g.OPT.checkUAs and self.userInst.isValid() and not self.userInst.Anonymous:
             for ua in g.OPT.badUAs:
                 if filterText(request.headers.get('User-Agent', '?')).startswith(ua):
-                    self.banUser(meta.Session.query(User).filter(User.uidNumber == self.userInst.uidNumber).first(), 2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest())
+                    self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest(), -1)
                     break
-    def canPost(self):
-        return g.OPT.allowPosting and self.userInst and ((self.userInst.Anonymous and g.OPT.allowAnonymousPosting) or not self.userInst.Anonymous)
-
-    def userIsAuthorized(self):
-        return self.userInst.isValid() and (session.get('uidNumber', -1) == self.userInst.uidNumber)
 
     def initEnvironment(self):
         c.title = g.settingsMap['title'].value
@@ -147,23 +142,44 @@ class OrphieBaseController(BaseController):
             c.pages = False
         c.count = count
 
+    def currentUserCanPost(self):
+        return g.OPT.allowPosting and self.userInst and ((self.userInst.Anonymous and g.OPT.allowAnonymousPosting) or not self.userInst.Anonymous)
 
-    def banUser(self, user, bantime, banreason):
-        if len(banreason)>1:
-            if isNumber(bantime) and int(bantime) > 0:
-                bantime = int(bantime)
-                if bantime > 10000:
-                    bantime = 10000
-                user.options.bantime = bantime
-                user.options.banreason = banreason
-                user.options.banDate = datetime.datetime.now()
-                toLog(LOG_EVENT_USER_BAN, _('Banned user %s for %s days for reason "%s"') % (user.uidNumber, bantime, banreason))
-                meta.Session.commit()
-                return _('User was banned')
-            else:
-                return _('You should specify ban time in days')
+    def currentUserIsAuthorized(self):
+        return self.userInst.isValid() and (session.get('uidNumber', -1) == self.userInst.uidNumber)
+
+    def getParentID(self, id):
+        post = self.sqlFirst(Post.query.filter(Post.id==id))
+        if post:
+           return post.parentid
         else:
-            return _('You should specify ban reason')
+           return False
+
+    def isPostOwner(self, id):
+        post = self.sqlFirst(Post.query.filter(Post.id==id))
+        if post and post.uidNumber == self.userInst.uidNumber:
+           return post.parentid
+        else:
+           return False
+
+    def postOwner(self, id):
+        post = self.sqlFirst(Post.query.filter(Post.id==id))
+        if post:
+           return post.parentid
+        else:
+           return False
+
+    def formatPostReference(self, postid, parentid = False): # TODO FIXME: move to parser
+        if not parentid:
+            parentid = self.getParentID(postid)
+
+        #if parentid == -1:
+        #    return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
+        #else:
+        # We will format all posts same way. Why not?
+        #Also, changed to /postid#ipostid instead of /parentid#ipostid.
+        #Forget it, changed back.
+        return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)
 
     def conjunctTagOptions(self, tags):
         options = empty()
@@ -304,70 +320,3 @@ class OrphieBaseController(BaseController):
                 meta.Session.delete(p)
         meta.Session.commit()
         return opPostDeleted
-
-    def passwd(self, key, key2, adminRights = False, currentKey = False, user = False):
-        newuid = User.genUid(key)
-        olduid = self.userInst.uid
-        if user:
-            olduid = user.uid
-
-        if key == key2 and newuid != olduid and len(key) >= g.OPT.minPassLength:
-            if not (adminRights or User.genUid(currentKey) == olduid):
-                c.boardName = _('Error')
-                c.errorText = _("You have entered incorrect current security code!")
-                return self.render('error')
-
-            anotherUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==newuid))
-            if not anotherUser:
-                if not user:
-                    self.userInst.setUid(newuid)
-                else:
-                    user.uid = newuid
-                c.profileMsg = _('Password was successfully changed.')
-                return True
-            else:
-                if not adminRights:
-                    currentUser = self.sqlFirst(meta.Session.query(User).options(eagerload('options')).filter(User.uid==olduid))
-                    self.banUser(currentUser, 7777, "Your are entered already existing Security Code. Contact administrator immediately please.")
-                    self.banUser(anotherUser, 7777, "Your Security Code was used during profile update by another user. Contact administrator immediately please.")
-                    c.boardName = _('Error')
-                    c.errorText = _("You entered already existing Security Code. Both accounts was banned. Contact administrator please.")
-                    return self.render('error')
-                else:
-                    c.boardName = _('Error')
-                    c.errorText = _("You entered already existing Security Code.")
-                    return self.render('error')
-        return False
-
-    def getParentID(self, id):
-        post = self.sqlFirst(Post.query.filter(Post.id==id))
-        if post:
-           return post.parentid
-        else:
-           return False
-
-    def isPostOwner(self, id):
-        post = self.sqlFirst(Post.query.filter(Post.id==id))
-        if post and post.uidNumber == self.userInst.uidNumber:
-           return post.parentid
-        else:
-           return False
-
-    def postOwner(self, id):
-        post = self.sqlFirst(Post.query.filter(Post.id==id))
-        if post:
-           return post.parentid
-        else:
-           return False
-
-    def formatPostReference(self, postid, parentid = False): # TODO FIXME: move to parser
-        if not parentid:
-            parentid = self.getParentID(postid)
-
-        #if parentid == -1:
-        #    return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
-        #else:
-        # We will format all posts same way. Why not?
-        #Also, changed to /postid#ipostid instead of /parentid#ipostid.
-        #Forget it, changed back.
-        return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)

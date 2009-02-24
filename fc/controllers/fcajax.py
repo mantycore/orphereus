@@ -26,7 +26,7 @@ class FcajaxController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         c.userInst = self.userInst
-        if not self.userIsAuthorized or self.userInst.isBanned():
+        if not self.currentUserIsAuthorized or self.userInst.isBanned():
             abort(403)
 
     def getPost(self, post):
@@ -89,36 +89,26 @@ class FcajaxController(OrphieBaseController):
     def getUploadsPath(self):
         return g.OPT.filesPathWeb
 
-    def editUserFilter(self,fid,filter):
+    def editUserFilter(self, fid, filter):
         if self.userInst.Anonymous:
             abort(403)
-        userFilter = meta.Session.query(UserFilters).get(fid)
-        if not userFilter or userFilter.uidNumber != self.userInst.uidNumber:
-            abort(404)
-        userFilter.filter = filterText(filter)
-        meta.Session.commit()
-        return userFilter.filter
+        if self.userInst.changeFilter(fid, filter):
+            return filter
+        abort(404)
 
-    def deleteUserFilter(self,fid):
+    def deleteUserFilter(self, fid):
         if self.userInst.Anonymous:
             abort(403)
-        userFilter = meta.Session.query(UserFilters).get(fid)
-        if not userFilter or userFilter.uidNumber != self.userInst.uidNumber:
-            abort(404)
-        meta.Session.delete(userFilter)
-        meta.Session.commit()
-        return ''
+        if self.userInst.deleteFilter(fid):
+            return ''
+        abort(404)
 
-    def addUserFilter(self,filter):
+    def addUserFilter(self, filter):
         if self.userInst.Anonymous:
             abort(403)
-        userFilter = UserFilters()
-        userFilter.uidNumber = self.userInst.uidNumber
-        userFilter.filter = filterText(filter)
-        meta.Session.add(userFilter)
-        meta.Session.commit()
+        userFilter = self.userInst.addFilter(filter)
         c.userFilter = userFilter
-        return self.render('ajax.addUserFilter') #render('/ajax.addUserFilter.mako')
+        return self.render('ajax.addUserFilter')
 
     def hideThread(self,post,url):
         if self.userInst.Anonymous:

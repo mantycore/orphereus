@@ -304,7 +304,7 @@ class FcmController(OrphieBaseController):
             postsCount = Post.query.filter(Post.uidNumber == user.uidNumber).count()
             if user.options:
                 if postsCount == 0 and user.options.bantime == 0:
-                    self.banUser(user, 10000, ("[AUTOMATIC BAN] You haven't any posts. Please, contact johan.liebert@jabber.ru to get you access back"))
+                    user.ban(10000, _("[AUTOMATIC BAN] You haven't any posts. Please, contact administration to get you access back"), -1)
                     mtnLog.append(self.createLogEntry('Info', "%d autobanned" % user.uidNumber))
             else:
                 mtnLog.append(self.createLogEntry('Warning', "User %d haven't options object" % user.uidNumber))
@@ -353,7 +353,7 @@ class FcmController(OrphieBaseController):
     def mtnAction(self, actid, secid):
         secTestPassed = False
         if not secid:
-            if not self.userIsAuthorized():
+            if not self.currentUserIsAuthorized():
                 c.currentURL = u'/holySynod/'
                 return redirect_to('/')
             self.initEnvironment()

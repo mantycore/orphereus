@@ -12,8 +12,8 @@ from fc.model import meta
 t_logins = sa.Table("loginStats", meta.metadata,
     sa.Column("id"          , sa.types.Integer, primary_key=True),
     sa.Column("ip"          , sa.types.String(16), nullable=False),
-    sa.Column("attempts"    , sa.types.Integer, nullable=False),    
-    sa.Column("cid"         , sa.types.Integer, nullable=True), 
+    sa.Column("attempts"    , sa.types.Integer, nullable=False),
+    sa.Column("cid"         , sa.types.Integer, nullable=True),
     sa.Column("lastAttempt" , sa.types.DateTime, nullable=True)
     )
 
@@ -22,7 +22,11 @@ class LoginTracker(object):
         self.ip = ip
         self.attempts = 0
         self.lastAttempt =  datetime.datetime.now()
-        
+
+    def delete(self):
+        meta.Session.delete(self)
+        meta.Session.commit()
+
     @staticmethod
     def getTracker(ip):
         tracker = LoginTracker.query.filter(LoginTracker.ip==ip).first()

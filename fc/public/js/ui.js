@@ -13,7 +13,7 @@ function popup_posts(options){
     popup_posts.helper.addClass("highlight reply")
     var left = popup_posts.ui.offset().left + popup_posts.ui.width()
     var top  = popup_posts.ui.offset().top - popup_posts.helper.height() - 2
-    
+
     popup_posts.helper.css('left',left).css('top',top).show()
     // if(popup_posts.helper.offset().top < $().scrollTop()) popup_posts.helper.css('top',$().scrollTop())
     if((popup_posts.helper.width() < 200) || (popup_posts.helper.offset().left + popup_posts.helper.width() > $(window).width() - 20)){
@@ -60,15 +60,15 @@ function popup_posts(options){
         }, error: function(a,b) {popup_posts.cache[m[0]] = 404; e.html("Post not found") } });
     }
   }
-  
+
   $("blockquote a").filter(function(){
     return $(this).attr('href').match(/^\/-?\d+(\#i\d+)?$/)
   }).hover(hover_it,hide_it)
-  
+
   popup_posts.repair = function(links){
     links.filter(function(){
       return $(this).attr('href').match(/^\/-?\d+(\#i\d+)?$/)
-    }).hover(hover_it,hide_it)    
+    }).hover(hover_it,hide_it)
   }
 }
 
@@ -95,7 +95,7 @@ function insert(text,notFocus)
         }
         if (!notFocus)
         {
-        	textarea.focus();
+          textarea.focus();
         }
     }
 }
@@ -119,12 +119,12 @@ function highlight(post)
 
 
 
-function showDeleteBoxes() 
+function showDeleteBoxes()
 {
     var chboxes = getElementsByClass('delete');
-    for(i=0; i<chboxes.length; i++) 
+    for(i=0; i<chboxes.length; i++)
     {
-        if(chboxes[i].style.display == 'none') 
+        if(chboxes[i].style.display == 'none')
         {
             chboxes[i].style.display = 'inline';
         }
@@ -149,22 +149,22 @@ function getReplyForm(iThreadId)
         g_objReplyForm.appendChild(createElementEx('input', {'name': 'task', 'value': 'post', 'type': 'hidden'}));
         g_objReplyForm.appendChild(createElementEx('input', {'name': 'akane', 'type': 'hidden'}));
         g_objReplyForm.appendChild(createElementEx('input', {'name': 'title', 'value': '', 'type': 'hidden'}));
-        
+
         var origForm = document.getElementById('postform');
         g_objReplyForm.appendChild(createElementEx('input', {'name': 'tagLine', 'value': origForm.tagLine.value, 'type': 'hidden'}));
         g_objReplyForm.appendChild(createElementEx('input', {'name': 'curPage', 'value': origForm.curPage.value, 'type': 'hidden'}));
 
         g_objReplyForm.appendChild(createElementEx('textarea', {'id': 'x_replyform_text', 'name': 'message', 'rows': '5', 'cols': '40'}));
         var objBottomDiv = document.createElement('div');
-        
+
         var objFileLabel = createElementEx('label', {'for': 'x_replyform_file', 'title': 'File'});
         objFileLabel.appendChild(document.createTextNode('File: '));
         objFileLabel.appendChild(createElementEx('input', {'id': 'x_replyform_file', 'name': 'file', 'size': '20', 'type': 'file'}));
-        
+
         var objSageLabel = createElementEx('label', {'for': 'x_replyform_sage', 'title': 'sage'});
         objSageLabel.appendChild(createElementEx('input', {'id': 'x_replyform_sage', 'type': 'checkbox', 'name': 'sage'}));
         objSageLabel.appendChild(document.createTextNode('sage'));
-        
+
         var objGotoLabel = createElementEx('label', {'for': 'x_replyform_goto', 'title': 'goto'});
         var GotoSelect = createElementEx('select', {'name': 'goto', 'id': 'x_replyform_goto'});
         for (i=0;i<origForm.goto.options.length;i++)
@@ -177,7 +177,7 @@ function getReplyForm(iThreadId)
         }
         objGotoLabel.appendChild(document.createTextNode('Go to'));
         objGotoLabel.appendChild(GotoSelect);
-        
+
         objBottomDiv.appendChild(objFileLabel);
         objBottomDiv.appendChild(objSageLabel);
         objBottomDiv.appendChild(objGotoLabel);
@@ -201,7 +201,7 @@ function getReplyForm(iThreadId)
         objCloseBtn.appendChild(document.createTextNode('Close'));
         objBottomDiv.appendChild(objCloseBtn);
         g_objReplyForm.appendChild(objBottomDiv);
-        
+
     }
     else
     {
@@ -226,7 +226,7 @@ function doQuickReplyForm(objEvent,iThreadId,iPostId)
     {
         var objPost = document.getElementById('quickReplyNode'+iPostId);
         var objReplyForm;
-        if (!g_objReplyForm) 
+        if (!g_objReplyForm)
             objReplyForm = getReplyForm(iThreadId);
         else
             objReplyForm = g_objReplyForm;
@@ -292,36 +292,36 @@ function getFullText(event, thread, post)
     $.get('/ajax/getPost/' + post, {}, function(response)
     {
       $(bq).html(response);
-	  popup_posts.repair($(bq).find("a"))
-    });	
-    event.preventDefault();	
+    popup_posts.repair($(bq).find("a"))
+    });
+    event.preventDefault();
 }
 function userFiltersAdd(event)
 {
-	if ($('#newFilterInput').get()[0].value)
-	{
-		$.get('/ajax/addUserFilter/' + $('#newFilterInput').get()[0].value, {}, function(response)
-		{
-			$(response).insertBefore('#newFilterTR')
-		});
-	}
-	event.preventDefault();
+  if ($('#newFilterInput').get()[0].value)
+  {
+    $.get('/ajax/addUserFilter/' + $('#newFilterInput').get()[0].value, {}, function(response)
+    {
+      $(response).insertBefore('#newFilterTR')
+    });
+  }
+  event.preventDefault();
 }
 function userFiltersEdit(event,fid)
 {
-	$.get('/ajax/editUserFilter/' + fid + '/' + $('#filterId' + fid + 'Input').get()[0].value, {}, function(response)
-	{
-		$('#filterId' + fid + 'Input').get()[0].value = response
-	});
-	event.preventDefault();
+  $.get('/ajax/editUserFilter/' + fid + '/' + $('#filterId' + fid + 'Input').get()[0].value, {}, function(response)
+  {
+    $('#filterId' + fid + 'Input').get()[0].value = response
+  });
+  event.preventDefault();
 }
 function userFiltersDelete(event,fid)
 {
-	$.get('/ajax/deleteUserFilter/' + fid, {}, function(response)
-	{
-		$('#filterId' + fid).remove()
-	});
-	event.preventDefault();
+  $.get('/ajax/deleteUserFilter/' + fid, {}, function(response)
+  {
+    $('#filterId' + fid).remove()
+  });
+  event.preventDefault();
 }
 window.onload=function(e)
 {
@@ -332,13 +332,13 @@ window.onload=function(e)
             insert(">>"+match[1],1);
         highlight(match[1]);
     }
-}  
+}
 
 function click_expands(options){
   if(!options) options = {max_width: 800, max_height: 600}
   var show_image = function() {
     if (this.src.match(/generic/)) return true;
-    
+
     if(options.max_height || options.max_width){
       var filesize = $(this).parent().parent().find("span.filesize em").html()
       var matcher = false
@@ -347,15 +347,20 @@ function click_expands(options){
         if (options.max_height && options.max_height < parseInt(matcher[2])) return true;
       }
     }
-    
+
     if (this.src != this.parentNode.href){
       this._width = this.width
       this._height = this.height
       this._src = this.src
-      
+
+      // loader
       var loader = $("<span class='img_loading'>loading…</span>")
+      loader.css("left", $(this).offset().left)
       $(this).parent().append(loader)
       $(this).load(function() {loader.remove()})
+
+      //highlight
+      $(this).addClass("highlight")
 
       this.removeAttribute('width');
       this.removeAttribute('height');
@@ -364,9 +369,11 @@ function click_expands(options){
       this.width = this._width
       this.height = this._height
       this.src = this._src
+
+      $(this).removeClass("highlight")
     }
     return false;
   }
-  $("a img.thumb").click(show_image) 
+  $("a img.thumb").click(show_image)
 }
 

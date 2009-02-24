@@ -435,8 +435,7 @@ background: #A8A8A8;
 #x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
 
 .img_loading{
-    margin-top: 15px;
-    margin-left: -120px;
+    position:absolute;
     z-index: 10;
     background-color:#FFFFFF;
     border: 2px solid #34345C;

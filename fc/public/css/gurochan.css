@@ -1,17 +1,17 @@
 ﻿body { margin: 0; padding: 8px; margin-bottom: auto; }
 blockquote blockquote { margin-left: 0em }
-form { 
+form {
 margin-bottom: 0px }
 .postarea { text-align: center }
 .postarea table { margin: 0px auto; text-align: left }
-.thumb { 
+.thumb {
 border: none; float: left; margin: 2px 20px }
-.nothumb { float: left; background: #eee; border: 2px dashed #aaa; 
+.nothumb { float: left; background: #eee; border: 2px dashed #aaa;
 text-align: center; margin: 2px 20px; padding: 1em 0.5em 1em 0.5em; }
-.reply blockquote, blockquote :last-child { 
+.reply blockquote, blockquote :last-child {
 margin-bottom: 0em }
 .reflink a { color: inherit; text-decoration: none }
-.reply .filesize { margin-left: 20px } 
+.reply .filesize { margin-left: 20px }
 .userdelete { float: right; text-align: center; white-space: nowrap }
 .replypage .replylink { display: none }
 html, body {
@@ -44,7 +44,7 @@ a.quotelink {
   color:#DD0000;
 }
 
-div.delete { 
+div.delete {
 }
 .adminbar {
   text-align: center;
@@ -80,55 +80,55 @@ div.delete {
   font-size:12px;
 }
 .dellist {
-	font-weight: bold;
-	text-align:center;
+  font-weight: bold;
+  text-align:center;
 }
 .delbuttons {
-	text-align:center;
-	padding-bottom:4px;
+  text-align:center;
+  padding-bottom:4px;
 }
 .managehead {
-	background:#AAAA66;
-	color:#400000;
-	padding:0px;
+  background:#AAAA66;
+  color:#400000;
+  padding:0px;
 }
 .postlists {
-	background:#FFFFFF;
-	width:100%;
-	padding:0px;
-	color:#800000;
+  background:#FFFFFF;
+  width:100%;
+  padding:0px;
+  color:#800000;
 }
 .row1 {
 }
 .row2 {
 }
 .unkfunc {
-	background:inert;
-	color:#789922;
+  background:inert;
+  color:#789922;
 }
 .reflink {
 }
 .filesize {
-	text-decoration:none;
+  text-decoration:none;
 }
 .filetitle {
-	background:inherit;
-	color:#0F0C5D;
-	font-weight:800;
+  background:inherit;
+  color:#0F0C5D;
+  font-weight:800;
 }
 .postername {
-	/*
+  /*
   background:inherit;
   font-size:11pt;
   color:#117743;
   font-weight: bold;
-	*/
+  */
 }
 .postertrip {
-	/*
-	background:inherit;
-	color:#228854;
-	*/
+  /*
+  background:inherit;
+  color:#228854;
+  */
 }
 .oldpost, .notabene {
   background:inherit;
@@ -140,35 +140,35 @@ div.delete {
   color:#070707;
 }
 .reply {
-	background:#D9AF9E;
-	color:#000000;
-	border:1px solid #CA927B;
+  background:#D9AF9E;
+  color:#000000;
+  border:1px solid #CA927B;
 }
 blockquote {
-	margin: .5em .5em .5em 1em;
+  margin: .5em .5em .5em 1em;
 }
 
 .reply blockquote {
-	margin: .5em;
+  margin: .5em;
 }
 .doubledash {
- 	vertical-align:top;
-	clear:both;
-	float:left;
+   vertical-align:top;
+  clear:both;
+  float:left;
 }
 .replytitle {
-	background:inherit;
-	font-size:18px;
+  background:inherit;
+  font-size:18px;
   color:#0F0C5D;
   font-weight:800;
 }
 .commentpostername {
-	/*
+  /*
    background:inherit;
   font-size:11pt;
   color:#117743;
   font-weight: bold;
-	font-weight:800;
+  font-weight:800;
 */
 }
 .thumbnailmsg {
@@ -176,15 +176,15 @@ blockquote {
 hr {
 }
 table {
-	border-style: none;
+  border-style: none;
 }
 table td {
-	border-style: none;
+  border-style: none;
 }
 .nothumb {
-	background-color: #FFFFFF;
-	border-style: dotted;
-	margin: .3em .5em;
+  background-color: #FFFFFF;
+  border-style: dotted;
+  margin: .3em .5em;
 }
 .abbrev {
         color:#707070;
@@ -195,20 +195,20 @@ table td {
     border: 2px dashed #EE6600;
 }
 dl.menu dt {
-	background:#DDDDDD;
-	border: solid 1px #CCCCCC;
-	margin-top: 1em;
-	padding-left: .5em;
-	cursor: pointer;
-	
+  background:#DDDDDD;
+  border: solid 1px #CCCCCC;
+  margin-top: 1em;
+  padding-left: .5em;
+  cursor: pointer;
+
 }
 dl.menu dd {
-	margin-left: .5em;
-	padding-left: .5em;
-	border-left: solid 1px #CCCCCC;
+  margin-left: .5em;
+  padding-left: .5em;
+  border-left: solid 1px #CCCCCC;
 }
 dl.menu dd.hidden {
-	display: none;
+  display: none;
 }
 .signature {
         background: #00FF00;
@@ -245,32 +245,32 @@ dl.menu dd.hidden {
         margin:0;
 }
 .spoiler {
-	background-color: #E6CBC0;
-	color: #E6CBC0;
+  background-color: #E6CBC0;
+  color: #E6CBC0;
 }
 .spoiler blockquote{
-	background: #E6CBC0; !important;
-	color: #E6CBC0; !important;
+  background: #E6CBC0; !important;
+  color: #E6CBC0; !important;
 }
 .spoiler:hover {
-	background: #E6CBC0;
-	color: #000000;
+  background: #E6CBC0;
+  color: #000000;
 }
 .spoiler:hover blockquote{
-	color:#789922 !important;
+  color:#789922 !important;
 }
 .spoiler blockquote:hover {
-	color:#789922 !important;
+  color:#789922 !important;
 }
 .errorMessage{
-	background:#EEaaaa;
-	text-align:center;
-	padding:2px;
-	color:#880000;
-	clear: both;
-	font-weight: bold;
-	margin-bottom: .5em;
-	border: solid 1px #117743;
+  background:#EEaaaa;
+  text-align:center;
+  padding:2px;
+  color:#880000;
+  clear: both;
+  font-weight: bold;
+  margin-bottom: .5em;
+  border: solid 1px #117743;
 }
 .adminMenu{
 vertical-align:top;
@@ -282,13 +282,13 @@ background:#D9AF9E;
 }
 
 .postername, .postertrip, .commentpostername {
-	display: inline; visibility: visible; font-weight: bold; color: #339;
+  display: inline; visibility: visible; font-weight: bold; color: #339;
 }
 .postertrip {
-	color: #993;
+  color: #993;
 }
 .hidden-thread {
-	color: #666; padding: 5px 0 0 28px; min-height: 24px; vertical-align: middle; background: url('images/hidden.png') no-repeat left center;
+  color: #666; padding: 5px 0 0 28px; min-height: 24px; vertical-align: middle; background: url('images/hidden.png') no-repeat left center;
 }
 form > div + br[clear="left"] {
 display: block; height: 1px;
@@ -297,51 +297,51 @@ display: block; height: 1px;
 font-size: 80%; color: #666;
 }
 .reply label span {
-font-size: 125%; 
+font-size: 125%;
 }
 label, label input {
 vertical-align: middle;
 }
 a.loading {
-	padding-left: 16px;
-	background: url('images/loading.gif') no-repeat left center;
+  padding-left: 16px;
+  background: url('images/loading.gif') no-repeat left center;
 }
 .x_unfoldreply td {
-	border-color: #EEAA88;
+  border-color: #EEAA88;
 }
 .x_qrattached:hover {
-	border-bottom: 1px #ccc dotted;
+  border-bottom: 1px #ccc dotted;
 }
 div a.show-hide-thread {
-	display: block; float: right; font-size: 70%; text-decoration: none;
+  display: block; float: right; font-size: 70%; text-decoration: none;
 }
 div a.show-hide-thread:hover {
-	text-decoration: underline; color: #f33;
+  text-decoration: underline; color: #f33;
 }
 #x_replyform {
-	display: block; border: 1px solid #CA927B; margin: 0 2px 2px 2px; padding: 5px; 
-	background-color: #D9AF9E;
+  display: block; border: 1px solid #CA927B; margin: 0 2px 2px 2px; padding: 5px;
+  background-color: #D9AF9E;
 }
 #x_replyform textarea {
-	width: 100%; border: 1px solid #CA927B;
+  width: 100%; border: 1px solid #CA927B;
 }
 #x_replyform div {
-	overflow: hidden; margin-top: 5px;
+  overflow: hidden; margin-top: 5px;
 }
 #x_replyform label {
-	float: left; margin-right: 10px;
+  float: left; margin-right: 10px;
 }
 #x_replyform input[type="text"], #x_replyform input[type="password"] {
-	border: 1px solid #CA927B;
+  border: 1px solid #CA927B;
 }
 #x_replyform input[type="file"] > input[type="text"] {
-	border: 1px solid #CA927B;
-} 
+  border: 1px solid #CA927B;
+}
 #x_replyform input[type="submit"] {
 
 }
 #x_replyform button {
-border: 1px solid #CA927B; background-color: #E6CBC0;	
+border: 1px solid #CA927B; background-color: #E6CBC0;
 }
 .logline {background: #DDDDDD;}
 .nomargin{margin: 0;}
@@ -365,8 +365,7 @@ background: #A8A8A8;
 #x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
 
 .img_loading{
-    margin-top: 15px;
-    margin-left: -120px;
+    position:absolute;
     z-index: 10;
     background:#EEDACB;
     color:#333333;

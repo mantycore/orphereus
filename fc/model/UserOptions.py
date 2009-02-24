@@ -33,7 +33,6 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("canChangeRights", sa.types.Boolean, nullable=True)
     )
 
-#TODO: rewrite UserOptions
 class UserOptions(object):
     @staticmethod
     def optionsDump(optionsObject):

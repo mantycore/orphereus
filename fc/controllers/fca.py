@@ -322,9 +322,9 @@ class FcaController(OrphieBaseController):
         if uid:
             user = False
             if isNumber(uid):
-                user = meta.Session.query(User).filter(User.uidNumber==uid).first()
+                user = User.getUser(uid) #meta.Session.query(User).filter(User.uidNumber==uid).first()
             else:
-                user = meta.Session.query(User).filter(User.uid==uid).first()
+                user = User.getByUid(uid) #meta.Session.query(User).filter(User.uid==uid).first()
             if user:
                 return redirect_to('/holySynod/manageUsers/edit/%s' % user.uidNumber)
             else:
@@ -360,7 +360,7 @@ class FcaController(OrphieBaseController):
             return self.render('error')
 
         c.boardName = 'Edit user %s' % uid
-        user = meta.Session.query(User).options(eagerload('options')).get(uid)
+        user = User.getByUid(uid) #meta.Session.query(User).options(eagerload('options')).get(uid)
         if user:
             c.user = user
             c.userInst = self.userInst
@@ -417,7 +417,6 @@ class FcaController(OrphieBaseController):
             elif request.POST.get('passwd', False):
                 key = request.POST.get('key','').encode('utf-8')
                 key2 = request.POST.get('key2','').encode('utf-8')
-                # XXX: temporary code. Methods from OrphieBaseController must be moved into model
                 passwdRet = user.passwd(key, key2, True, False)
                 if passwdRet == True:
                     c.message = _('Password was successfully changed.')

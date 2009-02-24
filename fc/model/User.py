@@ -25,7 +25,6 @@ t_users = sa.Table("users", meta.metadata,
     sa.Column("uid"      , sa.types.String(128), nullable=False)
     )
 
-#TODO: rewrite User
 class User(object):
     def __init__(self, uid):
         self.uid = uid
@@ -46,7 +45,7 @@ class User(object):
 
         #TODO: legacy code
         if meta.globj:
-            if not ret.options:
+            if ret and not ret.options:
                 ret.options = UserOptions()
                 UserOptions.initDefaultOptions(ret.options, meta.globj.OPT)
                 meta.Session.commit()

@@ -4,14 +4,15 @@ ${_('Current members of Holy Synod')}
 <table class="hlTable">
 <tr>
 <td>Number</td>
-<td colspan>Mod</td>
-<td colspan>Invites</td>
-<td colspan>Opt</td>
-<td colspan>Boards</td>
-<td colspan>Users</td>
-<td colspan>Ext</td>
-<td colspan>Mapping</td>
-<td colspan>Maint</td>
+<td><b>Rights</b></td>
+<td>Mod</td>
+<td>Invites</td>
+<td>Opt</td>
+<td>Boards</td>
+<td>Users</td>
+<td>Ext</td>
+<td>Mapping</td>
+<td>Maint</td>
 </tr>
 %for u in c.admins:
     <tr
@@ -20,14 +21,15 @@ ${_('Current members of Holy Synod')}
     %endif
     >
         <td><div class="hovblock"><a style="display: block;" href='/holySynod/manageUsers/edit/${u.uidNumber}'>${u.uidNumber}</a></div></td>
-        <td>${u.canDeleteAllPosts() and "+" or ""}</td>
-        <td>${u.canMakeInvite() and "+" or ""}</td>
-        <td>${u.canChangeSettings() and "+" or ""}</td>
-        <td>${u.canManageBoards() and "+" or ""}</td>
-        <td>${u.canManageUsers() and "+" or ""}</td>
-        <td>${u.canManageExtensions() and "+" or ""}</td>
-        <td>${u.canManageMappings() and "+" or ""}</td>
-        <td>${u.canRunMaintenance() and "+" or ""}</td>
+        <td>${u.canChangeRights() and "&#8226;" or ""}</td>
+        <td>${u.canDeleteAllPosts() and "&#8226;" or ""}</td>
+        <td>${u.canMakeInvite() and "&#8226;" or ""}</td>
+        <td>${u.canChangeSettings() and "&#8226;" or ""}</td>
+        <td>${u.canManageBoards() and "&#8226;" or ""}</td>
+        <td>${u.canManageUsers() and "&#8226;" or ""}</td>
+        <td>${u.canManageExtensions() and "&#8226;" or ""}</td>
+        <td>${u.canManageMappings() and "&#8226;" or ""}</td>
+        <td>${u.canRunMaintenance() and "&#8226;" or ""}</td>
     </tr>
 %endfor
 </table>

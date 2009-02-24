@@ -102,9 +102,9 @@
                     </td>
                 </tr>
                 <tr id="trtempl">
-                    <td class="postblock" style="width: 170px;">${_('Template')}</td>
+                    <td class="postblock">${_('Template')}</td>
                     <td>
-                        <select name name="template">
+                        <select name="template" style="width: 170px;">
 
                             %for t in c.templates:
                                <option value="${t}"
@@ -119,9 +119,9 @@
                     </td>
                 </tr>
                 <tr id="trstyle">
-                    <td class="postblock" style="width: 170px;">${_('Style')}</td>
+                    <td class="postblock">${_('Style')}</td>
                     <td>
-                        <select name="style">
+                        <select name="style" style="width: 170px;">
                             %for style in c.styles:
                                <option value="${style}"
                                  %if style == c.userInst.style():

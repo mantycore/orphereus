@@ -15,12 +15,12 @@ ${_('Current members of Holy Synod')}
 <td>Maint</td>
 </tr>
 %for u in c.admins:
-    <tr
-    %if u.uidNumber == c.userInst.uidNumber:
-    class="highlight"
-    %endif
-    >
-        <td><div class="hovblock"><a style="display: block;" href='/holySynod/manageUsers/edit/${u.uidNumber}'>${u.uidNumber}</a></div></td>
+    <tr>
+        <td
+            %if u.uidNumber == c.userInst.uidNumber:
+            class="highlight"
+            %endif
+        ><div class="hovblock"><a style="display: block;" href='/holySynod/manageUsers/edit/${u.uidNumber}'>${u.uidNumber}</a></div></td>
         <td>${u.canChangeRights() and "&#8226;" or ""}</td>
         <td>${u.canDeleteAllPosts() and "&#8226;" or ""}</td>
         <td>${u.canMakeInvite() and "&#8226;" or ""}</td>

@@ -33,7 +33,7 @@ class Post(object):
     def selfModeratable(self):
         ret = False
         for tag in self.tags:
-            if tag.options.selfModeration:
+            if tag.options and tag.options.selfModeration:
                 ret = True
                 break
         return ret

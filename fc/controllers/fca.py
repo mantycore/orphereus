@@ -283,17 +283,16 @@ class FcaController(OrphieBaseController):
                         sid = 0
                     c.tag.options.sectionId = sid
                     c.tag.options.persistent = request.POST.get('persistent', False)
-                    c.tag.options.imagelessThread = request.POST.get('imagelessThread', g.OPT.defImagelessThread)
-                    c.tag.options.imagelessPost = request.POST.get('imagelessPost', g.OPT.defImagelessPost)
-                    c.tag.options.images = request.POST.get('images', g.OPT.defImages)
-                    c.tag.options.enableSpoilers = request.POST.get('spoilers', g.OPT.defEnableSpoilers)
-                    c.tag.options.canDeleteOwnThreads = request.POST.get('canDeleteOwnThreads', g.OPT.defCanDeleteOwnThreads)
+                    c.tag.options.imagelessThread = request.POST.get('imagelessThread', False)
+                    c.tag.options.imagelessPost = request.POST.get('imagelessPost', False)
+                    c.tag.options.images = request.POST.get('images', False)
+                    c.tag.options.enableSpoilers = request.POST.get('spoilers', False)
+                    c.tag.options.canDeleteOwnThreads = request.POST.get('canDeleteOwnThreads', False)
+                    c.tag.options.selfModeration = request.POST.get('selfModeration', False)
                     c.tag.options.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
                     c.tag.options.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
                     c.tag.options.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
-                    c.tag.options.selfModeration = request.POST.get('selfModeration', g.OPT.defSelfModeration)
                     c.tag.save()
-
                     if request.POST.get('deleteBoard', False) and c.tag.id:
                         count = Post.query.filter(Post.tags.any(tag=tag)).count()
                         if count>0:

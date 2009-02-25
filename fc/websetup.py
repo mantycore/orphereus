@@ -66,22 +66,15 @@ def setup_config(command, filename, section, vars):
     log.debug('tags: %d' % tc)
 
     if tc == 0:
+        #TODO: rewrite nahuy
         log.info("Adding tag /b/")
 
-        tag = Tag('b')
+        tag = Tag(u'b')
         tag.options = TagOptions()
-        tag.options.comment = 'Random'
-        tag.options.sectionId = 2
+        tag.options.comment = u'Random'
+        tag.options.sectionId = 1
         tag.options.persistent = True
-        tag.options.specialRules = u''
-        tag.options.imagelessThread = False
-        tag.options.imagelessPost = True
-        tag.options.enableSpoilers = False
-        tag.options.canDeleteOwnThreads = True
-        tag.options.images = True
-        tag.options.maxFileSize = 3000000
-        tag.options.minPicSize = 50
-        tag.options.thumbSize = 180
+        tag.options.specialRules = u"It's /b/, there is no rules"
         meta.Session.add(tag)
 
         meta.Session.commit()

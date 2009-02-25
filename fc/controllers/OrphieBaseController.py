@@ -43,12 +43,12 @@ class OrphieBaseController(BaseController):
 
     def initEnvironment(self):
         c.title = g.settingsMap['title'].value
-        boards = meta.Session.query(Tag).join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
+        boards = Tag.getBoards()
         c.boardlist = []
-        sectionId = 0
+        sectionId = -1
         section = []
         for b in boards:
-            if not sectionId:
+            if sectionId == -1:
                 sectionId = b.options.sectionId
                 section = []
             if sectionId != b.options.sectionId:
@@ -172,65 +172,13 @@ class OrphieBaseController(BaseController):
     def formatPostReference(self, postid, parentid = False): # TODO FIXME: move to parser
         if not parentid:
             parentid = self.getParentID(postid)
-
+        return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)
         #if parentid == -1:
         #    return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
         #else:
         # We will format all posts same way. Why not?
         #Also, changed to /postid#ipostid instead of /parentid#ipostid.
         #Forget it, changed back.
-        return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)
-
-    def conjunctTagOptions(self, tags):
-        options = empty()
-        optionsFlag = True
-        rulesList = []
-        for t in tags:
-            if t.options:
-                if optionsFlag:
-                    options.imagelessThread = t.options.imagelessThread
-                    options.imagelessPost   = t.options.imagelessPost
-                    options.images   = t.options.images
-                    options.enableSpoilers = t.options.enableSpoilers
-                    options.maxFileSize = t.options.maxFileSize
-                    options.minPicSize = t.options.minPicSize
-                    options.thumbSize = t.options.thumbSize
-                    options.canDeleteOwnThreads = t.options.canDeleteOwnThreads
-                    optionsFlag = False
-                else:
-                    options.imagelessThread = options.imagelessThread & t.options.imagelessThread
-                    options.imagelessPost = options.imagelessPost & t.options.imagelessPost
-                    options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
-                    options.canDeleteOwnThreads = options.canDeleteOwnThreads & t.options.canDeleteOwnThreads
-                    options.images = options.images & t.options.images
-
-                    perm = g.OPT.permissiveFileSizeConjunction
-                    if (perm and t.options.maxFileSize > options.maxFileSize) or (not perm and t.options.maxFileSize < options.maxFileSize):
-                        options.maxFileSize = t.options.maxFileSize
-
-                    if t.options.minPicSize > options.minPicSize:
-                        options.minPicSize = t.options.minPicSize
-                    if t.options.thumbSize < options.thumbSize:
-                        options.thumbSize = t.options.thumbSize
-
-                tagRulesList = t.options.specialRules.split(';')
-                for rule in tagRulesList:
-                    if rule and not rule in rulesList:
-                        rulesList.append(rule)
-
-        options.rulesList = rulesList
-
-        if optionsFlag:
-            options.imagelessThread = g.OPT.defImagelessThread
-            options.imagelessPost   = g.OPT.defImagelessPost
-            options.images = g.OPT.defImages
-            options.enableSpoilers = g.OPT.defEnableSpoilers
-            options.canDeleteOwnThreads = g.OPT.defCanDeleteOwnThreads
-            options.maxFileSize = g.OPT.defMaxFileSize
-            options.minPicSize = g.OPT.defMinPicSize
-            options.thumbSize = g.OPT.defThumbSize
-            options.specialRules = u''
-        return options
 
     def deletePicture(self, post, commit = True):
         pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
@@ -280,7 +228,7 @@ class OrphieBaseController(BaseController):
                     tag.threadCount -= 1
             tagline = ', '.join(taglist)
 
-            postOptions = self.conjunctTagOptions(p.parentid>0 and parentp.tags or p.tags)
+            postOptions = Tag.conjunctedOptionsDescript(p.parentid>0 and parentp.tags or p.tags)
             if checkOwnage and not p.uidNumber == self.userInst.uidNumber:
                 logEntry = u''
                 if p.parentid>0:

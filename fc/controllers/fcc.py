@@ -25,9 +25,6 @@ from mutagen.easyid3 import EasyID3
 import logging
 log = logging.getLogger(__name__)
 
-def taglistcmp(a, b):
-    return cmp(b.count, a.count) or cmp(a.board.tag, b.board.tag)
-
 class FccController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
@@ -123,11 +120,8 @@ class FccController(OrphieBaseController):
         return (filter, tagList, filteringExpression)
 
     def excludeHiddenTags(self, filter):
-        adminTagsLine = g.settingsMap['adminOnlyTags'].value
-        forbiddenTags = getTagsListFromString(adminTagsLine)
-
         if not self.userInst.isAdmin():
-            blocker = Post.tags.any(Tag.id.in_(forbiddenTags))
+            blocker = Post.tags.any(Tag.id.in_(g.forbiddenTags))
             filter = filter.filter(not_(
                                    or_(blocker,
                                         Post.parentPost.has(blocker),
@@ -197,7 +191,7 @@ class FccController(OrphieBaseController):
             if board == '@':
                 c.boardName = _('Related threads')
 
-        c.boardOptions = self.conjunctTagOptions(tags)
+        c.boardOptions = Tag.conjunctedOptionsDescript(tags)
         c.tagList = ' '.join(tagList)
 
         hiddenThreads = self.userInst.hideThreads()
@@ -241,23 +235,7 @@ class FccController(OrphieBaseController):
         c.curPage = page
         return self.render('posts')
 
-    def __tagListFromString(self, tagstr):
-            tags = []
-            tagsl= []
-            if tagstr:
-                tagstr = tagstr.replace('&amp;', '&')
-                regex = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""")
-                tlist = regex.findall(tagstr)
-                for t in tlist:
-                    if not t in tagsl:
-                        tag = self.sqlFirst(meta.Session.query(Tag).filter(Tag.tag==t))
 
-                        if tag:
-                            tags.append(tag)
-                        else:
-                            tags.append(Tag(t))
-                        tagsl.append(t)
-            return tags
 
     def GetThread(self, post, tempid):
         thePost = self.sqlFirst(Post.query.options(eagerload('file')).filter(Post.id==post))
@@ -282,34 +260,7 @@ class FccController(OrphieBaseController):
     def GetBoard(self, board, tempid, page=0):
         if board == '!':
             def getTotalPosts():
-                return meta.Session().query(Post).count() #.execute("select count(id) from posts")
-                #return result.fetchone()[0]
-
-            def mainStats():
-                boards = self.sqlAll(meta.Session.query(Tag).options(eagerload('options')))
-                ret = empty()
-                ret.boards=[]
-                ret.tags=[]
-                ret.totalBoardsThreads = 0
-                ret.totalTagsThreads = 0
-                ret.totalBoardsPosts = 0
-                ret.totalTagsPosts = 0
-                for b in boards:
-                    if not b.tag in forbiddenTags:
-                        bc = empty()
-                        bc.count = b.threadCount
-                        bc.postsCount = b.replyCount
-                        bc.board = b
-
-                        if b.options and b.options.persistent:
-                            ret.boards.append(bc)
-                            ret.totalBoardsThreads += bc.count
-                            ret.totalBoardsPosts += bc.postsCount
-                        else:
-                            ret.tags.append(bc)
-                            ret.totalTagsThreads += bc.count
-                            ret.totalTagsPosts += bc.postsCount
-                return ret
+                return meta.Session().query(Post).count()
 
             def vitalSigns():
                 ret = empty()
@@ -325,9 +276,6 @@ class FccController(OrphieBaseController):
                 ret.prevWeekMessages = meta.Session().query(Post.id).filter(and_(Post.date <= firstBnd, Post.date >= secondBnd)).count()
                 return ret
 
-            adminTagsLine = g.settingsMap['adminOnlyTags'].value
-            forbiddenTags = adminTagsLine.split(',')
-
             if g.OPT.devMode:
                 ct = time.time()
 
@@ -341,12 +289,15 @@ class FccController(OrphieBaseController):
                 #cch = cache.get_cache('home_stats')
                 cch = cm.get_cache('home_stats')
                 c.totalPostsCount = cch.get_value(key="totalPosts", createfunc=getTotalPosts, expiretime=chTime)
-                mstat = cch.get_value(key="mainStats", createfunc=mainStats, expiretime=chTime)
+                mstat = cch.get_value(key="mainStats", createfunc=Tag.getStats, expiretime=chTime)
                 vts = cch.get_value(key="vitalSigns", createfunc=vitalSigns, expiretime=chTime)
             else:
                 c.totalPostsCount = getTotalPosts()
-                mstat = mainStats()
+                mstat = Tag.getStats()
                 vts = vitalSigns()
+
+            def taglistcmp(a, b):
+                return cmp(b.count, a.count) or cmp(a.board.tag, b.board.tag)
 
             c.boards = sorted(mstat.boards, taglistcmp)
             c.tags = sorted(mstat.tags, taglistcmp)
@@ -375,7 +326,7 @@ class FccController(OrphieBaseController):
             page = 0
 
         filter = self.buildFilter(board)
-        tags = self.sqlAll(meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag.in_(filter[1])))
+        tags = Tag.getAllByNames(filter[1])
         return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
 
     def makeThumbnail(self, source, dest, maxSize):
@@ -497,7 +448,7 @@ class FccController(OrphieBaseController):
             tags = thread.tags
         else:
             tagstr = request.POST.get('tags', False)
-            tags = self.__tagListFromString(tagstr)
+            tags = Tag.stringToTagList(tagstr)
             if not tags:
                 c.errorText = _("You should specify at least one board")
                 return self.render('error')
@@ -527,7 +478,7 @@ class FccController(OrphieBaseController):
                 c.errorText = _("Tags restrictions violations:<br/> %s") % ('<br/>'.join(problemTags))
                 return self.render('error')
 
-        options = self.conjunctTagOptions(tags)
+        options = Tag.conjunctedOptionsDescript(tags)
         if not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
             c.errorText = "Unacceptable combination of tags"
             return self.render('error')
@@ -875,7 +826,7 @@ class FccController(OrphieBaseController):
             if isNumber(maxExpandHeight) and (0 < int(maxExpandHeight) < 4096):
                 self.userInst.maxExpandHeight(maxExpandHeight)
             self.userInst.mixOldThreads(request.POST.get('mixOldThreads', False))
-            homeExcludeTags = self.__tagListFromString(request.POST.get('homeExclude', u''))
+            homeExcludeTags = Tag.stringToTagList(request.POST.get('homeExclude', u''))
             homeExcludeList = []
             for t in homeExcludeTags:
                 homeExcludeList.append(t.id)
@@ -901,7 +852,7 @@ class FccController(OrphieBaseController):
             c.profileMsg += _(' Profile was updated.')
             meta.Session.commit()
 
-        homeExcludeTags = self.sqlAll(meta.Session.query(Tag).filter(Tag.id.in_(self.userInst.homeExclude())))
+        homeExcludeTags = Tag.getAllByIds(self.userInst.homeExclude())
         homeExcludeList = []
         for t in homeExcludeTags:
             homeExcludeList.append(t.tag)
@@ -969,10 +920,6 @@ class FccController(OrphieBaseController):
 
         filter = self.excludeHiddenTags(base)
         filter = filter.filter(Post.message.like('%%%s%%' % text))
-
-        adminTagsLine = g.settingsMap['adminOnlyTags'].value
-        forbiddenTags = getTagsListFromString(adminTagsLine)
-
         count = self.sqlCount(filter)
         #log.debug(count)
         self.paginate(count, page, pp)

@@ -141,7 +141,7 @@
 
 <div id="smallFont">
 <b>${_('On this board')}
-%if c.board:
+%if c.tagLine:
 <i>(${c.tagLine})</i>
 %endif
 :</b>
@@ -154,6 +154,7 @@
 <li>${_('Imageless posts')}:  ${not c.boardOptions.imagelessPost and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Spoiler alerts')}:  ${not c.boardOptions.enableSpoilers and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Op can delete thread')}:  ${c.boardOptions.canDeleteOwnThreads and _('yes') or _('no')}</li>
+<li>${_('Op can moderate thread')}:  ${c.boardOptions.selfModeration and _('yes') or _('no')}</li>
 </ul>
 <b>${_('Additional information')}:</b>
 <ul class="nomargin">

@@ -52,5 +52,5 @@ def load_environment(global_conf, app_conf, setupMode):
     init_model(engine)
 
     #if not setupMode:
-    init_globals(config['pylons.app_globals'])
+    init_globals(config['pylons.app_globals'], setupMode)
     #adminAlert("Orphie-kun: Hello, I'm respawned")

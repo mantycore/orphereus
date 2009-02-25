@@ -21,7 +21,7 @@ sqlalchemy.encoding=utf-8
 # Basic IB settings
 core.devMode = true
 # We will hash hashSecret by sha512, so no need to have it long
-core.hashSecret = smallSecret 
+core.hashSecret = smallSecret
 core.baseDomain= anoma.ch
 core.minPassLength = 12
 core.uploadPath = /var/OrphieUploads/
@@ -48,6 +48,7 @@ defaults.imagelessPost = true
 defaults.images = true
 defaults.enableSpoilers = false
 defaults.canDeleteOwnThreads = true
+defaults.selfModeration = false
 
 # Security settings
 #use this option only with httpd configured as proxy
@@ -70,7 +71,7 @@ security.spiderTrap = true
 security.interestingNumbers = true
 security.useAnalBarriering = true
 security.enableFinalAnonymity = true
-security.finalAHoursDelay = 24 
+security.finalAHoursDelay = 24
 security.hlAnonymizedPosts = true
 
 [loggers]

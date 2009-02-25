@@ -20,6 +20,8 @@ from wakabaparse import WakabaParser
 import logging
 log = logging.getLogger(__name__)
 
+#TODO: totally rewrite this controller
+
 class Empty:
     pass
 

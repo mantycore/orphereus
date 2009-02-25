@@ -24,6 +24,7 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     sa.Column("enableSpoilers", sa.types.Boolean, nullable=False),
     sa.Column("canDeleteOwnThreads", sa.types.Boolean, server_default='1'),
     sa.Column("specialRules"  , sa.types.UnicodeText, nullable=True),
+    sa.Column("selfModeration", sa.types.Boolean, nullable=False),
     )
 
 #TODO: rewrite TagOptions
@@ -31,3 +32,14 @@ class TagOptions(object):
     def __init__(self):
         self.sectionId = 0
         self.persistent = False
+        self.comment = u''
+        self.specialRules = u''
+        self.imagelessThread = meta.globj.OPT.defImagelessThread
+        self.imagelessPost = meta.globj.OPT.defImagelessPost
+        self.images = meta.globj.OPT.defImages
+        self.enableSpoilers = meta.globj.OPT.defEnableSpoilers
+        self.canDeleteOwnThreads = meta.globj.OPT.defCanDeleteOwnThreads
+        self.maxFileSize = meta.globj.OPT.defMaxFileSize
+        self.minPicSize = meta.globj.OPT.defMinPicSize
+        self.thumbSize = meta.globj.OPT.defThumbSize
+        self.selfModeration = meta.globj.OPT.defSelfModeration

@@ -174,7 +174,7 @@ class FcaController(OrphieBaseController):
             if tagid == 0:
                 tagName = filterText(request.POST.get('tagName', u''))
                 if tagName:
-                    tag = meta.Session.query(Tag).filter(Tag.tag==tagName).first()
+                    tag = tag.getTag(tagName)
                     if tag:
                         tagid = tag.id
         else:
@@ -196,7 +196,7 @@ class FcaController(OrphieBaseController):
             if post and post.parentid == -1:
                 if act == 'del' and tagid > 0:
                     if len(post.tags) > 1:
-                        tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
+                        tag = Tag.getById(tagid)
                         tag.threadCount -= 1
                         tag.replyCount -= post.replyCount
                         toLog(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))
@@ -205,7 +205,7 @@ class FcaController(OrphieBaseController):
                         c.errorText = "Can't delete last tag!"
                         return self.render('error')
                 elif act == 'add':
-                    tag = meta.Session.query(Tag).filter(Tag.id==tagid).first()
+                    tag = Tag.getById(tagid)
                     if tag:
                         toLog(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))
                         post.tags.append(tag)
@@ -227,50 +227,47 @@ class FcaController(OrphieBaseController):
             return self.render('error')
 
         c.boardName = 'Boards management'
-        boards = meta.Session.query(Tag).options(eagerload('options')).all()
-        c.boards = {999:[]}
+        boards = Tag.getAll()
+        c.boards = {-1:[]}
+        c.sectionList = []
         for b in boards:
-            if b.options and b.options.persistent and b.options.sectionId:
-                if not b.options.sectionId in c.boards:
-                    c.boards[b.options.sectionId]=[]
-                c.boards[b.options.sectionId].append(b)
+            if b.options and b.options.persistent and b.options.sectionId >= 0:
+                sid = b.options.sectionId
+                if not sid in c.boards:
+                    c.boards[sid] = []
+                    c.sectionList.append(sid)
+                c.boards[sid].append(b)
             else:
-                c.boards[999].append(b)
-        bs = {}
-        for key in sorted(c.boards.iterkeys()):
-            bs[key] = c.boards[key]
-        c.boards = bs
+                c.boards[-1].append(b)
+
+        for sid in c.boards.keys():
+            def tagcmp(a, b):
+                return cmp(a.tag, b.tag)
+            c.boards[sid] = sorted(c.boards[sid], tagcmp)
+        c.sectionList = sorted(c.sectionList)
+        c.sectionList.append(-1)
         return self.render('manageBoards')
 
-    def editBoard(self,tag):
+    def editBoard(self, tag):
         if not self.userInst.canManageBoards():
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
         c.boardName = 'Edit board'
         c.message = u''
-        c.tag = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==tag).first()
+        c.tag = Tag.getTag(tag)
         if not c.tag:
             c.tag = Tag(tag)
+
+        #TODO: legacy code
         if not c.tag.options:
             c.tag.options = TagOptions()
-            c.tag.options.comment = u''
-            c.tag.options.sectionId = 0
-            c.tag.options.persistent = False
-            c.tag.options.imagelessThread = g.OPT.defImagelessThread
-            c.tag.options.imagelessPost = g.OPT.defImagelessPost
-            c.tag.options.images = g.OPT.defImages
-            c.tag.options.enableSpoilers = g.OPT.defEnableSpoilers
-            c.tag.options.canDeleteOwnThreads = g.OPT.defCanDeleteOwnThreads
-            c.tag.options.maxFileSize = g.OPT.defMaxFileSize
-            c.tag.options.minPicSize = g.OPT.defMinPicSize
-            c.tag.options.thumbSize = g.OPT.defThumbSize
-            c.tag.options.specialRules = u''
-        if request.POST.get('tag',False):
+
+        if request.POST.get('tag', False):
             newtag = request.POST.get('tag',False)
             newtagre = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""").match(newtag)
             if newtagre:
                 newtag = newtagre.groups()[0]
-                newtagRecord = meta.Session.query(Tag).options(eagerload('options')).filter(Tag.tag==newtag).first()
+                newtagRecord = Tag.getTag(newtag)
                 if not newtagRecord or newtagRecord.id == c.tag.id:
                     if c.tag.tag != newtag:
                         oldtag = c.tag.tag
@@ -279,16 +276,23 @@ class FcaController(OrphieBaseController):
                         oldtag = u''
                     c.tag.options.comment = filterText(request.POST.get('comment', u''))
                     c.tag.options.specialRules = filterText(request.POST.get('specialRules', u''))
-                    c.tag.options.sectionId = request.POST.get('sectionId',0)
-                    c.tag.options.persistent = request.POST.get('persistent',False)
-                    c.tag.options.imagelessThread = request.POST.get('imagelessThread',False)
-                    c.tag.options.imagelessPost = request.POST.get('imagelessPost',False)
-                    c.tag.options.images = request.POST.get('images',False)
-                    c.tag.options.enableSpoilers = request.POST.get('spoilers',False)
-                    c.tag.options.canDeleteOwnThreads = request.POST.get('canDeleteOwnThreads',False)
-                    c.tag.options.maxFileSize = request.POST.get('maxFileSize',3145728)
-                    c.tag.options.minPicSize = request.POST.get('minPicSize',0)
-                    c.tag.options.thumbSize = request.POST.get('thumbSize',250)
+                    sid = request.POST.get('sectionId', 0)
+                    if isNumber(sid) and int(sid) >= 0:
+                        sid = int(sid)
+                    else:
+                        sid = 0
+                    c.tag.options.sectionId = sid
+                    c.tag.options.persistent = request.POST.get('persistent', False)
+                    c.tag.options.imagelessThread = request.POST.get('imagelessThread', g.OPT.defImagelessThread)
+                    c.tag.options.imagelessPost = request.POST.get('imagelessPost', g.OPT.defImagelessPost)
+                    c.tag.options.images = request.POST.get('images', g.OPT.defImages)
+                    c.tag.options.enableSpoilers = request.POST.get('spoilers', g.OPT.defEnableSpoilers)
+                    c.tag.options.canDeleteOwnThreads = request.POST.get('canDeleteOwnThreads', g.OPT.defCanDeleteOwnThreads)
+                    c.tag.options.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
+                    c.tag.options.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
+                    c.tag.options.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
+                    c.tag.options.selfModeration = request.POST.get('selfModeration', g.OPT.defSelfModeration)
+                    c.tag.save()
 
                     if request.POST.get('deleteBoard', False) and c.tag.id:
                         count = Post.query.filter(Post.tags.any(tag=tag)).count()
@@ -319,7 +323,6 @@ class FcaController(OrphieBaseController):
 
         c.boardName = 'Users management'
         uid = request.POST.get("uid", False)
-        log.debug(uid)
         if uid:
             user = False
             if isNumber(uid):

@@ -17,7 +17,11 @@
                 <tr id="trtag">
                     <td class="postblock">${_('Tag')}</td>
                     <td>
-                        <input type="text" name="tag" size="35" value="${c.tag.tag}" />
+                        <input type="text" name="tag" size="35"
+                        %if c.tag.tag:
+                            value="${c.tag.tag}"
+                        %endif
+                        />
                         <a href="/${c.tag.tag}" target="_blank">Show board</a>
                     </td>
                 </tr>
@@ -73,6 +77,12 @@
                     <td class="postblock">${_('Allow OP to delete his threads')}</td>
                     <td>
                         <input type="checkbox" name="canDeleteOwnThreads" ${c.tag.options.canDeleteOwnThreads and "checked" or ""} />
+                    </td>
+                </tr>
+                <tr id="trsection">
+                    <td class="postblock">${_('Allow OP to moderate thread')}</td>
+                    <td>
+                        <input type="checkbox" name="selfModeration" ${c.tag.options.selfModeration and "checked" or ""} />
                     </td>
                 </tr>
                 <tr id="trsection">

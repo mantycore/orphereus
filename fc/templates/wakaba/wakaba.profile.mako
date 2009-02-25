@@ -69,17 +69,13 @@
                 </tr>
                 <tr>
                     <td class="postblock">${_('Max size to expand')}
-                    <div style="font-size: 60%; font-style:italic;">(Max side will be used)</div>
+                    <div style="font-size: 60%; font-style:italic;">(Stricter condition will be used)</div>
                     </td>
                     <td>
                     <input name="maxExpandWidth" value="${c.userInst.maxExpandWidth()}" size="5"/>
                     &#215;
                     <input name="maxExpandHeight" value="${c.userInst.maxExpandHeight()}"  size="5" />
                     </td>
-                </tr>
-                <tr>
-                    <td class="postblock">${_('Max height to expand')}</td>
-                    <td></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Home filter exclusions')}</td>

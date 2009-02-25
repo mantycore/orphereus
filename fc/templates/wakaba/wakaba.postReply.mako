@@ -7,12 +7,15 @@
             <td class="doubledash">&gt;&gt;</td>
             <td class="reply" id="reply${post.id}">
                 <a name="i${post.id}"></a>
-                <label>
+                <!-- <label> -->
                     &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Del" /></a>
                     <span style="display:none" class="delete">
-                    %if post.uidNumber == c.uidNumber or c.enableAllPostDeletion:
+                    %if post.uidNumber == c.uidNumber or (thread.selfModeratable() and c.uidNumber == thread.uidNumber) or c.enableAllPostDeletion:
                         <input type="checkbox" name="delete-${post.id}" value="${post.id}" />
-                        %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous:
+                        %if post.uidNumber != c.uidNumber and (thread.selfModeratable() and c.uidNumber == thread.uidNumber):
+                        <i>${_('[REMOVABLE]')}</i>
+                        %endif
+                        %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous and post.uidNumber == c.uidNumber:
                             <a href="/${post.id}/anonymize">[FA]</a>
                         %endif
                     %endif
@@ -24,7 +27,7 @@
                         <img src="${g.OPT.staticPathWeb}images/sage.png" alt="Sage"/>
                     %endif
                     <span class="replytitle">${post.title}</span>
-                </label>
+                <!-- </label> -->
                      ${h.modTime(post, c.userInst, g.OPT.secureTime)}
 
                     <span class="reflink">

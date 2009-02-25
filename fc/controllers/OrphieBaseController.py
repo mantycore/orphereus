@@ -207,16 +207,22 @@ class OrphieBaseController(BaseController):
             if self.userInst.Anonymous and p.removemd5 != rempPass:
                 return False
 
-            if checkOwnage and not (p.uidNumber == self.userInst.uidNumber or self.userInst.canDeleteAllPosts()):
-                # print some error stuff here
-                return False
-
             threadRemove = True
             tags = p.tags
+            parentp = p
             if p.parentid>0:
-                parentp = p.parentPost #self.sqlGet(Post.query, p.parentid)
+                parentp = p.parentPost
                 tags = parentp.tags
                 threadRemove = False
+
+            isOwner = self.userInst.uidNumber == p.uidNumber
+            selfModEnabled = parentp.selfModeratable()
+            canModerate = selfModEnabled and self.userInst.uidNumber == parentp.uidNumber
+            postCanBeDeleted = (isOwner or canModerate or self.userInst.canDeleteAllPosts())
+
+            if checkOwnage and not postCanBeDeleted:
+                # print some error stuff here
+                return False
 
             tagline = u''
             taglist = []

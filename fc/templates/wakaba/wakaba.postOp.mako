@@ -31,12 +31,12 @@
     <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>
 %endif
 <a name="i${thread.id}"></a>
-<label>
+<!-- <label> -->
     &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Delete"/></a>
     <span style="display:none" class="delete">
     %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
         <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
-        %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous:
+        %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous and thread.uidNumber == c.uidNumber:
             <a href="/${thread.id}/anonymize">[FA]</a>
         %endif
     %endif
@@ -48,7 +48,7 @@
     %endif
     </span>
     <span class="filetitle">${thread.title}</span>
-</label>
+<!-- </label> -->
 
     <span
     %if getattr(thread, 'mixed', False):

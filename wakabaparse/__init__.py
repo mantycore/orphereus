@@ -23,7 +23,7 @@ class WakabaParser(object):
         self.baseProd = baseProd
         self.defl = open(definition).read()
         self.parser = generator.buildParser(self.defl).parserbyname(baseProd)
-        
+
     def PrintTree(self, Node, Depth):
         for tag, beg, end, parts in Node:
             print ''.ljust(Depth,"\t") + tag + '=' + self.input[beg:end]
@@ -34,18 +34,18 @@ class WakabaParser(object):
         linkString = self.input[beg:end]
         linkHref   = linkString
         trusted = False
-        
+
         for trLink in g.OPT.refControlList:
             if trLink in linkString:
                 trusted = True
-                break 
-            
+                break
+
         if not (trusted):
             linkHref = g.OPT.obfuscator + linkHref
-            
+
         #return '<a href="%s">%s</a>' % (linkHref.replace("&", "&amp;"), linkString.replace("&", "&amp;"))
         return '<a href="%s">%s</a>' % (linkHref, linkString)
-        
+
     def reference(self, tag, beg, end, parts):
         n,i,j,p = parts[0]
         number = self.input[i:j]
@@ -56,8 +56,8 @@ class WakabaParser(object):
         #    return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (pid,number, number, number)
 
     def signature(self, tag, beg, end, parts):
-        valid = {} 
-        invalid = {} 
+        valid = {}
+        invalid = {}
         result = u''
         for nn, i, j, p in parts:
             pid = self.calledBy.isPostOwner(self.input[i:j])
@@ -68,27 +68,27 @@ class WakabaParser(object):
             else: #red label - only valid posts from ANOTHER users
                 pid = self.calledBy.postOwner(self.input[i:j])
                 if pid == -1:
-                    pid = self.input[i:j]                
+                    pid = self.input[i:j]
                 if pid:
                     invalid[self.input[i:j]]=pid
         if invalid:
-            result += '<span class="badsignature">##'    
+            result += '<span class="badsignature">##'
             sep = u''
             for i in invalid:
                 result += sep + '<a href="/%s#i%s">%s</a>' % (invalid[i],i,i)
                 sep = ','
-            result += '</span>'                     
+            result += '</span>'
         if valid:
             if result:
-                result+=","             
+                result+=","
                 result += '<span class="signature">'
             else:
-                result += '<span class="signature">##'        
+                result += '<span class="signature">##'
             sep = u''
             for i in valid:
                 result += sep + '<a href="/%s#i%s">%s</a>' % (valid[i],i,i)
                 sep = ','
-            result += '</span>'           
+            result += '</span>'
         return result
 
     def openTag(self, tag, quantity=1):
@@ -104,7 +104,7 @@ class WakabaParser(object):
         if reret:
             ret = reret.group(1)
         return ret
-    
+
     def closeTag(self,quantity=1):
         for i in range(0,quantity):
             tag = self.tags.pop()
@@ -157,7 +157,7 @@ class WakabaParser(object):
             self.closeTag()
         self.closeTag()
         return u''
-        
+
     def formatInHTML(self, Nodes):
         result = u''
         fP = False
@@ -168,7 +168,7 @@ class WakabaParser(object):
                 result += self.input[beg:end]
             elif tag in self.simple and parts:
                 tagName = tag.split()[0]
-                result += '<%s>%s' %(self.simple[tag], self.formatInHTML(parts)) 
+                result += '<%s>%s' %(self.simple[tag], self.formatInHTML(parts))
                 result += '</' + self.fixCloseTag(self.simple[tagName]) + '>'
             elif tag in self.complex:
                 result += getattr(self,tag)(tag, beg, end, parts)
@@ -238,6 +238,9 @@ class WakabaParser(object):
         result = self.formatInHTML(taglist[1])
         if self.short and self.linesCutted == self.lines:
             self.short = u''
+        #XXX: TODO: very dirty fix
+        if self.short:
+            self.short += '</p>'
         return (self.result,self.short)
 
     def getTagList(self, message):

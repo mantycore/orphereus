@@ -335,7 +335,16 @@ window.onload=function(e)
 }
 
 function click_expands(options){
-  if(!options) options = {max_width: 800, max_height: 600}
+  var default_options = {max_width: 800, max_height: 600}
+  if(!options) options = default_options
+  if(!options.max_width) options.max_width = default_options.max_width
+  if(!options.max_width) options.max_height = default_options.max_height
+  
+  if(options.loading_icon_path) $("<img>").attr("src", options.loading_icon_path)
+  
+  if (options.loading_icon_path){
+    
+  }
   var show_image = function() {
     if (this.src.match(/generic/)) return true;
 
@@ -354,7 +363,9 @@ function click_expands(options){
       this._src = this.src
 
       // loader
-      var loader = $("<span class='img_loading'>loading…</span>")
+      var loader = "<span class='img_loading'>loading…</span>"
+      if (options.loading_icon_path) loader = "<span class='img_loading'><img src='"+options.loading_icon_path+"'>loading…</span>"
+      loader = $("loader")
       loader.css("left", $(this).offset().left)
       $(this).parent().append(loader)
       $(this).load(function() {loader.remove()})
@@ -376,4 +387,5 @@ function click_expands(options){
   }
   $("a img.thumb").click(show_image)
 }
+
 

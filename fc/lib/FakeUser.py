@@ -3,6 +3,8 @@ from fc.lib.base import *
 from fc.lib.miscUtils import *
 from fc.model import UserOptions
 
+#it's not really needed to implement all User interface.
+
 class FakeUser(object):
     def __init__(self):
         self.__valid = False
@@ -32,9 +34,6 @@ class FakeUser(object):
         return self.__user.options.defaultGoto
 
     def isBanned(self):
-        return False
-
-    def isAdmin(self):
         return False
 
     def secid(self):
@@ -67,13 +66,10 @@ class FakeUser(object):
     def template(self, value = False):
         return self.__user.options.template
 
+    def isAdmin(self):
+        return False
+
     def canDeleteAllPosts(self):
-        return False
-
-    def canMakeInvite(self):
-        return False
-
-    def canChangeRights(self):
         return False
 
     def bantime(self):
@@ -84,24 +80,6 @@ class FakeUser(object):
 
     def optionsDump(self):
         return UserOptions.optionsDump(self.options)
-
-    def canChangeSettings(self):
-        return False
-
-    def canManageBoards(self):
-        return False
-
-    def canManageUsers(self):
-        return False
-
-    def canManageExtensions(self):
-        return False
-
-    def canManageMappings(self):
-        return False
-
-    def canRunMaintenance(self):
-        return False
 
     def expandImages(self):
         return self.__user.options.expandImages

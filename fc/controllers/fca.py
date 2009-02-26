@@ -183,7 +183,7 @@ class FcaController(OrphieBaseController):
 
         if act == 'show':
             if id and id > 0:
-                post = Post.query.filter(Post.id==id).first()
+                post = Post.getPost(id)
                 if post and post.parentid == -1:
                     c.post = post
                 else:
@@ -192,7 +192,7 @@ class FcaController(OrphieBaseController):
 
             return self.render('manageMappings')
         elif act in ['del', 'add']:
-            post = Post.query.filter(Post.id==id).first()
+            post = Post.getPost(id)
             if post and post.parentid == -1:
                 if act == 'del' and tagid > 0:
                     if len(post.tags) > 1:

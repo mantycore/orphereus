@@ -57,14 +57,7 @@
     <input value="Search" type="submit" />
 </form>
 
-<script type="text/javascript">
-%if c.userInst.useAjax():
-    popup_posts({ajax: true});
-%endif
-%if c.userInst.expandImages():
-    click_expands({max_width: ${c.userInst.maxExpandWidth()}, max_height: ${c.userInst.maxExpandHeight()}});
-%endif
-</script>
+<%include file="wakaba.jsService.mako" />
 
 <%include file="wakaba.paginator.mako" args="baselink=c.board"/>
 

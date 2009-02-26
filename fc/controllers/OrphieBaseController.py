@@ -180,25 +180,6 @@ class OrphieBaseController(BaseController):
         #Also, changed to /postid#ipostid instead of /parentid#ipostid.
         #Forget it, changed back.
 
-    def deletePicture(self, post, commit = True):
-        pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
-        refcount = self.sqlCount(Post.query.filter(Post.picid==post.picid))
-        if pic and refcount == 1:
-            filePath = os.path.join(g.OPT.uploadPath, pic.path)
-            thumPath = os.path.join(g.OPT.uploadPath, pic.thumpath)
-
-            if os.path.isfile(filePath):
-                os.unlink(filePath)
-
-            ext = pic.extension
-            if not ext.path:
-                if os.path.isfile(thumPath):
-                    os.unlink(thumPath)
-            meta.Session.delete(pic)
-            if commit:
-                meta.Session.commit()
-        return pic
-
     def processDelete(self, postid, fileonly=False, checkOwnage=True, reason = "???", rempPass = False):
         p = self.sqlGet(Post.query, postid)
 
@@ -252,7 +233,10 @@ class OrphieBaseController(BaseController):
                 for post in self.sqlAll(Post.query.filter(Post.parentid==p.id)):
                     self.processDelete(postid=post.id, checkOwnage=False)
 
-            pic = self.deletePicture(p, False)
+            pic = Picture.getPicture(p.picid)
+            if pic:
+                pic.deletePicture(True)
+                pic = True
 
             if fileonly and postOptions.imagelessPost:
                 if pic:

@@ -38,3 +38,7 @@ class Post(object):
                     self.smCached = True
                     break
         return self.smCached
+
+    @staticmethod
+    def pictureRefCount(picid):
+        return Post.query.filter(Post.picid==picid).count()

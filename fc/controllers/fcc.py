@@ -329,34 +329,21 @@ class FccController(OrphieBaseController):
         tags = Tag.getAllByNames(filter[1])
         return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
 
-    def makeThumbnail(self, source, dest, maxSize):
-        sourceImage = Image.open(source)
-        size = sourceImage.size
-        if sourceImage:
-           sourceImage.thumbnail(maxSize,Image.ANTIALIAS)
-           sourceImage.save(dest)
-           return size + sourceImage.size
-        else:
-           return []
-
     def processFile(self, file, thumbSize=250):
         if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
-           # We should check whether we got this file already or not
-           # If we dont have it, we add it
            name = str(long(time.time() * 10**7))
            ext  = file.filename.rsplit('.', 1)[:0:-1]
 
+           # We should check whether we got this file already or not
+           # If we dont have it, we add it
            if ext:
               ext = ext[0].lstrip(os.sep).lower()
-           else:
-              # Panic, no extention found
+           else:    # Panic, no extention found
               ext = ''
               return ''
 
            # Make sure its something we want to have
-
            extParams = Extension.getExtension(ext)
-
            if not extParams or not extParams.enabled:
               return [_(u'Extension "%s" is disallowed') % ext, False]
 
@@ -374,8 +361,9 @@ class FccController(OrphieBaseController):
            md5 = hashlib.md5(localFile.read()).hexdigest()
            file.file.close()
            localFile.close()
+           fileSize = os.stat(localFilePath)[6]
 
-           pic = self.sqlFirst(Picture.query.filter(Picture.md5==md5))
+           pic = Picture.getByMd5(md5)
 
            if pic:
                os.unlink(localFilePath)
@@ -384,29 +372,18 @@ class FccController(OrphieBaseController):
            try:
                 if extParams.type == 'image':
                    thumbFilePath = h.expandName('%ss.%s' % (name, ext))
-                   size = self.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize,thumbSize))
+                   size = Picture.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize, thumbSize))
                 else:
                    if extParams.type == 'image-jpg':
                       thumbFilePath = h.expandName('%ss.jpg' % (name))
-                      size = self.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize,thumbSize))
+                      size = Picture.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize, thumbSize))
                    else:
                      thumbFilePath = extParams.path
                      size = [0, 0, extParams.thwidth, extParams.thheight]
            except:
                 return [_(u"Broken picture. Maybe it is interlaced PNG?"), AngryFileHolder(localFilePath)]
 
-           pic = Picture()
-           pic.path = relativeFilePath
-           pic.thumpath = thumbFilePath
-           pic.width = size[0]
-           pic.height = size[1]
-           pic.thwidth = size[2]
-           pic.thheight = size[3]
-           pic.extid = extParams.id
-           pic.size = os.stat(localFilePath)[6]
-           pic.md5 = md5
-           meta.Session.add(pic)
-           meta.Session.commit()
+           pic = Picture.create(relativeFilePath, thumbFilePath, fileSize, size, extParams.id, md5)
            return [pic, AngryFileHolder(localFilePath, pic)]
         else:
            return False
@@ -709,7 +686,7 @@ class FccController(OrphieBaseController):
            post = self.sqlOne(Post.query.filter(Post.id==url))
 
            if post.picid:
-              pic = self.sqlFirst(meta.Session.query(Picture).filter(Picture.id==post.picid))
+              pic = Picture.getPicture(post.picid)
 
               if pic and pic.width:
                  oekSource = post.id

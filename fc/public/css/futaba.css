@@ -361,3 +361,5 @@ background: #A8A8A8;
     color:#800000;
     border: 2px dashed #EEAA88;
 }
+
+.img_loading img{ margin-top: 4px}

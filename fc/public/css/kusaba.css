@@ -412,3 +412,5 @@ background: #A8A8A8;
     background: #88DD88;
     border: 2px dashed #117743;
 }
+
+.img_loading img{ margin-top: 4px}

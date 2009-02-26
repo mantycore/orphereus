@@ -5,7 +5,7 @@
         <title>
 ${c.title}
 %if c.boardName:
-    &#151; ${c.boardName}
+    &mdash; ${c.boardName}
     %if c.page and isinstance(c.page, int):
       (${c.page})
     %endif

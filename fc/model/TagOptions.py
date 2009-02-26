@@ -27,7 +27,6 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     sa.Column("selfModeration", sa.types.Boolean, nullable=False),
     )
 
-#TODO: rewrite TagOptions
 class TagOptions(object):
     def __init__(self):
         self.sectionId = 0

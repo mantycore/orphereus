@@ -483,6 +483,19 @@ class FccController(OrphieBaseController):
             c.errorText = "Unacceptable combination of tags"
             return self.render('error')
 
+        tempid = request.POST.get('tempid', False)
+        painterMark = False # TODO FIXME : move into parser
+        if tempid:
+           oekaki = Oekaki.get(tempid)
+
+           file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
+           painterMark = u'<span class="postInfo">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
+           if oekaki.source:
+              painterMark += ", source " + self.formatPostReference(oekaki.source)
+           oekaki.delete()
+        else:
+           file = request.POST.get('file',False)
+
         post = Post()
         if remPass:
             post.removemd5 = hashlib.md5(remPass).hexdigest()
@@ -494,23 +507,12 @@ class FccController(OrphieBaseController):
         # VERY-VERY BIG CROCK OF SHIT !!!
         # VERY-VERY BIG CROCK OF SHIT !!!!
 
-        tempid = request.POST.get('tempid', False)
-        painterMark = False # TODO FIXME : move into parser
-        if tempid:
-           oekaki = Oekaki.get(tempid)
-
-           file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
-           painterMark = u'<span class="postInfo">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
-           if oekaki.source:
-              painterMark += ", source " + self.formatPostReference(oekaki.source) #<a href="">&lt;&lt;%s</a>" % oekaki.source
-           oekaki.delete()
-        else:
-           file = request.POST.get('file',False)
         if painterMark:
             if post.messageInfo:
                 post.messageInfo += painterMark
             else:
                 post.messageInfo = painterMark
+
         if post.message:
            if len(post.message) <= 15000:
                parser = WakabaParser(g.OPT.markupFile)

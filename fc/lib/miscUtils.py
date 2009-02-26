@@ -25,7 +25,7 @@ class FieldStorageLike(object):
 
 def filterText(text):
     return text.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace("'",'&#39;') \
-               .replace('"','&quot;').replace('(c)','&copy;').replace('--','&#151;') \
+               .replace('"','&quot;').replace('(c)','&copy;').replace('--','&mdash;') \
                .replace('(tm)','&#153;').replace('...','&#8230;')
 
 def isNumber(n):

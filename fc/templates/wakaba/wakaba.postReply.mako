@@ -26,7 +26,9 @@
                     %if post.sage:
                         <img src="${g.OPT.staticPathWeb}images/sage.png" alt="Sage"/>
                     %endif
-                    <span class="replytitle">${post.title}</span>
+                    %if post.title:
+                        <span class="replytitle">${post.title}</span>
+                    %endif
                 <!-- </label> -->
                      ${h.modTime(post, c.userInst, g.OPT.secureTime)}
 

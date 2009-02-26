@@ -12,7 +12,7 @@
     (<em>${'%.2f' % (thread.file.size / 1024.0)} Kbytes, ${thread.file.width}x${thread.file.height}</em>)
 </span>
 
-<span class="thumbnailmsg"></span><br />
+<br />
 <a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}"
 %if thread.file.extension.newWindow:
     target="_blank"
@@ -47,7 +47,9 @@
         <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>
     %endif
     </span>
-    <span class="filetitle">${thread.title}</span>
+    %if thread.title:
+        <span class="filetitle">${thread.title}</span>
+    %endif
 <!-- </label> -->
 
     <span

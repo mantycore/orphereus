@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.admin.mako" />
+<%inherit file="wakaba.management.mako" />
 
 <form id="mapeditForm" method="post" action="/holySynod/manageMappings/show">
     Enter post ID:<br/>
-    <input type='text' name='postId'>
-    <input type='submit' value='${_('Manage mappings')}'>
-</form>  
+    <input type='text' name='postId' />
+    <input type='submit' value='${_('Manage mappings')}' />
+</form>
 
 %if c.post:
 <hr />
@@ -28,11 +28,11 @@ ${c.post.message}
     </tbody>
 </table>
 
-<form id="mapeditForm" method="post" action="/holySynod/manageMappings/add">
-    <input type='text' name='tagName'>
-    <input type='hidden' name='postId' value='${c.post.id}'>
-    <input type='submit' value='${_('Append')}'>
-</form>  
+<form id="appendForm" method="post" action="/holySynod/manageMappings/add">
+    <input type='text' name='tagName' />
+    <input type='hidden' name='postId' value='${c.post.id}' />
+    <input type='submit' value='${_('Append')}' />
+</form>
 %endif
 
 

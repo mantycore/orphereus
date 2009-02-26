@@ -9,7 +9,7 @@
 
 %if c.boardlist:
 %if g.OPT.spiderTrap:
-<div style="display: none"><a href="/ajax/stat/${c.userInst.secid()}">...</a><a href="/ajax/stat">.</a></div>
+<span style="display: none"><a href="/ajax/stat/${c.userInst.secid()}">...</a><a href="/ajax/stat">.</a></span>
 %endif
     %for section in c.boardlist:
         [

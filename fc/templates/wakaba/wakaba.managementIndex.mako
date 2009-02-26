@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.admin.mako" />
+<%inherit file="wakaba.management.mako" />
 ${_('Current members of Holy Synod')}
 <table class="hlTable">
 <tr>

@@ -4,23 +4,23 @@
     <head>
         <title>${c.title} - ${_('Holy Synode')} - ${c.boardName}</title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <META NAME="ROBOTS" CONTENT="NOARCHIVE">
-        <link rel="stylesheet" type="text/css" href="${g.OPT.staticPathWeb}css/photon.css" title="Photon" />
+        <meta name="robots" content="noarchive" />
+        <link rel="stylesheet" type="text/css" href="${g.OPT.staticPathWeb}css/${c.userInst.style()}.css" title="Photon" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <script type="text/javascript" src="${g.OPT.staticPathWeb}js/ui.js"></script>
-    <script type="text/javascript" src="${g.OPT.staticPathWeb}js/utils.js"></script>
-    <script type="text/javascript" src="${g.OPT.staticPathWeb}js/jquery-1.2.6.js"></script>
+        <script type="text/javascript" src="${g.OPT.staticPathWeb}js/jquery-1.2.6.js"></script>
+        <script type="text/javascript" src="${g.OPT.staticPathWeb}js/utils.js"></script>
+        <script type="text/javascript" src="${g.OPT.staticPathWeb}js/ui.js"></script>
     </head>
     <body>
         %if not c.serviceOut:
             <%include file="wakaba.menu.mako" />
             <%include file="wakaba.logo.mako" />
             <hr />
-            <table cellpadding=5 width="100%">
+            <table cellpadding="5" width="100%">
                 <tbody>
                     <tr>
-                    <td class="adminMenu" width="200px;">
-                        <%include file="wakaba.adminMenu.mako" />
+                    <td class="adminMenu" style="width: 200px;">
+                        <%include file="wakaba.managementMenu.mako" />
                     </td>
                     <td style="vertical-align: top;">
         %endif

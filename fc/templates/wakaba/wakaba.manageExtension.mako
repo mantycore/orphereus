@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.admin.mako" />
+<%inherit file="wakaba.management.mako" />
 
 <div class="postarea">
-    <form id="postform" method="post">
+    <form id="postform" method="post" action="">
         <table>
             <tbody>
                 %if c.message:
@@ -19,21 +19,21 @@
                     <td>
                         <input type="text" name="ext" size="35" value="${c.ext.ext}"
                         %if c.exists:
-                            readonly
+                            readonly="readonly"
                         %endif
                         />
                     </td>
                 </tr>
-                <tr id="trsection">
+                <tr>
                     <td class="postblock">${_('Posting enabled')}</td>
                     <td>
-                        <input type="checkbox" name="enabled" ${c.ext.enabled and "checked" or ""} />
+                        <input type="checkbox" name="enabled" ${c.ext.enabled and 'checked="checked"' or ""} />
                     </td>
                 </tr>
-                <tr id="trsection">
+                <tr>
                     <td class="postblock">${_('Open links in new window')}</td>
                     <td>
-                        <input type="checkbox" name="newWindow" ${c.ext.newWindow and "checked" or ""} />
+                        <input type="checkbox" name="newWindow" ${c.ext.newWindow and 'checked="checked"' or ""} />
                     </td>
                 </tr>
                 <tr>

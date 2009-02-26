@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.admin.mako" />
+<%inherit file="wakaba.management.mako" />
 
 <h3>${_('Obligatory actions')}</h3>
 <table width="100%" class="hlTable">
@@ -9,7 +9,7 @@
 <form method="post" action="service/all">
 <span style="color: red; font-weight: bold;">${_('Run all actions')}</span>
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -19,7 +19,7 @@
 <form method="post" action="service/clearOekaki">
 ${_('Destroy unused oekaki IDs (older than one day)')}
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -29,7 +29,7 @@ ${_('Destroy unused oekaki IDs (older than one day)')}
 <form method="post" action="service/destroyInvites">
 ${_('Destroy unused invites (older than one week)')}
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -39,7 +39,7 @@ ${_('Destroy unused invites (older than one week)')}
 <form method="post" action="service/destroyTrackers">
 ${_('Destroy IP trackers (older than one day)')}
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -49,7 +49,7 @@ ${_('Destroy IP trackers (older than one day)')}
 <form method="post" action="service/banRotate">
 ${_('Remove old bans')}
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -59,7 +59,7 @@ ${_('Remove old bans')}
 <form method="post" action="service/integrityChecks">
 <span style="color: red;">${_('Integrity checks')}</span>
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -75,7 +75,7 @@ ${_('Remove old bans')}
 <form method="post" action="service/updateCaches">
 ${_('Update caches')}
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -85,7 +85,7 @@ ${_('Update caches')}
 <form method="post" action="service/updateStats">
 ${_('Update statistics')}
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -95,7 +95,7 @@ ${_('Update statistics')}
 <form method="post" action="service/removeEmptyTags">
 ${_('Remove empty tags')}
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -105,7 +105,7 @@ ${_('Remove empty tags')}
 <form method="post" action="service/banInactive">
 ${_('Ban ALL users without posts')}
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -115,7 +115,7 @@ ${_('Ban ALL users without posts')}
 <form method="post" action="service/reparse">
 ${_('Reparse posts which can be reparsed')}
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
@@ -125,7 +125,7 @@ ${_('Reparse posts which can be reparsed')}
 <form method="post" action="service/sortUploads">
 ${_('Sort uploads')}
 <br/>
-<input type="submit" value="Launch">
+<input type="submit" value="Launch" />
 </form>
 </td>
 </tr>

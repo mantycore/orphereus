@@ -1,8 +1,26 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.admin.mako" />
+<%inherit file="wakaba.management.mako" />
+
+%if c.showAttemptForm:
+<div class="postarea">
+    <form id="userEditReasonForm" method="post" action="/holySynod/manageUsers/editUserByPost/${c.pid}">
+<table>
+    <tr>
+        <td>Reason:</td>
+        <td><input type='text' name='UIDViewReason'></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td><input type='submit' name='editUser' value='${_('Show user info')}'></td>
+    </tr>
+</table>
+    </form>
+</div>
+
+%else:
 
 <div class="postarea">
-    <form id="postform" method="post">
+    <form id="postform" method="post" action="">
         <table>
             <tbody>
                 %if c.message:
@@ -15,63 +33,63 @@
                     </tr>
                 %endif
                 <tr>
-                    <td colspan=2>${_('Access')}</td>
+                    <td colspan="2">${_('Access')}</td>
                 </tr>
                 <tr>
-                    <td class="postblock"><u>${_('Admin')}<u></td>
+                    <td class="postblock"><u>${_('Admin')}</u></td>
                     <td>
-                        <input type="checkbox" name="isAdmin" ${not c.userInst.canChangeRights() and "disabled" or ""}
-                        ${c.user.options.isAdmin and "checked" or ""} />
+                        <input type="checkbox" name="isAdmin" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.isAdmin and 'checked="checked"' or ""} />
                     </td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Can delete posts')}</td>
                     <td>
-                        <input type="checkbox" name="canDeleteAllPosts" ${not c.userInst.canChangeRights() and "disabled" or ""}
-                        ${c.user.options.canDeleteAllPosts and "checked" or ""} />
+                        <input type="checkbox" name="canDeleteAllPosts" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.canDeleteAllPosts and 'checked="checked"' or ""} />
                     </td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Can make invite')}</td>
                     <td>
-                        <input type="checkbox" name="canMakeInvite" ${not c.userInst.canChangeRights() and "disabled" or ""}
-                        ${c.user.options.canMakeInvite and "checked" or ""} />
+                        <input type="checkbox" name="canMakeInvite" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.canMakeInvite and 'checked="checked"' or ""} />
                     </td>
                 </tr>
 
                 <tr>
                     <td class="postblock">${_('Can change settings')}</td>
                     <td>
-                        <input type="checkbox" name="canChangeSettings" ${not c.userInst.canChangeRights() and "disabled" or ""}
-                        ${c.user.options.canChangeSettings and "checked" or ""} />
+                        <input type="checkbox" name="canChangeSettings" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.canChangeSettings and 'checked="checked"' or ""} />
                     </td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Can manage boards')}</td>
                     <td>
-                        <input type="checkbox" name="canManageBoards" ${not c.userInst.canChangeRights() and "disabled" or ""}
-                        ${c.user.options.canManageBoards and "checked" or ""} />
+                        <input type="checkbox" name="canManageBoards" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.canManageBoards and 'checked="checked"' or ""} />
                     </td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Can manage extensions')}</td>
                     <td>
-                        <input type="checkbox" name="canManageExtensions" ${not c.userInst.canChangeRights() and "disabled" or ""}
-                        ${c.user.options.canManageExtensions and "checked" or ""} />
+                        <input type="checkbox" name="canManageExtensions" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.canManageExtensions and 'checked="checked"' or ""} />
                     </td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Can manage mappings')}</td>
                     <td>
-                        <input type="checkbox" name="canManageMappings" ${not c.userInst.canChangeRights() and "disabled" or ""}
-                        ${c.user.options.canManageMappings and "checked" or ""} />
+                        <input type="checkbox" name="canManageMappings" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.canManageMappings and 'checked="checked"' or ""} />
                     </td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Can run maintenance')}</td>
                     <td>
-                        <input type="checkbox" name="canRunMaintenance" ${not c.userInst.canChangeRights() and "disabled" or ""}
-                        ${c.user.options.canRunMaintenance and "checked" or ""} />
+                        <input type="checkbox" name="canRunMaintenance" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.canRunMaintenance and 'checked="checked"' or ""} />
                     </td>
                 </tr>
                 <tr>
@@ -79,22 +97,22 @@
                     <div style="font-size: 60%; font-style:italic;">(Suppresses by canChangeRights)</div>
                     </td>
                     <td>
-                        <input type="checkbox" name="canManageUsers" ${not c.userInst.canChangeRights() and "disabled" or ""}
-                        ${c.user.options.canManageUsers and "checked" or ""} />
+                        <input type="checkbox" name="canManageUsers" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.canManageUsers and 'checked="checked"' or ""} />
                     </td>
                 </tr>
 
                 <tr>
                     <td class="postblock"><u>${_('CAN CHANGE USER RIGHTS')}</u></td>
                     <td>
-                        <input type="checkbox" name="canChangeRights" ${not c.userInst.canChangeRights() and "disabled" or ""} ${c.user.options.canChangeRights and "checked" or ""} />
+                        <input type="checkbox" name="canChangeRights" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""} ${c.user.options.canChangeRights and 'checked="checked"' or ""} />
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" name="access" value="${_('Update')}" ${not c.userInst.canChangeRights() and "disabled" or ""}/></td>
+                    <td colspan="2"><input type="submit" name="access" value="${_('Update')}" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}/></td>
                 </tr>
                 <tr>
-                    <td colspan=2>${_('Ban')}</td>
+                    <td colspan="2">${_('Ban')}</td>
                 </tr>
                 %if c.user.options.bantime:
                 <tr>
@@ -130,7 +148,7 @@
                 </tr>
                 %endif
                 <tr>
-                    <td colspan=2>${_('Delete user')}</td>
+                    <td colspan="2">${_('Delete user')}</td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Reason')}</td>
@@ -140,11 +158,11 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" name="delete" value="${_('Delete')}" ${not c.userInst.canChangeRights() and "disabled" or ""}></td>
+                    <td colspan="2"><input type="submit" name="delete" value="${_('Delete')}" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""} /></td>
                 </tr>
 
                 <tr>
-                    <td colspan=2>${_('Look up posts')}</td>
+                    <td colspan="2">${_('Look up posts')}</td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Quantity of last posts to view')}</td>
@@ -159,11 +177,11 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" name="lookup" value="${_('Look up')}"></td>
+                    <td colspan="2"><input type="submit" name="lookup" value="${_('Look up')}" /></td>
                 </tr>
 
                 <tr>
-                    <td colspan=2>${_('Change security code')}</td>
+                    <td colspan="2">${_('Change security code')}</td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('New Security Code')}</td>
@@ -180,3 +198,5 @@
         </table>
     </form>
 </div>
+
+%endif

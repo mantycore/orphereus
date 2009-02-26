@@ -17,21 +17,24 @@
 <table>
 <tr>
 <td>
+    <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="tagLine" value="${c.tagLine}" />
+    <input type="hidden" name="curPage" value="${c.curPage}" />
+    <input type="hidden" name="task" value="post" />
+    %if c.boardOptions.images and c.oekaki:
+        <input type="hidden" name="tempid" value="${c.oekaki.tempid}" />
+    %endif
     <table>
         <tbody >
-    <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="tagLine" value="${c.tagLine}">
-    <input type="hidden" name="curPage" value="${c.curPage}">
-    <input type="hidden" name="task" value="post" />
     %if not c.board:
-        <tr id="tremail">
+        <tr id="trsage">
             <td class="postblock">${_('Sage')}</td>
             <td><input type="checkbox" name="sage" /></td>
         </tr>
     %endif
 
     %if c.boardOptions.enableSpoilers:
-        <tr id="tremail">
+        <tr id="trspoiler">
             <td class="postblock">${_('Spoiler')}</td>
             <td><input type="checkbox" name="spoiler" /></td>
         </tr>
@@ -81,7 +84,7 @@
                     %for dest in c.destinations.keys():
                       <option value="${dest}"
                       %if dest == c.userInst.defaultGoto():
-                        selected
+                        selected="selected"
                       %endif
                       >
                       ${_(c.destinations[dest])}
@@ -97,41 +100,40 @@
                 </select>
             </td>
         </tr>
-        %if c.oekaki:
-            <input type="hidden" name="tempid" value="${c.oekaki.tempid}">
-            </form>
-        %elif c.boardOptions.images:
+        %if c.boardOptions.images and not c.oekaki:
             <tr id="trfile">
                 <td class="postblock">${_('File')}</td>
                 <td><input type="file" name="file" size="35" /></td>
             </tr>
-         </form>
-
-        <form method="post" action="/${c.PostAction}/oekakiDraw">
-            <tr id="tremail">
-               <td class="postblock">${_('Oekaki')}</td>
-               <td>
-
-                <select name="oekaki_painter">
-                    <option selected="selected" value="shiNormal">Shi Normal</option>
-                <option value="shiPro">Shi Pro</option>
-                </select>
-                Width:
-                <input type="text" value="300" size="3" name="oekaki_x"/>
-                Height:
-                <input type="text" value="300" size="3" name="oekaki_y"/>
-                <input type="hidden" value="New" name="oekaki_type"/>
-                <input type="submit" value="${_('Draw Oekaki')}"/>
-
-                </td>
-            </tr>
-        </form>
-        %else:
-        </form>
         %endif
-            </tbody>
-            </table>
-            </td>
+    </tbody>
+    </table>
+    </form>
+    %if c.boardOptions.images and not c.oekaki:
+            <form method="post" action="/${c.PostAction}/oekakiDraw">
+                <table style="display: block;">
+                <tr id="troekaki">
+                   <td class="postblock">${_('Oekaki')}</td>
+                   <td>
+
+                    <select name="oekaki_painter">
+                        <option selected="selected" value="shiNormal">Shi Normal</option>
+                    <option value="shiPro">Shi Pro</option>
+                    </select>
+                    Size:
+                    <input type="text" value="300" size="3" name="oekaki_x"/>
+                    &#215;
+                    <input type="text" value="300" size="3" name="oekaki_y"/>
+                    <input type="hidden" value="New" name="oekaki_type"/>
+                    <input type="submit" value="${_('Draw Oekaki')}"/>
+
+                    </td>
+                </tr>
+               </table>
+            </form>
+    %endif
+
+</td>
 
 <td class="reply" style="padding: 10px; vertical-align: top;">
 
@@ -139,7 +141,7 @@
     <%include file="${c.actuator+'wakaba.postFormAdv.mako'}" />
 %endif
 
-<div id="smallFont">
+<div class="smallFont">
 <b>${_('On this board')}
 %if c.tagLine:
 <i>(${c.tagLine})</i>
@@ -178,10 +180,12 @@ ${_('Board-specific rules:')}
 
 </tr>
 </table>
+
 %if c.oekaki:
             <div id="trfile" class="theader">
-                <img src="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" alt="Oekaki preview">
+                <img src="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" alt="Oekaki preview" />
             </div>
 %endif
+
 </div>
 </div>

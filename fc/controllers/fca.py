@@ -36,7 +36,7 @@ class FcaController(OrphieBaseController):
     def index(self):
         c.boardName = 'Index'
         c.admins = User.getAdmins()
-        return self.render('adminIndex')
+        return self.render('managementIndex')
 
     def manageSettings(self):
         c.boardName = 'Settings management'
@@ -68,7 +68,7 @@ class FcaController(OrphieBaseController):
         tpp = 50
         self.paginate(count, page, tpp)
         c.logs = LogEntry.getRange(page*tpp, (page+1)*tpp)
-        return self.render('adminLogs')
+        return self.render('managementLogs')
 
     def invitePage(self):
         if not self.userInst.canMakeInvite():
@@ -91,7 +91,7 @@ class FcaController(OrphieBaseController):
 
             toLog(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, reason))
             c.inviteCode = invite.invite
-        return self.render('newInvite')
+        return self.render('manageInvites')
 
     def manageExtensions(self):
         if not self.userInst.canManageExtensions():
@@ -156,7 +156,7 @@ class FcaController(OrphieBaseController):
                     c.exists = False
                 else:
                     c.message = _("Can't delete extension. Uploaded files with this extension exists.")
-        return self.render('editExtension')
+        return self.render('manageExtension')
 
     def manageMappings(self, act, id, tagid):
         if not self.userInst.canManageMappings():
@@ -190,7 +190,7 @@ class FcaController(OrphieBaseController):
                     c.errorText = _("This is not op-post")
                     return self.render('error')
 
-            return self.render('adminMappings')
+            return self.render('manageMappings')
         elif act in ['del', 'add']:
             post = Post.query.filter(Post.id==id).first()
             if post and post.parentid == -1:
@@ -313,7 +313,7 @@ class FcaController(OrphieBaseController):
                     c.message = _("Board %s already exists!") % newtag
             else:
                 c.message = _("Board name should be non-empty and should contain only valid symbols")
-        return self.render('editBoard')
+        return self.render('manageBoard')
 
     def manageUsers(self):
         if not self.userInst.canManageUsers():
@@ -341,7 +341,8 @@ class FcaController(OrphieBaseController):
 
         c.boardName = 'User edit attemption'
         c.pid = pid
-        return self.render('editUserAttempt')
+        c.showAttemptForm = True
+        return self.render('manageUser')
 
     def editUserByPost(self, pid):
         if not self.userInst.canManageUsers():
@@ -351,7 +352,8 @@ class FcaController(OrphieBaseController):
         post = Post.query.options(eagerload('file')).filter(Post.id==pid).order_by(Post.id.asc()).first()
         if post:
             reason = request.POST.get("UIDViewReason", 'No reason given!')
-            toLog(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '<a href='/%s#i%s'>%s</a>'. Reason: %s" % (post.uidNumber, post.parentid > 0 and post.parentid or post.id, pid, pid, reason))
+            #toLog(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '<a href='/%s#i%s'>%s</a>'. Reason: %s" % (post.uidNumber, post.parentid > 0 and post.parentid or post.id, pid, pid, reason))
+            toLog(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '%s'. Reason: %s" % (post.uidNumber, post.id, reason))
             return redirect_to('/holySynod/manageUsers/edit/%s' % post.uidNumber)
         else:
             c.errorText = _("Post not found")
@@ -460,7 +462,7 @@ class FcaController(OrphieBaseController):
                         c.message = _('You should specify deletion reason')
                 else:
                     c.message = "You haven't rights to delete user"
-            return self.render('editUser')
+            return self.render('manageUser')
         else:
             c.errorText = _('No such user exists.')
             return self.render('error')

@@ -24,7 +24,9 @@
                     %if pt[0].sage:
                         <img src='${g.OPT.staticPathWeb}images/sage.png'>
                     %endif
-                    <span class="replytitle">${pt[0].title}</span>
+                    %if pt[0].title:
+                        <span class="replytitle">${pt[0].title}</span>
+                    %endif
                     ${pt[0].date}
                 </label>
                 <span class="reflink">

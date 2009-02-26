@@ -5,7 +5,7 @@
         <title>${c.title} - ${_('Maintenance panel')} - ${c.boardName}</title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <link rel="stylesheet" type="text/css" href="/css/photon.css" title="Photon" />
-		<script type="text/javascript" src="/ui.js"></script>
+    <script type="text/javascript" src="/ui.js"></script>
     </head>
     <body>
         <%include file="wakaba.menu.mako" />
@@ -15,12 +15,12 @@
             <tbody>
                 <tr>
                 <td class="adminMenu" width="200px;">
-                    <%include file="wakaba.adminMenu.mako" />
+                    <%include file="wakaba.managementMenu.mako" />
                 </td>
                 <td>
                     ${self.body()}
                 </td>
-                </tr>        
+                </tr>
             </tbody>
         </table>
         <%include file="wakaba.menu.mako" />

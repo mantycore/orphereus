@@ -23,8 +23,11 @@
         %endfor
     </div>
 %else:
+<div id="hiddenThread${thread.id}" >
+<!--    <img style="vertical-align:center;" src="${g.OPT.staticPathWeb}images/hidden.png" alt="Hidden"/> -->
     ${_('<b>Hidden</b> thread <a href=/%s>#%s</a> (%s replies) posted in %s') % (thread.id, thread.id, thread.replyCount, thread.tagLine)}
     [<a href="/ajax/showThread/${thread.id}/${c.tagLine}">${_('Unhide')}</a>]
+</div>
 %endif
     <br clear="left" />
     <hr />

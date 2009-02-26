@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-<div id="smallFont">
+<div class="smallFont">
 <p><b>Маленькое объявление</b></p>
 <p>jabber-сборища, результатом деятельности которых и стал этот чан, продолжают существовать.
 Новый адрес: <b>aconf@conference.jabber.ru</b>, пароль - <b>oblavobla</b>. 

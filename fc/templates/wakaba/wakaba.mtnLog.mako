@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.admin.mako" />
+<%inherit file="wakaba.management.mako" />
 <table width="100%" class="hlTable">
     <tr>
         <td>Type</td>

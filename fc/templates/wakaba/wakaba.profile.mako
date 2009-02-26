@@ -20,7 +20,7 @@
                 </tr>
                 <tr id="truid">
                     <td class="postblock">${_('UID')}</td>
-                    <td><input value="${c.userInst.uid}" readonly /></td>
+                    <td><input value="${c.userInst.uid}" readonly="readonly" /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Current Security Code')}</td>
@@ -53,19 +53,19 @@
                 </tr>
                 <tr>
                     <td class="postblock">${_('Mix old threads into boards')}</td>
-                    <td><input type="checkbox" name="mixOldThreads" ${c.userInst.mixOldThreads() and "checked" or ""} /></td>
+                    <td><input type="checkbox" name="mixOldThreads" ${c.userInst.mixOldThreads() and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Hide long comments')}</td>
-                    <td><input type="checkbox" name="hideLongComments" ${c.userInst.hideLongComments() and "checked" or ""} /></td>
+                    <td><input type="checkbox" name="hideLongComments" ${c.userInst.hideLongComments() and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Use AJAX hints')}</td>
-                    <td><input type="checkbox" name="useAjax" ${c.userInst.useAjax() and "checked" or ""} /></td>
+                    <td><input type="checkbox" name="useAjax" ${c.userInst.useAjax() and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Expand images in threads')}</td>
-                    <td><input type="checkbox" name="expandImages" ${c.userInst.expandImages() and "checked" or ""} /></td>
+                    <td><input type="checkbox" name="expandImages" ${c.userInst.expandImages() and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Max size to expand')}
@@ -81,14 +81,14 @@
                     <td class="postblock">${_('Home filter exclusions')}</td>
                     <td><input name="homeExclude" value="${c.homeExclude}" /></td>
                 </tr>
-                <tr id="trstyle">
+                <tr id="trgoto">
                     <td class="postblock">${_('By default Go To')}</td>
                     <td>
                     <select name="defaultGoto" style="width: 170px;">
                             %for dest in c.destinations.keys():
                                <option value="${dest}"
                                  %if dest == c.userInst.defaultGoto():
-                                    selected
+                                    selected="selected"
                                  %endif
                                >
 
@@ -105,7 +105,7 @@
                             %for t in c.templates:
                                <option value="${t}"
                                  %if t == c.userInst.template():
-                                    selected
+                                    selected="selected"
                                  %endif
                                >
 
@@ -121,7 +121,7 @@
                             %for style in c.styles:
                                <option value="${style}"
                                  %if style == c.userInst.style():
-                                    selected
+                                    selected="selected"
                                  %endif
                                >
 
@@ -138,7 +138,7 @@
                 </tr>
                 %for f in c.userInst.filters:
                 <tr id="filterId${f.id}">
-                    <td class="postblock">[<a href="" onclick="userFiltersEdit(event,${f.id});">Edit</a>] [<a href='' onClick="userFiltersDelete(event,${f.id});">Del</a>]</td>
+                    <td class="postblock">[<a href="" onclick="userFiltersEdit(event,${f.id});">Edit</a>] [<a href="" onclick="userFiltersDelete(event,${f.id});">Del</a>]</td>
                     <td><input id='filterId${f.id}Input' name='filterId${f.id}' value='${f.filter}' /></td>
                 </tr>
                 %endfor

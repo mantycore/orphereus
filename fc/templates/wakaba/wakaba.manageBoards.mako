@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.admin.mako" />
+<%inherit file="wakaba.management.mako" />
 
 <a href="/holySynod/manageBoards/edit">${_('Create new board')}</a>
 <hr />

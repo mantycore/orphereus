@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.admin.mako" />
+<%inherit file="wakaba.management.mako" />
 
 <div class="postarea">
-    <form id="postform" method="post">
+    <form id="postform" method="post" action="">
         <table>
             <tbody>
                 %if c.message:
@@ -22,14 +22,14 @@
                         <select name="${g.settingsMap[s].name}">
                                <option value="true"
                                  %if g.settingsMap[s].value == "true":
-                                    selected
+                                    selected="selected"
                                  %endif
                                >
                                True
                               </option>
                                <option value="false"
                                  %if g.settingsMap[s].value != "true":
-                                    selected
+                                    selected="selected"
                                  %endif
                                >
                                False
@@ -45,9 +45,9 @@
                     <td colspan='2'>
                         <input type="submit" name="update" value="${_('Update')}"
                           %if not c.userInst.canChangeSettings():
-                            disabled
+                            disabled="disabled"
                           %endif
-                        >
+                        />
                     </td>
                 </tr>
             </tbody>

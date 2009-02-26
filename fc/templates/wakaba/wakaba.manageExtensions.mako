@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.admin.mako" />
+<%inherit file="wakaba.management.mako" />
 
-<form id="postform" method="post">
+<form id="postform" method="post" action="">
 %if not c.showCount:
 <input type="submit" value="${_('Show statistics')}" name="showCount"/>
 %endif

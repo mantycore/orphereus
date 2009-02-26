@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-<%inherit file="wakaba.admin.mako" />
+<%inherit file="wakaba.management.mako" />
 
 <div class="postarea">
     <form id="postform" method="post" action="/holySynod/manageUsers">
@@ -13,7 +13,8 @@
                 <tr>
                     <td class="postblock">${_('UID or uidNumber')}</td>
                     <td>
-                        <input type="text" name="uid" size="35" value="" /><input type="submit" value="${_('View')}">
+                        <input type="text" name="uid" size="35" value="" />
+                        <input type="submit" value="${_('View')}" />
                     </td>
                 </tr>
             </tbody>

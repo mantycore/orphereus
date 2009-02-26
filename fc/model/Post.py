@@ -31,9 +31,10 @@ t_posts = sa.Table("posts", meta.metadata,
 #TODO: rewrite Post
 class Post(object):
     def selfModeratable(self):
-        ret = False
-        for tag in self.tags:
-            if tag.options and tag.options.selfModeration:
-                ret = True
-                break
-        return ret
+        if getattr(self, 'smCached', None) == None:
+            self.smCached = False
+            for tag in self.tags:
+                if tag.options and tag.options.selfModeration:
+                    self.smCached = True
+                    break
+        return self.smCached

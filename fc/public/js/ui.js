@@ -29,7 +29,7 @@ function popup_posts(options){
   }
   var load_on = function(e){
     e.attr('old_html',e.html())
-    e.html("loading...")
+    e.html("Loading...")
   }
   var load_off = function(e){
     e.html(e.attr('old_html'))

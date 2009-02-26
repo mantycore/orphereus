@@ -364,7 +364,7 @@ function click_expands(options){
 
       // loader
       var loader = $("<span class='img_loading'>Loading…</span>")
-      if (options.loading_icon_path) loader.html("<img style='border: none;' src='"+options.loading_icon_path+"'>&nbsp;Loading…")
+      if (options.loading_icon_path) loader.html("<img src='"+options.loading_icon_path+"'>&nbsp;Loading…")
       loader.css("left", $(this).offset().left)
       $(this).parent().append(loader)
       $(this).load(function() {loader.remove()})

@@ -18,11 +18,11 @@ ${_('You are banned for %s days for following reason:<br/>%s') % (c.userInst.ban
 ${_('Your UID Number: %d') % (c.userInst.uidNumber)}
 <br/>
 Your UID:<br/>
-<input type="text" value="${_('%s') % (c.userInst.uid)}">
+<input type="text" value="${_('%s') % (c.userInst.uid)}" />
 <br/>
 
 <form action="/logout">
-<p><input type="submit" value="${_('Logout')}"></p>
+<p><input type="submit" value="${_('Logout')}" /></p>
 </form>
 
 </td>

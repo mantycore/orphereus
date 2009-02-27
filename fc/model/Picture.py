@@ -15,8 +15,8 @@ t_piclist = sa.Table("piclist", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("path"     , sa.types.String(255), nullable=False),
     sa.Column("thumpath" , sa.types.String(255), nullable=False),
-    sa.Column("width"    , sa.types.Integer, nullable=False),
-    sa.Column("height"   , sa.types.Integer, nullable=False),
+    sa.Column("width"    , sa.types.Integer, nullable=True),
+    sa.Column("height"   , sa.types.Integer, nullable=True),
     sa.Column("thwidth"  , sa.types.Integer, nullable=False),
     sa.Column("thheight" , sa.types.Integer, nullable=False),
     sa.Column("size"     , sa.types.Integer, nullable=False),
@@ -37,10 +37,11 @@ class Picture(object):
        self.md5 = md5
 
     @staticmethod
-    def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5):
+    def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, commit = False):
         pic = Picture(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5)
-        meta.Session.add(pic)
-        meta.Session.commit()
+        if commit:
+            meta.Session.add(pic)
+            meta.Session.commit()
         return pic
 
     @staticmethod

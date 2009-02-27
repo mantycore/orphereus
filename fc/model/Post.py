@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy import orm
 
-from fc.model import meta
+from fc.model import meta, Picture
 import datetime
 
 import logging
@@ -30,6 +30,63 @@ t_posts = sa.Table("posts", meta.metadata,
 
 #TODO: rewrite Post
 class Post(object):
+    def __init__(self):
+        self.date = datetime.datetime.now()
+
+    @staticmethod
+    def create(postParams):
+        post = Post()
+        post.message = postParams.message
+        post.messageShort = postParams.messageShort
+        post.messageRaw = postParams.messageRaw
+        post.messageInfo = postParams.messageInfo
+        post.title = postParams.title
+        post.spoiler = postParams.spoiler
+        post.uidNumber = postParams.uidNumber
+        if postParams.removemd5:
+            post.removemd5 = postParams.removemd5
+
+        thread = postParams.thread
+        if thread:
+            post.parentid = thread.id
+            thread.replyCount += 1
+            post.sage = postParams.postSage
+            if not postParams.postSage:
+                thread.bumpDate = datetime.datetime.now()
+        else:
+            post.parentid = -1
+            post.replyCount = 0
+            post.bumpDate = datetime.datetime.now()
+            post.tags = postParams.tags
+
+        if not postParams.existentPic:
+            picInfo = postParams.picInfo
+            if picInfo:
+                post.file = Picture.create(picInfo.relativeFilePath,
+                                     picInfo.thumbFilePath,
+                                     picInfo.fileSize,
+                                     picInfo.sizes,
+                                     picInfo.extId,
+                                     picInfo.md5)
+        else:
+            post.picid = existentPic.id
+
+        meta.Session.add(post)
+        meta.Session.commit()
+
+    def incrementStats(self):
+        taglist = self.tags
+
+        newThread = True
+        if not taglist:
+            taglist = self.parentPost.tags
+            newThread = False
+
+        for tag in taglist:
+            tag.replyCount += 1
+            if newThread:
+                tag.threadCount += 1
+
     def selfModeratable(self):
         if getattr(self, 'smCached', None) == None:
             self.smCached = False
@@ -41,8 +98,12 @@ class Post(object):
 
     @staticmethod
     def getPost(id):
-        return Post.query.filter(Post.id==id).first()
+        return Post.query.filter(Post.id==id).one()
 
     @staticmethod
     def pictureRefCount(picid):
         return Post.query.filter(Post.picid==picid).count()
+
+    @staticmethod
+    def getByUid(uidNumber):
+        return Post.query.filter(Post.uidNumber == uidNumber).all()

@@ -15,6 +15,7 @@ class CaptchaGenerator(ImageCaptcha):
         self.word = word
         self.font = font
         super(CaptchaGenerator, self).__init__(*args, **kwargs)
+
     def getLayers(self):
         word = self.word
         ff = Text.FontFactory(26, self.font)
@@ -59,10 +60,11 @@ class Captcha(object):
         meta.Session.delete(self)
         meta.Session.commit()
 
-    def test(self, text):
+    def test(self, text, removeOnlyIncorrect = False):
         ret = (self.text == text)
-        meta.Session.delete(self)
-        meta.Session.commit()
+        if not ret or (ret and not removeOnlyIncorrect):
+            meta.Session.delete(self)
+            meta.Session.commit()
         return ret
 
     @staticmethod

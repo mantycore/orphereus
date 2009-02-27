@@ -177,3 +177,21 @@ class Tag(object):
                     ret.totalTagsPosts += bc.postsCount
         return ret
 
+    @staticmethod
+    def checkForConfilcts(tags):
+        disabledTagsLine = meta.globj.settingsMap['disabledTags'].value
+        disabledTags = disabledTagsLine.lower().split(',')
+        maxTagLen = int(meta.globj.settingsMap['maxTagLen'].value)
+        tagsPermOk = True
+        problemTags = []
+        for tag in tags:
+            lengthNeedsToBeChecked = ((not tag.options) or (tag.options and not tag.options.persistent))
+            tagLengthProblem = lengthNeedsToBeChecked and len(tag.tag) > maxTagLen
+            tagDisabled = tag.tag.lower() in disabledTags
+            if (tagLengthProblem or tagDisabled):
+                tagsPermOk = False
+                errorMsg = N_("Too long. Maximal length: %s" % maxTagLen)
+                if tagDisabled:
+                    errorMsg = N_("Disabled")
+                problemTags.append(tag.tag + " [%s]" % errorMsg)
+        return (tagsPermOk, problemTags)

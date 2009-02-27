@@ -77,7 +77,7 @@ def make_map():
     map.connect('/ajax/getThreadIds/:post', controller='fcajax', action='getThreadIds', requirements=dict(post='\d+'))
     map.connect('/ajax/getUserSettings', controller='fcajax', action='getUserSettings')
     map.connect('/ajax/getUploadsPath', controller='fcajax', action='getUploadsPath')
-
+    map.connect('/ajax/checkCaptcha/:id/:text', controller='fcajax', action='checkCaptcha', text='', requirements=dict(id='\d+'))
     # Threads
     map.connect('/:post', controller='fcc', action='PostReply', conditions=dict(method=['POST']), requirements=dict(post='\d+'))
     map.connect('/:board/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))

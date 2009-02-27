@@ -58,7 +58,7 @@ class FccController(OrphieBaseController):
     def buildFilter(self, url):
         def buildMyPostsFilter():
             list  = []
-            posts = self.sqlAll(Post.query.filter(Post.uidNumber==self.userInst.uidNumber))
+            posts = Post.getByUid(self.userInst.uidNumber) #self.sqlAll(Post.query.filter(Post.uidNumber==self.userInst.uidNumber))
 
             for p in posts:
                 if p.parentid == -1 and not p.id in list:
@@ -334,18 +334,20 @@ class FccController(OrphieBaseController):
            name = str(long(time.time() * 10**7))
            ext  = file.filename.rsplit('.', 1)[:0:-1]
 
+           #ret: [FileHolder, PicInfo, Picture, Error]
+
            # We should check whether we got this file already or not
            # If we dont have it, we add it
            if ext:
               ext = ext[0].lstrip(os.sep).lower()
            else:    # Panic, no extention found
               ext = ''
-              return ''
+              return [False, False, False, _("Can't post files without extension")]
 
            # Make sure its something we want to have
            extParams = Extension.getExtension(ext)
            if not extParams or not extParams.enabled:
-              return [_(u'Extension "%s" is disallowed') % ext, False]
+              return [False, False, False, _(u'Extension "%s" is disallowed') % ext]
 
            relativeFilePath = h.expandName('%s.%s' % (name, ext))
            localFilePath = os.path.join(g.OPT.uploadPath, relativeFilePath)
@@ -363,39 +365,51 @@ class FccController(OrphieBaseController):
            localFile.close()
            fileSize = os.stat(localFilePath)[6]
 
-           pic = Picture.getByMd5(md5)
+           picInfo = empty()
+           picInfo.localFilePath = localFilePath
+           picInfo.relativeFilePath = relativeFilePath
+           picInfo.fileSize = fileSize
+           picInfo.md5 = md5
+           picInfo.sizes = []
+           picInfo.extId = extParams.id
 
+           pic = Picture.getByMd5(md5)
            if pic:
                os.unlink(localFilePath)
-               return [pic, False]
+               picInfo.sizes = [pic.width, pic.height, pic.thwidth, pic.thheight]
+               picInfo.thumbFilePath = pic.thumpath
+               picInfo.relativeFilePath = pic.path
+               picInfo.localFilePath = os.path.join(g.OPT.uploadPath, picInfo.relativeFilePath)
+               return [False, picInfo, pic, False]
 
            try:
+                thumbFilePath = False
                 if extParams.type == 'image':
                    thumbFilePath = h.expandName('%ss.%s' % (name, ext))
-                   size = Picture.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize, thumbSize))
+                   picInfo.sizes = Picture.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize, thumbSize))
                 else:
                    if extParams.type == 'image-jpg':
                       thumbFilePath = h.expandName('%ss.jpg' % (name))
-                      size = Picture.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize, thumbSize))
+                      picInfo.sizes = Picture.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize, thumbSize))
                    else:
                      thumbFilePath = extParams.path
-                     size = [0, 0, extParams.thwidth, extParams.thheight]
+                     picInfo.sizes = [None, None, extParams.thwidth, extParams.thheight]
+                picInfo.thumbFilePath = thumbFilePath
            except:
-                return [_(u"Broken picture. Maybe it is interlaced PNG?"), AngryFileHolder(localFilePath)]
+                os.unlink(localFilePath)
+                return [False, False, False, _(u"Broken picture. Maybe it is interlaced PNG?")]
 
-           pic = Picture.create(relativeFilePath, thumbFilePath, fileSize, size, extParams.id, md5)
-           return [pic, AngryFileHolder(localFilePath, pic)]
+           return [AngryFileHolder(localFilePath), picInfo, False, False]
         else:
            return False
 
     def processPost(self, postid=0, board=u''):
-        fileHolder = False
-
         if not self.currentUserCanPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')
 
-        remPass = False
+        fileHolder = False
+        postRemovemd5 = None
         if self.userInst.Anonymous:
             captchaOk = False
             anonCaptId = session.get('anonCaptId', False)
@@ -409,17 +423,20 @@ class FccController(OrphieBaseController):
                 return self.render('error')
 
             remPass = request.POST.get('remPass', False)
+            if remPass:
+                postRemovemd5 = hashlib.md5(remPass).hexdigest()
 
+        thread = None
+        tags = []
         if postid:
-            thePost = self.sqlFirst(Post.query.filter(Post.id==postid))
+            thePost = Post.getPost(postid)
 
             if not thePost:
                 c.errorText = _("Can't post into non-existent thread")
                 return self.render('error')
 
-            # ???
             if thePost.parentid != -1:
-                thread = self.sqlOne(Post.query.filter(Post.id==thePost.parentid))
+                thread = thePost.parentPost #Post.getPost(thePost.parentid)
             else:
                thread = thePost
             tags = thread.tags
@@ -431,28 +448,13 @@ class FccController(OrphieBaseController):
                 return self.render('error')
 
             maxTagsCount = int(g.settingsMap['maxTagsCount'].value)
-            maxTagLen = int(g.settingsMap['maxTagLen'].value)
-            disabledTagsLine = g.settingsMap['disabledTags'].value
-
             if len(tags) > maxTagsCount:
                 c.errorText = _("Too many tags. Maximum allowed: %s") % (maxTagsCount)
                 return self.render('error')
 
-            tagsPermOk = True
-            problemTags = []
-            disabledTags = disabledTagsLine.lower().split(',')
-            for tag in tags:
-                tagLengthProblem = ((not tag.options) or (tag.options and not tag.options.persistent)) and len(tag.tag)>maxTagLen
-                tagDisabled = tag.tag.lower() in disabledTags
-                if (tagLengthProblem or tagDisabled):
-                    tagsPermOk = False
-                    errorMsg = _("Too long. Maximal length: %s" % maxTagLen)
-                    if tagDisabled:
-                        errorMsg = _("Disabled")
-                    problemTags.append(tag.tag + " [%s]" % errorMsg)
-
-            if not tagsPermOk:
-                c.errorText = _("Tags restrictions violations:<br/> %s") % ('<br/>'.join(problemTags))
+            permCheckRes = Tag.checkForConfilcts(tags)
+            if not permCheckRes[0]:
+                c.errorText = _("Tags restrictions violations:<br/> %s") % ('<br/>'.join(permCheckRes[1]))
                 return self.render('error')
 
         options = Tag.conjunctedOptionsDescript(tags)
@@ -460,146 +462,130 @@ class FccController(OrphieBaseController):
             c.errorText = "Unacceptable combination of tags"
             return self.render('error')
 
+        postMessageInfo = None
         tempid = request.POST.get('tempid', False)
-        painterMark = False # TODO FIXME : move into parser
-        if tempid:
+        if tempid: # TODO FIXME : move into parser
            oekaki = Oekaki.get(tempid)
 
            file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
-           painterMark = u'<span class="postInfo">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
+           postMessageInfo = u'<span class="postInfo">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
            if oekaki.source:
-              painterMark += ", source " + self.formatPostReference(oekaki.source)
+              postMessageInfo += ", source " + self.formatPostReference(oekaki.source)
            oekaki.delete()
         else:
-           file = request.POST.get('file',False)
-
-        post = Post()
-        if remPass:
-            post.removemd5 = hashlib.md5(remPass).hexdigest()
-        post.parentid = 0
+           file = request.POST.get('file', False)
 
         # VERY-VERY BIG CROCK OF SHIT !!!
         # VERY-VERY BIG CROCK OF SHIT !!!
-        post.message = filterText(request.POST.get('message', u'')).replace('&gt;','>') #XXX: TODO: this must be fixed in parser
+        postMessage = filterText(request.POST.get('message', u'')).replace('&gt;','>') #XXX: TODO: this must be fixed in parser
         # VERY-VERY BIG CROCK OF SHIT !!!
         # VERY-VERY BIG CROCK OF SHIT !!!!
 
-        if painterMark:
-            if post.messageInfo:
-                post.messageInfo += painterMark
-            else:
-                post.messageInfo = painterMark
-
-        if post.message:
-           if len(post.message) <= 15000:
+        postMessageShort = None
+        postMessageRaw = None
+        if postMessage:
+           if len(postMessage) <= 15000:
                parser = WakabaParser(g.OPT.markupFile)
                maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
                cutSymbols = int(g.settingsMap["cutSymbols"].value)
-               parsedMessage = parser.parseWakaba(post.message,self,lines=maxLinesInPost,maxLen=cutSymbols)
+               parsedMessage = parser.parseWakaba(postMessage, self, lines=maxLinesInPost, maxLen=cutSymbols)
                fullMessage = parsedMessage[0]
+               postMessageShort = parsedMessage[1]
 
-               post.messageShort = parsedMessage[1]
                #FIXME: not best solution
                #if not fullMessage[5:].startswith(post.message):
-               if (not post.message in fullMessage) or post.messageShort:
-                   post.messageRaw = post.message
+               if (not postMessage in fullMessage) or postMessageShort:
+                   postMessageRaw = postMessage
 
-               post.message = fullMessage
+               postMessage = fullMessage
            else:
                c.errorText = _('Message is too long')
                return self.render('error')
 
-        post.title = filterText(request.POST.get('title', u''))
-        post.date = datetime.datetime.now()
+        postTitle = filterText(request.POST.get('title', u''))
 
         fileDescriptors = self.processFile(file, options.thumbSize)
-        pic = False
+        fileHolder = False
+        existentPic = False
+        picInfo = False
         if fileDescriptors:
-            pic = fileDescriptors[0]
-            fileHolder = fileDescriptors[1] # Object for file auto-removing
+            fileHolder = fileDescriptors[0] # Object for file auto-removing
+            picInfo = fileDescriptors[1]
+            existentPic = fileDescriptors[2]
+            errorMessage = fileDescriptors[3]
+            if errorMessage:
+                c.errorText = errorMessage
+                return self.render('error')
 
-        if pic:
-            if isinstance(pic, basestring) or isinstance(pic, unicode):
-                c.errorText = pic
-                return self.render('error')
-            if pic.size > options.maxFileSize:
-                c.errorText = _("File size (%d) exceeds the limit (%d)") % (pic.size, options.maxFileSize)
-                return self.render('error')
-            if pic.height and (pic.height < options.minPicSize or pic.width < options.minPicSize):
-                c.errorText = _("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize)
-                return self.render('error')
+        if picInfo:
             if not options.images:
                 c.errorText = _("Files are not allowed on this board")
                 return self.render('error')
-            post.picid = pic.id
+            if picInfo.fileSize > options.maxFileSize:
+                c.errorText = _("File size (%d) exceeds the limit (%d)") % (picInfo.fileSize, options.maxFileSize)
+                return self.render('error')
+            if picInfo.sizes and picInfo.sizes[0] and picInfo.sizes[1] and (picInfo.sizes[0] < options.minPicSize or picInfo.sizes[1] < options.minPicSize):
+                c.errorText = _("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize)
+                return self.render('error')
 
             try:
-                if fileHolder:
-                    audio = EasyID3(fileHolder.path())
-                    trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
-                    taglist = sorted(audio.keys())
-                    taglist.reverse()
-                    tagsToShow = taglist
-                    for tag in tagsToShow:
-                        #log.debug(tag)
-                        #log.debug(audio[tag])
-                        value = audio[tag]
-                        if value and isinstance(value, list) and tag in id3FieldsNames.keys():
-                            value = ' '.join(value)
-                            trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
-                    if not post.messageInfo:
-                        post.messageInfo = trackInfo
-                    else:
-                        post.messageInfo += '<br/>%s' % trackInfo
+                audio = EasyID3(picInfo.localFilePath)
+                trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
+                taglist = sorted(audio.keys())
+                taglist.reverse()
+                tagsToShow = taglist
+                for tag in tagsToShow:
+                    #log.debug(tag)
+                    #log.debug(audio[tag])
+                    value = audio[tag]
+                    if value and isinstance(value, list) and tag in id3FieldsNames.keys():
+                        value = ' '.join(value)
+                        trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
+                if not postMessageInfo:
+                    postMessageInfo = trackInfo
+                else:
+                    postMessageInfo += '<br/>%s' % trackInfo
             except:
                 pass
-            #try:
-            #except:
-            #    pass
 
-        post.uidNumber = self.userInst.uidNumber
-
-        if not post.message and not post.picid and not post.messageInfo:
+        if not postMessage and not picInfo and not postMessageInfo:
             c.errorText = _("At least message or file should be specified")
             return self.render('error')
 
+        postSpoiler = False
         if options.enableSpoilers:
-            post.spoiler = request.POST.get('spoiler', False)
+            postSpoiler = request.POST.get('spoiler', False)
 
+        postSage = request.POST.get('sage', False)
         if postid:
-            if not post.picid and not options.imagelessPost:
+            if not picInfo and not options.imagelessPost:
                 c.errorText = _("Replies without image are not allowed")
                 return self.render('error')
-
-            post.parentid = thread.id
-            thread.replyCount += 1
-            post.sage = request.POST.get('sage', False)
-            if not post.sage:
-                thread.bumpDate = datetime.datetime.now()
         else:
-            if not post.picid and not options.imagelessThread:
+            if not picInfo and not options.imagelessThread:
                 c.errorText = _("Threads without image are not allowed")
                 return self.render('error')
-            post.parentid = -1
-            post.replyCount = 0
-            post.bumpDate = datetime.datetime.now()
-            post.tags = tags
 
-        newThread = True
-        taglist = post.tags
-        if not taglist:
-            taglist = thread.tags
-            newThread = False
+        postParams = empty()
+        postParams.message = postMessage
+        postParams.messageShort = postMessageShort
+        postParams.messageRaw = postMessageRaw
+        postParams.messageInfo = postMessageInfo
+        postParams.title = postTitle
+        postParams.spoiler = postSpoiler
+        postParams.uidNumber = self.userInst.uidNumber
+        postParams.removemd5 = postRemovemd5
+        postParams.postSage = postSage
+        #postParams.replyTo = postid
+        postParams.thread = thread
+        postParams.tags = tags
+        postParams.existentPic = existentPic
+        postParams.picInfo = picInfo
 
-        for tag in taglist:
-            tag.replyCount += 1
-            if newThread:
-                tag.threadCount += 1
+        post = Post.create(postParams)
 
         if fileHolder:
             fileHolder.disableDeletion()
-        meta.Session.add(post)
-        meta.Session.commit()
         self.gotoDestination(post, postid)
 
     def gotoDestination(self, post, postid):

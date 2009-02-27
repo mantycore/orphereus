@@ -139,3 +139,15 @@ class FcajaxController(OrphieBaseController):
             return redirect_to(str('/%s' %redirect.encode('utf-8')))
         else:
             return ''
+
+    def checkCaptcha(self, id, text):
+        ct = Captcha.getCaptcha(id)
+        if ct:
+            ok = ct.test(text, True)
+            if ok:
+                return 'ok'
+            else:
+                ct = Captcha.create()
+                return str(ct.id)
+        else:
+            abort(404)

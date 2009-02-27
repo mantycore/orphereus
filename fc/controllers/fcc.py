@@ -644,11 +644,10 @@ class FccController(OrphieBaseController):
         elif dest == 3: # overview
             pass
         elif dest == 5: #referrer
-            return redirect_to(request.headers.get('REFERER', str(tagLine)))
+            return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')))
 
         ##log.debug(redirectAddr)
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
-
 
 
     def PostReply(self, post):

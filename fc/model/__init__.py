@@ -6,7 +6,7 @@ from fc.lib.constantValues import *
 import logging
 log = logging.getLogger(__name__)
 
-from Captcha import *
+from FCCaptcha import *
 from Extension import *
 from Invite import *
 from LogEntry import *

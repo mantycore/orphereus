@@ -6,13 +6,17 @@ except ImportError:
     from setuptools import setup, find_packages
 
 setup(
-    name='FC',
-    version="",
-    #description='',
-    #author='',
+    name='Orphereus',
+    version="1.0.0",
+    description='Powerful imageboard engine',
+    author='Anoma Chan',
     #author_email='',
-    #url='',
-    install_requires=["Pylons>=0.9.6.2"],
+    url='http://orphereus.anoma.ch',
+    install_requires=["Pylons>=0.9.7", "sqlalchemy>=0.5.1",
+                      "mutagen>=1.15", "pil>=1.1.6",
+                      "simpleparse>=2.1", "egenix-mx-base>=3.1.0",
+                      "pycaptcha>=0.4"],
+
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
     test_suite='nose.collector',

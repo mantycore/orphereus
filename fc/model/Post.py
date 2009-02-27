@@ -73,6 +73,7 @@ class Post(object):
 
         meta.Session.add(post)
         meta.Session.commit()
+        return post
 
     def incrementStats(self):
         taglist = self.tags

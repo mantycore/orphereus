@@ -69,7 +69,7 @@ class Post(object):
                                      picInfo.extId,
                                      picInfo.md5)
         else:
-            post.picid = existentPic.id
+            post.picid = postParams.existentPic.id
 
         meta.Session.add(post)
         meta.Session.commit()

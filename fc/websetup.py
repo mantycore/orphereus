@@ -58,7 +58,6 @@ def setup_config(command, filename, section, vars):
         Extension.create('mp3', True, True, 'image', '../generic/sound.png', 0, 0)
         Extension.create('ogg', True, True, 'image', '../generic/sound.png', 0, 0)
 
-
     try:
         tc = meta.Session.query(Tag).count()
     except:
@@ -66,7 +65,6 @@ def setup_config(command, filename, section, vars):
     log.debug('tags: %d' % tc)
 
     if tc == 0:
-        #TODO: rewrite nahuy
         log.info("Adding tag /b/")
 
         tag = Tag(u'b')

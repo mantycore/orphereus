@@ -66,7 +66,7 @@ class FcajaxController(OrphieBaseController):
     def getRepliesIds(self, post):
         postInst = Post.getPost(post)
         if postInst:
-            replies = postInst.getReplies()
+            replies = postInst.filterReplies().all()
             ret = []
             if replies:
                 for reply in replies:

@@ -25,6 +25,8 @@ from mutagen.easyid3 import EasyID3
 import logging
 log = logging.getLogger(__name__)
 
+#TODO: new debug system. Don't forget about c.log and c.sum
+
 class FccController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
@@ -73,38 +75,36 @@ class FccController(OrphieBaseController):
             extList.append(ext.ext)
         c.extLine = ', '.join(extList)
 
-        count = self.sqlCount(threadFilter)
+        count = threadFilter.count()
         tpp = self.userInst.threadsPerPage()
         if page*tpp >= count and count > 0:
             c.errorText = _("Incorrect page")
             return self.render('error')
-
         self.paginate(count, page, tpp)
-        #log.debug("count: %d" % count)
 
         if count > 1:
-            c.threads = self.sqlSlice(threadFilter.order_by(Post.bumpDate.desc()), (page * tpp), (page + 1)* tpp)
+            c.threads = threadFilter.order_by(Post.bumpDate.desc())[page * tpp: (page + 1)* tpp]
             if self.userInst.mixOldThreads():
-                oldThread = self.sqlFirst(threadFilter.filter(Post.bumpDate < c.threads[-1].bumpDate).order_by(sqlalchemy.func.random()))
+                oldThread = threadFilter.filter(Post.bumpDate < c.threads[-1].bumpDate).order_by(sqlalchemy.func.random()).first()
                 #log.debug(oldThread)
                 if oldThread:
                     oldThread.mixed = True
                     c.threads.insert(1, oldThread)
 
         elif count == 1:
-            c.threads = [self.sqlOne(threadFilter)]
+            c.threads = [threadFilter.one()]
         elif count == 0:
             c.threads = []
 
         if tagList and len(tagList) == 1 and tags:
             currentBoard = tags[0]
-            c.boardName = currentBoard.options and currentBoard.options.comment or ("/" + currentBoard.tag + "/")
+            c.boardName = currentBoard.options and currentBoard.options.comment or (u"/%s/" % currentBoard.tag)
             c.tagLine   = currentBoard.tag
         elif not tagList and tags:
             names = []
             rawNames = []
             for t in tags:
-                names.append(t.options and t.options.comment or ("/" + t.tag + "/"))
+                names.append(t.options and t.options.comment or (u"/%s/" % t.tag))
                 rawNames.append(t.tag)
             c.boardName = " + ".join(names)
             c.tagLine ="+".join(rawNames)
@@ -135,10 +135,9 @@ class FccController(OrphieBaseController):
                 if replyLim < 0:
                     replyLim = 0
                 thread.omittedPosts = replyLim
-
-                thread.Replies = self.sqlSlice(Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()), replyLim)
+                thread.Replies = thread.filterReplies()[replyLim:]
             else:
-                thread.Replies = self.sqlAll(Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).order_by(Post.id.asc()))
+                thread.Replies = thread.filterReplies().all()
                 thread.omittedPosts = 0
                 thread.hidden = False
 
@@ -151,45 +150,9 @@ class FccController(OrphieBaseController):
         c.curPage = page
         return self.render('posts')
 
-    def GetThread(self, post, tempid):
-        thePost = self.sqlFirst(Post.query.options(eagerload('file')).filter(Post.id==post))
-
-        #if thePost isn't op-post, redirect to op-post instead
-        if thePost and thePost.parentid != -1:
-            if isNumber(tempid) and not int(tempid) == 0:
-                redirect_to('/%d/%d' % (thePost.parentid, int(tempid)))
-            else:
-                redirect_to('/%d#i%d' % (thePost.parentid, thePost.id))
-            #thePost = Post.query.options(eagerload('file')).filter(Post.id==thePost.parentid).first()
-
-        if not thePost:
-            c.errorText = _("No such post exist.")
-            return self.render('error')
-
-        filter = Post.query.options(eagerload('file')).filter(Post.id==thePost.id)
-        c.PostAction = thePost.id
-
-        return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
 
     def GetBoard(self, board, tempid, page=0):
         if board == '!':
-            def getTotalPosts():
-                return meta.Session().query(Post).count()
-
-            def vitalSigns():
-                ret = empty()
-                tpc = c.totalPostsCount
-                uniqueUidsExpr = meta.Session().query(Post.uidNumber).distinct()
-                ret.last1KUsersCount = uniqueUidsExpr.filter(and_(Post.id <= tpc, Post.id >= tpc - 1000)).count()
-                ret.prev1KUsersCount = uniqueUidsExpr.filter(and_(Post.id <= tpc - 1000, Post.id >= tpc - 2000)).count()
-
-                currentTime = datetime.datetime.now()
-                firstBnd = currentTime - datetime.timedelta(days=7)
-                secondBnd = currentTime - datetime.timedelta(days=14)
-                ret.lastWeekMessages = meta.Session().query(Post.id).filter(Post.date >= firstBnd).count()
-                ret.prevWeekMessages = meta.Session().query(Post.id).filter(and_(Post.date <= firstBnd, Post.date >= secondBnd)).count()
-                return ret
-
             if g.OPT.devMode:
                 ct = time.time()
 
@@ -200,15 +163,14 @@ class FccController(OrphieBaseController):
 
             if chTime > 0:
                 cm = CacheManager(type='memory')
-                #cch = cache.get_cache('home_stats')
                 cch = cm.get_cache('home_stats')
-                c.totalPostsCount = cch.get_value(key="totalPosts", createfunc=getTotalPosts, expiretime=chTime)
+                c.totalPostsCount = cch.get_value(key="totalPosts", createfunc=Post.getPostsCount, expiretime=chTime)
                 mstat = cch.get_value(key="mainStats", createfunc=Tag.getStats, expiretime=chTime)
-                vts = cch.get_value(key="vitalSigns", createfunc=vitalSigns, expiretime=chTime)
+                vts = cch.get_value(key="vitalSigns", createfunc=Post.vitalSigns, expiretime=chTime)
             else:
-                c.totalPostsCount = getTotalPosts()
+                c.totalPostsCount = Post.getPostsCount()
                 mstat = Tag.getStats()
-                vts = vitalSigns()
+                vts = Post.vitalSigns()
 
             def taglistcmp(a, b):
                 return cmp(b.count, a.count) or cmp(a.board.tag, b.board.tag)
@@ -239,9 +201,26 @@ class FccController(OrphieBaseController):
         else:
             page = 0
 
-        filter = Post.buildFilter(board, self.userInst)
+        filter = Post.buildMetaboardFilter(board, self.userInst)
         tags = Tag.getAllByNames(filter[1])
         return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
+
+    def GetThread(self, post, tempid):
+        thePost = Post.getPost(post)
+        #if thePost isn't op-post, redirect to op-post instead
+        if thePost and thePost.parentPost:
+            if isNumber(tempid) and not int(tempid) == 0:
+                redirect_to('/%d/%d' % (thePost.parentid, int(tempid)))
+            else:
+                redirect_to('/%d#i%d' % (thePost.parentid, thePost.id))
+
+        if not thePost:
+            c.errorText = _("No such post exist.")
+            return self.render('error')
+
+        c.PostAction = thePost.id
+        filter = Post.buildThreadFilter(self.userInst, thePost.id)
+        return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
 
     def gotoDestination(self, post, postid):
         tagLine = request.POST.get('tagLine', '~')
@@ -288,84 +267,6 @@ class FccController(OrphieBaseController):
             return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')))
 
         ##log.debug(redirectAddr)
-        return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
-
-
-    def PostReply(self, post):
-        return self.processPost(postid=post)
-
-    def PostThread(self, board):
-        return self.processPost(board=board)
-
-    def oekakiDraw(self,url):
-        if not self.currentUserCanPost():
-            c.errorText = _("Posting is disabled")
-            return self.render('error')
-
-        c.url = url
-        c.canvas = False
-        c.width  = request.POST.get('oekaki_x','300')
-        c.height = request.POST.get('oekaki_y','300')
-        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
-
-        if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width)<=10 or int(c.height)<=10):
-           c.width = 300
-           c.height = 300
-        c.tempid = str(long(time.time() * 10**7))
-
-        oekType = ''
-        if request.POST.get('oekaki_painter','shiNormal') == 'shiNormal':
-            oekType = 'Shi normal'
-            c.oekakiToolString = 'normal';
-        else:
-            oekType = 'Shi pro'
-            c.oekakiToolString = 'pro'
-
-        oekSource = 0
-        if isNumber(url) and enablePicLoading:
-           post = self.sqlOne(Post.query.filter(Post.id==url))
-
-           if post.picid:
-              pic = Picture.getPicture(post.picid)
-
-              if pic and pic.width:
-                 oekSource = post.id
-                 c.canvas = h.modLink(pic.path, c.userInst.secid())
-                 c.width  = pic.width
-                 c.height = pic.height
-        oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource)
-        return self.render('spainter')
-
-    def DeletePost(self, board):
-        if not self.currentUserCanPost():
-            c.errorText = _("Deletion disabled")
-            return self.render('error')
-
-        fileonly = 'fileonly' in request.POST
-        redirectAddr = board
-
-        opPostDeleted = False
-        reason = filterText(request.POST.get('reason', '???'))
-
-        remPass = ''
-        if self.userInst.Anonymous:
-            remPass = hashlib.md5(request.POST.get('remPass', '')).hexdigest()
-
-        retest = re.compile("^\d+$")
-        for i in request.POST:
-            if retest.match(request.POST[i]):
-                post = Post.getPost(request.POST[i])
-                if post:
-                    res = post.deletePost(self.userInst, fileonly, True, reason, remPass)
-                opPostDeleted = opPostDeleted or res
-
-        tagLine = request.POST.get('tagLine', False)
-        if opPostDeleted:
-            if tagLine:
-                redirectAddr = tagLine
-            else:
-                redirectAddr = '~'
-
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
 
     def showProfile(self):
@@ -434,7 +335,7 @@ class FccController(OrphieBaseController):
         for t in homeExcludeTags:
             homeExcludeList.append(t.tag)
         c.homeExclude = ', '.join(homeExcludeList)
-        c.hiddenThreads = self.sqlAll(Post.query.options(eagerload('file')).options(eagerload('tags')).filter(Post.id.in_(self.userInst.hideThreads())))
+        c.hiddenThreads = Post.filter(Post.id.in_(self.userInst.hideThreads())).options(eagerload('file')).options(eagerload('tags')).all()
         for t in c.hiddenThreads:
             tl = []
             for tag in t.tags:
@@ -442,6 +343,38 @@ class FccController(OrphieBaseController):
             t.tagLine = ', '.join(tl)
         c.userInst = self.userInst
         return self.render('profile')
+
+    def DeletePost(self, board):
+        if not self.currentUserCanPost():
+            c.errorText = _("Deletion disabled")
+            return self.render('error')
+
+        fileonly = 'fileonly' in request.POST
+        redirectAddr = board
+
+        opPostDeleted = False
+        reason = filterText(request.POST.get('reason', '???'))
+
+        remPass = ''
+        if self.userInst.Anonymous:
+            remPass = hashlib.md5(request.POST.get('remPass', '')).hexdigest()
+
+        retest = re.compile("^\d+$")
+        for i in request.POST:
+            if retest.match(request.POST[i]):
+                post = Post.getPost(request.POST[i])
+                if post:
+                    res = post.deletePost(self.userInst, fileonly, True, reason, remPass)
+                opPostDeleted = opPostDeleted or res
+
+        tagLine = request.POST.get('tagLine', False)
+        if opPostDeleted:
+            if tagLine:
+                redirectAddr = tagLine
+            else:
+                redirectAddr = '~'
+
+        return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
 
     def search(self, text, page = 0):
         rawtext = text
@@ -470,7 +403,7 @@ class FccController(OrphieBaseController):
             groups = filteredQueryRe.groups()
             filterName = groups[1]
             text = groups[2]
-            tagfilter = Post.buildFilter(filterName, self.userInst)[2]
+            tagfilter = Post.buildMetaboardFilter(filterName, self.userInst)[2]
 
         base = False
         if tagfilter:
@@ -478,9 +411,8 @@ class FccController(OrphieBaseController):
                                         Post.parentPost.has(tagfilter),
                                    ))
         else:
-            base = Post.buildFilter(False, self.userInst)[0]
+            base = Post.buildMetaboardFilter(False, self.userInst)[0]
 
-        #filter = Post.excludeAdminTags(base, self.userInst)
         filter = base.filter(Post.message.like('%%%s%%' % text))
         count = filter.count()
         self.paginate(count, page, pp)
@@ -561,6 +493,45 @@ class FccController(OrphieBaseController):
         else:
             return redirect_to('/')
 
+    def oekakiDraw(self,url):
+        if not self.currentUserCanPost():
+            c.errorText = _("Posting is disabled")
+            return self.render('error')
+
+        c.url = url
+        c.canvas = False
+        c.width  = request.POST.get('oekaki_x','300')
+        c.height = request.POST.get('oekaki_y','300')
+        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
+
+        if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width)<=10 or int(c.height)<=10):
+           c.width = 300
+           c.height = 300
+        c.tempid = str(long(time.time() * 10**7))
+
+        oekType = ''
+        if request.POST.get('oekaki_painter','shiNormal') == 'shiNormal':
+            oekType = 'Shi normal'
+            c.oekakiToolString = 'normal';
+        else:
+            oekType = 'Shi pro'
+            c.oekakiToolString = 'pro'
+
+        oekSource = 0
+        if isNumber(url) and enablePicLoading:
+           post = Post.getPost(url)
+
+           if post.picid:
+              pic = Picture.getPicture(post.picid)
+
+              if pic and pic.width:
+                 oekSource = post.id
+                 c.canvas = h.modLink(pic.path, c.userInst.secid())
+                 c.width  = pic.width
+                 c.height = pic.height
+        oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource)
+        return self.render('spainter')
+
     def processFile(self, file, thumbSize=250):
         if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
            name = str(long(time.time() * 10**7))
@@ -634,6 +605,12 @@ class FccController(OrphieBaseController):
            return [AngryFileHolder((localFilePath, localThumbPath)), picInfo, False, False]
         else:
            return False
+
+    def PostReply(self, post):
+        return self.processPost(postid=post)
+
+    def PostThread(self, board):
+        return self.processPost(board=board)
 
     def processPost(self, postid=0, board=u''):
         if not self.currentUserCanPost():

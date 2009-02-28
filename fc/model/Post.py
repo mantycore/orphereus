@@ -7,7 +7,7 @@ from fc.model import meta
 from fc.model.Picture import Picture
 from fc.model.Tag import Tag
 from fc.model.LogEntry import LogEntry
-from fc.lib.miscUtils import getRPN
+from fc.lib.miscUtils import getRPN, empty
 from fc.lib.constantValues import *
 import datetime
 
@@ -37,7 +37,6 @@ t_posts = sa.Table("posts", meta.metadata,
     sa.Column("removemd5"  , sa.types.String(32), nullable=True),
     )
 
-#TODO: rewrite Post
 class Post(object):
     def __init__(self):
         self.date = datetime.datetime.now()
@@ -112,11 +111,11 @@ class Post(object):
         else:
             return Post.query.filter(Post.parentid == self.id).count()
 
-    def getReplies(self):
+    def filterReplies(self):
         if self.parentPost:
             return False
         else:
-            return Post.query.filter(Post.parentid == self.id).all()
+            return Post.query.filter(Post.parentid == self.id).order_by(Post.id.asc())
 
     @staticmethod
     def getPost(id):
@@ -133,10 +132,12 @@ class Post(object):
 
     @staticmethod
     def filter(filter):
-        return Post.query.filter(filter)
+        if filter:
+            return Post.query.filter(filter)
+        return Post.query
 
     @staticmethod
-    def buildFilter(url, userInst):
+    def buildMetaboardFilter(url, userInst):
         def buildMyPostsFilter():
             list  = []
             posts = Post.filterByUid(userInst.uidNumber).all()
@@ -160,11 +161,7 @@ class Post(object):
                 return arg
 
         filter = Post.query.options(eagerload('file')).filter(Post.parentid==-1)
-        filteringExpression = False
-        if not userInst.isAdmin():
-            blocker = Post.tags.any(Tag.id.in_(meta.globj.forbiddenTags))
-            blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))
-            filteringExpression = blockHidden
+        filteringExpression = Post.excludeAdminTags(userInst)
         #log.debug(self.userInst.homeExclude())
         tagList = []
         if url:
@@ -208,10 +205,17 @@ class Post(object):
         filter = filter.filter(filteringExpression)
         return (filter, tagList, filteringExpression)
 
-#    @staticmethod
-#    def excludeAdminTags(filter, userInst):
-#
-#        return filter
+    @staticmethod
+    def excludeAdminTags(userInst):
+        blockHidden = False
+        if not userInst.isAdmin():
+            blocker = Post.tags.any(Tag.id.in_(meta.globj.forbiddenTags))
+            blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))
+        return blockHidden
+
+    @staticmethod
+    def buildThreadFilter(userInst, threadId):
+        return Post.filter(Post.excludeAdminTags(userInst)).filter(Post.id==threadId).options(eagerload('file'))
 
     def deletePost(self, userInst, fileonly=False, checkOwnage=True, reason = "???", rempPass = False):
         opPostDeleted = False
@@ -288,3 +292,22 @@ class Post(object):
             meta.Session.delete(self)
         meta.Session.commit()
         return opPostDeleted
+
+    @staticmethod
+    def getPostsCount():
+        return Post.query.count()
+
+    @staticmethod
+    def vitalSigns():
+        ret = empty()
+        tpc = Post.getPostsCount()
+        uniqueUidsExpr = meta.Session.query(Post.uidNumber).distinct()
+        ret.last1KUsersCount = uniqueUidsExpr.filter(and_(Post.id <= tpc, Post.id >= tpc - 1000)).count()
+        ret.prev1KUsersCount = uniqueUidsExpr.filter(and_(Post.id <= tpc - 1000, Post.id >= tpc - 2000)).count()
+
+        currentTime = datetime.datetime.now()
+        firstBnd = currentTime - datetime.timedelta(days=7)
+        secondBnd = currentTime - datetime.timedelta(days=14)
+        ret.lastWeekMessages = meta.Session.query(Post.id).filter(Post.date >= firstBnd).count()
+        ret.prevWeekMessages =meta.Session.query(Post.id).filter(and_(Post.date <= firstBnd, Post.date >= secondBnd)).count()
+        return ret

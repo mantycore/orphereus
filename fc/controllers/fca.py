@@ -414,7 +414,7 @@ class FcaController(OrphieBaseController):
                 quantity = int(request.POST.get('quantity', '0'))
                 if isNumber(quantity) and int(quantity) > 0:
                     if len(reason) > 1:
-                        c.posts = Post.filterByUid(user.uidNumber)[:quantity]
+                        c.posts = Post.filterByUid(user.uidNumber).order_by(Post.date.desc())[:quantity]
                         toLog(LOG_EVENT_USER_DELETE,_('Performed posts lookup for user %s for "%s", quantity: %s') % (user.uidNumber, reason, quantity))
                         if c.posts:
                             return self.render('postsLookup')

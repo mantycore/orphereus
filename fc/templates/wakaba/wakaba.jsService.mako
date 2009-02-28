@@ -1,6 +1,8 @@
 <script type="text/javascript">
 %if c.userInst.useAjax():
-    popup_posts({ajax: true});
+    popup_posts({ajax: true,
+                 loading_icon_path: "${g.OPT.staticPathWeb}images/loading.gif"
+               });
 %endif
 %if c.userInst.expandImages():
     click_expands({max_width: ${c.userInst.maxExpandWidth()},

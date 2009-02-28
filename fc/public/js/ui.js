@@ -29,7 +29,7 @@ function popup_posts(options){
   }
   var load_on = function(e){
     e.attr('old_html',e.html())
-    e.html("Loading...")
+    e.html("<img src='"+options.loading_icon_path+"'> Loading…")
   }
   var load_off = function(e){
     e.html(e.attr('old_html'))

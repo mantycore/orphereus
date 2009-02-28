@@ -79,7 +79,11 @@ def staticFile(fileName):
     spl = gv.OPT.staticPath
     ext = fileName.split('.')[-1]
     relFileName = "%s/%s" % (ext, fileName)
-    version = os.path.getmtime(os.path.join(spl, relFileName))
+    localFileName = os.path.join(spl, relFileName)
+    version = gv.caches.get(localFileName, False)
+    if not version:
+        version = os.path.getmtime(localFileName)
+        gv.caches[localFileName] = version
     return u"%s%s?version=%s" % (spw, relFileName, str(version))
 
 

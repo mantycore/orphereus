@@ -1,4 +1,5 @@
 <script type="text/javascript">
+window.loading_icon_path = "${g.OPT.staticPathWeb}images/loading.gif"
 %if c.userInst.useAjax():
     popup_posts({ajax: true,
                  loading_icon_path: "${g.OPT.staticPathWeb}images/loading.gif"

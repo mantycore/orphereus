@@ -1,3 +1,50 @@
+function click_expands(options){
+  var default_options = {max_width: 800, max_height: 600}
+  if(!options) options = default_options
+  if(!options.max_width) options.max_width = default_options.max_width
+  if(!options.max_width) options.max_height = default_options.max_height
+
+  if(options.loading_icon_path) $("<img>").attr("src", options.loading_icon_path)
+
+  var show_image = function() {
+    var filesize = $(this).parent().parent().find("span.filesize em").html()
+    var matcher = filesize.match(/(\d+)x(\d+)/)
+    if (!matcher) return true;
+    if(options.max_height || options.max_width){
+        if (options.max_width  && options.max_width  < parseInt(matcher[1])) return true;
+        if (options.max_height && options.max_height < parseInt(matcher[2])) return true;
+    }
+
+    if (this.src != this.parentNode.href){
+      this._width = this.width
+      this._height = this.height
+      this._src = this.src
+
+      // loader
+      var loader = $("<span class='img_loading'>Loading…</span>")
+      if (options.loading_icon_path) loader.html("<img src='"+options.loading_icon_path+"'>Loading…")
+      loader.css("left", $(this).offset().left)
+      $(this).parent().append(loader)
+      $(this).load(function() {loader.remove()})
+
+      //highlight
+      $(this).addClass("highlight")
+
+      this.removeAttribute('width');
+      this.removeAttribute('height');
+      this.src = this.parentNode.href;
+    }else{
+      this.width = this._width
+      this.height = this._height
+      this.src = this._src
+
+      $(this).removeClass("highlight")
+    }
+    return false;
+  }
+  $("a img.thumb").click(show_image)
+}
+
 function popup_posts(options){
   if(!options) options = {}
   popup_posts.helper = $(document.createElement('blockquote'));
@@ -119,8 +166,6 @@ function highlight(post)
 
     return true;
 }
-
-
 
 function showDeleteBoxes()
 {
@@ -291,7 +336,12 @@ function getFullText(event, thread, post)
 {
     var bq = document.getElementById('postBQId' + post);
     if (!bq) bq = document.getElementById('quickReplyNode' + post);
-    $("a.expandPost[href=/" + thread + "#i" + post + "]").html('loading…')
+    var loadingString = 'Loading…'
+    if (window.loading_icon_path)
+    {
+        loadingString = "<img src='"+window.loading_icon_path+"'> Loading…"
+    }
+    $("a.expandPost[href=/" + thread + "#i" + post + "]").html(loadingString)
     $.get('/ajax/getPost/' + post, {}, function(response)
     {
       $(bq).html(response);
@@ -336,52 +386,4 @@ window.onload=function(e)
         highlight(match[1]);
     }
 }
-
-function click_expands(options){
-  var default_options = {max_width: 800, max_height: 600}
-  if(!options) options = default_options
-  if(!options.max_width) options.max_width = default_options.max_width
-  if(!options.max_width) options.max_height = default_options.max_height
-
-  if(options.loading_icon_path) $("<img>").attr("src", options.loading_icon_path)
-
-  var show_image = function() {
-    var filesize = $(this).parent().parent().find("span.filesize em").html()
-    var matcher = filesize.match(/(\d+)x(\d+)/)
-    if (!matcher) return true;
-    if(options.max_height || options.max_width){
-        if (options.max_width  && options.max_width  < parseInt(matcher[1])) return true;
-        if (options.max_height && options.max_height < parseInt(matcher[2])) return true;
-    }
-
-    if (this.src != this.parentNode.href){
-      this._width = this.width
-      this._height = this.height
-      this._src = this.src
-
-      // loader
-      var loader = $("<span class='img_loading'>Loading…</span>")
-      if (options.loading_icon_path) loader.html("<img src='"+options.loading_icon_path+"'>Loading…")
-      loader.css("left", $(this).offset().left)
-      $(this).parent().append(loader)
-      $(this).load(function() {loader.remove()})
-
-      //highlight
-      $(this).addClass("highlight")
-
-      this.removeAttribute('width');
-      this.removeAttribute('height');
-      this.src = this.parentNode.href;
-    }else{
-      this.width = this._width
-      this.height = this._height
-      this.src = this._src
-
-      $(this).removeClass("highlight")
-    }
-    return false;
-  }
-  $("a img.thumb").click(show_image)
-}
-
 

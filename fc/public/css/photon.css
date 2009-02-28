@@ -388,3 +388,7 @@ border: none;
 border: none;
 vertical-align: baseline;
 }
+
+.popup_loading_img{
+border: none;
+}

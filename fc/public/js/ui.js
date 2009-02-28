@@ -431,11 +431,11 @@ var YForm = function(){
 }
 
 YForm.open = function(e){
-  try{
+  //try{
     if(!YForm.default) YForm.default = new YForm();
     if(!e || e['tagName'] != 'A') e = this;
     return YForm.default.open(e)
-  }catch(e){ console.error(e); return false;}
+  //}catch(e){ console.error(e); return false;}
 }
 
 YForm.init = function(){

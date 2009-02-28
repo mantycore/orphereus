@@ -26,60 +26,81 @@ class FcajaxController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         c.userInst = self.userInst
-        if not self.currentUserIsAuthorized or self.userInst.isBanned():
+        if not self.currentUserIsAuthorized() or self.userInst.isBanned():
             abort(403)
 
     def getPost(self, post):
-        postInst = Post.query.get(post)
+        postInst = Post.getPost(post)
         if postInst:
-            if postInst.parentid == -1:
-                parent = postInst
-            else:
-                parent = Post.query.get(postInst.parentid)
-
-            for t in parent.tags:
-                if t.id in g.forbiddenTags and not self.userInst.isAdmin():
-                    abort(403)
+            if not self.userInst.isAdmin() and postInst.parentPost:
+                for t in postInst.parentPost.tags:
+                    if t.id in g.forbiddenTags:
+                        abort(403)
             return postInst.message
-        else:
-            abort(404)
+        abort(404)
 
     def getRenderedPost(self, post):
-        postInst = Post.query.get(post)
+        postInst = Post.getPost(post)
         if postInst:
-            if postInst.parentid == -1:
+            if not self.userInst.isAdmin() and postInst.parentPost:
+                for t in postInst.parentPost.tags:
+                    if t.id in g.forbiddenTags:
+                        abort(403)
+            parent = postInst.parentPost
+            if not parent:
                 parent = postInst
-            else:
-                parent = Post.query.get(postInst.parentid)
-
-            for t in parent.tags:
-                if t.id in g.forbiddenTags and not self.userInst.isAdmin():
-                    abort(403)
-
             #uncomment to disable folding for big posts
             #parent.enableShortMessages=False
             return self.render('postReply', thread=parent, post = postInst)
-        else:
-            abort(404)
+        abort(404)
 
     def getRepliesCountForThread(self, post):
-        postInst = Post.query.get(post)
-        if postInst and postInst.parentid == -1:
-            return str(Post.query.filter(Post.parentid == postInst.id).count())
-        else:
-            abort(404)
+        postInst = Post.getPost(post)
+        ret = False
+        if postInst:
+            ret = postInst.getExactReplyCount()
+        if ret:
+            return str(ret)
+        abort(404)
 
-    def getThreadIds(self, post):
-        postInst = Post.query.get(post)
-        if postInst and postInst.parentid == -1:
-            replies = Post.query.filter(Post.parentid == postInst.id).all()
-            ret = [str(post)]
+    def getRepliesIds(self, post):
+        postInst = Post.getPost(post)
+        if postInst:
+            replies = postInst.getReplies()
+            ret = []
             if replies:
                 for reply in replies:
                     ret.append(str(reply.id))
-            return ','.join(ret)
-        else:
-            abort(404)
+                return str(','.join(ret))
+        abort(404)
+
+    def hideThread(self,post,redirect):
+        if self.userInst.Anonymous:
+            abort(403)
+        postInst = Post.getPost(post)
+        if postInst and not postInst.parentPost:
+            hideThreads = self.userInst.hideThreads()
+            if not post in hideThreads:
+                hideThreads.append(post)
+                self.userInst.hideThreads(hideThreads)
+                meta.Session.commit()
+        if redirect:
+            return redirect_to(str('/%s' % redirect.encode('utf-8')))
+        return ''
+
+    def showThread(self, post, redirect):
+        if self.userInst.Anonymous:
+            abort(403)
+        postInst = Post.getPost(post)
+        if postInst and not postInst.parentPost:
+            hideThreads = self.userInst.hideThreads()
+            if post in hideThreads:
+                hideThreads.remove(post)
+                self.userInst.hideThreads(hideThreads)
+                meta.Session.commit()
+        if redirect:
+            return redirect_to(str('/%s' % redirect.encode('utf-8')))
+        return ''
 
     def getUserSettings(self):
         return str(self.userInst.optionsDump())
@@ -107,38 +128,6 @@ class FcajaxController(OrphieBaseController):
         userFilter = self.userInst.addFilter(filter)
         c.userFilter = userFilter
         return self.render('ajax.addUserFilter')
-
-    def hideThread(self,post,url):
-        if self.userInst.Anonymous:
-            abort(403)
-        postInst = Post.query.get(post)
-        if postInst:
-            if postInst.parentid == -1:
-                hideThreads = self.userInst.hideThreads()
-                if not post in hideThreads:
-                    hideThreads.append(post)
-                    self.userInst.hideThreads(hideThreads)
-                    meta.Session.commit()
-        if url:
-            return redirect_to(str('/%s' % url.encode('utf-8')))
-        else:
-            return ''
-
-    def showThread(self,post,redirect):
-        if self.userInst.Anonymous:
-            abort(403)
-        postInst = Post.query.get(post)
-        if postInst:
-            if postInst.parentid == -1:
-                hideThreads = self.userInst.hideThreads()
-                if post in hideThreads:
-                    hideThreads.remove(post)
-                    self.userInst.hideThreads(hideThreads)
-                    meta.Session.commit()
-        if redirect:
-            return redirect_to(str('/%s' %redirect.encode('utf-8')))
-        else:
-            return ''
 
     def checkCaptcha(self, id, text):
         ct = Captcha.getCaptcha(id)

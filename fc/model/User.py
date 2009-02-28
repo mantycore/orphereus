@@ -97,7 +97,7 @@ class User(object):
         self.options.banreason = banreason
         self.options.banDate = datetime.datetime.now()
         meta.Session.commit()
-        LogEntry.create(who, LOG_EVENT_USER_BAN, N_('Banned user %s for %s days for reason "%s"') % (bantime, banreason))
+        LogEntry.create(who, LOG_EVENT_USER_BAN, N_('Banned user %d for %s days for reason "%s"') % (self.id, bantime, banreason))
         return N_('User was banned')
 
     def passwd(self, key, key2, changeAnyway = False, currentKey = False):

@@ -148,31 +148,28 @@ class OrphieBaseController(BaseController):
     def currentUserIsAuthorized(self):
         return self.userInst.isValid() and (session.get('uidNumber', -1) == self.userInst.uidNumber)
 
-    def getParentID(self, id):
-        post = self.sqlFirst(Post.query.filter(Post.id==id))
-        if post:
-           return post.parentid
-        else:
-           return False
-
+    # Parser callbacks
     def isPostOwner(self, id):
-        post = self.sqlFirst(Post.query.filter(Post.id==id))
+        post = Post.getPost(postid)
         if post and post.uidNumber == self.userInst.uidNumber:
            return post.parentid
         else:
            return False
 
     def postOwner(self, id):
-        post = self.sqlFirst(Post.query.filter(Post.id==id))
+        post = Post.getPost(postid)
         if post:
            return post.parentid
         else:
            return False
 
-    def formatPostReference(self, postid, parentid = False): # TODO FIXME: move to parser
-        if not parentid:
-            parentid = self.getParentID(postid)
-        return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)
+    def formatPostReference(self, postid): # TODO FIXME: move to parser
+        post = Post.getPost(postid)
+        if post:
+            parentid = post.parentid
+            return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)
+        else:
+            return "&gt;&gt;%s" % postid
         #if parentid == -1:
         #    return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
         #else:
@@ -180,6 +177,7 @@ class OrphieBaseController(BaseController):
         #Also, changed to /postid#ipostid instead of /parentid#ipostid.
         #Forget it, changed back.
 
+    #TODO: rewrite
     def processDelete(self, postid, fileonly=False, checkOwnage=True, reason = "???", rempPass = False):
         p = self.sqlGet(Post.query, postid)
 

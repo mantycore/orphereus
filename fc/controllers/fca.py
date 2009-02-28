@@ -325,9 +325,9 @@ class FcaController(OrphieBaseController):
         if uid:
             user = False
             if isNumber(uid):
-                user = User.getUser(uid) #meta.Session.query(User).filter(User.uidNumber==uid).first()
+                user = User.getUser(uid)
             else:
-                user = User.getByUid(uid) #meta.Session.query(User).filter(User.uid==uid).first()
+                user = User.getByUid(uid)
             if user:
                 return redirect_to('/holySynod/manageUsers/edit/%s' % user.uidNumber)
             else:
@@ -349,7 +349,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        post = Post.query.options(eagerload('file')).filter(Post.id==pid).order_by(Post.id.asc()).first()
+        post = Post.getPost(pid)
         if post:
             reason = request.POST.get("UIDViewReason", 'No reason given!')
             #toLog(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '<a href='/%s#i%s'>%s</a>'. Reason: %s" % (post.uidNumber, post.parentid > 0 and post.parentid or post.id, pid, pid, reason))
@@ -414,7 +414,7 @@ class FcaController(OrphieBaseController):
                 quantity = int(request.POST.get('quantity', '0'))
                 if isNumber(quantity) and int(quantity) > 0:
                     if len(reason) > 1:
-                        c.posts = Post.query.filter(Post.uidNumber==user.uidNumber).order_by(Post.date.desc())[:quantity]
+                        c.posts = Post.filterByUid(user.uidNumber)[:quantity]
                         toLog(LOG_EVENT_USER_DELETE,_('Performed posts lookup for user %s for "%s", quantity: %s') % (user.uidNumber, reason, quantity))
                         if c.posts:
                             return self.render('postsLookup')
@@ -444,7 +444,7 @@ class FcaController(OrphieBaseController):
                 if self.userInst.canChangeRights():
                     if len(reason)>1:
                         if deleteLegacy:
-                            posts = self.sqlAll(Post.query.filter(Post.uidNumber==user.uidNumber))
+                            posts = Post.filterByUid(user.uidNumber).all()
                             removed = []
                             for post in posts:
                                 if post.parentid == -1:

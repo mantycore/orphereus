@@ -1,7 +1,12 @@
 import sqlalchemy as sa
 from sqlalchemy import orm
+from sqlalchemy.orm import eagerload
+from sqlalchemy.sql import and_, or_, not_
 
-from fc.model import meta, Picture
+from fc.model import meta
+from fc.model.Picture import Picture
+from fc.model.Tag import Tag
+from fc.lib.miscUtils import getRPN
 import datetime
 
 import logging
@@ -97,14 +102,102 @@ class Post(object):
                     break
         return self.smCached
 
+    def getExactReplyCount(self):
+        if self.parentPost:
+            return False
+        else:
+            return Post.query.filter(Post.parentid == self.id).count()
+
+    def getReplies(self):
+        if self.parentPost:
+            return False
+        else:
+            return Post.query.filter(Post.parentid == self.id).all()
+
     @staticmethod
     def getPost(id):
-        return Post.query.filter(Post.id==id).one()
+        return Post.query.get(id)
+        #return Post.query.filter(Post.id==id).one()
 
     @staticmethod
     def pictureRefCount(picid):
         return Post.query.filter(Post.picid==picid).count()
 
     @staticmethod
-    def getByUid(uidNumber):
-        return Post.query.filter(Post.uidNumber == uidNumber).all()
+    def filterByUid(uidNumber):
+        return Post.query.filter(Post.uidNumber == uidNumber)
+
+    @staticmethod
+    def buildFilter(url, userInst):
+        def buildMyPostsFilter():
+            list  = []
+            posts = Post.getByUid(userInst.uidNumber).all()
+
+            for p in posts:
+                if p.parentid == -1 and not p.id in list:
+                    list.append(p.id)
+                elif p.parentid > -1 and not p.parentid in list:
+                    list.append(p.parentid)
+            return Post.id.in_(list)
+
+        def buildArgument(arg):
+            if not isinstance(arg, sa.sql.expression.ClauseElement):
+                if arg == '@':
+                    return (buildMyPostsFilter(), [])
+                elif arg == '~':
+                    return (not_(Post.tags.any(Tag.id.in_(userInst.homeExclude()))), [])
+                else:
+                    return (Post.tags.any(tag=arg), [arg])
+            else:
+                return arg
+
+        #log.debug(self.userInst.homeExclude())
+        operators = {'+':1, '-':1, '^':2, '&':2}
+        url = url.replace('&amp;', '&')
+        filter = Post.query.options(eagerload('file')).filter(Post.parentid==-1)
+        filteringExpression = False
+        tagList = []
+        RPN = getRPN(url,operators)
+        stack = []
+        for i in RPN:
+            if i in operators:
+                # If operator is not provided with 2 arguments, we silently ignore it. (for example '- b' will be just 'b')
+                if len(stack)>= 2:
+                    arg2 = stack.pop()
+                    arg1 = stack.pop()
+                    if i == '+':
+                        f = or_(arg1[0],arg2[0])
+                        for t in arg2[1]:
+                            if not t in arg1[1]:
+                                arg1[1].append(t)
+                        stack.append((f,arg1[1]))
+                    elif i == '&' or i == '^':
+                        f = and_(arg1[0],arg2[0])
+                        for t in arg2[1]:
+                            if not t in arg1[1]:
+                                arg1[1].append(t)
+                        stack.append((f,arg1[1]))
+                    elif i == '-':
+                        f = and_(arg1[0],not_(arg2[0]))
+                        for t in arg2[1]:
+                            if t in arg1[1]:
+                                arg1[1].remove(t)
+                        stack.append((f,arg1[1]))
+            else:
+                stack.append(buildArgument(i))
+        if stack and isinstance(stack[0][0],sa.sql.expression.ClauseElement):
+            cl = stack.pop()
+            filteringExpression = cl[0]
+            filter = filter.filter(filteringExpression)
+            tagList = cl[1]
+        return (filter, tagList, filteringExpression)
+
+    @staticmethod
+    def excludeAdminTags(filter, userInst):
+        if not userInst.isAdmin():
+            blocker = Post.tags.any(Tag.id.in_(g.forbiddenTags))
+            filter = filter.filter(not_(
+                                   or_(blocker,
+                                        Post.parentPost.has(blocker),
+                                   )))
+        return filter

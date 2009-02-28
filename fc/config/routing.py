@@ -66,7 +66,7 @@ def make_map():
     map.connect('/holySynod/service/:actid/:secid', controller='fcm', actid='', secid='', action='mtnAction')
 
     # AJAX
-    map.connect('/ajax/hideThread/:post/*url', controller='fcajax', action='hideThread', requirements=dict(post='\d+'))
+    map.connect('/ajax/hideThread/:post/*redirect', controller='fcajax', action='hideThread', requirements=dict(post='\d+'))
     map.connect('/ajax/showThread/:post/:redirect', controller='fcajax', action='showThread', redirect='', requirements=dict(post='\d+'))
     map.connect('/ajax/getPost/:post', controller='fcajax', action='getPost', requirements=dict(post='\d+'))
     map.connect('/ajax/getRenderedPost/:post', controller='fcajax', action='getRenderedPost', requirements=dict(post='\d+'))
@@ -74,7 +74,7 @@ def make_map():
     map.connect('/ajax/deleteUserFilter/:fid', controller='fcajax', action='deleteUserFilter', requirements=dict(fid='\d+'))
     map.connect('/ajax/addUserFilter/:filter', controller='fcajax', action='addUserFilter')
     map.connect('/ajax/getRepliesCountForThread/:post', controller='fcajax', action='getRepliesCountForThread', requirements=dict(post='\d+'))
-    map.connect('/ajax/getThreadIds/:post', controller='fcajax', action='getThreadIds', requirements=dict(post='\d+'))
+    map.connect('/ajax/getRepliesIds/:post', controller='fcajax', action='getRepliesIds', requirements=dict(post='\d+'))
     map.connect('/ajax/getUserSettings', controller='fcajax', action='getUserSettings')
     map.connect('/ajax/getUploadsPath', controller='fcajax', action='getUploadsPath')
     map.connect('/ajax/checkCaptcha/:id/:text', controller='fcajax', action='checkCaptcha', text='', requirements=dict(id='\d+'))

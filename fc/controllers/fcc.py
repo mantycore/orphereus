@@ -1,8 +1,8 @@
 from fc.lib.base import *
 from fc.model import *
 from sqlalchemy.orm import eagerload
-from sqlalchemy.orm import class_mapper
 from sqlalchemy.sql import and_, or_, not_
+from sqlalchemy.orm import class_mapper
 import sqlalchemy
 import os
 import cgi
@@ -55,80 +55,6 @@ class FccController(OrphieBaseController):
         else:
             return redirect_to('/')
 
-    def buildFilter(self, url):
-        def buildMyPostsFilter():
-            list  = []
-            posts = Post.getByUid(self.userInst.uidNumber) #self.sqlAll(Post.query.filter(Post.uidNumber==self.userInst.uidNumber))
-
-            for p in posts:
-                if p.parentid == -1 and not p.id in list:
-                    list.append(p.id)
-                elif p.parentid > -1 and not p.parentid in list:
-                    list.append(p.parentid)
-            return Post.id.in_(list)
-
-        def buildArgument(arg):
-            if not isinstance(arg, sqlalchemy.sql.expression.ClauseElement):
-                if arg == '@':
-                    return (buildMyPostsFilter(), [])
-                elif arg == '~':
-                    return (not_(Post.tags.any(Tag.id.in_(self.userInst.homeExclude()))), [])
-                else:
-                    return (Post.tags.any(tag=arg), [arg])
-            else:
-                return arg
-
-        #log.debug(self.userInst.homeExclude())
-        operators = {'+':1, '-':1, '^':2, '&':2}
-        url = url.replace('&amp;', '&')
-        filter = Post.query.options(eagerload('file')).filter(Post.parentid==-1)
-        filteringExpression = False
-        tagList = []
-        RPN = getRPN(url,operators)
-        stack = []
-        for i in RPN:
-            if i in operators:
-                # If operator is not provided with 2 arguments, we silently ignore it. (for example '- b' will be just 'b')
-                if len(stack)>= 2:
-                    arg2 = stack.pop()
-                    arg1 = stack.pop()
-                    if i == '+':
-                        f = or_(arg1[0],arg2[0])
-                        for t in arg2[1]:
-                            if not t in arg1[1]:
-                                arg1[1].append(t)
-                        stack.append((f,arg1[1]))
-                    elif i == '&' or i == '^':
-                        f = and_(arg1[0],arg2[0])
-                        for t in arg2[1]:
-                            if not t in arg1[1]:
-                                arg1[1].append(t)
-                        stack.append((f,arg1[1]))
-                    elif i == '-':
-                        f = and_(arg1[0],not_(arg2[0]))
-                        for t in arg2[1]:
-                            if t in arg1[1]:
-                                arg1[1].remove(t)
-                        stack.append((f,arg1[1]))
-            else:
-                stack.append(buildArgument(i))
-        if stack and isinstance(stack[0][0],sqlalchemy.sql.expression.ClauseElement):
-            cl = stack.pop()
-            filteringExpression = cl[0]
-            filter = filter.filter(filteringExpression)
-            tagList = cl[1]
-        return (filter, tagList, filteringExpression)
-
-    def excludeHiddenTags(self, filter):
-        if not self.userInst.isAdmin():
-            blocker = Post.tags.any(Tag.id.in_(g.forbiddenTags))
-            filter = filter.filter(not_(
-                                   or_(blocker,
-                                        Post.parentPost.has(blocker),
-                                   )))
-
-        return filter
-
     def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
         if isNumber(page):
             page = int(page)
@@ -147,7 +73,7 @@ class FccController(OrphieBaseController):
             extList.append(ext.ext)
         c.extLine = ', '.join(extList)
 
-        threadFilter = self.excludeHiddenTags(threadFilter)
+        threadFilter = Post.excludeAdminTags(threadFilter, self.userInst)
         count = self.sqlCount(threadFilter)
         tpp = self.userInst.threadsPerPage()
         if page*tpp >= count and count > 0:
@@ -325,7 +251,7 @@ class FccController(OrphieBaseController):
         else:
             page = 0
 
-        filter = self.buildFilter(board)
+        filter = Post.buildFilter(board, self.userInst)
         tags = Tag.getAllByNames(filter[1])
         return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
 
@@ -382,24 +308,24 @@ class FccController(OrphieBaseController):
                picInfo.localFilePath = os.path.join(g.OPT.uploadPath, picInfo.relativeFilePath)
                return [False, picInfo, pic, False]
 
+           thumbFilePath = False
+           localThumbPath = False
            try:
-                thumbFilePath = False
-                if extParams.type == 'image':
+               if not extParams.type in ('image', 'image-jpg'):
+                 thumbFilePath = extParams.path
+                 picInfo.sizes = [None, None, extParams.thwidth, extParams.thheight]
+               elif extParams.type == 'image':
                    thumbFilePath = h.expandName('%ss.%s' % (name, ext))
-                   picInfo.sizes = Picture.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize, thumbSize))
-                else:
-                   if extParams.type == 'image-jpg':
-                      thumbFilePath = h.expandName('%ss.jpg' % (name))
-                      picInfo.sizes = Picture.makeThumbnail(localFilePath, os.path.join(g.OPT.uploadPath,thumbFilePath), (thumbSize, thumbSize))
-                   else:
-                     thumbFilePath = extParams.path
-                     picInfo.sizes = [None, None, extParams.thwidth, extParams.thheight]
-                picInfo.thumbFilePath = thumbFilePath
+               else:
+                  thumbFilePath = h.expandName('%ss.jpg' % (name))
+               localThumbPath = os.path.join(g.OPT.uploadPath, thumbFilePath)
+               picInfo.sizes = Picture.makeThumbnail(localFilePath, localThumbPath, (thumbSize, thumbSize))
+               picInfo.thumbFilePath = thumbFilePath
            except:
                 os.unlink(localFilePath)
                 return [False, False, False, _(u"Broken picture. Maybe it is interlaced PNG?")]
 
-           return [AngryFileHolder(localFilePath), picInfo, False, False]
+           return [AngryFileHolder((localFilePath, localThumbPath)), picInfo, False, False]
         else:
            return False
 
@@ -872,7 +798,7 @@ class FccController(OrphieBaseController):
             groups = filteredQueryRe.groups()
             filterName = groups[1]
             text = groups[2]
-            tagfilter = self.buildFilter(filterName)[2]
+            tagfilter = Post.buildFilter(filterName, self.userInst)[2]
 
         base = Post.query
         if tagfilter:
@@ -882,7 +808,7 @@ class FccController(OrphieBaseController):
                                         Post.parentPost.has(tagfilter),
                                    ))
 
-        filter = self.excludeHiddenTags(base)
+        filter = Post.excludeAdminTags(base, self.userInst)
         filter = filter.filter(Post.message.like('%%%s%%' % text))
         count = self.sqlCount(filter)
         #log.debug(count)

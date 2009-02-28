@@ -5,6 +5,9 @@ function popup_posts(options){
   popup_posts.helper.addClass("popup_post");
   popup_posts.helper.hide();
   popup_posts.cache = {}
+
+  if(options.loading_icon_path) $("<img>").attr("src", options.loading_icon_path)
+
   $(document.body).append(popup_posts.helper)
   var show_it = function(html){
     popup_posts.helper.html('<table>' + html + '</table>')
@@ -342,9 +345,6 @@ function click_expands(options){
 
   if(options.loading_icon_path) $("<img>").attr("src", options.loading_icon_path)
 
-  if (options.loading_icon_path){
-
-  }
   var show_image = function() {
     var filesize = $(this).parent().parent().find("span.filesize em").html()
     var matcher = filesize.match(/(\d+)x(\d+)/)

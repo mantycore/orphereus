@@ -623,7 +623,8 @@ class FccController(OrphieBaseController):
             captchaOk = False
             anonCaptId = session.get('anonCaptId', False)
             captcha = Captcha.getCaptcha(anonCaptId)
-
+            #log.debug("captcha id: " + str(anonCaptId))
+            #log.debug("captcha object: " + str(captcha))
             if captcha:
                 captchaOk = captcha.test(request.POST.get('captcha', False))
 

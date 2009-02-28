@@ -77,6 +77,7 @@ class OrphieBaseController(BaseController):
         if self.userInst.Anonymous:
             anonCaptId = session.get('anonCaptId', False)
             if not anonCaptId or not Captcha.exists(anonCaptId):
+                #log.debug('recreate')
                 captcha = Captcha.create()
                 session['anonCaptId'] = captcha.id
                 session.save()

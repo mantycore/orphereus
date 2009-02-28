@@ -42,8 +42,8 @@ t_captchas = sa.Table("captchas", meta.metadata,
 
 def randomStr(min = 6, max = 8):
     #alphabet = string.ascii_lowercase + string.digits + '$%#@'
-    vowels = "euioa"
-    consonants = "qwrtypsdfghjklzxcvbnm"
+    vowels = "euoa"
+    consonants = "qwrtypsdfghjkzxcvbnm"
     str=''
 
     for x in range(0, random.randint(min ,max) / 2): #random.sample(alphabet, random.randint(min,max)):
@@ -62,7 +62,11 @@ class Captcha(object):
 
     def test(self, text, removeOnlyIncorrect = False):
         ret = (self.text == text)
+        #log.debug("recieved:" + text)
+        #log.debug("self:" + self.text)
+        #log.debug(str(self) +  "  " + str(self.id))
         if not ret or (ret and not removeOnlyIncorrect):
+            #log.debug("del")
             meta.Session.delete(self)
             meta.Session.commit()
         return ret
@@ -72,6 +76,7 @@ class Captcha(object):
         captcha = Captcha(randomStr())
         meta.Session.add(captcha)
         meta.Session.commit()
+        #log.debug("created" + str(captcha.id))
         return captcha
 
     @staticmethod

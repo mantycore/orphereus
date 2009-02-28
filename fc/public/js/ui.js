@@ -122,6 +122,37 @@ function popup_posts(options){
   }
 }
 
+function createElementEx(strTagName, arrAttrs, arrChildren)
+{
+    var objElement = document.createElement(strTagName);
+    for (strIndex in arrAttrs)
+    {
+        objElement.setAttribute(strIndex, arrAttrs[strIndex]);
+    }
+    for (strIndex in arrChildren)
+    {
+        objElement.appendChild(arrChildren[strIndex]);
+    }
+    return objElement;
+}
+function getElementsByClass(searchClass, domNode, tagName)
+{
+    if (domNode == null)
+        domNode = document;
+    if (tagName == null)
+        tagName = '*';
+    var el = new Array();
+    var tags = domNode.getElementsByTagName(tagName);
+    var tcl = " "+searchClass+" ";
+    for(i=0,j=0; i<tags.length; i++)
+    {
+        var test = " " + tags[i].className + " ";
+        if (test.indexOf(tcl) != -1)
+            el[j++] = tags[i];
+    }
+    return el;
+}
+
 function insert(text,notFocus)
 {
     var textarea=document.forms.postform.message;
@@ -387,6 +418,7 @@ window.onload=function(e)
     }
 }
 
+/* YForm */
 var YForm = function(){
     this.form = $("#y_replyform")
 
@@ -454,7 +486,6 @@ YForm.prototype = {
         if(!m){ //thread
           m = ["", this.thread_for_link(link), link.html().match(/\d+/)[0]]
         };
-        console.info("attaching"+m[2]+"(thread "+m[1]+")")
         this.form.parent().insertAfter($("#quickReplyNode" + m[2]))
         this.set_fields(m[1])
         this.quote(m[2])
@@ -462,20 +493,21 @@ YForm.prototype = {
         return false;
     },
     close: function(){
-        this.form.hide()
+        this.form.parent().hide()
     }
 }
 
 YForm.Captcha = function(form){
     var me = this;
     this.cfield = form.find("#y_replyform_captcha_field");
-    this.creq = this.cfield.attr("request")
+    this.creq = "Captcha required"
     this.cimg = this.cfield.parent().find("img")
     var field = this.cfield;
 
     field.removeAttr("readonly")
     field.focus(function() {
-        field.removeClass("inactive valid invalid").val("")
+        if(field.hasClass("valid")) return false;
+        field.removeClass("inactive valid invalid").val(me.captcha)
     })
     field.blur(function() {
         me.test()
@@ -520,5 +552,6 @@ YForm.Captcha.prototype = {
         $.ajax({type: 'get', url: "/ajax/checkCaptcha/" + this.captcha_id + '/' + this.captcha, success: callback, error: error });
     }
 }
+
 
 

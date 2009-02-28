@@ -16,7 +16,6 @@ ${c.title}
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style() + ".css")}" title="${c.userInst.style()}" />
         <script type="text/javascript" src="${h.staticFile("jquery.js")}"></script>
-        <script type="text/javascript" src="${h.staticFile("utils.js")}"></script>
         <script type="text/javascript" src="${h.staticFile("ui.js")}"></script>
     </head>
     <body>

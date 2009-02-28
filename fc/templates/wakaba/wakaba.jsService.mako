@@ -1,5 +1,5 @@
 <script type="text/javascript">
-<!-- $(YForm.init) -->
+ $(YForm.init)
 window.loading_icon_path = "${g.OPT.staticPathWeb}images/loading.gif"
 %if c.userInst.useAjax():
     popup_posts({ajax: true,

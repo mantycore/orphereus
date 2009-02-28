@@ -467,14 +467,13 @@ border: none;
 }
 .y_replyform{
     overflow: hidden;
-    float: left;
     display: none;
 }
 .y_replyform .clear{
     clear: both;
 }
 #y_replyform textarea {
-    width: 100%; border: 1px #888 solid;
+    width: 99%; border: 1px #888 solid;
 }
 #y_replyform div.hidden {
     margin: 0;
@@ -492,7 +491,7 @@ border: none;
     padding-right: 1em;
     vertical-align: middle
 }
-.y_replyform_anon #y_replyform p{
+.y_replyform_anon .y_replyform_fields p{
     line-height: 40px;
     height: 40px;
     min-height: 2.5em;
@@ -514,7 +513,7 @@ border: none;
     width: 100px;
     min-width: 15ex;
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 155px;
 }
 #y_replyform_captcha input.inactive{
@@ -527,12 +526,13 @@ border: none;
 #y_replyform_captcha input.invalid{
     background: #f55;
 }
-#y_replyform_password{
-    position: absolute;
-    left: 155px;
-    top: 0;
-    vertical-align: top;
-    height: 1em;
+input#y_replyform_password{
+            position: absolute;
+            left: 155px;
+            bottom: 0;
+            top: auto;
+            vertical-align: top;
+            height: 1em;
 }
 #y_replyform_sage label{
 }
@@ -547,9 +547,15 @@ border: none;
 #y_replyform_buttons input{
     border: 1px #666 solid; margin-left: 10px;
 }
-#y_replyform_file input{
-    margin-top: 10px;
+ #y_replyform_file input{
+    margin-top: 2px;
 }
 #y_replyform_buttons input{
+    margin-top: 3px;
+}
+.y_replyform_anon #y_replyform_file input{
+    margin-top: 10px;
+}
+.y_replyform_anon #y_replyform_buttons input{
     margin-top: 12px;
 }

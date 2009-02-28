@@ -132,11 +132,16 @@ class FcajaxController(OrphieBaseController):
     def checkCaptcha(self, id, text):
         ct = Captcha.getCaptcha(id)
         if ct:
+            #log.debug("testing: " + str(id))
             ok = ct.test(text, True)
             if ok:
+                #log.debug('chck - ok')
                 return 'ok'
             else:
                 ct = Captcha.create()
+                session['anonCaptId'] = ct.id
+                #log.debug('chk - fail ' + str(ct.id))
+                session.save()
                 return str(ct.id)
         else:
             abort(404)

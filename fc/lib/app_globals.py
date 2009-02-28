@@ -12,6 +12,7 @@ class OptHolder(object):
         self.appPath = os.path.dirname(__file__).replace('/fc/lib', '').replace('\\fc\\lib', '')  #sys.path[0] #os.path.dirname(__file__)
         self.templPath= os.path.join(self.appPath, 'fc/templates/')
         self.uploadPath = os.path.join(self.appPath, 'fc/uploads/')
+        self.staticPath = os.path.join(self.appPath, 'fc/public/')
         self.captchaFont = os.path.join(self.appPath, 'fc/cfont.ttf')
         self.markupFile = os.path.join(self.appPath, 'wakabaparse/mark.def')
 
@@ -19,6 +20,9 @@ class OptHolder(object):
         proposedPath = config['core.uploadPath']
         if os.path.exists(proposedPath):
             self.uploadPath = proposedPath
+        proposedPath = config['core.staticPath']
+        if os.path.exists(proposedPath):
+            self.staticPath = proposedPath
         self.devMode = (config['core.devMode'] == 'true')
         self.hashSecret = config['core.hashSecret']
         self.baseDomain = config['core.baseDomain']

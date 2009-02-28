@@ -73,3 +73,13 @@ def templateExists(relName):
     #log.debug(os.path.exists(os.path.join(config['pylons.g'].OPT.templPath, relName)))
     return os.path.exists(os.path.join(config['pylons.app_globals'].OPT.templPath, relName))
 
+def staticFile(fileName):
+    gv = config['pylons.app_globals']
+    spw = gv.OPT.staticPathWeb
+    spl = gv.OPT.staticPath
+    ext = fileName.split('.')[-1]
+    relFileName = "%s/%s" % (ext, fileName)
+    version = os.path.getmtime(os.path.join(spl, relFileName))
+    return u"%s%s?version=%s" % (spw, relFileName, str(version))
+
+

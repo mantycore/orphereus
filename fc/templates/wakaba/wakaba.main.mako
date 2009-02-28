@@ -9,20 +9,20 @@ ${c.title}
     %if c.page and isinstance(c.page, int):
       (${c.page})
     %endif
-%endif        
+%endif
         </title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <meta name="robots" content="noarchive" />
-        <link rel="stylesheet" type="text/css" href="${g.OPT.staticPathWeb}css/${c.userInst.style()}.css" title="Photon" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-        <script type="text/javascript" src="${g.OPT.staticPathWeb}js/jquery-1.2.6.js"></script>
-        <script type="text/javascript" src="${g.OPT.staticPathWeb}js/utils.js"></script>
-        <script type="text/javascript" src="${g.OPT.staticPathWeb}js/ui.js"></script>
+        <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style() + ".css")}" title="${c.userInst.style()}" />
+        <script type="text/javascript" src="${h.staticFile("jquery.js")}"></script>
+        <script type="text/javascript" src="${h.staticFile("utils.js")}"></script>
+        <script type="text/javascript" src="${h.staticFile("ui.js")}"></script>
     </head>
     <body>
         <%include file="wakaba.menu.mako" />
         <%include file="wakaba.logo.mako" />
-        <hr />     
+        <hr />
         ${self.body()}
         <%include file="wakaba.menu.mako" />
         <%include file="wakaba.footer.mako" />

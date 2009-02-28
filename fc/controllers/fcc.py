@@ -625,7 +625,9 @@ class FccController(OrphieBaseController):
         retest = re.compile("^\d+$")
         for i in request.POST:
             if retest.match(request.POST[i]):
-                res = self.processDelete(request.POST[i], fileonly, True, reason, remPass)
+                post = Post.getPost(request.POST[i])
+                if post:
+                    res = post.deletePost(self.userInst, fileonly, True, reason, remPass)
                 opPostDeleted = opPostDeleted or res
 
         tagLine = request.POST.get('tagLine', False)

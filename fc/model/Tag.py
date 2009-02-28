@@ -38,7 +38,7 @@ class Tag(object):
 
     def getExactThreadCount(self):
         from fc.model.Post import Post
-        return Post.query.filter(Post.tags.any(id==self.id)).count()
+        return Post.query.filter(Post.tags.any(Tag.id==self.id)).count()
     """
     def __le__(self, other):
         return cmp(self.tag, other.tag)

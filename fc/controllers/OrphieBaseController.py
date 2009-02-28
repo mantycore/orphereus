@@ -163,96 +163,11 @@ class OrphieBaseController(BaseController):
         else:
            return False
 
-    def formatPostReference(self, postid): # TODO FIXME: move to parser
+    def formatPostReference(self, postid):
         post = Post.getPost(postid)
         if post:
             parentid = post.parentid
             return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)
         else:
             return "&gt;&gt;%s" % postid
-        #if parentid == -1:
-        #    return '<a href="/%s">&gt;&gt;%s</a>' % (postid, postid)
-        #else:
-        # We will format all posts same way. Why not?
-        #Also, changed to /postid#ipostid instead of /parentid#ipostid.
-        #Forget it, changed back.
 
-    #TODO: rewrite
-    def processDelete(self, postid, fileonly=False, checkOwnage=True, reason = "???", rempPass = False):
-        p = self.sqlGet(Post.query, postid)
-
-        opPostDeleted = False
-        if p:
-            if self.userInst.Anonymous and p.removemd5 != rempPass:
-                return False
-
-            threadRemove = True
-            tags = p.tags
-            parentp = p
-            if p.parentid>0:
-                parentp = p.parentPost
-                tags = parentp.tags
-                threadRemove = False
-
-            isOwner = self.userInst.uidNumber == p.uidNumber
-            selfModEnabled = parentp.selfModeratable()
-            canModerate = selfModEnabled and self.userInst.uidNumber == parentp.uidNumber
-            postCanBeDeleted = (isOwner or canModerate or self.userInst.canDeleteAllPosts())
-
-            if checkOwnage and not postCanBeDeleted:
-                # print some error stuff here
-                return False
-
-            tagline = u''
-            taglist = []
-            for tag in tags:
-                taglist.append(tag.tag)
-
-                tag.replyCount -= 1
-                if threadRemove:
-                    tag.threadCount -= 1
-            tagline = ', '.join(taglist)
-
-            postOptions = Tag.conjunctedOptionsDescript(p.parentid>0 and parentp.tags or p.tags)
-            if checkOwnage and not p.uidNumber == self.userInst.uidNumber:
-                logEntry = u''
-                if p.parentid>0:
-                    logEntry = _("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (p.id, p.uidNumber, p.parentid, tagline, reason)
-                else:
-                    logEntry = _("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (p.id, p.uidNumber, tagline, reason)
-                if fileonly:
-                    logEntry += " %s" % _("(file only)")
-                toLog(LOG_EVENT_POSTS_DELETE, logEntry)
-
-            if p.parentid == -1 and not fileonly:
-                if not (postOptions.canDeleteOwnThreads or self.userInst.canDeleteAllPosts()):
-                    return False
-                opPostDeleted = True
-                for post in self.sqlAll(Post.query.filter(Post.parentid==p.id)):
-                    self.processDelete(postid=post.id, checkOwnage=False)
-
-            pic = Picture.getPicture(p.picid)
-            if pic:
-                pic.deletePicture(True)
-                pic = True
-
-            if fileonly and postOptions.imagelessPost:
-                if pic:
-                    p.picid = -1
-            else:
-                invisBumpDisabled = (g.settingsMap['invisibleBump'].value == 'false')
-                parent = self.sqlFirst(Post.query.filter(Post.id==p.parentid))
-                if parent:
-                    parent.replyCount -= 1
-
-                if invisBumpDisabled and p.parentid != -1:
-                    thread = self.sqlAll(Post.query.filter(Post.parentid==p.parentid))
-                    if thread and thread[-1].id == p.id: #wut?
-                        if len(thread) > 1 and not thread[-2].sage:
-                            parent.bumpDate = thread[-2].date
-                        else:
-                            parent.bumpDate = parent.date
-
-                meta.Session.delete(p)
-        meta.Session.commit()
-        return opPostDeleted

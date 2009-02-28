@@ -65,7 +65,6 @@ class Picture(object):
 
     def deletePicture(self, commit = True):
         from fc.model.Post import Post
-        log.debug(Post.pictureRefCount(self.id))
         if Post.pictureRefCount(self.id) == 1:
             filePath = os.path.join(meta.globj.OPT.uploadPath, self.path)
             thumPath = os.path.join(meta.globj.OPT.uploadPath, self.thumpath)

@@ -56,8 +56,6 @@ def make_map():
     map.connect('/holySynod/manageUsers/editAttempt/:pid', controller='fca', action='editUserAttempt', requirements=dict(pid='\d+'))
     map.connect('/holySynod/manageUsers/editUserByPost/:pid', controller='fca', action='editUserByPost', requirements=dict(pid='\d+'))
     map.connect('/holySynod/manageUsers/edit/:uid', controller='fca', action='editUser', requirements=dict(uid='\d+'))
-    map.connect('/holySynod/manageQuestions', controller='fca', action='manageQuestions')
-    map.connect('/holySynod/manageApplications', controller='fca', action='manageApplications')
     map.connect('/holySynod/viewLog', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
     map.connect('/holySynod/viewLog/page/:page', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
     map.connect('/holySynod/manageMappings/:act/:id/:tagid', controller='fca', action='manageMappings', act='show', id=0, tagid=0, requirements=dict(id='\d+', tagid='\d+'))

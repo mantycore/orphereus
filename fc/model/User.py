@@ -3,22 +3,20 @@ from sqlalchemy import orm
 from sqlalchemy.orm import eagerload
 
 from fc.model import meta
+from fc.model.UserOptions import UserOptions
 from fc.model.LogEntry import LogEntry
 from fc.model.UserFilters import UserFilters
+from fc.lib.miscUtils import isNumber, toLog, filterText
+from fc.lib.constantValues import *
+
 import datetime
 import hashlib
 import re
 import pickle
-from pylons import config
 from pylons.i18n import _, ungettext, N_
 
 import logging
 log = logging.getLogger(__name__)
-
-from fc.model import meta
-from fc.model.UserOptions import UserOptions
-from fc.lib.miscUtils import isNumber, toLog, filterText
-from fc.lib.constantValues import *
 
 t_users = sa.Table("users", meta.metadata,
     sa.Column("uidNumber",sa.types.Integer, primary_key=True),
@@ -43,21 +41,20 @@ class User(object):
     def getUser(uidNumber):
         ret = User.query.options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
 
-        #TODO: legacy code
-        if meta.globj:
-            if ret and not ret.options:
-                ret.options = UserOptions()
-                UserOptions.initDefaultOptions(ret.options, meta.globj.OPT)
-                meta.Session.commit()
-
-            if not ret.options.hideThreads:
-                ret.options.hideThreads = pickle.dumps([])
-                meta.Session.commit()
-            if not ret.options.homeExclude:
-                ret.options.homeExclude = pickle.dumps([])
-                meta.Session.commit()
-
         if ret:
+            if meta.globj: #TODO: legacy code
+                if ret and not ret.options:
+                    ret.options = UserOptions()
+                    UserOptions.initDefaultOptions(ret.options, meta.globj.OPT)
+                    meta.Session.commit()
+
+                if not ret.options.hideThreads:
+                    ret.options.hideThreads = pickle.dumps([])
+                    meta.Session.commit()
+                if not ret.options.homeExclude:
+                    ret.options.homeExclude = pickle.dumps([])
+                    meta.Session.commit()
+
             ret.Anonymous = False
         return ret
 

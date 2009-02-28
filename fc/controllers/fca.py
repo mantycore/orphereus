@@ -294,7 +294,7 @@ class FcaController(OrphieBaseController):
                     c.tag.options.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
                     c.tag.save()
                     if request.POST.get('deleteBoard', False) and c.tag.id:
-                        count = Post.query.filter(Post.tags.any(tag=tag)).count()
+                        count = c.tag.getExactThreadCount()
                         if count>0:
                             c.message = _("Board must be empty for deletion")
                         else:
@@ -451,8 +451,7 @@ class FcaController(OrphieBaseController):
                                     removed.append(str(post.id))
                                 else:
                                     removed.append("%d/%d" % (post.id, post.parentid))
-
-                                self.processDelete(post.id, False, False, reason)
+                                post.deletePost(self.userInst, False, False, reason)
                             toLog(LOG_EVENT_USER_DELETE,_('Removed legacy of %s for "%s" [%s]') % (user.uidNumber, reason, ', '.join(removed)))
                         meta.Session.delete(user)
                         toLog(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
@@ -466,13 +465,4 @@ class FcaController(OrphieBaseController):
         else:
             c.errorText = _('No such user exists.')
             return self.render('error')
-
-    def manageQuestions(self):
-        c.boardName = 'Questions management'
-        return self.render('manageQuestions')
-
-    def manageApplications(self):
-        c.boardName = 'Applications management'
-        return self.render('manageApplications')
-
 

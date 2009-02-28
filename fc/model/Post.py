@@ -6,8 +6,12 @@ from sqlalchemy.sql import and_, or_, not_
 from fc.model import meta
 from fc.model.Picture import Picture
 from fc.model.Tag import Tag
+from fc.model.LogEntry import LogEntry
 from fc.lib.miscUtils import getRPN
+from fc.lib.constantValues import *
 import datetime
+
+from pylons.i18n import _, ungettext, N_
 
 import logging
 log = logging.getLogger(__name__)
@@ -201,3 +205,79 @@ class Post(object):
                                         Post.parentPost.has(blocker),
                                    )))
         return filter
+
+    def deletePost(self, userInst, fileonly=False, checkOwnage=True, reason = "???", rempPass = False):
+        opPostDeleted = False
+
+        if userInst.Anonymous and self.removemd5 != rempPass:
+            return False
+
+        threadRemove = True
+        tags = self.tags
+        parentp = self
+        if self.parentPost:
+            parentp = self.parentPost
+            tags = parentp.tags
+            threadRemove = False
+
+        isOwner = userInst.uidNumber == self.uidNumber
+        selfModEnabled = parentp.selfModeratable()
+        canModerate = selfModEnabled and userInst.uidNumber == parentp.uidNumber
+        postCanBeDeleted = (isOwner or canModerate or userInst.canDeleteAllPosts())
+
+        if checkOwnage and not postCanBeDeleted:
+            # print some error stuff here
+            return False
+
+        tagline = u''
+        taglist = []
+        for tag in tags:
+            taglist.append(tag.tag)
+
+            tag.replyCount -= 1
+            if threadRemove:
+                tag.threadCount -= 1
+        tagline = ', '.join(taglist)
+
+        postOptions = Tag.conjunctedOptionsDescript(self.parentid>0 and parentp.tags or self.tags)
+        if checkOwnage and not self.uidNumber == userInst.uidNumber:
+            logEntry = u''
+            if self.parentid > 0:
+                logEntry = N_("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (self.id, self.uidNumber, self.parentid, tagline, reason)
+            else:
+                logEntry = N_("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (self.id, self.uidNumber, tagline, reason)
+            if fileonly:
+                logEntry += " %s" % N_("(file only)")
+            LogEntry.create(userInst.uidNumber, LOG_EVENT_POSTS_DELETE, logEntry)
+
+        if not self.parentPost and not fileonly:
+            if not (postOptions.canDeleteOwnThreads or userInst.canDeleteAllPosts()):
+                return False
+            opPostDeleted = True
+            for post in Post.query.filter(Post.parentid==self.id).all():
+                post.deletePost(userInst, checkOwnage=False)
+
+        pic = Picture.getPicture(self.picid)
+        if pic:
+            pic.deletePicture(True)
+            pic = True
+
+        if fileonly and postOptions.imagelessPost:
+            if pic:
+                self.picid = -1
+        else:
+            invisBumpDisabled = (meta.globj.settingsMap['invisibleBump'].value == 'false')
+            parent = self.parentPost
+            if parent:
+                parent.replyCount -= 1
+
+            if invisBumpDisabled and self.parentid != -1:
+                thread = Post.query.filter(Post.parentid==self.parentid).all()
+                if thread and thread[-1].id == self.id: #wut?
+                    if len(thread) > 1 and not thread[-2].sage:
+                        parent.bumpDate = thread[-2].date
+                    else:
+                        parent.bumpDate = parent.date
+            meta.Session.delete(self)
+        meta.Session.commit()
+        return opPostDeleted

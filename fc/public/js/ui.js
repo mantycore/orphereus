@@ -387,3 +387,138 @@ window.onload=function(e)
     }
 }
 
+var YForm = function(){
+    this.form = $("#y_replyform")
+
+    if($("#trcaptcha img").size()){
+        this.anon();
+        this.captcha = new YForm.Captcha(this.form)
+    }else{
+        this.reg()
+    }
+}
+
+YForm.open = function(e){
+  try{
+    if(!YForm.default) YForm.default = new YForm();
+    if(!e || e['tagName'] != 'A') e = this;
+    return YForm.default.open(e)
+  }catch(e){ console.error(e); return false;}
+}
+
+YForm.init = function(){
+  $(".reflink a").attr("onclick","").click(YForm.open)
+}
+
+YForm.prototype = {
+    anon: function() {
+        this.form.addClass("y_replyform_anon")
+    },
+    reg: function() {
+        this.form.removeClass("y_replyform_anon")
+        this.form.find("#y_replyform_password").remove() // no save password query!
+    },
+    set_fields: function(thread_id) {
+        var form = this.form;
+        var me = this;
+
+        form.attr("action", this.form.attr("action").replace(/\d+/,thread_id) )
+
+        var select = $("#trgetback select");
+        if(select.size()) form.find("#y_replyform_goto_field").html(select.html())
+
+        var captcha = $("#trcaptcha img")
+        if(captcha.size()) this.captcha.cimg.attr("src",captcha.attr("src"))
+
+        $(["tagLine", "curPage", "remPass"]).each(function() {
+            var field = $("#postform input[name="+this+"]")
+            if(field.size()) form.find("input[name="+this+"]").val(field.val())
+        })
+
+        $("#y_replyform_buttons .close").click(function() {me.close()})
+    },
+    quote: function(post_id){
+      var value = $("#y_replyform_text").val();
+      $("#y_replyform_text").val(value + ">>" + post_id + "\n")
+    },
+    thread_for_link: function(link){
+      link = link[0]
+      var match
+      while(link = link.parentNode){
+        if(match = link.id.match(/^thread\D*(\d+)$/)) return match[1];
+      }
+    },
+    open: function(link) {
+        link = $(link)
+        var m = link.attr("href").match(/\/(\d+)\D+(\d+)$/)
+        if(!m){ //thread
+          m = ["", this.thread_for_link(link), link.html().match(/\d+/)[0]]
+        };
+        console.info("attaching"+m[2]+"(thread "+m[1]+")")
+        this.form.parent().insertAfter($("#quickReplyNode" + m[2]))
+        this.set_fields(m[1])
+        this.quote(m[2])
+        this.form.parent().show()
+        return false;
+    },
+    close: function(){
+        this.form.hide()
+    }
+}
+
+YForm.Captcha = function(form){
+    var me = this;
+    this.cfield = form.find("#y_replyform_captcha_field");
+    this.creq = this.cfield.attr("request")
+    this.cimg = this.cfield.parent().find("img")
+    var field = this.cfield;
+
+    field.removeAttr("readonly")
+    field.focus(function() {
+        field.removeClass("inactive valid invalid").val("")
+    })
+    field.blur(function() {
+        me.test()
+    })
+    form.submit(function() {
+      if(me.captcha) me.cfield.removeAttr("readonly").val(me.captcha).attr("readonly","true")
+      return true;
+    })
+}
+YForm.Captcha.prototype = {
+    request: function(){
+        this.cfield.removeClass("inactive valid invalid").addClass("inactive").val(this.creq)
+    },
+    error: function() {
+        this.cfield.removeClass("inactive valid invalid").addClass("invalid").val("Error! Refresh page please")
+        if(window.console) console.error("errors in captcha uri");
+    },
+    test: function(){
+        var me = this;
+        var img = this.cimg;
+        this.captcha = this.cfield.val()
+        if(img.attr("src").match(/\d+/)) this.captcha_id = img.attr("src").match(/\d+/)[0];
+        else return me.error();
+        if(!this.captcha) return this.request();
+        var field = this.cfield
+        field.addClass("inactive").val("Validating…")
+
+        var callback = function(response) {
+            if(response == "ok"){
+                setTimeout(function() {field.removeAttr("readonly").val(me.captcha).attr("readonly","true")}, 2000)
+                field.val("You are human!")
+                field.addClass("valid").attr("readonly","true")
+            }else{
+                field.addClass("invalid").val("Try again")
+                img.attr("src", img.attr("src").replace(/\d+/, response))
+            }
+        }
+        var error = function() {
+            me.error()
+        }
+
+        $.ajax({type: 'get', url: "/ajax/checkCaptcha/" + this.captcha_id + '/' + this.captcha, success: callback, error: error });
+    }
+}
+
+

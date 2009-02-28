@@ -35,6 +35,10 @@ class Tag(object):
 
     def save(self):
         meta.Session.commit()
+
+    def getExactThreadCount(self):
+        from fc.model.Post import Post
+        return Post.query.filter(Post.tags.any(id==self.id)).count()
     """
     def __le__(self, other):
         return cmp(self.tag, other.tag)

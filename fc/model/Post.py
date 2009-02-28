@@ -195,7 +195,7 @@ class Post(object):
     @staticmethod
     def excludeAdminTags(filter, userInst):
         if not userInst.isAdmin():
-            blocker = Post.tags.any(Tag.id.in_(g.forbiddenTags))
+            blocker = Post.tags.any(Tag.id.in_(meta.globj.forbiddenTags))
             filter = filter.filter(not_(
                                    or_(blocker,
                                         Post.parentPost.has(blocker),

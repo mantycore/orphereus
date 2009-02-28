@@ -383,3 +383,8 @@ margin-right: 8px;
 vertical-align: middle;
 border: none;
 }
+
+.comment_loading_img{
+border: none;
+vertical-align: bottom;
+}

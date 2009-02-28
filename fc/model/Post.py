@@ -202,7 +202,8 @@ class Post(object):
                 else:
                     filteringExpression = cl[0]
                 tagList = cl[1]
-        filter = filter.filter(filteringExpression)
+        if filteringExpression:
+            filter = filter.filter(filteringExpression)
         return (filter, tagList, filteringExpression)
 
     @staticmethod

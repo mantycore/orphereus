@@ -501,6 +501,7 @@ YForm.Captcha = function(form){
     var me = this;
     this.cfield = form.find("#y_replyform_captcha_field");
     this.creq = "Captcha required"
+    this.captcha = ""
     this.cimg = this.cfield.parent().find("img")
     var field = this.cfield;
 
@@ -510,6 +511,7 @@ YForm.Captcha = function(form){
         field.removeClass("inactive valid invalid").val(me.captcha)
     })
     field.blur(function() {
+        if(field.hasClass("valid")) return false;
         me.test()
     })
     form.submit(function() {
@@ -542,6 +544,7 @@ YForm.Captcha.prototype = {
                 field.addClass("valid").attr("readonly","true")
             }else{
                 field.addClass("invalid").val("Try again")
+                me.captcha = ""
                 img.attr("src", img.attr("src").replace(/\d+/, response))
             }
         }
@@ -552,6 +555,4 @@ YForm.Captcha.prototype = {
         $.ajax({type: 'get', url: "/ajax/checkCaptcha/" + this.captcha_id + '/' + this.captcha, success: callback, error: error });
     }
 }
-
-
 

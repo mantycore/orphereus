@@ -69,7 +69,7 @@
             <input type="password" value="risiku" size="35" name="remPass" id="y_replyform_password" title="You can use this password to remove posts"/>
         </p>
         <p id="y_replyform_file"><input type="file" id="y_replyform_file_field" name="file" size="10" tabindex="40" /></p>
-        <p id="y_replyform_sage"><label for="y_replyform_sage_field" title="sage" tabindex="50"><input type="checkbox" id="y_replyform_sage_field" name="sage" />sage</label></p>
+        <p id="y_replyform_sage"><label for="y_replyform_sage_field" title="sage"><input type="checkbox" id="y_replyform_sage_field" name="sage" tabindex="50"/>sage</label></p>
 
         <p id="y_replyform_goto"><label for="y_replyform_goto_field" title="goto">Go to</label> <select name="goto" id="y_replyform_goto_field"  tabindex="60">
             <option value="0">Thread</option>

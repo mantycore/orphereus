@@ -9,7 +9,13 @@
     %endif
     >
     ${h.modLink(thread.file.path, c.userInst.secid(), True)}</a>
-    (<em>${'%.2f' % (thread.file.size / 1024.0)} Kbytes, ${thread.file.width}x${thread.file.height}</em>)
+
+    (<em>${'%.2f' % (thread.file.size / 1024.0)}
+    %if thread.file.width and thread.file.height:
+        ${_('Kbytes')}, ${thread.file.width}x${thread.file.height}</em>)
+    %else:
+        ${_('Kbytes')}</em>)
+    %endif
 </span>
 
 <br />
@@ -31,44 +37,43 @@
     <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>
 %endif
 <a name="i${thread.id}"></a>
-<!-- <label> -->
-    &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Delete"/></a>
-    <span style="display:none" class="delete">
-    %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
-        <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
-        %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous and thread.uidNumber == c.uidNumber:
-            <a href="/${thread.id}/anonymize">[FA]</a>
-        %endif
+&nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Delete"/></a>
+<span style="display:none" class="delete">
+%if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
+    <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
+    %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous and thread.uidNumber == c.uidNumber:
+        <a href="/${thread.id}/anonymize">[FA]</a>
     %endif
-    %if c.userInst.isAdmin() and c.userInst.canManageUsers():
-        <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>
-    %endif
-    %if c.userInst.isAdmin() and c.userInst.canManageMappings():
-        <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>
-    %endif
-    </span>
-    %if thread.title:
-        <span class="filetitle">${thread.title}</span>
-    %endif
-<!-- </label> -->
+%endif
+%if c.userInst.isAdmin() and c.userInst.canManageUsers():
+    <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>
+%endif
+%if c.userInst.isAdmin() and c.userInst.canManageMappings():
+    <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>
+%endif
+</span>
+%if thread.title:
+    <span class="filetitle">${thread.title}</span>
+%endif
 
-    <span
-    %if getattr(thread, 'mixed', False):
-     style="color: red;"
-    %endif
-    >
-    ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
-    </span>
-    <span class="reflink">
-    %if c.board:
-        <a href="/${thread.id}#i${thread.id}" ${c.currentUserCanPost and """onclick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
-    %else:
-        <a href="javascript:insert('&gt;&gt;${thread.id}')" ${c.currentUserCanPost and """onclick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
-    %endif
-    %if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
-        <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
-    %endif
-    </span>
+
+<span
+%if getattr(thread, 'mixed', False):
+ style="color: red;"
+%endif
+>
+${h.modTime(thread, c.userInst, g.OPT.secureTime)}
+</span>
+<span class="reflink">
+%if c.board:
+    <a href="/${thread.id}#i${thread.id}" ${c.currentUserCanPost and """onclick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
+%else:
+    <a href="javascript:insert('&gt;&gt;${thread.id}')" ${c.currentUserCanPost and """onclick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
+%endif
+%if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
+    <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
+%endif
+</span>
 
     &nbsp;
     ${_('Posted in')}:
@@ -84,20 +89,16 @@
 &nbsp;
 %if not c.userInst.Anonymous:
 [<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide Thread')}</a>]
-<!-- </span> -->
 %endif
 
-<!-- <span class="replytothread"> -->
-    %if c.currentUserCanPost:
-    %if thread.file and thread.file.width:
-     [<a href="/${thread.id}/oekakiDraw">Draw</a>]
-    %endif
-    [<a href="/${thread.id}">Reply</a>]
-    %else:
-    [<a href="/${thread.id}">View thread</a>]
-    %endif
-<!-- </span>-->
-
+%if c.currentUserCanPost:
+%if thread.file and thread.file.width:
+ [<a href="/${thread.id}/oekakiDraw">Draw</a>]
+%endif
+[<a href="/${thread.id}">Reply</a>]
+%else:
+[<a href="/${thread.id}">View thread</a>]
+%endif
 
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():

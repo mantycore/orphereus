@@ -346,15 +346,12 @@ function click_expands(options){
 
   }
   var show_image = function() {
-    if (this.src.match(/generic/)) return true;
-
+    var filesize = $(this).parent().parent().find("span.filesize em").html()
+    var matcher = filesize.match(/(\d+)x(\d+)/)
+    if (!matcher) return true;
     if(options.max_height || options.max_width){
-      var filesize = $(this).parent().parent().find("span.filesize em").html()
-      var matcher = false
-      if (matcher = filesize.match(/(\d+)x(\d+)/)){
         if (options.max_width  && options.max_width  < parseInt(matcher[1])) return true;
         if (options.max_height && options.max_height < parseInt(matcher[2])) return true;
-      }
     }
 
     if (this.src != this.parentNode.href){

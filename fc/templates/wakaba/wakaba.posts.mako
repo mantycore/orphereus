@@ -22,6 +22,7 @@
            <%include file="wakaba.postReply.mako" args="thread=thread, post=post"/>
         %endfor
     </div>
+    <br clear="left" />
 %else:
 <div id="hiddenThread${thread.id}">
     <img style="vertical-align: bottom;" src="${g.OPT.staticPathWeb}images/hidden.png" alt="Hidden"/>
@@ -29,8 +30,7 @@
     [<a href="/ajax/showThread/${thread.id}/${c.tagLine}">${_('Unhide')}</a>]
 </div>
 %endif
-    <br clear="left" />
-    <hr />
+    <hr/>
 %endfor
 
 <table class="userdelete">

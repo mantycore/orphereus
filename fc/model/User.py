@@ -125,6 +125,7 @@ class User(object):
     # Board customization
     def addFilter(self, filter):
         userFilter = UserFilters(self.uidNumber, filterText(filter))
+        self.filters.append(userFilter)
         meta.Session.add(userFilter)
         meta.Session.commit()
         return userFilter

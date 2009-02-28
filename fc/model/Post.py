@@ -132,10 +132,14 @@ class Post(object):
         return Post.query.filter(Post.uidNumber == uidNumber)
 
     @staticmethod
+    def filter(filter):
+        return Post.query.filter(filter)
+
+    @staticmethod
     def buildFilter(url, userInst):
         def buildMyPostsFilter():
             list  = []
-            posts = Post.getByUid(userInst.uidNumber).all()
+            posts = Post.filterByUid(userInst.uidNumber).all()
 
             for p in posts:
                 if p.parentid == -1 and not p.id in list:
@@ -155,56 +159,59 @@ class Post(object):
             else:
                 return arg
 
-        #log.debug(self.userInst.homeExclude())
-        operators = {'+':1, '-':1, '^':2, '&':2}
-        url = url.replace('&amp;', '&')
         filter = Post.query.options(eagerload('file')).filter(Post.parentid==-1)
         filteringExpression = False
-        tagList = []
-        RPN = getRPN(url,operators)
-        stack = []
-        for i in RPN:
-            if i in operators:
-                # If operator is not provided with 2 arguments, we silently ignore it. (for example '- b' will be just 'b')
-                if len(stack)>= 2:
-                    arg2 = stack.pop()
-                    arg1 = stack.pop()
-                    if i == '+':
-                        f = or_(arg1[0],arg2[0])
-                        for t in arg2[1]:
-                            if not t in arg1[1]:
-                                arg1[1].append(t)
-                        stack.append((f,arg1[1]))
-                    elif i == '&' or i == '^':
-                        f = and_(arg1[0],arg2[0])
-                        for t in arg2[1]:
-                            if not t in arg1[1]:
-                                arg1[1].append(t)
-                        stack.append((f,arg1[1]))
-                    elif i == '-':
-                        f = and_(arg1[0],not_(arg2[0]))
-                        for t in arg2[1]:
-                            if t in arg1[1]:
-                                arg1[1].remove(t)
-                        stack.append((f,arg1[1]))
-            else:
-                stack.append(buildArgument(i))
-        if stack and isinstance(stack[0][0],sa.sql.expression.ClauseElement):
-            cl = stack.pop()
-            filteringExpression = cl[0]
-            filter = filter.filter(filteringExpression)
-            tagList = cl[1]
-        return (filter, tagList, filteringExpression)
-
-    @staticmethod
-    def excludeAdminTags(filter, userInst):
         if not userInst.isAdmin():
             blocker = Post.tags.any(Tag.id.in_(meta.globj.forbiddenTags))
-            filter = filter.filter(not_(
-                                   or_(blocker,
-                                        Post.parentPost.has(blocker),
-                                   )))
-        return filter
+            blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))
+            filteringExpression = blockHidden
+        #log.debug(self.userInst.homeExclude())
+        tagList = []
+        if url:
+            operators = {'+':1, '-':1, '^':2, '&':2}
+            url = url.replace('&amp;', '&')
+            RPN = getRPN(url,operators)
+            stack = []
+            for i in RPN:
+                if i in operators:
+                    # If operator is not provided with 2 arguments, we silently ignore it. (for example '- b' will be just 'b')
+                    if len(stack)>= 2:
+                        arg2 = stack.pop()
+                        arg1 = stack.pop()
+                        if i == '+':
+                            f = or_(arg1[0],arg2[0])
+                            for t in arg2[1]:
+                                if not t in arg1[1]:
+                                    arg1[1].append(t)
+                            stack.append((f,arg1[1]))
+                        elif i == '&' or i == '^':
+                            f = and_(arg1[0],arg2[0])
+                            for t in arg2[1]:
+                                if not t in arg1[1]:
+                                    arg1[1].append(t)
+                            stack.append((f,arg1[1]))
+                        elif i == '-':
+                            f = and_(arg1[0],not_(arg2[0]))
+                            for t in arg2[1]:
+                                if t in arg1[1]:
+                                    arg1[1].remove(t)
+                            stack.append((f,arg1[1]))
+                else:
+                    stack.append(buildArgument(i))
+            if stack and isinstance(stack[0][0],sa.sql.expression.ClauseElement):
+                cl = stack.pop()
+                if filteringExpression:
+                    filteringExpression = and_(cl[0], filteringExpression)
+                else:
+                    filteringExpression = cl[0]
+                tagList = cl[1]
+        filter = filter.filter(filteringExpression)
+        return (filter, tagList, filteringExpression)
+
+#    @staticmethod
+#    def excludeAdminTags(filter, userInst):
+#
+#        return filter
 
     def deletePost(self, userInst, fileonly=False, checkOwnage=True, reason = "???", rempPass = False):
         opPostDeleted = False

@@ -42,7 +42,7 @@ class ErrorController(BaseController):
     <head>
         <title>Orphereus: misfunction. %(code)s</title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <META NAME="ROBOTS" CONTENT="NOARCHIVE">
+        <meta name="robots" content="noarchive" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     </head>
     <body style='background-color: #eb6d00;'>
@@ -59,4 +59,4 @@ class ErrorController(BaseController):
 """
         out = out % params
         return out
-    
+

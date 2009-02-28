@@ -150,14 +150,14 @@ class OrphieBaseController(BaseController):
 
     # Parser callbacks
     def isPostOwner(self, id):
-        post = Post.getPost(postid)
+        post = Post.getPost(id)
         if post and post.uidNumber == self.userInst.uidNumber:
            return post.parentid
         else:
            return False
 
     def postOwner(self, id):
-        post = Post.getPost(postid)
+        post = Post.getPost(id)
         if post:
            return post.parentid
         else:

@@ -73,7 +73,6 @@ class FccController(OrphieBaseController):
             extList.append(ext.ext)
         c.extLine = ', '.join(extList)
 
-        threadFilter = Post.excludeAdminTags(threadFilter, self.userInst)
         count = self.sqlCount(threadFilter)
         tpp = self.userInst.threadsPerPage()
         if page*tpp >= count and count > 0:
@@ -130,11 +129,8 @@ class FccController(OrphieBaseController):
                 thread.tagLine = ', '.join(tl)
 
             if count > 1:
-                replyCount = thread.replyCount #Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).count()
-                #if not isNumber(replyCount):
-                    #replyCount = 0
-                    #log.debug("WARNING!!!" + str(thread.id) + "::" + str(replyCount)  )
-
+                replyCount = thread.replyCount
+                #replyCount = Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).count()
                 replyLim   = replyCount - self.userInst.repliesPerThread()
                 if replyLim < 0:
                     replyLim = 0
@@ -146,22 +142,14 @@ class FccController(OrphieBaseController):
                 thread.omittedPosts = 0
                 thread.hidden = False
 
-            #log.debug(thread.id)
-            #log.debug(self.userInst.hideThreads())
-            #log.debug(str(thread.id) in self.userInst.hideThreads())
-            #log.debug(thread.hidden)
-
         if tempid:
             oekaki = Oekaki.get(tempid)
             c.oekaki = oekaki
         else:
             c.oekaki = False
 
-        #c.returnTo = session.get('returnTo', False)
         c.curPage = page
         return self.render('posts')
-
-
 
     def GetThread(self, post, tempid):
         thePost = self.sqlFirst(Post.query.options(eagerload('file')).filter(Post.id==post))
@@ -254,6 +242,324 @@ class FccController(OrphieBaseController):
         filter = Post.buildFilter(board, self.userInst)
         tags = Tag.getAllByNames(filter[1])
         return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
+
+    def gotoDestination(self, post, postid):
+        tagLine = request.POST.get('tagLine', '~')
+
+        dest = int(request.POST.get('goto', 0))
+        if isNumber(dest):
+            dest = int(dest)
+        else:
+            dest = 0
+
+        curPage = request.POST.get('curPage', 0)
+        if isNumber(curPage):
+            curPage = int(curPage)
+        else:
+            curPage = 0
+
+        ##log.debug('%s %s %s' % (tagLine, str(dest), str(curPage)))
+        redirectAddr = '~'
+
+        if dest == 4: # destination board
+            if post.parentid == -1:
+                tags = []
+                for tag in post.tags:
+                    tags.append(tag.tag)
+                postTagline = "+".join(tags)
+
+                redirectAddr = '%s/' % (postTagline)
+            else:
+                dest = 1
+
+        if dest == 0: #current thread
+            if postid:
+                return redirect_to(action='GetThread', post=post.parentid, board=None)
+            else:
+                return redirect_to(action='GetThread', post=post.id, board=None)
+        elif dest == 1 or dest == 2: # current board
+            if  tagLine:
+                if dest == 1:
+                    curPage = 0
+                redirectAddr = "%s/page/%d" % (tagLine, curPage)
+        elif dest == 3: # overview
+            pass
+        elif dest == 5: #referrer
+            return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')))
+
+        ##log.debug(redirectAddr)
+        return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
+
+
+    def PostReply(self, post):
+        return self.processPost(postid=post)
+
+    def PostThread(self, board):
+        return self.processPost(board=board)
+
+    def oekakiDraw(self,url):
+        if not self.currentUserCanPost():
+            c.errorText = _("Posting is disabled")
+            return self.render('error')
+
+        c.url = url
+        c.canvas = False
+        c.width  = request.POST.get('oekaki_x','300')
+        c.height = request.POST.get('oekaki_y','300')
+        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
+
+        if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width)<=10 or int(c.height)<=10):
+           c.width = 300
+           c.height = 300
+        c.tempid = str(long(time.time() * 10**7))
+
+        oekType = ''
+        if request.POST.get('oekaki_painter','shiNormal') == 'shiNormal':
+            oekType = 'Shi normal'
+            c.oekakiToolString = 'normal';
+        else:
+            oekType = 'Shi pro'
+            c.oekakiToolString = 'pro'
+
+        oekSource = 0
+        if isNumber(url) and enablePicLoading:
+           post = self.sqlOne(Post.query.filter(Post.id==url))
+
+           if post.picid:
+              pic = Picture.getPicture(post.picid)
+
+              if pic and pic.width:
+                 oekSource = post.id
+                 c.canvas = h.modLink(pic.path, c.userInst.secid())
+                 c.width  = pic.width
+                 c.height = pic.height
+        oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource)
+        return self.render('spainter')
+
+    def DeletePost(self, board):
+        if not self.currentUserCanPost():
+            c.errorText = _("Deletion disabled")
+            return self.render('error')
+
+        fileonly = 'fileonly' in request.POST
+        redirectAddr = board
+
+        opPostDeleted = False
+        reason = filterText(request.POST.get('reason', '???'))
+
+        remPass = ''
+        if self.userInst.Anonymous:
+            remPass = hashlib.md5(request.POST.get('remPass', '')).hexdigest()
+
+        retest = re.compile("^\d+$")
+        for i in request.POST:
+            if retest.match(request.POST[i]):
+                post = Post.getPost(request.POST[i])
+                if post:
+                    res = post.deletePost(self.userInst, fileonly, True, reason, remPass)
+                opPostDeleted = opPostDeleted or res
+
+        tagLine = request.POST.get('tagLine', False)
+        if opPostDeleted:
+            if tagLine:
+                redirectAddr = tagLine
+            else:
+                redirectAddr = '~'
+
+        return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
+
+    def showProfile(self):
+        if self.userInst.Anonymous:
+            c.errorText = _("Profile is not avaiable to Anonymous users.")
+            return self.render('error')
+
+        c.templates = g.OPT.templates
+        c.styles    = g.OPT.styles
+        c.profileChanged = False
+        c.boardName = _('Profile')
+        if request.POST.get('update', False):
+            template = request.POST.get('template', self.userInst.template())
+            if template in c.templates:
+                self.userInst.template(template)
+            style = filterText(request.POST.get('style', self.userInst.style()))
+            if style in c.styles:
+                self.userInst.style(style)
+            gotodest = filterText(request.POST.get('defaultGoto', self.userInst.defaultGoto()))
+            if isNumber(gotodest) and (int(gotodest) in destinations.keys()):
+                self.userInst.defaultGoto(int(gotodest))
+            threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
+            if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 30):
+                self.userInst.threadsPerPage(threadsPerPage)
+            repliesPerThread = request.POST.get('repliesPerThread',self.userInst.repliesPerThread())
+            if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
+                self.userInst.repliesPerThread(repliesPerThread)
+            self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
+            self.userInst.useAjax(request.POST.get('useAjax', False))
+            self.userInst.expandImages(request.POST.get('expandImages', False))
+            maxExpandWidth = request.POST.get('maxExpandWidth', self.userInst.maxExpandWidth())
+            if isNumber(maxExpandWidth) and (0 < int(maxExpandWidth) < 4096):
+                self.userInst.maxExpandWidth(maxExpandWidth)
+            maxExpandHeight = request.POST.get('maxExpandHeight', self.userInst.maxExpandHeight())
+            if isNumber(maxExpandHeight) and (0 < int(maxExpandHeight) < 4096):
+                self.userInst.maxExpandHeight(maxExpandHeight)
+            self.userInst.mixOldThreads(request.POST.get('mixOldThreads', False))
+            homeExcludeTags = Tag.stringToTagList(request.POST.get('homeExclude', u''))
+            homeExcludeList = []
+            for t in homeExcludeTags:
+                homeExcludeList.append(t.id)
+            self.userInst.homeExclude(homeExcludeList)
+
+            c.profileMsg = _('Password was NOT changed.')
+
+            key = request.POST.get('key','').encode('utf-8')
+            key2 = request.POST.get('key2','').encode('utf-8')
+            currentKey = request.POST.get('currentKey', '').encode('utf-8')
+
+            passwdRet = self.userInst.passwd(key, key2, False, currentKey)
+            if passwdRet == True:
+                c.profileMsg = _('Password was successfully changed.')
+            elif passwdRet == False:
+                c.message = _('Incorrect security codes')
+            else:
+                c.boardName = _('Error')
+                c.errorText = passwdRet
+                return self.render('error')
+
+            c.profileChanged = True
+            c.profileMsg += _(' Profile was updated.')
+            meta.Session.commit()
+
+        homeExcludeTags = Tag.getAllByIds(self.userInst.homeExclude())
+        homeExcludeList = []
+        for t in homeExcludeTags:
+            homeExcludeList.append(t.tag)
+        c.homeExclude = ', '.join(homeExcludeList)
+        c.hiddenThreads = self.sqlAll(Post.query.options(eagerload('file')).options(eagerload('tags')).filter(Post.id.in_(self.userInst.hideThreads())))
+        for t in c.hiddenThreads:
+            tl = []
+            for tag in t.tags:
+                tl.append(tag.tag)
+            t.tagLine = ', '.join(tl)
+        c.userInst = self.userInst
+        return self.render('profile')
+
+    def search(self, text, page = 0):
+        rawtext = text
+        if not text:
+            rawtext = request.POST.get('query', u'')
+            text = filterText(rawtext)
+
+        minLen = 3
+        if not text or len(rawtext) < minLen:
+            c.boardName = _('Error')
+            c.errorText = _("Query too short (minimal length: %d)") % minLen
+            return self.render('error')
+
+        if isNumber(page):
+            page = int(page)
+        else:
+            page = 0
+
+        pp = self.userInst.threadsPerPage()
+        c.boardName = _("Search")
+        c.query = text
+
+        tagfilter = False
+        filteredQueryRe = re.compile("^(([^:]+):){1}(.+)$").match(text)
+        if filteredQueryRe:
+            groups = filteredQueryRe.groups()
+            filterName = groups[1]
+            text = groups[2]
+            tagfilter = Post.buildFilter(filterName, self.userInst)[2]
+
+        base = False
+        if tagfilter:
+            base = Post.filter(or_(tagfilter,
+                                        Post.parentPost.has(tagfilter),
+                                   ))
+        else:
+            base = Post.buildFilter(False, self.userInst)[0]
+
+        #filter = Post.excludeAdminTags(base, self.userInst)
+        filter = base.filter(Post.message.like('%%%s%%' % text))
+        count = filter.count()
+        self.paginate(count, page, pp)
+        posts = filter.order_by(Post.date.desc())[(page * pp):(page + 1)* pp]
+
+        c.posts = []
+        for p in posts:
+            parent = p
+            if not p.parentid == -1:
+                parent = p.parentPost
+
+            pt = []
+            pt.append(p)
+            if p.parentid == -1:
+                pt.append(p)
+            else:
+               pt.append(parent)
+            c.posts.append(pt)
+
+        return self.render('search')
+
+    def Anonimyze(self, post):
+        postid = request.POST.get('postId', False)
+        batch = request.POST.get('batchFA', False)
+        if postid and isNumber(postid):
+            c.FAResult = self.processAnomymize(int(postid), batch)
+        else:
+            c.boardName = _('Final Anonymization')
+            c.FAResult = False
+            c.postId = post
+        return self.render('finalAnonymization')
+
+    def processAnomymize(self, postid, batch):
+        if not g.OPT.enableFinalAnonymity:
+            return _("Final Anonymity is disabled")
+
+        if self.userInst.Anonymous:
+            return _("Final Anonymity available only for registered users")
+
+        result = []
+        post = Post.getPost(postid)
+        if post:
+            posts = []
+            if not batch:
+                posts = [post]
+            else:
+                posts = Post.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date <= post.date)).all()
+            for post in posts:
+                if post.uidNumber != self.userInst.uidNumber:
+                    result.append(_("You are not author of post #%s") % post.id)
+                else:
+                    delay = g.OPT.finalAHoursDelay
+                    timeDelta = datetime.timedelta(hours=delay)
+                    if post.date < datetime.datetime.now() - timeDelta:
+                        post.uidNumber = 0
+                        result.append(_("Post #%d successfully anonymized") % post.id)
+                    else:
+                        params = (post.id, str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta), str(datetime.datetime.now()))
+                        result.append(_("Can't anomymize post #%d now, it will be allowed after %s (now: %s)" % params))
+            meta.Session.commit()
+        else:
+            result = [_("Nothing to anonymize")]
+
+        return result
+
+    def viewLog(self, page):
+        if g.settingsMap['usersCanViewLogs'].value == 'true':
+            c.boardName = 'Logs'
+            page = int(page)
+            count = LogEntry.count(disabledEvents)
+            tpp = 50
+            self.paginate(count, page, tpp)
+            c.logs = LogEntry.getRange(page*tpp, (page+1)*tpp, disabledEvents)
+            rv = re.compile('(\d+\.){3}\d+')
+            for le in c.logs:
+                le.entry = rv.sub('<font color="red">[IP REMOVED]</font>', le.entry)
+            return self.render('logs')
+        else:
+            return redirect_to('/')
 
     def processFile(self, file, thumbSize=250):
         if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
@@ -362,7 +668,7 @@ class FccController(OrphieBaseController):
                 return self.render('error')
 
             if thePost.parentid != -1:
-                thread = thePost.parentPost #Post.getPost(thePost.parentid)
+                thread = thePost.parentPost
             else:
                thread = thePost
             tags = thread.tags
@@ -513,323 +819,3 @@ class FccController(OrphieBaseController):
         if fileHolder:
             fileHolder.disableDeletion()
         self.gotoDestination(post, postid)
-
-    def gotoDestination(self, post, postid):
-        tagLine = request.POST.get('tagLine', '~')
-
-        dest = int(request.POST.get('goto', 0))
-        if isNumber(dest):
-            dest = int(dest)
-        else:
-            dest = 0
-
-        curPage = request.POST.get('curPage', 0)
-        if isNumber(curPage):
-            curPage = int(curPage)
-        else:
-            curPage = 0
-
-        ##log.debug('%s %s %s' % (tagLine, str(dest), str(curPage)))
-        redirectAddr = '~'
-
-        if dest == 4: # destination board
-            if post.parentid == -1:
-                tags = []
-                for tag in post.tags:
-                    tags.append(tag.tag)
-                postTagline = "+".join(tags)
-
-                redirectAddr = '%s/' % (postTagline)
-            else:
-                dest = 1
-
-        if dest == 0: #current thread
-            if postid:
-                return redirect_to(action='GetThread', post=post.parentid, board=None)
-            else:
-                return redirect_to(action='GetThread', post=post.id, board=None)
-        elif dest == 1 or dest == 2: # current board
-            if  tagLine:
-                if dest == 1:
-                    curPage = 0
-                redirectAddr = "%s/page/%d" % (tagLine, curPage)
-        elif dest == 3: # overview
-            pass
-        elif dest == 5: #referrer
-            return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')))
-
-        ##log.debug(redirectAddr)
-        return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
-
-
-    def PostReply(self, post):
-        return self.processPost(postid=post)
-
-    def PostThread(self, board):
-        return self.processPost(board=board)
-
-    def oekakiDraw(self,url):
-        if not self.currentUserCanPost():
-            c.errorText = _("Posting is disabled")
-            return self.render('error')
-
-        c.url = url
-        c.canvas = False
-        c.width  = request.POST.get('oekaki_x','300')
-        c.height = request.POST.get('oekaki_y','300')
-        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
-
-        if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width)<=10 or int(c.height)<=10):
-           c.width = 300
-           c.height = 300
-        c.tempid = str(long(time.time() * 10**7))
-
-        oekType = ''
-        if request.POST.get('oekaki_painter','shiNormal') == 'shiNormal':
-            oekType = 'Shi normal'
-            c.oekakiToolString = 'normal';
-        else:
-            oekType = 'Shi pro'
-            c.oekakiToolString = 'pro'
-
-        oekSource = 0
-        if isNumber(url) and enablePicLoading:
-           post = self.sqlOne(Post.query.filter(Post.id==url))
-
-           if post.picid:
-              pic = Picture.getPicture(post.picid)
-
-              if pic and pic.width:
-                 oekSource = post.id
-                 c.canvas = h.modLink(pic.path, c.userInst.secid())
-                 c.width  = pic.width
-                 c.height = pic.height
-        oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource)
-        return self.render('spainter')
-
-    def DeletePost(self, board):
-        if not self.currentUserCanPost():
-            c.errorText = _("Deletion disabled")
-            return self.render('error')
-
-        fileonly = 'fileonly' in request.POST
-        redirectAddr = board
-
-        opPostDeleted = False
-        reason = filterText(request.POST.get('reason', '???'))
-
-        remPass = ''
-        if self.userInst.Anonymous:
-            remPass = hashlib.md5(request.POST.get('remPass', '')).hexdigest()
-
-        retest = re.compile("^\d+$")
-        for i in request.POST:
-            if retest.match(request.POST[i]):
-                post = Post.getPost(request.POST[i])
-                if post:
-                    res = post.deletePost(self.userInst, fileonly, True, reason, remPass)
-                opPostDeleted = opPostDeleted or res
-
-        tagLine = request.POST.get('tagLine', False)
-        if opPostDeleted:
-            if tagLine:
-                redirectAddr = tagLine
-            else:
-                redirectAddr = '~'
-
-        return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
-
-    def Anonimyze(self, post):
-        postid = request.POST.get('postId', False)
-        batch = request.POST.get('batchFA', False)
-        if postid and isNumber(postid):
-            c.FAResult = self.processAnomymize(int(postid), batch)
-        else:
-            c.boardName = _('Final Anonymization')
-            c.FAResult = False
-            c.postId = post
-        return self.render('finalAnonymization')
-
-    def processAnomymize(self, postid, batch):
-        if not g.OPT.enableFinalAnonymity:
-            return _("Final Anonymity is disabled")
-
-        if self.userInst.Anonymous:
-            return _("Final Anonymity available only for registered users")
-
-        result = []
-        post = self.sqlGet(Post.query, postid)
-        if post:
-            posts = []
-            if not batch:
-                posts = [post]
-            else:
-                posts = self.sqlAll(Post.query.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date <= post.date)))
-            for post in posts:
-                if post.uidNumber != self.userInst.uidNumber:
-                    result.append(_("You are not author of post #%s") % post.id)
-                else:
-                    delay = g.OPT.finalAHoursDelay
-                    timeDelta = datetime.timedelta(hours=delay)
-                    if post.date < datetime.datetime.now() - timeDelta:
-                        post.uidNumber = 0
-                        result.append(_("Post #%d successfully anonymized") % post.id)
-                    else:
-                        params = (post.id, str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta), str(datetime.datetime.now()))
-                        result.append(_("Can't anomymize post #%d now, it will be allowed after %s (now: %s)" % params))
-            meta.Session.commit()
-        else:
-            result = [_("Nothing to anonymize")]
-
-        return result
-
-    def showProfile(self):
-        if self.userInst.Anonymous:
-            c.errorText = _("Profile is not avaiable to Anonymous users.")
-            return self.render('error')
-
-        c.templates = g.OPT.templates
-        c.styles    = g.OPT.styles
-        c.profileChanged = False
-        c.boardName = _('Profile')
-        if request.POST.get('update', False):
-            template = request.POST.get('template', self.userInst.template())
-            if template in c.templates:
-                self.userInst.template(template)
-            style = filterText(request.POST.get('style', self.userInst.style()))
-            if style in c.styles:
-                self.userInst.style(style)
-            gotodest = filterText(request.POST.get('defaultGoto', self.userInst.defaultGoto()))
-            if isNumber(gotodest) and (int(gotodest) in destinations.keys()):
-                self.userInst.defaultGoto(int(gotodest))
-            threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
-            if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 30):
-                self.userInst.threadsPerPage(threadsPerPage)
-            repliesPerThread = request.POST.get('repliesPerThread',self.userInst.repliesPerThread())
-            if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
-                self.userInst.repliesPerThread(repliesPerThread)
-            self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
-            self.userInst.useAjax(request.POST.get('useAjax', False))
-            self.userInst.expandImages(request.POST.get('expandImages', False))
-            maxExpandWidth = request.POST.get('maxExpandWidth', self.userInst.maxExpandWidth())
-            if isNumber(maxExpandWidth) and (0 < int(maxExpandWidth) < 4096):
-                self.userInst.maxExpandWidth(maxExpandWidth)
-            maxExpandHeight = request.POST.get('maxExpandHeight', self.userInst.maxExpandHeight())
-            if isNumber(maxExpandHeight) and (0 < int(maxExpandHeight) < 4096):
-                self.userInst.maxExpandHeight(maxExpandHeight)
-            self.userInst.mixOldThreads(request.POST.get('mixOldThreads', False))
-            homeExcludeTags = Tag.stringToTagList(request.POST.get('homeExclude', u''))
-            homeExcludeList = []
-            for t in homeExcludeTags:
-                homeExcludeList.append(t.id)
-            self.userInst.homeExclude(homeExcludeList)
-
-            c.profileMsg = _('Password was NOT changed.')
-
-            key = request.POST.get('key','').encode('utf-8')
-            key2 = request.POST.get('key2','').encode('utf-8')
-            currentKey = request.POST.get('currentKey', '').encode('utf-8')
-
-            passwdRet = self.userInst.passwd(key, key2, False, currentKey)
-            if passwdRet == True:
-                c.profileMsg = _('Password was successfully changed.')
-            elif passwdRet == False:
-                c.message = _('Incorrect security codes')
-            else:
-                c.boardName = _('Error')
-                c.errorText = passwdRet
-                return self.render('error')
-
-            c.profileChanged = True
-            c.profileMsg += _(' Profile was updated.')
-            meta.Session.commit()
-
-        homeExcludeTags = Tag.getAllByIds(self.userInst.homeExclude())
-        homeExcludeList = []
-        for t in homeExcludeTags:
-            homeExcludeList.append(t.tag)
-        c.homeExclude = ', '.join(homeExcludeList)
-        c.hiddenThreads = self.sqlAll(Post.query.options(eagerload('file')).options(eagerload('tags')).filter(Post.id.in_(self.userInst.hideThreads())))
-        for t in c.hiddenThreads:
-            tl = []
-            for tag in t.tags:
-                tl.append(tag.tag)
-            t.tagLine = ', '.join(tl)
-        c.userInst = self.userInst
-        return self.render('profile')
-
-    def viewLog(self, page):
-        if g.settingsMap['usersCanViewLogs'].value == 'true':
-            c.boardName = 'Logs'
-            page = int(page)
-            count = LogEntry.count(disabledEvents)
-            tpp = 50
-            self.paginate(count, page, tpp)
-            c.logs = LogEntry.getRange(page*tpp, (page+1)*tpp, disabledEvents)
-            rv = re.compile('(\d+\.){3}\d+')
-            for le in c.logs:
-                le.entry = rv.sub('<font color="red">[IP REMOVED]</font>', le.entry)
-            return self.render('logs')
-        else:
-            return redirect_to('/')
-
-    def search(self, text, page = 0):
-        rawtext = text
-        if not text:
-            rawtext = request.POST.get('query', u'')
-            text = filterText(rawtext)
-
-        minLen = 3
-        if not text or len(rawtext) < minLen:
-            c.boardName = _('Error')
-            c.errorText = _("Query too short (minimal length: %d)") % minLen
-            return self.render('error')
-
-        if isNumber(page):
-            page = int(page)
-        else:
-            page = 0
-
-        pp = self.userInst.threadsPerPage()
-        c.boardName = _("Search")
-        c.query = text
-
-        tagfilter = False
-        filteredQueryRe = re.compile("^(([^:]+):){1}(.+)$").match(text)
-        if filteredQueryRe:
-            groups = filteredQueryRe.groups()
-            filterName = groups[1]
-            text = groups[2]
-            tagfilter = Post.buildFilter(filterName, self.userInst)[2]
-
-        base = Post.query
-        if tagfilter:
-            base = Post.query
-
-            base = base.filter(or_(tagfilter,
-                                        Post.parentPost.has(tagfilter),
-                                   ))
-
-        filter = Post.excludeAdminTags(base, self.userInst)
-        filter = filter.filter(Post.message.like('%%%s%%' % text))
-        count = self.sqlCount(filter)
-        #log.debug(count)
-        self.paginate(count, page, pp)
-        posts = self.sqlSlice(filter.order_by(Post.date.desc()), (page * pp), (page + 1)* pp)
-
-        c.posts = []
-        for p in posts:
-            parent = p
-            if not p.parentid == -1:
-                parent = p.parentPost
-
-            pt = []
-            pt.append(p)
-            if p.parentid == -1:
-                pt.append(p)
-            else:
-               pt.append(parent)
-            c.posts.append(pt)
-
-        return self.render('search')
-

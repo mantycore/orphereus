@@ -596,8 +596,9 @@ class FccController(OrphieBaseController):
                else:
                   thumbFilePath = h.expandName('%ss.jpg' % (name))
                localThumbPath = os.path.join(g.OPT.uploadPath, thumbFilePath)
-               picInfo.sizes = Picture.makeThumbnail(localFilePath, localThumbPath, (thumbSize, thumbSize))
                picInfo.thumbFilePath = thumbFilePath
+               if not picInfo.sizes:
+                   picInfo.sizes = Picture.makeThumbnail(localFilePath, localThumbPath, (thumbSize, thumbSize))
            except:
                 os.unlink(localFilePath)
                 return [False, False, False, _(u"Broken picture. Maybe it is interlaced PNG?")]

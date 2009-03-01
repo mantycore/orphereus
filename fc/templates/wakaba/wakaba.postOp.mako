@@ -66,9 +66,9 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
 </span>
 <span class="reflink">
 %if c.board:
-    <a href="/${thread.id}#i${thread.id}" ${c.currentUserCanPost and """onclick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
+    <a href="/${thread.id}#i${thread.id}">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
 %else:
-    <a href="javascript:insert('&gt;&gt;${thread.id}')" ${c.currentUserCanPost and """onclick="doQuickReplyForm(event,%s,%s)" """ % (thread.id,thread.id) or ""}>#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
+    <a href="javascript:insert('&gt;&gt;${thread.id}')">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
 %endif
 %if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
     <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>

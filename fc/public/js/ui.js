@@ -122,19 +122,144 @@ function popup_posts(options){
   }
 }
 
-function createElementEx(strTagName, arrAttrs, arrChildren)
-{
-    var objElement = document.createElement(strTagName);
-    for (strIndex in arrAttrs)
-    {
-        objElement.setAttribute(strIndex, arrAttrs[strIndex]);
+/* YForm */
+var YForm = function(){
+    this.form = $("#y_replyform")
+
+    if($("#trcaptcha img").size()){
+        this.anon();
+        this.captcha = new YForm.Captcha(this.form)
+    }else{
+        this.reg()
     }
-    for (strIndex in arrChildren)
-    {
-        objElement.appendChild(arrChildren[strIndex]);
-    }
-    return objElement;
 }
+
+YForm.open = function(e){
+    if(!YForm.def) YForm.def = new YForm();
+    if(!e || e['tagName'] != 'A') e = this;
+    return YForm.def.open(e)
+}
+
+YForm.init = function(){
+  $(".reflink a").attr("onclick","").click(YForm.open)
+}
+
+YForm.prototype = {
+    anon: function() {
+        this.form.addClass("y_replyform_anon")
+    },
+    reg: function() {
+        this.form.removeClass("y_replyform_anon")
+        this.form.find("#y_replyform_password").remove() // no save password query!
+    },
+    set_fields: function(thread_id) {
+        var form = this.form;
+        var me = this;
+
+        form.attr("action", this.form.attr("action").replace(/\d+/,thread_id) )
+
+        var select = $("#trgetback select");
+        if(select.size()) form.find("#y_replyform_goto_field").html(select.html())
+
+        var captcha = $("#trcaptcha img")
+        if(captcha.size()) this.captcha.cimg.attr("src",captcha.attr("src"))
+
+        $(["tagLine", "curPage", "remPass"]).each(function() {
+            var field = $("#postform input[name="+this+"]")
+            if(field.size()) form.find("input[name="+this+"]").val(field.val())
+        })
+
+        $("#y_replyform_buttons .close").click(function() {me.close()})
+    },
+    quote: function(post_id){
+      var value = $("#y_replyform_text").val();
+      $("#y_replyform_text").val(value + ">>" + post_id + "\n")
+    },
+    thread_for_link: function(link){
+      link = link[0]
+      var match
+      while(link = link.parentNode){
+        if(match = link.id.match(/^thread\D*(\d+)$/)) return match[1];
+      }
+    },
+    open: function(link) {
+        link = $(link)
+        var m = link.attr("href").match(/\/(\d+)\D+(\d+)$/)
+        if(!m){ //thread
+          m = ["", this.thread_for_link(link), link.html().match(/\d+/)[0]]
+        };
+        this.form.parent().insertAfter($("#quickReplyNode" + m[2]))
+        this.set_fields(m[1])
+        this.quote(m[2])
+        this.form.parent().show()
+        return false;
+    },
+    close: function(){
+        this.form.parent().hide()
+    }
+}
+
+YForm.Captcha = function(form){
+    var me = this;
+    this.cfield = form.find("#y_replyform_captcha_field");
+    this.creq = "Captcha required"
+    this.captcha = ""
+    this.cimg = this.cfield.parent().find("img")
+    var field = this.cfield;
+
+    field.removeAttr("readonly")
+    field.focus(function() {
+        if(field.hasClass("valid")) return false;
+        field.removeClass("inactive valid invalid").val(me.captcha)
+    })
+    field.blur(function() {
+        if(field.hasClass("valid")) return false;
+        me.test()
+    })
+    form.submit(function() {
+      if(me.captcha) me.cfield.removeAttr("readonly").val(me.captcha).attr("readonly","true")
+      return true;
+    })
+}
+YForm.Captcha.prototype = {
+    request: function(){
+        this.cfield.removeClass("inactive valid invalid").addClass("inactive").val(this.creq)
+    },
+    error: function() {
+        this.cfield.removeClass("inactive valid invalid").addClass("invalid").val("Error! Refresh page please")
+        if(window.console) console.error("errors in captcha uri");
+    },
+    test: function(){
+        var me = this;
+        var img = this.cimg;
+        this.captcha = this.cfield.val()
+        if(img.attr("src").match(/\d+/)) this.captcha_id = img.attr("src").match(/\d+/)[0];
+        else return me.error();
+        if(!this.captcha) return this.request();
+        var field = this.cfield
+        field.addClass("inactive").val("Validating…")
+
+        var callback = function(response) {
+            if(response == "ok"){
+                setTimeout(function() {field.removeAttr("readonly").val(me.captcha).attr("readonly","true")}, 2000)
+                field.val("You are human!")
+                field.addClass("valid").attr("readonly","true")
+            }else{
+                field.addClass("invalid").val("Try again")
+                me.captcha = ""
+                img.attr("src", img.attr("src").replace(/\d+/, response))
+            }
+        }
+        var error = function() {
+            me.error()
+        }
+
+        $.ajax({type: 'get', url: "/ajax/checkCaptcha/" + this.captcha_id + '/' + this.captcha, success: callback, error: error });
+    }
+}
+
+
+// code below should be refactored
 function getElementsByClass(searchClass, domNode, tagName)
 {
     if (domNode == null)
@@ -214,6 +339,78 @@ function showDeleteBoxes()
     }
 }
 
+function getFullText(event, thread, post)
+{
+    var bq = document.getElementById('postBQId' + post);
+    if (!bq) bq = document.getElementById('quickReplyNode' + post);
+    var loadingString = 'Loading…'
+    if (window.loading_icon_path)
+    {
+        loadingString = "<img class='comment_loading_img' src='"+window.loading_icon_path+"'> Loading…"
+    }
+    $("a.expandPost[href=/" + thread + "#i" + post + "]").html(loadingString)
+    $.get('/ajax/getPost/' + post, {}, function(response)
+    {
+      $(bq).html(response);
+    popup_posts.repair($(bq).find("a"))
+    });
+    event.preventDefault();
+}
+
+function userFiltersAdd(event)
+{
+  if ($('#newFilterInput').get()[0].value)
+  {
+    $.get('/ajax/addUserFilter/' + $('#newFilterInput').get()[0].value, {}, function(response)
+    {
+      $(response).insertBefore('#newFilterTR')
+    });
+  }
+  event.preventDefault();
+}
+function userFiltersEdit(event,fid)
+{
+  $.get('/ajax/editUserFilter/' + fid + '/' + $('#filterId' + fid + 'Input').get()[0].value, {}, function(response)
+  {
+    $('#filterId' + fid + 'Input').get()[0].value = response
+  });
+  event.preventDefault();
+}
+function userFiltersDelete(event,fid)
+{
+  $.get('/ajax/deleteUserFilter/' + fid, {}, function(response)
+  {
+    $('#filterId' + fid).remove()
+  });
+  event.preventDefault();
+}
+window.onload=function(e)
+{
+    var match;
+    if(match=/#i([0-9]+)/.exec(document.location.toString()))
+    {
+        if(!document.forms.postform.message.value)
+            insert(">>"+match[1],1);
+        highlight(match[1]);
+    }
+}
+
+/*
+function createElementEx(strTagName, arrAttrs, arrChildren)
+{
+    var objElement = document.createElement(strTagName);
+    for (strIndex in arrAttrs)
+    {
+        objElement.setAttribute(strIndex, arrAttrs[strIndex]);
+    }
+    for (strIndex in arrChildren)
+    {
+        objElement.appendChild(arrChildren[strIndex]);
+    }
+    return objElement;
+}
+*/
+/*
 var g_objReplyForm = null; // "Global" variable
 function getReplyForm(iThreadId)
 {
@@ -363,194 +560,4 @@ function hideQuickReplyForm(objEvent)
     { ; }
     objEvent.preventDefault();
 }
-function getFullText(event, thread, post)
-{
-    var bq = document.getElementById('postBQId' + post);
-    if (!bq) bq = document.getElementById('quickReplyNode' + post);
-    var loadingString = 'Loading…'
-    if (window.loading_icon_path)
-    {
-        loadingString = "<img class='comment_loading_img' src='"+window.loading_icon_path+"'> Loading…"
-    }
-    $("a.expandPost[href=/" + thread + "#i" + post + "]").html(loadingString)
-    $.get('/ajax/getPost/' + post, {}, function(response)
-    {
-      $(bq).html(response);
-    popup_posts.repair($(bq).find("a"))
-    });
-    event.preventDefault();
-}
-function userFiltersAdd(event)
-{
-  if ($('#newFilterInput').get()[0].value)
-  {
-    $.get('/ajax/addUserFilter/' + $('#newFilterInput').get()[0].value, {}, function(response)
-    {
-      $(response).insertBefore('#newFilterTR')
-    });
-  }
-  event.preventDefault();
-}
-function userFiltersEdit(event,fid)
-{
-  $.get('/ajax/editUserFilter/' + fid + '/' + $('#filterId' + fid + 'Input').get()[0].value, {}, function(response)
-  {
-    $('#filterId' + fid + 'Input').get()[0].value = response
-  });
-  event.preventDefault();
-}
-function userFiltersDelete(event,fid)
-{
-  $.get('/ajax/deleteUserFilter/' + fid, {}, function(response)
-  {
-    $('#filterId' + fid).remove()
-  });
-  event.preventDefault();
-}
-window.onload=function(e)
-{
-    var match;
-    if(match=/#i([0-9]+)/.exec(document.location.toString()))
-    {
-        if(!document.forms.postform.message.value)
-            insert(">>"+match[1],1);
-        highlight(match[1]);
-    }
-}
-
-/* YForm */
-var YForm = function(){
-    this.form = $("#y_replyform")
-
-    if($("#trcaptcha img").size()){
-        this.anon();
-        this.captcha = new YForm.Captcha(this.form)
-    }else{
-        this.reg()
-    }
-}
-
-YForm.open = function(e){
-    if(!YForm.def) YForm.def = new YForm();
-    if(!e || e['tagName'] != 'A') e = this;
-    return YForm.def.open(e)
-}
-
-YForm.init = function(){
-  $(".reflink a").attr("onclick","").click(YForm.open)
-}
-
-YForm.prototype = {
-    anon: function() {
-        this.form.addClass("y_replyform_anon")
-    },
-    reg: function() {
-        this.form.removeClass("y_replyform_anon")
-        this.form.find("#y_replyform_password").remove() // no save password query!
-    },
-    set_fields: function(thread_id) {
-        var form = this.form;
-        var me = this;
-
-        form.attr("action", this.form.attr("action").replace(/\d+/,thread_id) )
-
-        var select = $("#trgetback select");
-        if(select.size()) form.find("#y_replyform_goto_field").html(select.html())
-
-        var captcha = $("#trcaptcha img")
-        if(captcha.size()) this.captcha.cimg.attr("src",captcha.attr("src"))
-
-        $(["tagLine", "curPage", "remPass"]).each(function() {
-            var field = $("#postform input[name="+this+"]")
-            if(field.size()) form.find("input[name="+this+"]").val(field.val())
-        })
-
-        $("#y_replyform_buttons .close").click(function() {me.close()})
-    },
-    quote: function(post_id){
-      var value = $("#y_replyform_text").val();
-      $("#y_replyform_text").val(value + ">>" + post_id + "\n")
-    },
-    thread_for_link: function(link){
-      link = link[0]
-      var match
-      while(link = link.parentNode){
-        if(match = link.id.match(/^thread\D*(\d+)$/)) return match[1];
-      }
-    },
-    open: function(link) {
-        link = $(link)
-        var m = link.attr("href").match(/\/(\d+)\D+(\d+)$/)
-        if(!m){ //thread
-          m = ["", this.thread_for_link(link), link.html().match(/\d+/)[0]]
-        };
-        this.form.parent().insertAfter($("#quickReplyNode" + m[2]))
-        this.set_fields(m[1])
-        this.quote(m[2])
-        this.form.parent().show()
-        return false;
-    },
-    close: function(){
-        this.form.parent().hide()
-    }
-}
-
-YForm.Captcha = function(form){
-    var me = this;
-    this.cfield = form.find("#y_replyform_captcha_field");
-    this.creq = "Captcha required"
-    this.captcha = ""
-    this.cimg = this.cfield.parent().find("img")
-    var field = this.cfield;
-
-    field.removeAttr("readonly")
-    field.focus(function() {
-        if(field.hasClass("valid")) return false;
-        field.removeClass("inactive valid invalid").val(me.captcha)
-    })
-    field.blur(function() {
-        if(field.hasClass("valid")) return false;
-        me.test()
-    })
-    form.submit(function() {
-      if(me.captcha) me.cfield.removeAttr("readonly").val(me.captcha).attr("readonly","true")
-      return true;
-    })
-}
-YForm.Captcha.prototype = {
-    request: function(){
-        this.cfield.removeClass("inactive valid invalid").addClass("inactive").val(this.creq)
-    },
-    error: function() {
-        this.cfield.removeClass("inactive valid invalid").addClass("invalid").val("Error! Refresh page please")
-        if(window.console) console.error("errors in captcha uri");
-    },
-    test: function(){
-        var me = this;
-        var img = this.cimg;
-        this.captcha = this.cfield.val()
-        if(img.attr("src").match(/\d+/)) this.captcha_id = img.attr("src").match(/\d+/)[0];
-        else return me.error();
-        if(!this.captcha) return this.request();
-        var field = this.cfield
-        field.addClass("inactive").val("Validating…")
-
-        var callback = function(response) {
-            if(response == "ok"){
-                setTimeout(function() {field.removeAttr("readonly").val(me.captcha).attr("readonly","true")}, 2000)
-                field.val("You are human!")
-                field.addClass("valid").attr("readonly","true")
-            }else{
-                field.addClass("invalid").val("Try again")
-                me.captcha = ""
-                img.attr("src", img.attr("src").replace(/\d+/, response))
-            }
-        }
-        var error = function() {
-            me.error()
-        }
-
-        $.ajax({type: 'get', url: "/ajax/checkCaptcha/" + this.captcha_id + '/' + this.captcha, success: callback, error: error });
-    }
-}
-
+*/

@@ -58,19 +58,33 @@ class WakabaParser(object):
     def signature(self, tag, beg, end, parts):
         valid = {}
         invalid = {}
+        unknown = {}
         result = u''
         for nn, i, j, p in parts:
-            pid = self.calledBy.isPostOwner(self.input[i:j])
-            if pid == -1:
-                pid = self.input[i:j]
-            if pid:
-                valid[self.input[i:j]]=pid
-            else: #red label - only valid posts from ANOTHER users
-                pid = self.calledBy.postOwner(self.input[i:j])
-                if pid == -1:
-                    pid = self.input[i:j]
-                if pid:
-                    invalid[self.input[i:j]]=pid
+            postId = self.input[i:j]
+            info = self.calledBy.cbGetPostAndUser(postId) #self.calledBy.isPostOwner(self.input[i:j])
+            post = info[0]
+            uidNumber = info[1]
+            if post:
+                if post.uidNumber < 1 or uidNumber < 1:
+                    unknown[postId]=post.id
+                elif post.uidNumber == uidNumber:
+                    valid[postId]=post.id
+                else:
+                    invalid[postId]=post.id
+                """
+                    if pid == -1:
+                        pid = self.input[i:j]
+                    if pid:
+                        valid[self.input[i:j]]=pid
+                    else: #red label - only valid posts from ANOTHER users
+                        pid = self.calledBy.postOwner(self.input[i:j])
+                        if pid == -1:
+                            pid = self.input[i:j]
+                        if pid:
+                            invalid[self.input[i:j]]=pid
+                """
+        # todo: fix fucking copypaste
         if invalid:
             result += '<span class="badsignature">##'
             sep = u''
@@ -87,6 +101,17 @@ class WakabaParser(object):
             sep = u''
             for i in valid:
                 result += sep + '<a href="/%s#i%s">%s</a>' % (valid[i],i,i)
+                sep = ','
+            result += '</span>'
+        if unknown:
+            if result:
+                result+=","
+                result += '<span class="nonsignature">'
+            else:
+                result += '<span class="nonsignature">##'
+            sep = u''
+            for i in unknown:
+                result += sep + '<a href="/%s#i%s">%s</a>' % (unknown[i],i,i)
                 sep = ','
             result += '</span>'
         return result

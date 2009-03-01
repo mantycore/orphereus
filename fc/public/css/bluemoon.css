@@ -275,6 +275,17 @@ dl.menu dd.hidden {
         color: #BB0000;
 }
 
+.nonsignature {
+background: #ffe66f;
+color: #7a5a0c;
+}
+.nonsignature a {
+        color: #957220;
+}
+.nonsignature a:hover {
+        color: #4d3a0d;
+}
+
 .postbody blockquote {
     background:#FFFFFF;
     color:#6B7B8D;
@@ -367,52 +378,7 @@ div a.show-hide-thread {
 div a.show-hide-thread:hover {
     text-decoration: underline; color: #f33;
 }
-#x_replyform {
-    display: block; border: 1px #117743; solid; margin: 0 2px 2px 2px; padding: 5px;
-    background-color: #49525D;
-    -moz-border-radius: 6px;
-}
-#x_replyform textarea {
-    width: 100%; background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #B6C2CF;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #B6C2CF;
-}
-#x_replyform div {
-    overflow: hidden; margin-top: 5px;
-}
-#x_replyform label {
-    float: left; margin-right: 10px;
-}
-#x_replyform input[type="text"], #x_replyform input[type="password"] {
-    background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #B6C2CF;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #B6C2CF;
-}
-#x_replyform input[type="file"] > input[type="text"] {
-    background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #B6C2CF;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #B6C2CF;
-}
-#x_replyform input[type="submit"] {background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #B6C2CF;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #B6C2CF;
 
-}
-#x_replyform button {background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #B6C2CF;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #B6C2CF;
-
-}
 .logline {background: #DDDDDD;}
 .nomargin{margin: 0;}
 .smallFont{font-size: 70%;}
@@ -429,10 +395,6 @@ div a.show-hide-thread:hover {
 .postInfo{
 background: #A8A8A8;
 }
-
-#x_replyform_goto{margin: 0px 4px 0px 4px; width: 120px}
-#x_replyform_captcha_input{margin: 0px 4px 0px 4px; width: 70px}
-#x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
 
 .img_loading{
     position:absolute;
@@ -559,3 +521,55 @@ input#y_replyform_password{
 .y_replyform_anon #y_replyform_buttons input{
     margin-top: 12px;
 }
+
+/*
+#x_replyform {
+    display: block; border: 1px #117743; solid; margin: 0 2px 2px 2px; padding: 5px;
+    background-color: #49525D;
+    -moz-border-radius: 6px;
+}
+#x_replyform textarea {
+    width: 100%; background-color: #EEEEEE;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
+}
+#x_replyform div {
+    overflow: hidden; margin-top: 5px;
+}
+#x_replyform label {
+    float: left; margin-right: 10px;
+}
+#x_replyform input[type="text"], #x_replyform input[type="password"] {
+    background-color: #EEEEEE;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
+}
+#x_replyform input[type="file"] > input[type="text"] {
+    background-color: #EEEEEE;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
+}
+#x_replyform input[type="submit"] {background-color: #EEEEEE;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
+
+}
+#x_replyform button {background-color: #EEEEEE;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #B6C2CF;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #B6C2CF;
+
+}
+#x_replyform_goto{margin: 0px 4px 0px 4px; width: 120px}
+#x_replyform_captcha_input{margin: 0px 4px 0px 4px; width: 70px}
+#x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
+*/

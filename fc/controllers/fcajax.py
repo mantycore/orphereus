@@ -75,7 +75,7 @@ class FcajaxController(OrphieBaseController):
         abort(404)
 
     def hideThread(self,post,redirect):
-        if self.userInst.Anonymous:
+        if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             abort(403)
         postInst = Post.getPost(post)
         if postInst and not postInst.parentPost:
@@ -89,7 +89,7 @@ class FcajaxController(OrphieBaseController):
         return ''
 
     def showThread(self, post, redirect):
-        if self.userInst.Anonymous:
+        if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             abort(403)
         postInst = Post.getPost(post)
         if postInst and not postInst.parentPost:

@@ -270,7 +270,7 @@ class FccController(OrphieBaseController):
         return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
 
     def showProfile(self):
-        if self.userInst.Anonymous:
+        if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             c.errorText = _("Profile is not avaiable to Anonymous users.")
             return self.render('error')
 
@@ -279,6 +279,22 @@ class FccController(OrphieBaseController):
         c.profileChanged = False
         c.boardName = _('Profile')
         if request.POST.get('update', False):
+            self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
+            self.userInst.useAjax(bool(request.POST.get('useAjax', False)))
+            self.userInst.expandImages(request.POST.get('expandImages', False))
+            self.userInst.mixOldThreads(bool(request.POST.get('mixOldThreads', False)))
+            threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
+            if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 30):
+                self.userInst.threadsPerPage(int(threadsPerPage))
+            repliesPerThread = request.POST.get('repliesPerThread',self.userInst.repliesPerThread())
+            if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
+                self.userInst.repliesPerThread(int(repliesPerThread))
+            maxExpandWidth = request.POST.get('maxExpandWidth', self.userInst.maxExpandWidth())
+            if isNumber(maxExpandWidth) and (0 < int(maxExpandWidth) < 4096):
+                self.userInst.maxExpandWidth(int(maxExpandWidth))
+            maxExpandHeight = request.POST.get('maxExpandHeight', self.userInst.maxExpandHeight())
+            if isNumber(maxExpandHeight) and (0 < int(maxExpandHeight) < 4096):
+                self.userInst.maxExpandHeight(int(maxExpandHeight))
             template = request.POST.get('template', self.userInst.template())
             if template in c.templates:
                 self.userInst.template(template)
@@ -288,47 +304,31 @@ class FccController(OrphieBaseController):
             gotodest = filterText(request.POST.get('defaultGoto', self.userInst.defaultGoto()))
             if isNumber(gotodest) and (int(gotodest) in destinations.keys()):
                 self.userInst.defaultGoto(int(gotodest))
-            threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
-            if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 30):
-                self.userInst.threadsPerPage(threadsPerPage)
-            repliesPerThread = request.POST.get('repliesPerThread',self.userInst.repliesPerThread())
-            if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
-                self.userInst.repliesPerThread(repliesPerThread)
-            self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
-            self.userInst.useAjax(request.POST.get('useAjax', False))
-            self.userInst.expandImages(request.POST.get('expandImages', False))
-            maxExpandWidth = request.POST.get('maxExpandWidth', self.userInst.maxExpandWidth())
-            if isNumber(maxExpandWidth) and (0 < int(maxExpandWidth) < 4096):
-                self.userInst.maxExpandWidth(maxExpandWidth)
-            maxExpandHeight = request.POST.get('maxExpandHeight', self.userInst.maxExpandHeight())
-            if isNumber(maxExpandHeight) and (0 < int(maxExpandHeight) < 4096):
-                self.userInst.maxExpandHeight(maxExpandHeight)
-            self.userInst.mixOldThreads(request.POST.get('mixOldThreads', False))
-            homeExcludeTags = Tag.stringToTagList(request.POST.get('homeExclude', u''))
+            homeExcludeTags = Tag.stringToTagList(request.POST.get('homeExclude', u''), False)
+            log.debug(homeExcludeTags)
             homeExcludeList = []
             for t in homeExcludeTags:
                 homeExcludeList.append(t.id)
             self.userInst.homeExclude(homeExcludeList)
 
-            c.profileMsg = _('Password was NOT changed.')
-
-            key = request.POST.get('key','').encode('utf-8')
-            key2 = request.POST.get('key2','').encode('utf-8')
-            currentKey = request.POST.get('currentKey', '').encode('utf-8')
-
-            passwdRet = self.userInst.passwd(key, key2, False, currentKey)
-            if passwdRet == True:
-                c.profileMsg = _('Password was successfully changed.')
-            elif passwdRet == False:
-                c.message = _('Incorrect security codes')
-            else:
-                c.boardName = _('Error')
-                c.errorText = passwdRet
-                return self.render('error')
+            if not c.userInst.Anonymous:
+                c.profileMsg = _('Password was NOT changed.')
+                key = request.POST.get('key','').encode('utf-8')
+                key2 = request.POST.get('key2','').encode('utf-8')
+                currentKey = request.POST.get('currentKey', '').encode('utf-8')
+                passwdRet = self.userInst.passwd(key, key2, False, currentKey)
+                if passwdRet == True:
+                    c.profileMsg = _('Password was successfully changed.')
+                elif passwdRet == False:
+                    c.message = _('Incorrect security codes')
+                else:
+                    c.boardName = _('Error')
+                    c.errorText = passwdRet
+                    return self.render('error')
+                meta.Session.commit()
 
             c.profileChanged = True
             c.profileMsg += _(' Profile was updated.')
-            meta.Session.commit()
 
         homeExcludeTags = Tag.getAllByIds(self.userInst.homeExclude())
         homeExcludeList = []

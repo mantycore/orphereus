@@ -19,7 +19,9 @@
         ]
     %endfor
     %if not c.userInst.Anonymous:
-  [<a href="/userProfile/">${_('Profile')}</a>]
+        [<a href="/userProfile/">${_('Profile')}</a>]
+    %elif g.OPT.allowAnonProfile:
+        [<a href="/userProfile/">${_('Settings')}</a>]
     %endif
     %if c.userInst.isAdmin():
         [<a href="/holySynod/">${_('Holy Synod')}</a>]
@@ -45,6 +47,7 @@
         %else:
             [<a href="/authorize">${_('Login')}</a>]
         %endif
+        [<a href="/logout/">${_('Kill session')}</a>]
     %if g.OPT.allowRegistration:
     [<a href="/register/register">${_('Register')}</a>]
     %endif

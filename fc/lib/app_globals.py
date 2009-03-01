@@ -35,9 +35,10 @@ class OptHolder(object):
         self.secondaryIndex = (config['core.secondaryIndex'] == 'true')
         self.vitalSigns = (config['core.vitalSigns'] == 'true')
         self.allowPosting = (config['core.allowPosting'] == 'true')
-        self.allowAnonymous = (config['core.allowAnonymous'] == 'true')
-        self.allowAnonymousPosting = (config['core.allowAnonymousPosting'] == 'true')
         self.allowRegistration = (config['core.allowRegistration'] == 'true')
+        self.allowAnonymous = (config['core.allowAnonymous'] == 'true')
+        self.allowAnonymousPosting = self.allowAnonymous and (config['core.allowAnonymousPosting'] == 'true')
+        self.allowAnonProfile = self.allowAnonymous and (config['core.allowAnonProfile'] == 'true')
         self.statsCacheTime = int(config['core.statsCacheTime'])
 
         self.permissiveFileSizeConjunction = (config['core.permissiveFileSizeConjunction'] == 'true')

@@ -30,42 +30,65 @@ class FakeUser(object):
     def setUid(self, value=None):
         return self.__user.uid
 
-    def defaultGoto(self, value = None):
-        return self.__user.options.defaultGoto
-
     def isBanned(self):
         return False
 
     def secid(self):
         return 0
 
+    def sessValue(self, name, value, default):
+        if value != None:
+            session[name] = value
+            session.save()
+        return session.get(name, default)
+
+    def sessPickleValue(self, name, value, default):
+        if value != None:
+            session[name] = pickle.dumps(value)
+            session.save()
+        return  pickle.loads(session.get(name, default))
+
+    #customizable options
+    def defaultGoto(self, value = None):
+        return self.sessValue('defaultGoto', value, self.__user.options.defaultGoto)
+
     def hideLongComments(self, value=None):
-        return self.__user.options.hideLongComments
+        return self.sessValue('hideLongComments', value, self.__user.options.hideLongComments)
 
     def mixOldThreads(self, value=None):
-        return self.__user.options.mixOldThreads
+        return self.sessValue('mixOldThreads', value, self.__user.options.mixOldThreads)
 
     def useAjax(self, value=None):
-        return self.__user.options.useAjax
+        return self.sessValue('useAjax', value, self.__user.options.useAjax)
+
+    def threadsPerPage(self, value = None):
+        return self.sessValue('threadsPerPage', value, self.__user.options.threadsPerPage)
+
+    def repliesPerThread(self, value = None):
+        return self.sessValue('repliesPerThread', value, self.__user.options.repliesPerThread)
+
+    def style(self, value = None):
+        return self.sessValue('style', value, self.__user.options.style)
+
+    def template(self, value = None):
+        return self.sessValue('template', value, self.__user.options.template)
+
+    def expandImages(self, value = None):
+        return self.sessValue('expandImages', value, self.__user.options.expandImages)
+
+    def maxExpandWidth(self, value = None):
+        return self.sessValue('maxExpandWidth', value, self.__user.options.maxExpandWidth)
+
+    def maxExpandHeight(self, value = None):
+        return self.sessValue('maxExpandHeight', value, self.__user.options.maxExpandHeight)
 
     def homeExclude(self, value = None):
-        return pickle.loads(self.__user.options.homeExclude)
+        return self.sessPickleValue('homeExclude',  value, self.__user.options.homeExclude)
 
     def hideThreads(self, value = None):
-        return pickle.loads(self.__user.options.hideThreads)
+        return self.sessPickleValue('hideThreads',  value, self.__user.options.hideThreads)
 
-    def threadsPerPage(self, value = False):
-        return self.__user.options.threadsPerPage
-
-    def repliesPerThread(self, value = False):
-        return self.__user.options.repliesPerThread
-
-    def style(self, value = False):
-        return self.__user.options.style
-
-    def template(self, value = False):
-        return self.__user.options.template
-
+    # disable any dangerous action
     def isAdmin(self):
         return False
 
@@ -81,11 +104,3 @@ class FakeUser(object):
     def optionsDump(self):
         return UserOptions.optionsDump(self.options)
 
-    def expandImages(self):
-        return self.__user.options.expandImages
-
-    def maxExpandWidth(self):
-        return self.__user.options.maxExpandWidth
-
-    def maxExpandHeight(self):
-        return self.__user.options.maxExpandHeight

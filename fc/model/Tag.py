@@ -71,7 +71,7 @@ class Tag(object):
         return Tag.query.options(eagerload('options')).filter(Tag.tag.in_(names)).all()
 
     @staticmethod
-    def stringToTagList(tagstr):
+    def stringToTagList(tagstr, createNewTags = True):
         tags = []
         tagsl= []
         if tagstr:
@@ -84,9 +84,10 @@ class Tag(object):
 
                     if tag:
                         tags.append(tag)
-                    else:
+                    elif createNewTags:
                         tags.append(Tag(t))
-                    tagsl.append(t)
+                    if tag or createNewTags:
+                        tagsl.append(t)
         return tags
 
     @staticmethod

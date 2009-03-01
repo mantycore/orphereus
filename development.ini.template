@@ -37,6 +37,7 @@ core.allowPosting = true
 core.allowAnonymous = false
 core.allowAnonymousPosting = false
 core.allowRegistration = false
+core.allowAnonProfile = false
 core.statsCacheTime = 180
 core.permissiveFileSizeConjunction = true
 

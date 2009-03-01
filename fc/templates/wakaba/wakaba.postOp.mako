@@ -87,7 +87,7 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
 
 
 &nbsp;
-%if not c.userInst.Anonymous:
+%if not c.userInst.Anonymous or g.OPT.allowAnonProfile:
 [<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide Thread')}</a>]
 %endif
 

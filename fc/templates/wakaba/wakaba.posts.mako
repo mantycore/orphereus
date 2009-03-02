@@ -15,12 +15,12 @@
 <input type="hidden" name="tagLine" value="${c.tagLine}" />
 %for thread in c.threads:
 %if not thread.hidden:
-    <div id="thread-${thread.id}">
-        <%include file="wakaba.postOp.mako" args="thread=thread"/>
+    <div class="thread" id="thread-${thread.id}">
+    <%include file="wakaba.postOp.mako" args="thread=thread"/>
 
-        %for post in thread.Replies:
-           <%include file="wakaba.postReply.mako" args="thread=thread, post=post"/>
-        %endfor
+    <div class="replies">
+    <%include file="wakaba.replies.mako" args="thread=thread"/>
+    </div>
     </div>
     <br clear="left" />
 %else:

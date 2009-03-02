@@ -54,6 +54,17 @@ class FcajaxController(OrphieBaseController):
             return self.render('postReply', thread=parent, post = postInst)
         abort(404)
 
+    def getRenderedReplies(self, thread):
+        postInst = Post.getPost(thread)
+        if postInst and not postInst.parentPost:
+            if not self.userInst.isAdmin():
+                for t in postInst.tags:
+                    if t.id in g.forbiddenTags:
+                        abort(403)
+            postInst.Replies = postInst.filterReplies().all()
+            return self.render('replies', thread=postInst)
+        abort(404)
+
     def getRepliesCountForThread(self, post):
         postInst = Post.getPost(post)
         ret = False

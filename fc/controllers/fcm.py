@@ -255,7 +255,7 @@ class FcmController(OrphieBaseController):
     def updateCaches(self):
         mtnLog = []
         mtnLog.append(self.createLogEntry('Task', 'Updating caches...'))
-        posts = Post.query.filter(not_(Post.parentid)).all()
+        posts = Post.query.filter(Post.parentid == None).all()
         for post in posts:
             repliesCount = Post.query.filter(Post.parentid == post.id).count()
             if post.replyCount != repliesCount:
@@ -274,7 +274,7 @@ class FcmController(OrphieBaseController):
         tags = meta.Session.query(Tag).all()
         for tag in tags:
             condition = Post.tags.any(Tag.id == tag.id)
-            threadCount = Post.query.filter(not_(Post.parentid)).filter(condition).count()
+            threadCount = Post.query.filter(Post.parentid == None).filter(condition).count()
             #log.debug("%s:%s" % (tag.tag, threadCount))
 
             if tag.threadCount != threadCount:
@@ -321,7 +321,7 @@ class FcmController(OrphieBaseController):
         for tag in tags:
             log.debug(tag.tag)
             if not tag.options or not tag.options.persistent:
-                threadCount = Post.query.filter(not_(Post.parentid)).filter(Post.tags.any(Tag.id == tag.id)).count()
+                threadCount = Post.query.filter(Post.parentid == None).filter(Post.tags.any(Tag.id == tag.id)).count()
                 if threadCount == 0:
                     mtnLog.append(self.createLogEntry('Info', "Removed tag %s" % tag.tag))
                     meta.Session.delete(tag)

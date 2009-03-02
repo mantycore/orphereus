@@ -479,6 +479,14 @@ input#y_replyform_password{
 .omittedposts.expanded span{
   display: none
 }
+
+.omittedposts img{
+border: none;
+vertical-align: baseline;
+}
+
+a img{ border: 0}
+
 /*
 
 #x_replyform {

@@ -526,6 +526,13 @@ input#y_replyform_password{
   display: none
 }
 
+.omittedposts img{
+border: none;
+vertical-align: baseline;
+}
+
+a img{ border: 0}
+
 /*
 #x_replyform {
     display: block; border: 1px #117743; solid; margin: 0 2px 2px 2px; padding: 5px;

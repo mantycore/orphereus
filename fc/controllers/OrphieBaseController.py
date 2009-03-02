@@ -157,7 +157,7 @@ class OrphieBaseController(BaseController):
         post = Post.getPost(postid)
         if post:
             parentid = post.parentid
-            return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid>0 and parentid or postid, postid, postid, postid)
+            return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid and parentid or postid, postid, postid, postid)
         else:
             return "&gt;&gt;%s" % postid
 

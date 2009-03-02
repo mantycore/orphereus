@@ -62,7 +62,7 @@ class Post(object):
             if not postParams.postSage:
                 thread.bumpDate = datetime.datetime.now()
         else:
-            post.parentid = -1
+            post.parentid = None
             post.replyCount = 0
             post.bumpDate = datetime.datetime.now()
             post.tags = postParams.tags
@@ -143,9 +143,9 @@ class Post(object):
             posts = Post.filterByUid(userInst.uidNumber).all()
 
             for p in posts:
-                if p.parentid == -1 and not p.id in list:
+                if p.parentid == None and not p.id in list:
                     list.append(p.id)
-                elif p.parentid > -1 and not p.parentid in list:
+                elif p.parentid and not p.parentid in list:
                     list.append(p.parentid)
             return Post.id.in_(list)
 
@@ -160,7 +160,7 @@ class Post(object):
             else:
                 return arg
 
-        filter = Post.query.options(eagerload('file')).filter(Post.parentid==-1)
+        filter = Post.query.options(eagerload('file')).filter(Post.parentid==None)
         filteringExpression = Post.excludeAdminTags(userInst)
         #log.debug(self.userInst.homeExclude())
         tagList = []
@@ -254,7 +254,7 @@ class Post(object):
         postOptions = Tag.conjunctedOptionsDescript(self.parentid>0 and parentp.tags or self.tags)
         if checkOwnage and not self.uidNumber == userInst.uidNumber:
             logEntry = u''
-            if self.parentid > 0:
+            if self.parentid:
                 logEntry = N_("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (self.id, self.uidNumber, self.parentid, tagline, reason)
             else:
                 logEntry = N_("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (self.id, self.uidNumber, tagline, reason)
@@ -283,7 +283,7 @@ class Post(object):
             if parent:
                 parent.replyCount -= 1
 
-            if invisBumpDisabled and self.parentid != -1:
+            if invisBumpDisabled and self.parentid != None:
                 thread = Post.query.filter(Post.parentid==self.parentid).all()
                 if thread and thread[-1].id == self.id: #wut?
                     if len(thread) > 1 and not thread[-2].sage:

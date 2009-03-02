@@ -184,7 +184,7 @@ class FcaController(OrphieBaseController):
         if act == 'show':
             if id and id > 0:
                 post = Post.getPost(id)
-                if post and post.parentid == -1:
+                if post and post.parentid == None:
                     c.post = post
                 else:
                     c.errorText = _("This is not op-post")
@@ -193,7 +193,7 @@ class FcaController(OrphieBaseController):
             return self.render('manageMappings')
         elif act in ['del', 'add']:
             post = Post.getPost(id)
-            if post and post.parentid == -1:
+            if post and post.parentid == None:
                 if act == 'del' and tagid > 0:
                     if len(post.tags) > 1:
                         tag = Tag.getById(tagid)
@@ -447,7 +447,7 @@ class FcaController(OrphieBaseController):
                             posts = Post.filterByUid(user.uidNumber).all()
                             removed = []
                             for post in posts:
-                                if post.parentid == -1:
+                                if post.parentid == None:
                                     removed.append(str(post.id))
                                 else:
                                     removed.append("%d/%d" % (post.id, post.parentid))

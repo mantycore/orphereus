@@ -25,7 +25,7 @@ class CaptchaGenerator(ImageCaptcha):
             #Backgrounds.RandomDots(),
             #Distortions.WigglyBlocks(),
             Text.TextLayer(word, borderSize=1, fontFactory=ff),
-            Distortions.SineWarp(amplitudeRange=(2, 4), periodRange=(0.05, 0.12))
+            Distortions.SineWarp(amplitudeRange=(3.5, 5.5), periodRange=(0.1, 0.2))
             #Distortions.SineWarp()
             ]
 

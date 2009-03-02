@@ -43,6 +43,10 @@ function click_expands(options){
     return false;
   }
   $("a img.thumb").click(show_image)
+
+  click_expands.repair = function(node){
+    node.find("a img.thumb").click(show_image)
+  }
 }
 
 function popup_posts(options){
@@ -122,33 +126,6 @@ function popup_posts(options){
   }
 }
 
-function expandable_threads(){
-  $(".thread .omittedposts a").click(function() {
-    var me = $(this)
-    var thread = me.parent().parent();
-    if(me.data("oldreplies")){
-      var t = me.data("oldreplies")
-      me.data("oldreplies", thread.find(".replies").html())
-      thread.find(".replies").html(t)
-
-      t = me.data("orig_html")
-      me.data("orig_html", me.html())
-      me.html(t)
-
-      me.parent().toggleClass("expanded")
-    }else{
-      me.data("orig_html", me.html())
-      me.data("oldreplies", thread.find(".replies").html())
-      me.html("<img src='"+window.loading_icon_path+"'>Loading…")
-      thread.find(".replies").load("/ajax/getRenderedReplies/" + thread.attr("id").match(/\d+/)[0], function() {
-        me.parent().toggleClass("expanded")
-        me.html("Collapse thread")
-      })
-    }
-    return false;
-  })
-}
-
 /* YForm */
 var YForm = function(){
     this.form = $("#y_replyform")
@@ -169,6 +146,10 @@ YForm.open = function(e){
 
 YForm.init = function(){
   $(".reflink a").attr("onclick","").click(YForm.open)
+}
+
+YForm.repair = function(node){
+  node.find(".reflink a").attr("onclick","").click(YForm.open)
 }
 
 YForm.prototype = {
@@ -285,6 +266,40 @@ YForm.Captcha.prototype = {
     }
 }
 
+function expandable_threads(){
+  expandable_threads.mass_repair =  function(node){
+    popup_posts.repair(node.find("blockquote a"))
+    click_expands.repair(node)
+    YForm.repair(node)
+  }
+
+  $(".thread .omittedposts a").click(function() {
+    var me = $(this)
+    var thread = me.parent().parent();
+    if(me.data("oldreplies")){
+      var t = me.data("oldreplies")
+      me.data("oldreplies", thread.find(".replies").html())
+      thread.find(".replies").html(t)
+
+      t = me.data("orig_html")
+      me.data("orig_html", me.html())
+      me.html(t)
+
+      expandable_threads.mass_repair(thread.find(".replies"))
+      me.parent().toggleClass("expanded")
+    }else{
+      me.data("orig_html", me.html())
+      me.data("oldreplies", thread.find(".replies").html())
+      me.html("<img src='"+window.loading_icon_path+"'>Loading…")
+      thread.find(".replies").load("/ajax/getRenderedReplies/" + thread.attr("id").match(/\d+/)[0], function() {
+        me.parent().toggleClass("expanded")
+        me.html("Collapse thread")
+        expandable_threads.mass_repair(thread.find(".replies"))
+      })
+    }
+    return false;
+  })
+}
 
 // code below should be refactored
 function getElementsByClass(searchClass, domNode, tagName)

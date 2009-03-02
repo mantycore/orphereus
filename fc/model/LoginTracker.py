@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 from fc.model import meta
 
-t_logins = sa.Table("loginStats", meta.metadata,
+t_logins = sa.Table("loginTracker", meta.metadata,
     sa.Column("id"          , sa.types.Integer, primary_key=True),
     sa.Column("ip"          , sa.types.String(16), nullable=False),
     sa.Column("attempts"    , sa.types.Integer, nullable=False),

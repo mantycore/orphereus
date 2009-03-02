@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 
 from fc.model import meta
 
-t_tags = sa.Table("tags", meta.metadata,
+t_tags = sa.Table("tag", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("tag"      , sa.types.UnicodeText, nullable=False),
     sa.Column("replyCount" , sa.types.Integer, nullable=False, server_default='0'),
@@ -22,8 +22,8 @@ t_tags = sa.Table("tags", meta.metadata,
 
 t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
 #    sa.Column("id"          , sa.types.Integer, primary_key=True),
-    sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('posts.id')),
-    sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tags.id')),
+    sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id')),
+    sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tag.id')),
     )
 
 class Tag(object):

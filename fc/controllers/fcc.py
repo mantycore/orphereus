@@ -305,7 +305,7 @@ class FccController(OrphieBaseController):
             if isNumber(gotodest) and (int(gotodest) in destinations.keys()):
                 self.userInst.defaultGoto(int(gotodest))
             homeExcludeTags = Tag.stringToTagList(request.POST.get('homeExclude', u''), False)
-            log.debug(homeExcludeTags)
+            #log.debug(homeExcludeTags)
             homeExcludeList = []
             for t in homeExcludeTags:
                 homeExcludeList.append(t.id)

@@ -14,7 +14,7 @@ from fc.lib.miscUtils import filterText
 
 t_log = sa.Table("log", meta.metadata,
     sa.Column("id"    , sa.types.Integer, primary_key=True),
-    sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('users.uidNumber')),
+    sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('user.uidNumber')),
     sa.Column("date"  , sa.types.DateTime, nullable=False),
     sa.Column("event" , sa.types.Integer, nullable=False),
     sa.Column("entry" , sa.types.UnicodeText, nullable=False)

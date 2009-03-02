@@ -34,7 +34,7 @@ log = logging.getLogger(__name__)
 
 from fc.model import meta
 
-t_captchas = sa.Table("captchas", meta.metadata,
+t_captchas = sa.Table("captcha", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("text"     , sa.types.String(32), nullable=False),
     sa.Column("content"  , sa.types.Binary, nullable=True),

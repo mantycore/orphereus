@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 from fc.model import meta
 
-t_extlist = sa.Table("extlist", meta.metadata,
+t_extension = sa.Table("extension", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
     sa.Column("path"     , sa.types.String(255), nullable=False),
     sa.Column("thwidth"  , sa.types.Integer, nullable=False),

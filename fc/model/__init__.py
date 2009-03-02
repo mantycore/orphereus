@@ -36,18 +36,18 @@ def init_model(engine):
     meta.Session.mapper(UserOptions, t_userOptions)
     meta.Session.mapper(UserFilters, t_userFilters)
     meta.Session.mapper(User, t_users, properties = {
-            'options' : orm.relation(UserOptions, uselist=False, backref='t_users', cascade="all, delete, delete-orphan"),
-            'filters' : orm.relation(UserFilters, backref='t_users', cascade="all, delete, delete-orphan")
+            'options' : orm.relation(UserOptions, uselist=False, backref='user', cascade="all, delete, delete-orphan"),
+            'filters' : orm.relation(UserFilters, backref='user', cascade="all, delete, delete-orphan")
         })
 
-    meta.Session.mapper(Extension, t_extlist)
+    meta.Session.mapper(Extension, t_extension)
     meta.Session.mapper(Picture, t_piclist, properties = {
         'extension' : orm.relation(Extension)
         })
 
     meta.Session.mapper(TagOptions, t_tagOptions)
     meta.Session.mapper(Tag, t_tags, properties = {
-            'options' : orm.relation(TagOptions, uselist=False, backref='t_tags', cascade="all, delete, delete-orphan")
+            'options' : orm.relation(TagOptions, uselist=False, backref='tag', cascade="all, delete, delete-orphan")
         })
     meta.Session.mapper(Post, t_posts, properties = {
         'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),

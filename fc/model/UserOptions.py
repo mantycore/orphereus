@@ -13,7 +13,7 @@ from fc.model import meta
 
 t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("optid"    ,sa.types.Integer, primary_key=True),
-    sa.Column("uidNumber",sa.types.Integer, sa.ForeignKey('users.uidNumber')),
+    sa.Column("uidNumber",sa.types.Integer, sa.ForeignKey('user.uidNumber')),
     sa.Column("threadsPerPage", sa.types.Integer, nullable=False),
     sa.Column("repliesPerThread", sa.types.Integer, nullable=False),
     sa.Column("style"    , sa.types.String(32), nullable=False),

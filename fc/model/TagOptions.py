@@ -11,7 +11,7 @@ from fc.model import meta
 
 t_tagOptions = sa.Table("tagOptions", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("tagId"   , sa.types.Integer,  sa.ForeignKey('tags.id')),
+    sa.Column("tagId"   , sa.types.Integer,  sa.ForeignKey('tag.id')),
     sa.Column("comment"  , sa.types.UnicodeText, nullable=True),
     sa.Column("sectionId", sa.types.Integer, nullable=False),
     sa.Column("persistent", sa.types.Boolean, nullable=False),

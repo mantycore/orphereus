@@ -18,7 +18,7 @@ from pylons.i18n import _, ungettext, N_
 import logging
 log = logging.getLogger(__name__)
 
-t_users = sa.Table("users", meta.metadata,
+t_users = sa.Table("user", meta.metadata,
     sa.Column("uidNumber",sa.types.Integer, primary_key=True),
     sa.Column("uid"      , sa.types.String(128), nullable=False)
     )

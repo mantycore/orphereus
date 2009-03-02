@@ -62,7 +62,7 @@ class Post(object):
             if not postParams.postSage:
                 thread.bumpDate = datetime.datetime.now()
         else:
-            post.parentid = 0
+            post.parentid = None
             post.replyCount = 0
             post.bumpDate = datetime.datetime.now()
             post.tags = postParams.tags

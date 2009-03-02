@@ -241,7 +241,7 @@ class FccController(OrphieBaseController):
         redirectAddr = '~'
 
         if dest == 4: # destination board
-            if post.parentid == None:
+            if not post.parentid:
                 tags = []
                 for tag in post.tags:
                     tags.append(tag.tag)
@@ -421,12 +421,12 @@ class FccController(OrphieBaseController):
         c.posts = []
         for p in posts:
             parent = p
-            if not p.parentid == None:
+            if p.parentid:
                 parent = p.parentPost
 
             pt = []
             pt.append(p)
-            if p.parentid == None:
+            if not p.parentid:
                 pt.append(p)
             else:
                pt.append(parent)
@@ -646,7 +646,7 @@ class FccController(OrphieBaseController):
                 c.errorText = _("Can't post into non-existent thread")
                 return self.render('error')
 
-            if thePost.parentid != None:
+            if thePost.parentid:
                 thread = thePost.parentPost
             else:
                thread = thePost

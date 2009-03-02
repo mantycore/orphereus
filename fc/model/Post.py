@@ -62,7 +62,7 @@ class Post(object):
             if not postParams.postSage:
                 thread.bumpDate = datetime.datetime.now()
         else:
-            post.parentid = None
+            post.parentid = 0
             post.replyCount = 0
             post.bumpDate = datetime.datetime.now()
             post.tags = postParams.tags
@@ -119,6 +119,7 @@ class Post(object):
 
     @staticmethod
     def getPost(id):
+        log.debug(Post.query.get(id).parentid)
         return Post.query.get(id)
         #return Post.query.filter(Post.id==id).one()
 
@@ -143,7 +144,7 @@ class Post(object):
             posts = Post.filterByUid(userInst.uidNumber).all()
 
             for p in posts:
-                if p.parentid == None and not p.id in list:
+                if not p.parentid and not p.id in list:
                     list.append(p.id)
                 elif p.parentid and not p.parentid in list:
                     list.append(p.parentid)
@@ -160,7 +161,7 @@ class Post(object):
             else:
                 return arg
 
-        filter = Post.query.options(eagerload('file')).filter(Post.parentid==None)
+        filter = Post.query.options(eagerload('file')).filter(Post.parentid == None)
         filteringExpression = Post.excludeAdminTags(userInst)
         #log.debug(self.userInst.homeExclude())
         tagList = []
@@ -283,7 +284,7 @@ class Post(object):
             if parent:
                 parent.replyCount -= 1
 
-            if invisBumpDisabled and self.parentid != None:
+            if invisBumpDisabled and not self.parentid:
                 thread = Post.query.filter(Post.parentid==self.parentid).all()
                 if thread and thread[-1].id == self.id: #wut?
                     if len(thread) > 1 and not thread[-2].sage:

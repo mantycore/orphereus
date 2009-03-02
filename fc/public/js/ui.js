@@ -122,6 +122,33 @@ function popup_posts(options){
   }
 }
 
+function expandable_threads(){
+  $(".thread .omittedposts a").click(function() {
+    var me = $(this)
+    var thread = me.parent().parent();
+    if(me.data("oldreplies")){
+      var t = me.data("oldreplies")
+      me.data("oldreplies", thread.find(".replies").html())
+      thread.find(".replies").html(t)
+
+      t = me.data("orig_html")
+      me.data("orig_html", me.html())
+      me.html(t)
+
+      me.parent().toggleClass("expanded")
+    }else{
+      me.data("orig_html", me.html())
+      me.data("oldreplies", thread.find(".replies").html())
+      me.html("<img src='"+window.loading_icon_path+"'>Loading…")
+      thread.find(".replies").load("/ajax/getRenderedReplies/" + thread.attr("id").match(/\d+/)[0], function() {
+        me.parent().toggleClass("expanded")
+        me.html("Collapse thread")
+      })
+    }
+    return false;
+  })
+}
+
 /* YForm */
 var YForm = function(){
     this.form = $("#y_replyform")

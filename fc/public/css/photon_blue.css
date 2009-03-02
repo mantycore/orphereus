@@ -476,6 +476,9 @@ input#y_replyform_password{
     margin-top: 12px;
 }
 
+.omittedposts.expanded span{
+  display: none
+}
 /*
 
 #x_replyform {

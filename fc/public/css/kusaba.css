@@ -512,6 +512,9 @@ input#y_replyform_password{
     margin-top: 12px;
 }
 
+.omittedposts.expanded span{
+  display: none
+}
 /*
 #x_replyform {
     display: block; border: 1px #117743; solid; margin: 0 2px 2px 2px; padding: 5px;

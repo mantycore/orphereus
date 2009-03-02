@@ -113,5 +113,5 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
     %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:
-    <span class="omittedposts"><span>${_('%s posts omitted.') % thread.omittedPosts }</span> <a href="#" style="display: none;">${_('Expand thread')}</a> </span>
+    <span class="omittedposts"><span>${_('%s posts omitted.') % thread.omittedPosts }</span> <a href="#">${_('Expand thread')}</a> </span>
 %endif

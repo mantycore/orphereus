@@ -165,6 +165,7 @@
 ${g.OPT.enableFinalAnonymity and g.OPT.hlAnonymizedPosts and _('(with marks)') or ''}
 ${g.OPT.enableFinalAnonymity and not g.OPT.hlAnonymizedPosts and _('(without marks)') or ''}
 </li>
+<li>${_('Board-wide prooflabels')}:  ${_('turned')} ${not g.OPT.boardWideProoflabels and _('off') or _('on')}</li>
 <li><a href="/static/markup" target="_blank">${_('Markup and features')}</a></li>
 </ul>
 </div>

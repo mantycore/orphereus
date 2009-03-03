@@ -696,7 +696,7 @@ class FccController(OrphieBaseController):
         postMessageRaw = None
         if postMessage:
            if len(postMessage) <= 15000:
-               parser = WakabaParser(g.OPT.markupFile)
+               parser = WakabaParser(g.OPT, thread and thread.id or -1)
                maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
                cutSymbols = int(g.settingsMap["cutSymbols"].value)
                parsedMessage = parser.parseWakaba(postMessage, self, lines=maxLinesInPost, maxLen=cutSymbols)

@@ -337,7 +337,7 @@ class FcmController(OrphieBaseController):
         for post in posts:
             log.debug(post.id)
             if post.messageRaw:
-               parser = WakabaParser(g.OPT.markupFile)
+               parser = WakabaParser(g.OPT, post.parentPost and post.parentPost.id or -1)
                maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
                cutSymbols = int(g.settingsMap["cutSymbols"].value)
                parsedMessage = parser.parseWakaba(post.messageRaw, self, lines=maxLinesInPost,maxLen=cutSymbols)

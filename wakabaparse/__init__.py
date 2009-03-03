@@ -11,7 +11,7 @@ import logging
 log = logging.getLogger(__name__)
 
 class WakabaParser(object):
-    def __init__(self, definition, baseProd = 'all'):
+    def __init__(self, optHolder, replyingId = -1, baseProd = 'all'):
         self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nop','symbol_mark_nou','accent_code','noaccent_code','punctuation']
         self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','inline_spoiler':'span class="spoiler"','inline_code':'code'}
         self.complex= ['reference','signature','link']
@@ -21,7 +21,10 @@ class WakabaParser(object):
         self.input  = u''
         self.calledBy = None
         self.baseProd = baseProd
-        self.defl = open(definition).read()
+        self.defl = open(optHolder.markupFile).read()
+        self.replyingId = replyingId
+        self.boardWideProoflabels = optHolder.boardWideProoflabels
+
         self.parser = generator.buildParser(self.defl).parserbyname(baseProd)
 
     def PrintTree(self, Node, Depth):
@@ -66,54 +69,36 @@ class WakabaParser(object):
             post = info[0]
             uidNumber = info[1]
             if post:
-                if post.uidNumber < 1 or uidNumber < 1:
+                disablePL = (not self.boardWideProoflabels) and \
+                            (self.replyingId == -1 or \
+                            (post.parentid != self.replyingId and post.id != self.replyingId))
+                if post.uidNumber < 1 or uidNumber < 1 or disablePL:
                     unknown[postId]=post.id
                 elif post.uidNumber == uidNumber:
                     valid[postId]=post.id
                 else:
                     invalid[postId]=post.id
-                """
-                    if pid == -1:
-                        pid = self.input[i:j]
-                    if pid:
-                        valid[self.input[i:j]]=pid
-                    else: #red label - only valid posts from ANOTHER users
-                        pid = self.calledBy.postOwner(self.input[i:j])
-                        if pid == -1:
-                            pid = self.input[i:j]
-                        if pid:
-                            invalid[self.input[i:j]]=pid
-                """
-        # todo: fix fucking copypaste
+
+        def addSpan(className, idList, result):
+            retval = u''
+            if result:
+                retval+=","
+                retval += '<span class="%s">' % className
+            else:
+                retval += '<span class="%s">##' % className
+            sep = u''
+            for i in idList:
+                retval += sep + '<a href="/%s#i%s">%s</a>' % (idList[i],i,i)
+                sep = ','
+            retval += '</span>'
+            return retval
+
         if invalid:
-            result += '<span class="badsignature">##'
-            sep = u''
-            for i in invalid:
-                result += sep + '<a href="/%s#i%s">%s</a>' % (invalid[i],i,i)
-                sep = ','
-            result += '</span>'
+            result += addSpan("badsignature", invalid, result)
         if valid:
-            if result:
-                result+=","
-                result += '<span class="signature">'
-            else:
-                result += '<span class="signature">##'
-            sep = u''
-            for i in valid:
-                result += sep + '<a href="/%s#i%s">%s</a>' % (valid[i],i,i)
-                sep = ','
-            result += '</span>'
+            result += addSpan("signature", valid, result)
         if unknown:
-            if result:
-                result+=","
-                result += '<span class="nonsignature">'
-            else:
-                result += '<span class="nonsignature">##'
-            sep = u''
-            for i in unknown:
-                result += sep + '<a href="/%s#i%s">%s</a>' % (unknown[i],i,i)
-                sep = ','
-            result += '</span>'
+            result += addSpan("nonsignature", unknown, result)
         return result
 
     def openTag(self, tag, quantity=1):

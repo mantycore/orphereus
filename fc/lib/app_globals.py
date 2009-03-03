@@ -40,6 +40,7 @@ class OptHolder(object):
         self.allowAnonymousPosting = self.allowAnonymous and (config['core.allowAnonymousPosting'] == 'true')
         self.allowAnonProfile = self.allowAnonymous and (config['core.allowAnonProfile'] == 'true')
         self.statsCacheTime = int(config['core.statsCacheTime'])
+        self.boardWideProoflabels = (config['core.boardWideProoflabels'] == 'true')
 
         self.permissiveFileSizeConjunction = (config['core.permissiveFileSizeConjunction'] == 'true')
         #default board settings

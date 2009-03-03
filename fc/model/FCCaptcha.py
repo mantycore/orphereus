@@ -22,10 +22,10 @@ class CaptchaGenerator(ImageCaptcha):
         bg = random.choice([Backgrounds.SolidColor(), Backgrounds.CroppedImage(), Backgrounds.TiledImage(),])
         bg = (bg, Backgrounds.Grid(), Distortions.SineWarp(amplitudeRange=(6, 10), periodRange=(0.1, 0.4)))
         return [ bg,
-            #Backgrounds.RandomDots(),
+            Backgrounds.RandomDots(),
             #Distortions.WigglyBlocks(),
             Text.TextLayer(word, borderSize=1, fontFactory=ff),
-            Distortions.SineWarp(amplitudeRange=(3.5, 5.5), periodRange=(0.1, 0.2))
+            Distortions.SineWarp()
             #Distortions.SineWarp()
             ]
 

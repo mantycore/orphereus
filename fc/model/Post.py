@@ -119,7 +119,6 @@ class Post(object):
 
     @staticmethod
     def getPost(id):
-        log.debug(Post.query.get(id).parentid)
         return Post.query.get(id)
         #return Post.query.filter(Post.id==id).one()
 
@@ -284,7 +283,7 @@ class Post(object):
             if parent:
                 parent.replyCount -= 1
 
-            if invisBumpDisabled and not self.parentid:
+            if invisBumpDisabled and self.parentid:
                 thread = Post.query.filter(Post.parentid==self.parentid).all()
                 if thread and thread[-1].id == self.id: #wut?
                     if len(thread) > 1 and not thread[-2].sage:

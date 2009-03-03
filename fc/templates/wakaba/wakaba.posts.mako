@@ -64,20 +64,28 @@
 
     <div class="y_replyform_fields">
         <p id="y_replyform_captcha">
-            <label for="y_replyform_captcha_field"><img width="150" height="40" alt="Captcha" src="${g.OPT.staticPathWeb}images/loading.gif"></label>
+            <label for="y_replyform_captcha_field">
+                <img width="150" height="40" alt="Captcha" src="${g.OPT.staticPathWeb}images/loading.gif" />
+            </label>
             <input type="text" size="35" name="captcha" id="y_replyform_captcha_field" class="inactive" value="Captcha required" title="Captcha text" tabindex="20"/>
             <input type="password" value="risiku" size="35" name="remPass" id="y_replyform_password" title="You can use this password to remove posts"/>
         </p>
-        <p id="y_replyform_file"><input type="file" id="y_replyform_file_field" name="file" size="10" tabindex="40" /></p>
-        <p id="y_replyform_sage"><label for="y_replyform_sage_field" title="sage"><input type="checkbox" id="y_replyform_sage_field" name="sage" tabindex="50"/>sage</label></p>
-
-        <p id="y_replyform_goto"><label for="y_replyform_goto_field" title="goto">Go to</label> <select name="goto" id="y_replyform_goto_field"  tabindex="60">
-            <option value="0">Thread</option>
-            <option value="1">First page of current board</option>
-            <option value="2">Current page of current board</option>
-            <option value="3">Overview</option>
-            <option value="4">First page of destination board</option>
-            <option value="5">Referrer</option></select>
+        <p id="y_replyform_file">
+            <input type="file" id="y_replyform_file_field" name="file" size="10" tabindex="40" />
+        </p>
+        <p id="y_replyform_sage">
+            <label for="y_replyform_sage_field" title="sage"><input type="checkbox" id="y_replyform_sage_field" name="sage" tabindex="50"/>sage</label>
+        </p>
+        <p id="y_replyform_goto">
+            <label for="y_replyform_goto_field" title="goto">Go to</label>
+            <select name="goto" id="y_replyform_goto_field"  tabindex="60">
+                <option value="0">Thread</option>
+                <option value="1">First page of current board</option>
+                <option value="2">Current page of current board</option>
+                <option value="3">Overview</option>
+                <option value="4">First page of destination board</option>
+                <option value="5">Referrer</option>
+            </select>
         </p>
         <p id="y_replyform_buttons"><input type="submit" value="Post" tabindex="30"/><input type="button" value="Close" class="close" /></p>
     </div>

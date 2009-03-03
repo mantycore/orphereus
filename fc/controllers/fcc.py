@@ -649,7 +649,7 @@ class FccController(OrphieBaseController):
             if thePost.parentid:
                 thread = thePost.parentPost
             else:
-               thread = thePost
+                thread = thePost
             tags = thread.tags
         else:
             tagstr = request.POST.get('tags', False)

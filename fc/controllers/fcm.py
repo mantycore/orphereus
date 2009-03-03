@@ -15,7 +15,7 @@ import re
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
-from wakabaparse import WakabaParser
+from wakabaparse import WakabaParser, fixHtml
 
 import logging
 log = logging.getLogger(__name__)
@@ -83,9 +83,8 @@ class FcmController(OrphieBaseController):
 
         captchas = meta.Session.query(Captcha).all()
         for ct in captchas:
-            tracker = meta.Session.query(LoginTracker).filter(LoginTracker.cid == ct.id).first()
-            if not tracker:
-                mtnLog.append(self.createLogEntry('Info', "Deleted captcha <b>#%d</b>" % (ct.id)))
+            if ct.timestamp < currentTime - datetime.timedelta(days=1):
+                mtnLog.append(self.createLogEntry('Info', "Deleted old captcha <b>#%d</b>" % (ct.id)))
                 meta.Session.delete(ct)
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
@@ -335,7 +334,7 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Reparsing...'))
         posts = Post.query.all()
         for post in posts:
-            log.debug(post.id)
+            log.debug("Reparsing %d..." % post.id)
             if post.messageRaw:
                parser = WakabaParser(g.OPT, post.parentPost and post.parentPost.id or -1)
                maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
@@ -347,6 +346,13 @@ class FcmController(OrphieBaseController):
                mtnLog.append(self.createLogEntry('Info', "Reparsed post %d" % post.id))
                post.message = fullMessage
                post.messageShort = parsedMessage[1]
+            else:
+                if post.message:
+                    post.message = fixHtml(post.message)
+                    mtnLog.append(self.createLogEntry('Info', "Fixed message for post %d" % post.id))
+                if post.messageShort:
+                    mtnLog.append(self.createLogEntry('Info', "Fixed short message for post %d" % post.id))
+                    post.messageShort = fixHtml(post.messageShort)
 
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))

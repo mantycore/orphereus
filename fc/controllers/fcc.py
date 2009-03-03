@@ -21,7 +21,6 @@ from fc.lib.fileHolder import AngryFileHolder
 from OrphieBaseController import OrphieBaseController
 from mutagen.easyid3 import EasyID3
 
-
 import logging
 log = logging.getLogger(__name__)
 

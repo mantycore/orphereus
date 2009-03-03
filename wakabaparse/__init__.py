@@ -6,6 +6,7 @@ from mx.TextTools import TextTools
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 import re
+from html5lib.html5parser import HTMLParser
 
 import logging
 log = logging.getLogger(__name__)
@@ -233,6 +234,10 @@ class WakabaParser(object):
             self.result += '</p>'
         return result
 
+    def fixHtml(self, html):
+        p = HTMLParser()
+        return ''.join([token.toxml() for token in p.parseFragment(html).childNodes])
+
     def parseWakaba(self, message, o, lines=20, maxLen=5000):
         self.input = "\n" + message + "\n"
         self.calledBy = o
@@ -248,10 +253,12 @@ class WakabaParser(object):
         result = self.formatInHTML(taglist[1])
         if self.short and self.linesCutted == self.lines:
             self.short = u''
+
+        self.result = self.fixHtml(self.result)
         #XXX: TODO: very dirty fix
         if self.short:
-            self.short += '</p>'
-        return (self.result,self.short)
+            self.short = self.fixHtml(self.short)
+        return (self.result, self.short)
 
     def getTagList(self, message):
         self.input = "\n" + message + "\n"

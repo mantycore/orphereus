@@ -162,7 +162,6 @@ class Post(object):
 
         filter = Post.query.options(eagerload('file')).filter(Post.parentid == None)
         filteringExpression = Post.excludeAdminTags(userInst)
-        #log.debug(self.userInst.homeExclude())
         tagList = []
         if url:
             operators = {'+':1, '-':1, '^':2, '&':2}
@@ -195,7 +194,7 @@ class Post(object):
                             stack.append((f,arg1[1]))
                 else:
                     stack.append(buildArgument(i))
-            if stack and isinstance(stack[0][0],sa.sql.expression.ClauseElement):
+            if stack and isinstance(stack[0][0], sa.sql.expression.ClauseElement):
                 cl = stack.pop()
                 if filteringExpression:
                     filteringExpression = and_(cl[0], filteringExpression)
@@ -208,7 +207,7 @@ class Post(object):
 
     @staticmethod
     def excludeAdminTags(userInst):
-        blockHidden = False
+        blockHidden = not_(Post.id == None)
         if not userInst.isAdmin():
             blocker = Post.tags.any(Tag.id.in_(meta.globj.forbiddenTags))
             blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))

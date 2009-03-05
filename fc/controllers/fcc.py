@@ -407,13 +407,14 @@ class FccController(OrphieBaseController):
             text = groups[2]
             tagfilter = Post.buildMetaboardFilter(filterName, self.userInst)[2]
 
-        base = False
-        if tagfilter:
-            base = Post.filter(or_(tagfilter,
-                                        Post.parentPost.has(tagfilter),
-                                   ))
-        else:
-            base = Post.buildMetaboardFilter(False, self.userInst)[0]
+        if not tagfilter:
+            tagfilter = Post.buildMetaboardFilter(False, self.userInst)[2]
+
+        base = Post.filter(or_(tagfilter,
+                                    Post.parentPost.has(tagfilter),
+                               ))
+        #else:
+
 
         filter = base.filter(Post.message.like('%%%s%%' % text))
         count = filter.count()

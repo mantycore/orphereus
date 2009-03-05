@@ -20,7 +20,7 @@
         %if b.board.options and b.board.options.comment:
             ${b.board.options.comment}
         %endif
-        %if b.board.options.specialRules:
+        %if b.board.options and b.board.options.specialRules:
             <div class="smallFont">
             Rules:
             <ul class="nomargin">

@@ -124,6 +124,9 @@
                     <input type="text" value="300" size="3" name="oekaki_x"/>
                     &#215;
                     <input type="text" value="300" size="3" name="oekaki_y"/>
+
+                    <input type="checkbox" name="selfy" /> Use Selfy
+
                     <input type="hidden" value="New" name="oekaki_type"/>
                     <input type="submit" value="${_('Draw Oekaki')}"/>
 

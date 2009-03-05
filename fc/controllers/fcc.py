@@ -506,6 +506,8 @@ class FccController(OrphieBaseController):
         c.width  = request.POST.get('oekaki_x','300')
         c.height = request.POST.get('oekaki_y','300')
         enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
+        selfy = request.POST.get('selfy', False)
+        c.selfy = selfy
 
         if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width)<=10 or int(c.height)<=10):
            c.width = 300
@@ -532,7 +534,7 @@ class FccController(OrphieBaseController):
                  c.canvas = h.modLink(pic.path, c.userInst.secid())
                  c.width  = pic.width
                  c.height = pic.height
-        oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource)
+        oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource, selfy)
         return self.render('spainter')
 
     def processFile(self, file, thumbSize=250):
@@ -682,7 +684,8 @@ class FccController(OrphieBaseController):
            oekaki = Oekaki.get(tempid)
 
            file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
-           postMessageInfo = u'<span class="postInfo">Drawn with <b>%s</b> in %s seconds</span>' % (oekaki.type, str(int(oekaki.time/1000)))
+           postMessageInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds</span>' \
+                            % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time/1000)))
            if oekaki.source:
               postMessageInfo += ", source " + self.formatPostReference(oekaki.source)
            oekaki.delete()

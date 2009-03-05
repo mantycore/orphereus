@@ -2,14 +2,21 @@
 <head>
 <title>Shi-Painter</title>
 <script type="text/javascript" src="${g.OPT.staticPathWeb}sp.js"></script>
+<script type="text/javascript" src="${g.OPT.staticPathWeb}js/selfy.js"></script>
 </head>
 <body>
+
+<table cellpadding="0" cellspacing="0" width="100%" height="100%"><tr><td width="100%">
 <applet width="100%" height="100%" code="c.ShiPainter.class" name="paintbbs" archive="${g.OPT.staticPathWeb}spainter.jar,${g.OPT.staticPathWeb}res/${c.oekakiToolString}.zip" MAYSCRIPT>
 <param name="image_width" value="${c.width}" />
 <param name="image_height" value="${c.height}" />
 %if c.canvas:
   <param name="image_canvas" value="${g.OPT.filesPathWeb + c.canvas}" />
 %endif
+
+<!--
+<param name="thumbnail_type" value="animation" />
+-->
 
 <param name="image_size" value="512" />
 <param name="compress_level" value="15" />
@@ -92,7 +99,14 @@
 <param name="l_m_color_text" value="#0000ff" />
 </applet>
 
-
+%if c.selfy:
+    <td valign="top">
+    <script type="text/javascript">
+    palette_selfy();
+    </script>
+    </td>
+%endif
+</tr></table>
 
 </body>
 </html>

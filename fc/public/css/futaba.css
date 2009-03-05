@@ -319,7 +319,7 @@ div a.show-hide-thread:hover {
 }
 
 .logline {background: #DDDDDD;}
-.nomargin{margin: 0;}
+.nomargin{margin: 0; padding: 0 0 0 20px;} 
 .smallFont{font-size: 70%;}
 
 .hovblock

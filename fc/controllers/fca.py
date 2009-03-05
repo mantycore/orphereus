@@ -283,6 +283,7 @@ class FcaController(OrphieBaseController):
                         sid = 0
                     c.tag.options.sectionId = sid
                     c.tag.options.persistent = request.POST.get('persistent', False)
+                    c.tag.options.service = request.POST.get('service', False)
                     c.tag.options.imagelessThread = request.POST.get('imagelessThread', False)
                     c.tag.options.imagelessPost = request.POST.get('imagelessPost', False)
                     c.tag.options.images = request.POST.get('images', False)

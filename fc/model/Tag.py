@@ -161,10 +161,13 @@ class Tag(object):
         ret = empty()
         ret.boards=[]
         ret.tags=[]
+        ret.stags=[]
         ret.totalBoardsThreads = 0
-        ret.totalTagsThreads = 0
         ret.totalBoardsPosts = 0
+        ret.totalTagsThreads = 0
         ret.totalTagsPosts = 0
+        ret.totalSTagsThreads = 0
+        ret.totalSTagsPosts = 0
         for b in boards:
             if not b.id in meta.globj.forbiddenTags:
                 bc = empty()
@@ -176,10 +179,14 @@ class Tag(object):
                     ret.boards.append(bc)
                     ret.totalBoardsThreads += bc.count
                     ret.totalBoardsPosts += bc.postsCount
-                else:
+                elif not (b.options and b.options.service):
                     ret.tags.append(bc)
                     ret.totalTagsThreads += bc.count
                     ret.totalTagsPosts += bc.postsCount
+                else:
+                    ret.stags.append(bc)
+                    ret.totalSTagsThreads += bc.count
+                    ret.totalSTagsPosts += bc.postsCount
         return ret
 
     @staticmethod

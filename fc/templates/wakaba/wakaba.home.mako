@@ -14,7 +14,7 @@
 Vital signs
 <br/><br/>
 <font size="-1">
-LKA: ${c.last1KUsersCount}; 
+LKA: ${c.last1KUsersCount};
 PKA: ${c.prev1KUsersCount}
 </font>
 <br/>
@@ -46,71 +46,22 @@ ${vitalSigns()}
 </span>
 %endif
 
+%if c.boards:
 <i>Let my BOARDS go!</i>
-<table width="100%" class="hlTable">
-    <thead>
-        <tr>
-            <td style="width: 200px;">${_('Name')}</td>
-            <td style="width: 40px;">${_('Threads')}</td>
-            <td style="width: 40px;">${_('Posts')}</td>
-            <td>${_('Description')}</td>
-        </tr>
-    </thead>
-    <tbody>
-%for b in c.boards:
-        <tr>
-            <td><div class="hovblock"><a style="display: block;" href="/${b.board.tag}/">${b.board.tag}</a></div></td>
-            <td>${b.count}</td>
-            <td>${b.postsCount}</td>
-            <td>
-            %if b.board.options and b.board.options.comment:
-                ${b.board.options.comment}
-            %endif
-            </td>  
-        </tr>
-%endfor 
-        <tr>
-            <td><div class="hovblock"><b>${_('Total')}</b></div></td>
-            <td><div class="hovblock">${c.totalBoardsThreads}</div></td>
-            <td><div class="hovblock">${c.totalBoardsPosts}</div></td>
-            <td></td>  
-        </tr>   
-    </tbody>
-</table>
-<br/>
+<%include file="wakaba.homeStatTable.mako" args="boards=c.boards,totalThreads=c.totalBoardsThreads,totalPosts=c.totalBoardsPosts"/>
+%endif
 
+%if c.stags:
+<h3>Special tags</h3>
+<i>Useful stuff is so useful</i>
+<%include file="wakaba.homeStatTable.mako" args="boards=c.stags,totalThreads=c.totalSTagsThreads,totalPosts=c.totalSTagsPosts"/>
+%endif
+
+%if c.tags:
 <h3>Tags</h3>
 <i>Every small TAG has hidden powers. And it has everything to become a BOARD</i>
-<table width="100%" class="hlTable">
-    <thead>
-        <tr>
-            <td style="width: 200px;">${_('Name')}</td>
-            <td style="width: 40px;">${_('Threads')}</td>
-            <td style="width: 40px;">${_('Posts')}</td>
-            <td>${_('Description')}</td>
-        </tr>
-    </thead>
-    <tbody>
-%for b in c.tags:
-        <tr>
-            <td><div class="hovblock"><a style="display: block;" href="/${b.board.tag}/">${b.board.tag}</a></div></td>
-            <td>${b.count}</td>     
-            <td>${b.postsCount}</td>    
-            <td>
-            %if b.board.options and b.board.options.comment:
-                ${b.board.options.comment}
-            %endif
-            </td>  
-        </tr>
-%endfor    
-        <tr>
-            <td><div class="hovblock"><b>${_('Total')}</b></div></td>
-            <td><div class="hovblock">${c.totalTagsThreads}</div></td>
-            <td><div class="hovblock">${c.totalTagsPosts}</div></td>
-            <td></td>  
-        </tr>   
-    </tbody>
-</table>
+<%include file="wakaba.homeStatTable.mako" args="boards=c.tags,totalThreads=c.totalTagsThreads,totalPosts=c.totalTagsPosts"/>
+%endif
 
 <hr />
 <br clear="all" />

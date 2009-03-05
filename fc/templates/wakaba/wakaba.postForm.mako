@@ -175,7 +175,7 @@ ${_('Board-specific rules:')}
     %for rule in c.boardOptions.rulesList:
         <li>${rule}</li>
     %endfor
-    </ul>
+</ul>
 %endif
 </td>
 

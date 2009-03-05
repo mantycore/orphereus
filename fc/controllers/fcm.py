@@ -318,10 +318,9 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Removing empty tags...'))
         tags = meta.Session.query(Tag).all()
         for tag in tags:
-            log.debug(tag.tag)
             if not tag.options or not tag.options.persistent:
                 threadCount = Post.query.filter(Post.parentid == None).filter(Post.tags.any(Tag.id == tag.id)).count()
-                if threadCount == 0:
+                if threadCount == 0 and not (tag.options and tag.options.service):
                     mtnLog.append(self.createLogEntry('Info', "Removed tag %s" % tag.tag))
                     meta.Session.delete(tag)
 

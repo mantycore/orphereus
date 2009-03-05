@@ -176,10 +176,13 @@ class FccController(OrphieBaseController):
 
             c.boards = sorted(mstat.boards, taglistcmp)
             c.tags = sorted(mstat.tags, taglistcmp)
+            c.stags = sorted(mstat.stags, taglistcmp)
             c.totalBoardsThreads = mstat.totalBoardsThreads
-            c.totalTagsThreads = mstat.totalTagsThreads
             c.totalBoardsPosts = mstat.totalBoardsPosts
+            c.totalTagsThreads = mstat.totalTagsThreads
             c.totalTagsPosts = mstat.totalTagsPosts
+            c.totalSTagsThreads = mstat.totalSTagsThreads
+            c.totalSTagsPosts = mstat.totalSTagsPosts
 
             c.last1KUsersCount = vts.last1KUsersCount
             c.prev1KUsersCount = vts.prev1KUsersCount

@@ -15,6 +15,7 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     sa.Column("comment"  , sa.types.UnicodeText, nullable=True),
     sa.Column("sectionId", sa.types.Integer, nullable=False),
     sa.Column("persistent", sa.types.Boolean, nullable=False),
+    sa.Column("service",    sa.types.Boolean, nullable=False),
     sa.Column("imagelessThread", sa.types.Boolean, nullable=False),
     sa.Column("imagelessPost", sa.types.Boolean, nullable=False),
     sa.Column("images"   , sa.types.Boolean, nullable=False),
@@ -31,6 +32,7 @@ class TagOptions(object):
     def __init__(self):
         self.sectionId = 0
         self.persistent = False
+        self.service = False
         self.comment = u''
         self.specialRules = u''
         self.imagelessThread = meta.globj.OPT.defImagelessThread

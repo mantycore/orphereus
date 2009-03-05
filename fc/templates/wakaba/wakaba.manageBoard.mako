@@ -50,6 +50,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Service')}
+                    <div style="font-size: 60%; font-style:italic;">${_('(Disable deletion during maintenance, place into special group)')}</div>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="service" ${c.tag.options.service and 'checked="checked"' or ""} />
+                    </td>
+                </tr>
+                <tr>
                     <td class="postblock">${_('Allow OPs without image')}</td>
                     <td>
                         <input type="checkbox" name="imagelessThread" ${c.tag.options.imagelessThread and 'checked="checked"' or ""} />

@@ -93,11 +93,11 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
 
 %if c.currentUserCanPost:
 %if thread.file and thread.file.width:
- [<a href="/${thread.id}/oekakiDraw">Draw</a>]
+    [<a href="/${thread.id}/oekakiDraw/${c.userInst.oekUseSelfy() and '+selfy' or '-selfy'}/${c.userInst.oekUseAnim() and '+anim' or '-anim'}/${c.userInst.oekUsePro() and 'shiPro' or 'shiNormal'}">Draw</a>]
 %endif
-[<a href="/${thread.id}">Reply</a>]
+    [<a href="/${thread.id}">Reply</a>]
 %else:
-[<a href="/${thread.id}">View thread</a>]
+    [<a href="/${thread.id}">View thread</a>]
 %endif
 
 <blockquote class="postbody" id="quickReplyNode${thread.id}">

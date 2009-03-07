@@ -83,7 +83,7 @@ class FccController(OrphieBaseController):
 
         if count > 1:
             c.threads = threadFilter.order_by(Post.bumpDate.desc())[page * tpp: (page + 1)* tpp]
-            if self.userInst.mixOldThreads():
+            if self.userInst.mixOldThreads() and not board == '@':
                 oldThread = threadFilter.filter(Post.bumpDate < c.threads[-1].bumpDate).order_by(sqlalchemy.func.random()).first()
                 #log.debug(oldThread)
                 if oldThread:
@@ -285,6 +285,9 @@ class FccController(OrphieBaseController):
             self.userInst.useAjax(bool(request.POST.get('useAjax', False)))
             self.userInst.expandImages(request.POST.get('expandImages', False))
             self.userInst.mixOldThreads(bool(request.POST.get('mixOldThreads', False)))
+            self.userInst.oekUseSelfy(bool(request.POST.get('oekUseSelfy', False)))
+            self.userInst.oekUseAnim(bool(request.POST.get('oekUseAnim', False)))
+            self.userInst.oekUsePro(bool(request.POST.get('oekUsePro', False)))
             threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
             if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 30):
                 self.userInst.threadsPerPage(int(threadsPerPage))
@@ -496,31 +499,32 @@ class FccController(OrphieBaseController):
         else:
             return redirect_to('/')
 
-    def oekakiDraw(self,url):
+    def oekakiDraw(self, url, selfy, anim, tool):
         if not self.currentUserCanPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')
 
         c.url = url
+        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
+        c.selfy = request.POST.get('selfy', False) or selfy == '+selfy'
+        c.animation = request.POST.get('animation', False) or anim == '+anim'
+
+        oekType = ''
+        if request.POST.get('oekaki_painter', False) == 'shiPro' or tool=='shiPro':
+            oekType = 'Shi pro'
+            c.oekakiToolString = 'pro'
+        else:
+            oekType = 'Shi normal'
+            c.oekakiToolString = 'normal';
+
         c.canvas = False
         c.width  = request.POST.get('oekaki_x','300')
         c.height = request.POST.get('oekaki_y','300')
-        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
-        selfy = request.POST.get('selfy', False)
-        c.selfy = selfy
 
         if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width)<=10 or int(c.height)<=10):
            c.width = 300
            c.height = 300
         c.tempid = str(long(time.time() * 10**7))
-
-        oekType = ''
-        if request.POST.get('oekaki_painter','shiNormal') == 'shiNormal':
-            oekType = 'Shi normal'
-            c.oekakiToolString = 'normal';
-        else:
-            oekType = 'Shi pro'
-            c.oekakiToolString = 'pro'
 
         oekSource = 0
         if isNumber(url) and enablePicLoading:
@@ -534,7 +538,7 @@ class FccController(OrphieBaseController):
                  c.canvas = h.modLink(pic.path, c.userInst.secid())
                  c.width  = pic.width
                  c.height = pic.height
-        oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource, selfy)
+        oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource, c.selfy)
         return self.render('spainter')
 
     def processFile(self, file, thumbSize=250):

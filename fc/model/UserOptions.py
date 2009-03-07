@@ -30,6 +30,9 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("maxExpandHeight", sa.types.Integer, nullable=True, server_default='768'),
     sa.Column("mixOldThreads", sa.types.Boolean, nullable=True),
     sa.Column("defaultGoto", sa.types.Integer, nullable=True),
+    sa.Column("oekUseSelfy", sa.types.Boolean, nullable=True, server_default='0'),
+    sa.Column("oekUseAnim", sa.types.Boolean, nullable=True, server_default='0'),
+    sa.Column("oekUsePro", sa.types.Boolean, nullable=True, server_default='0'),
     sa.Column("isAdmin"  , sa.types.Boolean, nullable=True),
     sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable=True),
     sa.Column("canMakeInvite", sa.types.Boolean, nullable=True),
@@ -67,6 +70,9 @@ class UserOptions(object):
         optionsObject.mixOldThreads = True
         optionsObject.defaultGoto = 0
         optionsObject.expandImages = True
+        optionsObject.oekUseSelfy = False
+        optionsObject.oekUseAnim = False
+        optionsObject.oekUsePro = False
         optionsObject.maxExpandWidth = 1024
         optionsObject.maxExpandHeight = 768
         optionsObject.homeExclude = pickle.dumps([])

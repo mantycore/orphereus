@@ -14,9 +14,9 @@
   <param name="image_canvas" value="${g.OPT.filesPathWeb + c.canvas}" />
 %endif
 
-<!--
-<param name="thumbnail_type" value="animation" />
--->
+%if c.animation:
+    <param name="thumbnail_type" value="animation" />
+%endif
 
 <param name="image_size" value="512" />
 <param name="compress_level" value="15" />

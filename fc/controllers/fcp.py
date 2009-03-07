@@ -195,28 +195,44 @@ class FcpController(OrphieBaseController):
         out += 'test:' + str(request.POST.get('test', ''))
         return filterText(out)
 
+    def saveUploaded(self, expandedName, content):
+        localFilePath = os.path.join(g.OPT.uploadPath, expandedName)
+        targetDir = os.path.dirname(localFilePath)
+        if not os.path.exists(targetDir):
+           os.makedirs(targetDir)
+        localFile = open(localFilePath, 'wb')
+        localFile.write(content)
+        localFile.close()
+
     def oekakiSave(self, environ, start_response, url, tempid):
         start_response('200 OK', [('Content-Type','text/plain'),('Content-Length','2')])
         oekaki = Oekaki.get(tempid) #meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
         cl = int(request.environ['CONTENT_LENGTH'])
+
         if oekaki and cl:
             id = request.environ['wsgi.input'].read(1)
             if id == 'S':
                 headerLength = int(request.environ['wsgi.input'].read(8))
                 header = request.environ['wsgi.input'].read(headerLength)
+
                 bodyLength = int(request.environ['wsgi.input'].read(8))
                 request.environ['wsgi.input'].read(2)
                 body = request.environ['wsgi.input'].read(bodyLength)
+
                 headers = header.split('&')
                 type = filterText(headers[0].split('=')[1])
                 time = headers[1].split('=')[1]
-                expandedName = h.expandName('%s.%s' % (tempid, type))
-                localFilePath = os.path.join(g.OPT.uploadPath, expandedName)
-                targetDir = os.path.dirname(localFilePath)
-                if not os.path.exists(targetDir):
-                   os.makedirs(targetDir)
-                localFile = open(localFilePath,'wb')
-                localFile.write(body)
-                localFile.close()
-                oekaki.setPathAndTime(expandedName, time)
+                savedOekakiPath = h.expandName('%s.%s' % (tempid, type))
+                self.saveUploaded(savedOekakiPath, body)
+
+                animPath = None
+                animLength = request.environ['wsgi.input'].read(8)
+                if animLength:
+                    animLength = int(animLength)
+                    anim = request.environ['wsgi.input'].read(animLength)
+                    animPath = h.expandName('%s.%s' % (tempid, 'pch'))
+                    self.saveUploaded(animPath, anim)
+
+
+                oekaki.setPathsAndTime(savedOekakiPath, animPath, time)
         return ['ok']

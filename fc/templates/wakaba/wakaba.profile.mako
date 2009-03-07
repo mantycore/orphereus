@@ -140,6 +140,21 @@
                     </td>
                 </tr>
                 <tr>
+                    <td colspan="2" style="text-align: center; font-weight: bold;">${_('Oekaki defaults')}</td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Use Selfy')}</td>
+                    <td><input type="checkbox" name="oekUseSelfy" ${c.userInst.oekUseSelfy() and 'checked="checked"' or ""} /></td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Record animation')}</td>
+                    <td><input type="checkbox" name="oekUseAnim" ${c.userInst.oekUseAnim() and 'checked="checked"' or ""} /></td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Use Shi Pro')}</td>
+                    <td><input type="checkbox" name="oekUsePro" ${c.userInst.oekUsePro() and 'checked="checked"' or ""} /></td>
+                </tr>
+                <tr>
                     <td colspan="2"><input name="update" type="submit" value="${_('Update')}" /></td>
                 </tr>
                 %if not c.userInst.Anonymous:

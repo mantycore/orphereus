@@ -19,6 +19,7 @@ t_oekaki = sa.Table("oekaki", meta.metadata,
     sa.Column("path"     , sa.types.String(255), nullable=False),
     sa.Column("timeStamp", sa.types.DateTime, nullable=False),
     sa.Column("selfy", sa.types.Boolean, nullable=False, server_default='0'),
+    sa.Column("animPath", sa.types.String(255), nullable=True),
     )
 
 class Oekaki(object):
@@ -31,6 +32,7 @@ class Oekaki(object):
         self.source = source
         self.tempid = tempid
         self.selfy = selfy
+        self.animPath = None
 
     @staticmethod
     def create(tempid, uidNumber, type, source, selfy):
@@ -42,8 +44,9 @@ class Oekaki(object):
     def get(tempid):
         return Oekaki.query.filter(Oekaki.tempid==tempid).first()
 
-    def setPathAndTime(self, path, time):
+    def setPathsAndTime(self, path, animPath, time):
         self.path = path
+        self.animPath = animPath
         self.time = time
         meta.Session.commit()
 

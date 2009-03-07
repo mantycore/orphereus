@@ -61,6 +61,15 @@ class FakeUser(object):
     def useAjax(self, value=None):
         return self.sessValue('useAjax', value, self.__user.options.useAjax)
 
+    def oekUseSelfy(self, value = None):
+        return self.sessValue('oekUseSelfy', value, self.__user.options.oekUseSelfy)
+
+    def oekUseAnim(self, value = None):
+        return self.sessValue('oekUseAnim', value, self.__user.options.oekUseAnim)
+
+    def oekUsePro(self, value = None):
+        return self.sessValue('oekUsePro', value, self.__user.options.oekUsePro)
+
     def threadsPerPage(self, value = None):
         return self.sessValue('threadsPerPage', value, self.__user.options.threadsPerPage)
 

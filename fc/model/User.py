@@ -23,6 +23,7 @@ t_users = sa.Table("user", meta.metadata,
     sa.Column("uid"      , sa.types.String(128), nullable=False)
     )
 
+#TODO: universal setter/getter, FakeUser-like
 class User(object):
     def __init__(self, uid):
         self.uid = uid
@@ -199,6 +200,21 @@ class User(object):
         if value != None:
             self.options.expandImages = value
         return self.options.expandImages
+
+    def oekUseSelfy(self, value = None):
+        if value != None:
+            self.options.oekUseSelfy = value
+        return self.options.oekUseSelfy
+
+    def oekUseAnim(self, value = None):
+        if value != None:
+            self.options.oekUseAnim = value
+        return self.options.oekUseAnim
+
+    def oekUsePro(self, value = None):
+        if value != None:
+            self.options.oekUsePro = value
+        return self.options.oekUsePro
 
     def maxExpandWidth(self, value = None):
         if value != None and isNumber(value) or value == 0:

@@ -35,7 +35,8 @@ def make_map():
     #map.connect('/Join', controller='fcp', action='showStatic', page = 'Join')
 
     # Oekaki
-    map.connect('/:url/oekakiDraw', controller='fcc', action='oekakiDraw', url='')
+    map.connect('/:url/oekakiDraw', controller='fcc', action='oekakiDraw', url='', selfy='-selfy', anim='-anim', tool='shiNormal')
+    map.connect('/:url/oekakiDraw/:selfy/:anim/:tool', controller='fcc', action='oekakiDraw', url='')
     map.connect('/:url/oekakiSave/:tempid', controller='fcp', action='oekakiSave', url='',requirements=dict(tempid='\d+'))
 
     # User subsystem

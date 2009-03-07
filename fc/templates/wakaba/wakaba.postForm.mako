@@ -115,17 +115,18 @@
                 <tr id="troekaki">
                    <td class="postblock">${_('Oekaki')}</td>
                    <td>
-
                     <select name="oekaki_painter">
-                        <option selected="selected" value="shiNormal">Shi Normal</option>
-                    <option value="shiPro">Shi Pro</option>
+                        <option value="shiNormal" ${not c.userInst.oekUsePro() and 'selected="selected"' or ""}>Shi Normal</option>
+                        <option value="shiPro" ${c.userInst.oekUsePro() and 'selected="selected"' or ""}>Shi Pro</option>
                     </select>
+
                     Size:
                     <input type="text" value="300" size="3" name="oekaki_x"/>
                     &#215;
                     <input type="text" value="300" size="3" name="oekaki_y"/>
 
-                    <input type="checkbox" name="selfy" /> Use Selfy
+                    <label><input type="checkbox" name="selfy" ${c.userInst.oekUseSelfy() and 'checked="checked"' or ""} /> ${_('Selfy')}</label>
+                    <label><input type="checkbox" name="animation" ${c.userInst.oekUseAnim() and 'checked="checked"' or ""} /> ${_('Animation')}</label>
 
                     <input type="hidden" value="New" name="oekaki_type"/>
                     <input type="submit" value="${_('Draw Oekaki')}"/>

@@ -75,7 +75,7 @@ class Post(object):
                                      picInfo.fileSize,
                                      picInfo.sizes,
                                      picInfo.extId,
-                                     picInfo.md5)
+                                     picInfo.md5, picInfo.animPath)
         else:
             post.picid = postParams.existentPic.id
 

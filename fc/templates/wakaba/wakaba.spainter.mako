@@ -10,13 +10,19 @@
 <applet width="100%" height="100%" code="c.ShiPainter.class" name="paintbbs" archive="${g.OPT.staticPathWeb}spainter.jar,${g.OPT.staticPathWeb}res/${c.oekakiToolString}.zip" MAYSCRIPT>
 <param name="image_width" value="${c.width}" />
 <param name="image_height" value="${c.height}" />
-%if c.canvas:
+
+%if c.canvas and not (c.animation and c.pchPath):
   <param name="image_canvas" value="${g.OPT.filesPathWeb + c.canvas}" />
 %endif
 
 %if c.animation:
     <param name="thumbnail_type" value="animation" />
+    %if c.pchPath:
+        <param name="pch_file" value="${g.OPT.filesPathWeb + c.pchPath}" />
+    %endif
 %endif
+
+
 
 <param name="image_size" value="512" />
 <param name="compress_level" value="15" />

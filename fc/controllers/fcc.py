@@ -538,8 +538,19 @@ class FccController(OrphieBaseController):
                  c.canvas = h.modLink(pic.path, c.userInst.secid())
                  c.width  = pic.width
                  c.height = pic.height
+                 if pic.animpath:
+                     c.pchPath = h.modLink(pic.animpath, c.userInst.secid())
         oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource, c.selfy)
         return self.render('spainter')
+
+    def viewAnimation(self, source):
+        post = Post.getPost(source)
+        if not post or not post.file or not post.file.animpath:
+            c.errorText = _("No animation associated with this post")
+            return self.render('error')
+
+        c.pchPath = h.modLink(post.file.animpath, c.userInst.secid())
+        return self.render('shiAnimation')
 
     def processFile(self, file, thumbSize=250):
         if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
@@ -684,10 +695,10 @@ class FccController(OrphieBaseController):
 
         postMessageInfo = None
         tempid = request.POST.get('tempid', False)
+        animPath = None
         if tempid: # TODO FIXME : move into parser
-           #TODO: animation link
            oekaki = Oekaki.get(tempid)
-
+           animPath = oekaki.animPath
            file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
            postMessageInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds</span>' \
                             % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time/1000)))
@@ -803,6 +814,8 @@ class FccController(OrphieBaseController):
         postParams.tags = tags
         postParams.existentPic = existentPic
         postParams.picInfo = picInfo
+        if postParams.picInfo:
+            postParams.picInfo.animPath = animPath
 
         post = Post.create(postParams)
 

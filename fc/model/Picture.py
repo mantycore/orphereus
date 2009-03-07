@@ -21,11 +21,12 @@ t_piclist = sa.Table("picture", meta.metadata,
     sa.Column("thheight" , sa.types.Integer, nullable=False),
     sa.Column("size"     , sa.types.Integer, nullable=False),
     sa.Column("md5"      , sa.types.String(32), nullable=False),
-    sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extension.id'))
+    sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extension.id')),
+    sa.Column("animpath" , sa.types.String(255), nullable=True), #TODO: XXX: dirty solution
     )
 
 class Picture(object):
-    def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5):
+    def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath):
        self.path = relativeFilePath
        self.thumpath = thumbFilePath
        self.width = picSizes[0]
@@ -35,10 +36,12 @@ class Picture(object):
        self.extid = extId
        self.size = fileSize
        self.md5 = md5
+       if animPath:
+           self.animpath = animPath
 
     @staticmethod
-    def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, commit = False):
-        pic = Picture(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5)
+    def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath = None, commit = False):
+        pic = Picture(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath)
         if commit:
             meta.Session.add(pic)
             meta.Session.commit()

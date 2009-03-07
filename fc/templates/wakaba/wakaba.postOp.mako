@@ -111,6 +111,9 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
     %if thread.messageInfo:
         ${thread.messageInfo}
     %endif
+    %if thread.file and thread.file.animpath:
+        [<a href="/viewAnimation/${thread.id}" target="_blank">${_("View animation")}</a>]
+    %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:
     <span class="omittedposts"><span>${_('%s posts omitted.') % thread.omittedPosts }</span> <a href="#">${_('Expand thread')}</a> </span>

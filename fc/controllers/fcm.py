@@ -121,7 +121,7 @@ class FcmController(OrphieBaseController):
         for opt in userOpts:
             user = meta.Session.query(User).filter(User.uidNumber==opt.uidNumber).first()
             if not user:
-                msg = 'Orphaned userOptions %d for %s, removing' % (opt.optid, str(opt.uidNumber))
+                msg = u'Orphaned userOptions %d for %s, removing' % (opt.optid, str(opt.uidNumber))
                 mtnLog.append(self.createLogEntry('Warning', msg))
                 toLog(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(opt)
@@ -131,7 +131,7 @@ class FcmController(OrphieBaseController):
         for fl in userFl:
             user = meta.Session.query(User).filter(User.uidNumber==opt.uidNumber).first()
             if not user:
-                msg = 'Orphaned userFilters %d for %s, removing' % (fl.id, str(fl.uidNumber))
+                msg = u'Orphaned userFilters %d for %s, removing' % (fl.id, str(fl.uidNumber))
                 mtnLog.append(self.createLogEntry('Warning', msg))
                 toLog(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(fl)
@@ -141,7 +141,7 @@ class FcmController(OrphieBaseController):
         for opt in tagOpts:
             tag = meta.Session.query(Tag).filter(Tag.id==opt.tagId).first()
             if not tag:
-                msg = 'Orphaned tagOptions %d for %s, removing' % (opt.id, str(opt.tagId))
+                msg = u'Orphaned tagOptions %d for %s, removing' % (opt.id, str(opt.tagId))
                 mtnLog.append(self.createLogEntry('Warning', msg))
                 toLog(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(opt)
@@ -151,15 +151,15 @@ class FcmController(OrphieBaseController):
         for pic in pictures:
             post = Post.query.filter(Post.picid == pic.id).first()
             if not post:
-                msg = 'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
+                msg = u'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
                 mtnLog.append(self.createLogEntry('Warning', msg))
                 toLog(LOG_EVENT_INTEGR, msg)
                 meta.Session.delete(pic)
 
         meta.Session.commit()
-        mtnLog.append(self.createLogEntry('Task', 'Orpaned database entries check completed'))
+        mtnLog.append(self.createLogEntry('Task', u'Orpaned database entries check completed'))
 
-        mtnLog.append(self.createLogEntry('Task', 'Cheking for orphaned files...'))
+        mtnLog.append(self.createLogEntry('Task', u'Cheking for orphaned files...'))
 
 
         junkPath= os.path.join(g.OPT.uploadPath, 'junk')
@@ -170,7 +170,7 @@ class FcmController(OrphieBaseController):
         for dir, subdirs, flist in os.walk(g.OPT.uploadPath):
             for file in flist:
                 name = os.path.join(dir+'/'+file)
-                if not '.svn' in dir and not 'junk' in name:
+                if not ('junk' in name or '.svn' in dir or 'pch' in name):
                     files.append(name)
 
         ccJunkFiles = 0
@@ -178,14 +178,14 @@ class FcmController(OrphieBaseController):
         for fn in sorted(files):
             fullname = os.path.basename(fn)
             name = fullname.split('.')[0]
-            log.debug(fn)
+            #log.debug(fn)
             if os.path.isfile(fn) and name and len(name) > 0:
                 isThumb = (name[-1] == 's')
 
                 if isThumb:
                     thumbIds = meta.Session.query(Picture).filter(Picture.thumpath.like('%%%s' % fullname)).all()
                     if not thumbIds:
-                        msg = 'Orphaned thumbnail %s moved into junk directory' % fn
+                        msg = u'Orphaned thumbnail %s moved into junk directory' % fn
                         mtnLog.append(self.createLogEntry('Info', msg))
                         toLog(LOG_EVENT_INTEGR, msg)
                         shutil.move(fn, junkPath)
@@ -193,14 +193,14 @@ class FcmController(OrphieBaseController):
                 else:
                     picIds = meta.Session.query(Picture).filter(Picture.path.like('%%%s' % fullname)).all()
                     if not picIds:
-                        msg = 'Orphaned picture %s moved into junk directory' % fn
+                        msg = u'Orphaned picture %s moved into junk directory' % fn
                         mtnLog.append(self.createLogEntry('Info', msg))
                         toLog(LOG_EVENT_INTEGR, msg)
                         shutil.move(fn, junkPath)
                         ccJunkFiles += 1
 
         if (ccJunkFiles > 0 or ccJunkThumbnails > 0):
-            toLog(LOG_EVENT_INTEGR, "%d files and %d thumbnails moved into junk directory" % (ccJunkFiles, ccJunkThumbnails))
+            toLog(LOG_EVENT_INTEGR, u"%d files and %d thumbnails moved into junk directory" % (ccJunkFiles, ccJunkThumbnails))
 
         mtnLog.append(self.createLogEntry('Task', 'Orpaned files check completed'))
 

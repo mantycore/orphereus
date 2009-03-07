@@ -91,5 +91,8 @@
         %if post.messageInfo:
             ${post.messageInfo}
         %endif
+        %if post.file and post.file.animpath:
+            [<a href="/viewAnimation/${post.id}" target="_blank">${_("View animation")}</a>]
+        %endif
     </blockquote>
 </td></tr></tbody></table>

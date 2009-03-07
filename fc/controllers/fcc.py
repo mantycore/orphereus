@@ -685,6 +685,7 @@ class FccController(OrphieBaseController):
         postMessageInfo = None
         tempid = request.POST.get('tempid', False)
         if tempid: # TODO FIXME : move into parser
+           #TODO: animation link
            oekaki = Oekaki.get(tempid)
 
            file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))

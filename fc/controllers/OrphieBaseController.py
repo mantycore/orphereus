@@ -150,8 +150,6 @@ class OrphieBaseController(BaseController):
         return self.userInst.isValid() and (session.get('uidNumber', -1) == self.userInst.uidNumber)
 
     # Parser callbacks
-    def cbGetPostAndUser(self, id):
-        return (Post.getPost(id), self.userInst.uidNumber)
 
     def formatPostReference(self, postid):
         post = Post.getPost(postid)

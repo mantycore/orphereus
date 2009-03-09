@@ -46,6 +46,10 @@ class FccController(OrphieBaseController):
             return redirect_to('/')
         self.initEnvironment()
 
+    #parser callback
+    def cbGetPostAndUser(self, id):
+        return (Post.getPost(id), self.userInst.uidNumber)
+
     def selfBan(self, confirm):
         if g.OPT.spiderTrap:
             if confirm:

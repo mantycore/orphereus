@@ -28,6 +28,7 @@ class Empty:
 class FcmController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
+        self.currentUserId = None
 
     def createLogEntry(self, type, message):
         act = Empty()
@@ -328,13 +329,19 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog
 
+
+    #parser callback
+    def cbGetPostAndUser(self, id):
+        return (Post.getPost(id), self.currentUserId)
+
     def reparse(self):
         mtnLog = []
         mtnLog.append(self.createLogEntry('Task', 'Reparsing...'))
         posts = Post.query.all()
         for post in posts:
-            log.debug("Reparsing %d..." % post.id)
+            #log.debug("Reparsing %d..." % post.id)
             if post.messageRaw:
+               self.currentUserId = post.uidNumber
                parser = WakabaParser(g.OPT, post.parentPost and post.parentPost.id or -1)
                maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
                cutSymbols = int(g.settingsMap["cutSymbols"].value)

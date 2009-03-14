@@ -174,7 +174,7 @@ class FcaController(OrphieBaseController):
             if tagid == 0:
                 tagName = filterText(request.POST.get('tagName', u''))
                 if tagName:
-                    tag = tag.getTag(tagName)
+                    tag = Tag.getTag(tagName)
                     if tag:
                         tagid = tag.id
         else:

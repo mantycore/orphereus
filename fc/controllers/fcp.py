@@ -162,7 +162,7 @@ class FcpController(OrphieBaseController):
 
                 user = User.create(uid)
                 regId = user.secid() * user.secid() - user.secid()
-                toLog(LOG_EVENT_INVITE_USED, _("Utilized invite #%d [%d]") % (session['iid'], regId ))
+                toLog(LOG_EVENT_INVITE_USED, _("Utilized invite #%d [RID:%d]") % (session['iid'], regId ))
                 del session['invite']
                 del session['iid']
                 session.save()

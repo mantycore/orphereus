@@ -64,8 +64,9 @@ class OrphieBaseController(BaseController):
 
         #log.debug(request.cookies.get('fc',''))
         #log.debug(request.cookies)
-        sessCookie = request.cookies.get('fc','')
-        response.set_cookie('fc', str(sessCookie), domain='.'+g.OPT.baseDomain)
+        sessCookie = request.cookies.get('fc', '')
+        if sessCookie:
+            response.set_cookie('fc', str(sessCookie), domain='.'+g.OPT.baseDomain)
 
         c.menuLinks = []
         linksstr = g.settingsMap['additionalLinks'].value
@@ -85,9 +86,9 @@ class OrphieBaseController(BaseController):
             else:
                 c.captcha = Captcha.getCaptcha(anonCaptId)
 
-        remPassCookie = request.cookies.get('orhpieRemPass', randomStr())
-        c.remPass = remPassCookie
-        response.set_cookie('orhpieRemPass', str(remPassCookie), max_age=3600)
+            remPassCookie = request.cookies.get('orhpieRemPass', randomStr())
+            c.remPass = remPassCookie
+            response.set_cookie('orhpieRemPass', str(remPassCookie), max_age=3600)
 
     def render(self, page, **options):
         tname = 'std'

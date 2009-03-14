@@ -82,6 +82,7 @@ class Post(object):
         else:
             post.picid = postParams.existentPic.id
 
+        post.incrementStats()
         meta.Session.add(post)
         meta.Session.commit()
         return post
@@ -91,7 +92,7 @@ class Post(object):
 
         newThread = True
         if not taglist:
-            taglist = self.parentPost.tags
+            taglist = Post.getPost(self.parentid).tags
             newThread = False
 
         for tag in taglist:
@@ -256,13 +257,18 @@ class Post(object):
         postOptions = Tag.conjunctedOptionsDescript(self.parentid>0 and parentp.tags or self.tags)
         if checkOwnage and not self.uidNumber == userInst.uidNumber:
             logEntry = u''
-            if self.parentid:
-                logEntry = N_("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (self.id, self.uidNumber, self.parentid, tagline, reason)
+            uidNumber = userInst.uidNumber
+            if not canModerate:
+                if self.parentid:
+                    logEntry = N_("Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s") % (self.id, self.uidNumber, self.parentid, tagline, reason)
+                else:
+                    logEntry = N_("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (self.id, self.uidNumber, tagline, reason)
             else:
-                logEntry = N_("Deleted thread %s (owner %s); tagline: %s; reason: %s") % (self.id, self.uidNumber, tagline, reason)
+                uidNumber = 0
+                logEntry = N_("[self-moderation] Deleted post %s") % (self.id)
             if fileonly:
                 logEntry += " %s" % N_("(file only)")
-            LogEntry.create(userInst.uidNumber, LOG_EVENT_POSTS_DELETE, logEntry)
+            LogEntry.create(uidNumber, LOG_EVENT_POSTS_DELETE, logEntry)
 
         if not self.parentPost and not fileonly:
             if not (postOptions.canDeleteOwnThreads or userInst.canDeleteAllPosts()):

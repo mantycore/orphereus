@@ -51,6 +51,7 @@
 %if c.userInst.isAdmin() and c.userInst.canManageMappings():
     <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>
 %endif
+&nbsp;
 </span>
 %if thread.title:
     <span class="filetitle">${thread.title}</span>

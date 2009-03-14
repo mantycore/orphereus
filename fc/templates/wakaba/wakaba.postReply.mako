@@ -19,6 +19,7 @@
     %if c.userInst.isAdmin() and c.userInst.canManageUsers():
         <a href="/holySynod/manageUsers/editAttempt/${post.id}">[User]</a>
     %endif
+    &nbsp;
     </span>
     %if post.sage:
         <img src="${g.OPT.staticPathWeb}images/sage.png" alt="Sage"/>

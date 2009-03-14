@@ -35,6 +35,7 @@ t_posts = sa.Table("post", meta.metadata,
     sa.Column("spoiler"  , sa.types.Boolean, nullable=True),
     sa.Column("replyCount" , sa.types.Integer, nullable=False, server_default='0'),
     sa.Column("removemd5"  , sa.types.String(32), nullable=True),
+    sa.Column("ip"         , sa.types.Integer, nullable=True),
     )
 
 class Post(object):
@@ -53,6 +54,8 @@ class Post(object):
         post.uidNumber = postParams.uidNumber
         if postParams.removemd5:
             post.removemd5 = postParams.removemd5
+
+        post.ip = postParams.ip
 
         thread = postParams.thread
         if thread:

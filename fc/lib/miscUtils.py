@@ -86,6 +86,14 @@ def checkAdminIP():
     else:
         return True
 
+def ipToInt(ipstr):
+    ip = map(lambda x: int(x), ipstr.split('.'))
+    return (ip[0] << 24) + (ip[1] << 16) + (ip[2] << 8) + ip[3]
+
+def intToIp(ipint):
+    ipi = int(ipint)
+    return str((ipi >> 24) & 0xff)+'.'+str((ipi>>16) & 0xff)+'.'+str((ipi>>8) & 0xff)+'.'+str(ipi & 0xff)
+
 def getRPN(text, operators):
     whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']
     stack = []

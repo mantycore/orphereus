@@ -56,6 +56,7 @@ defaults.selfModeration = false
 # Security settings
 #use this option only with httpd configured as proxy
 security.useXRealIP = false
+security.saveAnyIP = false
 security.alertEmail = user1@sms.provider.ru,user2@sms.provider.ru
 security.alertServer = smtp.gmail.com
 security.alertPort = 587

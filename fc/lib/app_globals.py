@@ -56,6 +56,7 @@ class OptHolder(object):
 
         # Security settings
         self.useXRealIP = (config['security.useXRealIP'] == 'true')
+        self.saveAnyIP = (config['security.saveAnyIP'] == 'true')
         self.alertEmail = config['security.alertEmail'].split(',')
         self.alertServer = config['security.alertServer']
         self.alertPort = int(config['security.alertPort'])

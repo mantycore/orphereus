@@ -821,6 +821,10 @@ class FccController(OrphieBaseController):
         if postParams.picInfo:
             postParams.picInfo.animPath = animPath
 
+        postParams.ip = None
+        if self.userInst.Anonymous or g.OPT.saveAnyIP:
+            postParams.ip = ipToInt(getUserIp())
+
         post = Post.create(postParams)
 
         if fileHolder:

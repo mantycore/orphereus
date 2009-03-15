@@ -478,6 +478,7 @@ class FccController(OrphieBaseController):
                     timeDelta = datetime.timedelta(hours=delay)
                     if post.date < datetime.datetime.now() - timeDelta:
                         post.uidNumber = 0
+                        post.ip = None
                         result.append(_("Post #%d successfully anonymized") % post.id)
                     else:
                         params = (post.id, str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta), str(datetime.datetime.now()))

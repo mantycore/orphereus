@@ -9,8 +9,11 @@ host = 127.0.0.1
 port = 5000
 
 [app:main]
+set debug = false
 use = egg:FC
 full_stack = true
+set debug = false
+
 cache_dir = %(here)s/data
 beaker.session.key = fc
 beaker.session.secret = somesecret

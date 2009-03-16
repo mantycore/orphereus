@@ -9,6 +9,8 @@ from pylons.controllers.util import abort, etag_cache, redirect_to
 from pylons.decorators import jsonify, validate
 from pylons.i18n import _, ungettext, N_
 from pylons.templating import render
+#TODO: use new render and h.literal for all strings in templates
+# from pylons.templating import render_mako as render
 
 import fc.lib.helpers as h
 import fc.model as model

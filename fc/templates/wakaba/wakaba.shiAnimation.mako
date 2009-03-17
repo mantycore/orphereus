@@ -1,9 +1,11 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>Oekaki drawing process</title>
 </head>
 <body bgcolor="#CFCFFF" text="#800000" link="#003399" vlink="#808080" alink="#11FF11">
-<table cellpadding="0" cellspacing="0" width="100%" height="100%"><tr><td width="100%">
+<table cellpadding="0" cellspacing="0" width="100%" style="height: 100%;"><tr><td width="100%">
 <applet
  name="pch"
  code="pch2.PCHViewer.class"

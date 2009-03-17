@@ -89,16 +89,16 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
 
 &nbsp;
 %if not c.userInst.Anonymous or g.OPT.allowAnonProfile:
-[<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide Thread')}</a>]
+[<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide')}</a>]
 %endif
 
 %if c.currentUserCanPost:
 %if thread.file and thread.file.width:
     [<a href="/${thread.id}/oekakiDraw/${c.userInst.oekUseSelfy() and '+selfy' or '-selfy'}/${c.userInst.oekUseAnim() and '+anim' or '-anim'}/${c.userInst.oekUsePro() and 'shiPro' or 'shiNormal'}">Draw</a>]
 %endif
-    [<a href="/${thread.id}">Reply</a>]
+    [<a href="/${thread.id}">${_('Reply')}</a>]
 %else:
-    [<a href="/${thread.id}">View thread</a>]
+    [<a href="/${thread.id}">${_('Read')}</a>]
 %endif
 
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
@@ -113,7 +113,7 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
         ${thread.messageInfo}
     %endif
     %if thread.file and thread.file.animpath:
-        [<a href="/viewAnimation/${thread.id}" target="_blank">${_("View animation")}</a>]
+        [<a href="/viewAnimation/${thread.id}" target="_blank">${_('Animation')}</a>]
     %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:

@@ -7,7 +7,7 @@
 <applet
  name="pch"
  code="pch2.PCHViewer.class"
- codebase="./";
+ codebase="./"
  archive="${g.OPT.staticPathWeb}pch.jar"
  width="100%"
  height="100%"

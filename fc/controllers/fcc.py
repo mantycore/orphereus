@@ -702,8 +702,6 @@ class FccController(OrphieBaseController):
                     for tag in tags:
                         if not tag.options.service:
                             usualTagsCC += 1
-                        log.debug(usualTagsCC)
-                        log.debug(tag.tag)
                         if usualTagsCC > 1:
                             c.errorText = _("Crossposting allowed only for service tags")
                             return self.render('error')

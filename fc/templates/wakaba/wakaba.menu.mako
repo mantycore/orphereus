@@ -42,10 +42,12 @@
     %if not c.userInst.Anonymous:
     [<a href="/logout/">${_('Logout')}</a>]
     %else:
-        %if c.currentURL:
-            [<a href="${'%sauthorize' % c.currentURL}">${_('Login')}</a>]
-        %else:
-            [<a href="/authorize">${_('Login')}</a>]
+        %if g.OPT.allowLogin:
+            %if c.currentURL:
+                [<a href="${'%sauthorize' % c.currentURL}">${_('Login')}</a>]
+            %else:
+                [<a href="/authorize">${_('Login')}</a>]
+            %endif
         %endif
         [<a href="/logout/">${_('Kill session')}</a>]
     %if g.OPT.allowRegistration:

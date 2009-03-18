@@ -39,6 +39,10 @@ class OptHolder(object):
         self.allowAnonymous = (config['core.allowAnonymous'] == 'true')
         self.allowAnonymousPosting = self.allowAnonymous and (config['core.allowAnonymousPosting'] == 'true')
         self.allowAnonProfile = self.allowAnonymous and (config['core.allowAnonProfile'] == 'true')
+        self.allowLogin = (config['core.allowLogin'] == 'true')
+        self.allowCrossposting = (config['core.allowCrossposting'] == 'true')
+        self.allowCrosspostingSvc = (config['core.allowCrosspostingSvc'] == 'true')
+        self.allowTagCreation = (config['core.allowTagCreation'] == 'true')
         self.statsCacheTime = int(config['core.statsCacheTime'])
         self.boardWideProoflabels = (config['core.boardWideProoflabels'] == 'true')
 

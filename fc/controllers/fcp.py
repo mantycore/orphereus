@@ -36,8 +36,11 @@ class FcpController(OrphieBaseController):
             self.initEnvironment()
 
     def login(self, user):
-        session['uidNumber'] = user.uidNumber
-        session.save()
+        if g.OPT.allowLogin:
+            session['uidNumber'] = user.uidNumber
+            session.save()
+        else:
+            self.logout()
 
     def logout(self):
         session.clear()
@@ -56,6 +59,11 @@ class FcpController(OrphieBaseController):
             c.currentURL = u'/%s/' % url #.encode('utf-8')
         else:
             c.currentURL = u'/'
+
+        if not g.OPT.allowLogin:
+            c.boardName = _('Error')
+            c.errorText = _("Authorization disabled")
+            return self.render('error')
 
         ip = getUserIp()
         tracker = LoginTracker.getTracker(ip)

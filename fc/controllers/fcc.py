@@ -61,6 +61,11 @@ class FccController(OrphieBaseController):
             return redirect_to('/')
 
     def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
+        if not g.OPT.allowTagCreation:
+            for tag in tagList:
+                if not Tag.getTag(tag):
+                    c.errorText = _(u"Board creation denied: %s") % tag
+                    return self.render('error')
         if isNumber(page):
             page = int(page)
         else:
@@ -545,7 +550,7 @@ class FccController(OrphieBaseController):
                  c.height = pic.height
                  if pic.animpath:
                      c.pchPath = h.modLink(pic.animpath, c.userInst.secid())
-        oekaki = Oekaki.create(c.tempid, session.get('uidNumber', -1), oekType, oekSource, c.selfy)
+        oekaki = Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, c.selfy)
         return self.render('spainter')
 
     def viewAnimation(self, source):
@@ -678,7 +683,7 @@ class FccController(OrphieBaseController):
             tags = thread.tags
         else:
             tagstr = request.POST.get('tags', False)
-            tags = Tag.stringToTagList(tagstr)
+            tags = Tag.stringToTagList(tagstr, g.OPT.allowTagCreation)
             if not tags:
                 c.errorText = _("You should specify at least one board")
                 return self.render('error')
@@ -688,6 +693,23 @@ class FccController(OrphieBaseController):
                 c.errorText = _("Too many tags. Maximum allowed: %s") % (maxTagsCount)
                 return self.render('error')
 
+            if len(tags) > 1 and not g.OPT.allowCrossposting:
+                if not g.OPT.allowCrosspostingSvc:
+                    c.errorText = _("Crossposting disabled")
+                    return self.render('error')
+                else:
+                    usualTagsCC = 0
+                    for tag in tags:
+                        if not tag.options.service:
+                            usualTagsCC += 1
+                        log.debug(usualTagsCC)
+                        log.debug(tag.tag)
+                        if usualTagsCC > 1:
+                            c.errorText = _("Crossposting allowed only for service tags")
+                            return self.render('error')
+
+            #TODO: this check should be done before Tag() constructors
+            #In other cases only Autocommit=False will be correct
             permCheckRes = Tag.checkForConfilcts(tags)
             if not permCheckRes[0]:
                 c.errorText = _("Tags restrictions violations:<br/> %s") % ('<br/>'.join(permCheckRes[1]))

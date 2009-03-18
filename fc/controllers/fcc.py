@@ -693,18 +693,29 @@ class FccController(OrphieBaseController):
                 c.errorText = _("Too many tags. Maximum allowed: %s") % (maxTagsCount)
                 return self.render('error')
 
+            usualTagsCC = 0
+            svcTagsCC = 0
+            permaTagsCC = 0
+            for tag in tags:
+                if not tag.options.service:
+                    usualTagsCC += 1
+                else:
+                    svcTagsCC += 1
+                if tag.options.permanent:
+                    permaTagsCC += 1
+
             if len(tags) > 1 and not g.OPT.allowCrossposting:
                 if not g.OPT.allowCrosspostingSvc:
                     c.errorText = _("Crossposting disabled")
                     return self.render('error')
                 else:
-                    usualTagsCC = 0
-                    for tag in tags:
-                        if not tag.options.service:
-                            usualTagsCC += 1
-                        if usualTagsCC > 1:
-                            c.errorText = _("Crossposting allowed only for service tags")
-                            return self.render('error')
+                    if usualTagsCC > 1:
+                        c.errorText = _("Crossposting allowed only for service tags")
+                        return self.render('error')
+
+            if not g.OPT.allowPureSvcTagline and usualTagsCC == 0:
+                c.errorText = _("Can't post with service tags only")
+                return self.render('error')
 
             #TODO: this check should be done before Tag() constructors
             #In other cases only Autocommit=False will be correct

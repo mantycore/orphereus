@@ -42,6 +42,7 @@ class OptHolder(object):
         self.allowLogin = (config['core.allowLogin'] == 'true')
         self.allowCrossposting = (config['core.allowCrossposting'] == 'true')
         self.allowCrosspostingSvc = (config['core.allowCrosspostingSvc'] == 'true')
+        self.allowPureSvcTagline = (config['core.allowPureSvcTagline'] == 'true')
         self.allowTagCreation = (config['core.allowTagCreation'] == 'true')
         self.statsCacheTime = int(config['core.statsCacheTime'])
         self.boardWideProoflabels = (config['core.boardWideProoflabels'] == 'true')

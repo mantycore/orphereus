@@ -1,7 +1,13 @@
 [DEFAULT]
 debug = false
-smtp_server = localhost
-error_email_from = paste@localhost <mailto:paste@localhost>
+
+email_to = admin@gmail.com
+smtp_server = smtp.gmail.com
+error_email_from = robot@domain.ch
+error_subject_prefix = Orphereus-chan
+smtp_username = robot@domain.ch
+smtp_password = password
+smtp_use_tls = true
 
 [server:main]
 use = egg:Paste#http
@@ -44,6 +50,7 @@ core.allowAnonProfile = false
 core.allowLogin = true
 core.allowCrossposting = true
 core.allowCrosspostingSvc = true
+core.allowPureSvcTagline = true
 core.allowTagCreation = true
 core.statsCacheTime = 180
 core.permissiveFileSizeConjunction = true

@@ -42,7 +42,7 @@
 %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
     <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
     %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous and thread.uidNumber == c.uidNumber:
-        <a href="/${thread.id}/anonymize">[FA]</a>
+        <a href="${h.url_for('anonymize', post=thread.id)}">[FA]</a>
     %endif
 %endif
 %if c.userInst.isAdmin() and c.userInst.canManageUsers():
@@ -72,7 +72,7 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
     <a href="javascript:insert('&gt;&gt;${thread.id}')">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
 %endif
 %if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
-    <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
+    <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b>
 %endif
 </span>
 
@@ -89,12 +89,16 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
 
 &nbsp;
 %if not c.userInst.Anonymous or g.OPT.allowAnonProfile:
-[<a href="/ajax/hideThread/${thread.id}/${c.PostAction}${c.curPage and '/page/'+str(c.curPage) or ''}">${_('Hide')}</a>]
+    %if not thread.hidden:
+        [<a href="${h.url_for('ajHideThread', post=thread.id, redirect='%s%s' % ((not c.board and c.tagLine) and c.tagLine or str(c.PostAction), c.curPage and '/page/'+str(c.curPage) or '') )}">${_('Hide')}</a>]
+    %else:
+        [<a href="${h.url_for('ajShowThread', post=thread.id, redirect='%s%s' % (str(c.PostAction), c.curPage and '/page/'+str(c.curPage) or '') )}">${_('Unide')}</a>]
+    %endif
 %endif
 
 %if c.currentUserCanPost:
 %if thread.file and thread.file.width:
-    [<a href="/${thread.id}/oekakiDraw/${c.userInst.oekUseSelfy() and '+selfy' or '-selfy'}/${c.userInst.oekUseAnim() and '+anim' or '-anim'}/${c.userInst.oekUsePro() and 'shiPro' or 'shiNormal'}">Draw</a>]
+    [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy() and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim() and '+anim' or '-anim', tool=c.userInst.oekUsePro() and 'shiPro' or 'shiNormal')}">Draw</a>]
 %endif
     [<a href="/${thread.id}">${_('Reply')}</a>]
 %else:
@@ -113,7 +117,7 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
         ${thread.messageInfo}
     %endif
     %if thread.file and thread.file.animpath:
-        [<a href="/viewAnimation/${thread.id}" target="_blank">${_('Animation')}</a>]
+        [<a href="${h.url_for('viewAnimation', source=thread.id)}" target="_blank">${_('Animation')}</a>]
     %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:

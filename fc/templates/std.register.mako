@@ -25,7 +25,7 @@
         %if c.captcha:
             <br/>
             <span class="postblock">${_('Enter captcha')}</span>
-            <div><img src="${h.url_for('captcha', cid=c.captid)}" alt="Captcha" /></div>
+            <div><img src="${h.url_for('captcha', cid=c.captcha.id)}" alt="Captcha" /></div>
             <p><input name="captcha" type="text" size="60" /></p>
         %endif
 

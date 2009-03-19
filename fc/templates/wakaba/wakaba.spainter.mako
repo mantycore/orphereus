@@ -26,7 +26,7 @@
 
 <param name="image_size" value="512" />
 <param name="compress_level" value="15" />
-<param name="url_save" value="/${c.url}/oekakiSave/${c.tempid}" />
+<param name="url_save" value="${h.url_for('oekakiSave', url=c.url, tempid=c.tempid)}" />
 <param name="url_exit" value="/${c.url}/${c.tempid}" />
 
 <param name="send_header_image_type" value="true" />

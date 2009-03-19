@@ -13,7 +13,7 @@
         <i>${_('[REMOVABLE]')}</i>
         %endif
         %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous and post.uidNumber == c.uidNumber:
-            <a href="/${post.id}/anonymize">[FA]</a>
+            <a href="${h.url_for('anonymize', post=post.id)}">[FA]</a>
         %endif
     %endif
     %if c.userInst.isAdmin() and c.userInst.canManageUsers():
@@ -37,11 +37,11 @@
         <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
     %endif
     %if c.currentUserCanPost and post.file and post.file.width:
-        [<a href="/${post.id}/oekakiDraw/${c.userInst.oekUseSelfy() and '+selfy' or '-selfy'}/${c.userInst.oekUseAnim() and '+anim' or '-anim'}/${c.userInst.oekUsePro() and 'shiPro' or 'shiNormal'}">Draw</a>]
+        [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy() and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim() and '+anim' or '-anim', tool=c.userInst.oekUsePro() and 'shiPro' or 'shiNormal')}">Draw</a>]
     %endif
 
     %if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
-        <b class="signature"><a href="/static/finalAnonymity" target="_blank">FA</a></b>
+        <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b>
     %endif
     </span>
 
@@ -93,7 +93,7 @@
             ${post.messageInfo}
         %endif
         %if post.file and post.file.animpath:
-            [<a href="/viewAnimation/${post.id}" target="_blank">${_('Animation')}</a>]
+            [<a href="${h.url_for('viewAnimation', source=post.id)}" target="_blank">${_('Animation')}</a>]
         %endif
     </blockquote>
 </td></tr></tbody></table>

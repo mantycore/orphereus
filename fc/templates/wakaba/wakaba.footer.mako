@@ -12,7 +12,7 @@
   %for l in c.log:
     ${l}<br/><br/>
   %endfor
-  <span style="display: none"><a href="/holySynod/stat">.</a></span>
+  <span style="display: none"><a href="${h.url_for('botTrap2')}">.</a></span>
 </font>
 %endif
 

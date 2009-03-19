@@ -21,7 +21,7 @@ Your UID:<br/>
 <input type="text" value="${_('%s') % (c.userInst.uid)}" />
 <br/>
 
-<form action="/logout">
+<form action="${h.url_for('logout')}">
 <p><input type="submit" value="${_('Logout')}" /></p>
 </form>
 

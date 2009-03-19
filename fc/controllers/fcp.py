@@ -83,7 +83,7 @@ class FcpController(OrphieBaseController):
                 tracker.cid = captcha.id
                 meta.Session.commit()
 
-            c.captid = tracker.cid
+            c.captcha = Captcha.getCaptcha(tracker.cid)
 
         if request.POST.get('code', False):
             code = User.genUid(request.POST['code'].encode('utf-8'))

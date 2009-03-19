@@ -4,10 +4,10 @@
 <b>Found:</b> ${c.count}
 
 <br/>
-<form action="/search" method="post">
+<form action="${h.url_for('search')}" method="post">
     <input type="text" name="query" size="20" value="${c.query}"/>
     <input value="Search again" type="submit" />
-    [<a href="/static/markup#search" target="_blank">Help</a>]
+    [<a href="${h.url_for('static', page='markup#search')}" target="_blank">Help</a>]
 </form>
 
 <%include file="wakaba.paginator.mako" args="baselink='search/%s' % c.query"/>
@@ -79,7 +79,7 @@
 %endfor
 
 <br/>
-<form action="/search" method="post">
+<form action="${h.url_for('search')}" method="post">
     <input type="text" name="query" size="20" value="${c.query}"/>
     <input value="Search again" type="submit" />
 </form>

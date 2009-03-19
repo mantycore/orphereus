@@ -25,7 +25,7 @@ class FcaController(OrphieBaseController):
         if not self.currentUserIsAuthorized():
             return redirect_to('/')
         self.initEnvironment()
-        if not self.userInst.isAdmin():
+        if not self.userInst.isAdmin() or self.userInst.isBanned():
             c.errorText = _("No way! You aren't holy enough!")
             return redirect_to('/')
         c.userInst = self.userInst

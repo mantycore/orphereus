@@ -40,7 +40,7 @@ class FccController(OrphieBaseController):
             return redirect_to(h.url_for('authorizeToUrl', url=c.currentURL))
         if self.userInst.isBanned():
             #abort(500, 'Internal Server Error')     # calm hidden ban
-            return redirect_to('/youAreBanned')
+            return redirect_to(h.url_for('youAreBanned'))
         c.currentUserCanPost = self.currentUserCanPost()
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('/')
@@ -51,7 +51,7 @@ class FccController(OrphieBaseController):
         return (Post.getPost(id), self.userInst.uidNumber)
 
     def selfBan(self, confirm):
-        if g.OPT.spiderTrap:
+        if g.OPT.spiderTrap and not self.userInst.Anonymous:
             if confirm:
                 self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 2"), -1)
                 redirect_to('/')
@@ -129,8 +129,9 @@ class FccController(OrphieBaseController):
 
         hiddenThreads = self.userInst.hideThreads()
         for thread in c.threads:
-            thread.hidden = (str(thread.id) in hiddenThreads)
-            if thread.hidden:
+            thread.hideFromBoards = (str(thread.id) in hiddenThreads)
+            thread.hidden = thread.hideFromBoards
+            if thread.hideFromBoards:
                 tl = []
                 for tag in thread.tags:
                     tl.append(tag.tag)
@@ -147,7 +148,7 @@ class FccController(OrphieBaseController):
             else:
                 thread.Replies = thread.filterReplies().all()
                 thread.omittedPosts = 0
-                thread.hidden = False
+                thread.hideFromBoards = False
 
         if tempid:
             oekaki = Oekaki.get(tempid)
@@ -697,11 +698,11 @@ class FccController(OrphieBaseController):
             svcTagsCC = 0
             permaTagsCC = 0
             for tag in tags:
-                if not tag.options.service:
+                if not (tag.options and tag.options.service):
                     usualTagsCC += 1
                 else:
                     svcTagsCC += 1
-                if tag.options.persistent:
+                if tag.options and tag.options.persistent:
                     permaTagsCC += 1
 
             if len(tags) > 1 and not g.OPT.allowCrossposting:

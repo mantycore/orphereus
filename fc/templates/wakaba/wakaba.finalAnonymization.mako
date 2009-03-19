@@ -5,7 +5,7 @@
 <h1>${_('Final Anonymization')}</h1>
 
 %if not c.FAResult:
-<form action="/${c.postId}/anonymize" method="post">
+<form action="${h.url_for('anonymize', post=c.postId)}" method="post">
     <p>You are trying to anonymize post #${c.postId}.</p>
     <h3><input type="checkbox" name="batchFA">${_('Anonymize ALL posts older than this one')}</h3>
     <p>This action will remove mapping to your UID. You will loss abilities to:</p>

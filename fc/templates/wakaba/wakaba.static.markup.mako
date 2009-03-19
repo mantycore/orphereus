@@ -127,7 +127,7 @@
 <h2 style="margin: 0; text-align: center;">Особенности Orphereus</h2>
 <ol>
 <li>IP адреса пользователей нигде не хранятся.</li>
-<li>Наличествует такая возможность, как <a href="/static/finalAnonymity">Окончательная Анонимизация</a></li>
+<li>Наличествует такая возможность, как <a href="${h.url_for('static', page='finalAnonymity')}">Окончательная Анонимизация</a></li>
 </ol>
 
 

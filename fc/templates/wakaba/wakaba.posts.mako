@@ -11,10 +11,10 @@
 <hr/>
 %endif
 
-<form action="/${c.PostAction}/delete" method="post">
+<form action="${h.url_for('delete', board=c.PostAction)}" method="post">
 <input type="hidden" name="tagLine" value="${c.tagLine}" />
 %for thread in c.threads:
-%if not thread.hidden:
+%if not thread.hideFromBoards:
     <div class="thread" id="thread-${thread.id}">
     <%include file="wakaba.postOp.mako" args="thread=thread"/>
 
@@ -27,7 +27,7 @@
 <div id="hiddenThread${thread.id}">
     <img style="vertical-align: bottom;" src="${g.OPT.staticPathWeb}images/hidden.png" alt="Hidden"/>
     ${_('Hidden thread <a href="/%s">#%s</a> (%s replies) posted in /%s/') % (thread.id, thread.id, thread.replyCount, thread.tagLine)}
-    [<a href="/ajax/showThread/${thread.id}/${c.tagLine}">${_('Unhide')}</a>]
+    [<a href="${h.url_for('ajShowThread', post=thread.id, redirect='%s%s' % (str(c.PostAction), c.curPage and '/page/'+str(c.curPage) or ''))}">${_('Unide')}</a>]
 </div>
 %endif
     <hr/>
@@ -52,7 +52,7 @@
 
 </form>
 
-<form action="/search" method="post">
+<form action="${h.url_for('search')}" method="post">
     <input type="text" name="query" size="20" />
     <input value="Search" type="submit" />
 </form>

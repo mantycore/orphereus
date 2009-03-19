@@ -63,7 +63,7 @@
             <tr id="trcaptcha">
                 <td class="postblock">${_('Captcha')}</td>
                 <td>
-                    <img src="${h.url_for('captcha', cid=c.captid)}" alt="Captcha"/><br/>
+                    <img src="${h.url_for('captcha', cid=c.captcha.id)}" alt="Captcha"/><br/>
                     <input type="text" name="captcha" size="35"/>
                 </td>
             </tr>
@@ -110,7 +110,7 @@
     </table>
     </form>
     %if c.boardOptions.images and not c.oekaki:
-            <form method="post" action="/${c.PostAction}/oekakiDraw">
+            <form method="post" action="${h.url_for('oekakiDraw', url=c.PostAction)}">
                 <table style="display: block;">
                 <tr id="troekaki">
                    <td class="postblock">${_('Oekaki')}</td>
@@ -170,7 +170,7 @@ ${g.OPT.enableFinalAnonymity and g.OPT.hlAnonymizedPosts and _('(with marks)') o
 ${g.OPT.enableFinalAnonymity and not g.OPT.hlAnonymizedPosts and _('(without marks)') or ''}
 </li>
 <li>${_('Board-wide prooflabels')}:  ${_('turned')} ${not g.OPT.boardWideProoflabels and _('off') or _('on')}</li>
-<li><a href="/static/markup" target="_blank">${_('Markup and features')}</a></li>
+<li><a href="${h.url_for('static', page='markup')}" target="_blank">${_('Markup and features')}</a></li>
 </ul>
 </div>
 %if c.boardOptions.rulesList:

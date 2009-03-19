@@ -368,7 +368,6 @@ class FcmController(OrphieBaseController):
         secTestPassed = False
         if not secid:
             if not self.currentUserIsAuthorized():
-                c.currentURL = u'/holySynod/'
                 return redirect_to('/')
             self.initEnvironment()
             if not (self.userInst.isAdmin() and self.userInst.canRunMaintenance()):

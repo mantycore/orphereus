@@ -23,7 +23,6 @@ class FcaController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         if not self.currentUserIsAuthorized():
-            c.currentURL = u'/holySynod/'
             return redirect_to('/')
         self.initEnvironment()
         if not self.userInst.isAdmin():

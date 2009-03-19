@@ -1,33 +1,33 @@
 <div class="adminbar">
     [
-    <a href="/~/" title="${_('Overview')}">/~/</a>
+    <a href="${h.url_for('board', board='~')}" title="${_('Overview')}">/~/</a>
     %if not c.userInst.Anonymous:
-    <a href="/@/" title="${_('Related threads')}">/@/</a>
+    <a href="${h.url_for('board', board='@')}" title="${_('Related threads')}">/@/</a>
     %endif
-    <a href="/!/" title="${_('Home')}">/!/</a>
+    <a href="${h.url_for('board', board='!')}" title="${_('Home')}">/!/</a>
     ]
 
 %if c.boardlist:
 %if g.OPT.spiderTrap:
-<span style="display: none"><a href="/ajax/stat/${c.userInst.secid()}">...</a><a href="/ajax/stat">.</a></span>
+<span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap1')}">.</a></span>
 %endif
     %for section in c.boardlist:
         [
         %for board in section:
-            <a href="/${board.tag}/" title="${board.comment}"><b>/${board.tag}/</b></a>
+            <a href="${h.url_for('board', board=board.tag)}" title="${board.comment}"><b>/${board.tag}/</b></a>
         %endfor
         ]
     %endfor
     %if not c.userInst.Anonymous:
-        [<a href="/userProfile/">${_('Profile')}</a>]
+        [<a href="${h.url_for('userProfile')}">${_('Profile')}</a>]
     %elif g.OPT.allowAnonProfile:
-        [<a href="/userProfile/">${_('Settings')}</a>]
+        [<a href="${h.url_for('userProfile')}">${_('Settings')}</a>]
     %endif
     %if c.userInst.isAdmin():
-        [<a href="/holySynod/">${_('Holy Synod')}</a>]
+        [<a href="${h.url_for('holySynod')}">${_('Holy Synod')}</a>]
     %endif
     %if g.settingsMap['usersCanViewLogs'].value == 'true':
-        [<a href="/viewLog/">${_('Logs')}</a>]
+        [<a href="${h.url_for('viewLog')}">${_('Logs')}</a>]
     %endif
     %if c.menuLinks:
         %for link in c.menuLinks:
@@ -40,16 +40,16 @@
 
     [<a target="_blank" href="/static/donate">Donate</a>]
     %if not c.userInst.Anonymous:
-    [<a href="/logout/">${_('Logout')}</a>]
+    [<a href="${h.url_for('logout')}">${_('Logout')}</a>]
     %else:
         %if g.OPT.allowLogin:
             %if c.currentURL:
-                [<a href="${'%sauthorize' % c.currentURL}">${_('Login')}</a>]
+                [<a href="${h.url_for('authorizeToUrl', url=c.currentURL)}">${_('Login')}</a>]
             %else:
-                [<a href="/authorize">${_('Login')}</a>]
+                [<a href="${h.url_for('authorize')}">${_('Login')}</a>]
             %endif
         %endif
-        [<a href="/logout/">${_('Kill session')}</a>]
+        [<a href="${h.url_for('logout')}">${_('Kill session')}</a>]
     %if g.OPT.allowRegistration:
     [<a href="/register/register">${_('Register')}</a>]
     %endif

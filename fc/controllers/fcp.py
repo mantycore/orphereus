@@ -56,9 +56,9 @@ class FcpController(OrphieBaseController):
 
     def authorize(self, url):
         if url:
-            c.currentURL = u'/%s/' % url #.encode('utf-8')
+            c.currentURL = u'/%s' % url #.encode('utf-8')
         else:
-            c.currentURL = u'/'
+            c.currentURL = u''
 
         if not g.OPT.allowLogin:
             c.boardName = _('Error')
@@ -114,7 +114,7 @@ class FcpController(OrphieBaseController):
 
             meta.Session.commit()
             #log.debug("redir: %s" % c.currentURL)
-            redirect_to(c.currentURL.encode('utf-8'))
+            return redirect_to(h.url_for('board', board=c.currentURL))
 
         c.boardName = _('Login')
         return self.render('login')
@@ -133,7 +133,7 @@ class FcpController(OrphieBaseController):
                  session['openReg'] = True
                  session.save()
             else:
-                c.currentURL = '/'
+                c.currentURL = u''
                 return self.render('login')
 
         c.openReg = session['openReg']

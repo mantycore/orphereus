@@ -24,14 +24,14 @@ def make_map():
 
     # Special routes
     #map.connect('', controller='fcc', action='GetOverview')
-    map.connect('/authorize', controller='fcp', action='authorize', url='')
-    map.connect('/captcha/:cid', controller='fcp', action='captchaPic', cid=0)
-    map.connect('/logout', controller='fcp', action='logout', url='')
-    map.connect('/*url/authorize', controller='fcp', action='authorize', url='')
-    map.connect('/register/:invite', controller='fcp', action='register')
+    map.connect('authorize', '/authorize', controller='fcp', action='authorize', url='')
+    map.connect('captcha', '/captcha/:cid', controller='fcp', action='captchaPic', cid=0)
+    map.connect('logout', '/logout', controller='fcp', action='logout', url='')
+    map.connect('authorizeToUrl', '/*url/authorize', controller='fcp', action='authorize', url='')
+    map.connect('register', '/register/:invite', controller='fcp', action='register')
+    map.connect('search', '/search/:text/:page_dummy/:page', controller='fcc', action='search', text='', page=0, page_dummy='page', requirements=dict(page='\d+'))
+    #map.connect('/search/:text/page/:page', controller='fcc', action='search', text='', page=0, requirements=dict(page='\d+'))
     map.connect('/youAreBanned', controller='fcp', action='banned')
-    map.connect('/search/:text', controller='fcc', action='search', text='', page=0)
-    map.connect('/search/:text/page/:page', controller='fcc', action='search', text='', page=0, requirements=dict(page='\d+'))
     #map.connect('/Join', controller='fcp', action='showStatic', page = 'Join')
 
     # Oekaki
@@ -41,13 +41,13 @@ def make_map():
     map.connect('/viewAnimation/:source', controller='fcc', action='viewAnimation', requirements=dict(source='\d+'))
 
     # User subsystem
-    map.connect('/userProfile', controller='fcc', action='showProfile')
+    map.connect('userProfile', '/userProfile', controller='fcc', action='showProfile')
+    map.connect('viewLog', '/viewLog/:page_dummy/:page', controller='fcc', action='viewLog', page_dummy='page', page=0, requirements=dict(page='\d+'))
+    #map.connect('viewLogPage', '/viewLog/page/:page', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
     #map.connect('/userProfile/messages', controller='fcc', action='showMessages')
-    map.connect('/viewLog', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
-    map.connect('/viewLog/page/:page', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
 
     # Admin subsystem
-    map.connect('/holySynod', controller='fca', action='index')
+    map.connect('holySynod', '/holySynod', controller='fca', action='index')
     map.connect('/holySynod/makeInvite', controller='fca', action='makeInvite')
     map.connect('/holySynod/manageSettings', controller='fca', action='manageSettings')
     map.connect('/holySynod/manageExtensions', controller='fca', action='manageExtensions')
@@ -79,6 +79,7 @@ def make_map():
     map.connect('/ajax/getUserSettings', controller='fcajax', action='getUserSettings')
     map.connect('/ajax/getUploadsPath', controller='fcajax', action='getUploadsPath')
     map.connect('/ajax/checkCaptcha/:id/:text', controller='fcajax', action='checkCaptcha', text='', requirements=dict(id='\d+'))
+
     # Threads
     map.connect('/:post', controller='fcc', action='PostReply', conditions=dict(method=['POST']), requirements=dict(post='\d+'))
     map.connect('/:board/delete', controller='fcc', action='DeletePost',conditions=dict(method=['POST']))
@@ -87,14 +88,14 @@ def make_map():
     map.connect('/:board', controller='fcc', action='PostThread',conditions=dict(method=['POST']))
 
     # Generic filter
-    map.connect('/:board/:tempid', controller='fcc', action='GetBoard', board = '!', tempid=0, requirements=dict(tempid='\d+'))
-    map.connect('/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))
+    map.connect('board', '/:board/:tempid', controller='fcc', action='GetBoard', board = '!', tempid=0, requirements=dict(tempid='\d+'))
+    map.connect('boardPage', '/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))
 
     map.connect('/static/:page', controller='fcc', action='showStatic', page = 'Rules')
 
     # traps for bots
-    map.connect('/ajax/stat/:confirm', controller='fcc', action='selfBan', confirm = '')
-    map.connect('/holySynod/stat/:confirm', controller='fcc', action='selfBan', confirm = '')
+    map.connect('botTrap1', '/ajax/stat/:confirm', controller='fcc', action='selfBan', confirm = '')
+    map.connect('botTrap2','/holySynod/stat/:confirm', controller='fcc', action='selfBan', confirm = '')
 
     map.connect('*url', controller='fcp', action='UnknownAction')
 

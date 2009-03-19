@@ -63,7 +63,7 @@
             <tr id="trcaptcha">
                 <td class="postblock">${_('Captcha')}</td>
                 <td>
-                    <img src="/captcha/${c.captcha.id}" alt="Captcha"/><br/>
+                    <img src="${h.url_for('captcha', cid=c.captid)}" alt="Captcha"/><br/>
                     <input type="text" name="captcha" size="35"/>
                 </td>
             </tr>

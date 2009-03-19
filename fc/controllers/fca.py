@@ -216,9 +216,9 @@ class FcaController(OrphieBaseController):
 
                 meta.Session.commit()
 
-            redirect_to('/holySynod/manageMappings/show/%d' % id)
+            redirect_to(h.url_for('manageMappings', act='show', id=id))
         else:
-            redirect_to('/holySynod/manageMappings')
+            redirect_to(h.url_for('manageMappings'))
 
     def manageBoards(self):
         if not self.userInst.canManageBoards():
@@ -301,7 +301,7 @@ class FcaController(OrphieBaseController):
                             meta.Session.delete(c.tag)
                             toLog(LOG_EVENT_BOARD_EDIT, "Deleted board %s %s" % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))
                             meta.Session.commit()
-                            return redirect_to('/holySynod/manageBoards/')
+                            return redirect_to(h.url_for('hsBoards'))
                     elif not c.tag.id:
                         meta.Session.add(c.tag)
 

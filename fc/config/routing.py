@@ -47,21 +47,22 @@ def make_map():
     map.connect('viewAnimation', '/viewAnimation/:source', controller='fcc', action='viewAnimation', requirements=dict(source='\d+'))
 
     # Admin subsystem
-    #TODO:
     map.connect('holySynod', '/holySynod', controller='fca', action='index')
-    map.connect('/holySynod/makeInvite', controller='fca', action='makeInvite')
-    map.connect('/holySynod/manageSettings', controller='fca', action='manageSettings')
-    map.connect('/holySynod/manageExtensions', controller='fca', action='manageExtensions')
-    map.connect('/holySynod/manageExtensions/edit/:name', controller='fca', name='', action='editExtension')
-    map.connect('/holySynod/manageBoards', controller='fca', action='manageBoards')
-    map.connect('/holySynod/manageBoards/edit/:tag', controller='fca', tag='', action='editBoard')
-    map.connect('/holySynod/manageUsers', controller='fca', action='manageUsers')
-    map.connect('/holySynod/manageUsers/editAttempt/:pid', controller='fca', action='editUserAttempt', requirements=dict(pid='\d+'))
-    map.connect('/holySynod/manageUsers/editUserByPost/:pid', controller='fca', action='editUserByPost', requirements=dict(pid='\d+'))
-    map.connect('/holySynod/manageUsers/edit/:uid', controller='fca', action='editUser', requirements=dict(uid='\d+'))
-    map.connect('/holySynod/viewLog', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
-    map.connect('/holySynod/viewLog/page/:page', controller='fca', action='viewLog', page=0, requirements=dict(page='\d+'))
-    map.connect('/holySynod/manageMappings/:act/:id/:tagid', controller='fca', action='manageMappings', act='show', id=0, tagid=0, requirements=dict(id='\d+', tagid='\d+'))
+    map.connect('hsViewLog', '/holySynod/viewLog/:page_dummy/:page', controller='fca', action='viewLog',page_dummy='page', page=0, requirements=dict(page='\d+', page_dummy='page'))
+    map.connect('hsInvite', '/holySynod/makeInvite', controller='fca', action='makeInvite')
+    map.connect('hsSettings', '/holySynod/manageSettings', controller='fca', action='manageSettings')
+    map.connect('hsMappings', '/holySynod/manageMappings/:act/:id/:tagid', controller='fca', action='manageMappings', act='show', id=0, tagid=0, requirements=dict(id='\d+', tagid='\d+'))
+    map.connect('hsExtensions', '/holySynod/manageExtensions', controller='fca', action='manageExtensions')
+    map.connect('hsExtensionEdit', '/holySynod/manageExtensions/edit/:name', controller='fca', name='', action='editExtension')
+    map.connect('hsBoards', '/holySynod/manageBoards', controller='fca', action='manageBoards')
+    map.connect('hsBoardEdit', '/holySynod/manageBoards/edit/:tag', controller='fca', tag='', action='editBoard')
+
+    #TODO:
+    map.connect('hsUsers', '/holySynod/manageUsers', controller='fca', action='manageUsers')
+    map.connect('hsUserEditAttempt', '/holySynod/manageUsers/editAttempt/:pid', controller='fca', action='editUserAttempt', requirements=dict(pid='\d+'))
+    map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/:pid', controller='fca', action='editUserByPost', requirements=dict(pid='\d+'))
+    map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller='fca', action='editUser', requirements=dict(uid='\d+'))
+    #
 
     # Maintenance
     map.connect('hsMaintenance', '/holySynod/service/:actid/:secid', controller='fcm', actid='', secid='', action='mtnAction')
@@ -89,11 +90,13 @@ def make_map():
     map.connect('anonymize', '/:post/anonymize', controller='fcc', action='Anonimyze', requirements=dict(post='\d+'))
     map.connect('/:post/:tempid', controller='fcc', action='GetThread', tempid=0, requirements=dict(post='\d+',tempid='\d+'))
     map.connect('/:board', controller='fcc', action='PostThread',conditions=dict(method=['POST']))
+    #
 
     # Generic filter
     #TODO
     map.connect('board', '/:board/:tempid', controller='fcc', action='GetBoard', board = '!', tempid=0, requirements=dict(tempid='\d+'))
     map.connect('boardPage', '/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, page=0, requirements=dict(page='\d+'))
+    #
 
     # traps for bots
     map.connect('botTrap1', '/ajax/stat/:confirm', controller='fcc', action='selfBan', confirm = '')

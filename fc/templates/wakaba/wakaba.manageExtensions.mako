@@ -5,7 +5,7 @@
 %if not c.showCount:
 <input type="submit" value="${_('Show statistics')}" name="showCount"/>
 %endif
-<a href="/holySynod/manageExtensions/edit">${_('Add new extension')}</a>
+<a href="${h.url_for('hsExtensionEdit')}">${_('Add new extension')}</a>
 </form>
 
 <hr />
@@ -27,7 +27,7 @@
     <tbody>
     %for e in c.extensions:
         <tr>
-            <td><a href="/holySynod/manageExtensions/edit/${e.ext}">${e.ext}</a></td>
+            <td><a href="${h.url_for('hsExtensionEdit', name=e.ext)}">${e.ext}</a></td>
             <td>${e.type}</td>
             <td>${e.thwidth}&#215;${e.thheight}</td>
             <td>${e.path}</td>

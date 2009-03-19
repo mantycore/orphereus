@@ -9,7 +9,7 @@ ${'http://%s/register/%s' % (g.OPT.baseDomain, c.inviteCode)}
 </div>
 %else:
 <div class="postarea">
-    <form id="inviteForm" method="post" action="makeInvite">
+    <form id="inviteForm" method="post" action="${h.url_for('hsInvite')}">
 <table>
     <tr>
         <td>Reason:</td>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.management.mako" />
 
-<form id="mapeditForm" method="post" action="/holySynod/manageMappings/show">
+<form id="mapeditForm" method="post" action="${h.url_for('manageMappings', act='show')}">
     Enter post ID:<br/>
     <input type='text' name='postId' />
     <input type='submit' value='${_('Manage mappings')}' />
@@ -22,13 +22,13 @@ ${c.post.message}
     %for tag in c.post.tags:
         <tr>
             <td>${tag.tag}</td>
-            <td><a href='/holySynod/manageMappings/del/${c.post.id}/${tag.id}'>Remove</a></td>
+            <td><a href='${h.url_for('manageMappings', act='del', id=c.post.id, tagid=tag.id)}'>Remove</a></td>
         </tr>
     %endfor
     </tbody>
 </table>
 
-<form id="appendForm" method="post" action="/holySynod/manageMappings/add">
+<form id="appendForm" method="post" action="${h.url_for('manageMappings', act='add')}">
     <input type='text' name='tagName' />
     <input type='hidden' name='postId' value='${c.post.id}' />
     <input type='submit' value='${_('Append')}' />

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.management.mako" />
 
-<a href="/holySynod/manageBoards/edit">${_('Create new board')}</a>
+<a href="${h.url_for('hsBoardEdit')}">${_('Create new board')}</a>
 <hr />
 
 <table class="hlTable">
@@ -21,7 +21,7 @@
     </td>
     <td>
         %for b in c.boards[s]:
-            <a href="/holySynod/manageBoards/edit/${b.tag}">/${b.tag}/</a>
+            <a href="${h.url_for('hsBoardEdit', tag=b.tag)}">/${b.tag}/</a>
         %endfor
     </td>
 </tr>

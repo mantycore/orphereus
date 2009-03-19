@@ -49,7 +49,7 @@
     <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>
 %endif
 %if c.userInst.isAdmin() and c.userInst.canManageMappings():
-    <a href="/holySynod/manageMappings/show/${thread.id}">[Tags]</a>
+    <a href="${h.url_for('manageMappings', act='show', id=thread.id)}">[Tags]</a>
 %endif
 &nbsp;
 </span>
@@ -90,9 +90,9 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
 &nbsp;
 %if not c.userInst.Anonymous or g.OPT.allowAnonProfile:
     %if not thread.hidden:
-        [<a href="${h.url_for('ajHideThread', post=thread.id, redirect='%s%s' % ((not c.board and c.tagLine) and c.tagLine or str(c.PostAction), c.curPage and '/page/'+str(c.curPage) or '') )}">${_('Hide')}</a>]
+        [<a href="${h.url_for('ajHideThread', post=thread.id, redirect=u'%s%s' % ((not c.board and c.tagLine) and c.tagLine or unicode(c.PostAction), c.curPage and '/page/'+str(c.curPage) or '') )}">${_('Hide')}</a>]
     %else:
-        [<a href="${h.url_for('ajShowThread', post=thread.id, redirect='%s%s' % (str(c.PostAction), c.curPage and '/page/'+str(c.curPage) or '') )}">${_('Unide')}</a>]
+        [<a href="${h.url_for('ajShowThread', post=thread.id, redirect=u'%s%s' % (unicode(c.PostAction), c.curPage and '/page/'+str(c.curPage) or '') )}">${_('Unhide')}</a>]
     %endif
 %endif
 

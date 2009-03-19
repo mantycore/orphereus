@@ -701,7 +701,7 @@ class FccController(OrphieBaseController):
                     usualTagsCC += 1
                 else:
                     svcTagsCC += 1
-                if tag.options.permanent:
+                if tag.options.persistent:
                     permaTagsCC += 1
 
             if len(tags) > 1 and not g.OPT.allowCrossposting:

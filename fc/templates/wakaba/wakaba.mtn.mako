@@ -4,7 +4,7 @@
     <head>
         <title>${c.title} - ${_('Maintenance panel')} - ${c.boardName}</title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <link rel="stylesheet" type="text/css" href="/css/photon.css" title="Photon" />
+        <link rel="stylesheet" type="text/css" href="${h.staticFile("photon.css")}" title="Photon" />
     <script type="text/javascript" src="/ui.js"></script>
     </head>
     <body>

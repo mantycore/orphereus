@@ -11,7 +11,7 @@
     <p>This action will remove mapping to your UID. You will loss abilities to:</p>
     <ol>
     <li>delete this post</li>
-    <li>view this post in <a href="/@">/@/</a></li>
+    <li>view this post in <a href="${h.url_for('boardBase', board='@')}">/@/</a></li>
     <li>use ID of this posts in prooflabels</li>
     </ol>
     <h3>Do you want to continue?</h3>

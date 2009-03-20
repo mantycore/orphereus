@@ -46,7 +46,7 @@
     %endif
 %endif
 %if c.userInst.isAdmin() and c.userInst.canManageUsers():
-    <a href="/holySynod/manageUsers/editAttempt/${thread.id}">[User]</a>
+    <a href="${h.url_for('hsUserEditAttempt', pid=thread.id)}">[User]</a>
 %endif
 %if c.userInst.isAdmin() and c.userInst.canManageMappings():
     <a href="${h.url_for('manageMappings', act='show', id=thread.id)}">[Tags]</a>

@@ -4,13 +4,13 @@
 <b>Found:</b> ${c.count}
 
 <br/>
-<form action="${h.url_for('search')}" method="post">
+<form action="${h.url_for('searchBase')}" method="post">
     <input type="text" name="query" size="20" value="${c.query}"/>
     <input value="Search again" type="submit" />
     [<a href="${h.url_for('static', page='markup#search')}" target="_blank">Help</a>]
 </form>
 
-<%include file="wakaba.paginator.mako" args="baselink='search/%s' % c.query"/>
+<%include file="wakaba.paginator.mako" args="baselink='search', kwargDict={'text' : c.query}"/>
 
 %for pt in c.posts:
 <table id="quickReplyNode${pt[0].id}">
@@ -79,11 +79,11 @@
 %endfor
 
 <br/>
-<form action="${h.url_for('search')}" method="post">
+<form action="${h.url_for('searchBase')}" method="post">
     <input type="text" name="query" size="20" value="${c.query}"/>
     <input value="Search again" type="submit" />
 </form>
 
 <%include file="wakaba.jsService.mako" />
 
-<%include file="wakaba.paginator.mako" args="baselink='search/%s' % c.query"/>
+<%include file="wakaba.paginator.mako" args="baselink='search', kwargDict={'text' : c.query}"/>

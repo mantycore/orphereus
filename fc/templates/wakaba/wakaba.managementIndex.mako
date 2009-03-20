@@ -20,7 +20,7 @@ ${_('Current members of Holy Synod')}
             %if u.uidNumber == c.userInst.uidNumber:
             class="highlight"
             %endif
-        ><div class="hovblock"><a style="display: block;" href='/holySynod/manageUsers/edit/${u.uidNumber}'>${u.uidNumber}</a></div></td>
+        ><div class="hovblock"><a style="display: block;" href='${h.url_for('hsUserEdit', uid=u.uidNumber)}'>${u.uidNumber}</a></div></td>
         <td align="center">${u.canChangeRights() and "&#8226;" or ""}</td>
         <td align="center">${u.canDeleteAllPosts() and "&#8226;" or ""}</td>
         <td align="center">${u.canMakeInvite() and "&#8226;" or ""}</td>

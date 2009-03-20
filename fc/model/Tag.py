@@ -8,6 +8,8 @@ from fc.lib.miscUtils import empty
 import datetime
 import re
 
+from pylons.i18n import _, ungettext, N_
+
 import logging
 log = logging.getLogger(__name__)
 

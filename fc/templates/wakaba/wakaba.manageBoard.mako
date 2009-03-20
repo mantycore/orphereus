@@ -2,7 +2,7 @@
 <%inherit file="wakaba.management.mako" />
 
 <div class="postarea">
-    <form id="postform" method="post" action="">
+    <form id="postform" method="post" action="${h.url_for('hsBoardEdit', tag=c.tag.tag)}">
         <table>
             <tbody>
                 %if c.message:
@@ -22,7 +22,7 @@
                             value="${c.tag.tag}"
                         %endif
                         />
-                        <a href="/${c.tag.tag}" target="_blank">Show board</a>
+                        <a href="${h.url_for('boardBase', board=c.tag.tag)}" target="_blank">Show board</a>
                     </td>
                 </tr>
                 <tr>

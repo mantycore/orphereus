@@ -2,7 +2,7 @@
 <%inherit file="wakaba.management.mako" />
 
 <div class="postarea">
-    <form id="postform" method="post" action="">
+    <form id="postform" method="post" action="${h.url_for('hsExtensionEdit', name=c.ext.ext)}">
         <table>
             <tbody>
                 %if c.message:

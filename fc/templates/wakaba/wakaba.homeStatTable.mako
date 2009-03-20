@@ -13,7 +13,7 @@
 <tbody>
 %for b in boards:
     <tr>
-        <td><div class="hovblock"><a style="display: block;" href="/${b.board.tag}/">${b.board.tag}</a></div></td>
+        <td><div class="hovblock"><a style="display: block;" href="${h.url_for('boardBase', board=b.board.tag)}">${b.board.tag}</a></div></td>
         <td>${b.count}</td>
         <td>${b.postsCount}</td>
         <td>

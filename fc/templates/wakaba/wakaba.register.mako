@@ -2,7 +2,7 @@
 <%inherit file="wakaba.main.mako" />
 
 <div class="postarea">
-  <form id="postform" action="/register/doesntmatteranymore" method="post">
+  <form id="postform" action="${h.url_for('register', invite='doesntmatteranymore')}" method="post">
         <h2>${_('New UID')}</h2>
 
          <p><i>

@@ -1,10 +1,10 @@
 <div class="adminbar">
     [
-    <a href="${h.url_for('board', board='~')}" title="${_('Overview')}">/~/</a>
+    <a href="${h.url_for('boardBase', board='~')}" title="${_('Overview')}">/~/</a>
     %if not c.userInst.Anonymous:
-    <a href="${h.url_for('board', board='@')}" title="${_('Related threads')}">/@/</a>
+    <a href="${h.url_for('boardBase', board='@')}" title="${_('Related threads')}">/@/</a>
     %endif
-    <a href="${h.url_for('board', board='!')}" title="${_('Home')}">/!/</a>
+    <a href="${h.url_for('boardBase', board='!')}" title="${_('Home')}">/!/</a>
     ]
 
 %if c.boardlist:
@@ -14,7 +14,7 @@
     %for section in c.boardlist:
         [
         %for board in section:
-            <a href="${h.url_for('board', board=board.tag)}" title="${board.comment}"><b>/${board.tag}/</b></a>
+            <a href="${h.url_for('boardBase', board=board.tag)}" title="${board.comment}"><b>/${board.tag}/</b></a>
         %endfor
         ]
     %endfor
@@ -27,7 +27,7 @@
         [<a href="${h.url_for('holySynod')}">${_('Holy Synod')}</a>]
     %endif
     %if g.settingsMap['usersCanViewLogs'].value == 'true':
-        [<a href="${h.url_for('viewLog')}">${_('Logs')}</a>]
+        [<a href="${h.url_for('viewLogBase')}">${_('Logs')}</a>]
     %endif
     %if c.menuLinks:
         %for link in c.menuLinks:
@@ -51,14 +51,14 @@
         %endif
         [<a href="${h.url_for('logout')}">${_('Kill session')}</a>]
     %if g.OPT.allowRegistration:
-    [<a href="/register/register">${_('Register')}</a>]
+    [<a href="${h.url_for('register', invite='register')}">${_('Register')}</a>]
     %endif
     %endif
     %if not c.userInst.Anonymous and c.userInst.filters:
         <br />
         [
         %for f in c.userInst.filters:
-            <a href="/${f.filter}/">/${f.filter}/</a>
+            <a href="${h.url_for('boardBase', board=f.filter)}">/${f.filter}/</a>
         %endfor
         ]
     %endif

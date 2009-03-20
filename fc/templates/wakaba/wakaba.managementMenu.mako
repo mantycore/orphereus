@@ -19,7 +19,7 @@
 <a href="${h.url_for('hsMappings')}">${_('Manage mappings')}</a><br />
 %endif
 
-<a href="${h.url_for('hsViewLog')}">${_('View logs')}</a><br />
+<a href="${h.url_for('hsViewLogBase')}">${_('View logs')}</a><br />
 
 %if c.userInst.canMakeInvite():
 <a href="${h.url_for('hsInvite')}">${_('Generate invite')}</a><br />

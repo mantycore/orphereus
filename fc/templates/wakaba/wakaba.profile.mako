@@ -2,7 +2,7 @@
 <%inherit file="wakaba.main.mako" />
 <div class="theader">${_('Profile')}</div>
 
-<form id="postform" action="/userProfile/" method="post">
+<form id="postform" action="${h.url_for('userProfile')}" method="post">
     <div class="postarea">
         <table>
             <tbody>
@@ -180,8 +180,8 @@
                     </tr>
                     %for t in c.hiddenThreads:
                     <tr>
-                        <td>${_('Thread <a href=/%s>#%s</a> (%s replies) posted in %s') % (t.id, t.id, t.replyCount, t.tagLine)}</td>
-                        <td><a href="/ajax/showThread/${t.id}/userProfile">${_('Unhide')}</a></td>
+                        <td>${_('Thread <a href="%s">#%s</a> (%s replies) posted in %s') % (h.url_for('thread', post=t.id), t.id, t.replyCount, t.tagLine)}</td>
+                        <td><a href="${h.url_for('ajShowThread', post=t.id, redirect='userProfile')}">${_('Unhide')}</a></td>
                     </tr>
                     %endfor
             </tbody>

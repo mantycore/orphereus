@@ -2,7 +2,7 @@
 <%inherit file="wakaba.management.mako" />
 
 <div class="postarea">
-    <form id="postform" method="post" action="/holySynod/manageUsers">
+    <form id="postform" method="post" action="${h.url_for('hsUsers')}">
         <table>
             <tbody>
                 %if c.message:

@@ -3,7 +3,7 @@
 
 %if c.showAttemptForm:
 <div class="postarea">
-    <form id="userEditReasonForm" method="post" action="/holySynod/manageUsers/editUserByPost/${c.pid}">
+    <form id="userEditReasonForm" method="post" action="${h.url_for('hsUserEditByPost', pid=c.pid)}">
 <table>
     <tr>
         <td>Reason:</td>
@@ -20,7 +20,7 @@
 %else:
 
 <div class="postarea">
-    <form id="postform" method="post" action="">
+    <form id="postform" method="post" action="${h.url_for('hsUserEdit', uid=c.user.uidNumber)}">
         <table>
             <tbody>
                 %if c.message:

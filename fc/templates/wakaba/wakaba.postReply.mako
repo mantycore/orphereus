@@ -17,7 +17,7 @@
         %endif
     %endif
     %if c.userInst.isAdmin() and c.userInst.canManageUsers():
-        <a href="/holySynod/manageUsers/editAttempt/${post.id}">[User]</a>
+        <a href="${h.url_for('hsUserEditAttempt', pid=post.id)}">[User]</a>
     %endif
     &nbsp;
     </span>

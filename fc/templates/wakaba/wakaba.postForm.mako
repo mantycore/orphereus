@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 %if not c.board and c.tagLine:
-    [<a href="/${c.tagLine}">${_('Back')}</a>]
+    [<a href="${h.url_for('boardBase', board=c.tagLine)}">${_('Back')}</a>]
     <hr/>
 %endif
 

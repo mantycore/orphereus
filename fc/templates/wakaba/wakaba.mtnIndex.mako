@@ -6,7 +6,7 @@
 
 <tr>
 <td>
-<form method="post" action="service/all">
+<form method="post" action="${h.url_for('hsMaintenance', actid='all')}">
 <span style="color: red; font-weight: bold;">${_('Run all actions')}</span>
 <br/>
 <input type="submit" value="Launch" />
@@ -16,7 +16,7 @@
 
 <tr>
 <td>
-<form method="post" action="service/clearOekaki">
+<form method="post" action="${h.url_for('hsMaintenance', actid='clearOekaki')}">
 ${_('Destroy unused oekaki IDs (older than one day)')}
 <br/>
 <input type="submit" value="Launch" />
@@ -26,7 +26,7 @@ ${_('Destroy unused oekaki IDs (older than one day)')}
 
 <tr>
 <td>
-<form method="post" action="service/destroyInvites">
+<form method="post" action="${h.url_for('hsMaintenance', actid='destroyInvites')}">
 ${_('Destroy unused invites (older than one week)')}
 <br/>
 <input type="submit" value="Launch" />
@@ -36,7 +36,7 @@ ${_('Destroy unused invites (older than one week)')}
 
 <tr>
 <td>
-<form method="post" action="service/destroyTrackers">
+<form method="post" action="${h.url_for('hsMaintenance', actid='destroyTrackers')}">
 ${_('Destroy IP trackers (older than one day)')}
 <br/>
 <input type="submit" value="Launch" />
@@ -46,7 +46,7 @@ ${_('Destroy IP trackers (older than one day)')}
 
 <tr>
 <td>
-<form method="post" action="service/banRotate">
+<form method="post" action="${h.url_for('hsMaintenance', actid='banRotate')}">
 ${_('Remove old bans')}
 <br/>
 <input type="submit" value="Launch" />
@@ -56,7 +56,7 @@ ${_('Remove old bans')}
 
 <tr>
 <td>
-<form method="post" action="service/integrityChecks">
+<form method="post" action="${h.url_for('hsMaintenance', actid='integrityChecks')}">
 <span style="color: red;">${_('Integrity checks')}</span>
 <br/>
 <input type="submit" value="Launch" />
@@ -72,7 +72,7 @@ ${_('Remove old bans')}
 
 <tr>
 <td>
-<form method="post" action="service/updateCaches">
+<form method="post" action="${h.url_for('hsMaintenance', actid='updateCaches')}">
 ${_('Update caches')}
 <br/>
 <input type="submit" value="Launch" />
@@ -82,7 +82,7 @@ ${_('Update caches')}
 
 <tr>
 <td>
-<form method="post" action="service/updateStats">
+<form method="post" action="${h.url_for('hsMaintenance', actid='updateStats')}">
 ${_('Update statistics')}
 <br/>
 <input type="submit" value="Launch" />
@@ -92,7 +92,7 @@ ${_('Update statistics')}
 
 <tr>
 <td>
-<form method="post" action="service/removeEmptyTags">
+<form method="post" action="${h.url_for('hsMaintenance', actid='removeEmptyTags')}">
 ${_('Remove empty tags')}
 <br/>
 <input type="submit" value="Launch" />
@@ -102,7 +102,7 @@ ${_('Remove empty tags')}
 
 <tr>
 <td>
-<form method="post" action="service/banInactive">
+<form method="post" action="${h.url_for('hsMaintenance', actid='banInactive')}">
 ${_('Ban ALL users without posts')}
 <br/>
 <input type="submit" value="Launch" />
@@ -112,7 +112,7 @@ ${_('Ban ALL users without posts')}
 
 <tr>
 <td>
-<form method="post" action="service/reparse">
+<form method="post" action="${h.url_for('hsMaintenance', actid='reparse')}">
 ${_('Reparse posts which can be reparsed')}
 <br/>
 <input type="submit" value="Launch" />
@@ -122,7 +122,7 @@ ${_('Reparse posts which can be reparsed')}
 
 <tr>
 <td>
-<form method="post" action="service/sortUploads">
+<form method="post" action="${h.url_for('hsMaintenance', actid='sortUploads')}">
 ${_('Sort uploads')}
 <br/>
 <input type="submit" value="Launch" />

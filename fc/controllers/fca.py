@@ -329,7 +329,7 @@ class FcaController(OrphieBaseController):
             else:
                 user = User.getByUid(uid)
             if user:
-                return redirect_to('/holySynod/manageUsers/edit/%s' % user.uidNumber)
+                return redirect_to(h.url_for('hsUserEdit', uid=user.uidNumber))
             else:
                 c.message = _('No such user exists.')
         return self.render('manageUsers')
@@ -354,7 +354,7 @@ class FcaController(OrphieBaseController):
             reason = request.POST.get("UIDViewReason", 'No reason given!')
             #toLog(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '<a href='/%s#i%s'>%s</a>'. Reason: %s" % (post.uidNumber, post.parentid > 0 and post.parentid or post.id, pid, pid, reason))
             toLog(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '%s'. Reason: %s" % (post.uidNumber, post.id, reason))
-            return redirect_to('/holySynod/manageUsers/edit/%s' % post.uidNumber)
+            return redirect_to(h.url_for('hsUserEdit', uid=post.uidNumber))
         else:
             c.errorText = _("Post not found")
             return self.render('error')

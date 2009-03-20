@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.management.mako" />
 
-<form id="postform" method="post" action="">
+<form id="postform" method="post" action="${h.url_for('hsExtensions')}">
 %if not c.showCount:
 <input type="submit" value="${_('Show statistics')}" name="showCount"/>
 %endif

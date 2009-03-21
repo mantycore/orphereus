@@ -67,7 +67,7 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
 </span>
 <span class="reflink">
 %if c.board:
-    <a href="/${thread.id}#i${thread.id}">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
+    <a href="${h.postUrl(thread.id, thread.id)}">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
 %else:
     <a href="javascript:insert('&gt;&gt;${thread.id}')">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
 %endif
@@ -79,7 +79,7 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
     &nbsp;
     ${_('Posted in')}:
 %for t in thread.tags:
-    <a href="/${t.tag}/"
+    <a href="${h.url_for('boardBase', board=t.tag)}"
     %if t.options:
         title="${t.options.comment}"
     %endif
@@ -97,19 +97,19 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
 %endif
 
 %if c.currentUserCanPost:
-%if thread.file and thread.file.width:
-    [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy() and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim() and '+anim' or '-anim', tool=c.userInst.oekUsePro() and 'shiPro' or 'shiNormal')}">Draw</a>]
-%endif
-    [<a href="/${thread.id}">${_('Reply')}</a>]
+    %if thread.file and thread.file.width:
+        [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy() and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim() and '+anim' or '-anim', tool=c.userInst.oekUsePro() and 'shiPro' or 'shiNormal')}">Draw</a>]
+    %endif
+    [<a href="${h.url_for('thread', post=thread.id)}">${_('Reply')}</a>]
 %else:
-    [<a href="/${thread.id}">${_('Read')}</a>]
+    [<a href="${h.postUrl(thread.id, thread.id)}">${_('Read')}</a>]
 %endif
 
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():
         ${h.modMessage(thread.messageShort, c.userInst, g.OPT.secureText)}
         <br />
-        ${_('Comment is too long.')} <a href="/${thread.id}#i${thread.id}" onclick="getFullText(event,${thread.id},${thread.id});" class="expandPost">${_('Full version')}</a>
+        ${_('Comment is too long.')} <a href="${h.postUrl(thread.id, thread.id)}" onclick="getFullText(event,${thread.id},${thread.id});" class="expandPost">${_('Full version')}</a>
     %else:
         ${h.modMessage(thread.message, c.userInst, g.OPT.secureText)}
     %endif

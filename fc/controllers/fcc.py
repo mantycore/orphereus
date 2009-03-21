@@ -224,7 +224,7 @@ class FccController(OrphieBaseController):
             if isNumber(tempid) and not int(tempid) == 0:
                 redirect_to('/%d/%d' % (thePost.parentid, int(tempid)))
             else:
-                redirect_to('/%d#i%d' % (thePost.parentid, thePost.id))
+                redirect_to(h.postUrl(thePost.parentid, thePost.id))
 
         if not thePost:
             c.errorText = _("No such post exist.")

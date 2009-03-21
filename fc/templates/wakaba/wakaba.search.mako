@@ -10,7 +10,7 @@
     [<a href="${h.url_for('static', page='markup#search')}" target="_blank">Help</a>]
 </form>
 
-<%include file="wakaba.paginator.mako" args="baselink='search', kwargDict={'text' : c.query}"/>
+<%include file="wakaba.paginator.mako" args="routeName='search', kwargDict={'text' : c.query}"/>
 
 %for pt in c.posts:
 <table id="quickReplyNode${pt[0].id}">
@@ -30,13 +30,13 @@
                     ${pt[0].date}
                 </label>
                 <span class="reflink">
-                    <a href="/${pt[1].id}#i${pt[0].id}">#${g.OPT.secondaryIndex and pt[0].secondaryIndex or pt[0].id}</a>;
+                    <a href="${h.postUrl(pt[1].id, pt[0].id)}">#${g.OPT.secondaryIndex and pt[0].secondaryIndex or pt[0].id}</a>;
 
           ${_('Thread')}
-          <a href="/${pt[1].id}#i${pt[1].id}">#${g.OPT.secondaryIndex and pt[1].secondaryIndex or pt[1].id}</a>
+          <a href="${h.postUrl(pt[1].id, pt[1].id)}">#${g.OPT.secondaryIndex and pt[1].secondaryIndex or pt[1].id}</a>
           ${_('from')}:
           %for t in pt[1].tags:
-              <a href="/${t.tag}/">/${t.tag}/</a>
+              <a href="${h.url_for('boardBase', board=t.tag)}">/${t.tag}/</a>
           %endfor
         </span>
         &nbsp;
@@ -86,4 +86,4 @@
 
 <%include file="wakaba.jsService.mako" />
 
-<%include file="wakaba.paginator.mako" args="baselink='search', kwargDict={'text' : c.query}"/>
+<%include file="wakaba.paginator.mako" args="routeName='search', kwargDict={'text' : c.query}"/>

@@ -32,7 +32,7 @@
 
     <span class="reflink">
     %if c.board:
-        <a href="/${thread.id}#i${post.id}">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
+        <a href="${h.postUrl(thread.id, post.id)}">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
     %else:
         <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
     %endif
@@ -85,7 +85,7 @@
         %if (c.count > 1) and post.messageShort and c.userInst.hideLongComments() and getattr(thread, 'enableShortMessages', True):
             ${h.modMessage(post.messageShort, c.userInst, g.OPT.secureText)}
             <br />
-            ${_('Comment is too long.')} <a href="/${thread.id}#i${post.id}" onclick="getFullText(event,${thread.id},${post.id});" class="expandPost">${_('Full version')}</a>
+            ${_('Comment is too long.')} <a href="${h.postUrl(thread.id, post.id)}" onclick="getFullText(event,${thread.id},${post.id});" class="expandPost">${_('Full version')}</a>
         %else:
             ${h.modMessage(post.message, c.userInst, g.OPT.secureText)}
         %endif

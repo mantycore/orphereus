@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
-<%include file="wakaba.paginator.mako" args="baselink='board', kwargDict={'board' : c.board}" />
+<%include file="wakaba.paginator.mako" args="routeName='board', kwargDict={'board' : c.board}" />
 %if c.pages:
 <hr/>
 %endif
@@ -96,7 +96,7 @@
 
 <%include file="wakaba.jsService.mako" />
 
-<%include file="wakaba.paginator.mako" args="baselink='board', kwargDict={'board' : c.board}" />
+<%include file="wakaba.paginator.mako" args="routeName='board', kwargDict={'board' : c.board}" />
 
 <br clear="all" />
 

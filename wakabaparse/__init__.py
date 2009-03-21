@@ -51,17 +51,12 @@ class WakabaParser(object):
         if not (trusted):
             linkHref = g.OPT.obfuscator + linkHref
 
-        #return '<a href="%s">%s</a>' % (linkHref.replace("&", "&amp;"), linkString.replace("&", "&amp;"))
         return '<a href="%s">%s</a>' % (linkHref, linkString)
 
     def reference(self, tag, beg, end, parts):
         n,i,j,p = parts[0]
         number = self.input[i:j]
         return self.calledBy.formatPostReference(number)
-        #if pid == -1:
-        #    return '<a href="/%s">&gt;&gt;%s</a>' % (number, number)
-        #else:
-        #    return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (pid,number, number, number)
 
     def signature(self, tag, beg, end, parts):
         valid = {}
@@ -93,7 +88,7 @@ class WakabaParser(object):
                 retval += '<span class="%s">##' % className
             sep = u''
             for i in idList:
-                retval += sep + '<a href="/%s#i%s">%s</a>' % (idList[i],i,i)
+                retval += sep + self.calledBy.formatPostReference(i, False)
                 sep = ','
             retval += '</span>'
             return retval
@@ -151,6 +146,7 @@ class WakabaParser(object):
             n += 1
         self.closeTag(depth + 1)
         return u''
+
     def block_list(self, tag, beg, end, parts):
         fNL = (parts[0][3][1][0] == 'numlist')
         if fNL:

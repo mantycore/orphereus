@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
-<%include file="wakaba.paginator.mako" args="baselink='viewLog'"/>
+<%include file="wakaba.paginator.mako" args="routeName='viewLog'"/>
 <hr/>
 
 %if c.logs:
@@ -33,6 +33,6 @@
 %endif
 
 <hr/>
-<%include file="wakaba.paginator.mako" args="baselink='viewLog'"/>
+<%include file="wakaba.paginator.mako" args="routeName='viewLog'"/>
 <hr/>
 

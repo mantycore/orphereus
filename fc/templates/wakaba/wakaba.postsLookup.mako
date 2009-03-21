@@ -11,10 +11,10 @@
 <td>
 <blockquote style="margin: 0; padding: 0;">
 
-%if not post.parentPost:
-    <b><a href="/${post.id}#i${post.id}">&gt;&gt;${post.id}</a></b>
-%else:
-    <a href="/${post.parentid}#i${post.id}">&gt;&gt;${post.id}</a>
+
+<a href="${h.postUrl(post.parentid, post.id)}">&gt;&gt;${post.id}</a>
+%if post.parentPost:
+    <b>[op]</b>
 %endif
 
 </blockquote>

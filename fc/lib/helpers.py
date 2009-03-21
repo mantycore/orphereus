@@ -13,6 +13,9 @@ from routes.util import url_for
 import logging
 log = logging.getLogger(__name__)
 
+def postUrl(threadId, postId):
+    return '%s#i%s' % (url_for('thread', post = threadId and threadId or postId), postId)
+
 def expandName(name):
     #log.debug("expanding: %s" % name)
     if name:

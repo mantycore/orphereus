@@ -156,11 +156,13 @@ class OrphieBaseController(BaseController):
 
     # Parser callbacks
 
-    def formatPostReference(self, postid):
+    def formatPostReference(self, postid, prependGt = True):
         post = Post.getPost(postid)
         if post:
             parentid = post.parentid
-            return '<a href="/%s#i%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % (parentid and parentid or postid, postid, postid, postid)
+            linkText = '%s%s' % (prependGt and '&gt;&gt;' or '', postid)
+            linkUrl = h.postUrl(parentid, postid)
+            return '<a href="%s" onclick="highlight(%s)">%s</a>' % (linkUrl, postid, linkText)
         else:
-            return "&gt;&gt;%s" % postid
+            return "%s%s" % (prependGt and '&gt;&gt;' or '', postid)
 

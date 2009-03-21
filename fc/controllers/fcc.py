@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from fc.lib.base import *
 from fc.model import *
 from sqlalchemy.orm import eagerload
@@ -32,7 +33,8 @@ class FccController(OrphieBaseController):
         c.userInst = self.userInst
         c.destinations = destinations
 
-        c.currentURL = request.path_info.decode('utf-8')
+        c.currentURL = request.path_info.decode('utf-8', 'ignore')
+
         if c.currentURL == u'/':
             c.currentURL = u''
 
@@ -221,7 +223,7 @@ class FccController(OrphieBaseController):
         #if thePost isn't op-post, redirect to op-post instead
         if thePost and thePost.parentPost:
             if isNumber(tempid) and not int(tempid) == 0:
-                redirect_to('/%d/%d' % (thePost.parentid, int(tempid)))
+                redirect_to(h.url_for('thread', post=thePost.parentid, tempid=int(tempid)))
             else:
                 redirect_to(h.postUrl(thePost.parentid, thePost.id))
 
@@ -249,18 +251,18 @@ class FccController(OrphieBaseController):
             curPage = 0
 
         ##log.debug('%s %s %s' % (tagLine, str(dest), str(curPage)))
-        redirectAddr = '~'
+        redirectAddr = h.url_for('boardBase', board='~') #'~'
 
         if dest == 4: # destination board
-            if not post.parentid:
-                tags = []
-                for tag in post.tags:
-                    tags.append(tag.tag)
-                postTagline = "+".join(tags)
-
-                redirectAddr = '%s/' % (postTagline)
-            else:
-                dest = 1
+            taglineSource = post
+            if post.parentid:
+                taglineSource = post.parentPost
+            tags = []
+            for tag in taglineSource.tags:
+                tags.append(tag.tag)
+            postTagline = "+".join(tags)
+            log.debug(postTagline)
+            redirectAddr = h.url_for('boardBase', board=postTagline) #'%s/' % (postTagline)
 
         if dest == 0: #current thread
             if postid:
@@ -271,14 +273,14 @@ class FccController(OrphieBaseController):
             if  tagLine:
                 if dest == 1:
                     curPage = 0
-                redirectAddr = "%s/page/%d" % (tagLine, curPage)
+                redirectAddr = h.url_for('board', board=tagLine, page=curPage) #"%s/page/%d" % (tagLine, curPage)
         elif dest == 3: # overview
             pass
         elif dest == 5: #referrer
             return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')))
 
         ##log.debug(redirectAddr)
-        return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
+        return redirect_to(redirectAddr) #str('/%s' % redirectAddr.encode('utf-8')))
 
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
@@ -388,7 +390,8 @@ class FccController(OrphieBaseController):
             else:
                 redirectAddr = '~'
 
-        return redirect_to(str('/%s' % redirectAddr.encode('utf-8')))
+        return redirect_to(h.url_for('boardBase', board=redirectAddr))
+        #str('/%s' % redirectAddr.encode('utf-8'))
 
     def search(self, text, page = 0):
         rawtext = text

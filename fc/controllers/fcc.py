@@ -72,7 +72,6 @@ class FccController(OrphieBaseController):
             page = 0
 
         c.board = board
-        c.uidNumber = self.userInst.uidNumber
         c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
         c.isAdmin = self.userInst.isAdmin()
 

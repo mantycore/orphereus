@@ -34,6 +34,7 @@ class OrphieBaseController(BaseController):
             self.userInst = FakeUser()
 
         c.userInst = self.userInst
+        c.uidNumber = self.userInst.uidNumber
         #log.debug(session.get('uidNumber', -1))
         if g.OPT.checkUAs and self.userInst.isValid() and not self.userInst.Anonymous:
             for ua in g.OPT.badUAs:

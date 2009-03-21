@@ -33,6 +33,9 @@
     <hr/>
 %endfor
 
+<%include file="wakaba.paginator.mako" args="routeName='board', kwargDict={'board' : c.board}" />
+<hr />
+
 <table class="userdelete">
     <tbody>
         <tr><td>
@@ -95,8 +98,6 @@
 </div>
 
 <%include file="wakaba.jsService.mako" />
-
-<%include file="wakaba.paginator.mako" args="routeName='board', kwargDict={'board' : c.board}" />
 
 <br clear="all" />
 

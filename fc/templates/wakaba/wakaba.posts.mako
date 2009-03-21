@@ -34,7 +34,9 @@
 %endfor
 
 <%include file="wakaba.paginator.mako" args="routeName='board', kwargDict={'board' : c.board}" />
+%if c.pages:
 <hr />
+%endif
 
 <table class="userdelete">
     <tbody>

@@ -129,7 +129,7 @@
                     <label><input type="checkbox" name="animation" ${c.userInst.oekUseAnim() and 'checked="checked"' or ""} /> ${_('Animation')}</label>
 
                     <input type="hidden" value="New" name="oekaki_type"/>
-                    <input type="submit" value="${_('Draw Oekaki')}"/>
+                    <input type="submit" value="${_('Draw')}"/>
 
                     </td>
                 </tr>

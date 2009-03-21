@@ -9,11 +9,11 @@ class FakeUser(object):
     def __init__(self):
         self.__valid = False
         self.Anonymous = False
+        self.uidNumber = -1
 
         if g.OPT.allowAnonymous:
             self.__valid = True
             self.Anonymous = True
-            self.uidNumber = -1
             self.uid = "Anonymous"
             self.filters = ()
 

@@ -261,7 +261,6 @@ class FccController(OrphieBaseController):
             for tag in taglineSource.tags:
                 tags.append(tag.tag)
             postTagline = "+".join(tags)
-            log.debug(postTagline)
             redirectAddr = h.url_for('boardBase', board=postTagline) #'%s/' % (postTagline)
 
         if dest == 0: #current thread
@@ -279,7 +278,6 @@ class FccController(OrphieBaseController):
         elif dest == 5: #referrer
             return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')))
 
-        ##log.debug(redirectAddr)
         return redirect_to(redirectAddr) #str('/%s' % redirectAddr.encode('utf-8')))
 
     def showProfile(self):

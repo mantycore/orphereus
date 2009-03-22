@@ -304,8 +304,8 @@ class FcpController(OrphieBaseController):
             if not parent:
                 parent = post
             parent.enableShortMessages=False
-            descr = self.render('postReply', thread=parent, post = post)
-
+            descr = self.render('postReply', thread=parent, post = post).decode('utf-8')
+            log.debug(type(descr))
             feed.add_item(title=_(u"#%d") % post.id,
                           link=h.url_for('thread', post = post.id),
                           description=descr)

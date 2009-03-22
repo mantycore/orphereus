@@ -266,19 +266,14 @@ class FcpController(OrphieBaseController):
         title = u''
         descr = u'%s News Feed' % g.OPT.baseDomain
         posts = []
-        log.debug(watch)
         if re.compile("^\d+$").match(watch):
             watch = int(watch)
             thePost = Post.getPost(watch)
-            log.debug(thePost)
             if not thePost:
-                log.debug('1')
                 abort(404)
             title = _(u"%s: thread #%d") % (g.settingsMap['title'].value, watch)
             thread = Post.buildThreadFilter(user, thePost.id).first()
-            log.debug(thread)
             if not thread:
-                log.debug('2')
                 abort(404)
             replies = thread.filterReplies().all()
             posts = [thread]

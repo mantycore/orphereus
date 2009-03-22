@@ -42,7 +42,7 @@
         <tr id="trsubject">
             <td class="postblock">${_('Title')}</td>
             <td>
-                <input type="text" name="title" style="width: 220px;" />
+                <input type="text" name="title" size="35" />
                 <input type="submit" value="Post" />
             </td>
         </tr>
@@ -54,7 +54,7 @@
             <tr id="trtags">
                 <td class="postblock">${_('Boards')}</td>
                 <td>
-                    <input type="text" name="tags" style="width: 220px;" value="${c.tagList}" />
+                    <input type="text" name="tags" size="35" value="${c.tagList}" />
                 </td>
             </tr>
         %endif
@@ -64,7 +64,7 @@
                 <td class="postblock">${_('Captcha')}</td>
                 <td>
                     <img src="${h.url_for('captcha', cid=c.captcha.id)}" alt="Captcha"/><br/>
-                    <input type="text" name="captcha" style="width: 220px;"/>
+                    <input type="text" name="captcha" size="35"/>
                 </td>
             </tr>
         %endif
@@ -72,8 +72,15 @@
             <tr id="trrempass">
                 <td class="postblock">${_('Password')}</td>
                 <td>
-                    <input type="password" name="remPass" style="width: 220px;" value="${c.remPass}" />
+                    <input type="password" name="remPass" size="35" value="${c.remPass}" />
                 </td>
+            </tr>
+        %endif
+
+        %if c.boardOptions.images and not c.oekaki:
+            <tr id="trfile">
+                <td class="postblock">${_('File')}</td>
+                <td><input type="file" name="file" size="35" /></td>
             </tr>
         %endif
 
@@ -100,12 +107,6 @@
                 </select>
             </td>
         </tr>
-        %if c.boardOptions.images and not c.oekaki:
-            <tr id="trfile">
-                <td class="postblock">${_('File')}</td>
-                <td><input type="file" name="file" style="width: 220px;" /></td>
-            </tr>
-        %endif
     </tbody>
     </table>
     </form>

@@ -46,6 +46,7 @@ class OptHolder(object):
         self.allowTagCreation = (config['core.allowTagCreation'] == 'true')
         self.statsCacheTime = int(config['core.statsCacheTime'])
         self.boardWideProoflabels = (config['core.boardWideProoflabels'] == 'true')
+        self.allowFeeds = (config['core.allowFeeds'] == 'true')
 
         self.permissiveFileSizeConjunction = (config['core.permissiveFileSizeConjunction'] == 'true')
         #default board settings

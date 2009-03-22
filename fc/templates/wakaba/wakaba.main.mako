@@ -17,7 +17,7 @@ ${c.title}
         <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style() + ".css")}" title="${c.userInst.style()}" />
         <script type="text/javascript" src="${h.staticFile("jquery.js")}"></script>
         <script type="text/javascript" src="${h.staticFile("ui.js")}"></script>
-%if c.userInst.isValid() and c.threads:
+%if g.OPT.allowFeeds and c.userInst.isValid() and c.threads:
         <link rel="alternate" type="application/rss+xml" title="RSS" href="${h.url_for('feed', uid=c.userInst.uid, authid=c.userInst.authid(), watch=c.PostAction, feedType='rss')}" />
         <link rel="alternate" type="application/atom+xml" title="Atom" href="${h.url_for('feed', uid=c.userInst.uid, authid=c.userInst.authid(), watch=c.PostAction, feedType='atom')}" />
 %endif

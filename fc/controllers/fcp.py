@@ -249,12 +249,15 @@ class FcpController(OrphieBaseController):
         return ['ok']
 
     def rss(self, watch, authid, uid, feedType):
+        if not g.OPT.allowFeeds:
+            abort(403)
+
         if not self.currentUserIsAuthorized():
-            log.debug(uid)
             user = User.getByUid(uid)
-            log.debug(user)
             if not user or not int(authid) == user.authid():
                 redirect_to('/')
+        else:
+            user = self.userInst
 
         title = u''
         descr = u'%s News Feed' % g.OPT.baseDomain

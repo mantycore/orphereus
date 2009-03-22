@@ -50,7 +50,9 @@ class ErrorController(BaseController):
         <img src='%(errorPic)s' alt = 'Orphie-kun' style="border: 2px solid #820000;"/>
         <h1 style='color: #ffffff;'>I'm awfully sorry, my dear user.</h1>
         <h2 style='color: #ffffff;'>I'm feeling</h2>
-        <h1 style="color: #820000; background-color: #FADDDD;">%(message)s</h1>
+        <h1 style="color: #820000; background-color: #FADDDD;">%(message)s
+        <br/>
+        <a href="http://trac.anoma.ch">Visit Bugtracker</a></h1>
         <br/>
         %(prefix)s
     </div>

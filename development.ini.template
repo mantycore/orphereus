@@ -55,6 +55,7 @@ core.allowTagCreation = true
 core.statsCacheTime = 180
 core.permissiveFileSizeConjunction = true
 core.boardWideProoflabels = true
+core.allowFeeds = true
 
 # Board defaults
 defaults.thumbSize = 200

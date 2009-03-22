@@ -12,8 +12,13 @@
 <span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap2')}">.</a></span>
 %endif
     %for section in c.boardlist:
+        %if section[1]:
+            <!-- ${section[1]} -->
+        %else:
+            <!-- ${_('Unnamed section')} -->
+        %endif
         [
-        %for board in section:
+        %for board in section[0]:
             <a href="${h.url_for('boardBase', board=board.tag)}" title="${board.comment}"><b>/${board.tag}/</b></a>
         %endfor
         ]

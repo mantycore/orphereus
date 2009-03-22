@@ -72,12 +72,10 @@ def init_globals(globalObject, setupMode):
                 if s.name in settingsDef:
                     settingsMap[s.name] = s
 
-
         for s in settingsDef:
             if not s in settingsMap:
                 option = Setting.create(s, settingsDef[s])
                 settingsMap[s] = option
-
     else:
         from fc.lib.miscUtils import empty
         for s in settingsDef:
@@ -90,6 +88,18 @@ def init_globals(globalObject, setupMode):
     if not setupMode:
         adminTagsLine = meta.globj.settingsMap['adminOnlyTags'].value
         meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)
+
+        meta.globj.additionalLinks = []
+        linksstr = meta.globj.settingsMap['additionalLinks'].value
+        links = linksstr.split('|')
+        if links:
+            for link in links:
+                meta.globj.additionalLinks.append(link.split(','))
+
+        meta.globj.sectionNames = meta.globj.settingsMap['sectionNames'].value.split('|')
+
+        disabledTagsLine = meta.globj.settingsMap['disabledTags'].value
+        meta.globj.disabledTags = disabledTagsLine.lower().split('|')
 
     """
     gv = config['pylons.g']

@@ -6,12 +6,13 @@ settingsDef = {
     "invisibleBump" : u'true',
     "maxTagsCount"  : u'5',
     "maxTagLen"     : u'6',
-    "disabledTags"  : u'logout,authorize,register,youAreBanned,userProfile,holySynod',
-    "adminOnlyTags" : u'synod,logs',
+    "disabledTags"  : u'logout|authorize|register|youAreBanned|userProfile|holySynod',
+    "adminOnlyTags" : u'synod|logs',
     "maxLinesInPost": u'15',
     "cutSymbols"    : u'5000',
     "usersCanViewLogs"  : u'false',
-    "additionalLinks" : u'http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma'
+    "additionalLinks" : u'http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma',
+    "sectionNames" : u'Main',
 }
 
 settingsDescription = {
@@ -25,6 +26,7 @@ settingsDescription = {
     "cutSymbols"    : (N_("Cut post after Y symbols"), int),
     "usersCanViewLogs"  : (N_("Logs available to users"), bool),
     "additionalLinks" : (N_("Additional links"), list),
+    "sectionNames" : (N_("Menu section names"), list),
 
 }
 

@@ -52,12 +52,18 @@ class OrphieBaseController(BaseController):
         c.boardlist = []
         sectionId = -1
         section = []
+
+        def sectionName(id):
+            sName = ''
+            if sectionId < len(g.sectionNames):
+                sName = g.sectionNames[id]
+            return sName
         for b in boards:
             if sectionId == -1:
                 sectionId = b.options.sectionId
                 section = []
             if sectionId != b.options.sectionId:
-                c.boardlist.append(section)
+                c.boardlist.append((section, sectionName(sectionId)))
                 sectionId = b.options.sectionId
                 section = []
             bc = empty()
@@ -65,7 +71,15 @@ class OrphieBaseController(BaseController):
             bc.comment = b.options.comment
             section.append(bc) #b.tag)
         if section:
-            c.boardlist.append(section)
+            c.boardlist.append((section, sectionName(sectionId)))
+        log.debug(c.boardlist)
+
+        c.sectionNames = []
+        for i in range(0, len(c.boardlist)):
+            if i < len(g.sectionNames):
+                c.sectionNames.append(g.sectionNames[i])
+            else:
+                c.sectionNames.append(None)
 
         #log.debug(request.cookies.get('fc',''))
         #log.debug(request.cookies)
@@ -73,12 +87,8 @@ class OrphieBaseController(BaseController):
         if sessCookie:
             response.set_cookie('fc', str(sessCookie), domain='.'+g.OPT.baseDomain)
 
-        c.menuLinks = []
-        linksstr = g.settingsMap['additionalLinks'].value
-        links = linksstr.split(',')
-        if links:
-            for link in links:
-                c.menuLinks.append(link.split('|'))
+        c.menuLinks = g.additionalLinks
+        c.sectionNames = g.sectionNames
 
         if self.userInst.Anonymous:
             anonCaptId = session.get('anonCaptId', False)

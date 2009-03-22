@@ -35,6 +35,12 @@
                                False
                               </option>
                         </select>
+                        %elif c.settingsDescription[g.settingsMap[s].name][1] == list:
+<textarea style="overflow-x: scroll; overflow-y: scroll;" rows="5" cols="25" name="${g.settingsMap[s].name}">
+%for line in g.settingsMap[s].value.split('|'):
+${line}
+%endfor
+</textarea>
                         %else:
                             <input type="text" name="${g.settingsMap[s].name}" size="35" value="${g.settingsMap[s].value}" />
                         %endif

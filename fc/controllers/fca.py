@@ -52,11 +52,14 @@ class FcaController(OrphieBaseController):
                     if settingsDescription[s][1] == int and not isNumber(val):
                         c.errorText = _("'%s' isn't correct number, but '%s' must be an integer number.") % (val, s)
                         return self.render('error')
+                    if settingsDescription[s][1] == list:
+                        valarr = filter(lambda l: l, re.split('\r+|\n+|\r+\n+', val))
+                        val = '|'.join(valarr)
                     if g.settingsMap[s].value != val:
                         toLog(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s, g.settingsMap[s].value, val))
                         Setting.getSetting(s).setValue(val)
                         g.settingsMap[s].value = val
-
+                    init_globals(config['pylons.app_globals'], False)
             c.message = _('Settings updated')
         return self.render('manageSettings')
 

@@ -87,7 +87,7 @@
         <tr id="trgetback">
             <td class="postblock">${_('Go to')}</td>
             <td>
-                <select name="goto" style="width: 220px;">
+                <select name="goto">
                     %for dest in c.destinations.keys():
                       <option value="${dest}"
                       %if dest == c.userInst.defaultGoto():

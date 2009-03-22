@@ -10,6 +10,8 @@ from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 
+from webhelpers.feedgenerator import Atom1Feed, Rss201rev2Feed
+
 log = logging.getLogger(__name__)
 
 class FcpController(OrphieBaseController):
@@ -245,3 +247,54 @@ class FcpController(OrphieBaseController):
 
                 oekaki.setPathsAndTime(savedOekakiPath, animPath, time)
         return ['ok']
+
+    def rss(self, watch, authid, uid, feedType):
+        if not self.currentUserIsAuthorized():
+            log.debug(uid)
+            user = User.getByUid(uid)
+            log.debug(user)
+            if not user or not int(authid) == user.authid():
+                redirect_to('/')
+
+        title = u''
+        descr = u'%s News Feed' % g.OPT.baseDomain
+        posts = []
+        if re.compile("^\d+$").match(watch):
+            watch = int(watch)
+            thePost = Post.getPost(watch)
+            if not thePost:
+                abort(404)
+            title = _(u"%s: thread #%d") % (g.settingsMap['title'].value, watch)
+            thread = Post.buildThreadFilter(user, thePost.id).first()
+            if not thread:
+                abort(404)
+            replies = thread.filterReplies().all()
+            posts = [thread]
+            if replies:
+                posts += replies
+        else:
+            title = _(u"%s: %s") % (g.settingsMap['title'].value, watch)
+            filter = Post.buildMetaboardFilter(watch, user)[0]
+            tpp = user.threadsPerPage()
+            posts = filter.order_by(Post.bumpDate.desc())[0 : tpp]
+
+        feed = None
+        args = dict(title=title,
+                link=h.url_for(),
+                description=descr,
+                language=u"en",
+                )
+
+        if feedType == 'rss':
+            feed = Rss201rev2Feed(**args)
+            response.content_type = 'application/rss+xml'
+        else:
+            feed = Atom1Feed(**args)
+            response.content_type = 'application/atom+xml'
+
+        for post in posts:
+            feed.add_item(title=_(u"#%d") % post.id,
+                          link=h.url_for('thread', post = post.id),
+                          description=post.message)
+
+        return feed.writeString('utf-8')

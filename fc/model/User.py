@@ -81,6 +81,9 @@ class User(object):
 
     def secid(self):
         return (2*self.uidNumber + 6) * (self.uidNumber + 5) * (self.uidNumber - 1)
+
+    def authid(self):
+        return (self.uidNumber + 10) * (2*self.uidNumber + 1) * (self.uidNumber + 1)
         #(2*x+3)*(x+10)*(x-1)=
 
     def ban(self, bantime, banreason, who = -1):

@@ -72,7 +72,6 @@ class OrphieBaseController(BaseController):
             section.append(bc) #b.tag)
         if section:
             c.boardlist.append((section, sectionName(sectionId)))
-        log.debug(c.boardlist)
 
         c.sectionNames = []
         for i in range(0, len(c.boardlist)):

@@ -1,4 +1,6 @@
 import pickle
+import random
+
 from fc.lib.base import *
 from fc.lib.miscUtils import *
 from fc.model import UserOptions
@@ -35,6 +37,9 @@ class FakeUser(object):
 
     def secid(self):
         return 0
+
+    def authid(self):
+        return random.randint(1000, 10000)
 
     def sessValue(self, name, value, default):
         if value != None:

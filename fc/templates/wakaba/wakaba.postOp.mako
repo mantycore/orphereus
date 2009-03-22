@@ -24,13 +24,9 @@
     target="_blank"
 %endif
 >
-%if thread.spoiler:
-    <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb" alt="Spoiler"/>
-%elif 'image' in thread.file.extension.type:
-    <img src="${g.OPT.filesPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />
-%else:
-    <img src="${g.OPT.staticPathWeb +  h.modLink(thread.file.thumpath, c.userInst.secid())}" width="${thread.file.thwidth}" height="${thread.file.thheight}" class="thumb"  alt="Preview" />
-%endif
+
+<%include file="wakaba.thumbnail.mako" args="post=thread" />
+
 </a>
 %elif thread.picid == -1:
     <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>

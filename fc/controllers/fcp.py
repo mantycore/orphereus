@@ -255,21 +255,30 @@ class FcpController(OrphieBaseController):
         if not self.currentUserIsAuthorized():
             user = User.getByUid(uid)
             if not user or not int(authid) == user.authid():
-                redirect_to('/')
+                return redirect_to('/')
+            # enable static files downloading
+            session['feedAuth'] = True
+            session.save()
+            self.setCookie()
         else:
             user = self.userInst
 
         title = u''
         descr = u'%s News Feed' % g.OPT.baseDomain
         posts = []
+        log.debug(watch)
         if re.compile("^\d+$").match(watch):
             watch = int(watch)
             thePost = Post.getPost(watch)
+            log.debug(thePost)
             if not thePost:
+                log.debug('1')
                 abort(404)
             title = _(u"%s: thread #%d") % (g.settingsMap['title'].value, watch)
             thread = Post.buildThreadFilter(user, thePost.id).first()
+            log.debug(thread)
             if not thread:
+                log.debug('2')
                 abort(404)
             replies = thread.filterReplies().all()
             posts = [thread]
@@ -296,8 +305,14 @@ class FcpController(OrphieBaseController):
             response.content_type = 'application/atom+xml'
 
         for post in posts:
+            parent = post.parentPost
+            if not parent:
+                parent = post
+            parent.enableShortMessages=False
+            descr = self.render('postReply', thread=parent, post = post)
+
             feed.add_item(title=_(u"#%d") % post.id,
                           link=h.url_for('thread', post = post.id),
-                          description=post.message)
+                          description=descr)
 
         return feed.writeString('utf-8')

@@ -41,10 +41,16 @@ class OrphieBaseController(BaseController):
                 if filterText(request.headers.get('User-Agent', '?')).startswith(ua):
                     self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest(), -1)
                     break
+
     def sessUid(self):
         if g.OPT.allowLogin:
             return session.get('uidNumber', -1)
         return -1
+
+    def setCookie(self):
+        sessCookie = request.cookies.get('fc', '')
+        if sessCookie:
+            response.set_cookie('fc', str(sessCookie), domain='.'+g.OPT.baseDomain)
 
     def initEnvironment(self):
         c.title = g.settingsMap['title'].value
@@ -82,9 +88,8 @@ class OrphieBaseController(BaseController):
 
         #log.debug(request.cookies.get('fc',''))
         #log.debug(request.cookies)
-        sessCookie = request.cookies.get('fc', '')
-        if sessCookie:
-            response.set_cookie('fc', str(sessCookie), domain='.'+g.OPT.baseDomain)
+
+        self.setCookie()
 
         c.menuLinks = g.additionalLinks
         c.sectionNames = g.sectionNames

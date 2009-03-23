@@ -37,7 +37,7 @@ class FcajaxController(OrphieBaseController):
                 parent = postInst
             #uncomment to disable folding for big posts
             #parent.enableShortMessages=False
-            return self.render('postReply', thread=parent, post = postInst)
+            return self.render('postReply', None, thread=parent, post = postInst)
         abort(404)
 
     def getRenderedReplies(self, thread):
@@ -48,7 +48,7 @@ class FcajaxController(OrphieBaseController):
                     if t.id in g.forbiddenTags:
                         abort(403)
             postInst.Replies = postInst.filterReplies().all()
-            return self.render('replies', thread=postInst)
+            return self.render('replies', None, thread=postInst)
         abort(404)
 
     def getRepliesCountForThread(self, post):

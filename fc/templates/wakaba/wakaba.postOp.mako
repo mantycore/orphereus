@@ -110,7 +110,7 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
         ${h.modMessage(thread.message, c.userInst, g.OPT.secureText)}
     %endif
     %if thread.messageInfo:
-        ${thread.messageInfo}
+        <div>${thread.messageInfo}</div>
     %endif
     %if thread.file and thread.file.animpath:
         [<a href="${h.url_for('viewAnimation', source=thread.id)}" target="_blank">${_('Animation')}</a>]

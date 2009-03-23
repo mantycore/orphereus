@@ -262,6 +262,7 @@ class FcpController(OrphieBaseController):
             self.setCookie()
         else:
             user = self.userInst
+        self.userInst = user
 
         title = u''
         descr = u'%s News Feed' % g.OPT.baseDomain
@@ -304,11 +305,22 @@ class FcpController(OrphieBaseController):
             if not parent:
                 parent = post
             parent.enableShortMessages=False
-            descr = self.render('postReply', thread=parent, post = post).decode('utf-8')
+
+            title=None
             if not post.parentPost:
-                descr = _(u"%s<br/><u><i>%s replies</i></u>") % (descr, post.replyCount)
-            feed.add_item(title=_(u"#%d") % post.id,
+                post.replies = post.replyCount
+                title = _(u"Thread #%d") % post.id
+            else:
+                post.replies = None
+                title = _(u"#%d") % post.id
+            descr = self.render('rssPost', 'std', thread=parent, post = post).decode('utf-8')
+
+            feed.add_item(title=title,
                           link=h.url_for('thread', post = post.id),
                           description=descr)
 
-        return feed.writeString('utf-8')
+        out = feed.writeString('utf-8')
+        #css = str(h.staticFile(g.OPT.styles[0] + ".css"))
+        #out = out.replace('<?xml version="1.0" encoding="utf-8"?>',
+        #                  '<?xml version="1.0" encoding="utf-8"?>\n<?xml-stylesheet type="text/css" href="%s"?>' % css)
+        return out

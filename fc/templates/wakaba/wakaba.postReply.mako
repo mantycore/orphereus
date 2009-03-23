@@ -85,7 +85,7 @@
             ${h.modMessage(post.message, c.userInst, g.OPT.secureText)}
         %endif
         %if post.messageInfo:
-            ${post.messageInfo}
+            <div>${post.messageInfo}</div>
         %endif
         %if post.file and post.file.animpath:
             [<a href="${h.url_for('viewAnimation', source=post.id)}" target="_blank">${_('Animation')}</a>]

@@ -21,6 +21,7 @@ from fc.lib.constantValues import *
 from fc.lib.fileHolder import AngryFileHolder
 from OrphieBaseController import OrphieBaseController
 from mutagen.easyid3 import EasyID3
+from urllib import quote_plus
 
 import logging
 log = logging.getLogger(__name__)
@@ -649,6 +650,27 @@ class FccController(OrphieBaseController):
             c.errorText = _("Posting is disabled")
             return self.render('error')
 
+        # VERY-VERY BIG CROCK OF SHIT !!!
+        # VERY-VERY BIG CROCK OF SHIT !!!
+        postMessage = filterText(request.POST.get('message', u''))
+        c.postMessage = postMessage
+        postMessage = postMessage.replace('&gt;','>') #XXX: TODO: this must be fixed in parser
+        # VERY-VERY BIG CROCK OF SHIT !!!
+        # VERY-VERY BIG CROCK OF SHIT !!!!
+
+        postTitle = filterText(request.POST.get('title', u''))
+        c.postTitle = postTitle
+
+        tagstr = request.POST.get('tags', False)
+        if tagstr:
+            c.postTagLine = filterText(tagstr)
+
+        response.set_cookie('orphie-postingCompleted', 'no')
+        response.set_cookie('orphie-lastPost', quote_plus(c.postMessage.encode('utf-8')))
+        response.set_cookie('orphie-lastTitle', quote_plus(c.postTitle.encode('utf-8')))
+        if tagstr:
+            response.set_cookie('orphie-lastTagLine', quote_plus(c.postTagLine))
+
         fileHolder = False
         postRemovemd5 = None
         if self.userInst.Anonymous:
@@ -683,7 +705,6 @@ class FccController(OrphieBaseController):
                 thread = thePost
             tags = thread.tags
         else:
-            tagstr = request.POST.get('tags', False)
             tags = Tag.stringToTagList(tagstr, g.OPT.allowTagCreation)
             if not tags:
                 c.errorText = _("You should specify at least one board")
@@ -745,12 +766,6 @@ class FccController(OrphieBaseController):
         else:
            file = request.POST.get('file', False)
 
-        # VERY-VERY BIG CROCK OF SHIT !!!
-        # VERY-VERY BIG CROCK OF SHIT !!!
-        postMessage = filterText(request.POST.get('message', u'')).replace('&gt;','>') #XXX: TODO: this must be fixed in parser
-        # VERY-VERY BIG CROCK OF SHIT !!!
-        # VERY-VERY BIG CROCK OF SHIT !!!!
-
         postMessageShort = None
         postMessageRaw = None
         if postMessage:
@@ -771,8 +786,6 @@ class FccController(OrphieBaseController):
            else:
                c.errorText = _('Message is too long')
                return self.render('error')
-
-        postTitle = filterText(request.POST.get('title', u''))
 
         fileDescriptors = self.processFile(file, options.thumbSize)
         fileHolder = False
@@ -862,4 +875,5 @@ class FccController(OrphieBaseController):
 
         if fileHolder:
             fileHolder.disableDeletion()
+        response.set_cookie('orphie-postingCompleted', 'yes')
         self.gotoDestination(post, postid)

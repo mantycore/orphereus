@@ -109,15 +109,17 @@ class OrphieBaseController(BaseController):
             c.remPass = remPassCookie
             response.set_cookie('orhpieRemPass', str(remPassCookie), max_age=3600)
 
-    def render(self, page, **options):
+    def render(self, page, tmplName = None, **options):
         tname = 'std'
         tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
         c.actuator = "actuators/%s/" % (g.OPT.actuator)
         c.actuatorTest = c.actuator
 
         try:
-            if self.userInst and not self.userInst.isBanned():
-                tname = self.userInst.template()
+            if not tmplName == 'std' and self.userInst and not self.userInst.isBanned():
+                tname = tmplName
+                if not tname:
+                    tname = self.userInst.template()
                 tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
                 c.actuatorTest = "%s/actuators/%s/" % (tname, g.OPT.actuator)
         except: #userInst not defined or user banned

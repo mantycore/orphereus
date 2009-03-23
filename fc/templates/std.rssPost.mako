@@ -9,6 +9,7 @@
     %endif
 
      ${h.modTime(post, c.userInst, g.OPT.secureTime)}
+     <a href="${h.url_for('thread', post=post.id)}">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
 
     &nbsp;
     %if post.file:

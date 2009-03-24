@@ -256,6 +256,8 @@ class FcpController(OrphieBaseController):
             user = User.getByUid(uid)
             if not user or not int(authid) == user.authid():
                 return redirect_to('/')
+            if user.isAdmin() and not checkAdminIP():
+                return redirect_to('/')
             # enable static files downloading
             session['feedAuth'] = True
             session.save()

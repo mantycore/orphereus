@@ -437,14 +437,17 @@ class FccController(OrphieBaseController):
 
         c.posts = []
         for p in posts:
+            parent = p
+            if p.parentid:
+                parent = p.parentPost
+
             pt = []
             pt.append(p)
-            if not p.parentPost:
+            if not p.parentid:
                 pt.append(p)
             else:
-               pt.append(p.parentPost)
+               pt.append(parent)
             c.posts.append(pt)
-            log.debug(pt)
 
         return self.render('search')
 

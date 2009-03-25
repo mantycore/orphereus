@@ -10,12 +10,12 @@
     <tr>
         <td class="list">
             %if g.OPT.allowOverview:
-            <div><a href="${h.url_for('boardBase', board='~')}" title="${_('Overview')}" target="board">${_('Overview')}</a></div>
+            <div><a href="${h.url_for('boardBase', board='~')}" title="/~/" target="board">${_('Overview')}</a></div>
             %endif
             %if not c.userInst.Anonymous:
-            <div><a href="${h.url_for('boardBase', board='@')}" title="${_('Related threads')}" target="board">${_('Related threads')}</a></div>
+            <div><a href="${h.url_for('boardBase', board='@')}" title="/@/" target="board">${_('Related threads')}</a></div>
             %endif
-            <div><a href="${h.url_for('boardBase', board='!')}" title="${_('Home')}" target="board">${_('Statistics')}</a></div>
+            <div><a href="${h.url_for('boardBase', board='!')}" title="/!/" target="board">${_('Statistics')}</a></div>
         </td>
     </tr>
 </tbody>
@@ -42,7 +42,7 @@
             <td class="list">
                 %for board in section[0]:
                     <div>
-                        <a href="${h.url_for('boardBase', board=board.tag)}" title="${board.comment}" target="board">
+                        <a href="${h.url_for('boardBase', board=board.tag)}" title="/${board.tag}/" target="board">
                             %if board.comment:
                                 ${board.comment}
                             %else:

@@ -36,10 +36,8 @@ class FccController(OrphieBaseController):
 
         c.currentURL = request.path_info.decode('utf-8', 'ignore')
 
-        log.debug(">>%s" %c.currentURL)
         if c.currentURL.endswith('/'):
             c.currentURL = c.currentURL[:-1]
-        log.debug(c.currentURL)
 
         if not self.currentUserIsAuthorized():
             return redirect_to(h.url_for('authorizeToUrl', url=c.currentURL))

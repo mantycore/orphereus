@@ -81,11 +81,7 @@
     <div><a href="${h.url_for('logout')}" target="_top" onclick="parent.top.list.location.reload(true);">${_('Logout')}</a></div>
     %else:
         %if g.OPT.allowLogin:
-            %if c.currentURL:
-                <div><a href="${h.url_for('authorizeToUrl', url=c.currentURL)}" target="board">${_('Login')}</a></div>
-            %else:
-                <div><a href="${h.url_for('authorize')}" target="board">${_('Login')}</a></div>
-            %endif
+            <div><a href="${h.url_for('authorizeToUrl', url='!')}" target="board">${_('Login')}</a></div>
         %endif
         <div><a href="${h.url_for('logout')}" target="_top">${_('Kill session')}</a></div>
     %if g.OPT.allowRegistration:

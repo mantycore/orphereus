@@ -6,7 +6,7 @@ settingsDef = {
     "invisibleBump" : u'true',
     "maxTagsCount"  : u'5',
     "maxTagLen"     : u'6',
-    "disabledTags"  : u'logout|authorize|register|youAreBanned|userProfile|holySynod',
+    "disabledTags"  : u'logout|authorize|register|youAreBanned|userProfile|holySynod|frameMenu|!',
     "adminOnlyTags" : u'synod|logs',
     "maxLinesInPost": u'15',
     "cutSymbols"    : u'5000',

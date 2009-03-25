@@ -11,6 +11,6 @@
             <p><input name="captcha" size="32" style="text-align: center" /></p>
             <p><input name="captid" type="hidden" value="${c.captcha.id}" /></p>
         %endif
-    <p><input type="submit" value="${_('OK')}" /></p>
+    <p><input type="submit" value="${_('OK')}"/></p>
   </form>
 </div>

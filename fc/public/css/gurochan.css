@@ -331,7 +331,7 @@ div a.show-hide-thread:hover {
 }
 
 .logline {background: #DDDDDD;}
-.nomargin{margin: 0; padding: 0 0 0 20px;} 
+.nomargin{margin: 0; padding: 0 0 0 20px;}
 .smallFont{font-size: 70%;}
 
 .hovblock
@@ -482,6 +482,40 @@ vertical-align: baseline;
 
 a img{ border: 0}
 
+.category {
+        font-family: sans-serif;
+        font-size: small;
+        margin-bottom: 8px;
+        background: #013947;
+}
+
+.header {
+        background: #013947;
+        color: #FFFFFF;
+        padding: 0px 3px 0px 3px;
+        font-weight: bold;
+        border-left: 1px solid #000000;
+        border-right: 1px solid #000000;
+        border-top: 1px solid #000000;
+}
+
+
+.list {
+        border-left: 1px solid #000000;
+        border-right: 1px solid #000000;
+        border-bottom: 1px solid #000000;
+}
+
+.list div a {
+        display: block;
+        text-decoration: none;
+        color: #D4D7A9;
+        padding: 0px 3px 0px 3px;
+}
+
+.list div a:hover {
+        color: #F4F7C9;
+}
 /*
 #x_replyform {
   display: block; border: 1px solid #CA927B; margin: 0 2px 2px 2px; padding: 5px;

@@ -78,7 +78,7 @@
     %endif
 
     %if not c.userInst.Anonymous:
-    <div><a href="${h.url_for('logout')}" target="_top">${_('Logout')}</a></div>
+    <div><a href="${h.url_for('logout')}" target="_top" onclick="parent.top.list.location.reload(true);">${_('Logout')}</a></div>
     %else:
         %if g.OPT.allowLogin:
             %if c.currentURL:
@@ -89,7 +89,7 @@
         %endif
         <div><a href="${h.url_for('logout')}" target="_top">${_('Kill session')}</a></div>
     %if g.OPT.allowRegistration:
-    <div><a href="${h.url_for('register', invite='register')}" target="board">${_('Register')}</a></div>
+    <div><a href="${h.url_for('register', invite='register')}" target="board" onclick="parent.top.list.location.reload(true);">${_('Register')}</a></div>
     %endif
     %endif
         </td>

@@ -319,7 +319,7 @@ div a.show-hide-thread:hover {
 }
 
 .logline {background: #DDDDDD;}
-.nomargin{margin: 0; padding: 0 0 0 20px;} 
+.nomargin{margin: 0; padding: 0 0 0 20px;}
 .smallFont{font-size: 70%;}
 
 .hovblock
@@ -470,6 +470,39 @@ vertical-align: baseline;
 }
 
 a img{ border: 0}
+
+.category {
+        font-family: sans-serif;
+        font-size: small;
+        margin-bottom: 8px;
+        background: #F0E0D6;
+}
+
+.header {
+        background: #EEAA88;
+        color: #800000;
+        padding: 0px 3px 0px 3px;
+        font-weight: bold;
+}
+
+
+.list {
+        border-left: 1px solid #F0E0D6;
+        border-right: 1px solid #F0E0D6;
+        border-bottom: 1px solid #F0E0D6;
+}
+
+.list div a {
+        display: block;
+        text-decoration: none;
+        color: #800000;
+        padding: 0px 3px 0px 3px;
+}
+
+.list div a:hover {
+        background: #FFFFEE;
+}
+
 
 /*
 #x_replyform {

@@ -48,7 +48,7 @@
 
 [<a target="_blank" href="${h.url_for('static', page='donate')}">Donate</a>]
 %if not c.userInst.Anonymous:
-[<a href="${h.url_for('logout')}">${_('Logout')}</a>]
+[<a href="${h.url_for('logout')}" target="_top" onclick="parent.top.list.location.reload(true);">${_('Logout')}</a>]
 %else:
     %if g.OPT.allowLogin:
         %if c.currentURL:
@@ -57,7 +57,7 @@
             [<a href="${h.url_for('authorize')}">${_('Login')}</a>]
         %endif
     %endif
-    [<a href="${h.url_for('logout')}">${_('Kill session')}</a>]
+    [<a href="${h.url_for('logout')}" target="_top" onclick="parent.top.list.location.reload(true);">${_('Kill session')}</a>]
 %if g.OPT.allowRegistration:
 [<a href="${h.url_for('register', invite='register')}">${_('Register')}</a>]
 %endif

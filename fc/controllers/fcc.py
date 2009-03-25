@@ -36,8 +36,10 @@ class FccController(OrphieBaseController):
 
         c.currentURL = request.path_info.decode('utf-8', 'ignore')
 
-        if c.currentURL == u'/':
-            c.currentURL = u''
+        log.debug(">>%s" %c.currentURL)
+        if c.currentURL.endswith('/'):
+            c.currentURL = c.currentURL[:-1]
+        log.debug(c.currentURL)
 
         if not self.currentUserIsAuthorized():
             return redirect_to(h.url_for('authorizeToUrl', url=c.currentURL))
@@ -173,6 +175,12 @@ class FccController(OrphieBaseController):
 
 
     def GetBoard(self, board, tempid, page=0):
+        if board == None:
+            if g.OPT.framedMain:
+                return self.render('frameMain')
+            else:
+                board = '!'
+
         if board == '!':
             if g.OPT.devMode:
                 ct = time.time()
@@ -216,8 +224,6 @@ class FccController(OrphieBaseController):
             if g.OPT.devMode:
                 c.log.append("home: " + str(time.time() - ct))
             return self.render('home')
-        if board == None:
-            return self.render('frameMain')
 
         board = filterText(board)
         if not g.OPT.allowOverview and '~' in board:

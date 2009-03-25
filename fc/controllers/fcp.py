@@ -60,7 +60,7 @@ class FcpController(OrphieBaseController):
         if url:
             c.currentURL = u'/%s' % url #.encode('utf-8')
         else:
-            c.currentURL = u''
+            c.currentURL = u'!'
 
         if not g.OPT.allowLogin:
             c.boardName = _('Error')

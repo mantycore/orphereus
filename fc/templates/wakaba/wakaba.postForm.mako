@@ -89,20 +89,22 @@
             <td>
                 <select name="goto">
                     %for dest in c.destinations.keys():
-                      <option value="${dest}"
-                      %if dest == c.userInst.defaultGoto():
-                        selected="selected"
+                      %if dest != 3 or g.OPT.allowOverview:
+                          <option value="${dest}"
+                          %if dest == c.userInst.defaultGoto():
+                            selected="selected"
+                          %endif
+                          >
+                          ${_(c.destinations[dest])}
+                          %if dest == 1 or dest == 2:
+                            (${c.tagLine}
+                            %if dest == 2:
+                              /page/${c.curPage}
+                            %endif
+                            )
+                          %endif
+                          </option>
                       %endif
-                      >
-                      ${_(c.destinations[dest])}
-                      %if dest == 1 or dest == 2:
-                        (${c.tagLine}
-                        %if dest == 2:
-                          /page/${c.curPage}
-                        %endif
-                        )
-                      %endif
-                      </option>
                     %endfor
                 </select>
             </td>

@@ -56,6 +56,9 @@ core.statsCacheTime = 180
 core.permissiveFileSizeConjunction = true
 core.boardWideProoflabels = true
 core.allowFeeds = true
+core.allowOverview = true
+core.framedMain = true
+core.defaultFrame = /!/
 
 # Board defaults
 defaults.thumbSize = 200

@@ -95,13 +95,15 @@
                     <td>
                     <select name="defaultGoto" style="width: 170px;">
                             %for dest in c.destinations.keys():
-                               <option value="${dest}"
-                                 %if dest == c.userInst.defaultGoto():
-                                    selected="selected"
-                                 %endif
-                               >
+                               %if dest != 3 or g.OPT.allowOverview:
+                                   <option value="${dest}"
+                                     %if dest == c.userInst.defaultGoto():
+                                        selected="selected"
+                                     %endif
+                                   >
 
-                              ${_(c.destinations[dest])}</option>
+                                  ${_(c.destinations[dest])}</option>
+                               %endif
                             %endfor
                     </select>
                     </td>

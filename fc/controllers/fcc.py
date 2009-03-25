@@ -111,13 +111,18 @@ class FccController(OrphieBaseController):
             c.boardName = currentBoard.options and currentBoard.options.comment or (u"/%s/" % currentBoard.tag)
             c.tagLine   = currentBoard.tag
         elif not tagList and tags:
-            names = []
-            rawNames = []
-            for t in tags:
-                names.append(t.options and t.options.comment or (u"/%s/" % t.tag))
-                rawNames.append(t.tag)
-            c.boardName = " + ".join(names)
-            c.tagLine ="+".join(rawNames)
+            tagDescr = Post.tagLine(tags)
+            c.boardName = tagDescr[1]
+            c.tagLine = tagDescr[0]
+            """
+                names = []
+                rawNames = []
+                for t in tags:
+                    names.append(t.options and t.options.comment or (u"/%s/" % t.tag))
+                    rawNames.append(t.tag)
+                c.boardName = " + ".join(names)
+                c.tagLine ="+".join(rawNames)
+            """
         else:
             c.boardName = board
             c.tagLine = c.boardName
@@ -208,6 +213,9 @@ class FccController(OrphieBaseController):
             return self.render('home')
 
         board = filterText(board)
+        if not g.OPT.allowOverview and '~' in board:
+            c.errorText = _("Overview is disabled.")
+            return self.render('error')
         c.PostAction = board
 
         if isNumber(page):
@@ -237,7 +245,12 @@ class FccController(OrphieBaseController):
         return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
 
     def gotoDestination(self, post, postid):
-        tagLine = request.POST.get('tagLine', '~')
+        taglineSource = post
+        if post.parentid:
+            taglineSource = post.parentPost
+        postTagline = Post.tagLine(taglineSource.tags)[0]
+
+        tagLine = request.POST.get('tagLine', postTagline)
 
         dest = int(request.POST.get('goto', 0))
         if isNumber(dest):
@@ -252,16 +265,9 @@ class FccController(OrphieBaseController):
             curPage = 0
 
         ##log.debug('%s %s %s' % (tagLine, str(dest), str(curPage)))
-        redirectAddr = h.url_for('boardBase', board='~') #'~'
+        redirectAddr = h.url_for('boardBase', board=g.OPT.allowOverview and '~' or postTagline)
 
         if dest == 4: # destination board
-            taglineSource = post
-            if post.parentid:
-                taglineSource = post.parentPost
-            tags = []
-            for tag in taglineSource.tags:
-                tags.append(tag.tag)
-            postTagline = "+".join(tags)
             redirectAddr = h.url_for('boardBase', board=postTagline) #'%s/' % (postTagline)
 
         if dest == 0: #current thread
@@ -279,7 +285,7 @@ class FccController(OrphieBaseController):
         elif dest == 5: #referrer
             return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')))
 
-        return redirect_to(redirectAddr) #str('/%s' % redirectAddr.encode('utf-8')))
+        return redirect_to(redirectAddr)
 
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
@@ -382,12 +388,9 @@ class FccController(OrphieBaseController):
                     res = post.deletePost(self.userInst, fileonly, True, reason, remPass)
                 opPostDeleted = opPostDeleted or res
 
-        tagLine = request.POST.get('tagLine', False)
+        tagLine = request.POST.get('tagLine', g.OPT.allowOverview and '~' or '!')
         if opPostDeleted:
-            if tagLine:
-                redirectAddr = tagLine
-            else:
-                redirectAddr = '~'
+            redirectAddr = tagLine
 
         return redirect_to(h.url_for('boardBase', board=redirectAddr))
         #str('/%s' % redirectAddr.encode('utf-8'))

@@ -27,7 +27,7 @@ PWA: ${c.prevWeekMessages}
 <br/>
 ADW: <span style="color: ${c.lastWeekMessages / (c.prevWeekMessages + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.lastWeekMessages / (c.prevWeekMessages + 0.01))}</span>
 
-%if g.OPT.interestingNumbers:
+%if g.OPT.interestingNumbers and not c.userInst.Anonymous:
 <br/><br/>
 SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPostsCount)}
 %endif

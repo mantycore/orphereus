@@ -47,6 +47,9 @@ class OptHolder(object):
         self.statsCacheTime = int(config['core.statsCacheTime'])
         self.boardWideProoflabels = (config['core.boardWideProoflabels'] == 'true')
         self.allowFeeds = (config['core.allowFeeds'] == 'true')
+        self.allowOverview = (config['core.allowOverview'] == 'true')
+        self.framedMain = (config['core.framedMain'] == 'true')
+        self.defaultFrame = (config['core.defaultFrame'])
 
         self.permissiveFileSizeConjunction = (config['core.permissiveFileSizeConjunction'] == 'true')
         #default board settings

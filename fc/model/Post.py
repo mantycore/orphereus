@@ -109,6 +109,15 @@ class Post(object):
                     break
         return self.smCached
 
+    @staticmethod
+    def tagLine(tags):
+        names = []
+        rawNames = []
+        for t in tags:
+            names.append(t.options and t.options.comment or (u"/%s/" % t.tag))
+            rawNames.append(t.tag)
+        return ("+".join(rawNames), " + ".join(names))
+
     def getExactReplyCount(self):
         if self.parentPost:
             return False

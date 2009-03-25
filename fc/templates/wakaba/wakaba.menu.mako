@@ -1,6 +1,8 @@
 <div class="adminbar">
     [
+    %if g.OPT.allowOverview:
     <a href="${h.url_for('boardBase', board='~')}" title="${_('Overview')}">/~/</a>
+    %endif
     %if not c.userInst.Anonymous:
     <a href="${h.url_for('boardBase', board='@')}" title="${_('Related threads')}">/@/</a>
     %endif

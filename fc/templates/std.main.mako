@@ -7,6 +7,7 @@
         <meta name="robots" content="noarchive" />
         <link rel="stylesheet" type="text/css" href="${h.staticFile("std_gray.css")}" title="Anoma std::" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     </head>
     <body>
         <%include file="std.logo.mako" />

@@ -63,6 +63,11 @@ class FccController(OrphieBaseController):
         else:
             return redirect_to('/')
 
+    def frameMenu(self):
+        c.disableMenu = True
+        c.disableFooter = True
+        return self.render('frameMenu')
+
     def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
         if not g.OPT.allowTagCreation:
             for tag in tagList:
@@ -211,6 +216,8 @@ class FccController(OrphieBaseController):
             if g.OPT.devMode:
                 c.log.append("home: " + str(time.time() - ct))
             return self.render('home')
+        if board == None:
+            return self.render('frameMain')
 
         board = filterText(board)
         if not g.OPT.allowOverview and '~' in board:

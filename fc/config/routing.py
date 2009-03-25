@@ -19,7 +19,9 @@ def make_map():
 
     # CUSTOM ROUTES HERE
     # debug route
-    if config['core.devMode'] == 'true':
+    framedMain = config['pylons.app_globals'].OPT.framedMain
+    devMode = config['pylons.app_globals'].OPT.devMode
+    if devMode:
         map.connect('/uaInfo', controller='fcp', action='uaInfo')
 
     # Special routes
@@ -32,6 +34,7 @@ def make_map():
     map.connect('static', '/static/:page', controller='fcc', action='showStatic', page = 'Rules')
     map.connect('searchBase', '/search/:text', controller='fcc', action='search', text='', page=0, requirements=dict(page='\d+'))
     map.connect('search', '/search/:text/page/:page', controller='fcc', action='search', requirements=dict(page='\d+'))
+    map.connect('frameMenu', '/frameMenu', controller='fcc', action='frameMenu')
 
     # Users subsystem
     map.connect('userProfile', '/userProfile', controller='fcc', action='showProfile')
@@ -88,7 +91,7 @@ def make_map():
     map.connect('feed', '/:watch/feed/auth/:authid/:uid.:feedType', controller='fcp', action='rss', requirements=dict(authid='\d+'))
 
     # Generic filter
-    map.connect('boardBase', '/:board/:tempid', controller='fcc', action='GetBoard', board = '!', tempid=0, page=0, requirements=dict(tempid='\d+'))
+    map.connect('boardBase', '/:board/:tempid', controller='fcc', action='GetBoard', board = not framedMain and '!' or None, tempid=0, page=0, requirements=dict(tempid='\d+'))
     map.connect('board', '/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, requirements=dict(page='\d+'))
 
     # traps for bots

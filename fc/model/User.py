@@ -229,6 +229,11 @@ class User(object):
             self.options.maxExpandHeight = value
         return self.options.maxExpandHeight
 
+    def useTitleCollapse(self, value = None):
+        if value != None:
+            self.options.useTitleCollapse = value
+        return self.options.useTitleCollapse
+
     def optionsDump(self):
         return UserOptions.optionsDump(self.options)
 

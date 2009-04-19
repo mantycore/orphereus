@@ -312,6 +312,7 @@ class FccController(OrphieBaseController):
             self.userInst.useAjax(bool(request.POST.get('useAjax', False)))
             self.userInst.expandImages(request.POST.get('expandImages', False))
             self.userInst.mixOldThreads(bool(request.POST.get('mixOldThreads', False)))
+            self.userInst.useTitleCollapse(bool(request.POST.get('useTitleCollapse', False)))
             self.userInst.oekUseSelfy(bool(request.POST.get('oekUseSelfy', False)))
             self.userInst.oekUseAnim(bool(request.POST.get('oekUseAnim', False)))
             self.userInst.oekUsePro(bool(request.POST.get('oekUsePro', False)))

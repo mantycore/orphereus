@@ -96,6 +96,9 @@ class FakeUser(object):
     def maxExpandHeight(self, value = None):
         return self.sessValue('maxExpandHeight', value, self.__user.options.maxExpandHeight)
 
+    def useTitleCollapse(self, value = None):
+        return self.sessValue('useTitleCollapse',  value, self.__user.options.useTitleCollapse)
+
     def homeExclude(self, value = None):
         return self.sessPickleValue('homeExclude',  value, self.__user.options.homeExclude)
 

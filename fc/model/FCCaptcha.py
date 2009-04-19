@@ -1,4 +1,4 @@
-import sqlalchemy as sa
+﻿import sqlalchemy as sa
 from sqlalchemy import orm
 
 from fc.model import meta
@@ -94,11 +94,9 @@ class Captcha(object):
 
         out = ""
         if captcha and captcha.content:
-            out = captcha.content
-        else:
-            text = "Wrong ID"
-            if captcha:
-                text = captcha.text
+            return captcha.content
+        elif captcha:
+            text = captcha.text
 
             size = (150, 40)
             cgen = CaptchaGenerator(text, font)
@@ -111,8 +109,9 @@ class Captcha(object):
                 captcha.content = pic
                 meta.Session.commit()
             out = pic
-
-        return str(out)
+            return str(out)
+        else:
+            return "Wrong ID"
 
     """
         pw = 300

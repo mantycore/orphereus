@@ -5,16 +5,18 @@
     <hr/>
 %endif
 
+<div class="theader">
 <a onclick="javascript: adiv = document.getElementById('newThreadPlaceholder');
 if (adiv.style.display=='none') adiv.style.display = 'block'; else adiv.style.display = 'none'; ">
 %if not c.board:
-    <div class="theader">${_('Reply')}</div>
+    ${_('Reply')}
 %else:
-    <div class="theader">${_('New thread')}</div>
+    ${_('New thread')}
 %endif
 </a>
+</div>
 
-<div id="newThreadPlaceholder" style="display:none">
+<div id="newThreadPlaceholder" ${c.userInst.useTitleCollapse() and 'style="display:none"' or ""}>
 <div class="postarea" id="postFormDiv">
 
 <table>
@@ -151,15 +153,15 @@ if (adiv.style.display=='none') adiv.style.display = 'block'; else adiv.style.di
     <%include file="${c.actuator+'wakaba.postFormAdv.mako'}" />
 %endif
 
-<a onclick="javascript: adiv = document.getElementById('boardInfo');
+<div><a onclick="javascript: adiv = document.getElementById('boardInfo');
 if (adiv.style.display=='none') adiv.style.display = 'block'; else adiv.style.display = 'none'; ">
-<div><b>${_('Board settings')}
+<b>${_('Board settings')}
 %if c.tagLine:
 <i>(${c.tagLine})</i>
 %endif
 </b>
-</div>
 </a>
+</div>
 <div class="smallFont" id="boardInfo" style="display:none">
 <ul class="nomargin">
 <li>${_('Minimum picture size')}: ${c.boardOptions.minPicSize}&#215;${c.boardOptions.minPicSize}</li>

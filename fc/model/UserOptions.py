@@ -29,6 +29,7 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("maxExpandWidth", sa.types.Integer, nullable=True, server_default='1024'),
     sa.Column("maxExpandHeight", sa.types.Integer, nullable=True, server_default='768'),
     sa.Column("mixOldThreads", sa.types.Boolean, nullable=True),
+    sa.Column("useTitleCollapse", sa.types.Boolean, nullable=True),
     sa.Column("defaultGoto", sa.types.Integer, nullable=True),
     sa.Column("oekUseSelfy", sa.types.Boolean, nullable=True, server_default='0'),
     sa.Column("oekUseAnim", sa.types.Boolean, nullable=True, server_default='0'),
@@ -75,6 +76,7 @@ class UserOptions(object):
         optionsObject.oekUsePro = False
         optionsObject.maxExpandWidth = 1024
         optionsObject.maxExpandHeight = 768
+        optionsObject.useTitleCollapse = False
         optionsObject.homeExclude = pickle.dumps([])
         optionsObject.hideThreads = pickle.dumps([])
         optionsObject.canDeleteAllPosts = False
@@ -86,3 +88,4 @@ class UserOptions(object):
         optionsObject.canManageExtensions = False
         optionsObject.canManageMappings = False
         optionsObject.canRunMaintenance = False
+        

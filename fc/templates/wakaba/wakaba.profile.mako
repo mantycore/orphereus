@@ -75,6 +75,10 @@
                     <td><input type="checkbox" name="expandImages" ${c.userInst.expandImages() and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Use initial title shrinking')}</td>
+                    <td><input type="checkbox" name="useTitleCollapse" ${c.userInst.useTitleCollapse() and 'checked="checked"' or ""} /></td>
+                </tr>
+                <tr>
                     <td class="postblock">${_('Max size to expand')}
                     <div style="font-size: 60%; font-style:italic;">(Stricter condition will be used)</div>
                     </td>

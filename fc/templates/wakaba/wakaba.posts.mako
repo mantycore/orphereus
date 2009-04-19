@@ -70,7 +70,7 @@
     <div class="y_replyform_fields">
         <p id="y_replyform_captcha">
             <label for="y_replyform_captcha_field">
-                <img width="150" height="40" alt="Captcha" src="${g.OPT.staticPathWeb}images/loading.gif" />
+                <img width="150" height="40" alt="Captcha" src="${g.OPT.staticPathWeb}images/loading.gif"  onclick="update_captcha(this)"/>
             </label>
             <input type="text" size="35" name="captcha" id="y_replyform_captcha_field" class="inactive" value="Captcha required" title="Captcha text" tabindex="20"/>
             <input type="password" value="risiku" size="35" name="remPass" id="y_replyform_password" title="You can use this password to remove posts"/>

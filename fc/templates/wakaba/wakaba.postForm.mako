@@ -148,12 +148,16 @@
     <%include file="${c.actuator+'wakaba.postFormAdv.mako'}" />
 %endif
 
-<div class="smallFont">
-<b>${_('On this board')}
+<a onclick="javascript: adiv = document.getElementById('boardInfo');
+if (adiv.style.display=='none') adiv.style.display = 'block'; else adiv.style.display = 'none'; ">
+<div><b>${_('Board settings')}
 %if c.tagLine:
 <i>(${c.tagLine})</i>
 %endif
-:</b>
+</b>
+</div>
+</a>
+<div class="smallFont" id="boardInfo" style="display:none">
 <ul class="nomargin">
 <li>${_('Minimum picture size')}: ${c.boardOptions.minPicSize}&#215;${c.boardOptions.minPicSize}</li>
 <li>${_('Maximum file size')}: ${'%.2f' % (c.boardOptions.maxFileSize / 1024.0)} ${_('Kbytes')}</li>
@@ -176,6 +180,7 @@ ${g.OPT.enableFinalAnonymity and not g.OPT.hlAnonymizedPosts and _('(without mar
 <li><a href="${h.url_for('static', page='markup')}" target="_blank">${_('Markup and features')}</a></li>
 </ul>
 </div>
+<br />
 %if c.boardOptions.rulesList:
 ${_('Board-specific rules:')}
 <ul class="nomargin">

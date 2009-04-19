@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from fc.lib.base import *
 from fc.model import *
 from sqlalchemy.orm import eagerload
@@ -630,7 +630,9 @@ class FccController(OrphieBaseController):
            thumbFilePath = False
            localThumbPath = False
            try:
+               log.debug('Testing: %s' %extParams.type)
                if not extParams.type in ('image', 'image-jpg'):
+                 log.debug('Not an image')
                  thumbFilePath = extParams.path
                  picInfo.sizes = [None, None, extParams.thwidth, extParams.thheight]
                elif extParams.type == 'image':
@@ -823,21 +825,22 @@ class FccController(OrphieBaseController):
 
             try:
                 audio = EasyID3(picInfo.localFilePath)
-                trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
                 taglist = sorted(audio.keys())
                 taglist.reverse()
                 tagsToShow = taglist
-                for tag in tagsToShow:
-                    #log.debug(tag)
-                    #log.debug(audio[tag])
-                    value = audio[tag]
-                    if value and isinstance(value, list) and tag in id3FieldsNames.keys():
-                        value = ' '.join(value)
-                        trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
-                if not postMessageInfo:
-                    postMessageInfo = trackInfo
-                else:
-                    postMessageInfo += '<br/>%s' % trackInfo
+                if tagsToShow:
+                    trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
+                    for tag in tagsToShow:
+                        #log.debug(tag)
+                        #log.debug(audio[tag])
+                        value = audio[tag]
+                        if value and isinstance(value, list) and tag in id3FieldsNames.keys():
+                            value = ' '.join(value)
+                            trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
+                    if not postMessageInfo:
+                        postMessageInfo = trackInfo
+                    else:
+                        postMessageInfo += '<br/>%s' % trackInfo
             except:
                 pass
 

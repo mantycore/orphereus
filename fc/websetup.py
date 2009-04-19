@@ -1,4 +1,4 @@
-"""Setup the FC application"""
+﻿"""Setup the FC application"""
 import logging
 
 from paste.deploy import appconfig
@@ -55,8 +55,8 @@ def setup_config(command, filename, section, vars):
         Extension.create('png', True, True, 'image', '', 0, 0)
         Extension.create('zip', True, True, 'archive', '../generic/archive.png', 0, 0)
         Extension.create('7z', True, True, 'archive', '../generic/archive.png', 0, 0)
-        Extension.create('mp3', True, True, 'image', '../generic/sound.png', 0, 0)
-        Extension.create('ogg', True, True, 'image', '../generic/sound.png', 0, 0)
+        Extension.create('mp3', True, True, 'music', '../generic/sound.png', 128, 128)
+        Extension.create('ogg', True, True, 'music', '../generic/sound.png', 128, 128)
 
     try:
         tc = meta.Session.query(Tag).count()

@@ -115,7 +115,7 @@ class FcmController(OrphieBaseController):
         mtnLog = []
         mtnLog.append(self.createLogEntry('Task', 'Doing integrity checks...'))
 
-        mtnLog.append(self.createLogEntry('Task', 'Cheking for orphaned database entries...'))
+        mtnLog.append(self.createLogEntry('Task', 'Checking for orphaned database entries...'))
 
         mtnLog.append(self.createLogEntry('Task', 'User options...'))
         userOpts = meta.Session.query(UserOptions).all()
@@ -160,7 +160,7 @@ class FcmController(OrphieBaseController):
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', u'Orpaned database entries check completed'))
 
-        mtnLog.append(self.createLogEntry('Task', u'Cheking for orphaned files...'))
+        mtnLog.append(self.createLogEntry('Task', u'Checking for orphaned files...'))
 
 
         junkPath= os.path.join(g.OPT.uploadPath, 'junk')

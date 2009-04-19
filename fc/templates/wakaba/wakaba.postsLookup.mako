@@ -13,7 +13,7 @@
 
 
 <a href="${h.postUrl(post.parentid, post.id)}">&gt;&gt;${post.id}</a>
-%if post.parentPost:
+%if not(post.parentPost):
     <b>[op]</b>
 %endif
 

@@ -630,9 +630,9 @@ class FccController(OrphieBaseController):
            thumbFilePath = False
            localThumbPath = False
            try:
-               log.debug('Testing: %s' %extParams.type)
+               #log.debug('Testing: %s' %extParams.type)
                if not extParams.type in ('image', 'image-jpg'):
-                 log.debug('Not an image')
+                 # log.debug('Not an image')
                  thumbFilePath = extParams.path
                  picInfo.sizes = [None, None, extParams.thwidth, extParams.thheight]
                elif extParams.type == 'image':

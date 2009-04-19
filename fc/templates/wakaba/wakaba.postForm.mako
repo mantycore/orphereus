@@ -5,13 +5,16 @@
     <hr/>
 %endif
 
+<a onclick="javascript: adiv = document.getElementById('newThreadPlaceholder');
+if (adiv.style.display=='none') adiv.style.display = 'block'; else adiv.style.display = 'none'; ">
 %if not c.board:
     <div class="theader">${_('Reply')}</div>
 %else:
     <div class="theader">${_('New thread')}</div>
 %endif
+</a>
 
-<div id="newThreadPlaceholder">
+<div id="newThreadPlaceholder" style="display:none">
 <div class="postarea" id="postFormDiv">
 
 <table>
@@ -63,7 +66,7 @@
             <tr id="trcaptcha">
                 <td class="postblock">${_('Captcha')}</td>
                 <td>
-                    <img src="${h.url_for('captcha', cid=c.captcha.id)}" alt="Captcha"/><br/>
+                    <img src="${h.url_for('captcha', cid=c.captcha.id)}" alt="Captcha" onclick="update_captcha(this)"/><br/>
                     <input type="text" name="captcha" size="35"/>
                 </td>
             </tr>

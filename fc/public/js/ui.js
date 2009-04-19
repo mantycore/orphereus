@@ -1,3 +1,7 @@
+﻿function update_captcha(e) {
+    e.src = e.src.replace(/[0-9]*$/, Math.floor(Math.random() * 9000).toString());
+    }
+
 function click_expands(options){
   var default_options = {max_width: 800, max_height: 600}
   if(!options) options = default_options

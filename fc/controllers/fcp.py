@@ -1,4 +1,4 @@
-import logging
+﻿import logging
 
 from fc.lib.base import *
 from fc.model import *
@@ -51,7 +51,18 @@ class FcpController(OrphieBaseController):
         redirect_to('/')
 
     def captchaPic(self, cid):
+        sessionCid = None
+        if session.has_key('anonCaptId'):
+            sessionCid = session['anonCaptId']
         pic = Captcha.picture(cid, g.OPT.captchaFont)
+        if sessionCid:
+            if (str(cid) != str(sessionCid)):
+               redirect_to(h.url_for('captcha', cid=sessionCid))
+            elif ("Wrong ID"==pic):
+               newCaptcha = Captcha.create()
+               session['anonCaptId'] = newCaptcha.id
+               session.save()
+               redirect_to(h.url_for('captcha', cid=newCaptcha.id))
         response.headers['Content-Length'] = len(pic)
         response.headers['Content-Type'] = 'image/png'
         return str(pic)

@@ -85,7 +85,7 @@ class FcpController(OrphieBaseController):
         captcha = False
 
         if tracker.attempts >= 2:
-            if session and session['anonCaptId']:
+            if session and session.has_key('anonCaptId'):
                 anonCapt = Captcha.getCaptcha(session['anonCaptId'])
                 if tracker.cid and (str(tracker.cid)!=str(anonCapt.id)):
                      trackerCapt = Captcha.getCaptcha(tracker.cid)

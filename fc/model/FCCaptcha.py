@@ -67,7 +67,7 @@ class Captcha(object):
         #log.debug("self:" + self.text)
         #log.debug(str(self) +  "  " + str(self.id))
         if not ret or (ret and not removeOnlyIncorrect):
-            log.debug("del")
+            #log.debug("del")
             meta.Session.delete(self)
             meta.Session.commit()
         return ret
@@ -77,7 +77,7 @@ class Captcha(object):
         captcha = Captcha(randomStr())
         meta.Session.add(captcha)
         meta.Session.commit()
-        log.debug("created " + str(captcha.id))
+        #log.debug("created " + str(captcha.id))
         return captcha
 
     @staticmethod
@@ -90,15 +90,12 @@ class Captcha(object):
 
     @staticmethod
     def picture(cid, font):
-        log.debug('C: Requested #%s' %cid)
         captcha = Captcha.query.filter(Captcha.id==cid).first()
 
         out = ""
         if captcha and captcha.content:
-            log.debug('C: Exists, generated')
             return captcha.content
         elif captcha:
-            log.debug('C: Exists, not generated')
             text = captcha.text
 
             size = (150, 40)
@@ -112,10 +109,8 @@ class Captcha(object):
                 captcha.content = pic
                 meta.Session.commit()
             out = pic
-            log.debug('C: Done.')
             return str(out)
         else:
-            log.debug('C: Doesn''t exist')
             return "Wrong ID"
 
     """

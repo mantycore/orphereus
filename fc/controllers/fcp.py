@@ -85,6 +85,15 @@ class FcpController(OrphieBaseController):
         captcha = False
 
         if tracker.attempts >= 2:
+            if session and session['anonCaptId']:
+                anonCapt = Captcha.getCaptcha(session['anonCaptId'])
+                if tracker.cid and (str(tracker.cid)!=str(anonCapt.id)):
+                     trackerCapt = Captcha.getCaptcha(tracker.cid)
+                     if trackerCapt:
+                         trackerCapt.delete()
+                tracker.cid = anonCapt.id
+                meta.Session.commit()
+
             c.showCaptcha = True
             captchaOk = False
 
@@ -101,11 +110,11 @@ class FcpController(OrphieBaseController):
         if request.POST.get('code', False):
             code = User.genUid(request.POST['code'].encode('utf-8'))
             user = User.getByUid(code)
-            #log.debug(code)
+            #log.debug("code: %s user: %s",code,str(user))
 
             captid = request.POST.get('captid', False)
             captval = request.POST.get('captcha', False)
-            #log.debug("%s:%s" %(captid, captval))
+            #log.debug("got: %s:%s" %(captid, captval))
 
             if (not captchaOk) and captid and captval and isNumber(captid):
                 if captcha and int(captid) == captcha.id:

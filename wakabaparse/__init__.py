@@ -238,6 +238,7 @@ class WakabaParser(object):
         self.input = "\n" + message + "\n"
         self.calledBy = o
         self.maxLines = lines
+        self.maxLinesTolerance = 2
         self.maxLen = maxLen
         self.lines = 0
         self.linesCutted = 0
@@ -247,7 +248,7 @@ class WakabaParser(object):
         self.tags = []
         taglist = TextTools.tag(self.input, self.parser)
         result = self.formatInHTML(taglist[1])
-        if self.short and self.linesCutted == self.lines:
+        if self.short and ((self.linesCutted+self.maxLinesTolerance)>=self.lines):
             self.short = u''
 
         self.result = fixHtml(self.result)

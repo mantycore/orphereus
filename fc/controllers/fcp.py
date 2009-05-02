@@ -37,6 +37,16 @@ class FcpController(OrphieBaseController):
         if (self.userInst and self.userInst.isValid()) or g.OPT.allowAnonymous:
             self.initEnvironment()
 
+    def ipBanned(self):
+        if c.ban:
+            c.errorText = _('You are banned on %s for %s days for the following reason:<br/>%s') % (c.ban.date,c.ban.period,c.ban.reason)
+            return self.render('error')
+        else:
+            c.boardName = _('Error')
+            c.errorText = _("ORLY?")
+            return self.render('error')
+            
+
     def login(self, user):
         if g.OPT.allowLogin:
             session['uidNumber'] = user.uidNumber

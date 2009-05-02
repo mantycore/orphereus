@@ -53,8 +53,8 @@ def setup_config(command, filename, section, vars):
         Extension.create('gif', True, True, 'image', '', 0, 0)
         Extension.create('bmp', True, True, 'image-jpg', '', 0, 0)
         Extension.create('png', True, True, 'image', '', 0, 0)
-        Extension.create('zip', True, True, 'archive', '../generic/archive.png', 0, 0)
-        Extension.create('7z', True, True, 'archive', '../generic/archive.png', 0, 0)
+        Extension.create('zip', True, True, 'archive', '../generic/archive.png', 128, 128)
+        Extension.create('7z', True, True, 'archive', '../generic/archive.png', 128, 128)
         Extension.create('mp3', True, True, 'music', '../generic/sound.png', 128, 128)
         Extension.create('ogg', True, True, 'music', '../generic/sound.png', 128, 128)
 

@@ -659,6 +659,14 @@ class FccController(OrphieBaseController):
         return self.processPost(board=board)
 
     def processPost(self, postid=0, board=u''):
+        ipStr = getUserIp()
+        ip = h.dottedToInt(ipStr)
+        banInfo = Ban.getBanByIp(ip)
+
+        c.ban = banInfo
+        if banInfo and banInfo.enabled:
+            redirect_to(h.url_for('ipBanned'))
+        
         if not self.currentUserCanPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')

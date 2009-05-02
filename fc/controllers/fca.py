@@ -95,6 +95,66 @@ class FcaController(OrphieBaseController):
             c.inviteCode = invite.invite
         return self.render('manageInvites')
 
+    def manageBans(self):
+        if not self.userInst.canManageUsers():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
+        c.bans = Ban.getBans()
+        #c.showCount = request.POST.get('showCount', False)
+        #log.debug('rendering list, msg=%s' %c.message)
+        return self.render('manageBans')
+
+    def editBan(self,id):
+        #log.debug('ban')
+        if not self.userInst.canManageUsers():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+        
+        id = request.POST.get('id', id)
+
+        c.exists = True
+        ban = Ban.getBanById(id)
+
+        if not ban:
+            c.exists = False
+            c.ban = Ban.create(0,0,0,'',datetime.datetime.now(),30,True)
+            #log.debug('Made obj: %s, id: %s' %(c.ban,c.ban.id))
+            toLog(LOG_EVENT_BAN_ADD, _('Added ban no. %s') % c.ban.id)
+        else:
+            c.ban = ban
+
+        postedId = request.POST.get('id', -1)
+        if (postedId>-1):
+            if not request.POST.get('delete', False):
+                try:
+                    ip = h.dottedToInt(filterText(request.POST.get('ip', 0)))
+                    mask = h.dottedToInt(filterText(request.POST.get('mask', 0)))
+                except:
+                    c.errorText = _("Please check the format of IP addresses and masks.")
+                    return self.render('error')
+                    
+                type = request.POST.get('type', False)=='on'
+                enabled = request.POST.get('enabled', False)=='on'
+                reason = filterText(request.POST.get('reason', ''))
+                date = request.POST.get('date', 0)
+                period = request.POST.get('period', 0)
+
+                ban = Ban.getBanById(id)
+                if ban: 
+                    ban.setData(ip, mask, type, reason, date, period, enabled)
+                toLog(LOG_EVENT_BAN_EDIT, _('Updated ban no. %s, reason: %s') % (ban.id,ban.reason))
+                c.exists = True
+                c.message = _('Ban properties were updated')
+                return self.manageBans()
+            elif ban:
+                banId = ban.id
+                if ban.delete():
+                    toLog(LOG_EVENT_BAN_REMOVE, _('Deleted ban %s') % banId)
+                    c.message = _('Ban record no. %s deleted' %banId)
+                    return self.manageBans()
+        return self.render('manageBan')
+
     def manageExtensions(self):
         if not self.userInst.canManageExtensions():
             c.errorText = _("No way! You aren't holy enough!")

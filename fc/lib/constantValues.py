@@ -1,6 +1,8 @@
+﻿# -*- coding: utf-8 -*-
+
 from pylons.i18n import _, ungettext, N_
 
-#this is default values, real are stored in database
+#this are the default values, the real ones are stored in the database
 settingsDef = {
     "title"         : u'Orphereus',
     "invisibleBump" : u'true',
@@ -27,7 +29,6 @@ settingsDescription = {
     "usersCanViewLogs"  : (N_("Logs available to users"), bool),
     "additionalLinks" : (N_("Additional links"), list),
     "sectionNames" : (N_("Menu section names"), list),
-
 }
 
 id3FieldsNames = {
@@ -60,6 +61,10 @@ LOG_EVENT_RICKROLLD     = 0x00080001
 LOG_EVENT_EDITEDPOST    = 0x00090001
 LOG_EVENT_INTEGR        = 0x00100000
 LOG_EVENT_INTEGR_RC     = 0x00100001
+LOG_EVENT_BAN_ADD       = 0x00110001
+LOG_EVENT_BAN_DISABLE   = 0x00110002
+LOG_EVENT_BAN_REMOVE    = 0x00110003
+LOG_EVENT_BAN_EDIT      = 0x00110004
 
 disabledEvents = [LOG_EVENT_RICKROLLD, LOG_EVENT_SECURITY_IP, LOG_EVENT_INTEGR]
 

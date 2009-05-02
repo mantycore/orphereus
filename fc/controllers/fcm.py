@@ -109,6 +109,20 @@ class FcmController(OrphieBaseController):
                 user.options.banreason = u''
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
+        mtnLog.append(self.createLogEntry('Task', 'Removing IP bans...'))
+        bans = meta.Session.query(Ban).all()
+        for ban in bans:
+            bantime = ban.period
+            banDate = ban.date
+            if bantime > 10000:
+                bantime = 10000
+            if banDate and bantime>0 and banDate < (currentTime - datetime.timedelta(days=bantime)):
+                ban.disable()
+                unbanMessage = ("Automatic unban: IP <b>#%s</b> (Reason was %s)") % (h.intToDotted(ban.ip),ban.reason)
+                mtnLog.append(self.createLogEntry('Info', unbanMessage))
+                toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
+        meta.Session.commit()
+        mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog
 
     def integrityChecks(self):

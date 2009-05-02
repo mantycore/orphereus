@@ -10,6 +10,8 @@ import os
 import miscUtils as utils
 from routes.util import url_for
 
+import socket, struct
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -89,5 +91,13 @@ def staticFile(fileName):
         version = os.path.getmtime(localFileName)
         gv.caches[localFileName] = version
     return u"%s%s?version=%s" % (spw, relFileName, str(version))
+
+def dottedToInt(ipStr):
+    return struct.unpack('!L',socket.inet_aton(ipStr))[0]
+
+def intToDotted(n):
+    return socket.inet_ntoa(struct.pack('!L',n))
+
+
 
 

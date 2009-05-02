@@ -35,7 +35,23 @@ class OrphieBaseController(BaseController):
 
         c.userInst = self.userInst
         c.uidNumber = self.userInst.uidNumber
-        #log.debug(session.get('uidNumber', -1))
+
+        ################# TODO: rewrite. Dont't like this.
+        ipStr = getUserIp()
+        ip = h.dottedToInt(ipStr)
+        banInfo = Ban.getBanByIp(ip)
+        currentURL = request.path_info.decode('utf-8', 'ignore')
+
+        if currentURL.endswith('/'):
+            currentURL = c.currentURL[:-1]
+
+        #log.debug('ipstr: %s, ip: %s, ban: %s, url: %s' %(ipStr,ip,banInfo,currentURL))
+        c.ban = banInfo
+        if banInfo and banInfo.enabled and banInfo.type and (currentURL!='/ipBanned'):
+            redirect_to(h.url_for('ipBanned'))
+        
+        ###############
+        
         if g.OPT.checkUAs and self.userInst.isValid() and not self.userInst.Anonymous:
             for ua in g.OPT.badUAs:
                 if filterText(request.headers.get('User-Agent', '?')).startswith(ua):
@@ -130,7 +146,8 @@ class OrphieBaseController(BaseController):
         if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/')== fpath.replace('\\', '/'):
             return render('/'+tpath, **options)
         else:
-            abort(404) #return _("Template problem: " + page)
+            log.debug ("Template problem:  %s" %page)
+            abort(404) 
 
     def showStatic(self, page):
         c.boardName = _(page)

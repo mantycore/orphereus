@@ -20,6 +20,7 @@ from TagOptions import *
 from User import *
 from UserFilters import *
 from UserOptions import *
+from Ban import *
 
 def init_model(engine):
     sm = orm.sessionmaker(autoflush=False, autocommit=False, bind=engine)
@@ -32,6 +33,7 @@ def init_model(engine):
     meta.Session.mapper(Oekaki, t_oekaki)
     meta.Session.mapper(Invite, t_invites)
     meta.Session.mapper(Setting, t_settings)
+    meta.Session.mapper(Ban, t_bans)
 
     meta.Session.mapper(UserOptions, t_userOptions)
     meta.Session.mapper(UserFilters, t_userFilters)

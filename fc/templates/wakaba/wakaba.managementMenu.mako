@@ -11,6 +11,10 @@
 <a href="${h.url_for('hsUsers')}">${_('Manage users')}</a><br />
 %endif
 
+%if c.userInst.canManageUsers():
+<a href="${h.url_for('hsBans')}">${_('Manage bans')}</a><br />
+%endif
+
 %if c.userInst.canManageExtensions():
 <a href="${h.url_for('hsExtensions')}">${_('Manage extensions')}</a><br />
 %endif

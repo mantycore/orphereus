@@ -65,7 +65,7 @@
                         <img src='${g.OPT.staticPathWeb}images/picDeleted.png' class="thumb">
                     %endif
                 <blockquote class="postbody" id="postBQId${pt[0].id}">
-                        ${h.modMessage(pt[0].message, c.userInst, g.OPT.secureText)}
+                        ${pt[0].message}
                 </blockquote>
             </td>
         </tr>

@@ -2,5 +2,5 @@
 [<a href="https://${g.OPT.baseDomain}"> Paranoia mode </a>] <br/>
 
 <br/>
-    - <a target="_top" href="http://orphereus.anoma.ch/">Orphereus 1.0 alpha</a> -<br/>
+    - <a target="_top" href="http://orphereus.anoma.ch/">${g.OPT.version}</a> -<br/>
 </p>

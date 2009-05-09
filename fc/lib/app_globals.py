@@ -24,6 +24,7 @@ class OptHolder(object):
         if os.path.exists(proposedPath):
             self.staticPath = proposedPath
         self.devMode = (config['core.devMode'] == 'true')
+        self.version = config['core.version']
         self.hashSecret = config['core.hashSecret']
         self.baseDomain = config['core.baseDomain']
         self.minPassLength = int(config['core.minPassLength'])
@@ -83,9 +84,6 @@ class OptHolder(object):
 
         self.obfuscator = config['security.obfuscator']
 
-        self.secureLinks = (config['security.secureLinks'] == 'true')
-        self.secureText = (config['security.secureText'] == 'true')
-        self.secureTime = (config['security.secureTime'] == 'true')
         self.interestingNumbers = (config['security.interestingNumbers'] == 'true')
         self.useAnalBarriering = (config['security.useAnalBarriering'] == 'true')
 

@@ -8,7 +8,7 @@
         <span class="replytitle">${post.title}</span>
     %endif
 
-     ${h.modTime(post, c.userInst, g.OPT.secureTime)}
+     ${post.date}
      <a href="${h.url_for('thread', post=post.id)}">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
 
     &nbsp;
@@ -44,7 +44,7 @@
         <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb"  alt="Removed" />
     %endif
     <blockquote class="postbody" id="postBQId${post.id}">
-        ${h.modMessage(post.message, c.userInst, g.OPT.secureText)}
+        ${post.message}
         %if post.messageInfo:
             ${post.messageInfo}
         %endif

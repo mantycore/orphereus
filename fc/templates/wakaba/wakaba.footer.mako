@@ -1,6 +1,6 @@
 <br/>
 <p class="footer">
-    - <a target="_top" href="http://orphereus.anoma.ch/">Orphereus 1.0 alpha</a> -
+    - <a target="_top" href="http://orphereus.anoma.ch/">${g.OPT.version}</a> -
 </p>
 
 %if g.OPT.devMode and c.sum:

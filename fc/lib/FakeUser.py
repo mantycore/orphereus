@@ -12,7 +12,7 @@ class FakeUser(object):
         self.__valid = False
         self.Anonymous = False
         self.uidNumber = -1
-
+        
         if g.OPT.allowAnonymous:
             self.__valid = True
             self.Anonymous = True

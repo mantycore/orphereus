@@ -499,7 +499,7 @@ class FccController(OrphieBaseController):
                         post.ip = None
                         result.append(_("Post #%d successfully anonymized") % post.id)
                     else:
-                        params = (post.id, str(h.modifyTime(post.date, self.userInst, g.OPT.secureTime) + timeDelta), str(datetime.datetime.now()))
+                        params = (post.id, str(post.date + timeDelta), str(datetime.datetime.now()))
                         result.append(_("Can't anomymize post #%d now, it will be allowed after %s (now: %s)" % params))
             meta.Session.commit()
         else:

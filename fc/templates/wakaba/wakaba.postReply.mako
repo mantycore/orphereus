@@ -28,7 +28,7 @@
         <span class="replytitle">${post.title}</span>
     %endif
 
-     ${h.modTime(post, c.userInst, g.OPT.secureTime)}
+     ${post.date}
 
     <span class="reflink">
     %if c.board:
@@ -78,11 +78,11 @@
     %endif
     <blockquote class="postbody" id="postBQId${post.id}">
         %if (c.count > 1) and post.messageShort and c.userInst.hideLongComments() and getattr(thread, 'enableShortMessages', True):
-            ${h.modMessage(post.messageShort, c.userInst, g.OPT.secureText)}
+            ${post.messageShort}
             <br />
             ${_('Comment is too long.')} <a href="${h.postUrl(thread.id, post.id)}" onclick="getFullText(event,${thread.id},${post.id});" class="expandPost">${_('Full version')}</a>
         %else:
-            ${h.modMessage(post.message, c.userInst, g.OPT.secureText)}
+            ${post.message}
         %endif
         %if post.messageInfo:
             <div>${post.messageInfo}</div>

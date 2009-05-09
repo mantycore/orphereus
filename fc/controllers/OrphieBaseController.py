@@ -142,16 +142,18 @@ class OrphieBaseController(BaseController):
             pass
 
         fpath = os.path.join(g.OPT.templPath, tpath)
+        #log.debug ("Tpath:  %s ; Fpath: %s" %(tpath,fpath))
+          
         #TODO: it may be excessive
         if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/')== fpath.replace('\\', '/'):
             return render('/'+tpath, **options)
         else:
-            log.debug ("Template problem:  %s" %page)
+            #log.debug ("Template problem:  %s" %page)
             abort(404) 
 
     def showStatic(self, page):
         c.boardName = _(page)
-        return self.render('static.%s' % page) #render('/%s.static.mako' % self.userInst.template())
+        return self.render('static.%s' % page)
 
     def paginate(self, count, page, tpp):
         if count > 1:

@@ -31,46 +31,13 @@ def expandName(name):
     return name
 
 def modLink(filePath, secid, hidePrefixes = False):
-    #log.debug("mod: %s" % (filePath))
-    if filePath and config['pylons.app_globals'].OPT.secureLinks:
-        baseName = os.path.basename(filePath)
-        prefix = os.path.dirname(filePath)
-        #log.debug(baseName)
-        #log.debug(prefix)
-        if utils.isNumber(baseName.split('.')[-2].replace('s', '')):
-            p1 = baseName[0:4]
-            p2 = baseName[4:8]
-            p3 = baseName[8:len(baseName)]
-            retval = '%s%s%s%s' % (p1, str(secid), p2, p3)
-            if prefix and not hidePrefixes:
-                retval = prefix + '/' + retval
-            return retval
-    #log.debug('not modified: %s' % filePath)
-
+    #log.debug("gen link %s for id %s" %(filePath,secid))
     if hidePrefixes:
          baseName = os.path.basename(filePath)
          if baseName:
             return baseName
 
     return filePath
-
-def modMessage(message, user, f):
-    if f:
-        gv = config['pylons.app_globals']
-        uval = gv.uniqueVals[user.uidNumber % (len(gv.uniqueVals) - 1)]
-        return message.replace('[SECURITY:UNIQUE_VAL]', uval)
-    else:
-        return message
-
-def modifyTime(sourceTime, user, f):
-    if f:
-        x = user.uidNumber
-        return sourceTime - datetime.timedelta(seconds=((-1)**x)*int(x/2))
-    else:
-        return sourceTime
-
-def modTime(post, user, f):
-    return modifyTime(post.date, user, f)
 
 def templateExists(relName):
     #log.debug(config['pylons.g'].OPT.templPath)

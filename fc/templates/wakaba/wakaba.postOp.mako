@@ -59,7 +59,7 @@
  style="color: red;"
 %endif
 >
-${h.modTime(thread, c.userInst, g.OPT.secureTime)}
+${thread.date}
 </span>
 <span class="reflink">
 %if c.board:
@@ -103,11 +103,11 @@ ${h.modTime(thread, c.userInst, g.OPT.secureTime)}
 
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():
-        ${h.modMessage(thread.messageShort, c.userInst, g.OPT.secureText)}
+        ${thread.messageShort}
         <br />
         ${_('Comment is too long.')} <a href="${h.postUrl(thread.id, thread.id)}" onclick="getFullText(event,${thread.id},${thread.id});" class="expandPost">${_('Full version')}</a>
     %else:
-        ${h.modMessage(thread.message, c.userInst, g.OPT.secureText)}
+        ${thread.message}
     %endif
     %if thread.messageInfo:
         <div>${thread.messageInfo}</div>

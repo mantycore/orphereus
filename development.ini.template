@@ -29,6 +29,7 @@ sqlalchemy.encoding=utf-8
 
 # Basic IB settings
 core.devMode = true
+core.version = Orphereus 1.0 RC1
 # We will hash hashSecret by sha512, so no need to have it long
 core.hashSecret = smallSecret
 core.baseDomain= anoma.ch
@@ -85,9 +86,6 @@ security.refControlList = anoma.ch,anoma.li,localhost,127.0.0.1
 security.fakeLinks = http://www.youtube.com/watch?v=oHg5SJYRHA0,http://meatspin.com/,http://youtube.com/watch?v=Uqot33mczsw,http://youtube.com/watch?v=dZBU6WzBrX8
 security.badUAs = Wget,Offline Explorer,Web Downloader,WebCopier,WebZIP,Teleport Pro
 security.obfuscator=http://anonym.to/?
-security.secureLinks = true
-security.secureText = true
-security.secureTime = true
 security.checkUAs = true
 security.spiderTrap = true
 security.interestingNumbers = true

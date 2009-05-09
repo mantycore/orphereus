@@ -149,7 +149,9 @@ class FcpController(OrphieBaseController):
             if not g.OPT.framedMain:
                 return redirect_to(h.url_for('boardBase', board=c.currentURL))
             else:
-                return self.render('loginRedirect')
+                return redirect_to('/')
+                #return redirect_to(h.url_for(g.OPT.defaultFrame))
+                #return self.render('loginRedirect') # ,g.OPT.templates[0] TODO: FIXME
 
         c.boardName = _('Login')
         return self.render('login')

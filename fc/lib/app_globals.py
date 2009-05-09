@@ -50,6 +50,7 @@ class OptHolder(object):
         self.allowFeeds = (config['core.allowFeeds'] == 'true')
         self.allowOverview = (config['core.allowOverview'] == 'true')
         self.framedMain = (config['core.framedMain'] == 'true')
+        self.useFrameLogo = (config['core.useFrameLogo'] == 'true')
         self.defaultFrame = (config['core.defaultFrame'])
 
         self.permissiveFileSizeConjunction = (config['core.permissiveFileSizeConjunction'] == 'true')

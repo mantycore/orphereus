@@ -28,7 +28,7 @@ sqlalchemy.pool_recycle = 3600
 sqlalchemy.encoding=utf-8
 
 # Basic IB settings
-core.devMode = true
+core.devMode = false
 core.version = Orphereus 1.0 RC1
 # We will hash hashSecret by sha512, so no need to have it long
 core.hashSecret = smallSecret
@@ -59,6 +59,7 @@ core.boardWideProoflabels = true
 core.allowFeeds = true
 core.allowOverview = true
 core.framedMain = true
+core.useFrameLogo = false
 core.defaultFrame = /!/
 
 # Board defaults

@@ -116,7 +116,6 @@
 </tbody>
 </table>
 
-%if not c.userInst.Anonymous and c.userInst.filters:
 <table class="category" width="100%" border="0" cellspacing="0" cellpadding="0">
 <tbody>
     <tr>
@@ -125,12 +124,18 @@
 
     <tr>
         <td class="list">
+%if not c.userInst.Anonymous and c.userInst.filters:
         %for f in c.userInst.filters:
             <div><a href="${h.url_for('boardBase', board=f.filter)}" target="board">/${f.filter}/</a><div>
         %endfor
+%endif
+		<div id="custFwdLink"><a onclick="javascript:toggle_div('custFwd');toggle_div('custFwdLink');">Custom filter...</a></div>
+        <div style="display:none" id="custFwd">
+	        <form method="post" action="${h.url_for('makeFwdTo')}" target="board">
+	        <input type="text" name="tags"/>
+	        </form>
+        </div>
         </td>
     </tr>
 </tbody>
 </table>
-%endif
-

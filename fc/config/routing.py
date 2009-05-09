@@ -24,6 +24,8 @@ def make_map():
     if devMode:
         map.connect('/uaInfo', controller='fcp', action='uaInfo')
 
+    map.connect('makeFwdTo', '/makeFwdTo', controller='fcc', action='makeFwdTo')
+
     # Special routes
     map.connect('authorize', '/authorize', controller='fcp', action='authorize', url='')
     map.connect('authorizeToUrl', '/*url/authorize', controller='fcp', action='authorize', url='')
@@ -32,6 +34,7 @@ def make_map():
     map.connect('register', '/register/:invite', controller='fcp', action='register')
     map.connect('banned', '/youAreBanned', controller='fcp', action='banned')
     map.connect('ipBanned', '/ipBanned', controller='fcp', action='ipBanned')
+
     map.connect('static', '/static/:page', controller='fcc', action='showStatic', page = 'Rules')
     map.connect('searchBase', '/search/:text', controller='fcc', action='search', text='', page=0, requirements=dict(page='\d+'))
     map.connect('search', '/search/:text/page/:page', controller='fcc', action='search', requirements=dict(page='\d+'))
@@ -92,7 +95,7 @@ def make_map():
     map.connect('postThread', '/:board', controller='fcc', action='PostThread',conditions=dict(method=['POST']))
 
     map.connect('feed', '/:watch/feed/auth/:authid/:uid.:feedType', controller='fcp', action='rss', requirements=dict(authid='\d+'))
-
+   
     # Generic filter
     map.connect('boardBase', '/:board/:tempid', controller='fcc', action='GetBoard', board = not framedMain and '!' or None, tempid=0, page=0, requirements=dict(tempid='\d+'))
     map.connect('board', '/:board/page/:page', controller='fcc', action='GetBoard', tempid=0, requirements=dict(page='\d+'))

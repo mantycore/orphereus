@@ -77,6 +77,8 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.boardName = 'Invites'        
+
         return self.render('invitePage')
 
     def makeInvite(self):
@@ -100,6 +102,8 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.boardName = 'Bans management'
+
         c.bans = Ban.getBans()
         #c.showCount = request.POST.get('showCount', False)
         #log.debug('rendering list, msg=%s' %c.message)
@@ -111,6 +115,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
         
+        c.boardName = 'Editing ban %s' %id
         id = request.POST.get('id', id)
 
         c.exists = True
@@ -160,6 +165,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.boardName = 'Extensions management'
         c.extensions = Extension.getList(False)
         c.showCount = request.POST.get('showCount', False)
         return self.render('manageExtensions')
@@ -168,6 +174,8 @@ class FcaController(OrphieBaseController):
         if not self.userInst.canManageExtensions():
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
+
+        c.boardName = 'Editing extension %s' %name
         if not name:
             name = ''
 
@@ -224,6 +232,9 @@ class FcaController(OrphieBaseController):
         if not self.userInst.canManageMappings():
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
+        
+        c.boardName = 'Mappings management'
+        
         if isNumber(id) and isNumber(tagid):
             id = int(id)
             tagid = int(tagid)
@@ -411,6 +422,8 @@ class FcaController(OrphieBaseController):
         if not self.userInst.canManageUsers():
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
+
+        c.boardName = 'User management'
 
         post = Post.getPost(pid)
         if post:

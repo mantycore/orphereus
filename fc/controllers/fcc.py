@@ -254,7 +254,16 @@ class FccController(OrphieBaseController):
         c.PostAction = thePost.id
         filter = Post.buildThreadFilter(self.userInst, thePost.id)
         return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
-
+    
+    def makeFwdTo(self):
+        tagsStr = request.POST.get('tags','')
+        if tagsStr:
+            tags = tagsStr.split(' ')
+            return redirect_to(h.url_for('%2B'.join(tags).encode('utf-8')))
+        else:
+            c.errorText = _("You must specify post tagline.")
+            return self.render('error')
+        
     def gotoDestination(self, post, postid):
         taglineSource = post
         if post.parentid:

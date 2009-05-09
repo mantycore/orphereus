@@ -6,8 +6,7 @@
 %endif
 
 <div class="theader">
-<a style="cursor:pointer" onclick="javascript: adiv = document.getElementById('newThreadPlaceholder');
-if (adiv.style.display=='none') adiv.style.display = 'block'; else adiv.style.display = 'none'; ">
+<a style="cursor:pointer" onclick="toggle_div('newThreadPlaceholder');">
 %if not c.board:
     ${_('Reply')}
 %else:
@@ -153,8 +152,7 @@ if (adiv.style.display=='none') adiv.style.display = 'block'; else adiv.style.di
     <%include file="${c.actuator+'wakaba.postFormAdv.mako'}" />
 %endif
 
-<div><a style="cursor:pointer" onclick="javascript: adiv = document.getElementById('boardInfo');
-if (adiv.style.display=='none') adiv.style.display = 'block'; else adiv.style.display = 'none'; ">
+<div><a style="cursor:pointer" onclick="toggle_div('boardInfo');">
 <b>${_('Board settings')}
 %if c.tagLine:
 <i>(${c.tagLine})</i>

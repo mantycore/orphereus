@@ -1,4 +1,17 @@
-﻿function update_captcha(e) {
+function show_div(id) {
+    adiv = document.getElementById(id);
+    adiv.style.display = 'block'; 
+    }
+
+function toggle_div(id) {
+    adiv = document.getElementById(id);
+    if (adiv.style.display=='none') 
+        adiv.style.display = 'block'; 
+    else 
+        adiv.style.display = 'none'; 
+    }
+
+function update_captcha(e) {
     e.src = e.src.replace(/[0-9]*$/, Math.floor(Math.random() * 9000).toString());
     }
 

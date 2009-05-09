@@ -3,7 +3,7 @@
         [DEV]
     %endif
 	%if (g.OPT.useFrameLogo and not(c.boardName)):        
-		<div align="center"><img src="/logo.png" alt="${c.title}" /></div>
+		<div align="center"><a href="${g.OPT.defaultFrame}" target="board"><img src="/logo.png" alt="${c.title}" /></a></div>
 	%endif
 	%if not(g.OPT.useFrameLogo and not(c.boardName)):        
 		${c.title}

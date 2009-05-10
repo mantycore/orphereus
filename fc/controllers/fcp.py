@@ -170,10 +170,10 @@ class FcpController(OrphieBaseController):
 
             meta.Session.commit()
             #log.debug("redir: %s" % c.currentURL)
-            if not g.OPT.framedMain:
+            if (not g.OPT.framedMain or (user and not(user.useFrame()))):
                 return redirect_to(h.url_for('boardBase', board=c.currentURL))
             else:
-                if g.OPT.allowAnonymous:
+                if (g.OPT.allowAnonymous):
                     return self.render('loginRedirect')
                 else:
                     return redirect_to('/')

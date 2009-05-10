@@ -173,6 +173,11 @@ class User(object):
             self.options.hideLongComments = value
         return self.options.hideLongComments
 
+    def useFrame(self, value=None):
+        if value != None:
+            self.options.useFrame = value
+        return self.options.useFrame
+
     def mixOldThreads(self, value=None):
         if value != None:
             self.options.mixOldThreads = value

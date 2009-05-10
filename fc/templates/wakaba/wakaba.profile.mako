@@ -63,6 +63,10 @@
                     <td><input type="checkbox" name="mixOldThreads" ${c.userInst.mixOldThreads() and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Use frames')}</td>
+                    <td><input type="checkbox" name="useFrame" ${c.userInst.useFrame() and 'checked="checked"' or ""} /></td>
+                </tr>
+                <tr>
                     <td class="postblock">${_('Hide long comments')}</td>
                     <td><input type="checkbox" name="hideLongComments" ${c.userInst.hideLongComments() and 'checked="checked"' or ""} /></td>
                 </tr>

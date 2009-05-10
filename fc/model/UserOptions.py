@@ -44,6 +44,7 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("bantime"  , sa.types.Integer, nullable=False),
     sa.Column("banreason", sa.types.UnicodeText(256), nullable=True),
     sa.Column("banDate", sa.types.DateTime, nullable=True),
+    sa.Column("useFrame", sa.types.Boolean, nullable=True),
     sa.Column("hideLongComments", sa.types.Boolean, nullable=True),
     sa.Column("useAjax", sa.types.Boolean, nullable=True),
     sa.Column("expandImages", sa.types.Boolean, nullable=True, server_default='1'),
@@ -88,6 +89,7 @@ class UserOptions(object):
         optionsObject.bantime = 0
         optionsObject.isAdmin = False
         optionsObject.hideLongComments = True
+        optionsObject.useFrame = True
         optionsObject.useAjax = True
         optionsObject.mixOldThreads = True
         optionsObject.defaultGoto = 0

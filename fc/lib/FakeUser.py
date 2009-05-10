@@ -81,6 +81,9 @@ class FakeUser(object):
     def hideLongComments(self, value=None):
         return self.sessValue('hideLongComments', value, self.__user.options.hideLongComments)
 
+    def useFrame(self, value=None):
+        return self.sessValue('useFrame', value, self.__user.options.useFrame)
+
     def mixOldThreads(self, value=None):
         return self.sessValue('mixOldThreads', value, self.__user.options.mixOldThreads)
 

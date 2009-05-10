@@ -194,8 +194,9 @@ class FccController(OrphieBaseController):
 
 
     def GetBoard(self, board, tempid, page=0):
+        log.debug(self.userInst)
         if board == None:
-            if g.OPT.framedMain:
+            if (g.OPT.framedMain  and self.userInst and self.userInst.useFrame()):
                 return self.render('frameMain')
             else:
                 board = '!'
@@ -339,6 +340,7 @@ class FccController(OrphieBaseController):
         c.boardName = _('Profile')
         if request.POST.get('update', False):
             self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
+            self.userInst.useFrame(request.POST.get('useFrame',False))
             self.userInst.useAjax(bool(request.POST.get('useAjax', False)))
             self.userInst.expandImages(request.POST.get('expandImages', False))
             self.userInst.mixOldThreads(bool(request.POST.get('mixOldThreads', False)))

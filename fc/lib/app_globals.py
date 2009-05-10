@@ -118,9 +118,5 @@ class Globals(object):
         self.OPT = OptHolder()
         self.caches = {}
 
-        f = open(os.path.join(self.OPT.appPath, 'fc/uniqueVals.txt'), "r")
-        data = f.read()
-        f.close()
-
-        self.uniqueVals = data.split('\n')
+        self.uniqueVals = ()
 

@@ -399,7 +399,7 @@ class FccController(OrphieBaseController):
 
         remPass = ''
         if self.userInst.Anonymous:
-            remPass = hashlib.md5(request.POST.get('remPass', '')).hexdigest()
+            remPass = hashlib.md5(request.POST.get('remPass', '').encode('utf-8')).hexdigest()
 
         retest = re.compile("^\d+$")
         for i in request.POST:
@@ -675,7 +675,7 @@ class FccController(OrphieBaseController):
         c.ban = banInfo
         if banInfo and banInfo.enabled:
             redirect_to(h.url_for('ipBanned'))
-        
+            
         if not self.currentUserCanPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')
@@ -718,7 +718,7 @@ class FccController(OrphieBaseController):
 
             remPass = request.POST.get('remPass', False)
             if remPass:
-                postRemovemd5 = hashlib.md5(remPass).hexdigest()
+                postRemovemd5 = hashlib.md5(remPass.encode('utf-8')).hexdigest()
 
         thread = None
         tags = []

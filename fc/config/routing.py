@@ -65,6 +65,7 @@ def make_map():
     map.connect('hsBoardEdit', '/holySynod/manageBoards/edit/:tag', controller='fca', tag='', action='editBoard')
     map.connect('hsUsers', '/holySynod/manageUsers', controller='fca', action='manageUsers')
     map.connect('hsUserEditAttempt', '/holySynod/manageUsers/editAttempt/:pid', controller='fca', action='editUserAttempt', requirements=dict(pid='\d+'))
+    map.connect('hsIpBanAttempt', '/holySynod/manageUsers/banAttempt/:pid', controller='fca', action='ipBanAttempt', requirements=dict(pid='\d+'))
     map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/:pid', controller='fca', action='editUserByPost', requirements=dict(pid='\d+'))
     map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller='fca', action='editUser', requirements=dict(uid='\d+'))
 

@@ -46,9 +46,11 @@ class OrphieBaseController(BaseController):
             currentURL = c.currentURL[:-1]
 
         #log.debug('ipstr: %s, ip: %s, ban: %s, url: %s' %(ipStr,ip,banInfo,currentURL))
-        c.ban = banInfo
-        if banInfo and banInfo.enabled and banInfo.type and (currentURL!='/ipBanned'):
-            redirect_to(h.url_for('ipBanned'))
+        
+        if banInfo and banInfo.enabled:
+            c.ban = banInfo
+            if (currentURL!='/ipBanned') and banInfo.type:
+                redirect_to(h.url_for('ipBanned'))
         
         ###############
         

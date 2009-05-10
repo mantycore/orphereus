@@ -123,7 +123,9 @@ class FcaController(OrphieBaseController):
 
         if not ban:
             c.exists = False
-            c.ban = Ban.create(0,0,0,'',datetime.datetime.now(),30,True)
+            c.boardName = 'New IP ban'
+            ip = c.ipToBan or 0
+            c.ban = Ban.create(ip,h.dottedToInt('255.255.255.255'),0,'',datetime.datetime.now(),30,True)
             #log.debug('Made obj: %s, id: %s' %(c.ban,c.ban.id))
             toLog(LOG_EVENT_BAN_ADD, _('Added ban no. %s') % c.ban.id)
         else:
@@ -235,6 +237,8 @@ class FcaController(OrphieBaseController):
         
         c.boardName = 'Mappings management'
         
+        #log.debug("%s\n\n%s\nact:%s" %(c,request.POST,act))
+        
         if isNumber(id) and isNumber(tagid):
             id = int(id)
             tagid = int(tagid)
@@ -263,7 +267,7 @@ class FcaController(OrphieBaseController):
                     c.errorText = _("This is not op-post")
                     return self.render('error')
 
-            return self.render('manageMappings')
+            return self.render('hsMappings')
         elif act in ['del', 'add']:
             post = Post.getPost(id)
             if post and not post.parentid:
@@ -290,9 +294,10 @@ class FcaController(OrphieBaseController):
 
                 meta.Session.commit()
 
-            redirect_to(h.url_for('manageMappings', act='show', id=id))
+            redirect_to(h.url_for('hsMappings', act='show', id=id))
+           # return self.render('manageMappings')
         else:
-            redirect_to(h.url_for('manageMappings'))
+            redirect_to(h.url_for('hsMappings'))
 
     def manageBoards(self):
         if not self.userInst.canManageBoards():
@@ -417,6 +422,16 @@ class FcaController(OrphieBaseController):
         c.pid = pid
         c.showAttemptForm = True
         return self.render('manageUser')
+
+    def ipBanAttempt(self, pid):
+        if not self.userInst.canManageUsers():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
+        # TODO: perform reason request 
+        post = Post.getPost(pid)
+        c.ipToBan = post.ip
+        return self.editBan(-1)
 
     def editUserByPost(self, pid):
         if not self.userInst.canManageUsers():

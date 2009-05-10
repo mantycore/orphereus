@@ -61,9 +61,12 @@ class FcpController(OrphieBaseController):
         redirect_to('/')
 
     def captchaPic(self, cid):
+        # TODO: fix shitty code
         sessionCid = None
         if session.has_key('anonCaptId'):
             sessionCid = session['anonCaptId']
+        if session.has_key('cid'):
+            sessionCid = session['cid']
         pic = Captcha.picture(cid, g.OPT.captchaFont)
         if sessionCid:
             if (str(cid) != str(sessionCid)):
@@ -177,10 +180,12 @@ class FcpController(OrphieBaseController):
         c.openReg = session['openReg']
         c.captcha = None
         captchaOk = True
-        if session['openReg']:
+        if session['openReg']:  
             captchaOk = False
             if session.get('cid', False):
+                log.debug("session['cid']=%s" %session['cid'])
                 captcha = Captcha.getCaptcha(session['cid'])
+                log.debug("session[val]=%s" %captcha.text)
                 if captcha:
                     captchaOk = captcha.test(request.POST.get('captcha', False))
                 session['cid'] = None
@@ -213,7 +218,7 @@ class FcpController(OrphieBaseController):
                 del session['iid']
                 session.save()
                 self.login(user)
-                redirect_to('/')
+                redirect_to('/!/')
         c.boardName = _('Register')
         return self.render('register')
 

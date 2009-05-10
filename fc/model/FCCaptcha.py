@@ -1,4 +1,5 @@
-﻿import sqlalchemy as sa
+# -*- coding: utf-8 -*-
+import sqlalchemy as sa
 from sqlalchemy import orm
 
 from fc.model import meta
@@ -63,11 +64,11 @@ class Captcha(object):
 
     def test(self, text, removeOnlyIncorrect = False):
         ret = (self.text == text)
-        #log.debug("recieved:" + text)
-        #log.debug("self:" + self.text)
+        #log.debug("recieved: %s" %text)
+        #log.debug("self: %s" %self.text)
         #log.debug(str(self) +  "  " + str(self.id))
         if not ret or (ret and not removeOnlyIncorrect):
-            #log.debug("del")
+            #log.debug("del id %s " %self.text)
             meta.Session.delete(self)
             meta.Session.commit()
         return ret
@@ -77,7 +78,7 @@ class Captcha(object):
         captcha = Captcha(randomStr())
         meta.Session.add(captcha)
         meta.Session.commit()
-        #log.debug("created " + str(captcha.id))
+        #log.debug("created %s" %str(captcha.id))
         return captcha
 
     @staticmethod

@@ -41,3 +41,10 @@ For the first mode (recommended), in [server:main] section:
 For the second one:
 
       use = egg:Paste#http
+      
+
+Orphereus - Automatic Maintenance
+=====================
+
+To implement automatic unbans, integrity checks and clean-ups, there is an 
+example script for scheduling these tasks via cron - 'mtn.sh'. 

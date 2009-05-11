@@ -288,7 +288,7 @@ class FcaController(OrphieBaseController):
                     c.errorText = _("This is not op-post")
                     return self.render('error')
 
-            return self.render('hsMappings')
+            return self.render('manageMappings')
         elif act in ['del', 'add']:
             post = Post.getPost(id)
             if post and not post.parentid:

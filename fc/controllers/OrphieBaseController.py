@@ -171,7 +171,7 @@ class OrphieBaseController(BaseController):
         if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/')== fpath.replace('\\', '/'):
             return render('/'+tpath, **options)
         else:
-            #log.debug ("Template problem:  %s" %page)
+            log.debug ("Template problem:  %s" %page)
             abort(404) 
 
     def showStatic(self, page):

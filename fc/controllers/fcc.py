@@ -194,7 +194,6 @@ class FccController(OrphieBaseController):
 
 
     def GetBoard(self, board, tempid, page=0):
-        log.debug(self.userInst)
         if board == None:
             if (g.OPT.framedMain  and self.userInst and self.userInst.useFrame()):
                 return self.render('frameMain')

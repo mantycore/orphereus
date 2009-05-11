@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+ORPHIEPATH=/opt/py/orphie
+PIDFILE=/tmp/orphie.pid
+USER=orphie
+LOG=/var/log/orphie.error.log
+INI=development.ini 
+
+cd /var/py/ach
+
+case "$1" in
+  start)
+      paster serve --daemon --pid-file=$PIDFILE --user=$USER --group=$USER --log-file=$LOG "${ORPHIEPATH}/${INI}" start
+      ;;
+  stop)
+      paster serve --daemon --pid-file=$PIDFILE --user=$USER --group=$USER --log-file=$LOG "${ORPHIEPATH}/${INI}" stop
+      ;;
+  restart)
+      paster serve --daemon --pid-file=$PIDFILE --user=$USER --group=$USER --log-file=$LOG "${ORPHIEPATH}/${INI}" restart
+      ;;
+  *)
+    echo $"Usage: $0 {start|stop|restart}"
+    exit 1
+esac

@@ -721,7 +721,7 @@ class FccController(OrphieBaseController):
         response.set_cookie('orphie-lastPost', quote_plus(c.postMessage.encode('utf-8')))
         response.set_cookie('orphie-lastTitle', quote_plus(c.postTitle.encode('utf-8')))
         if tagstr:
-            response.set_cookie('orphie-lastTagLine', quote_plus(c.postTagLine))
+            response.set_cookie('orphie-lastTagLine', quote_plus(c.postTagLine.encode('utf-8')))
 
         fileHolder = False
         postRemovemd5 = None

@@ -38,6 +38,7 @@ port = 5000
 [app:main]
 set debug = false
 use = egg:FC
+lang = en
 full_stack = true
 set debug = false
 

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
-<b>Found:</b> ${c.count}
+<b>${_('Found')}:</b> ${c.count}
 
 <br/>
 <form action="${h.url_for('searchBase')}" method="post">
     <input type="text" name="query" size="20" value="${c.query}"/>
-    <input value="Search again" type="submit" />
-    [<a href="${h.url_for('static', page='markup#search')}" target="_blank">Help</a>]
+    <input value="${_('Search again')}" type="submit" />
+    [<a href="${h.url_for('static', page='markup#search')}" target="_blank">${_('Help')}</a>]
 </form>
 
 <%include file="wakaba.paginator.mako" args="routeName='search', kwargDict={'text' : c.query}"/>
@@ -77,7 +77,7 @@
 <br/>
 <form action="${h.url_for('searchBase')}" method="post">
     <input type="text" name="query" size="20" value="${c.query}"/>
-    <input value="Search again" type="submit" />
+    <input value="${_('Search again')}" type="submit" />
 </form>
 
 <%include file="wakaba.jsService.mako" />

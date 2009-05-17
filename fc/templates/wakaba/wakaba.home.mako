@@ -11,7 +11,7 @@
 
 <%def name="vitalSigns()" cached=${g.OPT.statsCacheTime>0} cache_timeout=${g.OPT.statsCacheTime} cache_type="memory">
 <div class="theader">
-Vital signs
+${_('Vital signs')}
 <br/><br/>
 <font size="-1">
 LKA: ${c.last1KUsersCount};
@@ -39,7 +39,7 @@ ${vitalSigns()}
 %endif
 
 <%def name="stats()" cached=${g.OPT.statsCacheTime>0} cache_timeout=${g.OPT.statsCacheTime} cache_type="memory">
-<h3>Boards</h3>
+<h3>${_('Boards')}</h3>
 %if g.OPT.interestingNumbers and not c.userInst.Anonymous:
 <span style="float: right;">
 <i>Interesting numbers: ${c.totalPostsCount} [${abs(c.userInst.secid()*c.userInst.secid() - c.totalPostsCount*c.totalPostsCount)}]</i>
@@ -47,19 +47,20 @@ ${vitalSigns()}
 %endif
 
 %if c.boards:
-<i>Let my BOARDS go!</i>
+<i>${_('Let my BOARDS go!')}</i>
 <%include file="wakaba.homeStatTable.mako" args="boards=c.boards,totalThreads=c.totalBoardsThreads,totalPosts=c.totalBoardsPosts"/>
 %endif
 
 %if c.stags:
-<h3>Special tags</h3>
-<i>Useful stuff is so useful</i>
+<h3>${_('Special tags')}</h3>
+<i>${_('Useful stuff is so useful')}</i>
 <%include file="wakaba.homeStatTable.mako" args="boards=c.stags,totalThreads=c.totalSTagsThreads,totalPosts=c.totalSTagsPosts"/>
 %endif
 
 %if c.tags:
-<h3>Tags</h3>
-<i>Every small TAG has hidden powers. And it has everything to become a BOARD</i>
+<h3>${_('Tags')}</h3>
+
+<i>${_('Every small TAG has hidden powers. And it has everything to become a BOARD')}</i>
 <%include file="wakaba.homeStatTable.mako" args="boards=c.tags,totalThreads=c.totalTagsThreads,totalPosts=c.totalTagsPosts"/>
 %endif
 

@@ -2,7 +2,7 @@
 <%inherit file="wakaba.management.mako" />
 
 <form id="mapeditForm" method="post" action="${h.url_for('hsMappings', act='show')}">
-    Enter post ID:<br/>
+    ${_('Enter post ID:')}<br/>
     <input type='text' name='postId' />
     <input type='submit' value='${_('Manage mappings')}' />
 </form>
@@ -22,7 +22,7 @@ ${c.post.message}
     %for tag in c.post.tags:
         <tr>
             <td>${tag.tag}</td>
-            <td><a href='${h.url_for('hsMappings', act='del', id=c.post.id, tagid=tag.id)}'>Remove</a></td>
+            <td><a href='${h.url_for('hsMappings', act='del', id=c.post.id, tagid=tag.id)}'>${_('Remove')}</a></td>
         </tr>
     %endfor
     </tbody>

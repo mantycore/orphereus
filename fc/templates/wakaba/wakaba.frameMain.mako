@@ -18,6 +18,6 @@ ${c.title}
 </head>
 <frameset cols="200,*">
         <frame src="${h.url_for('frameMenu')}" name="list" noresize="noresize" scrolling="auto" frameborder="1">
-        <frame src="${g.OPT.defaultFrame}" name="board" noresize="noresize">
+        <frame src="${c.frameBoard}" name="board" noresize="noresize">
 </frameset>
 </html>

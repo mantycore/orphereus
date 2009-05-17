@@ -193,9 +193,9 @@ class FcmController(OrphieBaseController):
                 meta.Session.delete(pic)
 
         meta.Session.commit()
-        mtnLog.append(self.createLogEntry('Task', u'Orpaned database entries check completed'))
+        mtnLog.append(self.createLogEntry('Task', 'Orpaned database entries check completed'))
 
-        mtnLog.append(self.createLogEntry('Task', u'Checking for orphaned files...'))
+        mtnLog.append(self.createLogEntry('Task', 'Checking for orphaned files...'))
 
 
         junkPath= os.path.join(g.OPT.uploadPath, 'junk')
@@ -236,7 +236,7 @@ class FcmController(OrphieBaseController):
                         ccJunkFiles += 1
 
         if (ccJunkFiles > 0 or ccJunkThumbnails > 0):
-            toLog(LOG_EVENT_INTEGR, u"%d files and %d thumbnails moved into junk directory" % (ccJunkFiles, ccJunkThumbnails))
+            toLog(LOG_EVENT_INTEGR, "%d files and %d thumbnails moved into junk directory" % (ccJunkFiles, ccJunkThumbnails))
 
         mtnLog.append(self.createLogEntry('Task', 'Orpaned files check completed'))
 
@@ -341,7 +341,7 @@ class FcmController(OrphieBaseController):
             postsCount = Post.query.filter(Post.uidNumber == user.uidNumber).count()
             if user.options:
                 if postsCount == 0 and user.options.bantime == 0:
-                    user.ban(10000, _("[AUTOMATIC BAN] You haven't any posts. Please, contact administration to get you access back"), -1)
+                    user.ban(10000, "[AUTOMATIC BAN] You haven't any posts. Please, contact administration to get you access back", -1)
                     mtnLog.append(self.createLogEntry('Info', "%d autobanned" % user.uidNumber))
             else:
                 mtnLog.append(self.createLogEntry('Warning', "User %d haven't options object" % user.uidNumber))
@@ -406,7 +406,7 @@ class FcmController(OrphieBaseController):
                 return redirect_to('/')
             self.initEnvironment()
             if not (self.userInst.isAdmin() and self.userInst.canRunMaintenance()) or self.userInst.isBanned():
-                c.errorText = "No way! You aren't holy enough!"
+                c.errorText = _("No way! You aren't holy enough!")
                 return redirect_to('/')
             c.userInst = self.userInst
             if not checkAdminIP():
@@ -428,10 +428,10 @@ class FcmController(OrphieBaseController):
             return redirect_to('/')
 
         if not actid:
-            c.boardName = 'Index'
+            c.boardName = _('Index')
             return self.render('mtnIndex')
         else:
-            toLog(LOG_EVENT_MTN_BEGIN, _('Maintenance started'))
+            toLog(LOG_EVENT_MTN_BEGIN, 'Maintenance started')
             mtnLog = []
             c.boardName = 'Maintenance log'
             if actid == 'clearOekaki':
@@ -460,31 +460,31 @@ class FcmController(OrphieBaseController):
                 try:
                     mtnLog = self.clearOekaki()
                 except:
-                    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in clearOekaki()'))
+                    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in clearOekaki()')
                 try:
                     mtnLog += self.destroyInvites()
                 except:
-                    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in destroyInvites()'))
+                    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in destroyInvites()')
                 try:
                     mtnLog += self.destroyTrackers()
                 except:
-                    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in destroyTrackers()'))
+                    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in destroyTrackers()')
                 try:
                     mtnLog += self.integrityChecks()
                 except:
-                    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in integrityChecks()'))
+                    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in integrityChecks()')
                 try:
                     mtnLog += self.banRotate()
                 except:
-                    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in banRotate()'))
+                    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in banRotate()')
                 #try:
                 #    mtnLog += self.updateCaches()
                 #except:
-                #    toLog(LOG_EVENT_MTN_ERROR, _('Critical error in updateCaches()'))
+                #    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in updateCaches()')
 
             #for entry in mtnLog:
             #    toLog(LOG_EVENT_MTN_ACT, entry.type + ': ' + entry.message)
 
             c.mtnLog = mtnLog
-            toLog(LOG_EVENT_MTN_END, _('Maintenance ended'))
+            toLog(LOG_EVENT_MTN_END, 'Maintenance ended')
             return self.render('mtnLog')

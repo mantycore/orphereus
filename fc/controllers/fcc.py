@@ -800,7 +800,7 @@ class FccController(OrphieBaseController):
 
         options = Tag.conjunctedOptionsDescript(tags)
         if not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
-            c.errorText = "Unacceptable combination of tags"
+            c.errorText = _("Unacceptable combination of tags")
             return self.render('error')
 
         postMessageInfo = None

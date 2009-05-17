@@ -154,7 +154,7 @@
                     <td class="postblock">${_('Reason')}</td>
                     <td>
                         <input type="text" name="deletereason" size="35" value="" /><br/>
-                        <input type="checkbox" name="deleteLegacy" /> Remove all users's posts
+                        <input type="checkbox" name="deleteLegacy" /> ${_("Remove all users's posts")}
                     </td>
                 </tr>
                 <tr>

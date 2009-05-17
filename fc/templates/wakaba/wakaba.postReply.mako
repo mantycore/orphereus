@@ -38,7 +38,7 @@
         <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
     %endif
     %if c.currentUserCanPost and post.file and post.file.width:
-        [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy() and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim() and '+anim' or '-anim', tool=c.userInst.oekUsePro() and 'shiPro' or 'shiNormal')}">Draw</a>]
+        [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy() and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim() and '+anim' or '-anim', tool=c.userInst.oekUsePro() and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
     %endif
 
     %if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:

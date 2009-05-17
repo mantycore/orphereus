@@ -54,12 +54,12 @@ class FcaController(OrphieBaseController):
             return redirect_to('/')
 
     def index(self):
-        c.boardName = 'Index'
+        c.boardName = _('Index')
         c.admins = User.getAdmins()
         return self.render('managementIndex')
 
     def manageSettings(self):
-        c.boardName = 'Settings management'
+        c.boardName = _('Settings management')
         c.settingsDescription = settingsDescription
 
         if request.POST.get('update', False):
@@ -77,7 +77,7 @@ class FcaController(OrphieBaseController):
                         valarr = filter(lambda l: l, re.split('\r+|\n+|\r+\n+', val))
                         val = '|'.join(valarr)
                     if g.settingsMap[s].value != val:
-                        toLog(LOG_EVENT_SETTINGS_EDIT,"Changed %s from '%s' to '%s'" % (s, g.settingsMap[s].value, val))
+                        toLog(LOG_EVENT_SETTINGS_EDIT, _("Changed %s from '%s' to '%s'") % (s, g.settingsMap[s].value, val))
                         Setting.getSetting(s).setValue(val)
                         g.settingsMap[s].value = val
                     init_globals(config['pylons.app_globals'], False)
@@ -85,7 +85,7 @@ class FcaController(OrphieBaseController):
         return self.render('manageSettings')
 
     def viewLog(self, page):
-        c.boardName = 'Logs'
+        c.boardName = _('Logs')
         page = int(page)
         count = LogEntry.count()
         tpp = 50
@@ -98,7 +98,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        c.boardName = 'Invites'        
+        c.boardName = _('Invites')        
 
         return self.render('invitePage')
 
@@ -114,7 +114,7 @@ class FcaController(OrphieBaseController):
             reason = filterText(reason)
             invite = Invite.create(g.OPT.hashSecret)
 
-            toLog(LOG_EVENT_INVITE,"Generated invite id %s. Reason: %s" % (invite.id, reason))
+            toLog(LOG_EVENT_INVITE,_("Generated invite id %s. Reason: %s") % (invite.id, reason))
             c.inviteCode = invite.invite
         return self.render('manageInvites')
 
@@ -123,7 +123,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        c.boardName = 'Bans management'
+        c.boardName = _('Bans management')
 
         c.bans = Ban.getBans()
         #c.showCount = request.POST.get('showCount', False)
@@ -136,7 +136,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
         
-        c.boardName = 'Editing ban %s' %id
+        c.boardName = _('Editing ban %s') %id
         id = request.POST.get('id', id)
 
         c.exists = True
@@ -144,7 +144,7 @@ class FcaController(OrphieBaseController):
 
         if not ban:
             c.exists = False
-            c.boardName = 'New IP ban'
+            c.boardName = _('New IP ban')
             ip = c.ipToBan or 0
             c.ban = Ban.create(ip,h.dottedToInt('255.255.255.255'),0,'',datetime.datetime.now(),30,True)
             #log.debug('Made obj: %s, id: %s' %(c.ban,c.ban.id))
@@ -188,7 +188,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        c.boardName = 'Extensions management'
+        c.boardName = _('Extensions management')
         c.extensions = Extension.getList(False)
         c.showCount = request.POST.get('showCount', False)
         return self.render('manageExtensions')
@@ -198,7 +198,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        c.boardName = 'Editing extension %s' %name
+        c.boardName = _('Editing extension %s') %name
         if not name:
             name = ''
 
@@ -256,7 +256,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
         
-        c.boardName = 'Mappings management'
+        c.boardName = _('Manage mappings')
         
         #log.debug("%s\n\n%s\nact:%s" %(c,request.POST,act))
         
@@ -300,7 +300,7 @@ class FcaController(OrphieBaseController):
                         toLog(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))
                         post.tags.remove(tag)
                     else:
-                        c.errorText = "Can't delete last tag!"
+                        c.errorText = _("Can't delete last tag!")
                         return self.render('error')
                 elif act == 'add':
                     tag = Tag.getById(tagid)
@@ -325,7 +325,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        c.boardName = 'Boards management'
+        c.boardName = _('Boards management')
         boards = Tag.getAll()
         c.boards = {-1:[]}
         c.sectionList = []
@@ -351,7 +351,7 @@ class FcaController(OrphieBaseController):
         if not self.userInst.canManageBoards():
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
-        c.boardName = 'Edit board'
+        c.boardName = _('Edit board')
         c.message = u''
         c.tag = Tag.getTag(tag)
         if not c.tag:
@@ -399,14 +399,14 @@ class FcaController(OrphieBaseController):
                             c.message = _("Board must be empty for deletion")
                         else:
                             meta.Session.delete(c.tag)
-                            toLog(LOG_EVENT_BOARD_EDIT, "Deleted board %s %s" % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))
+                            toLog(LOG_EVENT_BOARD_EDIT, _("Deleted board %s %s") % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))
                             meta.Session.commit()
                             return redirect_to(h.url_for('hsBoards'))
                     elif not c.tag.id:
                         meta.Session.add(c.tag)
 
                     c.message = _("Updated board")
-                    toLog(LOG_EVENT_BOARD_EDIT, "Edited board %s %s" % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
+                    toLog(LOG_EVENT_BOARD_EDIT, _("Edited board %s %s") % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
                     meta.Session.commit()
 
                 else:
@@ -420,7 +420,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        c.boardName = 'Users management'
+        c.boardName = _('Users management')
         uid = request.POST.get("uid", False)
         if uid:
             user = False
@@ -439,7 +439,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        c.boardName = 'User edit attemption'
+        c.boardName = _('User edit attemption')
         c.pid = pid
         c.showAttemptForm = True
         return self.render('manageUser')
@@ -459,13 +459,13 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        c.boardName = 'User management'
+        c.boardName = _('User management')
 
         post = Post.getPost(pid)
         if post:
-            reason = request.POST.get("UIDViewReason", 'No reason given!')
+            reason = request.POST.get("UIDViewReason", _('No reason given!'))
             #toLog(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '<a href='/%s#i%s'>%s</a>'. Reason: %s" % (post.uidNumber, post.parentid > 0 and post.parentid or post.id, pid, pid, reason))
-            toLog(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '%s'. Reason: %s" % (post.uidNumber, post.id, reason))
+            toLog(LOG_EVENT_USER_GETUID, _("Viewed UID for user '%s' from post '%s'. Reason: %s") % (post.uidNumber, post.id, reason))
             return redirect_to(h.url_for('hsUserEdit', uid=post.uidNumber))
         else:
             c.errorText = _("Post not found")
@@ -567,12 +567,12 @@ class FcaController(OrphieBaseController):
                             toLog(LOG_EVENT_USER_DELETE,_('Removed legacy of %s for "%s" [%s]') % (user.uidNumber, reason, ', '.join(removed)))
                         meta.Session.delete(user)
                         toLog(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
-                        c.message = "User deleted"
+                        c.message = _("User deleted")
                         return self.render('manageUsers')
                     else:
                         c.message = _('You should specify deletion reason')
                 else:
-                    c.message = "You haven't rights to delete user"
+                    c.message = _("You haven't rights to delete user")
             return self.render('manageUser')
         else:
             c.errorText = _('No such user exists.')

@@ -42,10 +42,10 @@ setup(
     include_package_data=True,
     test_suite='nose.collector',
     package_data={'fc': ['i18n/*/LC_MESSAGES/*.mo']},
-    #message_extractors = {'fc': [
-    #        ('**.py', 'python', None),
-    #        ('templates/**.mako', 'mako', None),
-    #        ('public/**', 'ignore', None)]},
+    message_extractors = {'fc': [
+            ('**.py', 'python', None),
+            ('templates/**.mako', 'mako', None),
+            ('public/**', 'ignore', None)]},
     entry_points="""
     [paste.app_factory]
     main = fc.config.middleware:make_app

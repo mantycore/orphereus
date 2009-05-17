@@ -43,14 +43,14 @@
         <tr><td>
             <input type="hidden" name="task" value="delete" />
           %if c.isAdmin:
-            Reason: <input type="text" name="reason" size="35" />
+            ${_('Reason')}: <input type="text" name="reason" size="35" />
            %endif
 
             %if c.userInst.Anonymous:
-                Password: <input type="password" name="remPass" size="10" value="${c.remPass}" />
+                ${_('Password')}: <input type="password" name="remPass" size="10" value="${c.remPass}" />
             %endif
-            [<label><input type="checkbox" name="fileonly" value="on" />Only file</label>]
-            <input value="Delete post(s)" type="submit" />
+            [<label><input type="checkbox" name="fileonly" value="on" />${_('Only file')}</label>]
+            <input value="${_('Delete post(s)')}" type="submit" />
         </td></tr>
     </tbody>
 </table>
@@ -59,7 +59,7 @@
 
 <form action="${h.url_for('searchBase')}" method="post">
     <input type="text" name="query" size="20" />
-    <input value="Search" type="submit" />
+    <input value="${_('Search')}" type="submit" />
 </form>
 
 <div class="y_replyform" style="display:none">

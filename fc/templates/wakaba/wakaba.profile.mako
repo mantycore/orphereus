@@ -86,7 +86,7 @@
                 </tr>
                 <tr>
                     <td class="postblock">${_('Max size to expand')}
-                    <div style="font-size: 60%; font-style:italic;">(Stricter condition will be used)</div>
+                    <div style="font-size: 60%; font-style:italic;">${_('(Stricter condition will be used)')}</div>
                     </td>
                     <td>
                     <input name="maxExpandWidth" value="${c.userInst.maxExpandWidth()}" size="5"/>
@@ -96,7 +96,7 @@
                 </tr>
                 <tr>
                     <td class="postblock">${_('Home filter exclusions')}
-                    <div style="font-size: 60%; font-style:italic;">(You can ignore only existing tags)</div>
+                    <div style="font-size: 60%; font-style:italic;">${_('(You can ignore only existing tags)')}</div>
                     </td>
                     <td><input name="homeExclude" value="${c.homeExclude}" /></td>
                 </tr>
@@ -175,7 +175,7 @@
                     </tr>
                     %for f in c.userInst.filters:
                     <tr id="filterId${f.id}">
-                        <td class="postblock">[<a href="" onclick="userFiltersEdit(event,${f.id});">Edit</a>] [<a href="" onclick="userFiltersDelete(event,${f.id});">Del</a>]</td>
+                        <td class="postblock">[<a href="" onclick="userFiltersEdit(event,${f.id});">${_('Edit')}</a>] [<a href="" onclick="userFiltersDelete(event,${f.id});">${_('Delete')}</a>]</td>
                         <td><input id='filterId${f.id}Input' name='filterId${f.id}' value='${f.filter}' /></td>
                     </tr>
                     %endfor

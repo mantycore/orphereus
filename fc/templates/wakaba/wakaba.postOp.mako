@@ -95,7 +95,7 @@ ${thread.date}
 
 %if c.currentUserCanPost:
     %if thread.file and thread.file.width:
-        [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy() and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim() and '+anim' or '-anim', tool=c.userInst.oekUsePro() and 'shiPro' or 'shiNormal')}">Draw</a>]
+        [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy() and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim() and '+anim' or '-anim', tool=c.userInst.oekUsePro() and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
     %endif
     [<a href="${h.url_for('thread', post=thread.id)}">${_('Reply')}</a>]
 %else:

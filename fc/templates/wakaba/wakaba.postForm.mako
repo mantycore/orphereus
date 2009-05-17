@@ -127,7 +127,7 @@
                         <option value="shiPro" ${c.userInst.oekUsePro() and 'selected="selected"' or ""}>Shi Pro</option>
                     </select>
 
-                    Size:
+                    ${_('Size')}:
                     <input type="text" value="300" size="3" name="oekaki_x"/>
                     &#215;
                     <input type="text" value="300" size="3" name="oekaki_y"/>

@@ -38,6 +38,7 @@ import re
 from fc.lib.miscUtils import *
 from fc.lib.FakeUser import FakeUser
 from fc.lib.constantValues import *
+from pylons.i18n import get_lang, set_lang
 
 log = logging.getLogger(__name__)
 
@@ -80,6 +81,10 @@ class OrphieBaseController(BaseController):
                 if filterText(request.headers.get('User-Agent', '?')).startswith(ua):
                     self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest(), -1)
                     break
+
+        
+        if 'lang' in session:
+            set_lang(session['lang'])
 
     def sessUid(self):
         if g.OPT.allowLogin:

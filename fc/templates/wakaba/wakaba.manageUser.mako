@@ -6,7 +6,7 @@
     <form id="userEditReasonForm" method="post" action="${h.url_for('hsUserEditByPost', pid=c.pid)}">
 <table>
     <tr>
-        <td>Reason:</td>
+        <td>${_('Reason:')}</td>
         <td><input type='text' name='UIDViewReason'></td>
     </tr>
     <tr>

@@ -1,0 +1,1826 @@
+# Translations template for Orphereus.
+# Copyright (C) 2009 ORGANIZATION
+# This file is distributed under the same license as the Orphereus project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Orphereus 1.0.0\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2009-05-17 18:41+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.4\n"
+
+#: fc/controllers/OrphieBaseController.py:82
+#, python-format
+msgid "[AUTOMATIC BAN] Security alert type 1: %s"
+msgstr ""
+
+#: fc/controllers/fca.py:50 fc/controllers/fca.py:67 fc/controllers/fca.py:98
+#: fc/controllers/fca.py:107 fc/controllers/fca.py:123 fc/controllers/fca.py:136
+#: fc/controllers/fca.py:188 fc/controllers/fca.py:198 fc/controllers/fca.py:256
+#: fc/controllers/fca.py:325 fc/controllers/fca.py:352 fc/controllers/fca.py:420
+#: fc/controllers/fca.py:439 fc/controllers/fca.py:449 fc/controllers/fca.py:459
+#: fc/controllers/fca.py:476 fc/controllers/fcm.py:409
+msgid "No way! You aren't holy enough!"
+msgstr ""
+
+#: fc/controllers/fca.py:57 fc/controllers/fcm.py:431
+msgid "Index"
+msgstr ""
+
+#: fc/controllers/fca.py:62
+msgid "Settings management"
+msgstr ""
+
+#: fc/controllers/fca.py:74
+#, python-format
+msgid "'%s' isn't correct number, but '%s' must be an integer number."
+msgstr ""
+
+#: fc/controllers/fca.py:80
+#, python-format
+msgid "Changed %s from '%s' to '%s'"
+msgstr ""
+
+#: fc/controllers/fca.py:84
+msgid "Settings updated"
+msgstr ""
+
+#: fc/controllers/fca.py:88 fc/templates/wakaba/wakaba.frameMenu.mako:77
+#: fc/templates/wakaba/wakaba.menu.mako:39
+msgid "Logs"
+msgstr ""
+
+#: fc/controllers/fca.py:101
+msgid "Invites"
+msgstr ""
+
+#: fc/controllers/fca.py:110
+msgid "Invite creation"
+msgstr ""
+
+#: fc/controllers/fca.py:117
+#, python-format
+msgid "Generated invite id %s. Reason: %s"
+msgstr ""
+
+#: fc/controllers/fca.py:126
+msgid "Bans management"
+msgstr ""
+
+#: fc/controllers/fca.py:139
+#, python-format
+msgid "Editing ban %s"
+msgstr ""
+
+#: fc/controllers/fca.py:147
+msgid "New IP ban"
+msgstr ""
+
+#: fc/controllers/fca.py:151
+#, python-format
+msgid "Added ban no. %s"
+msgstr ""
+
+#: fc/controllers/fca.py:162
+msgid "Please check the format of IP addresses and masks."
+msgstr ""
+
+#: fc/controllers/fca.py:174
+#, python-format
+msgid "Updated ban no. %s, reason: %s"
+msgstr ""
+
+#: fc/controllers/fca.py:176
+msgid "Ban properties were updated"
+msgstr ""
+
+#: fc/controllers/fca.py:181
+#, python-format
+msgid "Deleted ban %s"
+msgstr ""
+
+#: fc/controllers/fca.py:182
+#, python-format
+msgid "Ban record no. %s deleted"
+msgstr ""
+
+#: fc/controllers/fca.py:191
+msgid "Extensions management"
+msgstr ""
+
+#: fc/controllers/fca.py:201
+#, python-format
+msgid "Editing extension %s"
+msgstr ""
+
+#: fc/controllers/fca.py:207
+msgid "Too long extension"
+msgstr ""
+
+#: fc/controllers/fca.py:237
+#, python-format
+msgid "Created extension %s"
+msgstr ""
+
+#: fc/controllers/fca.py:239
+msgid "Extension created"
+msgstr ""
+
+#: fc/controllers/fca.py:242
+#, python-format
+msgid "Edited extension %s"
+msgstr ""
+
+#: fc/controllers/fca.py:243
+msgid "Extension edited"
+msgstr ""
+
+#: fc/controllers/fca.py:247
+#, python-format
+msgid "Deleted extension %s"
+msgstr ""
+
+#: fc/controllers/fca.py:248
+msgid "Extension deleted"
+msgstr ""
+
+#: fc/controllers/fca.py:251
+msgid "Can't delete extension. Uploaded files with this extension exists."
+msgstr ""
+
+#: fc/controllers/fca.py:259 fc/templates/wakaba/wakaba.manageMappings.mako:7
+#: fc/templates/wakaba/wakaba.managementMenu.mako:23
+msgid "Manage mappings"
+msgstr ""
+
+#: fc/controllers/fca.py:279
+msgid "Incorrect input values"
+msgstr ""
+
+#: fc/controllers/fca.py:288
+msgid "This is not op-post"
+msgstr ""
+
+#: fc/controllers/fca.py:300
+#, python-format
+msgid "Removed tag %s from post %d"
+msgstr ""
+
+#: fc/controllers/fca.py:303
+msgid "Can't delete last tag!"
+msgstr ""
+
+#: fc/controllers/fca.py:308
+#, python-format
+msgid "Added tag %s to post %d"
+msgstr ""
+
+#: fc/controllers/fca.py:313
+msgid "Non-existent tag"
+msgstr ""
+
+#: fc/controllers/fca.py:328
+msgid "Boards management"
+msgstr ""
+
+#: fc/controllers/fca.py:354
+msgid "Edit board"
+msgstr ""
+
+#: fc/controllers/fca.py:399
+msgid "Board must be empty for deletion"
+msgstr ""
+
+#: fc/controllers/fca.py:402
+#, python-format
+msgid "Deleted board %s %s"
+msgstr ""
+
+#: fc/controllers/fca.py:408
+msgid "Updated board"
+msgstr ""
+
+#: fc/controllers/fca.py:409
+#, python-format
+msgid "Edited board %s %s"
+msgstr ""
+
+#: fc/controllers/fca.py:413
+#, python-format
+msgid "Board %s already exists!"
+msgstr ""
+
+#: fc/controllers/fca.py:415
+msgid "Board name should be non-empty and should contain only valid symbols"
+msgstr ""
+
+#: fc/controllers/fca.py:423
+msgid "Users management"
+msgstr ""
+
+#: fc/controllers/fca.py:434 fc/controllers/fca.py:578
+msgid "No such user exists."
+msgstr ""
+
+#: fc/controllers/fca.py:442
+msgid "User edit attemption"
+msgstr ""
+
+#: fc/controllers/fca.py:462
+msgid "User management"
+msgstr ""
+
+#: fc/controllers/fca.py:466
+msgid "No reason given!"
+msgstr ""
+
+#: fc/controllers/fca.py:468
+#, python-format
+msgid "Viewed UID for user '%s' from post '%s'. Reason: %s"
+msgstr ""
+
+#: fc/controllers/fca.py:471
+msgid "Post not found"
+msgstr ""
+
+#: fc/controllers/fca.py:489
+#, python-format
+msgid "Changed user %s isAdmin to %s"
+msgstr ""
+
+#: fc/controllers/fca.py:495
+#, python-format
+msgid "Changed right \"%s\" for user #%s to %s"
+msgstr ""
+
+#: fc/controllers/fca.py:506
+msgid "User access was changed"
+msgstr ""
+
+#: fc/controllers/fca.py:509
+msgid "This user is already banned"
+msgstr ""
+
+#: fc/controllers/fca.py:520
+#, python-format
+msgid "Unbanned user %s (%s days for reason \"%s\")"
+msgstr ""
+
+#: fc/controllers/fca.py:521
+msgid "User was unbanned"
+msgstr ""
+
+#: fc/controllers/fca.py:523
+msgid "This user is not banned"
+msgstr ""
+
+#: fc/controllers/fca.py:530
+#, python-format
+msgid "Performed posts lookup for user %s for \"%s\", quantity: %s"
+msgstr ""
+
+#: fc/controllers/fca.py:534
+msgid "No posts found"
+msgstr ""
+
+#: fc/controllers/fca.py:536
+msgid "You should specify lookup reason"
+msgstr ""
+
+#: fc/controllers/fca.py:538
+msgid "Incorrect quantity value"
+msgstr ""
+
+#: fc/controllers/fca.py:544 fc/controllers/fcc.py:385
+msgid "Password was successfully changed."
+msgstr ""
+
+#: fc/controllers/fca.py:545
+#, python-format
+msgid "Changed password for user \"%s\""
+msgstr ""
+
+#: fc/controllers/fca.py:546
+msgid "Security code changed"
+msgstr ""
+
+#: fc/controllers/fca.py:548 fc/controllers/fcc.py:387
+msgid "Incorrect security codes"
+msgstr ""
+
+#: fc/controllers/fca.py:550 fc/controllers/fcc.py:389 fc/controllers/fcc.py:449
+#: fc/controllers/fcp.py:66 fc/controllers/fcp.py:111 fc/controllers/fcp.py:231
+#: fc/controllers/fcp.py:252 fc/controllers/fcp.py:258
+msgid "Error"
+msgstr ""
+
+#: fc/controllers/fca.py:567
+#, python-format
+msgid "Removed legacy of %s for \"%s\" [%s]"
+msgstr ""
+
+#: fc/controllers/fca.py:569
+#, python-format
+msgid "Deleted user %s for \"%s\""
+msgstr ""
+
+#: fc/controllers/fca.py:570
+msgid "User deleted"
+msgstr ""
+
+#: fc/controllers/fca.py:573
+msgid "You should specify deletion reason"
+msgstr ""
+
+#: fc/controllers/fca.py:575
+msgid "You haven't rights to delete user"
+msgstr ""
+
+#: fc/controllers/fcc.py:80
+msgid "[AUTOMATIC BAN] Security alert type 2"
+msgstr ""
+
+#: fc/controllers/fcc.py:96
+#, python-format
+msgid "Board creation denied: %s"
+msgstr ""
+
+#: fc/controllers/fcc.py:117
+msgid "Incorrect page"
+msgstr ""
+
+#: fc/controllers/fcc.py:156 fc/lib/constantValues.py:94
+#: fc/templates/wakaba/wakaba.frameMenu.mako:13
+#: fc/templates/wakaba/wakaba.menu.mako:4
+msgid "Overview"
+msgstr ""
+
+#: fc/controllers/fcc.py:158 fc/templates/wakaba/wakaba.frameMenu.mako:16
+#: fc/templates/wakaba/wakaba.menu.mako:7
+msgid "Related threads"
+msgstr ""
+
+#: fc/controllers/fcc.py:241 fc/templates/wakaba/wakaba.menu.mako:9
+msgid "Home"
+msgstr ""
+
+#: fc/controllers/fcc.py:249
+msgid "Overview is disabled."
+msgstr ""
+
+#: fc/controllers/fcc.py:272
+msgid "No such post exist."
+msgstr ""
+
+#: fc/controllers/fcc.py:285
+msgid "You must specify post tagline."
+msgstr ""
+
+#: fc/controllers/fcc.py:333
+msgid "Profile is not avaiable to Anonymous users."
+msgstr ""
+
+#: fc/controllers/fcc.py:339 fc/templates/wakaba/wakaba.frameMenu.mako:69
+#: fc/templates/wakaba/wakaba.menu.mako:31
+#: fc/templates/wakaba/wakaba.profile.mako:3
+msgid "Profile"
+msgstr ""
+
+#: fc/controllers/fcc.py:379
+msgid "Password was NOT changed."
+msgstr ""
+
+#: fc/controllers/fcc.py:395
+msgid " Profile was updated."
+msgstr ""
+
+#: fc/controllers/fcc.py:413
+msgid "Deletion disabled"
+msgstr ""
+
+#: fc/controllers/fcc.py:450
+#, python-format
+msgid "Query too short (minimal length: %d)"
+msgstr ""
+
+#: fc/controllers/fcc.py:459 fc/templates/wakaba/wakaba.posts.mako:62
+msgid "Search"
+msgstr ""
+
+#: fc/controllers/fcc.py:502 fc/templates/wakaba/wakaba.finalAnonymization.mako:5
+msgid "Final Anonymization"
+msgstr ""
+
+#: fc/controllers/fcc.py:509
+msgid "Final Anonymity is disabled"
+msgstr ""
+
+#: fc/controllers/fcc.py:512
+msgid "Final Anonymity available only for registered users"
+msgstr ""
+
+#: fc/controllers/fcc.py:524
+#, python-format
+msgid "You are not author of post #%s"
+msgstr ""
+
+#: fc/controllers/fcc.py:531
+#, python-format
+msgid "Post #%d successfully anonymized"
+msgstr ""
+
+#: fc/controllers/fcc.py:534
+#, python-format
+msgid "Can't anomymize post #%d now, it will be allowed after %s (now: %s)"
+msgstr ""
+
+#: fc/controllers/fcc.py:537
+msgid "Nothing to anonymize"
+msgstr ""
+
+#: fc/controllers/fcc.py:558 fc/controllers/fcc.py:702
+msgid "Posting is disabled"
+msgstr ""
+
+#: fc/controllers/fcc.py:603
+msgid "No animation associated with this post"
+msgstr ""
+
+#: fc/controllers/fcc.py:622
+msgid "Can't post files without extension"
+msgstr ""
+
+#: fc/controllers/fcc.py:627
+#, python-format
+msgid "Extension \"%s\" is disallowed"
+msgstr ""
+
+#: fc/controllers/fcc.py:680
+msgid "Broken picture. Maybe it is interlaced PNG?"
+msgstr ""
+
+#: fc/controllers/fcc.py:738
+msgid "Incorrect Captcha value"
+msgstr ""
+
+#: fc/controllers/fcc.py:751
+msgid "Can't post into non-existent thread"
+msgstr ""
+
+#: fc/controllers/fcc.py:762
+msgid "You should specify at least one board"
+msgstr ""
+
+#: fc/controllers/fcc.py:767
+#, python-format
+msgid "Too many tags. Maximum allowed: %s"
+msgstr ""
+
+#: fc/controllers/fcc.py:783
+msgid "Crossposting disabled"
+msgstr ""
+
+#: fc/controllers/fcc.py:787
+msgid "Crossposting allowed only for service tags"
+msgstr ""
+
+#: fc/controllers/fcc.py:791
+msgid "Can't post with service tags only"
+msgstr ""
+
+#: fc/controllers/fcc.py:798
+#, python-format
+msgid "Tags restrictions violations:<br/> %s"
+msgstr ""
+
+#: fc/controllers/fcc.py:803
+msgid "Unacceptable combination of tags"
+msgstr ""
+
+#: fc/controllers/fcc.py:839
+msgid "Message is too long"
+msgstr ""
+
+#: fc/controllers/fcc.py:857
+msgid "Files are not allowed on this board"
+msgstr ""
+
+#: fc/controllers/fcc.py:860
+#, python-format
+msgid "File size (%d) exceeds the limit (%d)"
+msgstr ""
+
+#: fc/controllers/fcc.py:863
+#, python-format
+msgid "Image is too small. At least one side should be %d or more pixels."
+msgstr ""
+
+#: fc/controllers/fcc.py:888
+msgid "At least message or file should be specified"
+msgstr ""
+
+#: fc/controllers/fcc.py:898
+msgid "Replies without image are not allowed"
+msgstr ""
+
+#: fc/controllers/fcc.py:902
+msgid "Threads without image are not allowed"
+msgstr ""
+
+#: fc/controllers/fcp.py:63
+#, python-format
+msgid "You are banned on %s for %s days for the following reason:<br/>%s"
+msgstr ""
+
+#: fc/controllers/fcp.py:67 fc/controllers/fcp.py:253
+msgid "ORLY?"
+msgstr ""
+
+#: fc/controllers/fcp.py:112
+msgid "Authorization disabled"
+msgstr ""
+
+#: fc/controllers/fcp.py:181 fc/templates/wakaba/wakaba.frameMenu.mako:84
+#: fc/templates/wakaba/wakaba.menu.mako:55 fc/templates/wakaba/wakaba.menu.mako:57
+msgid "Login"
+msgstr ""
+
+#: fc/controllers/fcp.py:228
+msgid ""
+"Your Security Code was used during registration by another user. Contact "
+"administrator immediately please."
+msgstr ""
+
+#: fc/controllers/fcp.py:232
+msgid ""
+"You entered already existing password. Previous account was banned. Contact "
+"administrator please."
+msgstr ""
+
+#: fc/controllers/fcp.py:237
+#, python-format
+msgid "Utilized invite #%d [RID:%d]"
+msgstr ""
+
+#: fc/controllers/fcp.py:243 fc/templates/wakaba/wakaba.frameMenu.mako:88
+#: fc/templates/wakaba/wakaba.menu.mako:62
+msgid "Register"
+msgstr ""
+
+#: fc/controllers/fcp.py:249
+msgid "Banned"
+msgstr ""
+
+#: fc/controllers/fcp.py:259
+msgid "Excuse me, WTF are you?"
+msgstr ""
+
+#: fc/controllers/fcp.py:339
+#, python-format
+msgid "%s: thread #%d"
+msgstr ""
+
+#: fc/controllers/fcp.py:348
+#, python-format
+msgid "%s: %s"
+msgstr ""
+
+#: fc/controllers/fcp.py:376
+#, python-format
+msgid "Thread #%d"
+msgstr ""
+
+#: fc/controllers/fcp.py:379
+#, python-format
+msgid "#%d"
+msgstr ""
+
+#: fc/lib/constantValues.py:41
+msgid "Board title"
+msgstr ""
+
+#: fc/lib/constantValues.py:42
+msgid "Invisible bumps"
+msgstr ""
+
+#: fc/lib/constantValues.py:43
+msgid "Max tags per thread"
+msgstr ""
+
+#: fc/lib/constantValues.py:44
+msgid "Max tag length"
+msgstr ""
+
+#: fc/lib/constantValues.py:45
+msgid "Disallowed tag names"
+msgstr ""
+
+#: fc/lib/constantValues.py:46
+msgid "Admin-only tags"
+msgstr ""
+
+#: fc/lib/constantValues.py:47
+msgid "Cut post after X lines"
+msgstr ""
+
+#: fc/lib/constantValues.py:48
+msgid "Cut post after Y symbols"
+msgstr ""
+
+#: fc/lib/constantValues.py:49
+msgid "Logs available to users"
+msgstr ""
+
+#: fc/lib/constantValues.py:50
+msgid "Additional links"
+msgstr ""
+
+#: fc/lib/constantValues.py:51
+msgid "Menu section names"
+msgstr ""
+
+#: fc/lib/constantValues.py:55
+msgid "Album"
+msgstr ""
+
+#: fc/lib/constantValues.py:56 fc/templates/wakaba/wakaba.manageBoard.mako:29
+#: fc/templates/wakaba/wakaba.postForm.mako:47
+msgid "Title"
+msgstr ""
+
+#: fc/lib/constantValues.py:57
+msgid "Artist"
+msgstr ""
+
+#: fc/lib/constantValues.py:91 fc/templates/wakaba/wakaba.search.mako:35
+msgid "Thread"
+msgstr ""
+
+#: fc/lib/constantValues.py:92
+msgid "First page of current board"
+msgstr ""
+
+#: fc/lib/constantValues.py:93
+msgid "Current page of current board"
+msgstr ""
+
+#: fc/lib/constantValues.py:95
+msgid "First page of destination board"
+msgstr ""
+
+#: fc/lib/constantValues.py:96
+msgid "Referrer"
+msgstr ""
+
+#: fc/lib/miscUtils.py:101
+#, python-format
+msgid "Access attempt from %s for admin account!"
+msgstr ""
+
+#: fc/model/Post.py:296
+#, python-format
+msgid "Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s"
+msgstr ""
+
+#: fc/model/Post.py:298
+#, python-format
+msgid "Deleted thread %s (owner %s); tagline: %s; reason: %s"
+msgstr ""
+
+#: fc/model/Post.py:301
+#, python-format
+msgid "[self-moderation] Deleted post %s"
+msgstr ""
+
+#: fc/model/Post.py:303
+msgid "(file only)"
+msgstr ""
+
+#: fc/model/Tag.py:227
+#, python-format
+msgid "Too long. Maximal length: %s"
+msgstr ""
+
+#: fc/model/Tag.py:229
+msgid "Disabled"
+msgstr ""
+
+#: fc/model/User.py:112
+msgid "You should specify ban reason"
+msgstr ""
+
+#: fc/model/User.py:114
+msgid "You should specify ban time in days"
+msgstr ""
+
+#: fc/model/User.py:122
+#, python-format
+msgid "Banned user %d for %s days for reason \"%s\""
+msgstr ""
+
+#: fc/model/User.py:123
+msgid "User was banned"
+msgstr ""
+
+#: fc/model/User.py:131
+msgid "You have entered incorrect current security code!"
+msgstr ""
+
+#: fc/model/User.py:139
+msgid ""
+"Your have entered already existing Security Code. Both accounts was banned. "
+"Contact administrator immediately please."
+msgstr ""
+
+#: fc/model/User.py:141
+msgid ""
+"Your Security Code was used during profile update by another user. Contact "
+"administrator immediately please."
+msgstr ""
+
+#: fc/model/User.py:144
+msgid "You have entered already existing Security Code."
+msgstr ""
+
+#: fc/templates/std.banned.mako:15 fc/templates/std.ipBanned.mako:16
+msgid "You are banned!"
+msgstr ""
+
+#: fc/templates/std.banned.mako:16
+#, python-format
+msgid "You are banned for %s days for following reason:<br/>%s"
+msgstr ""
+
+#: fc/templates/std.banned.mako:18
+#, python-format
+msgid "Your UID Number: %d"
+msgstr ""
+
+#: fc/templates/std.banned.mako:21
+#, python-format
+msgid "%s"
+msgstr ""
+
+#: fc/templates/std.banned.mako:25 fc/templates/wakaba/wakaba.frameMenu.mako:81
+#: fc/templates/wakaba/wakaba.menu.mako:51
+msgid "Logout"
+msgstr ""
+
+#: fc/templates/std.error.mako:6 fc/templates/wakaba/wakaba.error.mako:5
+msgid "You are doing it wrong!"
+msgstr ""
+
+#: fc/templates/std.ipBanned.mako:17
+#, python-format
+msgid "You are banned on %s for %s days for following reason:<br/>%s"
+msgstr ""
+
+#: fc/templates/std.login.mako:7 fc/templates/std.register.mako:19
+#: fc/templates/actuators/anomach/std.login.mako:8
+#: fc/templates/wakaba/wakaba.login.mako:6
+#: fc/templates/wakaba/wakaba.register.mako:19
+msgid "Enter your security code"
+msgstr ""
+
+#: fc/templates/std.login.mako:10 fc/templates/actuators/anomach/std.login.mako:12
+#: fc/templates/wakaba/wakaba.login.mako:9
+msgid "Too many login attempts. Enter CAPTCHA please"
+msgstr ""
+
+#: fc/templates/std.login.mako:15 fc/templates/std.register.mako:32
+#: fc/templates/actuators/anomach/std.login.mako:17
+#: fc/templates/wakaba/wakaba.login.mako:14
+#: fc/templates/wakaba/wakaba.register.mako:30
+msgid "OK"
+msgstr ""
+
+#: fc/templates/std.register.mako:6 fc/templates/wakaba/wakaba.register.mako:6
+msgid "New UID"
+msgstr ""
+
+#: fc/templates/std.register.mako:9 fc/templates/wakaba/wakaba.register.mako:9
+msgid "Now you can enter your personal security code."
+msgstr ""
+
+#: fc/templates/std.register.mako:12 fc/templates/wakaba/wakaba.register.mako:12
+msgid "Warning: you can't use this link twice."
+msgstr ""
+
+#: fc/templates/std.register.mako:14 fc/templates/wakaba/wakaba.register.mako:14
+msgid "If you close browser now you'll loss your ability to join us."
+msgstr ""
+
+#: fc/templates/std.register.mako:21 fc/templates/wakaba/wakaba.register.mako:21
+msgid "Re-enter security code"
+msgstr ""
+
+#: fc/templates/std.register.mako:23 fc/templates/wakaba/wakaba.profile.mako:41
+#: fc/templates/wakaba/wakaba.register.mako:23
+#, python-format
+msgid "Security code should be at least %d symbols"
+msgstr ""
+
+#: fc/templates/std.register.mako:27 fc/templates/wakaba/wakaba.register.mako:26
+msgid "Enter captcha"
+msgstr ""
+
+#: fc/templates/std.rssPost.mako:17 fc/templates/wakaba/wakaba.postReply.mako:51
+#: fc/templates/wakaba/wakaba.search.mako:44
+msgid "File:"
+msgstr ""
+
+#: fc/templates/std.rssPost.mako:27 fc/templates/std.rssPost.mako:29
+#: fc/templates/wakaba/wakaba.postForm.mako:166
+#: fc/templates/wakaba/wakaba.postOp.mako:15
+#: fc/templates/wakaba/wakaba.postOp.mako:17
+#: fc/templates/wakaba/wakaba.postReply.mako:61
+#: fc/templates/wakaba/wakaba.postReply.mako:63
+msgid "Kbytes"
+msgstr ""
+
+#: fc/templates/std.rssPost.mako:43 fc/templates/wakaba/wakaba.postOp.mako:32
+#: fc/templates/wakaba/wakaba.postReply.mako:77
+#: fc/templates/wakaba/wakaba.search.mako:64
+msgid "Picture was removed by user or administrator"
+msgstr ""
+
+#: fc/templates/std.rssPost.mako:52 fc/templates/wakaba/wakaba.postForm.mako:136
+#: fc/templates/wakaba/wakaba.postOp.mako:117
+#: fc/templates/wakaba/wakaba.postReply.mako:92
+msgid "Animation"
+msgstr ""
+
+#: fc/templates/std.rssPost.mako:56
+#, python-format
+msgid "Replies: %s"
+msgstr ""
+
+#: fc/templates/std.static.Join.mako:3
+msgid "Join"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.error.mako:12
+msgid "Here is content of your post:"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.error.mako:19
+msgid "Title:"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.error.mako:23
+msgid "Message:"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.error.mako:28
+msgid "Tags:"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.finalAnonymization.mako:10
+msgid "Anonymize ALL posts older than this one"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.finalAnonymization.mako:20
+msgid "Yes, I want!"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.frameMenu.mako:7
+msgid "Special pages"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.frameMenu.mako:18
+msgid "Statistics"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.frameMenu.mako:36
+#: fc/templates/wakaba/wakaba.menu.mako:20
+msgid "Unnamed section"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.frameMenu.mako:63
+msgid "Additional"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.frameMenu.mako:71
+#: fc/templates/wakaba/wakaba.menu.mako:33
+msgid "Settings"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.frameMenu.mako:74
+#: fc/templates/wakaba/wakaba.menu.mako:36
+msgid "Holy Synod"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.frameMenu.mako:86
+#: fc/templates/wakaba/wakaba.menu.mako:60
+msgid "Kill session"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.frameMenu.mako:99
+msgid "Links"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.frameMenu.mako:122
+#: fc/templates/wakaba/wakaba.profile.mako:174
+msgid "User filters"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.home.mako:14
+msgid "Vital signs"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.home.mako:42
+#: fc/templates/wakaba/wakaba.manageBoards.mako:10
+#: fc/templates/wakaba/wakaba.postForm.mako:59
+msgid "Boards"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.home.mako:50
+msgid "Let my BOARDS go!"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.home.mako:55
+msgid "Special tags"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.home.mako:56
+msgid "Useful stuff is so useful"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.home.mako:61
+msgid "Tags"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.home.mako:63
+msgid "Every small TAG has hidden powers. And it has everything to become a BOARD"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.homeStatTable.mako:7
+msgid "Name"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.homeStatTable.mako:8
+msgid "Threads"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.homeStatTable.mako:9
+msgid "Posts"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.homeStatTable.mako:10
+msgid "Description"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.homeStatTable.mako:37
+msgid "Total"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.loginRedirect.mako:9
+msgid "Successfully logged in"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBan.mako:19
+msgid "Enable"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBan.mako:25
+#: fc/templates/wakaba/wakaba.manageBans.mako:16
+msgid "IP"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBan.mako:31
+msgid "Mask"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBan.mako:37
+#: fc/templates/wakaba/wakaba.manageBans.mako:19
+#: fc/templates/wakaba/wakaba.manageUser.mako:154
+#: fc/templates/wakaba/wakaba.manageUser.mako:174
+#: fc/templates/wakaba/wakaba.posts.mako:46
+msgid "Reason"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBan.mako:43
+msgid "No access at all"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBan.mako:49
+msgid "Date"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBan.mako:55
+#: fc/templates/wakaba/wakaba.manageBans.mako:21
+msgid "Period"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBan.mako:63
+#: fc/templates/wakaba/wakaba.manageBoard.mako:121
+#: fc/templates/wakaba/wakaba.manageExtension.mako:69
+#: fc/templates/wakaba/wakaba.manageSettings.mako:52
+#: fc/templates/wakaba/wakaba.manageUser.mako:112
+#: fc/templates/wakaba/wakaba.profile.mako:170
+msgid "Update"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBan.mako:64
+#: fc/templates/wakaba/wakaba.manageExtension.mako:70
+#: fc/templates/wakaba/wakaba.manageUser.mako:161
+#: fc/templates/wakaba/wakaba.profile.mako:178
+msgid "Delete"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBan.mako:66
+#: fc/templates/wakaba/wakaba.manageExtension.mako:72
+msgid "Create"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBans.mako:9
+msgid "Add new ban"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBans.mako:14
+msgid "ID"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBans.mako:15
+msgid "Active"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBans.mako:17
+msgid "Network mask"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBans.mako:18
+msgid "Full ban"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBans.mako:20
+msgid "Date given"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBans.mako:31
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:34
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:35
+#: fc/templates/wakaba/wakaba.postForm.mako:172
+#: fc/templates/wakaba/wakaba.postForm.mako:173
+msgid "yes"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBans.mako:31
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:34
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:35
+#: fc/templates/wakaba/wakaba.postForm.mako:172
+#: fc/templates/wakaba/wakaba.postForm.mako:173
+msgid "no"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:18
+msgid "Tag"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:35
+msgid "Special board rules (split with \";\")"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:41
+#: fc/templates/wakaba/wakaba.manageBoards.mako:9
+msgid "Section"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:47
+msgid "Persistent"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:53
+msgid "Service"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:54
+msgid "(Disable deletion during maintenance, place into special group)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:61
+msgid "Allow OPs without image"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:67
+msgid "Allow replies without image"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:73
+msgid "Allow files"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:79
+msgid "Allow spoilers"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:85
+msgid "Allow OP to delete his threads"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:91
+msgid "Allow OP to moderate thread"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:97
+msgid "Max filesize (bytes)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:103
+msgid "Minimal size for images (pixels)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:109
+msgid "Thumbnail size (pixels)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoard.mako:115
+msgid "DELETE BOARD"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageBoards.mako:4
+msgid "Create new board"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtension.mako:18
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:16
+msgid "Extension"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtension.mako:28
+msgid "Posting enabled"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtension.mako:34
+msgid "Open links in new window"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtension.mako:40
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:17
+msgid "Type"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtension.mako:47
+msgid "Thumbnail path"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtension.mako:48
+msgid "Relative to <b>staticPathWeb</b> from config"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtension.mako:55
+msgid "Thumbnail width"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtension.mako:61
+msgid "Thumbnail height"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:6
+msgid "Show statistics"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:8
+msgid "Add new extension"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:18
+msgid "Thumb Resolution"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:19
+msgid "Thumb Path"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:20
+msgid "Enabled"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:21
+msgid "New window"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageExtensions.mako:23
+msgid "Files posted"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageInvites.mako:20
+#: fc/templates/wakaba/wakaba.managementMenu.mako:29
+msgid "Generate invite"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageMappings.mako:5
+msgid "Enter post ID:"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageMappings.mako:25
+msgid "Remove"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageMappings.mako:34
+msgid "Append"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:14
+msgid "Show user info"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:36
+msgid "Access"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:39
+msgid "Admin"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:46
+msgid "Can delete posts"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:53
+msgid "Can make invite"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:61
+msgid "Can change settings"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:68
+msgid "Can manage boards"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:75
+msgid "Can manage extensions"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:82
+msgid "Can manage mappings"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:89
+msgid "Can run maintenance"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:96
+msgid "Can manage users"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:97
+msgid "(Suppresses by canChangeRights)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:106
+msgid "CAN CHANGE USER RIGHTS"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:115
+#: fc/templates/wakaba/wakaba.manageUser.mako:147
+msgid "Ban"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:119
+#: fc/templates/wakaba/wakaba.manageUser.mako:135
+msgid "Bantime (days)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:125
+#: fc/templates/wakaba/wakaba.manageUser.mako:141
+msgid "Ban reason"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:131
+msgid "Unban"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:151
+msgid "Delete user"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:157
+msgid "Remove all users's posts"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:165
+msgid "Look up posts"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:168
+msgid "Quantity of last posts to view"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:180
+msgid "Look up"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:184
+msgid "Change security code"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:187
+#: fc/templates/wakaba/wakaba.profile.mako:32
+msgid "New Security Code"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:191
+#: fc/templates/wakaba/wakaba.profile.mako:36
+msgid "Repeat Security Code"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUser.mako:195
+msgid "Change"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUsers.mako:14
+msgid "UID or uidNumber"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.manageUsers.mako:17
+msgid "View"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.management.mako:5
+msgid "Holy Synode"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.managementIndex.mako:3
+msgid "Current members of Holy Synod"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.managementMenu.mako:3
+msgid "Manage settings"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.managementMenu.mako:7
+msgid "Manage boards"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.managementMenu.mako:11
+msgid "Manage users"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.managementMenu.mako:15
+msgid "Manage bans"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.managementMenu.mako:19
+msgid "Manage extensions"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.managementMenu.mako:26
+msgid "View logs"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.managementMenu.mako:33
+msgid "Maintenance"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtn.mako:5
+msgid "Maintenance panel"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:4
+msgid "Obligatory actions"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:10
+msgid "Run all actions"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:20
+msgid "Destroy unused oekaki IDs (older than one day)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:30
+msgid "Destroy unused invites (older than one week)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:40
+msgid "Destroy IP trackers (older than one day)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:50
+msgid "Remove old bans"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:60
+msgid "Integrity checks"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:70
+msgid "Optional actions"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:76
+msgid "Update caches"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:86
+msgid "Update statistics"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:96
+msgid "Remove empty tags"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:106
+msgid "Ban ALL users without posts"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:116
+msgid "Reparse posts which can be reparsed"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.mtnIndex.mako:126
+msgid "Sort uploads"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:4
+msgid "Back"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:11
+#: fc/templates/wakaba/wakaba.postOp.mako:100
+msgid "Reply"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:13
+msgid "New thread"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:35
+msgid "Sage"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:42
+msgid "Spoiler"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:54
+msgid "Text"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:68
+msgid "Captcha"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:77
+#: fc/templates/wakaba/wakaba.posts.mako:50
+msgid "Password"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:86
+msgid "File"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:92
+msgid "Go to"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:123
+msgid "Oekaki"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:130
+msgid "Size"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:135
+msgid "Selfy"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:139
+#: fc/templates/wakaba/wakaba.postOp.mako:98
+#: fc/templates/wakaba/wakaba.postReply.mako:41
+msgid "Draw"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:156
+msgid "Board settings"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:165
+msgid "Minimum picture size"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:166
+msgid "Maximum file size"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:167
+msgid "Thumbnail size"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:168
+msgid "Images"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:168
+#: fc/templates/wakaba/wakaba.postForm.mako:169
+#: fc/templates/wakaba/wakaba.postForm.mako:170
+#: fc/templates/wakaba/wakaba.postForm.mako:171
+msgid "not"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:168
+#: fc/templates/wakaba/wakaba.postForm.mako:169
+#: fc/templates/wakaba/wakaba.postForm.mako:170
+#: fc/templates/wakaba/wakaba.postForm.mako:171
+msgid "allowed"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:169
+msgid "Imageless threads"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:170
+msgid "Imageless posts"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:171
+msgid "Spoiler alerts"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:172
+msgid "Op can delete thread"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:173
+msgid "Op can moderate thread"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:175
+msgid "Additional information"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:177
+msgid "Enabled extensions"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:178
+msgid "Final Anonymity"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:178
+#: fc/templates/wakaba/wakaba.postForm.mako:182
+msgid "turned"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:178
+#: fc/templates/wakaba/wakaba.postForm.mako:182
+msgid "off"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:178
+#: fc/templates/wakaba/wakaba.postForm.mako:182
+msgid "on"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:179
+msgid "(with marks)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:180
+msgid "(without marks)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:182
+msgid "Board-wide prooflabels"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:183
+msgid "Markup and features"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postForm.mako:188
+msgid "Board-specific rules:"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postOp.mako:77
+msgid "Posted in"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postOp.mako:90
+msgid "Hide"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postOp.mako:92
+#: fc/templates/wakaba/wakaba.posts.mako:30
+#: fc/templates/wakaba/wakaba.profile.mako:196
+msgid "Unhide"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postOp.mako:102
+msgid "Read"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postOp.mako:109
+#: fc/templates/wakaba/wakaba.postReply.mako:84
+msgid "Comment is too long."
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postOp.mako:109
+#: fc/templates/wakaba/wakaba.postReply.mako:84
+msgid "Full version"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postOp.mako:121
+#, python-format
+msgid "%s posts omitted."
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postOp.mako:121
+msgid "Expand thread"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postReply.mako:13
+msgid "[REMOVABLE]"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postReply.mako:67
+#: fc/templates/wakaba/wakaba.search.mako:53
+msgid "This is resized copy. Click it to view original image"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.posts.mako:29
+#, python-format
+msgid "Hidden thread <a href=\"%s\">#%s</a> (%s replies) posted in /%s/"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.posts.mako:52
+msgid "Only file"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.posts.mako:53
+msgid "Delete post(s)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postsLookup.mako:6
+msgid "Post number"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.postsLookup.mako:7
+msgid "Timestamp"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:21
+msgid "Security"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:24
+msgid "UID"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:28
+msgid "Current Security Code"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:42
+msgid "Leave this fields empty if you don't wish to change your security code and UID"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:47
+msgid "You are in anonymous mode now. Settings will be saved in cookies"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:51
+msgid "Customization"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:54
+msgid "Threads per page"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:58
+msgid "Replies per thread"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:62
+msgid "Mix old threads into boards"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:67
+msgid "Use frames"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:72
+msgid "Hide long comments"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:76
+msgid "Use AJAX hints"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:80
+msgid "Expand images in threads"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:84
+msgid "Use initial title shrinking"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:88
+msgid "Max size to expand"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:89
+msgid "(Stricter condition will be used)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:98
+msgid "Home filter exclusions"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:99
+msgid "(You can ignore only existing tags)"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:104
+msgid "By default Go To"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:122
+msgid "Template"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:139
+msgid "Style"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:155
+msgid "Oekaki defaults"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:158
+msgid "Use Selfy"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:162
+msgid "Record animation"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:166
+msgid "Use Shi Pro"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:178
+msgid "Edit"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:183
+msgid "New filter"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:187
+msgid "Add"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:191
+msgid "Hidden threads"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.profile.mako:195
+#, python-format
+msgid "Thread <a href=\"%s\">#%s</a> (%s replies) posted in %s"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.search.mako:4
+msgid "Found"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.search.mako:9
+#: fc/templates/wakaba/wakaba.search.mako:80
+msgid "Search again"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.search.mako:10
+msgid "Help"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.search.mako:37
+msgid "from"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.static.donate.mako:4
+msgid "donate"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.static.finalAnonymity.mako:4
+msgid "finalAnonymization"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.static.markup.mako:4
+msgid "markup"
+msgstr ""
+
+#: fc/templates/wakaba/wakaba.static.rules.mako:4
+msgid "rules"
+msgstr ""
+

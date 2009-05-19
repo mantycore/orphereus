@@ -82,9 +82,7 @@ class OrphieBaseController(BaseController):
                     self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest(), -1)
                     break
 
-        #add_fallback('en')
-        
-        if (len(str(self.userInst.lang()))==2):
+        if self.userInst.isValid() and self.userInst.lang():
             set_lang(self.userInst.lang())
 
     def sessUid(self):

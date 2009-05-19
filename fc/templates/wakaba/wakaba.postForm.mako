@@ -47,7 +47,7 @@
             <td class="postblock">${_('Title')}</td>
             <td>
                 <input type="text" name="title" size="35" />
-                <input type="submit" value="Post" />
+                <input type="submit" value="${_('Post')}" />
             </td>
         </tr>
         <tr id="trcomment">

@@ -53,6 +53,11 @@ class OptHolder(object):
         self.filesPathWeb=config['core.filesPathWeb']
         self.templates = config['core.templates'].split(',')
         self.styles = config['core.styles'].split(',')
+        
+        self.langs = list()
+        self.langs.append('Default')
+        self.langs.extend(config['core.languages'].split(','))
+        
         self.actuator = config['core.actuator']
         self.secondaryIndex = (config['core.secondaryIndex'] == 'true')
         self.vitalSigns = (config['core.vitalSigns'] == 'true')

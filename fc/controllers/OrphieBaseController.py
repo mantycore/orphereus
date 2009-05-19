@@ -82,9 +82,10 @@ class OrphieBaseController(BaseController):
                     self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest(), -1)
                     break
 
+        #add_fallback('en')
         
-        if 'lang' in session:
-            set_lang(session['lang'])
+        if (len(str(self.userInst.lang()))==2):
+            set_lang(self.userInst.lang())
 
     def sessUid(self):
         if g.OPT.allowLogin:
@@ -142,7 +143,9 @@ class OrphieBaseController(BaseController):
             anonCaptId = session.get('anonCaptId', False)
             if not anonCaptId or not Captcha.exists(anonCaptId):
                 #log.debug('recreate')
+                oldLang = h.setLang(self.userInst.cLang())
                 captcha = Captcha.create()
+                h.setLang(oldLang)
                 session['anonCaptId'] = captcha.id
                 session.save()
                 c.captcha = captcha
@@ -151,7 +154,7 @@ class OrphieBaseController(BaseController):
 
             remPassCookie = request.cookies.get('orhpieRemPass', randomStr())
             c.remPass = remPassCookie
-            response.set_cookie('orhpieRemPass', str(remPassCookie), max_age=3600)
+            #response.set_cookie('orhpieRemPass', str(remPassCookie), max_age=3600)
 
     def render(self, page, tmplName = None, **options):
         tname = 'std'

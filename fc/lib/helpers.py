@@ -36,6 +36,8 @@ import socket, struct
 import logging
 log = logging.getLogger(__name__)
 
+from pylons.i18n import get_lang, set_lang
+
 def postUrl(threadId, postId):
     return '%s#i%s' % (url_for('thread', post = threadId and threadId or postId), postId)
 
@@ -86,6 +88,16 @@ def dottedToInt(ipStr):
 def intToDotted(n):
     return socket.inet_ntoa(struct.pack('!L',n))
 
-
-
-
+def setLang(lang):
+    log.debug('called setlang for %s' %lang)
+    if (lang and (len(lang)==2)):
+        oldLang = get_lang()
+        set_lang(lang)
+        return oldLang
+    
+def makeLangValid(lang):
+    if lang:
+        if (len(lang)==2):
+            return  lang
+        else:
+            return ''

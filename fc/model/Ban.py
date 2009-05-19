@@ -77,11 +77,6 @@ class Ban(object):
         self.enabled = enabled
         meta.Session.commit()
 
-    def banInfo(self,ip):
-        log.debug(h.intToDotted(ip))
-        ban = self.getBan(ip)
-        return ban
-    
     @staticmethod
     def getBans():
         return Ban.query.all()         

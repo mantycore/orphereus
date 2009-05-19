@@ -66,6 +66,8 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("canManageExtensions", sa.types.Boolean, nullable=True),
     sa.Column("canManageMappings", sa.types.Boolean, nullable=True),
     sa.Column("canRunMaintenance", sa.types.Boolean, nullable=True),
+    sa.Column("lang", sa.types.String(2), nullable=False),
+    sa.Column("cLang", sa.types.String(2), nullable=False),
     )
 
 class UserOptions(object):
@@ -111,4 +113,8 @@ class UserOptions(object):
         optionsObject.canManageExtensions = False
         optionsObject.canManageMappings = False
         optionsObject.canRunMaintenance = False
+        optionsObject.lang=''
+        optionsObject.cLang=''
+        
+        
         

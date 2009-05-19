@@ -31,6 +31,8 @@ from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 
+from pylons.i18n import get_lang, set_lang
+
 from webhelpers.feedgenerator import Atom1Feed, Rss201rev2Feed
 
 log = logging.getLogger(__name__)
@@ -83,6 +85,9 @@ class FcpController(OrphieBaseController):
 
     def captchaPic(self, cid):
         # TODO: fix shitty code
+        #log.debug('user cap lang: %s' %c.userInst.cLang())
+        h.set_lang(str(c.userInst.cLang()))
+            
         sessionCid = None
         if session.has_key('anonCaptId'):
             sessionCid = session['anonCaptId']
@@ -135,7 +140,9 @@ class FcpController(OrphieBaseController):
                 captcha = Captcha.getCaptcha(tracker.cid)
 
             if not captcha:
+                oldLang = h.setLang(self.userInst.cLang())
                 captcha = Captcha.create()
+                h.setLang(oldLang)
                 tracker.cid = captcha.id
                 meta.Session.commit()
 
@@ -155,7 +162,9 @@ class FcpController(OrphieBaseController):
                     captchaOk = captcha.test(captval)
                     captcha = False
                     if not captchaOk:
+                        oldLang = h.setLang(self.userInst.cLang())
                         captcha = Captcha.create()
+                        h.setLang(oldLang)
                         tracker.cid = captcha.id
 
             if user and captchaOk:
@@ -212,7 +221,9 @@ class FcpController(OrphieBaseController):
                 session['cid'] = None
                 session.save()
             if not captchaOk:
+                oldLang = h.setLang(self.userInst.cLang())
                 captcha = Captcha.create()
+                h.setLang(oldLang)
                 session['cid'] = captcha.id
                 session.save()
                 c.captcha = captcha

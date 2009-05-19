@@ -57,6 +57,7 @@ import logging
 log = logging.getLogger(__name__)
 
 from fc.model import meta
+from pylons.i18n import get_lang, set_lang, _
 
 t_captchas = sa.Table("captcha", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key=True),
@@ -66,15 +67,23 @@ t_captchas = sa.Table("captcha", meta.metadata,
     )
 
 def randomStr(min = 6, max = 8):
-    #alphabet = string.ascii_lowercase + string.digits + '$%#@'
-    vowels = "euoa"
-    consonants = "qwrtypsdfghjkzxcvbnm"
+    vowels = _("euoa")
+    consonants = _("qwrtypsdfghjkzxcvbnm")
     str=''
-
-    for x in range(0, random.randint(min ,max) / 2): #random.sample(alphabet, random.randint(min,max)):
+    #log.debug('using in gen: %s' %get_lang())
+    for x in range(0, random.randint(min ,max) / 2): 
         str += random.choice(consonants) + random.choice(vowels)
 
     return str
+
+def force_unicode(string, encoding='utf-8'):
+    try:
+        if type(string) is str:
+            string = string.decode(encoding)
+        if type(string) is not unicode:
+            string = unicode(string)
+    finally:
+        return string
 
 class Captcha(object):
     def __init__(self, text):
@@ -86,9 +95,9 @@ class Captcha(object):
         meta.Session.commit()
 
     def test(self, text, removeOnlyIncorrect = False):
-        ret = (self.text == text)
-        #log.debug("recieved: %s" %text)
-        #log.debug("self: %s" %self.text)
+        ret = (force_unicode(self.text) == force_unicode(text))
+        log.debug("recieved: %s" %text)
+        log.debug("self: %s" %self.text)
         #log.debug(str(self) +  "  " + str(self.id))
         if not ret or (ret and not removeOnlyIncorrect):
             #log.debug("del id %s " %self.text)
@@ -120,7 +129,7 @@ class Captcha(object):
         if captcha and captcha.content:
             return captcha.content
         elif captcha:
-            text = captcha.text
+            text = force_unicode(captcha.text)
 
             size = (150, 40)
             cgen = CaptchaGenerator(text, font)

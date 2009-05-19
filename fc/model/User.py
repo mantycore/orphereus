@@ -30,6 +30,8 @@ from fc.model.UserFilters import UserFilters
 from fc.lib.miscUtils import isNumber, toLog, filterText
 from fc.lib.constantValues import *
 
+import fc.lib.helpers as h
+
 import datetime
 import hashlib
 import re
@@ -212,6 +214,16 @@ class User(object):
         if value:
             self.options.style = value
         return self.options.style
+
+    def lang(self, value = None):
+        if value:
+            self.options.lang = h.makeLangValid(value)
+        return self.options.lang
+
+    def cLang(self, value = None):
+        if value:
+            self.options.cLang = h.makeLangValid(value)
+        return self.options.cLang
 
     def template(self, value = None):
         if value:

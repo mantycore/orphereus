@@ -108,6 +108,12 @@ class FakeUser(object):
     def style(self, value = None):
         return self.sessValue('style', value, self.__user.options.style)
 
+    def lang(self, value = None):
+        return self.sessValue('lang', h.makeLangValid(value), self.__user.options.lang)
+
+    def cLang(self, value = None):
+        return self.sessValue('cLang', h.makeLangValid(value), self.__user.options.cLang)
+
     def template(self, value = None):
         return self.sessValue('template', value, self.__user.options.template)
 

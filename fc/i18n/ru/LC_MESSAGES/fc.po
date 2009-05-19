@@ -1,16 +1,16 @@
 # Russian translations for Orphereus.
-# Copyright (C) 2009 ORGANIZATION
+# Copyright (C) 2009 Hedger
 # This file is distributed under the same license as the Orphereus project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# FIRST AUTHOR <tehHedger@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Orphereus 1.0.0\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"Report-Msgid-Bugs-To: anoma.team@gmail.com\n"
 "POT-Creation-Date: 2009-05-17 01:31+0400\n"
-"PO-Revision-Date: 2009-05-17 18:41+0400\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: ru <LL@li.org>\n"
+"PO-Revision-Date: 2009-05-19 19:07+0400\n"
+"Last-Translator: Hedger tehHedger@gmail.com\n"
+"Language-Team: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 "MIME-Version: 1.0\n"
@@ -250,7 +250,7 @@ msgstr ""
 msgid "Viewed UID for user '%s' from post '%s'. Reason: %s"
 msgstr "Просмотр UID пользователя '%s' (сообщение '%s'). Причина: %s"
 
-#: fc/controllers/fca.py:471
+#: fc/controllers/fca.py:471 fc/templates/wakaba/wakaba.jsStrings.mako:4
 msgid "Post not found"
 msgstr "Сообщение не найдено."
 
@@ -302,7 +302,7 @@ msgstr "Необходимо указать причину поиска сооб
 msgid "Incorrect quantity value"
 msgstr "Неверное число сообщений."
 
-#: fc/controllers/fca.py:544 fc/controllers/fcc.py:385
+#: fc/controllers/fca.py:544 fc/controllers/fcc.py:393
 msgid "Password was successfully changed."
 msgstr "Пароль изменён."
 
@@ -315,14 +315,14 @@ msgstr "Изменён пароль пользователя \"%s\""
 msgid "Security code changed"
 msgstr "Код безопасности изменён."
 
-#: fc/controllers/fca.py:548 fc/controllers/fcc.py:387
+#: fc/controllers/fca.py:548 fc/controllers/fcc.py:395
 msgid "Incorrect security codes"
 msgstr "Неверные коды безопасности"
 
-#: fc/controllers/fca.py:550 fc/controllers/fcc.py:389
-#: fc/controllers/fcc.py:449 fc/controllers/fcp.py:66 fc/controllers/fcp.py:111
-#: fc/controllers/fcp.py:231 fc/controllers/fcp.py:252
-#: fc/controllers/fcp.py:258
+#: fc/controllers/fca.py:550 fc/controllers/fcc.py:397
+#: fc/controllers/fcc.py:459 fc/controllers/fcp.py:68 fc/controllers/fcp.py:116
+#: fc/controllers/fcp.py:242 fc/controllers/fcp.py:263
+#: fc/controllers/fcp.py:269
 msgid "Error"
 msgstr "Ошибка"
 
@@ -347,6 +347,10 @@ msgstr "Укажите причину удаления."
 #: fc/controllers/fca.py:575
 msgid "You haven't rights to delete user"
 msgstr "Недостаточно прав для удаления пользователя."
+
+#: fc/controllers/fcajax.py:168 fc/templates/wakaba/wakaba.jsStrings.mako:3
+msgid "Collapse thread"
+msgstr "Свернуть тред"
 
 #: fc/controllers/fcc.py:80
 msgid "[AUTOMATIC BAN] Security alert type 2"
@@ -392,140 +396,144 @@ msgstr "Укажите список тэгов."
 msgid "Profile is not avaiable to Anonymous users."
 msgstr "Анонимные пользователи не имеют доступ к профилю."
 
-#: fc/controllers/fcc.py:339 fc/templates/wakaba/wakaba.frameMenu.mako:69
+#: fc/controllers/fcc.py:340 fc/templates/wakaba/wakaba.frameMenu.mako:69
 #: fc/templates/wakaba/wakaba.menu.mako:31
 #: fc/templates/wakaba/wakaba.profile.mako:3
 msgid "Profile"
 msgstr "Профиль"
 
-#: fc/controllers/fcc.py:379
+#: fc/controllers/fcc.py:387
 msgid "Password was NOT changed."
 msgstr "Пароль не изменён."
 
-#: fc/controllers/fcc.py:395
+#: fc/controllers/fcc.py:403
 msgid " Profile was updated."
 msgstr " Профиль обновлён."
 
-#: fc/controllers/fcc.py:413
+#: fc/controllers/fcc.py:405
+msgid " Reload page for language changes to take effect."
+msgstr " Обновите страницу для отображения изменений языка."
+
+#: fc/controllers/fcc.py:423
 msgid "Deletion disabled"
 msgstr "Удаление запрещено"
 
-#: fc/controllers/fcc.py:450
+#: fc/controllers/fcc.py:460
 #, python-format
 msgid "Query too short (minimal length: %d)"
 msgstr "Слишком короткий запрос (минимальная длина: %d)"
 
-#: fc/controllers/fcc.py:459 fc/templates/wakaba/wakaba.posts.mako:62
+#: fc/controllers/fcc.py:469 fc/templates/wakaba/wakaba.posts.mako:62
 msgid "Search"
 msgstr "Поиск"
 
-#: fc/controllers/fcc.py:502
+#: fc/controllers/fcc.py:512
 #: fc/templates/wakaba/wakaba.finalAnonymization.mako:5
 msgid "Final Anonymization"
 msgstr "Полная анонимизация"
 
-#: fc/controllers/fcc.py:509
+#: fc/controllers/fcc.py:519
 msgid "Final Anonymity is disabled"
 msgstr "Полная анонимизация запрещена."
 
-#: fc/controllers/fcc.py:512
+#: fc/controllers/fcc.py:522
 msgid "Final Anonymity available only for registered users"
 msgstr "Полная анонимизация доступна только зарегистированным пользователям."
 
-#: fc/controllers/fcc.py:524
+#: fc/controllers/fcc.py:534
 #, python-format
 msgid "You are not author of post #%s"
 msgstr "Вы - не автор поста #%s"
 
-#: fc/controllers/fcc.py:531
+#: fc/controllers/fcc.py:541
 #, python-format
 msgid "Post #%d successfully anonymized"
 msgstr "Пост #%d анонимизирован."
 
-#: fc/controllers/fcc.py:534
+#: fc/controllers/fcc.py:544
 #, python-format
 msgid "Can't anomymize post #%d now, it will be allowed after %s (now: %s)"
 msgstr ""
 "Нельзя анонимизировать пост #%d прямо сейчас, это можно будет сделать \"\n"
 "\"через %s (сейчас: %s)"
 
-#: fc/controllers/fcc.py:537
+#: fc/controllers/fcc.py:547
 msgid "Nothing to anonymize"
 msgstr "Нечего анонимизировать."
 
-#: fc/controllers/fcc.py:558 fc/controllers/fcc.py:702
+#: fc/controllers/fcc.py:568 fc/controllers/fcc.py:712
 msgid "Posting is disabled"
 msgstr "Постинг запрещён."
 
-#: fc/controllers/fcc.py:603
+#: fc/controllers/fcc.py:613
 msgid "No animation associated with this post"
 msgstr "С этим сообщением не связано анимации."
 
-#: fc/controllers/fcc.py:622
+#: fc/controllers/fcc.py:632
 msgid "Can't post files without extension"
 msgstr "Нельзя постить файлы без расширения."
 
-#: fc/controllers/fcc.py:627
+#: fc/controllers/fcc.py:637
 #, python-format
 msgid "Extension \"%s\" is disallowed"
 msgstr "Расширение \"%s\" не разрешено."
 
-#: fc/controllers/fcc.py:680
+#: fc/controllers/fcc.py:690
 msgid "Broken picture. Maybe it is interlaced PNG?"
 msgstr "Некорректный файл. Может, он чересстрочный PNG?"
 
-#: fc/controllers/fcc.py:738
+#: fc/controllers/fcc.py:748
 msgid "Incorrect Captcha value"
 msgstr "Неверно введена капча."
 
-#: fc/controllers/fcc.py:751
+#: fc/controllers/fcc.py:761
 msgid "Can't post into non-existent thread"
 msgstr "Тред не существует."
 
-#: fc/controllers/fcc.py:762
+#: fc/controllers/fcc.py:772
 msgid "You should specify at least one board"
 msgstr "Необходимо указать как минимум одну доску."
 
-#: fc/controllers/fcc.py:767
+#: fc/controllers/fcc.py:777
 #, python-format
 msgid "Too many tags. Maximum allowed: %s"
 msgstr "Слишком много тэгов. Максимальное число: %s"
 
-#: fc/controllers/fcc.py:783
+#: fc/controllers/fcc.py:793
 msgid "Crossposting disabled"
 msgstr "Кросс-постинг запрещён."
 
-#: fc/controllers/fcc.py:787
+#: fc/controllers/fcc.py:797
 msgid "Crossposting allowed only for service tags"
 msgstr "Кросс-постинг разрешён только для служебных тегов."
 
-#: fc/controllers/fcc.py:791
+#: fc/controllers/fcc.py:801
 msgid "Can't post with service tags only"
 msgstr "Нельзя постить только со служебными тэгами."
 
-#: fc/controllers/fcc.py:798
+#: fc/controllers/fcc.py:808
 #, python-format
 msgid "Tags restrictions violations:<br/> %s"
 msgstr "Нарушение разрешений по тегу: <br/> %s"
 
-#: fc/controllers/fcc.py:803
+#: fc/controllers/fcc.py:813
 msgid "Unacceptable combination of tags"
 msgstr "Недопустимое сочетание тегов."
 
-#: fc/controllers/fcc.py:839
+#: fc/controllers/fcc.py:849
 msgid "Message is too long"
 msgstr "Сообщение слишком длинное."
 
-#: fc/controllers/fcc.py:857
+#: fc/controllers/fcc.py:867
 msgid "Files are not allowed on this board"
 msgstr "На этой доске нельзя размещать файлы."
 
-#: fc/controllers/fcc.py:860
+#: fc/controllers/fcc.py:870
 #, python-format
 msgid "File size (%d) exceeds the limit (%d)"
 msgstr "Размер файла (%d байт) превышает максимально разрешённый (%d байт)."
 
-#: fc/controllers/fcc.py:863
+#: fc/controllers/fcc.py:873
 #, python-format
 msgid "Image is too small. At least one side should be %d or more pixels."
 msgstr ""
@@ -533,38 +541,38 @@ msgstr ""
 "\n"
 "\"пикселей."
 
-#: fc/controllers/fcc.py:888
+#: fc/controllers/fcc.py:898
 msgid "At least message or file should be specified"
 msgstr "Необходимо либо присоединить файл, либо написать сообщение."
 
-#: fc/controllers/fcc.py:898
+#: fc/controllers/fcc.py:908
 msgid "Replies without image are not allowed"
 msgstr "Ответы без изображений запрещены."
 
-#: fc/controllers/fcc.py:902
+#: fc/controllers/fcc.py:912
 msgid "Threads without image are not allowed"
 msgstr "Создание треда без изображения не разрешено."
 
-#: fc/controllers/fcp.py:63
+#: fc/controllers/fcp.py:65
 #, python-format
 msgid "You are banned on %s for %s days for the following reason:<br/>%s"
 msgstr "Вы забанены %s на %s дней по причине:<br/>%s"
 
-#: fc/controllers/fcp.py:67 fc/controllers/fcp.py:253
+#: fc/controllers/fcp.py:69 fc/controllers/fcp.py:264
 msgid "ORLY?"
 msgstr ""
 
-#: fc/controllers/fcp.py:112
+#: fc/controllers/fcp.py:117
 msgid "Authorization disabled"
 msgstr "Вход запрещён."
 
-#: fc/controllers/fcp.py:181 fc/templates/wakaba/wakaba.frameMenu.mako:84
+#: fc/controllers/fcp.py:190 fc/templates/wakaba/wakaba.frameMenu.mako:84
 #: fc/templates/wakaba/wakaba.menu.mako:55
 #: fc/templates/wakaba/wakaba.menu.mako:57
 msgid "Login"
 msgstr "Авторизация"
 
-#: fc/controllers/fcp.py:228
+#: fc/controllers/fcp.py:239
 msgid ""
 "Your Security Code was used during registration by another user. Contact "
 "administrator immediately please."
@@ -572,7 +580,7 @@ msgstr ""
 "Ваш код безопасности был использован при регистрации другим \"\n"
 "\"пользователем. Свяжитесь с администрацией."
 
-#: fc/controllers/fcp.py:232
+#: fc/controllers/fcp.py:243
 msgid ""
 "You entered already existing password. Previous account was banned. "
 "Contact administrator please."
@@ -580,40 +588,40 @@ msgstr ""
 "Вы ввели уже существующий пароль. Предыдущий аккаунт был заблокирован.\"\n"
 "\"Свяжитесь с администрацией."
 
-#: fc/controllers/fcp.py:237
+#: fc/controllers/fcp.py:248
 #, python-format
 msgid "Utilized invite #%d [RID:%d]"
 msgstr ""
 
-#: fc/controllers/fcp.py:243 fc/templates/wakaba/wakaba.frameMenu.mako:88
+#: fc/controllers/fcp.py:254 fc/templates/wakaba/wakaba.frameMenu.mako:88
 #: fc/templates/wakaba/wakaba.menu.mako:62
 msgid "Register"
 msgstr "Регистрация"
 
-#: fc/controllers/fcp.py:249
+#: fc/controllers/fcp.py:260
 msgid "Banned"
 msgstr "Бан"
 
-#: fc/controllers/fcp.py:259
+#: fc/controllers/fcp.py:270
 msgid "Excuse me, WTF are you?"
 msgstr "Ты ктоааа?!+"
 
-#: fc/controllers/fcp.py:339
+#: fc/controllers/fcp.py:350
 #, python-format
 msgid "%s: thread #%d"
 msgstr "%s: тред #%d"
 
-#: fc/controllers/fcp.py:348
+#: fc/controllers/fcp.py:359
 #, python-format
 msgid "%s: %s"
 msgstr ""
 
-#: fc/controllers/fcp.py:376
+#: fc/controllers/fcp.py:387
 #, python-format
 msgid "Thread #%d"
 msgstr "Тред #%d"
 
-#: fc/controllers/fcp.py:379
+#: fc/controllers/fcp.py:390
 #, python-format
 msgid "#%d"
 msgstr ""
@@ -700,6 +708,14 @@ msgstr "Реферер"
 msgid "Access attempt from %s for admin account!"
 msgstr ""
 
+#: fc/model/FCCaptcha.py:70
+msgid "euoa"
+msgstr "аеиоуыэюя"
+
+#: fc/model/FCCaptcha.py:71
+msgid "qwrtypsdfghjkzxcvbnm"
+msgstr "бвгджзклмнпрстфхцчщш"
+
 #: fc/model/Post.py:296
 #, python-format
 msgid "Deleted post %s (owner %s); from thread: %s; tagline: %s; reason: %s"
@@ -728,28 +744,28 @@ msgstr "Слишком длинный тег. Максимальная длин�
 msgid "Disabled"
 msgstr "Тег запрещён."
 
-#: fc/model/User.py:112
+#: fc/model/User.py:114
 msgid "You should specify ban reason"
 msgstr "Необходимо указать причину бана."
 
-#: fc/model/User.py:114
+#: fc/model/User.py:116
 msgid "You should specify ban time in days"
 msgstr "Необходимо указать продолжительность бана в днях."
 
-#: fc/model/User.py:122
+#: fc/model/User.py:124
 #, python-format
 msgid "Banned user %d for %s days for reason \"%s\""
 msgstr ""
 
-#: fc/model/User.py:123
+#: fc/model/User.py:125
 msgid "User was banned"
 msgstr "Пользователь забанен"
 
-#: fc/model/User.py:131
+#: fc/model/User.py:133
 msgid "You have entered incorrect current security code!"
 msgstr "Неверно введён код безопасности."
 
-#: fc/model/User.py:139
+#: fc/model/User.py:141
 msgid ""
 "Your have entered already existing Security Code. Both accounts was "
 "banned. Contact administrator immediately please."
@@ -757,7 +773,7 @@ msgstr ""
 "Введён существующий код безопасности. Оба аккаунта забанены. Свяжитесь\"\n"
 "\"с администрацией."
 
-#: fc/model/User.py:141
+#: fc/model/User.py:143
 msgid ""
 "Your Security Code was used during profile update by another user. "
 "Contact administrator immediately please."
@@ -765,7 +781,7 @@ msgstr ""
 "Была попытка смены кода безопасности другим пользователем на ваш.\"\n"
 "\"Свяжитесь с администрацией"
 
-#: fc/model/User.py:144
+#: fc/model/User.py:146
 msgid "You have entered already existing Security Code."
 msgstr "Введён существующий код безопасности."
 
@@ -956,9 +972,13 @@ msgid "Links"
 msgstr "Ссылки"
 
 #: fc/templates/wakaba/wakaba.frameMenu.mako:122
-#: fc/templates/wakaba/wakaba.profile.mako:174
+#: fc/templates/wakaba/wakaba.profile.mako:208
 msgid "User filters"
 msgstr "Фильтры"
+
+#: fc/templates/wakaba/wakaba.frameMenu.mako:132
+msgid "Custom filter..."
+msgstr "Фильтр..."
 
 #: fc/templates/wakaba/wakaba.home.mako:14
 msgid "Vital signs"
@@ -1010,6 +1030,26 @@ msgstr "Описание"
 msgid "Total"
 msgstr "Всего"
 
+#: fc/templates/wakaba/wakaba.jsStrings.mako:2
+msgid "Loading"
+msgstr "Загрузка"
+
+#: fc/templates/wakaba/wakaba.jsStrings.mako:5
+msgid "Captcha required"
+msgstr "Подтверждение"
+
+#: fc/templates/wakaba/wakaba.jsStrings.mako:6
+msgid "Validating"
+msgstr "Проверка"
+
+#: fc/templates/wakaba/wakaba.jsStrings.mako:7
+msgid "You are human!"
+msgstr "Вы человек!"
+
+#: fc/templates/wakaba/wakaba.jsStrings.mako:8
+msgid "Try again"
+msgstr "Попробуйте ещё"
+
 #: fc/templates/wakaba/wakaba.loginRedirect.mako:9
 msgid "Successfully logged in"
 msgstr "Вход выполнен"
@@ -1053,14 +1093,14 @@ msgstr "Длительность"
 #: fc/templates/wakaba/wakaba.manageExtension.mako:69
 #: fc/templates/wakaba/wakaba.manageSettings.mako:52
 #: fc/templates/wakaba/wakaba.manageUser.mako:112
-#: fc/templates/wakaba/wakaba.profile.mako:170
+#: fc/templates/wakaba/wakaba.profile.mako:204
 msgid "Update"
 msgstr "Сохранить"
 
 #: fc/templates/wakaba/wakaba.manageBan.mako:64
 #: fc/templates/wakaba/wakaba.manageExtension.mako:70
 #: fc/templates/wakaba/wakaba.manageUser.mako:161
-#: fc/templates/wakaba/wakaba.profile.mako:178
+#: fc/templates/wakaba/wakaba.profile.mako:212
 msgid "Delete"
 msgstr "Удалить"
 
@@ -1239,6 +1279,12 @@ msgstr "В новом окне"
 #: fc/templates/wakaba/wakaba.manageExtensions.mako:23
 msgid "Files posted"
 msgstr "Число файлов"
+
+#: fc/templates/wakaba/wakaba.manageInvites.mako:15
+#: fc/templates/wakaba/wakaba.manageUser.mako:9
+#, fuzzy
+msgid "Reason:"
+msgstr "Причина"
 
 #: fc/templates/wakaba/wakaba.manageInvites.mako:20
 #: fc/templates/wakaba/wakaba.managementMenu.mako:29
@@ -1491,6 +1537,11 @@ msgstr ""
 msgid "Spoiler"
 msgstr "Спойлер"
 
+#: fc/templates/wakaba/wakaba.postForm.mako:50
+#: fc/templates/wakaba/wakaba.posts.mako:95
+msgid "Post"
+msgstr "Отправить"
+
 #: fc/templates/wakaba/wakaba.postForm.mako:54
 msgid "Text"
 msgstr "Сообщение"
@@ -1641,7 +1692,7 @@ msgstr "Скрыть"
 
 #: fc/templates/wakaba/wakaba.postOp.mako:92
 #: fc/templates/wakaba/wakaba.posts.mako:30
-#: fc/templates/wakaba/wakaba.profile.mako:196
+#: fc/templates/wakaba/wakaba.profile.mako:230
 msgid "Unhide"
 msgstr "Показать"
 
@@ -1689,6 +1740,10 @@ msgstr "Только файл"
 #: fc/templates/wakaba/wakaba.posts.mako:53
 msgid "Delete post(s)"
 msgstr "Удалить пост(ы)"
+
+#: fc/templates/wakaba/wakaba.posts.mako:95
+msgid "Close"
+msgstr "Закрыть"
 
 #: fc/templates/wakaba/wakaba.postsLookup.mako:6
 msgid "Post number"
@@ -1785,38 +1840,46 @@ msgid "Style"
 msgstr "Стиль"
 
 #: fc/templates/wakaba/wakaba.profile.mako:155
+msgid "Board language"
+msgstr "Язык доски"
+
+#: fc/templates/wakaba/wakaba.profile.mako:172
+msgid "Captcha language"
+msgstr "Язык капчи"
+
+#: fc/templates/wakaba/wakaba.profile.mako:189
 msgid "Oekaki defaults"
 msgstr "Настройки оэкаки"
 
-#: fc/templates/wakaba/wakaba.profile.mako:158
+#: fc/templates/wakaba/wakaba.profile.mako:192
 msgid "Use Selfy"
 msgstr "Использовать Selfy"
 
-#: fc/templates/wakaba/wakaba.profile.mako:162
+#: fc/templates/wakaba/wakaba.profile.mako:196
 msgid "Record animation"
 msgstr "Записывать анимацию"
 
-#: fc/templates/wakaba/wakaba.profile.mako:166
+#: fc/templates/wakaba/wakaba.profile.mako:200
 msgid "Use Shi Pro"
 msgstr "Использовать Shi Pro"
 
-#: fc/templates/wakaba/wakaba.profile.mako:178
+#: fc/templates/wakaba/wakaba.profile.mako:212
 msgid "Edit"
 msgstr "Править"
 
-#: fc/templates/wakaba/wakaba.profile.mako:183
+#: fc/templates/wakaba/wakaba.profile.mako:217
 msgid "New filter"
 msgstr "Новый фильтр"
 
-#: fc/templates/wakaba/wakaba.profile.mako:187
+#: fc/templates/wakaba/wakaba.profile.mako:221
 msgid "Add"
 msgstr "Добавить"
 
-#: fc/templates/wakaba/wakaba.profile.mako:191
+#: fc/templates/wakaba/wakaba.profile.mako:225
 msgid "Hidden threads"
 msgstr "Скрытые треды"
 
-#: fc/templates/wakaba/wakaba.profile.mako:195
+#: fc/templates/wakaba/wakaba.profile.mako:229
 #, python-format
 msgid "Thread <a href=\"%s\">#%s</a> (%s replies) posted in %s"
 msgstr "Тред <a href=\"%s\">#%s</a> (%s ответов) в %s"

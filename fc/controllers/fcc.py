@@ -335,6 +335,7 @@ class FccController(OrphieBaseController):
 
         c.templates = g.OPT.templates
         c.styles    = g.OPT.styles
+        c.langs    = g.OPT.langs
         c.profileChanged = False
         c.boardName = _('Profile')
         if request.POST.get('update', False):
@@ -359,12 +360,19 @@ class FccController(OrphieBaseController):
             maxExpandHeight = request.POST.get('maxExpandHeight', self.userInst.maxExpandHeight())
             if isNumber(maxExpandHeight) and (0 < int(maxExpandHeight) < 4096):
                 self.userInst.maxExpandHeight(int(maxExpandHeight))
-            template = request.POST.get('template', self.userInst.template())
+            template = filterText(request.POST.get('template', self.userInst.template()))
             if template in c.templates:
                 self.userInst.template(template)
             style = filterText(request.POST.get('style', self.userInst.style()))
             if style in c.styles:
                 self.userInst.style(style)
+            lang = filterText(request.POST.get('lang', self.userInst.lang()))
+            c.reload = (lang!=self.userInst.lang())
+            if lang in c.langs:
+                self.userInst.lang(lang)
+            cLang = filterText(request.POST.get('cLang', self.userInst.cLang()))
+            if cLang in c.langs:
+                self.userInst.cLang(cLang)
             gotodest = filterText(request.POST.get('defaultGoto', self.userInst.defaultGoto()))
             if isNumber(gotodest) and (int(gotodest) in destinations.keys()):
                 self.userInst.defaultGoto(int(gotodest))
@@ -393,6 +401,8 @@ class FccController(OrphieBaseController):
 
             c.profileChanged = True
             c.profileMsg += _(' Profile was updated.')
+            if c.reload:
+                c.profileMsg += _(' Reload page for language changes to take effect.')
 
         homeExcludeTags = Tag.getAllByIds(self.userInst.homeExclude())
         homeExcludeList = []

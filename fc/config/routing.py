@@ -103,6 +103,7 @@ def make_map():
     map.connect('ajEditUserFilter', '/ajax/editUserFilter/:fid/:filter', controller='fcajax', action='editUserFilter', requirements=dict(fid='\d+'))
     map.connect('ajDeleteUserFilter', '/ajax/deleteUserFilter/:fid', controller='fcajax', action='deleteUserFilter', requirements=dict(fid='\d+'))
     map.connect('ajCheckCaptcha', '/ajax/checkCaptcha/:id/:text', controller='fcajax', action='checkCaptcha', text='', requirements=dict(id='\d+'))
+    map.connect('ajGetText', '/ajax/getText/:text', controller='fcajax', action='getText', text='')
     # routines below isn't actually used
     map.connect('/ajax/getRepliesCountForThread/:post', controller='fcajax', action='getRepliesCountForThread', requirements=dict(post='\d+'))
     map.connect('/ajax/getRepliesIds/:post', controller='fcajax', action='getRepliesIds', requirements=dict(post='\d+'))

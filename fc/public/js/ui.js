@@ -38,8 +38,8 @@ function click_expands(options){
       this._src = this.src
 
       // loader
-      var loader = $("<span class='img_loading'>Loading…</span>")
-      if (options.loading_icon_path) loader.html("<img src='"+options.loading_icon_path+"'>Loading…")
+      var loader = $("<span class='img_loading'>"+S_Loading+"…</span>")
+      if (options.loading_icon_path) loader.html("<img src='"+options.loading_icon_path+"'"+S_Loading+"…")
       loader.css("left", $(this).offset().left)
       $(this).parent().append(loader)
       $(this).load(function() {loader.remove()})
@@ -100,7 +100,7 @@ function popup_posts(options){
   }
   var load_on = function(e){
     e.attr('old_html',e.html())
-    e.html("<img class='popup_loading_img' src='"+options.loading_icon_path+"'> Loading…")
+    e.html("<img class='popup_loading_img' src='"+options.loading_icon_path+"'> "+S_Loading+"…")
   }
   var load_off = function(e){
     e.html(e.attr('old_html'))
@@ -128,7 +128,7 @@ function popup_posts(options){
           html = html.replace(/<\/?table[^>]*>/,'')
           show_it(html);
           popup_posts.cache[m[0]] = html;
-        }, error: function(a,b) {popup_posts.cache[m[0]] = 404; e.html("Post not found") } });
+        }, error: function(a,b) {popup_posts.cache[m[0]] = 404; e.html(S_PostNotFound) } });
     }
   }
 
@@ -227,7 +227,7 @@ YForm.prototype = {
 YForm.Captcha = function(form){
     var me = this;
     this.cfield = form.find("#y_replyform_captcha_field");
-    this.creq = "Captcha required"
+    this.creq = S_CaptchaRequired
     this.captcha = ""
     this.cimg = this.cfield.parent().find("img")
     var field = this.cfield;
@@ -262,15 +262,15 @@ YForm.Captcha.prototype = {
         else return me.error();
         if(!this.captcha) return this.request();
         var field = this.cfield
-        field.addClass("inactive").val("Validating…")
+        field.addClass("inactive").val(S_Validating+"…")
 
         var callback = function(response) {
             if(response == "ok"){
                 setTimeout(function() {field.removeAttr("readonly").val(me.captcha).attr("readonly","true")}, 2000)
-                field.val("You are human!")
+                field.val(S_YouAreHuman)
                 field.addClass("valid").attr("readonly","true")
             }else{
-                field.addClass("invalid").val("Try again")
+                field.addClass("invalid").val(S_TryAgain)
                 me.captcha = ""
                 img.attr("src", img.attr("src").replace(/\d+/, response))
             }
@@ -307,10 +307,10 @@ function expandable_threads(){
     }else{
       me.data("orig_html", me.html())
       me.data("oldreplies", thread.find(".replies").html())
-      me.html("<img src='"+window.loading_icon_path+"'>Loading…")
+      me.html("<img src='"+window.loading_icon_path+"'>"+S_Loading+"…")
       thread.find(".replies").load("/ajax/getRenderedReplies/" + thread.attr("id").match(/\d+/)[0], function() {
         me.parent().toggleClass("expanded")
-        me.html("Collapse thread")
+        me.html(S_CollapseThread)
         expandable_threads.mass_repair(thread.find(".replies"))
       })
     }

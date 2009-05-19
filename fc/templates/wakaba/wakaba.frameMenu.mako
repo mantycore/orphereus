@@ -129,7 +129,7 @@
             <div><a href="${h.url_for('boardBase', board=f.filter)}" target="board">/${f.filter}/</a><div>
         %endfor
 %endif
-		<div id="custFwdLink"><a onclick="javascript:toggle_div('custFwd');toggle_div('custFwdLink');">Custom filter...</a></div>
+		<div id="custFwdLink"><a onclick="javascript:toggle_div('custFwd');toggle_div('custFwdLink');">${_('Custom filter...')}</a></div>
         <div style="display:none" id="custFwd">
 	        <form method="post" action="${h.url_for('makeFwdTo')}" target="board">
 	        <input type="text" name="tags"/>

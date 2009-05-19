@@ -151,6 +151,40 @@
                         </select>
                     </td>
                 </tr>
+                <tr id="trlang">
+                    <td class="postblock">${_('Board language')}</td>
+                    <td>
+                        <select name="lang" style="width: 170px;">
+                            %for lang in c.langs:
+                               <option value="${lang}"
+                                 %if lang == c.userInst.lang():
+                                    selected="selected"
+                                 %endif
+                               >
+
+                              ${lang}</option>
+                            %endfor
+                        </select>
+                    </td>
+                </tr>
+                %if c.userInst.Anonymous:
+                <tr id="captlang">
+                    <td class="postblock">${_('Captcha language')}</td>
+                    <td>
+                        <select name="cLang" style="width: 170px;">
+                            %for lang in c.langs:
+                               <option value="${lang}"
+                                 %if lang == c.userInst.cLang():
+                                    selected="selected"
+                                 %endif
+                               >
+
+                              ${lang}</option>
+                            %endfor
+                        </select>
+                    </td>
+                </tr>
+                %endif
                 <tr>
                     <td colspan="2" style="text-align: center; font-weight: bold;">${_('Oekaki defaults')}</td>
                 </tr>

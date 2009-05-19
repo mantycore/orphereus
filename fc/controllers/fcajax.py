@@ -163,3 +163,7 @@ class FcajaxController(OrphieBaseController):
                 return str(ct.id)
         else:
             abort(404)
+
+    def getText(self,text):
+        strings = {'lol': 'test', 'CollapseThread': _('Collapse thread')}
+        return (strings.has_key(text) and strings[text]) or 'Wut?'  

@@ -402,7 +402,7 @@ function getFullText(event, thread, post)
 {
     var bq = document.getElementById('postBQId' + post);
     if (!bq) bq = document.getElementById('quickReplyNode' + post);
-    var loadingString = 'Loading…'
+    var loadingString = S_Loading+'…'
     if (window.loading_icon_path)
     {
         loadingString = "<img class='comment_loading_img' src='"+window.loading_icon_path+"'> Loading…"

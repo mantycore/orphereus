@@ -405,7 +405,7 @@ function getFullText(event, thread, post)
     var loadingString = S_Loading+'…'
     if (window.loading_icon_path)
     {
-        loadingString = "<img class='comment_loading_img' src='"+window.loading_icon_path+"'> Loading…"
+        loadingString = "<img class='comment_loading_img' src='"+window.loading_icon_path+"'> "+S_Loading+"…"
     }
     $("a.expandPost[href=/" + thread + "#i" + post + "]").html(loadingString)
     $.get('/ajax/getPost/' + post, {}, function(response)

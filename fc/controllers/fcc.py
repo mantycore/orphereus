@@ -751,6 +751,8 @@ class FccController(OrphieBaseController):
             remPass = request.POST.get('remPass', False)
             if remPass:
                 postRemovemd5 = hashlib.md5(remPass.encode('utf-8')).hexdigest()
+                response.set_cookie('orhpieRemPass', unicode(remPass), max_age=3600)
+                #log.debug('setting pass cookie in post proc: %s' %str(remPass.encode('utf-8')))
 
         thread = None
         tags = []

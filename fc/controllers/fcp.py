@@ -86,7 +86,8 @@ class FcpController(OrphieBaseController):
     def captchaPic(self, cid):
         # TODO: fix shitty code
         #log.debug('user cap lang: %s' %c.userInst.cLang())
-        h.set_lang(str(c.userInst.cLang()))
+        if c.userInst.isValid(): 
+            h.set_lang(str(c.userInst.cLang()))
             
         sessionCid = None
         if session.has_key('anonCaptId'):
@@ -140,9 +141,11 @@ class FcpController(OrphieBaseController):
                 captcha = Captcha.getCaptcha(tracker.cid)
 
             if not captcha:
-                oldLang = h.setLang(self.userInst.cLang())
+                if c.userInst.isValid():
+                    oldLang = h.setLang(self.userInst.cLang())
                 captcha = Captcha.create()
-                h.setLang(oldLang)
+                if c.userInst.isValid():
+                    h.setLang(oldLang)
                 tracker.cid = captcha.id
                 meta.Session.commit()
 
@@ -162,9 +165,11 @@ class FcpController(OrphieBaseController):
                     captchaOk = captcha.test(captval)
                     captcha = False
                     if not captchaOk:
-                        oldLang = h.setLang(self.userInst.cLang())
+                        if c.userInst.isValid():                        
+                            oldLang = h.setLang(self.userInst.cLang())
                         captcha = Captcha.create()
-                        h.setLang(oldLang)
+                        if c.userInst.isValid():
+                            h.setLang(oldLang)
                         tracker.cid = captcha.id
 
             if user and captchaOk:

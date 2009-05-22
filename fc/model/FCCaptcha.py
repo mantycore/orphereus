@@ -96,8 +96,8 @@ class Captcha(object):
 
     def test(self, text, removeOnlyIncorrect = False):
         ret = (force_unicode(self.text) == force_unicode(text))
-        log.debug("recieved: %s" %text)
-        log.debug("self: %s" %self.text)
+        #log.debug("recieved: %s" %text)
+        #log.debug("self: %s" %self.text)
         #log.debug(str(self) +  "  " + str(self.id))
         if not ret or (ret and not removeOnlyIncorrect):
             #log.debug("del id %s " %self.text)

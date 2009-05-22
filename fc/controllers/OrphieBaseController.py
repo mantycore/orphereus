@@ -149,10 +149,10 @@ class OrphieBaseController(BaseController):
                 c.captcha = captcha
             else:
                 c.captcha = Captcha.getCaptcha(anonCaptId)
-
+            
             remPassCookie = request.cookies.get('orhpieRemPass', randomStr())
             c.remPass = remPassCookie
-            #response.set_cookie('orhpieRemPass', str(remPassCookie), max_age=3600)
+            response.set_cookie('orhpieRemPass', unicode(remPassCookie), max_age=3600)
 
     def render(self, page, tmplName = None, **options):
         tname = 'std'

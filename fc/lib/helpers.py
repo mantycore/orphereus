@@ -89,11 +89,10 @@ def intToDotted(n):
     return socket.inet_ntoa(struct.pack('!L',n))
 
 def setLang(lang):
-    log.debug('called setlang for %s' %lang)
     if (lang and (len(lang)==2)):
         oldLang = get_lang()
         set_lang(lang)
-        return oldLang
+        return oldLang[0]
     
 def makeLangValid(lang):
     if lang:

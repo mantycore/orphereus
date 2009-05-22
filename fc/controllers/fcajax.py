@@ -63,6 +63,7 @@ class FcajaxController(OrphieBaseController):
 
     def getRenderedReplies(self, thread):
         postInst = Post.getPost(thread)
+        c.currentUserCanPost = self.currentUserCanPost()
         if postInst and not postInst.parentPost:
             if not self.userInst.isAdmin():
                 for t in postInst.tags:

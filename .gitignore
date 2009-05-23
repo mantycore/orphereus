@@ -1,0 +1,8 @@
+
+/development.ini
+/.project
+/.pydevproject
+/.metadata/*
+/data/*
+/.settings/*
+*.pyc

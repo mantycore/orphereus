@@ -64,7 +64,13 @@
 
 <div class="y_replyform" style="display:none">
 <form action="/1" method="post" enctype="multipart/form-data" id="y_replyform" class="y_replyform_anon">
-    <div class="hidden"><input type="hidden" name="task" value="post" /><input type="hidden" name="akane" /><input type="hidden" name="title" value="" /><input type="hidden" name="tagLine" value="b" /><input type="hidden" name="curPage" value="0" /></div>
+    <div class="hidden">
+    <input type="hidden" name="task" value="post" />
+    <input type="hidden" name="akane" />
+    <input type="hidden" name="title" value="" />
+    <input type="hidden" name="tagLine" value="b" />
+    <input type="hidden" name="curPage" value="0" />
+    </div>
     <div><textarea id="y_replyform_text" name="message" rows="5" cols="40" tabindex="10"></textarea></div>
 
     <div class="y_replyform_fields">

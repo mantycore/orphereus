@@ -43,7 +43,7 @@ from fc.lib.constantValues import *
 from fc.lib.fileHolder import AngryFileHolder
 from OrphieBaseController import OrphieBaseController
 from mutagen.easyid3 import EasyID3
-from urllib import quote_plus
+from urllib import quote_plus, unquote
 
 import logging
 log = logging.getLogger(__name__)
@@ -617,7 +617,7 @@ class FccController(OrphieBaseController):
         c.pchPath = h.modLink(post.file.animpath, c.userInst.secid())
         return self.render('shiAnimation')
 
-    def processFile(self, file, thumbSize = 250):
+    def processFile(self, file, thumbSize = 250, baseEncoded = False):
         if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
            name = str(long(time.time() * 10 ** 7))
            ext = file.filename.rsplit('.', 1)[:0:-1]
@@ -646,7 +646,10 @@ class FccController(OrphieBaseController):
                os.makedirs(targetDir)
 
            localFile = open(localFilePath, 'w+b')
-           shutil.copyfileobj(file.file, localFile)
+           if not baseEncoded:
+               shutil.copyfileobj(file.file, localFile)
+           else:
+               base64.decode(file.file, localFile)
            localFile.seek(0)
            md5 = hashlib.md5(localFile.read()).hexdigest()
            file.file.close()
@@ -731,32 +734,35 @@ class FccController(OrphieBaseController):
         if not self.currentUserCanPost():
             return errorHandler(_("Posting is disabled"))
 
-        baseEncoded = 'baseEncoded' in request.POST
+        baseEncoded = 'baseAndUrlEncoded' in request.POST
         def normalFilter(text):
             return filterText(text)
         def base64TextFilter(text):
-            return filterText(base64.decodestring(text))
+            tmp = unquote(text)
+            if '%u' in tmp:
+                tmp = tmp.replace('%u', '\\u').decode('unicode_escape')
+            return filterText(tmp)
         textFilter = normalFilter
         if baseEncoded:
             textFilter = base64TextFilter
 
         # VERY-VERY BIG CROCK OF SHIT !!!
         # VERY-VERY BIG CROCK OF SHIT !!!
-        postMessage = filterText(request.POST.get('message', u''))
+        postMessage = textFilter(request.POST.get('message', u''))
         c.postMessage = postMessage
         postMessage = postMessage.replace('&gt;', '>') #XXX: TODO: this must be fixed in parser
         # VERY-VERY BIG CROCK OF SHIT !!!
         # VERY-VERY BIG CROCK OF SHIT !!!!
 
-        postTitle = filterText(request.POST.get('title', u''))
+        postTitle = textFilter(request.POST.get('title', u''))
         c.postTitle = postTitle
 
         tagstr = request.POST.get('tags', False)
         if tagstr:
-            c.postTagLine = filterText(tagstr)
+            c.postTagLine = textFilter(tagstr)
 
         response.set_cookie('orphie-postingCompleted', 'no')
-        response.set_cookie('orphie-lastPost', quote_plus(c.postMessage.encode('utf-8')))
+        #response.set_cookie('orphie-lastPost', quote_plus(c.postMessage.encode('utf-8')))
         response.set_cookie('orphie-lastTitle', quote_plus(c.postTitle.encode('utf-8')))
         if tagstr:
             response.set_cookie('orphie-lastTagLine', quote_plus(c.postTagLine.encode('utf-8')))
@@ -869,7 +875,7 @@ class FccController(OrphieBaseController):
            else:
                return errorHandler(_('Message is too long'))
 
-        fileDescriptors = self.processFile(file, options.thumbSize)
+        fileDescriptors = self.processFile(file, options.thumbSize, baseEncoded = baseEncoded)
         fileHolder = False
         existentPic = False
         picInfo = False

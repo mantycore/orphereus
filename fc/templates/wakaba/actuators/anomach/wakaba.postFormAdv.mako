@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-<div class="smallFont">
 <p><b>Маленькое объявление</b></p>
 <p>jabber-сборища, результатом деятельности которых и стал этот чан, продолжают существовать.
 Новый адрес: <b>aconf@conference.jabber.ru</b>, пароль - <b>oblavobla</b>. 
-За доступом обращайтесь на rusanon@jabber.org 
-либо johan.liebert@jabber.ru</p>
-</div>
+За доступом обращайтесь на candlejack@jabber.org</p>
+<p>Специально разработан <a href="http://orphereus.anoma.ch/edward.htm">экстеншен</a> 
+под ФФ, позволяющий <s>пиз</s>постить на Аному откуда угодно. Use it.</p>

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -43,12 +42,12 @@ class CaptchaGenerator(ImageCaptcha):
     def getLayers(self):
         word = self.word
         ff = Text.FontFactory(26, self.font)
-        bg = random.choice([Backgrounds.SolidColor(), Backgrounds.CroppedImage(), Backgrounds.TiledImage(),])
-        bg = (bg, Backgrounds.Grid(), Distortions.SineWarp(amplitudeRange=(6, 10), periodRange=(0.1, 0.4)))
+        bg = random.choice([Backgrounds.SolidColor(), Backgrounds.CroppedImage(), Backgrounds.TiledImage(), ])
+        bg = (bg, Backgrounds.Grid(), Distortions.SineWarp(amplitudeRange = (6, 10), periodRange = (0.1, 0.4)))
         return [ bg,
             Backgrounds.RandomDots(),
             #Distortions.WigglyBlocks(),
-            Text.TextLayer(word, borderSize=1, fontFactory=ff),
+            Text.TextLayer(word, borderSize = 1, fontFactory = ff),
             Distortions.SineWarp()
             #Distortions.SineWarp()
             ]
@@ -60,23 +59,23 @@ from fc.model import meta
 from pylons.i18n import get_lang, set_lang, _
 
 t_captchas = sa.Table("captcha", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("text"     , sa.types.String(32), nullable=False),
-    sa.Column("content"  , sa.types.Binary, nullable=True),
-    sa.Column("timestamp", sa.types.DateTime, nullable=False)
+    sa.Column("id"       , sa.types.Integer, primary_key = True),
+    sa.Column("text"     , sa.types.String(32), nullable = False),
+    sa.Column("content"  , sa.types.Binary, nullable = True),
+    sa.Column("timestamp", sa.types.DateTime, nullable = False)
     )
 
 def randomStr(min = 6, max = 8):
     vowels = _("euoa")
     consonants = _("qwrtypsdfghjkzxcvbnm")
-    str=''
+    str = ''
     #log.debug('using in gen: %s' %get_lang())
-    for x in range(0, random.randint(min ,max) / 2): 
+    for x in range(0, random.randint(min , max) / 2):
         str += random.choice(consonants) + random.choice(vowels)
 
     return str
 
-def force_unicode(string, encoding='utf-8'):
+def force_unicode(string, encoding = 'utf-8'):
     try:
         if type(string) is str:
             string = string.decode(encoding)
@@ -88,7 +87,7 @@ def force_unicode(string, encoding='utf-8'):
 class Captcha(object):
     def __init__(self, text):
         self.text = text
-        self.timestamp =  datetime.datetime.now()
+        self.timestamp = datetime.datetime.now()
 
     def delete(self):
         meta.Session.delete(self)
@@ -115,15 +114,15 @@ class Captcha(object):
 
     @staticmethod
     def getCaptcha(id):
-        return Captcha.query.filter(Captcha.id==id).first()
+        return Captcha.query.filter(Captcha.id == id).first()
 
     @staticmethod
     def exists(id):
-        return (Captcha.query.filter(Captcha.id==id).count() == 1)
+        return (Captcha.query.filter(Captcha.id == id).count() == 1)
 
     @staticmethod
     def picture(cid, font):
-        captcha = Captcha.query.filter(Captcha.id==cid).first()
+        captcha = Captcha.query.filter(Captcha.id == cid).first()
 
         out = ""
         if captcha and captcha.content:

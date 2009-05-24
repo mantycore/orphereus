@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -64,7 +65,7 @@ class FcmController(OrphieBaseController):
         currentTime = datetime.datetime.now()
         for oekaki in oekakies:
             #oekaki.time==-1 and not oekaki.path and
-            if oekaki.timeStamp < currentTime - datetime.timedelta(days=1):
+            if oekaki.timeStamp < currentTime - datetime.timedelta(days = 1):
                 mtnLog.append(self.createLogEntry('Info', "Deleted oekaki with <b>#%d</b>" % (oekaki.id)))
                 meta.Session.delete(oekaki)
         meta.Session.commit()
@@ -77,11 +78,11 @@ class FcmController(OrphieBaseController):
         currentTime = datetime.datetime.now()
         invites = meta.Session.query(Invite).all()
         for invite in invites:
-            if invite.date < currentTime - datetime.timedelta(weeks=1):
+            if invite.date < currentTime - datetime.timedelta(weeks = 1):
                 msg1 = "Deleted invite <b>#%d</b>" % (invite.id)
                 msg2 = " from date <b>%s</b> with id <font size='-2'>%s</font>" % (invite.date, invite.invite)
                 toLog(LOG_EVENT_MTN_DELINVITE, msg1)
-                mtnLog.append(self.createLogEntry('Info', msg1+msg2))
+                mtnLog.append(self.createLogEntry('Info', msg1 + msg2))
                 meta.Session.delete(invite)
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
@@ -93,10 +94,10 @@ class FcmController(OrphieBaseController):
         currentTime = datetime.datetime.now()
         trackers = meta.Session.query(LoginTracker).all()
         for tracker in trackers:
-            if tracker.lastAttempt < currentTime - datetime.timedelta(days=1):
+            if tracker.lastAttempt < currentTime - datetime.timedelta(days = 1):
                 mtnLog.append(self.createLogEntry('Info', "Deleted ip tracker for <b>%s</b> with <b>%d</b> attempts" % (tracker.ip, tracker.attempts)))
                 if tracker.cid:
-                    captcha = meta.Session.query(Captcha).filter(Captcha.id==tracker.cid).first()
+                    captcha = meta.Session.query(Captcha).filter(Captcha.id == tracker.cid).first()
                     if captcha:
                         meta.Session.delete(captcha)
                         mtnLog.append(self.createLogEntry('Info', "Deleted captcha <b>#%d</b>" % (captcha.id)))
@@ -105,7 +106,7 @@ class FcmController(OrphieBaseController):
 
         captchas = meta.Session.query(Captcha).all()
         for ct in captchas:
-            if ct.timestamp < currentTime - datetime.timedelta(days=1):
+            if ct.timestamp < currentTime - datetime.timedelta(days = 1):
                 mtnLog.append(self.createLogEntry('Info', "Deleted old captcha <b>#%d</b>" % (ct.id)))
                 meta.Session.delete(ct)
         meta.Session.commit()
@@ -122,7 +123,7 @@ class FcmController(OrphieBaseController):
             banDate = user.options.banDate
             if bantime > 10000:
                 bantime = 10000
-            if banDate and bantime>0 and banDate < currentTime - datetime.timedelta(days=bantime):
+            if banDate and bantime > 0 and banDate < currentTime - datetime.timedelta(days = bantime):
                 unbanMessage = ("Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
                 mtnLog.append(self.createLogEntry('Info', unbanMessage))
                 toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
@@ -137,9 +138,9 @@ class FcmController(OrphieBaseController):
             banDate = ban.date
             if bantime > 10000:
                 bantime = 10000
-            if banDate and bantime>0 and banDate < (currentTime - datetime.timedelta(days=bantime)):
+            if banDate and bantime > 0 and banDate < (currentTime - datetime.timedelta(days = bantime)):
                 ban.disable()
-                unbanMessage = ("Automatic unban: IP <b>#%s</b> (Reason was %s)") % (h.intToDotted(ban.ip),ban.reason)
+                unbanMessage = ("Automatic unban: IP <b>#%s</b> (Reason was %s)") % (h.intToDotted(ban.ip), ban.reason)
                 mtnLog.append(self.createLogEntry('Info', unbanMessage))
                 toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
         meta.Session.commit()
@@ -155,7 +156,7 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'User options...'))
         userOpts = meta.Session.query(UserOptions).all()
         for opt in userOpts:
-            user = meta.Session.query(User).filter(User.uidNumber==opt.uidNumber).first()
+            user = meta.Session.query(User).filter(User.uidNumber == opt.uidNumber).first()
             if not user:
                 msg = u'Orphaned userOptions %d for %s, removing' % (opt.optid, str(opt.uidNumber))
                 mtnLog.append(self.createLogEntry('Warning', msg))
@@ -165,7 +166,7 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'User filters...'))
         userFl = meta.Session.query(UserFilters).all()
         for fl in userFl:
-            user = meta.Session.query(User).filter(User.uidNumber==opt.uidNumber).first()
+            user = meta.Session.query(User).filter(User.uidNumber == opt.uidNumber).first()
             if not user:
                 msg = u'Orphaned userFilters %d for %s, removing' % (fl.id, str(fl.uidNumber))
                 mtnLog.append(self.createLogEntry('Warning', msg))
@@ -175,7 +176,7 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Tag options...'))
         tagOpts = meta.Session.query(TagOptions).all()
         for opt in tagOpts:
-            tag = meta.Session.query(Tag).filter(Tag.id==opt.tagId).first()
+            tag = meta.Session.query(Tag).filter(Tag.id == opt.tagId).first()
             if not tag:
                 msg = u'Orphaned tagOptions %d for %s, removing' % (opt.id, str(opt.tagId))
                 mtnLog.append(self.createLogEntry('Warning', msg))
@@ -198,14 +199,14 @@ class FcmController(OrphieBaseController):
         mtnLog.append(self.createLogEntry('Task', 'Checking for orphaned files...'))
 
 
-        junkPath= os.path.join(g.OPT.uploadPath, 'junk')
+        junkPath = os.path.join(g.OPT.uploadPath, 'junk')
         if not os.path.exists(junkPath):
             os.mkdir(junkPath)
 
         files = [] #os.listdir(g.OPT.uploadPath)
         for dir, subdirs, flist in os.walk(g.OPT.uploadPath):
             for file in flist:
-                name = os.path.join(dir+'/'+file)
+                name = os.path.join(dir + '/' + file)
                 if not ('junk' in name or '.svn' in dir or 'pch' in name):
                     files.append(name)
 
@@ -377,10 +378,10 @@ class FcmController(OrphieBaseController):
             #log.debug("Reparsing %d..." % post.id)
             if post.messageRaw:
                self.currentUserId = post.uidNumber
-               parser = WakabaParser(g.OPT, post.parentPost and post.parentPost.id or -1)
+               parser = WakabaParser(g.OPT, post.parentPost and post.parentPost.id or - 1)
                maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
                cutSymbols = int(g.settingsMap["cutSymbols"].value)
-               parsedMessage = parser.parseWakaba(post.messageRaw, self, lines=maxLinesInPost,maxLen=cutSymbols)
+               parsedMessage = parser.parseWakaba(post.messageRaw, self, lines = maxLinesInPost, maxLen = cutSymbols)
                fullMessage = parsedMessage[0]
                #if painterMark:
                #    fullMessage += painterMark

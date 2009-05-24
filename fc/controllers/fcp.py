@@ -1,5 +1,6 @@
-﻿################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+﻿# -*- coding: utf-8 -*-
+################################################################################
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -62,13 +63,13 @@ class FcpController(OrphieBaseController):
 
     def ipBanned(self):
         if c.ban:
-            c.errorText = _('You are banned on %s for %s days for the following reason:<br/>%s') % (c.ban.date,c.ban.period,c.ban.reason)
+            c.errorText = _('You are banned on %s for %s days for the following reason:<br/>%s') % (c.ban.date, c.ban.period, c.ban.reason)
             return self.render('error')
         else:
             c.boardName = _('Error')
             c.errorText = _("ORLY?")
             return self.render('error')
-            
+
 
     def login(self, user):
         if g.OPT.allowLogin:
@@ -86,9 +87,9 @@ class FcpController(OrphieBaseController):
     def captchaPic(self, cid):
         # TODO: fix shitty code
         #log.debug('user cap lang: %s' %c.userInst.cLang())
-        if c.userInst.isValid(): 
+        if c.userInst.isValid():
             h.set_lang(str(c.userInst.cLang()))
-            
+
         sessionCid = None
         if session.has_key('anonCaptId'):
             sessionCid = session['anonCaptId']
@@ -97,12 +98,12 @@ class FcpController(OrphieBaseController):
         pic = Captcha.picture(cid, g.OPT.captchaFont)
         if sessionCid:
             if (str(cid) != str(sessionCid)):
-               redirect_to(h.url_for('captcha', cid=sessionCid))
-            elif ("Wrong ID"==pic):
+               redirect_to(h.url_for('captcha', cid = sessionCid))
+            elif ("Wrong ID" == pic):
                newCaptcha = Captcha.create()
                session['anonCaptId'] = newCaptcha.id
                session.save()
-               redirect_to(h.url_for('captcha', cid=newCaptcha.id))
+               redirect_to(h.url_for('captcha', cid = newCaptcha.id))
         response.headers['Content-Length'] = len(pic)
         response.headers['Content-Type'] = 'image/png'
         return str(pic)
@@ -127,7 +128,7 @@ class FcpController(OrphieBaseController):
         if tracker.attempts >= 2:
             if session and session.has_key('anonCaptId'):
                 anonCapt = Captcha.getCaptcha(session['anonCaptId'])
-                if tracker.cid and (str(tracker.cid)!=str(anonCapt.id)):
+                if tracker.cid and (str(tracker.cid) != str(anonCapt.id)):
                      trackerCapt = Captcha.getCaptcha(tracker.cid)
                      if trackerCapt:
                          trackerCapt.delete()
@@ -165,7 +166,7 @@ class FcpController(OrphieBaseController):
                     captchaOk = captcha.test(captval)
                     captcha = False
                     if not captchaOk:
-                        if c.userInst.isValid():                        
+                        if c.userInst.isValid():
                             oldLang = h.setLang(self.userInst.cLang())
                         captcha = Captcha.create()
                         if c.userInst.isValid():
@@ -185,7 +186,7 @@ class FcpController(OrphieBaseController):
             meta.Session.commit()
             #log.debug("redir: %s" % c.currentURL)
             if (not g.OPT.framedMain or (user and not(user.useFrame()))):
-                return redirect_to(h.url_for('boardBase', board=c.currentURL))
+                return redirect_to(h.url_for('boardBase', board = c.currentURL))
             else:
                 if (g.OPT.allowAnonymous):
                     return self.render('loginRedirect')
@@ -215,12 +216,12 @@ class FcpController(OrphieBaseController):
         c.openReg = session['openReg']
         c.captcha = None
         captchaOk = True
-        if session['openReg']:  
+        if session['openReg']:
             captchaOk = False
             if session.get('cid', False):
-                log.debug("session['cid']=%s" %session['cid'])
+                log.debug("session['cid']=%s" % session['cid'])
                 captcha = Captcha.getCaptcha(session['cid'])
-                log.debug("session[val]=%s" %captcha.text)
+                log.debug("session[val]=%s" % captcha.text)
                 if captcha:
                     captchaOk = captcha.test(request.POST.get('captcha', False))
                 session['cid'] = None
@@ -237,7 +238,7 @@ class FcpController(OrphieBaseController):
         key2 = request.POST.get('key2', '').encode('utf-8')
 
         if key and captchaOk:
-            if len(key)>=g.OPT.minPassLength and key == key2:
+            if len(key) >= g.OPT.minPassLength and key == key2:
                 uid = User.genUid(key)
                 user = User.getByUid(uid)
                 if user:
@@ -250,7 +251,7 @@ class FcpController(OrphieBaseController):
 
                 user = User.create(uid)
                 regId = user.secid() * user.secid() - user.secid()
-                toLog(LOG_EVENT_INVITE_USED, _("Utilized invite #%d [RID:%d]") % (session['iid'], regId ))
+                toLog(LOG_EVENT_INVITE_USED, _("Utilized invite #%d [RID:%d]") % (session['iid'], regId))
                 del session['invite']
                 del session['iid']
                 session.save()
@@ -280,7 +281,7 @@ class FcpController(OrphieBaseController):
         response.headers['Content-type'] = "text/plain"
         for key in request.environ.keys():
             if 'HTTP' in key or 'SERVER' in key or 'REMOTE' in key:
-                out += key + ':' +request.environ[key] + '\n'
+                out += key + ':' + request.environ[key] + '\n'
         out += 'test:' + str(request.POST.get('test', ''))
         return filterText(out)
 
@@ -294,7 +295,7 @@ class FcpController(OrphieBaseController):
         localFile.close()
 
     def oekakiSave(self, environ, start_response, url, tempid):
-        start_response('200 OK', [('Content-Type','text/plain'),('Content-Length','2')])
+        start_response('200 OK', [('Content-Type', 'text/plain'), ('Content-Length', '2')])
         oekaki = Oekaki.get(tempid) #meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
         cl = int(request.environ['CONTENT_LENGTH'])
 
@@ -367,10 +368,10 @@ class FcpController(OrphieBaseController):
             posts = filter.order_by(Post.bumpDate.desc())[0 : tpp]
 
         feed = None
-        args = dict(title=title,
-                link=h.url_for(),
-                description=descr,
-                language=u"en",
+        args = dict(title = title,
+                link = h.url_for(),
+                description = descr,
+                language = u"en",
                 )
 
         if feedType == 'rss':
@@ -384,20 +385,20 @@ class FcpController(OrphieBaseController):
             parent = post.parentPost
             if not parent:
                 parent = post
-            parent.enableShortMessages=False
+            parent.enableShortMessages = False
 
-            title=None
+            title = None
             if not post.parentPost:
                 post.replies = post.replyCount
                 title = _(u"Thread #%d") % post.id
             else:
                 post.replies = None
                 title = _(u"#%d") % post.id
-            descr = self.render('rssPost', 'std', thread=parent, post = post).decode('utf-8')
+            descr = self.render('rssPost', 'std', thread = parent, post = post).decode('utf-8')
 
-            feed.add_item(title=title,
-                          link=h.url_for('thread', post = post.id),
-                          description=descr)
+            feed.add_item(title = title,
+                          link = h.url_for('thread', post = post.id),
+                          description = descr)
 
         out = feed.writeString('utf-8')
         #css = str(h.staticFile(g.OPT.styles[0] + ".css"))

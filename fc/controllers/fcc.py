@@ -1,5 +1,6 @@
-﻿################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+﻿# -*- coding: utf-8 -*-
+################################################################################
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -19,7 +20,6 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #                                                                         #
 ################################################################################
 
-# -*- coding: utf-8 -*-
 from fc.lib.base import *
 from fc.model import *
 from sqlalchemy.orm import eagerload
@@ -61,7 +61,7 @@ class FccController(OrphieBaseController):
             c.currentURL = c.currentURL[:-1]
 
         if not self.currentUserIsAuthorized():
-            return redirect_to(h.url_for('authorizeToUrl', url=c.currentURL))
+            return redirect_to(h.url_for('authorizeToUrl', url = c.currentURL))
         if self.userInst.isBanned():
             #abort(500, 'Internal Server Error')     # calm hidden ban
             return redirect_to(h.url_for('youAreBanned'))
@@ -89,7 +89,7 @@ class FccController(OrphieBaseController):
         c.disableFooter = True
         return self.render('frameMenu')
 
-    def showPosts(self, threadFilter, tempid='', page=0, board='', tags=[], tagList=[]):
+    def showPosts(self, threadFilter, tempid = '', page = 0, board = '', tags = [], tagList = []):
         if not g.OPT.allowTagCreation:
             for tag in tagList:
                 if not Tag.getTag(tag):
@@ -113,13 +113,13 @@ class FccController(OrphieBaseController):
 
         count = threadFilter.count()
         tpp = self.userInst.threadsPerPage()
-        if page*tpp >= count and count > 0:
+        if page * tpp >= count and count > 0:
             c.errorText = _("Incorrect page")
             return self.render('error')
         self.paginate(count, page, tpp)
 
         if count > 1:
-            c.threads = threadFilter.order_by(Post.bumpDate.desc())[page * tpp: (page + 1)* tpp]
+            c.threads = threadFilter.order_by(Post.bumpDate.desc())[page * tpp: (page + 1) * tpp]
             if self.userInst.mixOldThreads() and not board == '@':
                 oldThread = threadFilter.filter(Post.bumpDate < c.threads[-1].bumpDate).order_by(sqlalchemy.func.random()).first()
                 #log.debug(oldThread)
@@ -135,7 +135,7 @@ class FccController(OrphieBaseController):
         if tagList and len(tagList) == 1 and tags:
             currentBoard = tags[0]
             c.boardName = currentBoard.options and currentBoard.options.comment or (u"/%s/" % currentBoard.tag)
-            c.tagLine   = currentBoard.tag
+            c.tagLine = currentBoard.tag
         elif not tagList and tags:
             tagDescr = Post.tagLine(tags)
             c.boardName = tagDescr[1]
@@ -173,7 +173,7 @@ class FccController(OrphieBaseController):
             if count > 1:
                 replyCount = thread.replyCount
                 #replyCount = Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).count()
-                replyLim   = replyCount - self.userInst.repliesPerThread()
+                replyLim = replyCount - self.userInst.repliesPerThread()
                 if replyLim < 0:
                     replyLim = 0
                 thread.omittedPosts = replyLim
@@ -193,7 +193,7 @@ class FccController(OrphieBaseController):
         return self.render('posts')
 
 
-    def GetBoard(self, board, tempid, page=0):
+    def GetBoard(self, board, tempid, page = 0):
         if board == None:
             if (g.OPT.framedMain and self.userInst and self.userInst.useFrame()):
                 return self.render('frameMain')
@@ -210,11 +210,11 @@ class FccController(OrphieBaseController):
             chTime = g.OPT.statsCacheTime
 
             if chTime > 0:
-                cm = CacheManager(type='memory')
+                cm = CacheManager(type = 'memory')
                 cch = cm.get_cache('home_stats')
-                c.totalPostsCount = cch.get_value(key="totalPosts", createfunc=Post.getPostsCount, expiretime=chTime)
-                mstat = cch.get_value(key="mainStats", createfunc=Tag.getStats, expiretime=chTime)
-                vts = cch.get_value(key="vitalSigns", createfunc=Post.vitalSigns, expiretime=chTime)
+                c.totalPostsCount = cch.get_value(key = "totalPosts", createfunc = Post.getPostsCount, expiretime = chTime)
+                mstat = cch.get_value(key = "mainStats", createfunc = Tag.getStats, expiretime = chTime)
+                vts = cch.get_value(key = "vitalSigns", createfunc = Post.vitalSigns, expiretime = chTime)
             else:
                 c.totalPostsCount = Post.getPostsCount()
                 mstat = Tag.getStats()
@@ -257,14 +257,14 @@ class FccController(OrphieBaseController):
 
         filter = Post.buildMetaboardFilter(board, self.userInst)
         tags = Tag.getAllByNames(filter[1])
-        return self.showPosts(threadFilter=filter[0], tempid=tempid, page=int(page), board=board, tags=tags, tagList=filter[1])
+        return self.showPosts(threadFilter = filter[0], tempid = tempid, page = int(page), board = board, tags = tags, tagList = filter[1])
 
     def GetThread(self, post, tempid):
         thePost = Post.getPost(post)
         #if thePost isn't op-post, redirect to op-post instead
         if thePost and thePost.parentPost:
             if isNumber(tempid) and not int(tempid) == 0:
-                redirect_to(h.url_for('thread', post=thePost.parentid, tempid=int(tempid)))
+                redirect_to(h.url_for('thread', post = thePost.parentid, tempid = int(tempid)))
             else:
                 redirect_to(h.postUrl(thePost.parentid, thePost.id))
 
@@ -274,17 +274,17 @@ class FccController(OrphieBaseController):
 
         c.PostAction = thePost.id
         filter = Post.buildThreadFilter(self.userInst, thePost.id)
-        return self.showPosts(threadFilter=filter, tempid=tempid, page=0, board='', tags=thePost.tags)
-    
+        return self.showPosts(threadFilter = filter, tempid = tempid, page = 0, board = '', tags = thePost.tags)
+
     def makeFwdTo(self):
-        tagsStr = request.POST.get('tags','')
+        tagsStr = request.POST.get('tags', '')
         if tagsStr:
             tags = tagsStr.split(' ')
             return redirect_to(h.url_for('%2B'.join(tags).encode('utf-8')))
         else:
             c.errorText = _("You must specify post tagline.")
             return self.render('error')
-        
+
     def gotoDestination(self, post, postid):
         taglineSource = post
         if post.parentid:
@@ -306,21 +306,21 @@ class FccController(OrphieBaseController):
             curPage = 0
 
         ##log.debug('%s %s %s' % (tagLine, str(dest), str(curPage)))
-        redirectAddr = h.url_for('boardBase', board=g.OPT.allowOverview and '~' or postTagline)
+        redirectAddr = h.url_for('boardBase', board = g.OPT.allowOverview and '~' or postTagline)
 
         if dest == 4: # destination board
-            redirectAddr = h.url_for('boardBase', board=postTagline) #'%s/' % (postTagline)
+            redirectAddr = h.url_for('boardBase', board = postTagline) #'%s/' % (postTagline)
 
         if dest == 0: #current thread
             if postid:
-                return redirect_to(action='GetThread', post=post.parentid, board=None)
+                return redirect_to(action = 'GetThread', post = post.parentid, board = None)
             else:
-                return redirect_to(action='GetThread', post=post.id, board=None)
+                return redirect_to(action = 'GetThread', post = post.id, board = None)
         elif dest == 1 or dest == 2: # current board
             if  tagLine:
                 if dest == 1:
                     curPage = 0
-                redirectAddr = h.url_for('board', board=tagLine, page=curPage) #"%s/page/%d" % (tagLine, curPage)
+                redirectAddr = h.url_for('board', board = tagLine, page = curPage) #"%s/page/%d" % (tagLine, curPage)
         elif dest == 3: # overview
             pass
         elif dest == 5: #referrer
@@ -334,13 +334,13 @@ class FccController(OrphieBaseController):
             return self.render('error')
 
         c.templates = g.OPT.templates
-        c.styles    = g.OPT.styles
-        c.langs    = g.OPT.langs
+        c.styles = g.OPT.styles
+        c.langs = g.OPT.langs
         c.profileChanged = False
         c.boardName = _('Profile')
         if request.POST.get('update', False):
-            self.userInst.hideLongComments(request.POST.get('hideLongComments',False))
-            self.userInst.useFrame(request.POST.get('useFrame',False))
+            self.userInst.hideLongComments(request.POST.get('hideLongComments', False))
+            self.userInst.useFrame(request.POST.get('useFrame', False))
             self.userInst.useAjax(bool(request.POST.get('useAjax', False)))
             self.userInst.expandImages(request.POST.get('expandImages', False))
             self.userInst.mixOldThreads(bool(request.POST.get('mixOldThreads', False)))
@@ -348,10 +348,10 @@ class FccController(OrphieBaseController):
             self.userInst.oekUseSelfy(bool(request.POST.get('oekUseSelfy', False)))
             self.userInst.oekUseAnim(bool(request.POST.get('oekUseAnim', False)))
             self.userInst.oekUsePro(bool(request.POST.get('oekUsePro', False)))
-            threadsPerPage = request.POST.get('threadsPerPage',self.userInst.threadsPerPage())
+            threadsPerPage = request.POST.get('threadsPerPage', self.userInst.threadsPerPage())
             if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 30):
                 self.userInst.threadsPerPage(int(threadsPerPage))
-            repliesPerThread = request.POST.get('repliesPerThread',self.userInst.repliesPerThread())
+            repliesPerThread = request.POST.get('repliesPerThread', self.userInst.repliesPerThread())
             if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
                 self.userInst.repliesPerThread(int(repliesPerThread))
             maxExpandWidth = request.POST.get('maxExpandWidth', self.userInst.maxExpandWidth())
@@ -367,7 +367,7 @@ class FccController(OrphieBaseController):
             if style in c.styles:
                 self.userInst.style(style)
             lang = filterText(request.POST.get('lang', self.userInst.lang()))
-            c.reload = (lang!=self.userInst.lang())
+            c.reload = (lang != self.userInst.lang())
             if lang in c.langs:
                 self.userInst.lang(lang)
             cLang = filterText(request.POST.get('cLang', self.userInst.cLang()))
@@ -385,8 +385,8 @@ class FccController(OrphieBaseController):
 
             if not c.userInst.Anonymous:
                 c.profileMsg = _('Password was NOT changed.')
-                key = request.POST.get('key','').encode('utf-8')
-                key2 = request.POST.get('key2','').encode('utf-8')
+                key = request.POST.get('key', '').encode('utf-8')
+                key2 = request.POST.get('key2', '').encode('utf-8')
                 currentKey = request.POST.get('currentKey', '').encode('utf-8')
                 passwdRet = self.userInst.passwd(key, key2, False, currentKey)
                 if passwdRet == True:
@@ -445,7 +445,7 @@ class FccController(OrphieBaseController):
         if opPostDeleted:
             redirectAddr = tagLine
 
-        return redirect_to(h.url_for('boardBase', board=redirectAddr))
+        return redirect_to(h.url_for('boardBase', board = redirectAddr))
         #str('/%s' % redirectAddr.encode('utf-8'))
 
     def search(self, text, page = 0):
@@ -489,7 +489,7 @@ class FccController(OrphieBaseController):
         filter = base.filter(Post.message.like('%%%s%%' % text))
         count = filter.count()
         self.paginate(count, page, pp)
-        posts = filter.order_by(Post.date.desc())[(page * pp):(page + 1)* pp]
+        posts = filter.order_by(Post.date.desc())[(page * pp):(page + 1) * pp]
 
         c.posts = []
         for p in posts:
@@ -534,7 +534,7 @@ class FccController(OrphieBaseController):
                     result.append(_("You are not author of post #%s") % post.id)
                 else:
                     delay = g.OPT.finalAHoursDelay
-                    timeDelta = datetime.timedelta(hours=delay)
+                    timeDelta = datetime.timedelta(hours = delay)
                     if post.date < datetime.datetime.now() - timeDelta:
                         post.uidNumber = 0
                         post.ip = None
@@ -555,7 +555,7 @@ class FccController(OrphieBaseController):
             count = LogEntry.count(disabledEvents)
             tpp = 50
             self.paginate(count, page, tpp)
-            c.logs = LogEntry.getRange(page*tpp, (page+1)*tpp, disabledEvents)
+            c.logs = LogEntry.getRange(page * tpp, (page + 1) * tpp, disabledEvents)
             rv = re.compile('(\d+\.){3}\d+')
             for le in c.logs:
                 le.entry = rv.sub('<font color="red">[IP REMOVED]</font>', le.entry)
@@ -574,7 +574,7 @@ class FccController(OrphieBaseController):
         c.animation = request.POST.get('animation', False) or anim == '+anim'
 
         oekType = ''
-        if request.POST.get('oekaki_painter', False) == 'shiPro' or tool=='shiPro':
+        if request.POST.get('oekaki_painter', False) == 'shiPro' or tool == 'shiPro':
             oekType = 'Shi pro'
             c.oekakiToolString = 'pro'
         else:
@@ -582,13 +582,13 @@ class FccController(OrphieBaseController):
             c.oekakiToolString = 'normal';
 
         c.canvas = False
-        c.width  = request.POST.get('oekaki_x','300')
-        c.height = request.POST.get('oekaki_y','300')
+        c.width = request.POST.get('oekaki_x', '300')
+        c.height = request.POST.get('oekaki_y', '300')
 
-        if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width)<=10 or int(c.height)<=10):
+        if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width) <= 10 or int(c.height) <= 10):
            c.width = 300
            c.height = 300
-        c.tempid = str(long(time.time() * 10**7))
+        c.tempid = str(long(time.time() * 10 ** 7))
 
         oekSource = 0
         if isNumber(url) and enablePicLoading:
@@ -600,7 +600,7 @@ class FccController(OrphieBaseController):
               if pic and pic.width:
                  oekSource = post.id
                  c.canvas = h.modLink(pic.path, c.userInst.secid())
-                 c.width  = pic.width
+                 c.width = pic.width
                  c.height = pic.height
                  if pic.animpath:
                      c.pchPath = h.modLink(pic.animpath, c.userInst.secid())
@@ -616,10 +616,10 @@ class FccController(OrphieBaseController):
         c.pchPath = h.modLink(post.file.animpath, c.userInst.secid())
         return self.render('shiAnimation')
 
-    def processFile(self, file, thumbSize=250):
+    def processFile(self, file, thumbSize = 250):
         if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
-           name = str(long(time.time() * 10**7))
-           ext  = file.filename.rsplit('.', 1)[:0:-1]
+           name = str(long(time.time() * 10 ** 7))
+           ext = file.filename.rsplit('.', 1)[:0:-1]
 
            #ret: [FileHolder, PicInfo, Picture, Error]
 
@@ -694,12 +694,12 @@ class FccController(OrphieBaseController):
            return False
 
     def PostReply(self, post):
-        return self.processPost(postid=post)
+        return self.processPost(postid = post)
 
     def PostThread(self, board):
-        return self.processPost(board=board)
+        return self.processPost(board = board)
 
-    def processPost(self, postid=0, board=u''):
+    def processPost(self, postid = 0, board = u''):
         ipStr = getUserIp()
         ip = h.dottedToInt(ipStr)
         banInfo = Ban.getBanByIp(ip)
@@ -707,7 +707,7 @@ class FccController(OrphieBaseController):
         c.ban = banInfo
         if banInfo and banInfo.enabled:
             redirect_to(h.url_for('ipBanned'))
-            
+
         if not self.currentUserCanPost():
             c.errorText = _("Posting is disabled")
             return self.render('error')
@@ -716,7 +716,7 @@ class FccController(OrphieBaseController):
         # VERY-VERY BIG CROCK OF SHIT !!!
         postMessage = filterText(request.POST.get('message', u''))
         c.postMessage = postMessage
-        postMessage = postMessage.replace('&gt;','>') #XXX: TODO: this must be fixed in parser
+        postMessage = postMessage.replace('&gt;', '>') #XXX: TODO: this must be fixed in parser
         # VERY-VERY BIG CROCK OF SHIT !!!
         # VERY-VERY BIG CROCK OF SHIT !!!!
 
@@ -751,7 +751,7 @@ class FccController(OrphieBaseController):
             remPass = request.POST.get('remPass', False)
             if remPass:
                 postRemovemd5 = hashlib.md5(remPass.encode('utf-8')).hexdigest()
-                response.set_cookie('orhpieRemPass', unicode(remPass), max_age=3600)
+                response.set_cookie('orhpieRemPass', unicode(remPass), max_age = 3600)
                 #log.debug('setting pass cookie in post proc: %s' %str(remPass.encode('utf-8')))
 
         thread = None
@@ -823,7 +823,7 @@ class FccController(OrphieBaseController):
            animPath = oekaki.animPath
            file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
            postMessageInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds</span>' \
-                            % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time/1000)))
+                            % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time / 1000)))
            if oekaki.source:
               postMessageInfo += ", source " + self.formatPostReference(oekaki.source)
            oekaki.delete()
@@ -834,10 +834,10 @@ class FccController(OrphieBaseController):
         postMessageRaw = None
         if postMessage:
            if len(postMessage) <= 15000:
-               parser = WakabaParser(g.OPT, thread and thread.id or -1)
+               parser = WakabaParser(g.OPT, thread and thread.id or - 1)
                maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
                cutSymbols = int(g.settingsMap["cutSymbols"].value)
-               parsedMessage = parser.parseWakaba(postMessage, self, lines=maxLinesInPost, maxLen=cutSymbols)
+               parsedMessage = parser.parseWakaba(postMessage, self, lines = maxLinesInPost, maxLen = cutSymbols)
                fullMessage = parsedMessage[0]
                postMessageShort = parsedMessage[1]
 

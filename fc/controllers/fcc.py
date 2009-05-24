@@ -35,6 +35,7 @@ import Image
 import os
 import hashlib
 import re
+import base64
 from beaker.cache import CacheManager
 from wakabaparse import WakabaParser
 from fc.lib.miscUtils import *
@@ -699,18 +700,45 @@ class FccController(OrphieBaseController):
     def PostThread(self, board):
         return self.processPost(board = board)
 
-    def processPost(self, postid = 0, board = u''):
+    def ajaxPostReply(self, post):
+        return self.processPost(postid = post, ajaxRequest = True)
+
+    def ajaxPostThread(self, board):
+        return self.processPost(board = board, ajaxRequest = True)
+
+    def processPost(self, postid = 0, board = u'', ajaxRequest = False):
+        def ajaxError(message):
+            return message
+        def usualError(message):
+            c.errorText = message
+            return self.render('error')
+
+        errorHandler = usualError
+        if ajaxRequest:
+            errorHandler = ajaxError
+
         ipStr = getUserIp()
         ip = h.dottedToInt(ipStr)
         banInfo = Ban.getBanByIp(ip)
 
         c.ban = banInfo
         if banInfo and banInfo.enabled:
-            redirect_to(h.url_for('ipBanned'))
+            if ajaxRequest:
+                return errorHandler(_("IP banned"))
+            else:
+                redirect_to(h.url_for('ipBanned'))
 
         if not self.currentUserCanPost():
-            c.errorText = _("Posting is disabled")
-            return self.render('error')
+            return errorHandler(_("Posting is disabled"))
+
+        baseEncoded = 'baseEncoded' in request.POST
+        def normalFilter(text):
+            return filterText(text)
+        def base64TextFilter(text):
+            return filterText(base64.decodestring(text))
+        textFilter = normalFilter
+        if baseEncoded:
+            textFilter = base64TextFilter
 
         # VERY-VERY BIG CROCK OF SHIT !!!
         # VERY-VERY BIG CROCK OF SHIT !!!
@@ -745,8 +773,7 @@ class FccController(OrphieBaseController):
                 captchaOk = captcha.test(request.POST.get('captcha', False))
 
             if not captchaOk:
-                c.errorText = _("Incorrect Captcha value")
-                return self.render('error')
+                return errorHandler(_("Incorrect Captcha value"))
 
             remPass = request.POST.get('remPass', False)
             if remPass:
@@ -760,8 +787,7 @@ class FccController(OrphieBaseController):
             thePost = Post.getPost(postid)
 
             if not thePost:
-                c.errorText = _("Can't post into non-existent thread")
-                return self.render('error')
+                return errorHandler(_("Can't post into non-existent thread"))
 
             if thePost.parentid:
                 thread = thePost.parentPost
@@ -771,13 +797,11 @@ class FccController(OrphieBaseController):
         else:
             tags = Tag.stringToTagList(tagstr, g.OPT.allowTagCreation)
             if not tags:
-                c.errorText = _("You should specify at least one board")
-                return self.render('error')
+                return errorHandler(_("You should specify at least one board"))
 
             maxTagsCount = int(g.settingsMap['maxTagsCount'].value)
             if len(tags) > maxTagsCount:
-                c.errorText = _("Too many tags. Maximum allowed: %s") % (maxTagsCount)
-                return self.render('error')
+                return errorHandler(_("Too many tags. Maximum allowed: %s") % (maxTagsCount))
 
             usualTagsCC = 0
             svcTagsCC = 0
@@ -792,28 +816,23 @@ class FccController(OrphieBaseController):
 
             if len(tags) > 1 and not g.OPT.allowCrossposting:
                 if not g.OPT.allowCrosspostingSvc:
-                    c.errorText = _("Crossposting disabled")
-                    return self.render('error')
+                    return errorHandler(_("Crossposting disabled"))
                 else:
                     if usualTagsCC > 1:
-                        c.errorText = _("Crossposting allowed only for service tags")
-                        return self.render('error')
+                        return errorHandler(_("Crossposting allowed only for service tags"))
 
             if not g.OPT.allowPureSvcTagline and usualTagsCC == 0:
-                c.errorText = _("Can't post with service tags only")
-                return self.render('error')
+                return errorHandler(_("Can't post with service tags only"))
 
             #TODO: this check should be done before Tag() constructors
             #In other cases only Autocommit=False will be correct
             permCheckRes = Tag.checkForConfilcts(tags)
             if not permCheckRes[0]:
-                c.errorText = _("Tags restrictions violations:<br/> %s") % ('<br/>'.join(permCheckRes[1]))
-                return self.render('error')
+                return errorHandler(_("Tags restrictions violations:<br/> %s") % ('<br/>'.join(permCheckRes[1])))
 
         options = Tag.conjunctedOptionsDescript(tags)
         if not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
-            c.errorText = _("Unacceptable combination of tags")
-            return self.render('error')
+            return errorHandler(_("Unacceptable combination of tags"))
 
         postMessageInfo = None
         tempid = request.POST.get('tempid', False)
@@ -848,8 +867,7 @@ class FccController(OrphieBaseController):
 
                postMessage = fullMessage
            else:
-               c.errorText = _('Message is too long')
-               return self.render('error')
+               return errorHandler(_('Message is too long'))
 
         fileDescriptors = self.processFile(file, options.thumbSize)
         fileHolder = False
@@ -866,14 +884,11 @@ class FccController(OrphieBaseController):
 
         if picInfo:
             if not options.images:
-                c.errorText = _("Files are not allowed on this board")
-                return self.render('error')
+                return errorHandler(_("Files are not allowed on this board"))
             if picInfo.fileSize > options.maxFileSize:
-                c.errorText = _("File size (%d) exceeds the limit (%d)") % (picInfo.fileSize, options.maxFileSize)
-                return self.render('error')
+                return errorHandler(_("File size (%d) exceeds the limit (%d)") % (picInfo.fileSize, options.maxFileSize))
             if picInfo.sizes and picInfo.sizes[0] and picInfo.sizes[1] and (picInfo.sizes[0] < options.minPicSize or picInfo.sizes[1] < options.minPicSize):
-                c.errorText = _("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize)
-                return self.render('error')
+                return errorHandler(_("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize))
 
             try:
                 audio = EasyID3(picInfo.localFilePath)
@@ -897,8 +912,7 @@ class FccController(OrphieBaseController):
                 pass
 
         if not postMessage and not picInfo and not postMessageInfo:
-            c.errorText = _("At least message or file should be specified")
-            return self.render('error')
+            return errorHandler(_("At least message or file should be specified"))
 
         postSpoiler = False
         if options.enableSpoilers:
@@ -907,12 +921,10 @@ class FccController(OrphieBaseController):
         postSage = request.POST.get('sage', False)
         if postid:
             if not picInfo and not options.imagelessPost:
-                c.errorText = _("Replies without image are not allowed")
-                return self.render('error')
+                return errorHandler(_("Replies without image are not allowed"))
         else:
             if not picInfo and not options.imagelessThread:
-                c.errorText = _("Threads without image are not allowed")
-                return self.render('error')
+                return errorHandler(_("Threads without image are not allowed"))
 
         postParams = empty()
         postParams.message = postMessage
@@ -941,4 +953,8 @@ class FccController(OrphieBaseController):
         if fileHolder:
             fileHolder.disableDeletion()
         response.set_cookie('orphie-postingCompleted', 'yes')
-        self.gotoDestination(post, postid)
+
+        if ajaxRequest:
+            return 'completed'
+        else:
+            self.gotoDestination(post, postid)

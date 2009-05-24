@@ -6,7 +6,7 @@
 %endif
 
 <div class="theader">
-<a style="cursor:pointer" onclick="toggle_div('newThreadPlaceholder');">
+<a style="cursor:pointer; display: block;" onclick="toggle_div('newThreadPlaceholder');">
 %if not c.board:
     ${_('Reply')}
 %else:

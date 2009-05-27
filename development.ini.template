@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -55,6 +55,7 @@ core.version = Orphereus 1.0 RC1
 # We will hash hashSecret by sha512, so no need to have it long
 core.hashSecret = smallSecret
 core.baseDomain= anoma.ch
+core.urlPrefix = /
 core.minPassLength = 12
 core.uploadPath = /var/www/OrphieUploads/
 core.staticPath = /var/www/OrhpieStatic/

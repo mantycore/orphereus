@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -58,7 +58,7 @@ class FcajaxController(OrphieBaseController):
                 parent = postInst
             #uncomment to disable folding for big posts
             #parent.enableShortMessages=False
-            return self.render('postReply', None, thread=parent, post = postInst)
+            return self.render('postReply', None, thread = parent, post = postInst)
         abort(404)
 
     def getRenderedReplies(self, thread):
@@ -70,7 +70,7 @@ class FcajaxController(OrphieBaseController):
                     if t.id in g.forbiddenTags:
                         abort(403)
             postInst.Replies = postInst.filterReplies().all()
-            return self.render('replies', None, thread=postInst)
+            return self.render('replies', None, thread = postInst)
         abort(404)
 
     def getRepliesCountForThread(self, post):
@@ -93,7 +93,7 @@ class FcajaxController(OrphieBaseController):
                 return str(','.join(ret))
         abort(404)
 
-    def hideThread(self,post,redirect):
+    def hideThread(self, post, redirect):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             abort(403)
         postInst = Post.getPost(post)
@@ -165,6 +165,6 @@ class FcajaxController(OrphieBaseController):
         else:
             abort(404)
 
-    def getText(self,text):
+    def getText(self, text):
         strings = {'lol': 'test', 'CollapseThread': _('Collapse thread')}
-        return (strings.has_key(text) and strings[text]) or 'Wut?'  
+        return (strings.has_key(text) and strings[text]) or 'Wut?'

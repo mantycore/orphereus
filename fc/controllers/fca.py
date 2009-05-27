@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -44,14 +44,14 @@ class FcaController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         if not self.currentUserIsAuthorized():
-            return redirect_to('/')
+            return redirect_to('boardBase')
         self.initEnvironment()
         if not self.userInst.isAdmin() or self.userInst.isBanned():
             c.errorText = _("No way! You aren't holy enough!")
-            return redirect_to('/')
+            return redirect_to('boardBase')
         c.userInst = self.userInst
         if not checkAdminIP():
-            return redirect_to('/')
+            return redirect_to('boardBase')
 
     def index(self):
         c.boardName = _('Index')
@@ -90,7 +90,7 @@ class FcaController(OrphieBaseController):
         count = LogEntry.count()
         tpp = 50
         self.paginate(count, page, tpp)
-        c.logs = LogEntry.getRange(page*tpp, (page+1)*tpp)
+        c.logs = LogEntry.getRange(page * tpp, (page + 1) * tpp)
         return self.render('managementLogs')
 
     def invitePage(self):
@@ -98,7 +98,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        c.boardName = _('Invites')        
+        c.boardName = _('Invites')
 
         return self.render('invitePage')
 
@@ -114,7 +114,7 @@ class FcaController(OrphieBaseController):
             reason = filterText(reason)
             invite = Invite.create(g.OPT.hashSecret)
 
-            toLog(LOG_EVENT_INVITE,_("Generated invite id %s. Reason: %s") % (invite.id, reason))
+            toLog(LOG_EVENT_INVITE, _("Generated invite id %s. Reason: %s") % (invite.id, reason))
             c.inviteCode = invite.invite
         return self.render('manageInvites')
 
@@ -130,13 +130,13 @@ class FcaController(OrphieBaseController):
         #log.debug('rendering list, msg=%s' %c.message)
         return self.render('manageBans')
 
-    def editBan(self,id):
+    def editBan(self, id):
         #log.debug('ban')
         if not self.userInst.canManageUsers():
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
-        
-        c.boardName = _('Editing ban %s') %id
+
+        c.boardName = _('Editing ban %s') % id
         id = request.POST.get('id', id)
 
         c.exists = True
@@ -146,14 +146,14 @@ class FcaController(OrphieBaseController):
             c.exists = False
             c.boardName = _('New IP ban')
             ip = c.ipToBan or 0
-            c.ban = Ban.create(ip,h.dottedToInt('255.255.255.255'),0,'',datetime.datetime.now(),30,True)
+            c.ban = Ban.create(ip, h.dottedToInt('255.255.255.255'), 0, '', datetime.datetime.now(), 30, True)
             #log.debug('Made obj: %s, id: %s' %(c.ban,c.ban.id))
             toLog(LOG_EVENT_BAN_ADD, _('Added ban no. %s') % c.ban.id)
         else:
             c.ban = ban
 
         postedId = request.POST.get('id', -1)
-        if (postedId>-1):
+        if (postedId > -1):
             if not request.POST.get('delete', False):
                 try:
                     ip = h.dottedToInt(filterText(request.POST.get('ip', 0)))
@@ -161,17 +161,17 @@ class FcaController(OrphieBaseController):
                 except:
                     c.errorText = _("Please check the format of IP addresses and masks.")
                     return self.render('error')
-                    
-                type = request.POST.get('type', False)=='on'
-                enabled = request.POST.get('enabled', False)=='on'
+
+                type = request.POST.get('type', False) == 'on'
+                enabled = request.POST.get('enabled', False) == 'on'
                 reason = filterText(request.POST.get('reason', ''))
                 date = request.POST.get('date', 0)
                 period = request.POST.get('period', 0)
 
                 ban = Ban.getBanById(id)
-                if ban: 
+                if ban:
                     ban.setData(ip, mask, type, reason, date, period, enabled)
-                toLog(LOG_EVENT_BAN_EDIT, _('Updated ban no. %s, reason: %s') % (ban.id,ban.reason))
+                toLog(LOG_EVENT_BAN_EDIT, _('Updated ban no. %s, reason: %s') % (ban.id, ban.reason))
                 c.exists = True
                 c.message = _('Ban properties were updated')
                 return self.manageBans()
@@ -179,7 +179,7 @@ class FcaController(OrphieBaseController):
                 banId = ban.id
                 if ban.delete():
                     toLog(LOG_EVENT_BAN_REMOVE, _('Deleted ban %s') % banId)
-                    c.message = _('Ban record no. %s deleted' %banId)
+                    c.message = _('Ban record no. %s deleted' % banId)
                     return self.manageBans()
         return self.render('manageBan')
 
@@ -198,7 +198,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        c.boardName = _('Editing extension %s') %name
+        c.boardName = _('Editing extension %s') % name
         if not name:
             name = ''
 
@@ -216,7 +216,7 @@ class FcaController(OrphieBaseController):
             c.ext.ext = name
             c.ext.path = ''
             c.ext.thwidth = 0
-            c.ext.thheight= 0
+            c.ext.thheight = 0
             c.ext.type = 'image'
             c.ext.enabled = True
             c.ext.newWindow = True
@@ -255,11 +255,11 @@ class FcaController(OrphieBaseController):
         if not self.userInst.canManageMappings():
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
-        
+
         c.boardName = _('Manage mappings')
-        
+
         #log.debug("%s\n\n%s\nact:%s" %(c,request.POST,act))
-        
+
         if isNumber(id) and isNumber(tagid):
             id = int(id)
             tagid = int(tagid)
@@ -297,7 +297,7 @@ class FcaController(OrphieBaseController):
                         tag = Tag.getById(tagid)
                         tag.threadCount -= 1
                         tag.replyCount -= post.replyCount
-                        toLog(LOG_EVENT_EDITEDPOST,_('Removed tag %s from post %d') % (tag.tag, post.id))
+                        toLog(LOG_EVENT_EDITEDPOST, _('Removed tag %s from post %d') % (tag.tag, post.id))
                         post.tags.remove(tag)
                     else:
                         c.errorText = _("Can't delete last tag!")
@@ -305,7 +305,7 @@ class FcaController(OrphieBaseController):
                 elif act == 'add':
                     tag = Tag.getById(tagid)
                     if tag:
-                        toLog(LOG_EVENT_EDITEDPOST,_('Added tag %s to post %d') % (tag.tag, post.id))
+                        toLog(LOG_EVENT_EDITEDPOST, _('Added tag %s to post %d') % (tag.tag, post.id))
                         post.tags.append(tag)
                         tag.threadCount += 1
                         tag.replyCount += post.replyCount
@@ -315,10 +315,10 @@ class FcaController(OrphieBaseController):
 
                 meta.Session.commit()
 
-            redirect_to(h.url_for('hsMappings', act='show', id=id))
+            redirect_to('hsMappings', act = 'show', id = id)
            # return self.render('manageMappings')
         else:
-            redirect_to(h.url_for('hsMappings'))
+            redirect_to('hsMappings')
 
     def manageBoards(self):
         if not self.userInst.canManageBoards():
@@ -362,7 +362,7 @@ class FcaController(OrphieBaseController):
             c.tag.options = TagOptions()
 
         if request.POST.get('tag', False):
-            newtag = request.POST.get('tag',False)
+            newtag = request.POST.get('tag', False)
             newtagre = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""").match(newtag)
             if newtagre:
                 newtag = newtagre.groups()[0]
@@ -395,18 +395,18 @@ class FcaController(OrphieBaseController):
                     c.tag.save()
                     if request.POST.get('deleteBoard', False) and c.tag.id:
                         count = c.tag.getExactThreadCount()
-                        if count>0:
+                        if count > 0:
                             c.message = _("Board must be empty for deletion")
                         else:
                             meta.Session.delete(c.tag)
-                            toLog(LOG_EVENT_BOARD_EDIT, _("Deleted board %s %s") % (newtag, oldtag and ("(that was renamed from %s)"%oldtag) or ""))
+                            toLog(LOG_EVENT_BOARD_EDIT, _("Deleted board %s %s") % (newtag, oldtag and ("(that was renamed from %s)" % oldtag) or ""))
                             meta.Session.commit()
-                            return redirect_to(h.url_for('hsBoards'))
+                            return redirect_to('hsBoards')
                     elif not c.tag.id:
                         meta.Session.add(c.tag)
 
                     c.message = _("Updated board")
-                    toLog(LOG_EVENT_BOARD_EDIT, _("Edited board %s %s") % (newtag,oldtag and ("(renamed from %s)"%oldtag) or ""))
+                    toLog(LOG_EVENT_BOARD_EDIT, _("Edited board %s %s") % (newtag, oldtag and ("(renamed from %s)" % oldtag) or ""))
                     meta.Session.commit()
 
                 else:
@@ -429,7 +429,7 @@ class FcaController(OrphieBaseController):
             else:
                 user = User.getByUid(uid)
             if user:
-                return redirect_to(h.url_for('hsUserEdit', uid=user.uidNumber))
+                return redirect_to('hsUserEdit', uid = user.uidNumber)
             else:
                 c.message = _('No such user exists.')
         return self.render('manageUsers')
@@ -449,7 +449,7 @@ class FcaController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
-        # TODO: perform reason request 
+        # TODO: perform reason request
         post = Post.getPost(pid)
         c.ipToBan = post.ip
         return self.editBan(-1)
@@ -466,12 +466,12 @@ class FcaController(OrphieBaseController):
             reason = request.POST.get("UIDViewReason", _('No reason given!'))
             #toLog(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '<a href='/%s#i%s'>%s</a>'. Reason: %s" % (post.uidNumber, post.parentid > 0 and post.parentid or post.id, pid, pid, reason))
             toLog(LOG_EVENT_USER_GETUID, _("Viewed UID for user '%s' from post '%s'. Reason: %s") % (post.uidNumber, post.id, reason))
-            return redirect_to(h.url_for('hsUserEdit', uid=post.uidNumber))
+            return redirect_to('hsUserEdit', uid = post.uidNumber)
         else:
             c.errorText = _("Post not found")
             return self.render('error')
 
-    def editUser(self,uid):
+    def editUser(self, uid):
         if not self.userInst.canManageUsers():
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
@@ -483,16 +483,16 @@ class FcaController(OrphieBaseController):
             c.userInst = self.userInst
             if request.POST.get('access', False) and self.userInst.canChangeRights():
                 #Basic admin right
-                isAdmin = request.POST.get('isAdmin',False) and True or False
+                isAdmin = request.POST.get('isAdmin', False) and True or False
                 if user.options.isAdmin != isAdmin:
                     user.options.isAdmin = isAdmin
-                    toLog(LOG_EVENT_USER_ACCESS,_('Changed user %s isAdmin to %s') % (user.uidNumber,isAdmin))
+                    toLog(LOG_EVENT_USER_ACCESS, _('Changed user %s isAdmin to %s') % (user.uidNumber, isAdmin))
 
                 def setRight(name):
                     right = request.POST.get(name, False) and True or False
                     if getattr(user.options, name) != right:
                         setattr(user.options, name, right)
-                        toLog(LOG_EVENT_USER_ACCESS,_('Changed right "%s" for user #%s to %s') % ( name, user.uidNumber, right))
+                        toLog(LOG_EVENT_USER_ACCESS, _('Changed right "%s" for user #%s to %s') % (name, user.uidNumber, right))
 
                 setRight("canDeleteAllPosts")
                 setRight("canMakeInvite")
@@ -508,16 +508,16 @@ class FcaController(OrphieBaseController):
                 if user.options.bantime > 0:
                     c.message = _('This user is already banned')
                 else:
-                    banreason = filterText(request.POST.get('banreason','???'))
-                    bantime = request.POST.get('bantime','0')
+                    banreason = filterText(request.POST.get('banreason', '???'))
+                    bantime = request.POST.get('bantime', '0')
                     c.message = user.ban(bantime, banreason, self.userInst.uidNumber)
-            elif request.POST.get('unban',False):
+            elif request.POST.get('unban', False):
                 if user.options.bantime > 0:
                     banreason = user.options.banreason
                     bantime = user.options.bantime
                     user.options.bantime = 0
                     user.options.banreason = u''
-                    toLog(LOG_EVENT_USER_UNBAN,_('Unbanned user %s (%s days for reason "%s")') % (user.uidNumber,bantime,banreason))
+                    toLog(LOG_EVENT_USER_UNBAN, _('Unbanned user %s (%s days for reason "%s")') % (user.uidNumber, bantime, banreason))
                     c.message = _('User was unbanned')
                 else:
                     c.message = _('This user is not banned')
@@ -527,7 +527,7 @@ class FcaController(OrphieBaseController):
                 if isNumber(quantity) and int(quantity) > 0:
                     if len(reason) > 1:
                         c.posts = Post.filterByUid(user.uidNumber).order_by(Post.date.desc())[:quantity]
-                        toLog(LOG_EVENT_USER_DELETE,_('Performed posts lookup for user %s for "%s", quantity: %s') % (user.uidNumber, reason, quantity))
+                        toLog(LOG_EVENT_USER_DELETE, _('Performed posts lookup for user %s for "%s", quantity: %s') % (user.uidNumber, reason, quantity))
                         if c.posts:
                             return self.render('postsLookup')
                         else:
@@ -537,12 +537,12 @@ class FcaController(OrphieBaseController):
                 else:
                     c.message = _('Incorrect quantity value')
             elif request.POST.get('passwd', False):
-                key = request.POST.get('key','').encode('utf-8')
-                key2 = request.POST.get('key2','').encode('utf-8')
+                key = request.POST.get('key', '').encode('utf-8')
+                key2 = request.POST.get('key2', '').encode('utf-8')
                 passwdRet = user.passwd(key, key2, True, False)
                 if passwdRet == True:
                     c.message = _('Password was successfully changed.')
-                    toLog(LOG_EVENT_USER_PASSWD,_('Changed password for user "%s"') % (user.uidNumber))
+                    toLog(LOG_EVENT_USER_PASSWD, _('Changed password for user "%s"') % (user.uidNumber))
                     c.message = _('Security code changed')
                 elif passwdRet == False:
                     c.message = _('Incorrect security codes')
@@ -554,7 +554,7 @@ class FcaController(OrphieBaseController):
                 reason = filterText(request.POST.get('deletereason', u''))
                 deleteLegacy = request.POST.get('deleteLegacy', False)
                 if self.userInst.canChangeRights():
-                    if len(reason)>1:
+                    if len(reason) > 1:
                         if deleteLegacy:
                             posts = Post.filterByUid(user.uidNumber).all()
                             removed = []
@@ -564,9 +564,9 @@ class FcaController(OrphieBaseController):
                                 else:
                                     removed.append("%d/%d" % (post.id, post.parentid))
                                 post.deletePost(self.userInst, False, False, reason)
-                            toLog(LOG_EVENT_USER_DELETE,_('Removed legacy of %s for "%s" [%s]') % (user.uidNumber, reason, ', '.join(removed)))
+                            toLog(LOG_EVENT_USER_DELETE, _('Removed legacy of %s for "%s" [%s]') % (user.uidNumber, reason, ', '.join(removed)))
                         meta.Session.delete(user)
-                        toLog(LOG_EVENT_USER_DELETE,_('Deleted user %s for "%s"') % (user.uidNumber,reason))
+                        toLog(LOG_EVENT_USER_DELETE, _('Deleted user %s for "%s"') % (user.uidNumber, reason))
                         c.message = _("User deleted")
                         return self.render('manageUsers')
                     else:

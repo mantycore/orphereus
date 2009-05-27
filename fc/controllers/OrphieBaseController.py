@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -68,18 +68,18 @@ class OrphieBaseController(BaseController):
             currentURL = c.currentURL[:-1]
 
         #log.debug('ipstr: %s, ip: %s, ban: %s, url: %s' %(ipStr,ip,banInfo,currentURL))
-        
+
         if banInfo and banInfo.enabled:
             c.ban = banInfo
-            if (currentURL!='/ipBanned') and banInfo.type:
-                redirect_to(h.url_for('ipBanned'))
-        
+            if (currentURL != '/ipBanned') and banInfo.type:
+                redirect_to('ipBanned')
+
         ###############
-        
+
         if g.OPT.checkUAs and self.userInst.isValid() and not self.userInst.Anonymous:
             for ua in g.OPT.badUAs:
                 if filterText(request.headers.get('User-Agent', '?')).startswith(ua):
-                    self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") %  hashlib.md5(ua).hexdigest(), -1)
+                    self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") % hashlib.md5(ua).hexdigest(), -1)
                     break
 
         if self.userInst.isValid() and self.userInst.lang():
@@ -88,12 +88,12 @@ class OrphieBaseController(BaseController):
     def sessUid(self):
         if g.OPT.allowLogin:
             return session.get('uidNumber', -1)
-        return -1
+        return - 1
 
     def setCookie(self):
         sessCookie = request.cookies.get('fc', '')
         if sessCookie:
-            response.set_cookie('fc', str(sessCookie), domain='.'+g.OPT.baseDomain)
+            response.set_cookie('fc', str(sessCookie), domain = '.' + g.OPT.baseDomain)
 
     def initEnvironment(self):
         c.title = g.settingsMap['title'].value
@@ -149,10 +149,10 @@ class OrphieBaseController(BaseController):
                 c.captcha = captcha
             else:
                 c.captcha = Captcha.getCaptcha(anonCaptId)
-            
+
             remPassCookie = request.cookies.get('orhpieRemPass', randomStr())
             c.remPass = remPassCookie
-            response.set_cookie('orhpieRemPass', unicode(remPassCookie), max_age=3600)
+            response.set_cookie('orhpieRemPass', unicode(remPassCookie), max_age = 3600)
 
     def render(self, page, tmplName = None, **options):
         tname = 'std'
@@ -172,13 +172,13 @@ class OrphieBaseController(BaseController):
 
         fpath = os.path.join(g.OPT.templPath, tpath)
         #log.debug ("Tpath:  %s ; Fpath: %s" %(tpath,fpath))
-          
+
         #TODO: it may be excessive
-        if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/')== fpath.replace('\\', '/'):
-            return render('/'+tpath, **options)
+        if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/') == fpath.replace('\\', '/'):
+            return render('/' + tpath, **options)
         else:
-            log.debug ("Template problem:  %s" %page)
-            abort(404) 
+            log.debug ("Template problem:  %s" % page)
+            abort(404)
 
     def showStatic(self, page):
         c.boardName = _(page)
@@ -194,22 +194,22 @@ class OrphieBaseController(BaseController):
                 page = c.pages - 1
             c.page = page
 
-            if c.pages>15:
+            if c.pages > 15:
                 c.showPagesPartial = True
-                if c.page-5>1:
-                    c.leftPage = c.page-5
+                if c.page - 5 > 1:
+                    c.leftPage = c.page - 5
                 else:
-                    c.leftPage=2
+                    c.leftPage = 2
 
-                if c.page+5<c.pages-2:
-                    c.rightPage = c.page+5
+                if c.page + 5 < c.pages - 2:
+                    c.rightPage = c.page + 5
                 else:
-                    c.rightPage=c.pages-2
+                    c.rightPage = c.pages - 2
         elif count == 1:
-            c.page  = False
+            c.page = False
             c.pages = False
         elif count == 0:
-            c.page  = False
+            c.page = False
             c.pages = False
         c.count = count
 

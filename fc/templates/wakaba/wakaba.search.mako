@@ -7,7 +7,7 @@
 <form action="${h.url_for('searchBase')}" method="post">
     <input type="text" name="query" size="20" value="${c.query}"/>
     <input value="${_('Search again')}" type="submit" />
-    [<a href="${h.url_for('static', page='markup#search')}" target="_blank">${_('Help')}</a>]
+    [<a href="${h.url_for('static', page='markup', anchor='search')}" target="_blank">${_('Help')}</a>]
 </form>
 
 <%include file="wakaba.paginator.mako" args="routeName='search', kwargDict={'text' : c.query}"/>

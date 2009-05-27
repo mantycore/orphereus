@@ -62,13 +62,13 @@ class FccController(OrphieBaseController):
             c.currentURL = c.currentURL[:-1]
 
         if not self.currentUserIsAuthorized():
-            return redirect_to(h.url_for('authorizeToUrl', url = c.currentURL))
+            return redirect_to('authorizeToUrl', url = c.currentURL)
         if self.userInst.isBanned():
             #abort(500, 'Internal Server Error')     # calm hidden ban
-            return redirect_to(h.url_for('youAreBanned'))
+            return redirect_to('youAreBanned')
         c.currentUserCanPost = self.currentUserCanPost()
         if self.userInst.isAdmin() and not checkAdminIP():
-            return redirect_to('/')
+            return redirect_to('boardBase')
         self.initEnvironment()
 
     #parser callback
@@ -79,11 +79,11 @@ class FccController(OrphieBaseController):
         if g.OPT.spiderTrap and not self.userInst.Anonymous:
             if confirm:
                 self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 2"), -1)
-                redirect_to('/')
+                redirect_to('boardBase')
             else:
                 return self.render('selfBan')
         else:
-            return redirect_to('/')
+            return redirect_to('boardBase')
 
     def frameMenu(self):
         c.disableMenu = True
@@ -265,7 +265,7 @@ class FccController(OrphieBaseController):
         #if thePost isn't op-post, redirect to op-post instead
         if thePost and thePost.parentPost:
             if isNumber(tempid) and not int(tempid) == 0:
-                redirect_to(h.url_for('thread', post = thePost.parentid, tempid = int(tempid)))
+                redirect_to('thread', post = thePost.parentid, tempid = int(tempid))
             else:
                 redirect_to(h.postUrl(thePost.parentid, thePost.id))
 
@@ -281,7 +281,7 @@ class FccController(OrphieBaseController):
         tagsStr = request.POST.get('tags', '')
         if tagsStr:
             tags = tagsStr.split(' ')
-            return redirect_to(h.url_for('%2B'.join(tags).encode('utf-8')))
+            return redirect_to('boardBase', board = '%2B'.join(tags).encode('utf-8'))
         else:
             c.errorText = _("You must specify post tagline.")
             return self.render('error')
@@ -307,21 +307,21 @@ class FccController(OrphieBaseController):
             curPage = 0
 
         ##log.debug('%s %s %s' % (tagLine, str(dest), str(curPage)))
-        redirectAddr = h.url_for('boardBase', board = g.OPT.allowOverview and '~' or postTagline)
+        redirectAddr = h.url_for('boardBase', board = g.OPT.allowOverview and '~' or postTagline, qualified = True)
 
         if dest == 4: # destination board
             redirectAddr = h.url_for('boardBase', board = postTagline) #'%s/' % (postTagline)
 
         if dest == 0: #current thread
             if postid:
-                return redirect_to(action = 'GetThread', post = post.parentid, board = None)
+                return redirect_to(action = 'GetThread', post = post.parentid, board = None, qualified = True)
             else:
-                return redirect_to(action = 'GetThread', post = post.id, board = None)
+                return redirect_to(action = 'GetThread', post = post.id, board = None, qualified = True)
         elif dest == 1 or dest == 2: # current board
             if  tagLine:
                 if dest == 1:
                     curPage = 0
-                redirectAddr = h.url_for('board', board = tagLine, page = curPage) #"%s/page/%d" % (tagLine, curPage)
+                redirectAddr = h.url_for('board', board = tagLine, page = curPage, qualified = True) #"%s/page/%d" % (tagLine, curPage)
         elif dest == 3: # overview
             pass
         elif dest == 5: #referrer
@@ -446,7 +446,7 @@ class FccController(OrphieBaseController):
         if opPostDeleted:
             redirectAddr = tagLine
 
-        return redirect_to(h.url_for('boardBase', board = redirectAddr))
+        return redirect_to('boardBase', board = redirectAddr)
         #str('/%s' % redirectAddr.encode('utf-8'))
 
     def search(self, text, page = 0):
@@ -562,7 +562,7 @@ class FccController(OrphieBaseController):
                 le.entry = rv.sub('<font color="red">[IP REMOVED]</font>', le.entry)
             return self.render('logs')
         else:
-            return redirect_to('/')
+            return redirect_to('boardBase')
 
     def oekakiDraw(self, url, selfy, anim, tool):
         if not self.currentUserCanPost():
@@ -729,7 +729,7 @@ class FccController(OrphieBaseController):
             if ajaxRequest:
                 return errorHandler(_("IP banned"))
             else:
-                redirect_to(h.url_for('ipBanned'))
+                redirect_to('ipBanned')
 
         if not self.currentUserCanPost():
             return errorHandler(_("Posting is disabled"))

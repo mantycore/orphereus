@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -36,11 +36,12 @@ from pylons.middleware import error_mapper, ErrorDocuments, ErrorHandler, \
 from beaker.middleware import CacheMiddleware, SessionMiddleware
 from pylons.middleware import ErrorHandler, StatusCodeRedirect
 from routes.middleware import RoutesMiddleware
+from paste.deploy.config import PrefixMiddleware
 from pylons.wsgiapp import PylonsApp
 
 from fc.config.environment import load_environment
 
-def make_app(global_conf, full_stack=True, **app_conf):
+def make_app(global_conf, full_stack = True, **app_conf):
     """Create a Pylons WSGI application and return it
 
     ``global_conf``
@@ -58,7 +59,7 @@ def make_app(global_conf, full_stack=True, **app_conf):
         [app:<name>] section of the Paste ini file (where <name>
         defaults to main).
     """
-    
+
     # Configure the Pylons environment
     load_environment(global_conf, app_conf, False)
 
@@ -79,7 +80,7 @@ def make_app(global_conf, full_stack=True, **app_conf):
         # 500 when debug is disabled)
         app = ErrorDocuments(app, global_conf, mapper=error_mapper, **app_conf)
     """
-    
+
     if asbool(full_stack):
         # Handle Python exceptions
         app = ErrorHandler(app, global_conf, **config['pylons.errorware'])
@@ -90,7 +91,7 @@ def make_app(global_conf, full_stack=True, **app_conf):
             app = StatusCodeRedirect(app)
         else:
             app = StatusCodeRedirect(app, [400, 401, 403, 404, 500])
-            
+
     # Establish the Registry for this application
     app = RegistryManager(app)
 
@@ -101,5 +102,8 @@ def make_app(global_conf, full_stack=True, **app_conf):
         app = Cascade([static_app, javascripts_app, app])
     """
     static_app = StaticURLParser(config['pylons.paths']['static_files'])
-    app = Cascade([static_app, app]) 
+    app = Cascade([static_app, app])
+    prefix = config['core.urlPrefix']
+    if prefix and prefix.startswith('/') and len(prefix) > 1:
+        app = PrefixMiddleware(app, global_conf, prefix = prefix)
     return app

@@ -404,14 +404,14 @@ class FcmController(OrphieBaseController):
         secTestPassed = False
         if not secid:
             if not self.currentUserIsAuthorized():
-                return redirect_to('/')
+                return redirect_to('boardBase')
             self.initEnvironment()
             if not (self.userInst.isAdmin() and self.userInst.canRunMaintenance()) or self.userInst.isBanned():
                 c.errorText = _("No way! You aren't holy enough!")
-                return redirect_to('/')
+                return redirect_to('boardBase')
             c.userInst = self.userInst
             if not checkAdminIP():
-                return redirect_to('/')
+                return redirect_to('boardBase')
             secTestPassed = True
         else:
             secidFilePath = os.path.join(g.OPT.appPath, 'fc/secid')
@@ -426,7 +426,7 @@ class FcmController(OrphieBaseController):
                 pass
 
         if not secTestPassed:
-            return redirect_to('/')
+            return redirect_to('boardBase')
 
         if not actid:
             c.boardName = _('Index')

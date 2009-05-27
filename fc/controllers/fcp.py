@@ -82,7 +82,7 @@ class FcpController(OrphieBaseController):
         session.clear()
         session.save()
         session.delete()
-        redirect_to('/')
+        redirect_to('boardBase')
 
     def captchaPic(self, cid):
         # TODO: fix shitty code
@@ -98,12 +98,12 @@ class FcpController(OrphieBaseController):
         pic = Captcha.picture(cid, g.OPT.captchaFont)
         if sessionCid:
             if (str(cid) != str(sessionCid)):
-               redirect_to(h.url_for('captcha', cid = sessionCid))
+               redirect_to('captcha', cid = sessionCid)
             elif ("Wrong ID" == pic):
                newCaptcha = Captcha.create()
                session['anonCaptId'] = newCaptcha.id
                session.save()
-               redirect_to(h.url_for('captcha', cid = newCaptcha.id))
+               redirect_to('captcha', cid = newCaptcha.id)
         response.headers['Content-Length'] = len(pic)
         response.headers['Content-Type'] = 'image/png'
         return str(pic)
@@ -186,12 +186,12 @@ class FcpController(OrphieBaseController):
             meta.Session.commit()
             #log.debug("redir: %s" % c.currentURL)
             if (not g.OPT.framedMain or (user and not(user.useFrame()))):
-                return redirect_to(h.url_for('boardBase', board = c.currentURL))
+                return redirect_to('boardBase', board = c.currentURL)
             else:
                 if (g.OPT.allowAnonymous):
                     return self.render('loginRedirect')
                 else:
-                    return redirect_to('/')
+                    return redirect_to('boardBase')
 
         c.boardName = _('Login')
         return self.render('login')
@@ -256,7 +256,7 @@ class FcpController(OrphieBaseController):
                 del session['iid']
                 session.save()
                 self.login(user)
-                redirect_to('/!/')
+                redirect_to('boardBase', board = '/!/')
         c.boardName = _('Register')
         return self.render('register')
 
@@ -334,9 +334,9 @@ class FcpController(OrphieBaseController):
         if not self.currentUserIsAuthorized():
             user = User.getByUid(uid)
             if not user or not int(authid) == user.authid():
-                return redirect_to('/')
+                return redirect_to('boardBase')
             if user.isAdmin() and not checkAdminIP():
-                return redirect_to('/')
+                return redirect_to('boardBase')
             # enable static files downloading
             session['feedAuth'] = True
             session.save()

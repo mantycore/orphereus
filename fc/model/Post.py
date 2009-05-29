@@ -329,7 +329,10 @@ class Post(object):
                 i = 2
                 while i < len(thread) and thread[-i].sage:
                     i += 1
-                parent.bumpDate = thread[-i].date
+                if i < len(thread):
+                    parent.bumpDate = thread[-i].date
+                else:
+                    parent.bumpDate = parent.date
             meta.Session.delete(self)
         meta.Session.commit()
         return opPostDeleted

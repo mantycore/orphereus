@@ -27,6 +27,7 @@ from mx.TextTools import TextTools
 from fc.lib.miscUtils import *
 from fc.lib.constantValues import *
 import re
+from urllib import quote
 from html5lib.html5parser import HTMLParser
 
 import logging
@@ -70,7 +71,7 @@ class WakabaParser(object):
                 break
 
         if not (trusted):
-            linkHref = g.OPT.obfuscator % {'url' : linkHref}
+            linkHref = g.OPT.obfuscator % {'url' : quote(linkHref.encode('utf-8'))}
 
         return '<a href="%s">%s</a>' % (linkHref, linkString)
 

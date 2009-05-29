@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -43,23 +43,23 @@ log = logging.getLogger(__name__)
 from fc.model import meta
 
 t_posts = sa.Table("post", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("secondaryIndex",sa.types.Integer, nullable=True),
-    sa.Column("parentid" , sa.types.Integer, sa.ForeignKey('post.id'), nullable=True, index=True),
-    sa.Column("message"  , sa.types.UnicodeText, nullable=True),
-    sa.Column("messageShort", sa.types.UnicodeText, nullable=True),
-    sa.Column("messageRaw"  , sa.types.UnicodeText, nullable=True),
-    sa.Column("messageInfo"  , sa.types.UnicodeText, nullable=True),
-    sa.Column("title"    , sa.types.UnicodeText, nullable=True),
-    sa.Column("sage"     , sa.types.Boolean, nullable=True),
-    sa.Column("uidNumber",sa.types.Integer,nullable=True),
+    sa.Column("id"       , sa.types.Integer, primary_key = True),
+    sa.Column("secondaryIndex", sa.types.Integer, nullable = True),
+    sa.Column("parentid" , sa.types.Integer, sa.ForeignKey('post.id'), nullable = True, index = True),
+    sa.Column("message"  , sa.types.UnicodeText, nullable = True),
+    sa.Column("messageShort", sa.types.UnicodeText, nullable = True),
+    sa.Column("messageRaw"  , sa.types.UnicodeText, nullable = True),
+    sa.Column("messageInfo"  , sa.types.UnicodeText, nullable = True),
+    sa.Column("title"    , sa.types.UnicodeText, nullable = True),
+    sa.Column("sage"     , sa.types.Boolean, nullable = True),
+    sa.Column("uidNumber", sa.types.Integer, nullable = True),
     sa.Column("picid"    , sa.types.Integer, sa.ForeignKey('picture.id')),
-    sa.Column("date"     , sa.types.DateTime, nullable=False),
-    sa.Column("bumpDate", sa.types.DateTime, nullable=True, index=True),
-    sa.Column("spoiler"  , sa.types.Boolean, nullable=True),
-    sa.Column("replyCount" , sa.types.Integer, nullable=False, server_default='0'),
-    sa.Column("removemd5"  , sa.types.String(32), nullable=True),
-    sa.Column("ip"         , mysql.MSInteger(unsigned=True), nullable=True),
+    sa.Column("date"     , sa.types.DateTime, nullable = False),
+    sa.Column("bumpDate", sa.types.DateTime, nullable = True, index = True),
+    sa.Column("spoiler"  , sa.types.Boolean, nullable = True),
+    sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
+    sa.Column("removemd5"  , sa.types.String(32), nullable = True),
+    sa.Column("ip"         , mysql.MSInteger(unsigned = True), nullable = True),
     )
 
 class Post(object):
@@ -161,7 +161,7 @@ class Post(object):
 
     @staticmethod
     def pictureRefCount(picid):
-        return Post.query.filter(Post.picid==picid).count()
+        return Post.query.filter(Post.picid == picid).count()
 
     @staticmethod
     def filterByUid(uidNumber):
@@ -176,7 +176,7 @@ class Post(object):
     @staticmethod
     def buildMetaboardFilter(url, userInst):
         def buildMyPostsFilter():
-            list  = []
+            list = []
             posts = Post.filterByUid(userInst.uidNumber).all()
 
             for p in posts:
@@ -193,7 +193,7 @@ class Post(object):
                 elif arg == '~':
                     return (not_(Post.tags.any(Tag.id.in_(userInst.homeExclude()))), [])
                 else:
-                    return (Post.tags.any(tag=arg), [arg])
+                    return (Post.tags.any(tag = arg), [arg])
             else:
                 return arg
 
@@ -203,32 +203,32 @@ class Post(object):
         if url:
             operators = {'+':1, '-':1, '^':2, '&':2}
             url = url.replace('&amp;', '&')
-            RPN = getRPN(url,operators)
+            RPN = getRPN(url, operators)
             stack = []
             for i in RPN:
                 if i in operators:
                     # If operator is not provided with 2 arguments, we silently ignore it. (for example '- b' will be just 'b')
-                    if len(stack)>= 2:
+                    if len(stack) >= 2:
                         arg2 = stack.pop()
                         arg1 = stack.pop()
                         if i == '+':
-                            f = or_(arg1[0],arg2[0])
+                            f = or_(arg1[0], arg2[0])
                             for t in arg2[1]:
                                 if not t in arg1[1]:
                                     arg1[1].append(t)
-                            stack.append((f,arg1[1]))
+                            stack.append((f, arg1[1]))
                         elif i == '&' or i == '^':
-                            f = and_(arg1[0],arg2[0])
+                            f = and_(arg1[0], arg2[0])
                             for t in arg2[1]:
                                 if not t in arg1[1]:
                                     arg1[1].append(t)
-                            stack.append((f,arg1[1]))
+                            stack.append((f, arg1[1]))
                         elif i == '-':
-                            f = and_(arg1[0],not_(arg2[0]))
+                            f = and_(arg1[0], not_(arg2[0]))
                             for t in arg2[1]:
                                 if t in arg1[1]:
                                     arg1[1].remove(t)
-                            stack.append((f,arg1[1]))
+                            stack.append((f, arg1[1]))
                 else:
                     stack.append(buildArgument(i))
             if stack and isinstance(stack[0][0], sa.sql.expression.ClauseElement):
@@ -252,9 +252,9 @@ class Post(object):
 
     @staticmethod
     def buildThreadFilter(userInst, threadId):
-        return Post.filter(Post.excludeAdminTags(userInst)).filter(Post.id==threadId).options(eagerload('file'))
+        return Post.filter(Post.excludeAdminTags(userInst)).filter(Post.id == threadId).options(eagerload('file'))
 
-    def deletePost(self, userInst, fileonly=False, checkOwnage=True, reason = "???", rempPass = False):
+    def deletePost(self, userInst, fileonly = False, checkOwnage = True, reason = "???", rempPass = False):
         opPostDeleted = False
 
         if userInst.Anonymous and self.removemd5 != rempPass:
@@ -287,7 +287,7 @@ class Post(object):
                 tag.threadCount -= 1
         tagline = ', '.join(taglist)
 
-        postOptions = Tag.conjunctedOptionsDescript(self.parentid>0 and parentp.tags or self.tags)
+        postOptions = Tag.conjunctedOptionsDescript(self.parentid > 0 and parentp.tags or self.tags)
         if checkOwnage and not self.uidNumber == userInst.uidNumber:
             logEntry = u''
             uidNumber = userInst.uidNumber
@@ -307,8 +307,8 @@ class Post(object):
             if not (postOptions.canDeleteOwnThreads or userInst.canDeleteAllPosts()):
                 return False
             opPostDeleted = True
-            for post in Post.query.filter(Post.parentid==self.id).all():
-                post.deletePost(userInst, checkOwnage=False)
+            for post in Post.query.filter(Post.parentid == self.id).all():
+                post.deletePost(userInst, checkOwnage = False)
 
         pic = Picture.getPicture(self.picid)
         if pic:
@@ -324,13 +324,12 @@ class Post(object):
             if parent:
                 parent.replyCount -= 1
 
-            if invisBumpDisabled and self.parentid:
-                thread = Post.query.filter(Post.parentid==self.parentid).all()
-                if thread and thread[-1].id == self.id: #wut?
-                    if len(thread) > 1 and not thread[-2].sage:
-                        parent.bumpDate = thread[-2].date
-                    else:
-                        parent.bumpDate = parent.date
+            if invisBumpDisabled and self.parentid and not self.sage:
+                thread = Post.query.filter(Post.parentid == self.parentid).all()
+                i = 2
+                while i < len(thread) and thread[-i].sage:
+                    i += 1
+                parent.bumpDate = thread[-i].date
             meta.Session.delete(self)
         meta.Session.commit()
         return opPostDeleted
@@ -348,8 +347,8 @@ class Post(object):
         ret.prev1KUsersCount = uniqueUidsExpr.filter(and_(Post.id <= tpc - 1000, Post.id >= tpc - 2000)).count()
 
         currentTime = datetime.datetime.now()
-        firstBnd = currentTime - datetime.timedelta(days=7)
-        secondBnd = currentTime - datetime.timedelta(days=14)
+        firstBnd = currentTime - datetime.timedelta(days = 7)
+        secondBnd = currentTime - datetime.timedelta(days = 14)
         ret.lastWeekMessages = meta.Session.query(Post.id).filter(Post.date >= firstBnd).count()
-        ret.prevWeekMessages =meta.Session.query(Post.id).filter(and_(Post.date <= firstBnd, Post.date >= secondBnd)).count()
+        ret.prevWeekMessages = meta.Session.query(Post.id).filter(and_(Post.date <= firstBnd, Post.date >= secondBnd)).count()
         return ret

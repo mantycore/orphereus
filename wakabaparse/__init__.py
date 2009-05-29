@@ -71,7 +71,7 @@ class WakabaParser(object):
                 break
 
         if not (trusted):
-            linkHref = g.OPT.obfuscator % {'url' : quote(linkHref.encode('utf-8'))}
+            linkHref = g.OPT.obfuscator % {'url' : linkHref}
 
         return '<a href="%s">%s</a>' % (linkHref, linkString)
 

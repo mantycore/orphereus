@@ -329,7 +329,7 @@ class Post(object):
                 i = 2
                 while i < len(thread) and thread[-i].sage:
                     i += 1
-                if i < len(thread):
+                if i <= len(thread):
                     parent.bumpDate = thread[-i].date
                 else:
                     parent.bumpDate = parent.date

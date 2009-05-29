@@ -23,9 +23,20 @@ from UserOptions import *
 from Ban import *
 
 def init_model(engine):
-    sm = orm.sessionmaker(autoflush=False, autocommit=False, bind=engine)
+    sm = orm.sessionmaker(autoflush = False, autocommit = False, bind = engine)
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
+    #log.debug(dir(engine))
+    #log.debug(dir(engine.logger))
+    #engine.echo = True
+    #engine.logger.setLevel('debug')
+    #import logging
+
+    #logging.basicConfig()
+    #logging.getLogger('sqlalchemy').setLevel(logging.DEBUG)
+    #logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+    #logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.DEBUG)
+    #logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.DEBUG)
 
     #create mappings
     meta.Session.mapper(LoginTracker, t_logins)
@@ -38,8 +49,8 @@ def init_model(engine):
     meta.Session.mapper(UserOptions, t_userOptions)
     meta.Session.mapper(UserFilters, t_userFilters)
     meta.Session.mapper(User, t_users, properties = {
-            'options' : orm.relation(UserOptions, uselist=False, backref='user', cascade="all, delete, delete-orphan"),
-            'filters' : orm.relation(UserFilters, backref='user', cascade="all, delete, delete-orphan")
+            'options' : orm.relation(UserOptions, uselist = False, backref = 'user', cascade = "all, delete, delete-orphan"),
+            'filters' : orm.relation(UserFilters, backref = 'user', cascade = "all, delete, delete-orphan")
         })
 
     meta.Session.mapper(Extension, t_extension)
@@ -49,12 +60,12 @@ def init_model(engine):
 
     meta.Session.mapper(TagOptions, t_tagOptions)
     meta.Session.mapper(Tag, t_tags, properties = {
-            'options' : orm.relation(TagOptions, uselist=False, backref='tag', cascade="all, delete, delete-orphan")
+            'options' : orm.relation(TagOptions, uselist = False, backref = 'tag', cascade = "all, delete, delete-orphan")
         })
     meta.Session.mapper(Post, t_posts, properties = {
         'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
         'file': orm.relation(Picture),
-        'parentPost' : orm.relation(Post, remote_side=[t_posts.c.id]),
+        'parentPost' : orm.relation(Post, remote_side = [t_posts.c.id]),
         })
 
     meta.Session.mapper(LogEntry, t_log, properties = {

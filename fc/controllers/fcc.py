@@ -336,7 +336,7 @@ class FccController(OrphieBaseController):
 
         c.templates = g.OPT.templates
         c.styles = g.OPT.styles
-        c.langs = g.OPT.langs
+        c.languages = g.OPT.languages
         c.profileChanged = False
         c.boardName = _('Profile')
         if request.POST.get('update', False):
@@ -369,10 +369,10 @@ class FccController(OrphieBaseController):
                 self.userInst.style(style)
             lang = filterText(request.POST.get('lang', self.userInst.lang()))
             c.reload = (lang != self.userInst.lang())
-            if lang in c.langs:
+            if lang in c.languages:
                 self.userInst.lang(lang)
             cLang = filterText(request.POST.get('cLang', self.userInst.cLang()))
-            if cLang in c.langs:
+            if cLang in c.languages:
                 self.userInst.cLang(cLang)
             gotodest = filterText(request.POST.get('defaultGoto', self.userInst.defaultGoto()))
             if isNumber(gotodest) and (int(gotodest) in destinations.keys()):

@@ -87,15 +87,15 @@ core.useFrameLogo = false
 core.defaultFrame = /!/
 
 # Board defaults
-defaults.thumbSize = 200
-defaults.minPicSize = 50
-defaults.maxFileSize = 2621440
-defaults.imagelessThread = true
-defaults.imagelessPost = true
-defaults.images = true
-defaults.enableSpoilers = false
-defaults.canDeleteOwnThreads = true
-defaults.selfModeration = false
+defaults.defThumbSize = 200
+defaults.defMinPicSize = 50
+defaults.defMaxFileSize = 2621440
+defaults.defImagelessThread = true
+defaults.defImagelessPost = true
+defaults.defImages = true
+defaults.defEnableSpoilers = false
+defaults.defCanDeleteOwnThreads = true
+defaults.defSelfModeration = false
 
 # Security settings
 #use this option only with httpd configured as proxy
@@ -110,7 +110,7 @@ security.refControlEnabled = true
 security.refControlList = anoma.ch,anoma.li,localhost,127.0.0.1
 security.fakeLinks = http://www.youtube.com/watch?v=oHg5SJYRHA0,http://meatspin.com/,http://youtube.com/watch?v=Uqot33mczsw,http://youtube.com/watch?v=dZBU6WzBrX8
 security.badUAs = Wget,Offline Explorer,Web Downloader,WebCopier,WebZIP,Teleport Pro
-security.obfuscator=http://anonym.to/?
+security.obfuscator=http://anonym.to/?$(url)s
 security.checkUAs = true
 security.spiderTrap = true
 security.interestingNumbers = true

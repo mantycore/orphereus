@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -38,13 +38,13 @@ def fixHtml(html):
 
 class WakabaParser(object):
     def __init__(self, optHolder, replyingId = -1, baseProd = 'all'):
-        self.plain  = ['safe_text','symbol','whitespace','strikedout','symbol_mark','symbol_mark_noa','symbol_mark_nop','symbol_mark_nou','accent_code','noaccent_code','punctuation']
-        self.simple = {'strong':'strong','emphasis':'em','strikeout':'del','inline_spoiler':'span class="spoiler"','inline_code':'code'}
-        self.complex= ['reference','signature','link']
-        self.block  = {'block_code':'code','block_spoiler':'div class="spoiler"'}
-        self.line   = ['inline_full','text']
-        self.mline  = ['block_cite','block_list']
-        self.input  = u''
+        self.plain = ['safe_text', 'symbol', 'whitespace', 'strikedout', 'symbol_mark', 'symbol_mark_noa', 'symbol_mark_nop', 'symbol_mark_nou', 'accent_code', 'noaccent_code', 'punctuation']
+        self.simple = {'strong':'strong', 'emphasis':'em', 'strikeout':'del', 'inline_spoiler':'span class="spoiler"', 'inline_code':'code'}
+        self.complex = ['reference', 'signature', 'link']
+        self.block = {'block_code':'code', 'block_spoiler':'div class="spoiler"'}
+        self.line = ['inline_full', 'text']
+        self.mline = ['block_cite', 'block_list']
+        self.input = u''
         self.calledBy = None
         self.baseProd = baseProd
         self.defl = open(optHolder.markupFile).read()
@@ -55,13 +55,13 @@ class WakabaParser(object):
 
     def PrintTree(self, Node, Depth):
         for tag, beg, end, parts in Node:
-            print ''.ljust(Depth,"\t") + tag + '=' + self.input[beg:end]
+            print ''.ljust(Depth, "\t") + tag + '=' + self.input[beg:end]
             if parts:
-                self.PrintTree(parts,Depth + 1)
+                self.PrintTree(parts, Depth + 1)
 
     def link(self, tag, beg, end, parts):
         linkString = self.input[beg:end]
-        linkHref   = linkString
+        linkHref = linkString
         trusted = False
 
         for trLink in g.OPT.refControlList:
@@ -70,12 +70,12 @@ class WakabaParser(object):
                 break
 
         if not (trusted):
-            linkHref = g.OPT.obfuscator + linkHref
+            linkHref = g.OPT.obfuscator % {'url' : linkHref}
 
         return '<a href="%s">%s</a>' % (linkHref, linkString)
 
     def reference(self, tag, beg, end, parts):
-        n,i,j,p = parts[0]
+        n, i, j, p = parts[0]
         number = self.input[i:j]
         return self.calledBy.formatPostReference(number)
 
@@ -94,16 +94,16 @@ class WakabaParser(object):
                             (self.replyingId == -1 or \
                             (post.parentid != self.replyingId and post.id != self.replyingId))
                 if post.uidNumber < 1 or uidNumber < 1 or disablePL:
-                    unknown[postId]=post.id
+                    unknown[postId] = post.id
                 elif post.uidNumber == uidNumber:
-                    valid[postId]=post.id
+                    valid[postId] = post.id
                 else:
-                    invalid[postId]=post.id
+                    invalid[postId] = post.id
 
         def addSpan(className, idList, result):
             retval = u''
             if result:
-                retval+=","
+                retval += ","
                 retval += '<span class="%s">' % className
             else:
                 retval += '<span class="%s">##' % className
@@ -122,9 +122,9 @@ class WakabaParser(object):
             result += addSpan("nonsignature", unknown, result)
         return result
 
-    def openTag(self, tag, quantity=1):
+    def openTag(self, tag, quantity = 1):
         tagName = tag.split()[0]
-        for i in range(0,quantity):
+        for i in range(0, quantity):
             self.result += "<%s>" % tag
             self.tags.append(tagName)
 
@@ -136,8 +136,8 @@ class WakabaParser(object):
             ret = reret.group(1)
         return ret
 
-    def closeTag(self,quantity=1):
-        for i in range(0,quantity):
+    def closeTag(self, quantity = 1):
+        for i in range(0, quantity):
             tag = self.tags.pop()
             tag = self.fixCloseTag(tag)
             self.result += "</%s>" % tag
@@ -155,7 +155,7 @@ class WakabaParser(object):
             else:
                 i = 0
             if i > depth:
-                self.openTag('blockquote',i - depth)
+                self.openTag('blockquote', i - depth)
                 depth = i
             elif i < depth:
                 self.closeTag(depth - i)
@@ -200,10 +200,10 @@ class WakabaParser(object):
                 result += self.input[beg:end]
             elif tag in self.simple and parts:
                 tagName = tag.split()[0]
-                result += '<%s>%s' %(self.simple[tag], self.formatInHTML(parts))
+                result += '<%s>%s' % (self.simple[tag], self.formatInHTML(parts))
                 result += '</' + self.fixCloseTag(self.simple[tagName]) + '>'
             elif tag in self.complex:
-                result += getattr(self,tag)(tag, beg, end, parts)
+                result += getattr(self, tag)(tag, beg, end, parts)
 
             elif tag in self.line:
                 self.lines += 1
@@ -228,7 +228,7 @@ class WakabaParser(object):
                 if fP:
                     fP = False
                     self.result += '</p>'
-                getattr(self,tag)(tag, beg, end, parts)
+                getattr(self, tag)(tag, beg, end, parts)
             elif tag == 'line' or tag == 'spoiler_line':
                 if fP and len(parts) > 1:
                     self.result += '<br />'
@@ -255,7 +255,7 @@ class WakabaParser(object):
             self.result += '</p>'
         return result
 
-    def parseWakaba(self, message, o, lines=20, maxLen=5000):
+    def parseWakaba(self, message, o, lines = 20, maxLen = 5000):
         self.input = "\n" + message + "\n"
         self.calledBy = o
         self.maxLines = lines
@@ -269,7 +269,7 @@ class WakabaParser(object):
         self.tags = []
         taglist = TextTools.tag(self.input, self.parser)
         result = self.formatInHTML(taglist[1])
-        if self.short and ((self.linesCutted+self.maxLinesTolerance)>=self.lines):
+        if self.short and ((self.linesCutted + self.maxLinesTolerance) >= self.lines):
             self.short = u''
 
         self.result = fixHtml(self.result)

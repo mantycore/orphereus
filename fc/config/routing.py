@@ -46,6 +46,16 @@ def make_map():
     gvars = config['pylons.app_globals']
     framedMain = gvars.OPT.framedMain
     devMode = gvars.OPT.devMode
+
+    log.info('Initialzing routes, registered plugins: %d' % (len(gvars.plugins)),)
+    # Calling routing initializers from plugins
+    for plugin in gvars.plugins:
+        rinit = plugin.routingInit()
+        if rinit:
+            log.info('calling routing initializer %s from: %s' % (str(rinit), plugin.pluginId()))
+            rinit(map)
+    log.info('COMPLETED ROUTING INITIALIZATION STAGE')
+
     if devMode:
         map.connect('/uaInfo', controller = 'fcp', action = 'uaInfo')
 
@@ -142,16 +152,5 @@ def make_map():
     #map.connect('viewLog', '/viewLog/:page_dummy/:page', controller='fcc', action='viewLog', page_dummy='page', page=0, requirements=dict(page='\d+', page_dummy='page'))
     #map.connect('viewLogPage', '/viewLog/page/:page', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
     #map.connect('/userProfile/messages', controller='fcc', action='showMessages')
-
-    log.info('Initialzing routes, registered plugins: %d' % (len(gvars.plugins)),)
-
-    # Calling routing initializers from plugins
-    for plugin in gvars.plugins:
-        rinit = plugin.routingInit()
-        if rinit:
-            log.info('calling routing initializer %s from: %s' % (str(rinit), plugin.pluginId()))
-            rinit(map)
-
-    log.info('COMPLETED ROUTING INITIALIZATION STAGE')
 
     return map

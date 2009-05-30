@@ -24,6 +24,8 @@ from pylons import config
 import sys
 import os
 
+from fc.lib.pluginInfo import PluginInfo
+
 import logging
 log = logging.getLogger("CORE")
 

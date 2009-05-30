@@ -29,6 +29,9 @@ from pylons import config
 from routes import Mapper
 from pylons import config
 
+import logging
+log = logging.getLogger("ROUTING (%s)" % __name__)
+
 def make_map():
     """Create, configure and return the routes Mapper"""
     map = Mapper(directory = config['pylons.paths']['controllers'],
@@ -40,8 +43,9 @@ def make_map():
 
     # CUSTOM ROUTES HERE
     # debug route
-    framedMain = config['pylons.app_globals'].OPT.framedMain
-    devMode = config['pylons.app_globals'].OPT.devMode
+    gvars = config['pylons.app_globals']
+    framedMain = gvars.OPT.framedMain
+    devMode = gvars.OPT.devMode
     if devMode:
         map.connect('/uaInfo', controller = 'fcp', action = 'uaInfo')
 
@@ -138,5 +142,16 @@ def make_map():
     #map.connect('viewLog', '/viewLog/:page_dummy/:page', controller='fcc', action='viewLog', page_dummy='page', page=0, requirements=dict(page='\d+', page_dummy='page'))
     #map.connect('viewLogPage', '/viewLog/page/:page', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
     #map.connect('/userProfile/messages', controller='fcc', action='showMessages')
+
+    log.info('Initialzing routes, registered plugins: %d' % (len(gvars.plugins)),)
+
+    # Calling routing initializers from plugins
+    for plugin in gvars.plugins:
+        rinit = plugin.routingInit()
+        if rinit:
+            log.info('calling routing initializer %s from: %s' % (str(rinit), plugin.pluginId()))
+            rinit(map)
+
+    log.info('COMPLETED ROUTING INITIALIZATION STAGE')
 
     return map

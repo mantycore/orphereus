@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -29,22 +29,19 @@ import datetime
 import logging
 log = logging.getLogger(__name__)
 
-from fc.model import meta
-
-
 # TODO: remove mySQL-specific type
- 
+
 t_bans = sa.Table("bans", meta.metadata,
-    sa.Column("id"          , sa.types.Integer, primary_key=True),
+    sa.Column("id"          , sa.types.Integer, primary_key = True),
 #    sa.Column("ip"          , sa.types.Integer, nullable=False),
 #    sa.Column("mask"        , sa.types.Integer, nullable=False),
-    sa.Column("ip"          , mysql.MSInteger(unsigned=True), nullable=False),
-    sa.Column("mask"        , mysql.MSInteger(unsigned=True), nullable=False),
-    sa.Column("type"        , sa.types.Integer, nullable=False),
-    sa.Column("reason"      , sa.types.Text, nullable=True),
-    sa.Column("date"        , sa.types.DateTime, nullable=False),
-    sa.Column("period"      , sa.types.Integer, nullable=False),
-    sa.Column("enabled"      , sa.types.Boolean, server_default='1'),
+    sa.Column("ip"          , mysql.MSInteger(unsigned = True), nullable = False),
+    sa.Column("mask"        , mysql.MSInteger(unsigned = True), nullable = False),
+    sa.Column("type"        , sa.types.Integer, nullable = False),
+    sa.Column("reason"      , sa.types.Text, nullable = True),
+    sa.Column("date"        , sa.types.DateTime, nullable = False),
+    sa.Column("period"      , sa.types.Integer, nullable = False),
+    sa.Column("enabled"      , sa.types.Boolean, server_default = '1'),
     )
 
 class Ban(object):
@@ -55,13 +52,13 @@ class Ban(object):
         meta.Session.delete(self)
         meta.Session.commit()
         return True
-        
+
     def disable(self):
         self.enabled = 0
         meta.Session.commit()
-        
+
     @staticmethod
-    def create(ip, mask, type, reason, date, period, enabled=0):
+    def create(ip, mask, type, reason, date, period, enabled = 0):
         ban = Ban(ip, mask, type, reason, date, period, enabled)
         meta.Session.add(ban)
         meta.Session.commit()
@@ -79,11 +76,11 @@ class Ban(object):
 
     @staticmethod
     def getBans():
-        return Ban.query.all()         
+        return Ban.query.all()
 
     @staticmethod
     def getBanById(banId):
-        return Ban.query.filter(banId == Ban.id).first()         
+        return Ban.query.filter(banId == Ban.id).first()
 
     @staticmethod
     def getBanByIp(userIp):

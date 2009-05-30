@@ -1,5 +1,5 @@
 ﻿################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -40,7 +40,7 @@ def setup_config(command, filename, section, vars):
     load_environment(conf.global_conf, conf.local_conf, True)
     from fc.model import meta
     log.info("Creating tables")
-    meta.metadata.create_all(bind=meta.engine)
+    meta.metadata.create_all(bind = meta.engine)
     log.info("Successfully setup")
 
     try:
@@ -99,3 +99,12 @@ def setup_config(command, filename, section, vars):
         meta.Session.commit()
 
     log.info("Completed")
+
+    gvars = config['pylons.app_globals']
+    log.debug('Calling deploy routines, registered plugins: %d' % (len(gvars.plugins)),)
+    for plugin in gvars.plugins:
+        dh = plugin.deployHook()
+        if dh:
+            log.debug('calling deploy routine %s from: %s' % (str(dh), plugin.pluginId()))
+            dh(plugin.namespace())
+    log.debug('DEPLOYMENT COMPLETED')

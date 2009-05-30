@@ -70,23 +70,11 @@ def make_app(global_conf, full_stack = True, **app_conf):
     app = CacheMiddleware(app, config)
 
     # CUSTOM MIDDLEWARE HERE (filtered by error handling middlewares)
-    """
-    if asbool(full_stack):
-        # Handle Python exceptions
-        app = ErrorHandler(app, global_conf, error_template=error_template,
-                           **config['pylons.errorware'])
-
-        # Display error documents for 401, 403, 404 status codes (and
-        # 500 when debug is disabled)
-        app = ErrorDocuments(app, global_conf, mapper=error_mapper, **app_conf)
-    """
-
     if asbool(full_stack):
         # Handle Python exceptions
         app = ErrorHandler(app, global_conf, **config['pylons.errorware'])
 
-        # Display error documents for 401, 403, 404 status codes (and
-        # 500 when debug is disabled)
+        # Display error documents for 401, 403, 404 status codes (and 500 when debug is disabled)
         if asbool(config['debug']):
             app = StatusCodeRedirect(app)
         else:
@@ -96,14 +84,9 @@ def make_app(global_conf, full_stack = True, **app_conf):
     app = RegistryManager(app)
 
     # Static files
-    """
-        javascripts_app = StaticJavascripts()
-        static_app = StaticURLParser(config['pylons.paths']['static_files'])
-        app = Cascade([static_app, javascripts_app, app])
-    """
     static_app = StaticURLParser(config['pylons.paths']['static_files'])
     app = Cascade([static_app, app])
-    prefix = config['core.urlPrefix']
+    prefix = config['pylons.app_globals'].OPT.urlPrefix
     if prefix and prefix.startswith('/') and len(prefix) > 1:
         app = PrefixMiddleware(app, global_conf, prefix = prefix)
     return app

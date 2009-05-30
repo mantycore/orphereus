@@ -48,6 +48,9 @@ class OrphieBaseController(BaseController):
             c.log = []
             c.sum = 0
 
+        if g.firstRequest:
+            g.firstRequest = False
+
         self.userInst = False
         uid = self.sessUid()
         if uid > 0 and g.OPT.allowLogin:

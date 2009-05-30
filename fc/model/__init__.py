@@ -2,9 +2,10 @@ import sqlalchemy as sa
 from sqlalchemy import orm
 from fc.model import meta
 from fc.lib.constantValues import *
+from pylons import config
 
 import logging
-log = logging.getLogger(__name__)
+log = logging.getLogger("ORM (%s)" % __name__)
 
 from FCCaptcha import *
 from Extension import *
@@ -23,6 +24,22 @@ from UserOptions import *
 from Ban import *
 
 def init_model(engine):
+    log.info("Trying to adjust engine to current dialect...")
+    def logAndChange(var, newType):
+        log.info("Using %s instead of %s" % (str(newType), str(var)))
+        return newType
+    if (isinstance(engine.dialect, sa.databases.mysql.MySQLDialect)):
+        log.info("Currently using MySQL dialect, adjusting types...")
+        meta.FloatType = logAndChange(meta.FloatType, mysql.MSDouble)
+        meta.BlobType = logAndChange(meta.BlobType, mysql.MSLongBlob)
+    elif (isinstance(engine.dialect, sa.databases.postgres.PGDialect)):
+        log.info("Currently using PostgreSQL dialect, adjusting types...")
+        meta.FloatType = logAndChange(meta.FloatType, postgres.PGFloat)
+        meta.BlobType = logAndChange(meta.BlobType, postgres.PGBinary)
+    else:
+        log.info("[WARNING] Unknown SQL Dialect!")
+    log.info("Adjusting completed")
+
     sm = orm.sessionmaker(autoflush = False, autocommit = False, bind = engine)
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
@@ -71,6 +88,15 @@ def init_model(engine):
     meta.Session.mapper(LogEntry, t_log, properties = {
         'user' : orm.relation(User)
         })
+
+    gvars = config['pylons.app_globals']
+    log.info('Initialzing ORM, registered plugins: %d' % (len(gvars.plugins)),)
+    for plugin in gvars.plugins:
+        orminit = plugin.ormInit()
+        if orminit:
+            log.info('calling ORM initializer %s from: %s' % (str(orminit), plugin.pluginId()))
+            orminit(orm, plugin.namespace())
+    log.info('COMPLETED ORM INITIALIZATION STAGE')
 
 def init_globals(globalObject, setupMode):
     meta.globj = globalObject

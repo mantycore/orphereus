@@ -64,7 +64,7 @@ class OptHolder(object):
                              ]
 
         self.stringValues = [('core',
-                               ('version', 'hashSecret', 'baseDomain',
+                               ('urlPrefix', 'version', 'hashSecret', 'baseDomain',
                                 'staticPathWeb', 'filesPathWeb', 'actuator',
                                 'defaultFrame', 'staticPath', 'uploadPath',
                                )

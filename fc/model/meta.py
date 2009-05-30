@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -19,6 +19,7 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #                                                                         #
 ################################################################################
 
+import sqlalchemy as sa
 from sqlalchemy import MetaData
 
 __all__ = ['engine', 'metadata', 'Session', 'globj']
@@ -26,3 +27,6 @@ engine = None
 Session = None
 metadata = MetaData()
 globj = None
+
+FloatType = sa.types.Float
+BlobType = sa.types.Binary

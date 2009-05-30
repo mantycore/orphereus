@@ -414,7 +414,7 @@ class FcmController(OrphieBaseController):
                 return redirect_to('boardBase')
             secTestPassed = True
         else:
-            secidFilePath = os.path.join(g.OPT.appPath, 'fc/secid')
+            secidFilePath = os.path.join(g.OPT.appRoot, 'fc/secid')
             try:
                 secidFile = open(secidFilePath)
                 secidFile.seek(0)

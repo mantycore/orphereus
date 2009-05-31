@@ -53,7 +53,7 @@ core.disabledModules = mod1.py,mod2.py
 
 # Basic IB settings
 core.devMode = false
-core.version = Orphereus 1.0 RC1
+core.version = Orphereus 1.0.2
 # We will hash hashSecret by sha512, so no need to have it long
 core.hashSecret = smallSecret
 core.baseDomain= anoma.ch

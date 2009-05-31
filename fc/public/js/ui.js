@@ -108,7 +108,7 @@ function popup_posts(options){
       else
         show_it(content.html())
     }else if(popup_posts.cache[m[0]] == 404){
-      $(this).html("Post not found");
+      $(this).html(S_PostNotFound);
     }else if (popup_posts.cache[m[0]]){
       show_it(popup_posts.cache[m[0]]);
     }else if(options.ajax){

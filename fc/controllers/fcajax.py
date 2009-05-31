@@ -16,7 +16,8 @@
 #                                                                              #
 #  You should have received a copy of the GNU General Public License           #
 #  along with this program; if not, write to the Free Software                 #
-#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #                                                                         #
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #                                                                        
+#                                                                              #
 ################################################################################
 
 import logging
@@ -164,7 +165,3 @@ class FcajaxController(OrphieBaseController):
                 return str(ct.id)
         else:
             abort(404)
-
-    def getText(self, text):
-        strings = {'lol': 'test', 'CollapseThread': _('Collapse thread')}
-        return (strings.has_key(text) and strings[text]) or 'Wut?'

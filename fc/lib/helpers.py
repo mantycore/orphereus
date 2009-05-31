@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -38,8 +38,11 @@ log = logging.getLogger(__name__)
 
 from pylons.i18n import get_lang, set_lang
 
+def postKwargs(threadId, postId):
+    return {'post' : threadId and threadId or postId, 'anchor' : "i%s" % postId}
+
 def postUrl(threadId, postId):
-    return '%s#i%s' % (url_for('thread', post = threadId and threadId or postId), postId)
+    return url_for('thread', **postKwargs(threadId, postId))
 
 def expandName(name):
     #log.debug("expanding: %s" % name)
@@ -83,20 +86,20 @@ def staticFile(fileName):
     return u"%s%s?version=%s" % (spw, relFileName, str(version))
 
 def dottedToInt(ipStr):
-    return struct.unpack('!L',socket.inet_aton(ipStr))[0]
+    return struct.unpack('!L', socket.inet_aton(ipStr))[0]
 
 def intToDotted(n):
-    return socket.inet_ntoa(struct.pack('!L',n))
+    return socket.inet_ntoa(struct.pack('!L', n))
 
 def setLang(lang):
-    if (lang and (len(lang)==2)):
+    if (lang and (len(lang) == 2)):
         oldLang = get_lang()
         set_lang(lang)
         return oldLang[0]
-    
+
 def makeLangValid(lang):
     if lang:
-        if (len(lang)==2):
+        if (len(lang) == 2):
             return  lang
         else:
             return ''

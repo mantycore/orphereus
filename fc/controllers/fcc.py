@@ -268,7 +268,7 @@ class FccController(OrphieBaseController):
             if isNumber(tempid) and not int(tempid) == 0:
                 redirect_to('thread', post = thePost.parentid, tempid = int(tempid))
             else:
-                redirect_to(h.postUrl(thePost.parentid, thePost.id))
+                redirect_to('thread', **h.postKwargs(thePost.parentid, thePost.id))
 
         if not thePost:
             c.errorText = _("No such post exist.")
@@ -307,28 +307,25 @@ class FccController(OrphieBaseController):
         else:
             curPage = 0
 
-        ##log.debug('%s %s %s' % (tagLine, str(dest), str(curPage)))
-        redirectAddr = h.url_for('boardBase', board = g.OPT.allowOverview and '~' or postTagline, qualified = True)
-
-        if dest == 4: # destination board
-            redirectAddr = h.url_for('boardBase', board = postTagline) #'%s/' % (postTagline)
-
         if dest == 0: #current thread
             if postid:
-                return redirect_to(action = 'GetThread', post = post.parentid, board = None, qualified = True)
+                return redirect_to(action = 'GetThread', post = post.parentid, board = None)
             else:
-                return redirect_to(action = 'GetThread', post = post.id, board = None, qualified = True)
+                return redirect_to(action = 'GetThread', post = post.id, board = None)
         elif dest == 1 or dest == 2: # current board
             if  tagLine:
                 if dest == 1:
                     curPage = 0
-                redirectAddr = h.url_for('board', board = tagLine, page = curPage, qualified = True) #"%s/page/%d" % (tagLine, curPage)
+                return redirect_to('board', board = tagLine, page = curPage)
         elif dest == 3: # overview
             pass
+        elif dest == 4: # destination board
+            return redirect_to('boardBase', board = postTagline)
         elif dest == 5: #referrer
             return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')))
 
-        return redirect_to(redirectAddr)
+        # impossible with correct data
+        return redirect_to('boardBase', board = g.OPT.allowOverview and '~' or postTagline)
 
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
@@ -448,7 +445,6 @@ class FccController(OrphieBaseController):
             redirectAddr = tagLine
 
         return redirect_to('boardBase', board = redirectAddr)
-        #str('/%s' % redirectAddr.encode('utf-8'))
 
     def search(self, text, page = 0):
         rawtext = text

@@ -87,6 +87,7 @@ core.allowOverview = true
 core.framedMain = true
 core.useFrameLogo = false
 core.defaultFrame = /!/
+core.obligatoryFrameCreation = false
 
 # Board defaults
 defaults.defThumbSize = 200

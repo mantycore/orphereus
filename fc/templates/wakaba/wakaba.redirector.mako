@@ -7,14 +7,15 @@ function redirect() {
     try
     {
         parent.top.board.window.location=destination;
-    }
-    catch(err) //frame not present
-    {
-
-    }
+    } catch(err) //frame not present
+    {}
     document.location=destination;
     %else:
-    parent.top.location=destination;
+    try
+    {
+        parent.top.location=destination;
+    } catch(err) //frame not present
+    {}
     %endif
 }
 redirect();

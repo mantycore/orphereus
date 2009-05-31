@@ -46,7 +46,8 @@ class OptHolder(object):
                                 'allowPureSvcTagline', 'allowTagCreation', 'boardWideProoflabels',
                                 'allowFeeds', 'allowOverview', 'framedMain',
                                 'useFrameLogo', 'permissiveFileSizeConjunction',
-                                'allowAnonymousPosting', 'allowAnonProfile'
+                                'allowAnonymousPosting', 'allowAnonProfile',
+                                'obligatoryFrameCreation',
                                )
                               ),
 

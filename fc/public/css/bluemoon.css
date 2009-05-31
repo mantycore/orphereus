@@ -182,6 +182,18 @@ div.delete {
     clear: both;
     -moz-border-radius: 6px;
 }
+
+.myreply
+{
+    background:#5b6674;
+}
+
+.mythread
+{
+    border-left: dashed 2px #49525D;
+    padding-left: 2px;
+}
+
 blockquote {
     margin: .5em .5em .5em 1em;
 }

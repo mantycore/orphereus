@@ -15,7 +15,13 @@
 <input type="hidden" name="tagLine" value="${c.tagLine}" />
 %for thread in c.threads:
 %if not thread.hideFromBoards:
-    <div class="thread" id="thread-${thread.id}">
+    <div
+    %if thread.uidNumber != c.uidNumber:
+    class="thread"
+    %else:
+    class="thread mythread"
+    %endif
+    id="thread-${thread.id}">
     <%include file="wakaba.postOp.mako" args="thread=thread"/>
 
     <div class="replies">

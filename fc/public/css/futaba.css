@@ -129,6 +129,18 @@ div.delete {
   background:#F0E0D6;
   color:#800000;
 }
+.myreply
+{
+    background:#e6d7ce;
+}
+
+.mythread
+{
+    border-left: dashed 2px #E04000;
+    padding-left: 2px;
+}
+
+
 blockquote {
   margin: .5em .5em .5em 1em;
 }

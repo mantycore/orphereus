@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -33,7 +33,7 @@ class FakeUser(object):
         self.__valid = False
         self.Anonymous = False
         self.uidNumber = -1
-        
+
         if g.OPT.allowAnonymous:
             self.__valid = True
             self.Anonymous = True
@@ -50,7 +50,7 @@ class FakeUser(object):
     def isValid(self):
         return self.__valid
 
-    def setUid(self, value=None):
+    def setUid(self, value = None):
         return self.__user.uid
 
     def isBanned(self):
@@ -78,16 +78,16 @@ class FakeUser(object):
     def defaultGoto(self, value = None):
         return self.sessValue('defaultGoto', value, self.__user.options.defaultGoto)
 
-    def hideLongComments(self, value=None):
+    def hideLongComments(self, value = None):
         return self.sessValue('hideLongComments', value, self.__user.options.hideLongComments)
 
-    def useFrame(self, value=None):
+    def useFrame(self, value = None):
         return self.sessValue('useFrame', value, self.__user.options.useFrame)
 
-    def mixOldThreads(self, value=None):
+    def mixOldThreads(self, value = None):
         return self.sessValue('mixOldThreads', value, self.__user.options.mixOldThreads)
 
-    def useAjax(self, value=None):
+    def useAjax(self, value = None):
         return self.sessValue('useAjax', value, self.__user.options.useAjax)
 
     def oekUseSelfy(self, value = None):
@@ -127,13 +127,16 @@ class FakeUser(object):
         return self.sessValue('maxExpandHeight', value, self.__user.options.maxExpandHeight)
 
     def useTitleCollapse(self, value = None):
-        return self.sessValue('useTitleCollapse',  value, self.__user.options.useTitleCollapse)
+        return self.sessValue('useTitleCollapse', value, self.__user.options.useTitleCollapse)
+
+    def hlOwnPosts(self, value = None):
+        return self.sessValue('hlOwnPosts', value, self.__user.options.hlOwnPosts)
 
     def homeExclude(self, value = None):
-        return self.sessPickleValue('homeExclude',  value, self.__user.options.homeExclude)
+        return self.sessPickleValue('homeExclude', value, self.__user.options.homeExclude)
 
     def hideThreads(self, value = None):
-        return self.sessPickleValue('hideThreads',  value, self.__user.options.hideThreads)
+        return self.sessPickleValue('hideThreads', value, self.__user.options.hideThreads)
 
     # disable any dangerous action
     def isAdmin(self):

@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -33,41 +33,42 @@ log = logging.getLogger(__name__)
 from fc.model import meta
 
 t_userOptions = sa.Table("userOptions", meta.metadata,
-    sa.Column("optid"    ,sa.types.Integer, primary_key=True),
-    sa.Column("uidNumber",sa.types.Integer, sa.ForeignKey('user.uidNumber')),
-    sa.Column("threadsPerPage", sa.types.Integer, nullable=False),
-    sa.Column("repliesPerThread", sa.types.Integer, nullable=False),
-    sa.Column("style"    , sa.types.String(32), nullable=False),
-    sa.Column("template" , sa.types.String(32), nullable=False),
-    sa.Column("homeExclude", sa.types.String(256), nullable=False),
-    sa.Column("hideThreads", sa.types.Text, nullable=True),
-    sa.Column("bantime"  , sa.types.Integer, nullable=False),
-    sa.Column("banreason", sa.types.UnicodeText(256), nullable=True),
-    sa.Column("banDate", sa.types.DateTime, nullable=True),
-    sa.Column("useFrame", sa.types.Boolean, nullable=True),
-    sa.Column("hideLongComments", sa.types.Boolean, nullable=True),
-    sa.Column("useAjax", sa.types.Boolean, nullable=True),
-    sa.Column("expandImages", sa.types.Boolean, nullable=True, server_default='1'),
-    sa.Column("maxExpandWidth", sa.types.Integer, nullable=True, server_default='1024'),
-    sa.Column("maxExpandHeight", sa.types.Integer, nullable=True, server_default='768'),
-    sa.Column("mixOldThreads", sa.types.Boolean, nullable=True),
-    sa.Column("useTitleCollapse", sa.types.Boolean, nullable=True),
-    sa.Column("defaultGoto", sa.types.Integer, nullable=True),
-    sa.Column("oekUseSelfy", sa.types.Boolean, nullable=True, server_default='0'),
-    sa.Column("oekUseAnim", sa.types.Boolean, nullable=True, server_default='0'),
-    sa.Column("oekUsePro", sa.types.Boolean, nullable=True, server_default='0'),
-    sa.Column("isAdmin"  , sa.types.Boolean, nullable=True),
-    sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable=True),
-    sa.Column("canMakeInvite", sa.types.Boolean, nullable=True),
-    sa.Column("canChangeRights", sa.types.Boolean, nullable=True),
-    sa.Column("canChangeSettings", sa.types.Boolean, nullable=True),
-    sa.Column("canManageBoards", sa.types.Boolean, nullable=True),
-    sa.Column("canManageUsers", sa.types.Boolean, nullable=True),
-    sa.Column("canManageExtensions", sa.types.Boolean, nullable=True),
-    sa.Column("canManageMappings", sa.types.Boolean, nullable=True),
-    sa.Column("canRunMaintenance", sa.types.Boolean, nullable=True),
-    sa.Column("lang", sa.types.String(2), nullable=False),
-    sa.Column("cLang", sa.types.String(2), nullable=False),
+    sa.Column("optid"    , sa.types.Integer, primary_key = True),
+    sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('user.uidNumber')),
+    sa.Column("threadsPerPage", sa.types.Integer, nullable = False),
+    sa.Column("repliesPerThread", sa.types.Integer, nullable = False),
+    sa.Column("style"    , sa.types.String(32), nullable = False),
+    sa.Column("template" , sa.types.String(32), nullable = False),
+    sa.Column("homeExclude", sa.types.String(256), nullable = False),
+    sa.Column("hideThreads", sa.types.Text, nullable = True),
+    sa.Column("bantime"  , sa.types.Integer, nullable = False),
+    sa.Column("banreason", sa.types.UnicodeText(256), nullable = True),
+    sa.Column("banDate", sa.types.DateTime, nullable = True),
+    sa.Column("useFrame", sa.types.Boolean, nullable = True),
+    sa.Column("hideLongComments", sa.types.Boolean, nullable = True),
+    sa.Column("useAjax", sa.types.Boolean, nullable = True),
+    sa.Column("expandImages", sa.types.Boolean, nullable = True, server_default = '1'),
+    sa.Column("maxExpandWidth", sa.types.Integer, nullable = True, server_default = '1024'),
+    sa.Column("maxExpandHeight", sa.types.Integer, nullable = True, server_default = '768'),
+    sa.Column("mixOldThreads", sa.types.Boolean, nullable = True),
+    sa.Column("useTitleCollapse", sa.types.Boolean, nullable = True),
+    sa.Column("hlOwnPosts", sa.types.Boolean, nullable = True, server_default = '0'),
+    sa.Column("defaultGoto", sa.types.Integer, nullable = True),
+    sa.Column("oekUseSelfy", sa.types.Boolean, nullable = True, server_default = '0'),
+    sa.Column("oekUseAnim", sa.types.Boolean, nullable = True, server_default = '0'),
+    sa.Column("oekUsePro", sa.types.Boolean, nullable = True, server_default = '0'),
+    sa.Column("isAdmin"  , sa.types.Boolean, nullable = True),
+    sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable = True),
+    sa.Column("canMakeInvite", sa.types.Boolean, nullable = True),
+    sa.Column("canChangeRights", sa.types.Boolean, nullable = True),
+    sa.Column("canChangeSettings", sa.types.Boolean, nullable = True),
+    sa.Column("canManageBoards", sa.types.Boolean, nullable = True),
+    sa.Column("canManageUsers", sa.types.Boolean, nullable = True),
+    sa.Column("canManageExtensions", sa.types.Boolean, nullable = True),
+    sa.Column("canManageMappings", sa.types.Boolean, nullable = True),
+    sa.Column("canRunMaintenance", sa.types.Boolean, nullable = True),
+    sa.Column("lang", sa.types.String(2), nullable = False),
+    sa.Column("cLang", sa.types.String(2), nullable = False),
     )
 
 class UserOptions(object):
@@ -102,6 +103,7 @@ class UserOptions(object):
         optionsObject.maxExpandWidth = 1024
         optionsObject.maxExpandHeight = 768
         optionsObject.useTitleCollapse = False
+        optionsObject.hlOwnPosts = False
         optionsObject.homeExclude = pickle.dumps([])
         optionsObject.hideThreads = pickle.dumps([])
         optionsObject.canDeleteAllPosts = False
@@ -113,8 +115,7 @@ class UserOptions(object):
         optionsObject.canManageExtensions = False
         optionsObject.canManageMappings = False
         optionsObject.canRunMaintenance = False
-        optionsObject.lang=''
-        optionsObject.cLang=''
-        
-        
-        
+        optionsObject.lang = ''
+        optionsObject.cLang = ''
+
+

@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -42,8 +42,8 @@ import logging
 log = logging.getLogger(__name__)
 
 t_users = sa.Table("user", meta.metadata,
-    sa.Column("uidNumber",sa.types.Integer, primary_key=True),
-    sa.Column("uid"      , sa.types.String(128), nullable=False)
+    sa.Column("uidNumber", sa.types.Integer, primary_key = True),
+    sa.Column("uid"      , sa.types.String(128), nullable = False)
     )
 
 #TODO: universal setter/getter, FakeUser-like
@@ -63,7 +63,7 @@ class User(object):
     # user ID
     @staticmethod
     def getUser(uidNumber):
-        ret = User.query.options(eagerload('options')).filter(User.uidNumber==uidNumber).first()
+        ret = User.query.options(eagerload('options')).filter(User.uidNumber == uidNumber).first()
 
         if ret:
             if meta.globj: #TODO: legacy code
@@ -84,7 +84,7 @@ class User(object):
 
     @staticmethod
     def getByUid(uid):
-        ret = User.query.filter(User.uid==uid).first()
+        ret = User.query.filter(User.uid == uid).first()
         if ret:
             ret.Anonymous = False
         return ret
@@ -96,21 +96,21 @@ class User(object):
     def isValid(self):
         return True
 
-    def setUid(self, value=None):
-        if value != None and not User.query.options(eagerload('options')).filter(User.uid==value).first():
+    def setUid(self, value = None):
+        if value != None and not User.query.options(eagerload('options')).filter(User.uid == value).first():
             self.uid = value
             meta.Session.commit()
         return self.uid
 
     def secid(self):
-        return (2*self.uidNumber + 6) * (self.uidNumber + 5) * (self.uidNumber - 1)
+        return (2 * self.uidNumber + 6) * (self.uidNumber + 5) * (self.uidNumber - 1)
 
     def authid(self):
-        return (self.uidNumber + 10) * (2*self.uidNumber + 1) * (self.uidNumber + 1)
+        return (self.uidNumber + 10) * (2 * self.uidNumber + 1) * (self.uidNumber + 1)
         #(2*x+3)*(x+10)*(x-1)=
 
     def ban(self, bantime, banreason, who = -1):
-        if len(banreason)<=1 :
+        if len(banreason) <= 1 :
             return N_('You should specify ban reason')
         if not (isNumber(bantime) and int(bantime) > 0):
             return N_('You should specify ban time in days')
@@ -138,7 +138,7 @@ class User(object):
                 return True
             else:
                 if not changeAnyway:
-                    userMsg  = N_("Your have entered already existing Security Code. Both accounts was banned. Contact administrator immediately please.")
+                    userMsg = N_("Your have entered already existing Security Code. Both accounts was banned. Contact administrator immediately please.")
                     self.ban(7777, userMsg, -1)
                     anotherUser.ban(7777, N_("Your Security Code was used during profile update by another user. Contact administrator immediately please."), -1)
                     return userMsg
@@ -170,22 +170,22 @@ class User(object):
         meta.Session.commit()
         return True
 
-    def hideLongComments(self, value=None):
+    def hideLongComments(self, value = None):
         if value != None:
             self.options.hideLongComments = value
         return self.options.hideLongComments
 
-    def useFrame(self, value=None):
+    def useFrame(self, value = None):
         if value != None:
             self.options.useFrame = value
         return self.options.useFrame
 
-    def mixOldThreads(self, value=None):
+    def mixOldThreads(self, value = None):
         if value != None:
             self.options.mixOldThreads = value
         return self.options.mixOldThreads
 
-    def useAjax(self, value=None):
+    def useAjax(self, value = None):
         if value != None:
             self.options.useAjax = value
         return self.options.useAjax
@@ -272,6 +272,11 @@ class User(object):
             self.options.useTitleCollapse = value
         return self.options.useTitleCollapse
 
+    def hlOwnPosts(self, value = None):
+        if value != None:
+            self.options.hlOwnPosts = value
+        return self.options.hlOwnPosts
+
     def optionsDump(self):
         return UserOptions.optionsDump(self.options)
 
@@ -288,7 +293,7 @@ class User(object):
     # admin rights
     @staticmethod
     def getAdmins():
-        return User.query.options(eagerload('options')).filter(User.options.has(UserOptions.isAdmin==True)).all()
+        return User.query.options(eagerload('options')).filter(User.options.has(UserOptions.isAdmin == True)).all()
 
     def isAdmin(self):
         return self.options.isAdmin

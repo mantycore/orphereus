@@ -23,6 +23,7 @@ ${c.title}
         <link rel="alternate" type="application/rss+xml" title="RSS" href="${h.url_for('feed', uid=c.userInst.uid, authid=c.userInst.authid(), watch=c.PostAction, feedType='rss')}" />
         <link rel="alternate" type="application/atom+xml" title="Atom" href="${h.url_for('feed', uid=c.userInst.uid, authid=c.userInst.authid(), watch=c.PostAction, feedType='atom')}" />
 %endif
+        <%include file="wakaba.redirector.mako" />
     </head>
     <body>
         %if not c.disableMenu:

@@ -70,7 +70,6 @@ class FcpController(OrphieBaseController):
             c.errorText = _("ORLY?")
             return self.render('error')
 
-
     def login(self, user):
         if g.OPT.allowLogin:
             session['uidNumber'] = user.uidNumber
@@ -179,6 +178,7 @@ class FcpController(OrphieBaseController):
                 if captcha:
                     captcha.delete()
                 self.login(user)
+                c.loginSuccessful = True
             else:
                 tracker.attempts += 1
                 tracker.lastAttempt = datetime.datetime.now()
@@ -189,6 +189,7 @@ class FcpController(OrphieBaseController):
                 return redirect_to('boardBase', board = c.currentURL)
             else:
                 if (g.OPT.allowAnonymous):
+                    c.proceedRedirect = True
                     return self.render('loginRedirect')
                 else:
                     return redirect_to('boardBase')

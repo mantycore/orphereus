@@ -1,7 +1,8 @@
 %if c.proceedRedirect and c.currentURL:
 <script type="text/javascript">
 function redirect() {
-    var destination = "h.url_for('boardBase', board = c.currentURL)";
+    var destination = "${h.url_for('boardBase', board = c.currentURL)}";
+    %if c.frameEnabled:
     parent.top.list.location.reload(true);
     try
     {
@@ -12,6 +13,9 @@ function redirect() {
 
     }
     document.location=destination;
+    %else:
+    parent.top.location=destination;
+    %endif
 }
 redirect();
 </script>

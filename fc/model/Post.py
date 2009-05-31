@@ -326,13 +326,12 @@ class Post(object):
 
             if invisBumpDisabled and self.parentid and not self.sage:
                 thread = Post.query.filter(Post.parentid == self.parentid).all()
-                i = 2
-                while i < len(thread) and thread[-i].sage:
-                    i += 1
-                if i <= len(thread):
-                    parent.bumpDate = thread[-i].date
-                else:
-                    parent.bumpDate = parent.date
+                maxDate = parent.date
+                for post in thread:
+                    if (not post.sage) and (not post.id == self.id) and maxDate < post.date:
+                        maxDate = post.date
+                parent.bumpDate = maxDate
+
             meta.Session.delete(self)
         meta.Session.commit()
         return opPostDeleted

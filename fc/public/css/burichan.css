@@ -169,6 +169,19 @@ div.delete {
   color:#000000;
   font-family:serif;
 }
+
+.myreply
+{
+    background:#b9bccf;
+}
+
+.mythread
+{
+    border-left: dashed 2px #b9bccf;
+    padding-left: 2px;
+}
+
+
 blockquote {
   margin: .5em .5em .5em 1em;
 }

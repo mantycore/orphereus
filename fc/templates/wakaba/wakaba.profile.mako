@@ -85,6 +85,10 @@
                     <td><input type="checkbox" name="useTitleCollapse" ${c.userInst.useTitleCollapse() and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Highlight my posts')}</td>
+                    <td><input type="checkbox" name="hlOwnPosts" ${c.userInst.hlOwnPosts() and 'checked="checked"' or ""} /></td>
+                </tr>
+                <tr>
                     <td class="postblock">${_('Max size to expand')}
                     <div style="font-size: 60%; font-style:italic;">${_('(Stricter condition will be used)')}</div>
                     </td>

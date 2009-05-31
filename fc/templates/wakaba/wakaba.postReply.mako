@@ -3,7 +3,13 @@
 
 <table id="quickReplyNode${post.id}"><tbody><tr>
 <td class="doubledash">&gt;&gt;</td>
-<td class="reply" id="reply${post.id}">
+<td
+%if post.uidNumber != c.uidNumber:
+class="reply"
+%else:
+class="reply myreply"
+%endif
+id="reply${post.id}">
     <a name="i${post.id}"></a>
     &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Del" /></a>
     <span style="display:none" class="delete">

@@ -277,6 +277,11 @@ class User(object):
             self.options.hlOwnPosts = value
         return self.options.hlOwnPosts
 
+    def invertSortingMode(self, value = None):
+        if value != None:
+            self.options.invertSortingMode = value
+        return self.options.invertSortingMode
+
     def optionsDump(self):
         return UserOptions.optionsDump(self.options)
 

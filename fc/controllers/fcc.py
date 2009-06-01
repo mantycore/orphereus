@@ -120,9 +120,17 @@ class FccController(OrphieBaseController):
         self.paginate(count, page, tpp)
 
         if count > 1:
-            c.threads = threadFilter.order_by(Post.bumpDate.desc())[page * tpp: (page + 1) * tpp]
+            if bool(g.OPT.newsSiteMode) ^ bool(self.userInst.invertSortingMode()):
+                sortClause = Post.date.desc()
+            else:
+                sortClause = Post.bumpDate.desc()
+            c.threads = threadFilter.order_by(sortClause)[page * tpp: (page + 1) * tpp]
             if self.userInst.mixOldThreads() and not board == '@':
-                oldThread = threadFilter.filter(Post.bumpDate < c.threads[-1].bumpDate).order_by(sqlalchemy.func.random()).first()
+                if g.OPT.newsSiteMode:
+                    filterClause = Post.date < c.threads[-1].date
+                else:
+                    filterClause = Post.bumpDate < c.threads[-1].bumpDate
+                oldThread = threadFilter.filter(filterClause).order_by(sqlalchemy.func.random()).first()
                 #log.debug(oldThread)
                 if oldThread:
                     oldThread.mixed = True
@@ -159,6 +167,7 @@ class FccController(OrphieBaseController):
                 c.boardName = _('Related threads')
 
         c.boardOptions = Tag.conjunctedOptionsDescript(tags)
+        c.invisibleBumps = asbool(meta.globj.settingsMap['invisibleBump'].value)
         c.tagList = ' '.join(tagList)
 
         hiddenThreads = self.userInst.hideThreads()
@@ -345,6 +354,7 @@ class FccController(OrphieBaseController):
             self.userInst.mixOldThreads(bool(request.POST.get('mixOldThreads', False)))
             self.userInst.useTitleCollapse(bool(request.POST.get('useTitleCollapse', False)))
             self.userInst.hlOwnPosts(bool(request.POST.get('hlOwnPosts', False)))
+            self.userInst.invertSortingMode(bool(request.POST.get('invertSortingMode', False)))
             self.userInst.oekUseSelfy(bool(request.POST.get('oekUseSelfy', False)))
             self.userInst.oekUseAnim(bool(request.POST.get('oekUseAnim', False)))
             self.userInst.oekUsePro(bool(request.POST.get('oekUsePro', False)))

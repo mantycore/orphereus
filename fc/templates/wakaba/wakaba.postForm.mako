@@ -180,6 +180,13 @@ ${g.OPT.enableFinalAnonymity and g.OPT.hlAnonymizedPosts and _('(with marks)') o
 ${g.OPT.enableFinalAnonymity and not g.OPT.hlAnonymizedPosts and _('(without marks)') or ''}
 </li>
 <li>${_('Board-wide prooflabels')}:  ${_('turned')} ${not g.OPT.boardWideProoflabels and _('off') or _('on')}</li>
+<li>${_('IP logging')}:  ${not g.OPT.saveAnyIP and _('for all users') or (g.OPT.allowAnonymous and _('only for anonymous') or _('disabled'))}</li>
+<li>${_('Invisible bumps')}:  ${not c.invisibleBumps and _('disabled') or _('enabled')}</li>
+<li>${_('News site mode')}:  ${not g.OPT.newsSiteMode and _('off') or _('on')}
+%if c.userInst.invertSortingMode():
+${_('(but inverted in your profile)')}
+%endif
+</li>
 <li><a href="${h.url_for('static', page='markup')}" target="_blank">${_('Markup and features')}</a></li>
 </ul>
 </div>

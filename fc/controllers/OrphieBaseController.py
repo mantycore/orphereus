@@ -48,6 +48,11 @@ class OrphieBaseController(BaseController):
             c.log = []
             c.sum = 0
 
+        for plugin in g.plugins:
+            hook = plugin.requestHook()
+            if hook:
+                hook(self)
+
         if g.firstRequest:
             g.firstRequest = False
 

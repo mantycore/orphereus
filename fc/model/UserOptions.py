@@ -53,6 +53,7 @@ t_userOptions = sa.Table("userOptions", meta.metadata,
     sa.Column("mixOldThreads", sa.types.Boolean, nullable = True),
     sa.Column("useTitleCollapse", sa.types.Boolean, nullable = True),
     sa.Column("hlOwnPosts", sa.types.Boolean, nullable = True, server_default = '0'),
+    sa.Column("invertSortingMode", sa.types.Boolean, nullable = True, server_default = '0'),
     sa.Column("defaultGoto", sa.types.Integer, nullable = True),
     sa.Column("oekUseSelfy", sa.types.Boolean, nullable = True, server_default = '0'),
     sa.Column("oekUseAnim", sa.types.Boolean, nullable = True, server_default = '0'),
@@ -104,6 +105,7 @@ class UserOptions(object):
         optionsObject.maxExpandHeight = 768
         optionsObject.useTitleCollapse = False
         optionsObject.hlOwnPosts = False
+        optionsObject.invertSortingMode = False
         optionsObject.homeExclude = pickle.dumps([])
         optionsObject.hideThreads = pickle.dumps([])
         optionsObject.canDeleteAllPosts = False

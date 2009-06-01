@@ -25,6 +25,7 @@ import sys
 import os
 
 from fc.lib.pluginInfo import PluginInfo
+from fc.lib.constantValues import engineVersion
 
 import logging
 log = logging.getLogger("CORE")
@@ -67,7 +68,7 @@ class OptHolder(object):
                              ]
 
         self.stringValues = [('core',
-                               ('urlPrefix', 'version', 'hashSecret', 'baseDomain',
+                               ('urlPrefix', 'hashSecret', 'baseDomain',
                                 'staticPathWeb', 'filesPathWeb', 'actuator',
                                 'defaultFrame', 'staticPath', 'uploadPath',
                                )
@@ -166,6 +167,7 @@ class Globals(object):
         self.filterStack = []
         self.enumeratePlugins('%s.controllers.' % appName)
         self.firstRequest = True
+        self.version = engineVersion
 
     def registerPlugin(self, plugin):
         self.plugins.append(plugin)

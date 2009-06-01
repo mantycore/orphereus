@@ -126,6 +126,7 @@ class OptHolder(object):
         self.obfuscator = self.obfuscator.replace('$(', '%(')
         self.allowAnonymousPosting = self.allowAnonymous and self.allowAnonymousPosting
         self.allowAnonProfile = self.allowAnonymous and self.allowAnonProfile
+        self.jsFiles = ['jquery.js', 'ui.js']
 
     @staticmethod
     def booleanGetter(value):

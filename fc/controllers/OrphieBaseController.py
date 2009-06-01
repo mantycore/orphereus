@@ -48,13 +48,7 @@ class OrphieBaseController(BaseController):
             c.log = []
             c.sum = 0
 
-        for plugin in g.plugins:
-            hook = plugin.requestHook()
-            if hook:
-                hook(self)
-
-        if g.firstRequest:
-            g.firstRequest = False
+        c.jsFiles = g.OPT.jsFiles
 
         self.userInst = False
         uid = self.sessUid()
@@ -65,6 +59,14 @@ class OrphieBaseController(BaseController):
 
         c.userInst = self.userInst
         c.uidNumber = self.userInst.uidNumber
+
+        for plugin in g.plugins:
+            hook = plugin.requestHook()
+            if hook:
+                hook(self)
+
+        if g.firstRequest:
+            g.firstRequest = False
 
         ################# TODO: rewrite. Dont't like this.
         ipStr = getUserIp()

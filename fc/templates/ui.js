@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 function toggle_div(id) {
     $('#'+id).slideToggle('fast');
 }
@@ -29,8 +30,8 @@ function click_expands(options){
       this._src = this.src
 
       // loader
-      var loader = $("<span class='img_loading'>"+S_Loading+"…</span>")
-      if (options.loading_icon_path) loader.html("<img src='"+options.loading_icon_path+"'>"+S_Loading+"…")
+      var loader = $("<span class='img_loading'>"+"${_('Loading')}"+"…</span>")
+      if (options.loading_icon_path) loader.html("<img src='"+options.loading_icon_path+"'>"+"${_('Loading')}"+"…")
       loader.css("left", $(this).offset().left)
       $(this).parent().append(loader)
       $(this).load(function() {loader.remove()})
@@ -91,7 +92,7 @@ function popup_posts(options){
   }
   var load_on = function(e){
     e.attr('old_html',e.html())
-    e.html("<img class='popup_loading_img' src='"+options.loading_icon_path+"'> "+S_Loading+"…")
+    e.html("<img class='popup_loading_img' src='"+options.loading_icon_path+"'> "+"${_('Loading')}"+"…")
   }
   var load_off = function(e){
     e.html(e.attr('old_html'))
@@ -108,7 +109,7 @@ function popup_posts(options){
       else
         show_it(content.html())
     }else if(popup_posts.cache[m[0]] == 404){
-      $(this).html(S_PostNotFound);
+      $(this).html("${_('Post not found')}");
     }else if (popup_posts.cache[m[0]]){
       show_it(popup_posts.cache[m[0]]);
     }else if(options.ajax){
@@ -119,7 +120,7 @@ function popup_posts(options){
           html = html.replace(/<\/?table[^>]*>/,'')
           show_it(html);
           popup_posts.cache[m[0]] = html;
-        }, error: function(a,b) {popup_posts.cache[m[0]] = 404; e.html(S_PostNotFound) } });
+        }, error: function(a,b) {popup_posts.cache[m[0]] = 404; e.html("${_('Post not found')}") } });
     }
   }
 
@@ -218,7 +219,7 @@ YForm.prototype = {
 YForm.Captcha = function(form){
     var me = this;
     this.cfield = form.find("#y_replyform_captcha_field");
-    this.creq = S_CaptchaRequired
+    this.creq = "${_('Captcha required')}"
     this.captcha = ""
     this.cimg = this.cfield.parent().find("img")
     var field = this.cfield;
@@ -253,15 +254,15 @@ YForm.Captcha.prototype = {
         else return me.error();
         if(!this.captcha) return this.request();
         var field = this.cfield
-        field.addClass("inactive").val(S_Validating+"…")
+        field.addClass("inactive").val("${_('Validating')}"+"…")
 
         var callback = function(response) {
             if(response == "ok"){
                 setTimeout(function() {field.removeAttr("readonly").val(me.captcha).attr("readonly","true")}, 2000)
-                field.val(S_YouAreHuman)
+                field.val("${_('You are human!')}")
                 field.addClass("valid").attr("readonly","true")
             }else{
-                field.addClass("invalid").val(S_TryAgain)
+                field.addClass("invalid").val("${_('Try again')}")
                 me.captcha = ""
                 img.attr("src", img.attr("src").replace(/\d+/, response))
             }
@@ -298,10 +299,10 @@ function expandable_threads(){
     }else{
       me.data("orig_html", me.html())
       me.data("oldreplies", thread.find(".replies").html())
-      me.html("<img src='"+window.loading_icon_path+"'>"+S_Loading+"…")
+      me.html("<img src='"+window.loading_icon_path+"'>"+"${_('Loading')}"+"…")
       thread.find(".replies").load("/ajax/getRenderedReplies/" + thread.attr("id").match(/\d+/)[0], function() {
         me.parent().toggleClass("expanded")
-        me.html(S_CollapseThread)
+        me.html("${_('Collapse thread')}")
         expandable_threads.mass_repair(thread.find(".replies"))
       })
     }
@@ -393,10 +394,10 @@ function getFullText(event, thread, post)
 {
     var bq = document.getElementById('postBQId' + post);
     if (!bq) bq = document.getElementById('quickReplyNode' + post);
-    var loadingString = S_Loading+'…'
+    var loadingString = "${_('Loading')}"+'…'
     if (window.loading_icon_path)
     {
-        loadingString = "<img class='comment_loading_img' src='"+window.loading_icon_path+"'> "+S_Loading+"…"
+        loadingString = "<img class='comment_loading_img' src='"+window.loading_icon_path+"'> "+"${_('Loading')}"+"…"
     }
     $("a.expandPost[href=/" + thread + "#i" + post + "]").html(loadingString)
     $.get('/ajax/getPost/' + post, {}, function(response)

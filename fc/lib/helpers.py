@@ -39,7 +39,7 @@ log = logging.getLogger(__name__)
 from pylons.i18n import get_lang, set_lang
 
 def applyFilters(inp):
-    gvars = config['pylons.g']
+    gvars = config['pylons.app_globals']
     out = inp
     for plugin in gvars.plugins:
         filter = plugin.outHook()

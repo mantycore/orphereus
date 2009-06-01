@@ -6,3 +6,4 @@
 /data/*
 /.settings/*
 *.pyc
+/fc/public/js/full_*.js

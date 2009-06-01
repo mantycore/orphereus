@@ -16,9 +16,9 @@ ${c.title}
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style() + ".css")}" title="${c.userInst.style()}" />
-        <%include file="wakaba.jsStrings.mako" />
-        <script type="text/javascript" src="${h.staticFile("jquery.js")}"></script>
-        <script type="text/javascript" src="${h.staticFile("ui.js")}"></script>
+%for jsFile in c.jsFiles:
+        <script type="text/javascript" src="${h.staticFile(jsFile)}"></script>
+%endfor
 %if g.OPT.allowFeeds and c.userInst.isValid() and c.threads:
         <link rel="alternate" type="application/rss+xml" title="RSS" href="${h.url_for('feed', uid=c.userInst.uid, authid=c.userInst.authid(), watch=c.PostAction, feedType='rss')}" />
         <link rel="alternate" type="application/atom+xml" title="Atom" href="${h.url_for('feed', uid=c.userInst.uid, authid=c.userInst.authid(), watch=c.PostAction, feedType='atom')}" />

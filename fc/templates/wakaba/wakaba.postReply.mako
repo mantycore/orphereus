@@ -4,7 +4,7 @@
 <table id="quickReplyNode${post.id}"><tbody><tr>
 <td class="doubledash">&gt;&gt;</td>
 <td
-%if post.uidNumber != c.uidNumber:
+%if post.uidNumber != c.uidNumber or not c.userInst.hlOwnPosts():
 class="reply"
 %else:
 class="reply myreply"

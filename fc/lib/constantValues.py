@@ -22,7 +22,7 @@
 
 from pylons.i18n import _, ungettext, N_
 
-engineVersion = "Orphereus 1.0.2"
+engineVersion = "Orphereus 1.0.3"
 
 #this are the default values, the real ones are stored in the database
 settingsDef = {

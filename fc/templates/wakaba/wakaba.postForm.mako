@@ -180,7 +180,7 @@ ${g.OPT.enableFinalAnonymity and g.OPT.hlAnonymizedPosts and _('(with marks)') o
 ${g.OPT.enableFinalAnonymity and not g.OPT.hlAnonymizedPosts and _('(without marks)') or ''}
 </li>
 <li>${_('Board-wide prooflabels')}:  ${_('turned')} ${not g.OPT.boardWideProoflabels and _('off') or _('on')}</li>
-<li>${_('IP logging')}:  ${not g.OPT.saveAnyIP and _('for all users') or (g.OPT.allowAnonymous and _('only for anonymous') or _('disabled'))}</li>
+<li>${_('IP logging')}:  ${not g.OPT.saveAnyIP and (g.OPT.allowAnonymous and _('only for anonymous') or _('disabled')) or _('for all users')}</li>
 <li>${_('Invisible bumps')}:  ${not c.invisibleBumps and _('disabled') or _('enabled')}</li>
 <li>${_('News site mode')}:  ${not g.OPT.newsSiteMode and _('off') or _('on')}
 %if c.userInst.invertSortingMode():

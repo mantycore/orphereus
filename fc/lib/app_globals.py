@@ -128,6 +128,7 @@ class OptHolder(object):
         self.allowAnonymousPosting = self.allowAnonymous and self.allowAnonymousPosting
         self.allowAnonProfile = self.allowAnonymous and self.allowAnonProfile
         self.jsFiles = ['jquery.js', 'ui.js']
+        #self.defaultLang = config['lang']
 
     @staticmethod
     def booleanGetter(value):
@@ -148,8 +149,6 @@ class OptHolder(object):
                 value = getter(config['%s.%s' % (sectionName, valueName)])
                 setattr(self, valueName, value)
                 log.debug('%s.%s = %s' % (sectionName, valueName, str(getattr(self, valueName))))
-
-
 
 class Globals(object):
     def __init__(self):

@@ -60,7 +60,7 @@ from pylons.i18n import get_lang, set_lang, _
 
 t_captchas = sa.Table("captcha", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key = True),
-    sa.Column("text"     , sa.types.String(32), nullable = False),
+    sa.Column("text"     , sa.types.UnicodeText, nullable = False),
     sa.Column("content"  , sa.types.Binary, nullable = True),
     sa.Column("timestamp", sa.types.DateTime, nullable = False)
     )

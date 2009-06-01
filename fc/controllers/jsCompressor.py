@@ -13,7 +13,11 @@ log = logging.getLogger(__name__)
 def requestHook(baseController):
     if g.firstRequest:
         for lang in g.OPT.languages:
-            set_lang(makeLangValid(lang))
+            lid = makeLangValid(lang)
+            if lid:
+                set_lang(lid)
+            #else:
+            #    set_lang(g.OPT.defaultLang)
             newJS = ""
             for js in g.OPT.jsFiles:
                 newJS += render('/' + js) + "\n"

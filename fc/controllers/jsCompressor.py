@@ -27,7 +27,7 @@ def requestHook(baseController):
         lang = baseController.userInst.lang()
         if not lang:
             lang = g.OPT.languages[0]
-    c.jsFiles = ["full_%s.js" % lang]
+        c.jsFiles = ["full_%s.js" % lang]
 
 def pluginInit(g = None):
     if g:

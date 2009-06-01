@@ -89,6 +89,16 @@
                     <td><input type="checkbox" name="hlOwnPosts" ${c.userInst.hlOwnPosts() and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Invert thread sorting mode')}
+                    %if g.OPT.newsSiteMode:
+                        <div style="font-size: 60%; font-style:italic;">${_('(Sort by last post date)')}</div>
+                    %else:
+                        <div style="font-size: 60%; font-style:italic;">${_('(Sort by op-post date)')}</div>
+                    %endif
+                    </td>
+                    <td><input type="checkbox" name="invertSortingMode" ${c.userInst.invertSortingMode() and 'checked="checked"' or ""} /></td>
+                </tr>
+                <tr>
                     <td class="postblock">${_('Max size to expand')}
                     <div style="font-size: 60%; font-style:italic;">${_('(Stricter condition will be used)')}</div>
                     </td>

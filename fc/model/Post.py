@@ -36,6 +36,7 @@ from fc.lib.constantValues import *
 import datetime
 
 from pylons.i18n import _, ungettext, N_
+from paste.deploy.converters import asbool
 
 import logging
 log = logging.getLogger(__name__)
@@ -319,7 +320,7 @@ class Post(object):
             if pic:
                 self.picid = -1
         else:
-            invisBumpDisabled = (meta.globj.settingsMap['invisibleBump'].value == 'false')
+            invisBumpDisabled = asbool(meta.globj.settingsMap['invisibleBump'].value)
             parent = self.parentPost
             if parent:
                 parent.replyCount -= 1

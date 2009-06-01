@@ -132,6 +132,9 @@ class FakeUser(object):
     def hlOwnPosts(self, value = None):
         return self.sessValue('hlOwnPosts', value, self.__user.options.hlOwnPosts)
 
+    def invertSortingMode(self, value = None):
+        return self.sessValue('invertSortingMode', value, self.__user.options.invertSortingMode)
+
     def homeExclude(self, value = None):
         return self.sessPickleValue('homeExclude', value, self.__user.options.homeExclude)
 

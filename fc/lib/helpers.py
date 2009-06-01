@@ -38,6 +38,16 @@ log = logging.getLogger(__name__)
 
 from pylons.i18n import get_lang, set_lang
 
+def applyFilters(inp):
+    gvars = config['pylons.g']
+    out = inp
+    for plugin in gvars.plugins:
+        filter = plugin.outHook()
+        if filter:
+            out = filter(out)
+
+    return out
+
 def postKwargs(threadId, postId):
     return {'post' : threadId and threadId or postId, 'anchor' : "i%s" % postId}
 

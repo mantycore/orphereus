@@ -47,7 +47,7 @@ class OptHolder(object):
                                 'allowFeeds', 'allowOverview', 'framedMain',
                                 'useFrameLogo', 'permissiveFileSizeConjunction',
                                 'allowAnonymousPosting', 'allowAnonProfile',
-                                'obligatoryFrameCreation',
+                                'obligatoryFrameCreation', 'newsSiteMode'
                                )
                               ),
 
@@ -200,7 +200,6 @@ class Globals(object):
 
                         if not plugins.has_key(plid):
                             plinf.pfileName = file
-                            # TODO: eliminate hardcoded name
                             plinf.pnamespaceName = basicNamespace + mod.__name__
                             plinf.pnamespace = __import__(plinf.pnamespaceName, globals(), locals(), '*', -1)
                             plugins[plid] = plinf

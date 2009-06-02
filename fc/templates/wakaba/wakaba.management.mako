@@ -7,8 +7,9 @@
         <meta name="robots" content="noarchive" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style() + ".css")}" title="${c.userInst.style()}" />
-        <script type="text/javascript" src="${h.staticFile("jquery.js")}"></script>
-        <script type="text/javascript" src="${h.staticFile("ui.js")}"></script>
+%for jsFile in c.jsFiles:
+        <script type="text/javascript" src="${h.staticFile(jsFile)}"></script>
+%endfor
     </head>
     <body>
         %if not c.serviceOut:

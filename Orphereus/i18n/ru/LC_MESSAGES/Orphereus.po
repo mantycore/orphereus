@@ -23,332 +23,332 @@ msgstr ""
 msgid "[AUTOMATIC BAN] Security alert type 1: %s"
 msgstr ""
 
-#: Orphereus/controllers/fca.py:50 Orphereus/controllers/fca.py:67 Orphereus/controllers/fca.py:98
-#: Orphereus/controllers/fca.py:107 Orphereus/controllers/fca.py:123
-#: Orphereus/controllers/fca.py:136 Orphereus/controllers/fca.py:188
-#: Orphereus/controllers/fca.py:198 Orphereus/controllers/fca.py:256
-#: Orphereus/controllers/fca.py:325 Orphereus/controllers/fca.py:352
-#: Orphereus/controllers/fca.py:420 Orphereus/controllers/fca.py:439
-#: Orphereus/controllers/fca.py:449 Orphereus/controllers/fca.py:459
-#: Orphereus/controllers/fca.py:476 Orphereus/controllers/fcm.py:409
+#: Orphereus/controllers/Orphie_Admin.py:50 Orphereus/controllers/Orphie_Admin.py:67 Orphereus/controllers/Orphie_Admin.py:98
+#: Orphereus/controllers/Orphie_Admin.py:107 Orphereus/controllers/Orphie_Admin.py:123
+#: Orphereus/controllers/Orphie_Admin.py:136 Orphereus/controllers/Orphie_Admin.py:188
+#: Orphereus/controllers/Orphie_Admin.py:198 Orphereus/controllers/Orphie_Admin.py:256
+#: Orphereus/controllers/Orphie_Admin.py:325 Orphereus/controllers/Orphie_Admin.py:352
+#: Orphereus/controllers/Orphie_Admin.py:420 Orphereus/controllers/Orphie_Admin.py:439
+#: Orphereus/controllers/Orphie_Admin.py:449 Orphereus/controllers/Orphie_Admin.py:459
+#: Orphereus/controllers/Orphie_Admin.py:476 Orphereus/controllers/fcm.py:409
 msgid "No way! You aren't holy enough!"
 msgstr "Нет пути!"
 
-#: Orphereus/controllers/fca.py:57 Orphereus/controllers/fcm.py:431
+#: Orphereus/controllers/Orphie_Admin.py:57 Orphereus/controllers/fcm.py:431
 msgid "Index"
 msgstr "Управление"
 
-#: Orphereus/controllers/fca.py:62
+#: Orphereus/controllers/Orphie_Admin.py:62
 msgid "Settings management"
 msgstr "Настройки"
 
-#: Orphereus/controllers/fca.py:74
+#: Orphereus/controllers/Orphie_Admin.py:74
 #, python-format
 msgid "'%s' isn't correct number, but '%s' must be an integer number."
 msgstr "'%s' не является числом, но '%s' вроде бы таково."
 
-#: Orphereus/controllers/fca.py:80
+#: Orphereus/controllers/Orphie_Admin.py:80
 #, python-format
 msgid "Changed %s from '%s' to '%s'"
 msgstr "Изменение настройки %s ('%s' -> '%s')"
 
-#: Orphereus/controllers/fca.py:84
+#: Orphereus/controllers/Orphie_Admin.py:84
 msgid "Settings updated"
 msgstr "Изменения сохранены"
 
-#: Orphereus/controllers/fca.py:88 Orphereus/templates/wakaba/wakaba.frameMenu.mako:77
+#: Orphereus/controllers/Orphie_Admin.py:88 Orphereus/templates/wakaba/wakaba.frameMenu.mako:77
 #: Orphereus/templates/wakaba/wakaba.menu.mako:39
 msgid "Logs"
 msgstr "Логи"
 
-#: Orphereus/controllers/fca.py:101
+#: Orphereus/controllers/Orphie_Admin.py:101
 msgid "Invites"
 msgstr "Приглашения"
 
-#: Orphereus/controllers/fca.py:110
+#: Orphereus/controllers/Orphie_Admin.py:110
 msgid "Invite creation"
 msgstr "Создание приглашения"
 
-#: Orphereus/controllers/fca.py:117
+#: Orphereus/controllers/Orphie_Admin.py:117
 #, python-format
 msgid "Generated invite id %s. Reason: %s"
 msgstr "Создан инвайт %s. Повод: %s"
 
-#: Orphereus/controllers/fca.py:126
+#: Orphereus/controllers/Orphie_Admin.py:126
 msgid "Bans management"
 msgstr "Баны"
 
-#: Orphereus/controllers/fca.py:139
+#: Orphereus/controllers/Orphie_Admin.py:139
 #, python-format
 msgid "Editing ban %s"
 msgstr "Редактирование бана %s"
 
-#: Orphereus/controllers/fca.py:147
+#: Orphereus/controllers/Orphie_Admin.py:147
 msgid "New IP ban"
 msgstr "Новый бан по IP"
 
-#: Orphereus/controllers/fca.py:151
+#: Orphereus/controllers/Orphie_Admin.py:151
 #, python-format
 msgid "Added ban no. %s"
 msgstr "Добавлен бан #%s"
 
-#: Orphereus/controllers/fca.py:162
+#: Orphereus/controllers/Orphie_Admin.py:162
 msgid "Please check the format of IP addresses and masks."
 msgstr "Проверьте правильность написания маски подсети и адреса."
 
-#: Orphereus/controllers/fca.py:174
+#: Orphereus/controllers/Orphie_Admin.py:174
 #, python-format
 msgid "Updated ban no. %s, reason: %s"
 msgstr "Обновлён бан %s, причина: %s"
 
-#: Orphereus/controllers/fca.py:176
+#: Orphereus/controllers/Orphie_Admin.py:176
 msgid "Ban properties were updated"
 msgstr "Изменения сохранены"
 
-#: Orphereus/controllers/fca.py:181
+#: Orphereus/controllers/Orphie_Admin.py:181
 #, python-format
 msgid "Deleted ban %s"
 msgstr "Снят бан %s"
 
-#: Orphereus/controllers/fca.py:182
+#: Orphereus/controllers/Orphie_Admin.py:182
 #, python-format
 msgid "Ban record no. %s deleted"
 msgstr "Бан %s удалён"
 
-#: Orphereus/controllers/fca.py:191
+#: Orphereus/controllers/Orphie_Admin.py:191
 msgid "Extensions management"
 msgstr "Настройка расширений"
 
-#: Orphereus/controllers/fca.py:201
+#: Orphereus/controllers/Orphie_Admin.py:201
 #, python-format
 msgid "Editing extension %s"
 msgstr "Редактирование расширения %s"
 
-#: Orphereus/controllers/fca.py:207
+#: Orphereus/controllers/Orphie_Admin.py:207
 msgid "Too long extension"
 msgstr "Слишком длинное расширение."
 
-#: Orphereus/controllers/fca.py:237
+#: Orphereus/controllers/Orphie_Admin.py:237
 #, python-format
 msgid "Created extension %s"
 msgstr "Создано расширение %s"
 
-#: Orphereus/controllers/fca.py:239
+#: Orphereus/controllers/Orphie_Admin.py:239
 msgid "Extension created"
 msgstr "Расширение создано."
 
-#: Orphereus/controllers/fca.py:242
+#: Orphereus/controllers/Orphie_Admin.py:242
 #, python-format
 msgid "Edited extension %s"
 msgstr "Обновлено расширение %s"
 
-#: Orphereus/controllers/fca.py:243
+#: Orphereus/controllers/Orphie_Admin.py:243
 msgid "Extension edited"
 msgstr "Изменения сохранены"
 
-#: Orphereus/controllers/fca.py:247
+#: Orphereus/controllers/Orphie_Admin.py:247
 #, python-format
 msgid "Deleted extension %s"
 msgstr "Расширение %s удалено"
 
-#: Orphereus/controllers/fca.py:248
+#: Orphereus/controllers/Orphie_Admin.py:248
 msgid "Extension deleted"
 msgstr "Расширение удалено"
 
-#: Orphereus/controllers/fca.py:251
+#: Orphereus/controllers/Orphie_Admin.py:251
 msgid "Can't delete extension. Uploaded files with this extension exists."
 msgstr "Нельзя удалить расширение, с которым имеются загруженные файлы."
 
-#: Orphereus/controllers/fca.py:259 Orphereus/templates/wakaba/wakaba.manageMappings.mako:7
+#: Orphereus/controllers/Orphie_Admin.py:259 Orphereus/templates/wakaba/wakaba.manageMappings.mako:7
 #: Orphereus/templates/wakaba/wakaba.managementMenu.mako:23
 msgid "Manage mappings"
 msgstr "Управление тегами постов"
 
-#: Orphereus/controllers/fca.py:279
+#: Orphereus/controllers/Orphie_Admin.py:279
 msgid "Incorrect input values"
 msgstr "Введены неверные значения."
 
-#: Orphereus/controllers/fca.py:288
+#: Orphereus/controllers/Orphie_Admin.py:288
 msgid "This is not op-post"
 msgstr "Редактировать теги можно только у ОП-постов."
 
-#: Orphereus/controllers/fca.py:300
+#: Orphereus/controllers/Orphie_Admin.py:300
 #, python-format
 msgid "Removed tag %s from post %d"
 msgstr "Тэг %s удалён из треда %d"
 
-#: Orphereus/controllers/fca.py:303
+#: Orphereus/controllers/Orphie_Admin.py:303
 msgid "Can't delete last tag!"
 msgstr "Нельзя удалить единственный тэг."
 
-#: Orphereus/controllers/fca.py:308
+#: Orphereus/controllers/Orphie_Admin.py:308
 #, python-format
 msgid "Added tag %s to post %d"
 msgstr "Тэг %s добавлен к посту %d"
 
-#: Orphereus/controllers/fca.py:313
+#: Orphereus/controllers/Orphie_Admin.py:313
 msgid "Non-existent tag"
 msgstr "Несуществующий тэг."
 
-#: Orphereus/controllers/fca.py:328
+#: Orphereus/controllers/Orphie_Admin.py:328
 msgid "Boards management"
 msgstr "Доски"
 
-#: Orphereus/controllers/fca.py:354
+#: Orphereus/controllers/Orphie_Admin.py:354
 msgid "Edit board"
 msgstr "Редактирование доски"
 
-#: Orphereus/controllers/fca.py:399
+#: Orphereus/controllers/Orphie_Admin.py:399
 msgid "Board must be empty for deletion"
 msgstr "Можно удалить только пустую доску."
 
-#: Orphereus/controllers/fca.py:402
+#: Orphereus/controllers/Orphie_Admin.py:402
 #, python-format
 msgid "Deleted board %s %s"
 msgstr "Удалена доска %s %s"
 
-#: Orphereus/controllers/fca.py:408
+#: Orphereus/controllers/Orphie_Admin.py:408
 msgid "Updated board"
 msgstr "Изменения сохранены."
 
-#: Orphereus/controllers/fca.py:409
+#: Orphereus/controllers/Orphie_Admin.py:409
 #, python-format
 msgid "Edited board %s %s"
 msgstr "Отредактированы настройки %s %s"
 
-#: Orphereus/controllers/fca.py:413
+#: Orphereus/controllers/Orphie_Admin.py:413
 #, python-format
 msgid "Board %s already exists!"
 msgstr "Доска %s уже существует!"
 
-#: Orphereus/controllers/fca.py:415
+#: Orphereus/controllers/Orphie_Admin.py:415
 msgid "Board name should be non-empty and should contain only valid symbols"
 msgstr "Имя доски не может быть пустым и должно содержать только верные символы."
 
-#: Orphereus/controllers/fca.py:423
+#: Orphereus/controllers/Orphie_Admin.py:423
 msgid "Users management"
 msgstr "Пользователи"
 
-#: Orphereus/controllers/fca.py:434 Orphereus/controllers/fca.py:578
+#: Orphereus/controllers/Orphie_Admin.py:434 Orphereus/controllers/Orphie_Admin.py:578
 msgid "No such user exists."
 msgstr "Этот пользователь не существует."
 
-#: Orphereus/controllers/fca.py:442
+#: Orphereus/controllers/Orphie_Admin.py:442
 msgid "User edit attemption"
 msgstr "Запрос на редактирование пользователя"
 
-#: Orphereus/controllers/fca.py:462
+#: Orphereus/controllers/Orphie_Admin.py:462
 msgid "User management"
 msgstr "Пользователи"
 
-#: Orphereus/controllers/fca.py:466
+#: Orphereus/controllers/Orphie_Admin.py:466
 msgid "No reason given!"
 msgstr ""
 
-#: Orphereus/controllers/fca.py:468
+#: Orphereus/controllers/Orphie_Admin.py:468
 #, python-format
 msgid "Viewed UID for user '%s' from post '%s'. Reason: %s"
 msgstr "Просмотр UID пользователя '%s' (сообщение '%s'). Причина: %s"
 
-#: Orphereus/controllers/fca.py:471 Orphereus/templates/wakaba/wakaba.jsStrings.mako:4
+#: Orphereus/controllers/Orphie_Admin.py:471 Orphereus/templates/wakaba/wakaba.jsStrings.mako:4
 msgid "Post not found"
 msgstr "Сообщение не найдено."
 
-#: Orphereus/controllers/fca.py:489
+#: Orphereus/controllers/Orphie_Admin.py:489
 #, python-format
 msgid "Changed user %s isAdmin to %s"
 msgstr "Изменён параметр пользователя %s isAdmin на %s"
 
-#: Orphereus/controllers/fca.py:495
+#: Orphereus/controllers/Orphie_Admin.py:495
 #, python-format
 msgid "Changed right \"%s\" for user #%s to %s"
 msgstr "Изменение привелегии \"%s\" пользователя #%s на %s"
 
-#: Orphereus/controllers/fca.py:506
+#: Orphereus/controllers/Orphie_Admin.py:506
 msgid "User access was changed"
 msgstr "Доступ пользователя изменён."
 
-#: Orphereus/controllers/fca.py:509
+#: Orphereus/controllers/Orphie_Admin.py:509
 msgid "This user is already banned"
 msgstr "Этот пользователь уже забанен."
 
-#: Orphereus/controllers/fca.py:520
+#: Orphereus/controllers/Orphie_Admin.py:520
 #, python-format
 msgid "Unbanned user %s (%s days for reason \"%s\")"
 msgstr "Разбанен пользователь %s (%s дней, причина: \"%s\")"
 
-#: Orphereus/controllers/fca.py:521
+#: Orphereus/controllers/Orphie_Admin.py:521
 msgid "User was unbanned"
 msgstr "Бан снят."
 
-#: Orphereus/controllers/fca.py:523
+#: Orphereus/controllers/Orphie_Admin.py:523
 msgid "This user is not banned"
 msgstr "Этот пользователь не забанен."
 
-#: Orphereus/controllers/fca.py:530
+#: Orphereus/controllers/Orphie_Admin.py:530
 #, python-format
 msgid "Performed posts lookup for user %s for \"%s\", quantity: %s"
 msgstr ""
 
-#: Orphereus/controllers/fca.py:534
+#: Orphereus/controllers/Orphie_Admin.py:534
 msgid "No posts found"
 msgstr "Сообщения не найдены."
 
-#: Orphereus/controllers/fca.py:536
+#: Orphereus/controllers/Orphie_Admin.py:536
 msgid "You should specify lookup reason"
 msgstr "Необходимо указать причину поиска сообщений."
 
-#: Orphereus/controllers/fca.py:538
+#: Orphereus/controllers/Orphie_Admin.py:538
 msgid "Incorrect quantity value"
 msgstr "Неверное число сообщений."
 
-#: Orphereus/controllers/fca.py:544 Orphereus/controllers/fcc.py:393
+#: Orphereus/controllers/Orphie_Admin.py:544 Orphereus/controllers/fcc.py:393
 msgid "Password was successfully changed."
 msgstr "Пароль изменён."
 
-#: Orphereus/controllers/fca.py:545
+#: Orphereus/controllers/Orphie_Admin.py:545
 #, python-format
 msgid "Changed password for user \"%s\""
 msgstr "Изменён пароль пользователя \"%s\""
 
-#: Orphereus/controllers/fca.py:546
+#: Orphereus/controllers/Orphie_Admin.py:546
 msgid "Security code changed"
 msgstr "Код безопасности изменён."
 
-#: Orphereus/controllers/fca.py:548 Orphereus/controllers/fcc.py:395
+#: Orphereus/controllers/Orphie_Admin.py:548 Orphereus/controllers/fcc.py:395
 msgid "Incorrect security codes"
 msgstr "Неверные коды безопасности"
 
-#: Orphereus/controllers/fca.py:550 Orphereus/controllers/fcc.py:397
+#: Orphereus/controllers/Orphie_Admin.py:550 Orphereus/controllers/fcc.py:397
 #: Orphereus/controllers/fcc.py:459 Orphereus/controllers/fcp.py:68 Orphereus/controllers/fcp.py:116
 #: Orphereus/controllers/fcp.py:242 Orphereus/controllers/fcp.py:263
 #: Orphereus/controllers/fcp.py:269
 msgid "Error"
 msgstr "Ошибка"
 
-#: Orphereus/controllers/fca.py:567
+#: Orphereus/controllers/Orphie_Admin.py:567
 #, python-format
 msgid "Removed legacy of %s for \"%s\" [%s]"
 msgstr ""
 
-#: Orphereus/controllers/fca.py:569
+#: Orphereus/controllers/Orphie_Admin.py:569
 #, python-format
 msgid "Deleted user %s for \"%s\""
 msgstr ""
 
-#: Orphereus/controllers/fca.py:570
+#: Orphereus/controllers/Orphie_Admin.py:570
 msgid "User deleted"
 msgstr "Пользователь удалён."
 
-#: Orphereus/controllers/fca.py:573
+#: Orphereus/controllers/Orphie_Admin.py:573
 msgid "You should specify deletion reason"
 msgstr "Укажите причину удаления."
 
-#: Orphereus/controllers/fca.py:575
+#: Orphereus/controllers/Orphie_Admin.py:575
 msgid "You haven't rights to delete user"
 msgstr "Недостаточно прав для удаления пользователя."
 
-#: Orphereus/controllers/OrphieAjax.py:168 Orphereus/templates/wakaba/wakaba.jsStrings.mako:3
+#: Orphereus/controllers/Orphie_Ajax.py:168 Orphereus/templates/wakaba/wakaba.jsStrings.mako:3
 msgid "Collapse thread"
 msgstr "Свернуть тред"
 

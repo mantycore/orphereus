@@ -40,7 +40,7 @@ from OrphieBaseController import OrphieBaseController
 
 log = logging.getLogger(__name__)
 
-class FcaController(OrphieBaseController):
+class OrphieAdminController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         if not self.currentUserIsAuthorized():

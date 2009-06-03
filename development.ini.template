@@ -37,13 +37,13 @@ port = 5000
 
 [app:main]
 set debug = false
-use = egg:FC
+use = egg:Orphereus
 lang = en
 full_stack = true
 set debug = false
 
 cache_dir = %(here)s/data
-beaker.session.key = fc
+beaker.session.key = Orphereus
 beaker.session.secret = somesecret
 sqlalchemy.url = mysql://user:passwd@127.0.0.1/database?use_unicode=0&charset=utf8
 sqlalchemy.pool_recycle = 3600
@@ -123,7 +123,7 @@ security.finalAHoursDelay = 24
 security.hlAnonymizedPosts = true
 
 [loggers]
-keys = root, fc
+keys = root, Orphereus
 
 [handlers]
 keys = console
@@ -134,10 +134,11 @@ keys = generic
 [logger_root]
 level = INFO
 handlers = console
-[logger_fc]
+
+[logger_Orphereus]
 level = DEBUG
 handlers =
-qualname = fc
+qualname = Orphereus
 
 [handler_console]
 class = StreamHandler

@@ -14,6 +14,15 @@ Orphereus - Installation and Setup
 Any problematic modules can be installed manually with a packet manager or with 
 `easy_install`.
 
+2.1 Development environment
+This command will made paster commands available without installation:
+
+  $ python setup.py egg_info 
+ 
+Example command processors can be found in example.py
+
+  $paster --plugin=Orphereus mycommand --goodbye lol
+
 3. Initial database structure is created with 
 
   $ paster setup-app prod.ini  
@@ -32,7 +41,7 @@ Orphereus - Configuration
 =====================
 
 Almost all configuration options are self-explanatory.
-There are two basic server modes: SCGI and atand-alone HTTP server. 
+There are two basic server modes: SCGI and stand-alone HTTP server. 
 
 For the first mode (recommended), in [server:main] section:
 

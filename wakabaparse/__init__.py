@@ -24,8 +24,8 @@ import sys
 
 from simpleparse import generator
 from mx.TextTools import TextTools
-from fc.lib.miscUtils import *
-from fc.lib.constantValues import *
+from Orphereus.lib.miscUtils import *
+from Orphereus.lib.constantValues import *
 import re
 from urllib import quote
 from html5lib.html5parser import HTMLParser

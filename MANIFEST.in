@@ -1,2 +1,2 @@
-recursive-include fc/public *
-recursive-include fc/templates *
+recursive-include Orphereus/public *
+recursive-include Orphereus/templates *

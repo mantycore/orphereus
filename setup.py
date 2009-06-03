@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -16,7 +16,7 @@
 #                                                                              #
 #  You should have received a copy of the GNU General Public License           #
 #  along with this program; if not, write to the Free Software                 #
-#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #                                                                         #
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. # #                                                                              #
 ################################################################################
 
 try:
@@ -26,31 +26,53 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
-setup(
-    name='Orphereus',
-    version="1.0.0",
-    description='Powerful imageboard engine',
-    author='Anoma Chan',
-    #author_email='',
-    url='http://orphereus.anoma.ch',
-    install_requires=["Pylons>=0.9.7", "sqlalchemy>=0.5.1",
-                      "mutagen>=1.15", "pil>=1.1.6",
-                      "simpleparse>=2.1", "egenix-mx-base>=3.1.0",
-                      "pycaptcha>=0.4", "html5lib>=0.11.0"],
+from Orphereus.lib.app_globals import Globals
+from Orphereus.lib.constantValues import decimalVersion
+globj = Globals(True)
 
-    packages=find_packages(exclude=['ez_setup']),
-    include_package_data=True,
-    test_suite='nose.collector',
-    package_data={'fc': ['i18n/*/LC_MESSAGES/*.mo']},
-    message_extractors = {'fc': [
-            ('**.py', 'python', None),
-            ('templates/**.mako', 'mako', None),
-            ('public/**', 'ignore', None)]},
-    entry_points="""
+print ""
+
+eplist = ""
+for plugin in globj.plugins:
+    if plugin.entryPoints():
+        for ep in plugin.entryPoints():
+            eplist += "%s = %s:%s\n" % (ep[0], plugin.namespaceName(), ep[1])
+
+#    mycommand = Orphereus.commands.updateArchive:UpdateArchive
+entry_points = """
     [paste.app_factory]
-    main = fc.config.middleware:make_app
+    main = Orphereus.config.middleware:make_app
 
     [paste.app_install]
     main = pylons.util:PylonsInstaller
-    """,
+
+"""
+
+if eplist:
+    print "Plugins provides these entry points:"
+    print eplist
+    entry_points += "[paste.paster_command]\n"
+    entry_points += eplist
+
+setup(
+    name = 'Orphereus',
+    version = decimalVersion,
+    description = 'Powerful imageboard engine',
+    author = 'Anoma Chan',
+    #author_email='',
+    url = 'http://orphereus.anoma.ch',
+    install_requires = ["Pylons>=0.9.7", "sqlalchemy>=0.5.1",
+                      "mutagen>=1.15", "pil>=1.1.6",
+                      "egenix-mx-base>=3.1.0", "SimpleParse>=2.1.0a1",
+                      "pycaptcha>=0.4", "html5lib>=0.11.0"],
+    packages = find_packages(exclude = ['ez_setup']),
+    include_package_data = True,
+    test_suite = 'nose.collector',
+    package_data = {'Orphereus': ['i18n/*/LC_MESSAGES/*.mo']},
+    message_extractors = {'Orphereus': [
+            ('**.py', 'python', None),
+            ('templates/**.mako', 'mako', None),
+            ('public/**', 'ignore', None)]},
+
+    entry_points = entry_points,
 )

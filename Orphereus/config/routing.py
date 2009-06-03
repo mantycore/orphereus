@@ -57,33 +57,33 @@ def make_map():
     log.info('COMPLETED ROUTING INITIALIZATION STAGE')
 
     if devMode:
-        map.connect('/uaInfo', controller = 'fcp', action = 'uaInfo')
+        map.connect('/uaInfo', controller = 'Orphie_Public', action = 'uaInfo')
 
-    map.connect('makeFwdTo', '/makeFwdTo', controller = 'fcc', action = 'makeFwdTo')
+    map.connect('makeFwdTo', '/makeFwdTo', controller = 'Orphie_Main', action = 'makeFwdTo')
 
     # Special routes
-    map.connect('authorize', '/authorize', controller = 'fcp', action = 'authorize', url = '')
-    map.connect('authorizeToUrl', '/*url/authorize', controller = 'fcp', action = 'authorize', url = '')
-    map.connect('logout', '/logout', controller = 'fcp', action = 'logout', url = '')
-    map.connect('captcha', '/captcha/:cid', controller = 'fcp', action = 'captchaPic', cid = 0)
-    map.connect('register', '/register/:invite', controller = 'fcp', action = 'register')
-    map.connect('banned', '/youAreBanned', controller = 'fcp', action = 'banned')
-    map.connect('ipBanned', '/ipBanned', controller = 'fcp', action = 'ipBanned')
+    map.connect('authorize', '/authorize', controller = 'Orphie_Public', action = 'authorize', url = '')
+    map.connect('authorizeToUrl', '/*url/authorize', controller = 'Orphie_Public', action = 'authorize', url = '')
+    map.connect('logout', '/logout', controller = 'Orphie_Public', action = 'logout', url = '')
+    map.connect('captcha', '/captcha/:cid', controller = 'Orphie_Public', action = 'captchaPic', cid = 0)
+    map.connect('register', '/register/:invite', controller = 'Orphie_Public', action = 'register')
+    map.connect('banned', '/youAreBanned', controller = 'Orphie_Public', action = 'banned')
+    map.connect('ipBanned', '/ipBanned', controller = 'Orphie_Public', action = 'ipBanned')
 
-    map.connect('static', '/static/:page', controller = 'fcc', action = 'showStatic', page = 'Rules')
-    map.connect('searchBase', '/search/:text', controller = 'fcc', action = 'search', text = '', page = 0, requirements = dict(page = '\d+'))
-    map.connect('search', '/search/:text/page/:page', controller = 'fcc', action = 'search', requirements = dict(page = '\d+'))
-    map.connect('frameMenu', '/frameMenu', controller = 'fcc', action = 'frameMenu')
+    map.connect('static', '/static/:page', controller = 'Orphie_Main', action = 'showStatic', page = 'Rules')
+    map.connect('searchBase', '/search/:text', controller = 'Orphie_Main', action = 'search', text = '', page = 0, requirements = dict(page = '\d+'))
+    map.connect('search', '/search/:text/page/:page', controller = 'Orphie_Main', action = 'search', requirements = dict(page = '\d+'))
+    map.connect('frameMenu', '/frameMenu', controller = 'Orphie_Main', action = 'frameMenu')
 
     # Users subsystem
-    map.connect('userProfile', '/userProfile', controller = 'fcc', action = 'showProfile')
-    map.connect('viewLogBase', '/viewLog', controller = 'fcc', action = 'viewLog', page = 0, requirements = dict(page = '\d+'))
-    map.connect('viewLog', '/viewLog/page/:page', controller = 'fcc', action = 'viewLog', requirements = dict(page = '\d+'))
+    map.connect('userProfile', '/userProfile', controller = 'Orphie_Main', action = 'showProfile')
+    map.connect('viewLogBase', '/viewLog', controller = 'Orphie_Main', action = 'viewLog', page = 0, requirements = dict(page = '\d+'))
+    map.connect('viewLog', '/viewLog/page/:page', controller = 'Orphie_Main', action = 'viewLog', requirements = dict(page = '\d+'))
 
     # Oekaki
-    map.connect('oekakiDraw', '/oekakiDraw/:url/:selfy/:anim/:tool', controller = 'fcc', action = 'oekakiDraw', selfy = '-selfy', anim = '-anim', tool = 'shiNormal')
-    map.connect('oekakiSave', '/oekakiSave/:url/:tempid', controller = 'fcp', action = 'oekakiSave', url = '', requirements = dict(tempid = '\d+'))
-    map.connect('viewAnimation', '/viewAnimation/:source', controller = 'fcc', action = 'viewAnimation', requirements = dict(source = '\d+'))
+    map.connect('oekakiDraw', '/oekakiDraw/:url/:selfy/:anim/:tool', controller = 'Orphie_Main', action = 'oekakiDraw', selfy = '-selfy', anim = '-anim', tool = 'shiNormal')
+    map.connect('oekakiSave', '/oekakiSave/:url/:tempid', controller = 'Orphie_Public', action = 'oekakiSave', url = '', requirements = dict(tempid = '\d+'))
+    map.connect('viewAnimation', '/viewAnimation/:source', controller = 'Orphie_Main', action = 'viewAnimation', requirements = dict(source = '\d+'))
 
     # Admin subsystem
     map.connect('holySynod', '/holySynod', controller = 'Orphie_Admin', action = 'index')
@@ -105,7 +105,7 @@ def make_map():
     map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller = 'Orphie_Admin', action = 'editUser', requirements = dict(uid = '\d+'))
 
     # Maintenance
-    map.connect('hsMaintenance', '/holySynod/service/:actid/:secid', controller = 'fcm', actid = '', secid = '', action = 'mtnAction')
+    map.connect('hsMaintenance', '/holySynod/service/:actid/:secid', controller = 'Orphie_Maintenance', actid = '', secid = '', action = 'mtnAction')
 
     # AJAX
     map.connect('ajHideThread', '/ajax/hideThread/:post/*redirect', controller = 'Orphie_ajax', action = 'hideThread', requirements = dict(post = '\d+'))
@@ -117,8 +117,8 @@ def make_map():
     map.connect('ajEditUserFilter', '/ajax/editUserFilter/:fid/:filter', controller = 'Orphie_Ajax', action = 'editUserFilter', requirements = dict(fid = '\d+'))
     map.connect('ajDeleteUserFilter', '/ajax/deleteUserFilter/:fid', controller = 'Orphie_Ajax', action = 'deleteUserFilter', requirements = dict(fid = '\d+'))
     map.connect('ajCheckCaptcha', '/ajax/checkCaptcha/:id/:text', controller = 'Orphie_Ajax', action = 'checkCaptcha', text = '', requirements = dict(id = '\d+'))
-    map.connect('ajPostThread', '/ajax/postThread/:board', controller = 'fcc', action = 'ajaxPostThread', conditions = dict(method = ['POST']))
-    map.connect('ajPostReply', '/ajax/postReply/:post', controller = 'fcc', action = 'ajaxPostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
+    map.connect('ajPostThread', '/ajax/postThread/:board', controller = 'Orphie_Main', action = 'ajaxPostThread', conditions = dict(method = ['POST']))
+    map.connect('ajPostReply', '/ajax/postReply/:post', controller = 'Orphie_Main', action = 'ajaxPostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
     # routines below isn't actually used
     map.connect('ajGetText', '/ajax/getText/:text', controller = 'Orphie_Ajax', action = 'getText', text = '')
     map.connect('/ajax/getRepliesCountForThread/:post', controller = 'Orphie_Ajax', action = 'getRepliesCountForThread', requirements = dict(post = '\d+'))
@@ -127,30 +127,30 @@ def make_map():
     map.connect('/ajax/getUploadsPath', controller = 'Orphie_Ajax', action = 'getUploadsPath')
 
     # Threads
-    map.connect('postReply', '/:post', controller = 'fcc', action = 'PostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
-    map.connect('delete', '/:board/delete', controller = 'fcc', action = 'DeletePost', conditions = dict(method = ['POST']))
-    map.connect('anonymize', '/:post/anonymize', controller = 'fcc', action = 'Anonimyze', requirements = dict(post = '\d+'))
-    map.connect('thread', '/:post/:tempid', controller = 'fcc', action = 'GetThread', tempid = 0, requirements = dict(post = '\d+', tempid = '\d+'))
-    map.connect('postThread', '/:board', controller = 'fcc', action = 'PostThread', conditions = dict(method = ['POST']))
+    map.connect('postReply', '/:post', controller = 'Orphie_Main', action = 'PostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
+    map.connect('delete', '/:board/delete', controller = 'Orphie_Main', action = 'DeletePost', conditions = dict(method = ['POST']))
+    map.connect('anonymize', '/:post/anonymize', controller = 'Orphie_Main', action = 'Anonimyze', requirements = dict(post = '\d+'))
+    map.connect('thread', '/:post/:tempid', controller = 'Orphie_Main', action = 'GetThread', tempid = 0, requirements = dict(post = '\d+', tempid = '\d+'))
+    map.connect('postThread', '/:board', controller = 'Orphie_Main', action = 'PostThread', conditions = dict(method = ['POST']))
 
-    map.connect('feed', '/:watch/feed/auth/:authid/:uid.:feedType', controller = 'fcp', action = 'rss', requirements = dict(authid = '\d+'))
+    map.connect('feed', '/:watch/feed/auth/:authid/:uid.:feedType', controller = 'Orphie_Public', action = 'rss', requirements = dict(authid = '\d+'))
 
     # Generic filter
-    map.connect('boardBase', '/:board/:tempid', controller = 'fcc', action = 'GetBoard', board = not framedMain and '!' or None, tempid = 0, page = 0, requirements = dict(tempid = '\d+'))
-    map.connect('board', '/:board/page/:page', controller = 'fcc', action = 'GetBoard', tempid = 0, requirements = dict(page = '\d+'))
+    map.connect('boardBase', '/:board/:tempid', controller = 'Orphie_Main', action = 'GetBoard', board = not framedMain and '!' or None, tempid = 0, page = 0, requirements = dict(tempid = '\d+'))
+    map.connect('board', '/:board/page/:page', controller = 'Orphie_Main', action = 'GetBoard', tempid = 0, requirements = dict(page = '\d+'))
 
     # traps for bots
-    map.connect('botTrap1', '/ajax/stat/:confirm', controller = 'fcc', action = 'selfBan', confirm = '')
-    map.connect('botTrap2', '/holySynod/stat/:confirm', controller = 'fcc', action = 'selfBan', confirm = '')
+    map.connect('botTrap1', '/ajax/stat/:confirm', controller = 'Orphie_Main', action = 'selfBan', confirm = '')
+    map.connect('botTrap2', '/holySynod/stat/:confirm', controller = 'Orphie_Main', action = 'selfBan', confirm = '')
 
-    map.connect('*url', controller = 'fcp', action = 'UnknownAction')
+    map.connect('*url', controller = 'Orphie_Public', action = 'UnknownAction')
 
-    #map.connect('search', '/search/:text/:page_dummy/:page', controller='fcc', action='search', text='', page=0, page_dummy='page', requirements=dict(page='\d+', page_dummy='page'))
-    #map.connect('/search/:text/page/:page', controller='fcc', action='search', text='', page=0, requirements=dict(page='\d+'))
-    #map.connect('/Join', controller='fcp', action='showStatic', page = 'Join')
-    #map.connect('/:url/oekakiDraw', controller='fcc', action='oekakiDraw', url='')
-    #map.connect('viewLog', '/viewLog/:page_dummy/:page', controller='fcc', action='viewLog', page_dummy='page', page=0, requirements=dict(page='\d+', page_dummy='page'))
-    #map.connect('viewLogPage', '/viewLog/page/:page', controller='fcc', action='viewLog', page=0, requirements=dict(page='\d+'))
-    #map.connect('/userProfile/messages', controller='fcc', action='showMessages')
+    #map.connect('search', '/search/:text/:page_dummy/:page', controller='Orphie_Main', action='search', text='', page=0, page_dummy='page', requirements=dict(page='\d+', page_dummy='page'))
+    #map.connect('/search/:text/page/:page', controller='Orphie_Main', action='search', text='', page=0, requirements=dict(page='\d+'))
+    #map.connect('/Join', controller='Orphie_Public', action='showStatic', page = 'Join')
+    #map.connect('/:url/oekakiDraw', controller='Orphie_Main', action='oekakiDraw', url='')
+    #map.connect('viewLog', '/viewLog/:page_dummy/:page', controller='Orphie_Main', action='viewLog', page_dummy='page', page=0, requirements=dict(page='\d+', page_dummy='page'))
+    #map.connect('viewLogPage', '/viewLog/page/:page', controller='Orphie_Main', action='viewLog', page=0, requirements=dict(page='\d+'))
+    #map.connect('/userProfile/messages', controller='Orphie_Main', action='showMessages')
 
     return map

@@ -50,7 +50,7 @@ log = logging.getLogger(__name__)
 
 #TODO: new debug system. Don't forget about c.log and c.sum
 
-class FccController(OrphieBaseController):
+class OrphieMainController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         c.userInst = self.userInst

@@ -4,9 +4,6 @@ from Orphereus.model import meta
 from Orphereus.lib.constantValues import *
 from pylons import config
 
-import logging
-log = logging.getLogger("ORM (%s)" % __name__)
-
 from FCCaptcha import *
 from Extension import *
 from Invite import *
@@ -22,6 +19,9 @@ from User import *
 from UserFilters import *
 from UserOptions import *
 from Ban import *
+
+import logging
+log = logging.getLogger("ORM (%s)" % __name__)
 
 def init_model(engine):
     log.info("Trying to adjust engine to current dialect...")

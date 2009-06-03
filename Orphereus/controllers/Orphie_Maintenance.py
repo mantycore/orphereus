@@ -42,12 +42,12 @@ from wakabaparse import WakabaParser, fixHtml
 import logging
 log = logging.getLogger(__name__)
 
-#TODO: totally rewrite this controller
+#TODO: totally rewrite this controller into plugin. Don't forget about entrypoints
 
 class Empty:
     pass
 
-class FcmController(OrphieBaseController):
+class OrphieMaintenanceController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.currentUserId = None

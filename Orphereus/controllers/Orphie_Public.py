@@ -38,7 +38,7 @@ from webhelpers.feedgenerator import Atom1Feed, Rss201rev2Feed
 
 log = logging.getLogger(__name__)
 
-class FcpController(OrphieBaseController):
+class OrphiePublicController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         c.title = g.settingsMap['title'].value

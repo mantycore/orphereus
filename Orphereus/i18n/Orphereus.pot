@@ -27,11 +27,11 @@ msgstr ""
 #: Orphereus/controllers/Orphie_Admin.py:188 Orphereus/controllers/Orphie_Admin.py:198 Orphereus/controllers/Orphie_Admin.py:256
 #: Orphereus/controllers/Orphie_Admin.py:325 Orphereus/controllers/Orphie_Admin.py:352 Orphereus/controllers/Orphie_Admin.py:420
 #: Orphereus/controllers/Orphie_Admin.py:439 Orphereus/controllers/Orphie_Admin.py:449 Orphereus/controllers/Orphie_Admin.py:459
-#: Orphereus/controllers/Orphie_Admin.py:476 Orphereus/controllers/fcm.py:409
+#: Orphereus/controllers/Orphie_Admin.py:476 Orphereus/controllers/Orphie_Maintenance.py:409
 msgid "No way! You aren't holy enough!"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:57 Orphereus/controllers/fcm.py:431
+#: Orphereus/controllers/Orphie_Admin.py:57 Orphereus/controllers/Orphie_Maintenance.py:431
 msgid "Index"
 msgstr ""
 
@@ -299,7 +299,7 @@ msgstr ""
 msgid "Incorrect quantity value"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:544 Orphereus/controllers/fcc.py:393
+#: Orphereus/controllers/Orphie_Admin.py:544 Orphereus/controllers/Orphie_Main.py:393
 msgid "Password was successfully changed."
 msgstr ""
 
@@ -312,13 +312,13 @@ msgstr ""
 msgid "Security code changed"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:548 Orphereus/controllers/fcc.py:395
+#: Orphereus/controllers/Orphie_Admin.py:548 Orphereus/controllers/Orphie_Main.py:395
 msgid "Incorrect security codes"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:550 Orphereus/controllers/fcc.py:397 Orphereus/controllers/fcc.py:459
-#: Orphereus/controllers/fcp.py:68 Orphereus/controllers/fcp.py:116 Orphereus/controllers/fcp.py:242
-#: Orphereus/controllers/fcp.py:263 Orphereus/controllers/fcp.py:269
+#: Orphereus/controllers/Orphie_Admin.py:550 Orphereus/controllers/Orphie_Main.py:397 Orphereus/controllers/Orphie_Main.py:459
+#: Orphereus/controllers/Orphie_Public.py:68 Orphereus/controllers/Orphie_Public.py:116 Orphereus/controllers/Orphie_Public.py:242
+#: Orphereus/controllers/Orphie_Public.py:263 Orphereus/controllers/Orphie_Public.py:269
 msgid "Error"
 msgstr ""
 
@@ -348,265 +348,265 @@ msgstr ""
 msgid "Collapse thread"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:80
+#: Orphereus/controllers/Orphie_Main.py:80
 msgid "[AUTOMATIC BAN] Security alert type 2"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:96
+#: Orphereus/controllers/Orphie_Main.py:96
 #, python-format
 msgid "Board creation denied: %s"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:117
+#: Orphereus/controllers/Orphie_Main.py:117
 msgid "Incorrect page"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:156 Orphereus/lib/constantValues.py:94
+#: Orphereus/controllers/Orphie_Main.py:156 Orphereus/lib/constantValues.py:94
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:13
 #: Orphereus/templates/wakaba/wakaba.menu.mako:4
 msgid "Overview"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:158 Orphereus/templates/wakaba/wakaba.frameMenu.mako:16
+#: Orphereus/controllers/Orphie_Main.py:158 Orphereus/templates/wakaba/wakaba.frameMenu.mako:16
 #: Orphereus/templates/wakaba/wakaba.menu.mako:7
 msgid "Related threads"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:241 Orphereus/templates/wakaba/wakaba.menu.mako:9
+#: Orphereus/controllers/Orphie_Main.py:241 Orphereus/templates/wakaba/wakaba.menu.mako:9
 msgid "Home"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:249
+#: Orphereus/controllers/Orphie_Main.py:249
 msgid "Overview is disabled."
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:272
+#: Orphereus/controllers/Orphie_Main.py:272
 msgid "No such post exist."
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:285
+#: Orphereus/controllers/Orphie_Main.py:285
 msgid "You must specify post tagline."
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:333
+#: Orphereus/controllers/Orphie_Main.py:333
 msgid "Profile is not avaiable to Anonymous users."
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:340 Orphereus/templates/wakaba/wakaba.frameMenu.mako:69
+#: Orphereus/controllers/Orphie_Main.py:340 Orphereus/templates/wakaba/wakaba.frameMenu.mako:69
 #: Orphereus/templates/wakaba/wakaba.menu.mako:31
 #: Orphereus/templates/wakaba/wakaba.profile.mako:3
 msgid "Profile"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:387
+#: Orphereus/controllers/Orphie_Main.py:387
 msgid "Password was NOT changed."
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:403
+#: Orphereus/controllers/Orphie_Main.py:403
 msgid " Profile was updated."
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:405
+#: Orphereus/controllers/Orphie_Main.py:405
 msgid " Reload page for language changes to take effect."
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:423
+#: Orphereus/controllers/Orphie_Main.py:423
 msgid "Deletion disabled"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:460
+#: Orphereus/controllers/Orphie_Main.py:460
 #, python-format
 msgid "Query too short (minimal length: %d)"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:469 Orphereus/templates/wakaba/wakaba.posts.mako:62
+#: Orphereus/controllers/Orphie_Main.py:469 Orphereus/templates/wakaba/wakaba.posts.mako:62
 msgid "Search"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:512 Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:5
+#: Orphereus/controllers/Orphie_Main.py:512 Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:5
 msgid "Final Anonymization"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:519
+#: Orphereus/controllers/Orphie_Main.py:519
 msgid "Final Anonymity is disabled"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:522
+#: Orphereus/controllers/Orphie_Main.py:522
 msgid "Final Anonymity available only for registered users"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:534
+#: Orphereus/controllers/Orphie_Main.py:534
 #, python-format
 msgid "You are not author of post #%s"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:541
+#: Orphereus/controllers/Orphie_Main.py:541
 #, python-format
 msgid "Post #%d successfully anonymized"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:544
+#: Orphereus/controllers/Orphie_Main.py:544
 #, python-format
 msgid "Can't anomymize post #%d now, it will be allowed after %s (now: %s)"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:547
+#: Orphereus/controllers/Orphie_Main.py:547
 msgid "Nothing to anonymize"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:568 Orphereus/controllers/fcc.py:712
+#: Orphereus/controllers/Orphie_Main.py:568 Orphereus/controllers/Orphie_Main.py:712
 msgid "Posting is disabled"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:613
+#: Orphereus/controllers/Orphie_Main.py:613
 msgid "No animation associated with this post"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:632
+#: Orphereus/controllers/Orphie_Main.py:632
 msgid "Can't post files without extension"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:637
+#: Orphereus/controllers/Orphie_Main.py:637
 #, python-format
 msgid "Extension \"%s\" is disallowed"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:690
+#: Orphereus/controllers/Orphie_Main.py:690
 msgid "Broken picture. Maybe it is interlaced PNG?"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:748
+#: Orphereus/controllers/Orphie_Main.py:748
 msgid "Incorrect Captcha value"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:761
+#: Orphereus/controllers/Orphie_Main.py:761
 msgid "Can't post into non-existent thread"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:772
+#: Orphereus/controllers/Orphie_Main.py:772
 msgid "You should specify at least one board"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:777
+#: Orphereus/controllers/Orphie_Main.py:777
 #, python-format
 msgid "Too many tags. Maximum allowed: %s"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:793
+#: Orphereus/controllers/Orphie_Main.py:793
 msgid "Crossposting disabled"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:797
+#: Orphereus/controllers/Orphie_Main.py:797
 msgid "Crossposting allowed only for service tags"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:801
+#: Orphereus/controllers/Orphie_Main.py:801
 msgid "Can't post with service tags only"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:808
+#: Orphereus/controllers/Orphie_Main.py:808
 #, python-format
 msgid "Tags restrictions violations:<br/> %s"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:813
+#: Orphereus/controllers/Orphie_Main.py:813
 msgid "Unacceptable combination of tags"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:849
+#: Orphereus/controllers/Orphie_Main.py:849
 msgid "Message is too long"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:867
+#: Orphereus/controllers/Orphie_Main.py:867
 msgid "Files are not allowed on this board"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:870
+#: Orphereus/controllers/Orphie_Main.py:870
 #, python-format
 msgid "File size (%d) exceeds the limit (%d)"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:873
+#: Orphereus/controllers/Orphie_Main.py:873
 #, python-format
 msgid "Image is too small. At least one side should be %d or more pixels."
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:898
+#: Orphereus/controllers/Orphie_Main.py:898
 msgid "At least message or file should be specified"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:908
+#: Orphereus/controllers/Orphie_Main.py:908
 msgid "Replies without image are not allowed"
 msgstr ""
 
-#: Orphereus/controllers/fcc.py:912
+#: Orphereus/controllers/Orphie_Main.py:912
 msgid "Threads without image are not allowed"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:65
+#: Orphereus/controllers/Orphie_Public.py:65
 #, python-format
 msgid "You are banned on %s for %s days for the following reason:<br/>%s"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:69 Orphereus/controllers/fcp.py:264
+#: Orphereus/controllers/Orphie_Public.py:69 Orphereus/controllers/Orphie_Public.py:264
 msgid "ORLY?"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:117
+#: Orphereus/controllers/Orphie_Public.py:117
 msgid "Authorization disabled"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:190 Orphereus/templates/wakaba/wakaba.frameMenu.mako:84
+#: Orphereus/controllers/Orphie_Public.py:190 Orphereus/templates/wakaba/wakaba.frameMenu.mako:84
 #: Orphereus/templates/wakaba/wakaba.menu.mako:55 Orphereus/templates/wakaba/wakaba.menu.mako:57
 msgid "Login"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:239
+#: Orphereus/controllers/Orphie_Public.py:239
 msgid ""
 "Your Security Code was used during registration by another user. Contact "
 "administrator immediately please."
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:243
+#: Orphereus/controllers/Orphie_Public.py:243
 msgid ""
 "You entered already existing password. Previous account was banned. Contact "
 "administrator please."
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:248
+#: Orphereus/controllers/Orphie_Public.py:248
 #, python-format
 msgid "Utilized invite #%d [RID:%d]"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:254 Orphereus/templates/wakaba/wakaba.frameMenu.mako:88
+#: Orphereus/controllers/Orphie_Public.py:254 Orphereus/templates/wakaba/wakaba.frameMenu.mako:88
 #: Orphereus/templates/wakaba/wakaba.menu.mako:62
 msgid "Register"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:260
+#: Orphereus/controllers/Orphie_Public.py:260
 msgid "Banned"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:270
+#: Orphereus/controllers/Orphie_Public.py:270
 msgid "Excuse me, WTF are you?"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:350
+#: Orphereus/controllers/Orphie_Public.py:350
 #, python-format
 msgid "%s: thread #%d"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:359
+#: Orphereus/controllers/Orphie_Public.py:359
 #, python-format
 msgid "%s: %s"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:387
+#: Orphereus/controllers/Orphie_Public.py:387
 #, python-format
 msgid "Thread #%d"
 msgstr ""
 
-#: Orphereus/controllers/fcp.py:390
+#: Orphereus/controllers/Orphie_Public.py:390
 #, python-format
 msgid "#%d"
 msgstr ""

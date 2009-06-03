@@ -344,7 +344,7 @@ msgstr ""
 msgid "You haven't rights to delete user"
 msgstr ""
 
-#: Orphereus/controllers/fcajax.py:168 Orphereus/templates/wakaba/wakaba.jsStrings.mako:3
+#: Orphereus/controllers/OrphieAjax.py:168 Orphereus/templates/wakaba/wakaba.jsStrings.mako:3
 msgid "Collapse thread"
 msgstr ""
 

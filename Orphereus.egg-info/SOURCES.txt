@@ -20,7 +20,7 @@ Orphereus/controllers/__init__.py
 Orphereus/controllers/error.py
 Orphereus/controllers/example.py
 Orphereus/controllers/fca.py
-Orphereus/controllers/fcajax.py
+Orphereus/controllers/OrphieAjax.py
 Orphereus/controllers/fcc.py
 Orphereus/controllers/fcm.py
 Orphereus/controllers/fcp.py
@@ -179,7 +179,7 @@ Orphereus/tests/__init__.py
 Orphereus/tests/test_models.py
 Orphereus/tests/functional/__init__.py
 Orphereus/tests/functional/test_fca.py
-Orphereus/tests/functional/test_fcajax.py
+Orphereus/tests/functional/test_OrphieAjax.py
 Orphereus/tests/functional/test_fcc.py
 Orphereus/tests/functional/test_fcp.py
 wakabaparse/__init__.py

@@ -30,7 +30,7 @@ from OrphieBaseController import OrphieBaseController
 
 log = logging.getLogger(__name__)
 
-class FcajaxController(OrphieBaseController):
+class OrphieAjaxController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         c.userInst = self.userInst

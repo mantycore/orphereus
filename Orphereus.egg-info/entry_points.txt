@@ -8,3 +8,4 @@
 [paste.paster_command]
 mycommand = Orphereus.controllers.example:CommandClass
 mycommand2 = Orphereus.controllers.example:CommandClass2
+maintenance = Orphereus.controllers.Orphie_Maintenance:MaintenanceCommand

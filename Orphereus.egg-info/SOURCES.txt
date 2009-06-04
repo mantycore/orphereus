@@ -18,12 +18,12 @@ Orphereus/config/routing.py
 Orphereus/controllers/OrphieBaseController.py
 Orphereus/controllers/Orphie_Admin.py
 Orphereus/controllers/Orphie_Ajax.py
-Orphereus/controllers/__init__.py
-Orphereus/controllers/error.py
-Orphereus/controllers/example.py
 Orphereus/controllers/Orphie_Main.py
 Orphereus/controllers/Orphie_Maintenance.py
 Orphereus/controllers/Orphie_Public.py
+Orphereus/controllers/__init__.py
+Orphereus/controllers/error.py
+Orphereus/controllers/example.py
 Orphereus/controllers/jsCompressor.py
 Orphereus/lib/FakeUser.py
 Orphereus/lib/__init__.py

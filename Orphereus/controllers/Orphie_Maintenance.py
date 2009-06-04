@@ -37,10 +37,128 @@ import re
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
+from Orphereus.lib.pluginInfo import PluginInfo
+
 from wakabaparse import WakabaParser, fixHtml
 
 import logging
 log = logging.getLogger(__name__)
+
+class LogElement(object):
+    printAll = False
+
+    @staticmethod
+    def setPrintAll(value = True):
+        LogElement.printAll = value
+
+    def __init__(self, type, message):
+        self.timestamp = datetime.datetime.now()
+        self.type = type
+        self.message = message
+        if LogElement.printAll:
+            print self
+
+    def __repr__(self):
+        return "[%s] %s: %s" % (self.timestamp, self.type, self.message)
+
+class MaintenanceWorker(object):
+    obligatoryActions = ['banRotate', 'destroyTrackers', 'destroyInvites', 'cleanOekaki']
+    optionalActions = ['integrityChecks', 'updateCaches', 'updateStats', 'banInactive',
+                       'removeEmptyTags', 'reparseAll', 'sortUploads',
+                      ]
+    def banRotate(self):
+        mtnLog = []
+        mtnLog.append(LogElement('Task', 'Removing bans...'))
+        currentTime = datetime.datetime.now()
+        users = meta.Session.query(User).all()
+        for user in users:
+            bantime = user.options.bantime
+            banDate = user.options.banDate
+            if bantime > 10000:
+                bantime = 10000
+            if banDate and bantime > 0 and banDate < currentTime - datetime.timedelta(days = bantime):
+                unbanMessage = ("Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
+                mtnLog.append(LogElement('Info', unbanMessage))
+                toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
+                user.options.bantime = 0
+                user.options.banreason = u''
+        meta.Session.commit()
+        mtnLog.append(LogElement('Task', 'Done'))
+        mtnLog.append(LogElement('Task', 'Removing IP bans...'))
+        bans = meta.Session.query(Ban).all()
+        for ban in bans:
+            bantime = ban.period
+            banDate = ban.date
+            if bantime > 10000:
+                bantime = 10000
+            if banDate and bantime > 0 and banDate < (currentTime - datetime.timedelta(days = bantime)):
+                ban.disable()
+                unbanMessage = ("Automatic unban: IP <b>#%s</b> (Reason was %s)") % (h.intToDotted(ban.ip), ban.reason)
+                mtnLog.append(LogElement('Info', unbanMessage))
+                toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
+        meta.Session.commit()
+        mtnLog.append(LogElement('Task', 'Done'))
+        return mtnLog
+
+from paste.script import command
+from Orphereus.config.environment import load_environment
+import Orphereus.lib.app_globals as app_globals
+from paste.deploy import appconfig
+from pylons import config
+
+class MaintenanceCommand(command.Command):
+    #max_args = 0
+    min_args = 1
+
+    usage = "development.ini  | RunAllObligatory"
+    summary = "Runs maintenance routines"
+    group_name = "Orphereus"
+
+    parser = command.Command.standard_parser(verbose = True)
+    parser.add_option('--config',
+                      action = 'store',
+                      dest = 'config',
+                      help = 'config name (e.g. "development.ini")')
+
+    parser.add_option('--path',
+                      action = 'store',
+                      dest = 'path',
+                      help = 'working dir (e.g. ".")')
+
+    @staticmethod
+    def setup_config(filename, relative_to):
+        if not relative_to or not os.path.exists(relative_to):
+            relative_to = "."
+        print 'Loading config "%s" at path "%s"...' % (filename, relative_to)
+        conf = appconfig('config:' + filename, relative_to = relative_to)
+        load_environment(conf.global_conf, conf.local_conf, True)
+
+    def command(self):
+        devIni = self.args[0]
+        self.setup_config(self.options.config, self.options.path)
+
+        LogElement.setPrintAll(True)
+        worker = MaintenanceWorker()
+
+        if 'RunAllObligatory' in self.args:
+            actions = {}.fromkeys(self.args).keys()
+        else:
+            actions = self.args
+        for action in actions:
+            if action in MaintenanceWorker.obligatoryActions or action in MaintenanceWorker.optionalActions:
+                print "Running %s..." % action
+                getattr(worker, action)()
+                print "Completed"
+def pluginInit(globj = None):
+    if globj:
+        pass
+
+    config = {'name' : N_('Maintenance'),
+             'entryPoints' : [('maintenance', "MaintenanceCommand"),
+                             ]
+             }
+
+    return PluginInfo('maintenance', config)
 
 #TODO: totally rewrite this controller into plugin. Don't forget about entrypoints
 

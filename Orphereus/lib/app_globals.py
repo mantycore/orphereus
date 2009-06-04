@@ -283,40 +283,6 @@ class Globals(object):
 
         log.info('COMPLETED PLUGINS CONNECTION STAGE')
 
-    """
-    def initMenu(self):
-        def itemsscmp(a, b):
-            return cmp(a.weight, b.weight)
-        log.info("Basic menu preparation...")
-        parentedItems = {}
-        uniqueIds = []
-        for plugin in self.plugins:
-            log.info("Getting menu items from %s" % plugin.pluginId())
-            items = plugin.menuItems()
-            log.info("Plugin returned next items: %s" % str(items))
-            if items:
-                for item in items:
-                    id = item.id
-                    if id in uniqueIds:
-                        raise '[ERROR] Duplicated menu item Ids: %s' % id
-                    else:
-                        uniqueIds.append(id)
-                    parentid = item.parentId
-                    item.plugin = plugin
-
-                    if not parentid in parentedItems:
-                        parentedItems[parentid] = []
-                    parentedItems[parentid].append(item)
-
-        for key in parentedItems.keys():
-            parentedItems[key] = sorted(parentedItems[key], itemsscmp)
-            log.info("Prepared submenu (with parent %s): %s" % (key, str(parentedItems[key])))
-
-        self.menuItems = parentedItems
-
-        log.info("COMPLETED MENU PREPARATION STAGE")
-    """
-
     def getMenuItems(self, menuId):
         def itemsscmp(a, b):
             return cmp(a.weight, b.weight)

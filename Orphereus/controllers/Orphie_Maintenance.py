@@ -77,7 +77,7 @@ class MaintenanceWorker(object):
             if bantime > 10000:
                 bantime = 10000
             if banDate and bantime > 0 and banDate < currentTime - datetime.timedelta(days = bantime):
-                unbanMessage = ("Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
+                unbanMessage = (u"Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
                 mtnLog.append(LogElement('Info', unbanMessage))
                 toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
                 user.options.bantime = 0
@@ -93,9 +93,64 @@ class MaintenanceWorker(object):
                 bantime = 10000
             if banDate and bantime > 0 and banDate < (currentTime - datetime.timedelta(days = bantime)):
                 ban.disable()
-                unbanMessage = ("Automatic unban: IP <b>#%s</b> (Reason was %s)") % (h.intToDotted(ban.ip), ban.reason)
+                unbanMessage = (u"Automatic unban: IP <b>#%s</b> (Reason was %s)") % (h.intToDotted(ban.ip), ban.reason)
                 mtnLog.append(LogElement('Info', unbanMessage))
                 toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
+        meta.Session.commit()
+        mtnLog.append(LogElement('Task', 'Done'))
+        return mtnLog
+
+    def cleanOekaki(self):
+        mtnLog = []
+        mtnLog.append(LogElement('Task', 'Clearing old oekaki entries...'))
+        oekakies = meta.Session.query(Oekaki).all()
+        currentTime = datetime.datetime.now()
+        for oekaki in oekakies:
+            #oekaki.time==-1 and not oekaki.path and
+            if oekaki.timeStamp < currentTime - datetime.timedelta(days = 1):
+                mtnLog.append(LogElement('Info', "Deleted oekaki with <b>#%d</b>" % (oekaki.id)))
+                meta.Session.delete(oekaki)
+        meta.Session.commit()
+        mtnLog.append(LogElement('Task', 'Done'))
+        return mtnLog
+
+    def destroyInvites(self):
+        mtnLog = []
+        mtnLog.append(LogElement('Task', 'Deleting old invites...'))
+        currentTime = datetime.datetime.now()
+        invites = meta.Session.query(Invite).all()
+        for invite in invites:
+            if invite.date < currentTime - datetime.timedelta(weeks = 1):
+                msg1 = u"Deleted invite <b>#%d</b>" % (invite.id)
+                msg2 = u" from date <b>%s</b> with id <font size='-2'>%s</font>" % (invite.date, invite.invite)
+                toLog(LOG_EVENT_MTN_DELINVITE, msg1)
+                mtnLog.append(LogElement('Info', msg1 + msg2))
+                meta.Session.delete(invite)
+        meta.Session.commit()
+        mtnLog.append(LogElement('Task', 'Done'))
+        return mtnLog
+
+    def destroyTrackers(self):
+        mtnLog = []
+        mtnLog.append(LogElement('Task', 'Deleting old trackers...'))
+        currentTime = datetime.datetime.now()
+        trackers = meta.Session.query(LoginTracker).all()
+        for tracker in trackers:
+            if tracker.lastAttempt < currentTime - datetime.timedelta(days = 1):
+                mtnLog.append(LogElement('Info', "Deleted ip tracker for <b>%s</b> with <b>%d</b> attempts" % (tracker.ip, tracker.attempts)))
+                if tracker.cid:
+                    captcha = meta.Session.query(Captcha).filter(Captcha.id == tracker.cid).first()
+                    if captcha:
+                        meta.Session.delete(captcha)
+                        mtnLog.append(LogElement('Info', "Deleted captcha <b>#%d</b>" % (captcha.id)))
+
+                meta.Session.delete(tracker)
+
+        captchas = meta.Session.query(Captcha).all()
+        for ct in captchas:
+            if ct.timestamp < currentTime - datetime.timedelta(days = 1):
+                mtnLog.append(LogElement('Info', "Deleted old captcha <b>#%d</b>" % (ct.id)))
+                meta.Session.delete(ct)
         meta.Session.commit()
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
@@ -110,7 +165,7 @@ class MaintenanceCommand(command.Command):
     #max_args = 0
     min_args = 1
 
-    usage = "development.ini  | RunAllObligatory"
+    usage = "development.ini %s %s | RunAllObligatory" % (MaintenanceWorker.obligatoryActions, MaintenanceWorker.optionalActions)
     summary = "Runs maintenance routines"
     group_name = "Orphereus"
 
@@ -138,17 +193,36 @@ class MaintenanceCommand(command.Command):
         self.setup_config(self.options.config, self.options.path)
 
         LogElement.setPrintAll(True)
-        worker = MaintenanceWorker()
-
         if 'RunAllObligatory' in self.args:
-            actions = {}.fromkeys(self.args).keys()
+            actions = {}.fromkeys(MaintenanceWorker.obligatoryActions).keys()
         else:
             actions = self.args
-        for action in actions:
-            if action in MaintenanceWorker.obligatoryActions or action in MaintenanceWorker.optionalActions:
-                print "Running %s..." % action
-                getattr(worker, action)()
-                print "Completed"
+        self.process(actions)
+
+    @staticmethod
+    def process(actions, printMessages = True):
+        log = []
+        if actions:
+            worker = MaintenanceWorker()
+            toLog(LOG_EVENT_MTN_BEGIN, u'Maintenance started')
+            for action in actions:
+                if action in MaintenanceWorker.obligatoryActions or action in MaintenanceWorker.optionalActions:
+                    if printMessages:
+                        print "Running %s..." % action
+                    try:
+                        log += getattr(worker, action)()
+                    except Exception, e:
+                        errorMsg = "Exception occured: %s" % str(e)
+                        if printMessages:
+                            print errorMsg
+                        toLog(LOG_EVENT_MTN_ERROR, errorMsg)
+                    if printMessages:
+                        print "Completed"
+            toLog(LOG_EVENT_MTN_END, u'Maintenance ended')
+        elif printMessages:
+            print "No work to do"
+        return log
+
 def pluginInit(globj = None):
     if globj:
         pass
@@ -175,7 +249,7 @@ class OrphieMaintenanceController(OrphieBaseController):
         act.type = type
         act.message = message
         return act
-
+    """
     def clearOekaki(self):
         mtnLog = []
         mtnLog.append(self.createLogEntry('Task', 'Clearing old oekaki entries...'))
@@ -264,6 +338,7 @@ class OrphieMaintenanceController(OrphieBaseController):
         meta.Session.commit()
         mtnLog.append(self.createLogEntry('Task', 'Done'))
         return mtnLog
+    """
 
     def integrityChecks(self):
         mtnLog = []
@@ -531,6 +606,9 @@ class OrphieMaintenanceController(OrphieBaseController):
             if not checkAdminIP():
                 return redirect_to('boardBase')
             secTestPassed = True
+
+         #TODO: legacy code. But MAY BE usable on weak hostings with small modifications (constant secid from config)
+        """
         else:
             secidFilePath = os.path.join(g.OPT.appRoot, 'Orphereus/secid')
             try:
@@ -542,6 +620,7 @@ class OrphieMaintenanceController(OrphieBaseController):
                 os.remove(secidFilePath)
             except IOError, err:
                 pass
+        """
 
         if not secTestPassed:
             return redirect_to('boardBase')
@@ -550,60 +629,13 @@ class OrphieMaintenanceController(OrphieBaseController):
             c.boardName = _('Index')
             return self.render('mtnIndex')
         else:
-            toLog(LOG_EVENT_MTN_BEGIN, 'Maintenance started')
-            mtnLog = []
             c.boardName = 'Maintenance log'
-            if actid == 'clearOekaki':
-                mtnLog = self.clearOekaki()
-            elif actid == 'destroyInvites':
-                mtnLog = self.destroyInvites()
-            elif actid == 'banRotate':
-                mtnLog = self.banRotate()
-            elif actid == 'integrityChecks':
-                mtnLog = self.integrityChecks()
-            elif actid == 'destroyTrackers':
-                mtnLog = self.destroyTrackers()
-            elif actid == 'updateCaches':
-                mtnLog = self.updateCaches()
-            elif actid == 'updateStats':
-                mtnLog = self.updateStats()
-            elif actid == 'banInactive':
-                mtnLog = self.banInactive()
-            elif actid == 'removeEmptyTags':
-                mtnLog = self.removeEmptyTags()
-            elif actid == 'reparse':
-                mtnLog = self.reparse()
-            elif actid == 'sortUploads':
-                mtnLog = self.sortUploads()
+            actions = []
+            if actid in MaintenanceWorker.optionalActions or actid in MaintenanceWorker.obligatoryActions:
+                actions = [actid]
             elif actid == 'all':
-                try:
-                    mtnLog = self.clearOekaki()
-                except:
-                    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in clearOekaki()')
-                try:
-                    mtnLog += self.destroyInvites()
-                except:
-                    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in destroyInvites()')
-                try:
-                    mtnLog += self.destroyTrackers()
-                except:
-                    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in destroyTrackers()')
-                try:
-                    mtnLog += self.integrityChecks()
-                except:
-                    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in integrityChecks()')
-                try:
-                    mtnLog += self.banRotate()
-                except:
-                    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in banRotate()')
-                #try:
-                #    mtnLog += self.updateCaches()
-                #except:
-                #    toLog(LOG_EVENT_MTN_ERROR, 'Critical error in updateCaches()')
+                actions = {}.fromkeys(MaintenanceWorker.obligatoryActions).keys()
 
-            #for entry in mtnLog:
-            #    toLog(LOG_EVENT_MTN_ACT, entry.type + ': ' + entry.message)
-
+            mtnLog = MaintenanceCommand.process(actions)
             c.mtnLog = mtnLog
-            toLog(LOG_EVENT_MTN_END, 'Maintenance ended')
             return self.render('mtnLog')

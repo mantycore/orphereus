@@ -16,7 +16,7 @@
 
 <tr>
 <td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='clearOekaki')}">
+<form method="post" action="${h.url_for('hsMaintenance', actid='cleanOekaki')}">
 ${_('Destroy unused oekaki IDs (older than one day)')}
 <br/>
 <input type="submit" value="Launch" />

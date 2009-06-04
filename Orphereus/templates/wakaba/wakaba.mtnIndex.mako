@@ -2,6 +2,7 @@
 <%inherit file="wakaba.management.mako" />
 
 <h3>${_('Obligatory actions')}</h3>
+
 <table width="100%" class="hlTable">
 
 <tr>
@@ -14,55 +15,17 @@
 </td>
 </tr>
 
+%for action in c.obligatoryActions:
 <tr>
 <td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='cleanOekaki')}">
-${_('Destroy unused oekaki IDs (older than one day)')}
+<form method="post" action="${h.url_for('hsMaintenance', actid=action)}">
+${c.descriptions.get(action, action)}
 <br/>
 <input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
-
-<tr>
-<td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='destroyInvites')}">
-${_('Destroy unused invites (older than one week)')}
-<br/>
-<input type="submit" value="Launch" />
-</form>
-</td>
-</tr>
-
-<tr>
-<td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='destroyTrackers')}">
-${_('Destroy IP trackers (older than one day)')}
-<br/>
-<input type="submit" value="Launch" />
-</form>
-</td>
-</tr>
-
-<tr>
-<td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='banRotate')}">
-${_('Remove old bans')}
-<br/>
-<input type="submit" value="Launch" />
-</form>
-</td>
-</tr>
-
-<tr>
-<td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='integrityChecks')}">
-<span style="color: red;">${_('Integrity checks')}</span>
-<br/>
-<input type="submit" value="Launch" />
-</form>
-</td>
-</tr>
+%endfor
 
 </table>
 
@@ -70,65 +33,17 @@ ${_('Remove old bans')}
 <h3>${_('Optional actions')}</h3>
 <table width="100%" class="hlTable">
 
+%for action in c.optionalActions:
 <tr>
 <td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='updateCaches')}">
-${_('Update caches')}
+<form method="post" action="${h.url_for('hsMaintenance', actid=action)}">
+${c.descriptions.get(action, action)}
 <br/>
 <input type="submit" value="Launch" />
 </form>
 </td>
 </tr>
-
-<tr>
-<td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='updateStats')}">
-${_('Update statistics')}
-<br/>
-<input type="submit" value="Launch" />
-</form>
-</td>
-</tr>
-
-<tr>
-<td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='removeEmptyTags')}">
-${_('Remove empty tags')}
-<br/>
-<input type="submit" value="Launch" />
-</form>
-</td>
-</tr>
-
-<tr>
-<td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='banInactive')}">
-${_('Ban ALL users without posts')}
-<br/>
-<input type="submit" value="Launch" />
-</form>
-</td>
-</tr>
-
-<tr>
-<td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='reparse')}">
-${_('Reparse posts which can be reparsed')}
-<br/>
-<input type="submit" value="Launch" />
-</form>
-</td>
-</tr>
-
-<tr>
-<td>
-<form method="post" action="${h.url_for('hsMaintenance', actid='sortUploads')}">
-${_('Sort uploads')}
-<br/>
-<input type="submit" value="Launch" />
-</form>
-</td>
-</tr>
+%endfor
 
 </table>
 

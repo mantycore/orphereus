@@ -230,8 +230,8 @@ class OrphieBaseController(BaseController):
         return self.userInst.isValid() and (self.sessUid() == self.userInst.uidNumber)
 
     # Parser callbacks
-
-    def formatPostReference(self, postid, prependGt = True):
+    @staticmethod
+    def formatPostReference(postid, prependGt = True):
         post = Post.getPost(postid)
         if post:
             parentid = post.parentid

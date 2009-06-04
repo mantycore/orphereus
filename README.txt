@@ -54,6 +54,22 @@ For the second one:
 
 Orphereus - Automatic Maintenance
 =====================
+Add this into crontab:
 
+  $ paster maintenance --config=development.ini --path=. RunAllObligatory
+
+--path is obligatory parameter, it's equals '.' by default.
+
+If you experience problems with this command, you may add "--plugin=Orphereus" 
+option to command line:
+  
+  $ paster --plugin=Orphereus maintenance --config=development.ini --path=. RunAllObligatory
+  
+Also you can replace "RunAllObligatory" with set of maintenance actions.
+Run this command get additional information:
+
+  $ paster --plugin=Orphereus maintenance -h
+
+-- TEXT BELOW IS DEPRECATED --
 To implement automatic unbans, integrity checks and clean-ups, there is an 
 example script for scheduling these tasks via cron - 'mtn.sh'. 

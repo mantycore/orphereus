@@ -42,6 +42,26 @@ from Orphereus.lib.menuItem import MenuItem
 
 log = logging.getLogger(__name__)
 
+def routingInit(map):
+    # Admin subsystem
+    map.connect('holySynod', '/holySynod', controller = 'Orphie_Admin', action = 'index')
+    map.connect('hsViewLogBase', '/holySynod/viewLog', controller = 'Orphie_Admin', action = 'viewLog', page = 0)
+    map.connect('hsViewLog', '/holySynod/viewLog/page/:page', controller = 'Orphie_Admin', action = 'viewLog', requirements = dict(page = '\d+'))
+    map.connect('hsInvite', '/holySynod/makeInvite', controller = 'Orphie_Admin', action = 'makeInvite')
+    map.connect('hsSettings', '/holySynod/manageSettings', controller = 'Orphie_Admin', action = 'manageSettings')
+    map.connect('hsMappings', '/holySynod/manageMappings/:act/:id/:tagid', controller = 'Orphie_Admin', action = 'manageMappings', act = 'show', id = 0, tagid = 0, requirements = dict(id = '\d+', tagid = '\d+'))
+    map.connect('hsBans', '/holySynod/manageBans', controller = 'Orphie_Admin', action = 'manageBans')
+    map.connect('hsBanEdit', '/holySynod/manageBans/edit/:id', controller = 'Orphie_Admin', id = 0, action = 'editBan')
+    map.connect('hsExtensions', '/holySynod/manageExtensions', controller = 'Orphie_Admin', action = 'manageExtensions')
+    map.connect('hsExtensionEdit', '/holySynod/manageExtensions/edit/:name', controller = 'Orphie_Admin', name = '', action = 'editExtension')
+    map.connect('hsBoards', '/holySynod/manageBoards', controller = 'Orphie_Admin', action = 'manageBoards')
+    map.connect('hsBoardEdit', '/holySynod/manageBoards/edit/:tag', controller = 'Orphie_Admin', tag = '', action = 'editBoard')
+    map.connect('hsUsers', '/holySynod/manageUsers', controller = 'Orphie_Admin', action = 'manageUsers')
+    map.connect('hsUserEditAttempt', '/holySynod/manageUsers/editAttempt/:pid', controller = 'Orphie_Admin', action = 'editUserAttempt', requirements = dict(pid = '\d+'))
+    map.connect('hsIpBanAttempt', '/holySynod/manageUsers/banAttempt/:pid', controller = 'Orphie_Admin', action = 'ipBanAttempt', requirements = dict(pid = '\d+'))
+    map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/:pid', controller = 'Orphie_Admin', action = 'editUserByPost', requirements = dict(pid = '\d+'))
+    map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller = 'Orphie_Admin', action = 'editUser', requirements = dict(uid = '\d+'))
+
 def menuTest(id, baseController):
     user = baseController.userInst
     if id == 'id_hsSettings':
@@ -91,6 +111,7 @@ def pluginInit(globj = None):
     config = {'name' : N_('Administration panel'),
              'menutest' : menuTest, # returns True if menu item should be visible. If False, all items will be visible
              'menuitems' : menuItems, # menu items
+             'routeinit' : routingInit,
              }
 
     return PluginInfo('adminpanel', config)

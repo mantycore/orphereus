@@ -85,25 +85,6 @@ def make_map():
     map.connect('oekakiSave', '/oekakiSave/:url/:tempid', controller = 'Orphie_Public', action = 'oekakiSave', url = '', requirements = dict(tempid = '\d+'))
     map.connect('viewAnimation', '/viewAnimation/:source', controller = 'Orphie_Main', action = 'viewAnimation', requirements = dict(source = '\d+'))
 
-    # Admin subsystem
-    map.connect('holySynod', '/holySynod', controller = 'Orphie_Admin', action = 'index')
-    map.connect('hsViewLogBase', '/holySynod/viewLog', controller = 'Orphie_Admin', action = 'viewLog', page = 0)
-    map.connect('hsViewLog', '/holySynod/viewLog/page/:page', controller = 'Orphie_Admin', action = 'viewLog', requirements = dict(page = '\d+'))
-    map.connect('hsInvite', '/holySynod/makeInvite', controller = 'Orphie_Admin', action = 'makeInvite')
-    map.connect('hsSettings', '/holySynod/manageSettings', controller = 'Orphie_Admin', action = 'manageSettings')
-    map.connect('hsMappings', '/holySynod/manageMappings/:act/:id/:tagid', controller = 'Orphie_Admin', action = 'manageMappings', act = 'show', id = 0, tagid = 0, requirements = dict(id = '\d+', tagid = '\d+'))
-    map.connect('hsBans', '/holySynod/manageBans', controller = 'Orphie_Admin', action = 'manageBans')
-    map.connect('hsBanEdit', '/holySynod/manageBans/edit/:id', controller = 'Orphie_Admin', id = 0, action = 'editBan')
-    map.connect('hsExtensions', '/holySynod/manageExtensions', controller = 'Orphie_Admin', action = 'manageExtensions')
-    map.connect('hsExtensionEdit', '/holySynod/manageExtensions/edit/:name', controller = 'Orphie_Admin', name = '', action = 'editExtension')
-    map.connect('hsBoards', '/holySynod/manageBoards', controller = 'Orphie_Admin', action = 'manageBoards')
-    map.connect('hsBoardEdit', '/holySynod/manageBoards/edit/:tag', controller = 'Orphie_Admin', tag = '', action = 'editBoard')
-    map.connect('hsUsers', '/holySynod/manageUsers', controller = 'Orphie_Admin', action = 'manageUsers')
-    map.connect('hsUserEditAttempt', '/holySynod/manageUsers/editAttempt/:pid', controller = 'Orphie_Admin', action = 'editUserAttempt', requirements = dict(pid = '\d+'))
-    map.connect('hsIpBanAttempt', '/holySynod/manageUsers/banAttempt/:pid', controller = 'Orphie_Admin', action = 'ipBanAttempt', requirements = dict(pid = '\d+'))
-    map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/:pid', controller = 'Orphie_Admin', action = 'editUserByPost', requirements = dict(pid = '\d+'))
-    map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller = 'Orphie_Admin', action = 'editUser', requirements = dict(uid = '\d+'))
-
     # AJAX
     map.connect('ajHideThread', '/ajax/hideThread/:post/*redirect', controller = 'Orphie_Ajax', action = 'hideThread', requirements = dict(post = '\d+'))
     map.connect('ajShowThread', '/ajax/showThread/:post/*redirect', controller = 'Orphie_Ajax', action = 'showThread', requirements = dict(post = '\d+'))

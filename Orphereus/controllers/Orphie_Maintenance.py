@@ -491,13 +491,18 @@ class MaintenanceCommand(command.Command):
             print "No work to do"
         return log
 
+def routingInit(map):
+    #map.connect('hsMaintenance', '/holySynod/service/:actid/:secid', controller = 'Orphie_Maintenance', actid = '', secid = '', action = 'mtnAction')
+    map.connect('hsMaintenance', '/holySynod/service/:actid', controller = 'Orphie_Maintenance', actid = '', action = 'mtnAction')
+
 def pluginInit(globj = None):
     if globj:
         pass
 
     config = {'name' : N_('Maintenance'),
              'entryPoints' : [('maintenance', "MaintenanceCommand"),
-                             ]
+                             ],
+             'routeinit' : routingInit,
              }
 
     return PluginInfo('maintenance', config)
@@ -507,19 +512,19 @@ class OrphieMaintenanceController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         self.currentUserId = None
 
-    def mtnAction(self, actid, secid):
+    def mtnAction(self, actid): #, secid):
         secTestPassed = False
-        if not secid:
-            if not self.currentUserIsAuthorized():
-                return redirect_to('boardBase')
-            self.initEnvironment()
-            if not (self.userInst.isAdmin() and self.userInst.canRunMaintenance()) or self.userInst.isBanned():
-                c.errorText = _("No way! You aren't holy enough!")
-                return redirect_to('boardBase')
-            c.userInst = self.userInst
-            if not checkAdminIP():
-                return redirect_to('boardBase')
-            secTestPassed = True
+        #if not secid:
+        if not self.currentUserIsAuthorized():
+            return redirect_to('boardBase')
+        self.initEnvironment()
+        if not (self.userInst.isAdmin() and self.userInst.canRunMaintenance()) or self.userInst.isBanned():
+            c.errorText = _("No way! You aren't holy enough!")
+            return redirect_to('boardBase')
+        c.userInst = self.userInst
+        if not checkAdminIP():
+            return redirect_to('boardBase')
+        secTestPassed = True
 
          #TODO: legacy code. But MAY BE usable on weak hostings with small modifications (constant secid from config)
         """

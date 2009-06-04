@@ -104,9 +104,6 @@ def make_map():
     map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/:pid', controller = 'Orphie_Admin', action = 'editUserByPost', requirements = dict(pid = '\d+'))
     map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller = 'Orphie_Admin', action = 'editUser', requirements = dict(uid = '\d+'))
 
-    # Maintenance
-    map.connect('hsMaintenance', '/holySynod/service/:actid/:secid', controller = 'Orphie_Maintenance', actid = '', secid = '', action = 'mtnAction')
-
     # AJAX
     map.connect('ajHideThread', '/ajax/hideThread/:post/*redirect', controller = 'Orphie_ajax', action = 'hideThread', requirements = dict(post = '\d+'))
     map.connect('ajShowThread', '/ajax/showThread/:post/*redirect', controller = 'Orphie_Ajax', action = 'showThread', requirements = dict(post = '\d+'))

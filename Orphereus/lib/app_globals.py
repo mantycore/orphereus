@@ -177,6 +177,7 @@ class Globals(object):
         self.enumeratePlugins('%s.controllers.' % appName)
         self.firstRequest = True
         self.version = engineVersion
+        self.menuCache = {}
 
     def registerPlugin(self, plugin):
         self.plugins.append(plugin)
@@ -281,3 +282,66 @@ class Globals(object):
                 log.info('Added text filter %s from %s' % (str(filter), plugin.pluginId()))
 
         log.info('COMPLETED PLUGINS CONNECTION STAGE')
+
+    """
+    def initMenu(self):
+        def itemsscmp(a, b):
+            return cmp(a.weight, b.weight)
+        log.info("Basic menu preparation...")
+        parentedItems = {}
+        uniqueIds = []
+        for plugin in self.plugins:
+            log.info("Getting menu items from %s" % plugin.pluginId())
+            items = plugin.menuItems()
+            log.info("Plugin returned next items: %s" % str(items))
+            if items:
+                for item in items:
+                    id = item.id
+                    if id in uniqueIds:
+                        raise '[ERROR] Duplicated menu item Ids: %s' % id
+                    else:
+                        uniqueIds.append(id)
+                    parentid = item.parentId
+                    item.plugin = plugin
+
+                    if not parentid in parentedItems:
+                        parentedItems[parentid] = []
+                    parentedItems[parentid].append(item)
+
+        for key in parentedItems.keys():
+            parentedItems[key] = sorted(parentedItems[key], itemsscmp)
+            log.info("Prepared submenu (with parent %s): %s" % (key, str(parentedItems[key])))
+
+        self.menuItems = parentedItems
+
+        log.info("COMPLETED MENU PREPARATION STAGE")
+    """
+
+    def getMenuItems(self, menuId):
+        def itemsscmp(a, b):
+            return cmp(a.weight, b.weight)
+        mitems = self.menuCache.get(menuId, False)
+        if not mitems:
+            parentedItems = {}
+            uniqueIds = []
+            for plugin in self.plugins:
+                items = plugin.menuItems(menuId)
+                if items:
+                    for item in items:
+                        id = item.id
+                        if id in uniqueIds:
+                            log.error('Duplicated menu item Ids: %s' % id)
+                        else:
+                            uniqueIds.append(id)
+                        parentid = item.parentId
+                        item.plugin = plugin
+
+                        if not parentid in parentedItems:
+                            parentedItems[parentid] = []
+                        parentedItems[parentid].append(item)
+
+            for key in parentedItems.keys():
+                parentedItems[key] = sorted(parentedItems[key], itemsscmp)
+            self.menuCache[menuId] = parentedItems
+            mitems = parentedItems
+        return mitems

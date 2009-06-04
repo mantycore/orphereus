@@ -21,6 +21,10 @@ class PluginInfo():
             self.__pDeployHook = pluginConfig.get('deployHook', False)
             self.__pEntryPoints = pluginConfig.get('entryPoints', False)
 
+            self.__pmenuInit = pluginConfig.get('menuitems', False)
+            self.__pmenuTest = pluginConfig.get('menutest', False)
+            self.__pmenuItems = {} #pluginConfig.get('menu', False)
+
     def pluginId(self):
         return self.__pId
 
@@ -49,6 +53,18 @@ class PluginInfo():
     def deployHook(self):
         return self.__pDeployHook
     # HOOKS END
+
+    def menuItems(self, menuId):
+        ret = None
+        if self.__pmenuInit:
+            ret = self.__pmenuItems.get(menuId, False)
+            if not ret:
+                ret = self.__pmenuInit(menuId)
+                self.__pmenuItems[menuId] = ret
+        return ret
+
+    def menuTest(self):
+        return self.__pmenuTest
 
     def deps(self):
         return self.__pdeps

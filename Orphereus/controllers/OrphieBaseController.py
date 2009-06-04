@@ -59,6 +59,8 @@ class OrphieBaseController(BaseController):
 
         c.userInst = self.userInst
         c.uidNumber = self.userInst.uidNumber
+        self.requestedMenus = []
+        self.builtMenus = {}
 
         for plugin in g.plugins:
             hook = plugin.requestHook()
@@ -164,6 +166,14 @@ class OrphieBaseController(BaseController):
             c.remPass = remPassCookie
             response.set_cookie('orhpieRemPass', unicode(remPassCookie), max_age = 3600)
 
+    def buildMenu(self, id, level, source, target):
+        if source and id in source:
+            for item in source[id]:
+                test = item.plugin.menuTest()
+                if (not test or (test and test(item.id, self))):
+                    target.append((item, level))
+                    self.buildMenu(item.id, level + 1, source, target)
+
     def render(self, page, tmplName = None, **options):
         tname = 'std'
         tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
@@ -182,6 +192,14 @@ class OrphieBaseController(BaseController):
 
         fpath = os.path.join(g.OPT.templPath, tpath)
         #log.debug ("Tpath:  %s ; Fpath: %s" %(tpath,fpath))
+
+        for menuName in self.requestedMenus:
+            menu = []
+            self.buildMenu(False, 0, g.getMenuItems(menuName), menu)
+            if menu:
+                self.builtMenus[menuName] = menu
+        c.builtMenus = self.builtMenus
+        #log.debug(self.builtMenus)
 
         #TODO: it may be excessive
         if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/') == fpath.replace('\\', '/'):

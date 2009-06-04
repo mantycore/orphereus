@@ -20,7 +20,7 @@
                 <tbody>
                     <tr>
                     <td class="adminMenu" style="width: 200px;">
-                        <%include file="wakaba.managementMenu.mako" />
+                        <%include file="wakaba.simpleMenu.mako" args="menuId='managementMenu', menuSource=c.builtMenus, currentItemId = c.currentItemId" />
                     </td>
                     <td style="vertical-align: top;">
         %endif

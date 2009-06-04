@@ -1,7 +1,8 @@
 from pylons.i18n import N_
 from string import *
 
-from Orphereus.lib.pluginInfo import *
+from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.base import *
 from Orphereus.model import *
 
@@ -106,6 +107,16 @@ class CommandClass2(command.Command):
             print "2 Hello", name
 
 
+def menuItems(menuId):
+    #          id        link       name                weight   parent
+    menu = None
+    if menuId == "managementMenu":
+        menu = (MenuItem('idItemOne', N_("Example top"), '', 400, False),
+                MenuItem('idItemTwo', N_("Sub"), h.url_for('home'), 20, 'idItemOne'),
+                )
+
+    return menu
+
 def pluginInit(globj = None):
     if globj:
         h.exampleHelper = exampleHelper
@@ -118,7 +129,9 @@ def pluginInit(globj = None):
              'name' : N_('Example'),
              'deployHook' : deployHook,
              'entryPoints' : [('mycommand', "CommandClass"),
-                              ('mycommand2', "CommandClass2"), ]
+                              ('mycommand2', "CommandClass2"), ],
+             'menutest' : False, # returns True if menu item should be visible. If False, all items will be visible
+             'menuitems' : menuItems, # menu items
              }
 
     return PluginInfo('example', config)
@@ -129,7 +142,6 @@ from OrphieBaseController import *
 class ExampleController(OrphieBaseController):
     def __init__(self):
         OrphieBaseController.__init__(self)
-        self.pluginInfo = pluginInit()
         #c.pageTitle = _('Test controller 2')
 
     def index(self):

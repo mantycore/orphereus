@@ -38,6 +38,7 @@ from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.menuItem import MenuItem
 
 from wakabaparse import WakabaParser, fixHtml
 
@@ -495,6 +496,21 @@ def routingInit(map):
     #map.connect('hsMaintenance', '/holySynod/service/:actid/:secid', controller = 'Orphie_Maintenance', actid = '', secid = '', action = 'mtnAction')
     map.connect('hsMaintenance', '/holySynod/service/:actid', controller = 'Orphie_Maintenance', actid = '', action = 'mtnAction')
 
+def menuTest(id, baseController):
+    user = baseController.userInst
+    if id == 'id_hsMaintenance':
+        return user.canRunMaintenance()
+    return True
+
+def menuItems(menuId):
+    #          id        link       name                weight   parent
+    menu = None
+    if menuId == "managementMenu":
+        menu = (MenuItem('id_hsMaintenance', N_("Maintenance"), h.url_for('hsMaintenance'), 300, False),
+                )
+
+    return menu
+
 def pluginInit(globj = None):
     if globj:
         pass
@@ -503,6 +519,8 @@ def pluginInit(globj = None):
              'entryPoints' : [('maintenance', "MaintenanceCommand"),
                              ],
              'routeinit' : routingInit,
+             'menutest' : menuTest,
+             'menuitems' : menuItems,
              }
 
     return PluginInfo('maintenance', config)
@@ -510,7 +528,8 @@ def pluginInit(globj = None):
 class OrphieMaintenanceController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        self.currentUserId = None
+        if not "managementMenu" in self.requestedMenus:
+            self.requestedMenus.append("managementMenu")
 
     def mtnAction(self, actid): #, secid):
         secTestPassed = False
@@ -544,6 +563,7 @@ class OrphieMaintenanceController(OrphieBaseController):
         if not secTestPassed:
             return redirect_to('boardBase')
 
+        c.currentItemId = 'id_hsMaintenance'
         if not actid:
             c.obligatoryActions = MaintenanceWorker.obligatoryActions
             c.optionalActions = MaintenanceWorker.optionalActions

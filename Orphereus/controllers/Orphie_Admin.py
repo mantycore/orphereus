@@ -37,8 +37,63 @@ import re
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
+from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.menuItem import MenuItem
 
 log = logging.getLogger(__name__)
+
+def menuTest(id, baseController):
+    user = baseController.userInst
+    if id == 'id_hsSettings':
+        return user.canChangeSettings()
+    if id == 'id_hsBoards':
+        return user.canManageBoards()
+    if id == 'id_hsUsers':
+        return user.canManageUsers()
+    if id == 'id_hsBans':
+        return user.canManageUsers()
+    if id == 'id_hsExtensions':
+        return user.canManageExtensions()
+    if id == 'id_hsMappings':
+        return user.canManageMappings()
+    if id == 'id_hsInvite':
+        return user.canMakeInvite()
+    if id == 'id_hsViewLogBase':
+        return True
+    return True
+
+
+def menuItems(menuId):
+    #          id        link       name                weight   parent
+    menu = None
+    if menuId == "managementMenu":
+        menu = (MenuItem('id_adminDashboard', N_("Dashboard"), h.url_for('holySynod'), 200, False),
+                MenuItem('id_adminBoard', N_("Common settings"), None, 200, False),
+                MenuItem('id_adminUsers', N_("Users"), None, 210, False),
+                MenuItem('id_adminPosts', N_("Threads and posts"), None, 220, False),
+                MenuItem('id_hsSettings', N_("Manage settings"), h.url_for('hsSettings'), 200, 'id_adminBoard'),
+                MenuItem('id_hsExtensions', N_("Manage extensions"), h.url_for('hsExtensions'), 240, 'id_adminBoard'),
+                MenuItem('id_hsUsers', N_("Manage users"), h.url_for('hsUsers'), 220, 'id_adminUsers'),
+                MenuItem('id_hsBans', N_("Manage bans"), h.url_for('hsBans'), 230, 'id_adminUsers'),
+                MenuItem('id_hsInvite', N_("Generate invite"), h.url_for('hsInvite'), 270, 'id_adminUsers'),
+                MenuItem('id_hsBoards', N_("Manage boards"), h.url_for('hsBoards'), 210, 'id_adminPosts'),
+                MenuItem('id_hsMappings', N_("Manage mappings"), h.url_for('hsMappings'), 250, 'id_adminPosts'),
+                MenuItem('id_hsViewLogBase', N_("View logs"), h.url_for('hsViewLogBase'), 260, False),
+
+                )
+
+    return menu
+
+def pluginInit(globj = None):
+    if globj:
+        pass
+
+    config = {'name' : N_('Administration panel'),
+             'menutest' : menuTest, # returns True if menu item should be visible. If False, all items will be visible
+             'menuitems' : menuItems, # menu items
+             }
+
+    return PluginInfo('adminpanel', config)
 
 class OrphieAdminController(OrphieBaseController):
     def __before__(self):
@@ -52,15 +107,19 @@ class OrphieAdminController(OrphieBaseController):
         c.userInst = self.userInst
         if not checkAdminIP():
             return redirect_to('boardBase')
+        if not "managementMenu" in self.requestedMenus:
+            self.requestedMenus.append("managementMenu")
 
     def index(self):
         c.boardName = _('Index')
         c.admins = User.getAdmins()
+        c.currentItemId = 'id_adminDashboard'
         return self.render('managementIndex')
 
     def manageSettings(self):
         c.boardName = _('Settings management')
         c.settingsDescription = settingsDescription
+        c.currentItemId = 'id_hsSettings'
 
         if request.POST.get('update', False):
             if not self.userInst.canChangeSettings():
@@ -86,6 +145,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def viewLog(self, page):
         c.boardName = _('Logs')
+        c.currentItemId = 'id_hsViewLogBase'
         page = int(page)
         count = LogEntry.count()
         tpp = 50
@@ -99,6 +159,7 @@ class OrphieAdminController(OrphieBaseController):
             return self.render('error')
 
         c.boardName = _('Invites')
+        c.currentItemId = 'id_hsInvite'
 
         return self.render('invitePage')
 
@@ -108,6 +169,7 @@ class OrphieAdminController(OrphieBaseController):
             return self.render('error')
 
         c.boardName = _('Invite creation')
+        c.currentItemId = 'id_hsInvite'
         c.inviteCode = False
         reason = request.POST.get('inviteReason', False)
         if reason and len(reason) > 1:
@@ -124,6 +186,7 @@ class OrphieAdminController(OrphieBaseController):
             return self.render('error')
 
         c.boardName = _('Bans management')
+        c.currentItemId = 'id_hsBans'
 
         c.bans = Ban.getBans()
         #c.showCount = request.POST.get('showCount', False)
@@ -136,6 +199,7 @@ class OrphieAdminController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.currentItemId = 'id_hsBans'
         c.boardName = _('Editing ban %s') % id
         id = request.POST.get('id', id)
 
@@ -188,6 +252,7 @@ class OrphieAdminController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.currentItemId = 'id_hsExtensions'
         c.boardName = _('Extensions management')
         c.extensions = Extension.getList(False)
         c.showCount = request.POST.get('showCount', False)
@@ -198,6 +263,7 @@ class OrphieAdminController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.currentItemId = 'id_hsExtensions'
         c.boardName = _('Editing extension %s') % name
         if not name:
             name = ''
@@ -256,6 +322,7 @@ class OrphieAdminController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.currentItemId = 'id_hsMappings'
         c.boardName = _('Manage mappings')
 
         #log.debug("%s\n\n%s\nact:%s" %(c,request.POST,act))
@@ -325,6 +392,7 @@ class OrphieAdminController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.currentItemId = 'id_hsBoards'
         c.boardName = _('Boards management')
         boards = Tag.getAll()
         c.boards = {-1:[]}
@@ -351,6 +419,8 @@ class OrphieAdminController(OrphieBaseController):
         if not self.userInst.canManageBoards():
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
+
+        c.currentItemId = 'id_hsBoards'
         c.boardName = _('Edit board')
         c.message = u''
         c.tag = Tag.getTag(tag)
@@ -420,6 +490,7 @@ class OrphieAdminController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.currentItemId = 'id_hsUsers'
         c.boardName = _('Users management')
         uid = request.POST.get("uid", False)
         if uid:
@@ -439,6 +510,7 @@ class OrphieAdminController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.currentItemId = 'id_hsUsers'
         c.boardName = _('User edit attemption')
         c.pid = pid
         c.showAttemptForm = True
@@ -459,6 +531,7 @@ class OrphieAdminController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.currentItemId = 'id_hsUsers'
         c.boardName = _('User management')
 
         post = Post.getPost(pid)
@@ -476,6 +549,7 @@ class OrphieAdminController(OrphieBaseController):
             c.errorText = _("No way! You aren't holy enough!")
             return self.render('error')
 
+        c.currentItemId = 'id_hsUsers'
         c.boardName = 'Edit user %s' % uid
         user = User.getUser(uid) #meta.Session.query(User).options(eagerload('options')).get(uid)
         if user:

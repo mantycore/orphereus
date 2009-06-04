@@ -81,9 +81,6 @@ Orphereus/public/images/loading.gif
 Orphereus/public/images/picDeleted.png
 Orphereus/public/images/sage.png
 Orphereus/public/images/spoiler.png
-Orphereus/public/js/full_Default.js
-Orphereus/public/js/full_en.js
-Orphereus/public/js/full_ru.js
 Orphereus/public/js/selfy.js
 Orphereus/public/res/bn.gif
 Orphereus/public/res/c1x16xy16y.gif

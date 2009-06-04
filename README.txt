@@ -21,7 +21,7 @@ This command will made paster commands available without installation:
  
 Example command processors can be found in example.py
 
-  $paster --plugin=Orphereus mycommand --goodbye lol
+  $ paster --plugin=Orphereus mycommand --goodbye lol
 
 3. Initial database structure is created with 
 

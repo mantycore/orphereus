@@ -16,7 +16,7 @@
 #                                                                              #
 #  You should have received a copy of the GNU General Public License           #
 #  along with this program; if not, write to the Free Software                 #
-#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #                                                                         #
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
 import sqlalchemy as sa
@@ -320,7 +320,7 @@ class Post(object):
             if pic:
                 self.picid = -1
         else:
-            invisBumpDisabled = asbool(meta.globj.settingsMap['invisibleBump'].value)
+            invisBumpDisabled = not(asbool(meta.globj.settingsMap['invisibleBump'].value))
             parent = self.parentPost
             if parent:
                 parent.replyCount -= 1

@@ -32,8 +32,6 @@ from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 
-from pylons.i18n import get_lang, set_lang
-
 from webhelpers.feedgenerator import Atom1Feed, Rss201rev2Feed
 
 log = logging.getLogger(__name__)
@@ -87,7 +85,7 @@ class OrphiePublicController(OrphieBaseController):
         # TODO: fix shitty code
         #log.debug('user cap lang: %s' %c.userInst.cLang())
         if c.userInst.isValid():
-            h.set_lang(str(c.userInst.cLang()))
+            h.setLang(str(c.userInst.cLang()))
 
         sessionCid = None
         if session.has_key('anonCaptId'):

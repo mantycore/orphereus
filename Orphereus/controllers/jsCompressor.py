@@ -12,6 +12,7 @@ log = logging.getLogger(__name__)
 
 def requestHook(baseController):
     if g.firstRequest:
+        oldLang = get_lang()
         log.info('Generating js files...')
         for lang in g.OPT.languages:
             lid = makeLangValid(lang)
@@ -32,6 +33,8 @@ def requestHook(baseController):
             f.close()
             newLen = len(newJS)
             log.info("Done. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))
+        set_lang(oldLang)
+
     if baseController.userInst.isValid():
         lang = baseController.userInst.lang()
         if not lang:

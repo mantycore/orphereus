@@ -38,7 +38,6 @@ import re
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.FakeUser import FakeUser
 from Orphereus.lib.constantValues import *
-from pylons.i18n import get_lang, set_lang
 
 log = logging.getLogger(__name__)
 
@@ -94,8 +93,8 @@ class OrphieBaseController(BaseController):
                     self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") % hashlib.md5(ua).hexdigest(), -1)
                     break
 
-        if self.userInst.isValid() and self.userInst.lang():
-            set_lang(self.userInst.lang())
+        if self.userInst.isValid(): # and self.userInst.lang():
+            h.setLang(self.userInst.lang())
 
     def sessUid(self):
         if g.OPT.allowLogin:

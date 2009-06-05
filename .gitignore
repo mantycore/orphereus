@@ -7,3 +7,4 @@
 /.settings/*
 *.pyc
 /Orphereus/public/js/full_*.js
+/Orphereus.egg-info/*

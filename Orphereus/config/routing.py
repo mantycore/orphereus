@@ -85,25 +85,6 @@ def make_map():
     map.connect('oekakiSave', '/oekakiSave/:url/:tempid', controller = 'Orphie_Public', action = 'oekakiSave', url = '', requirements = dict(tempid = '\d+'))
     map.connect('viewAnimation', '/viewAnimation/:source', controller = 'Orphie_Main', action = 'viewAnimation', requirements = dict(source = '\d+'))
 
-    # AJAX
-    map.connect('ajHideThread', '/ajax/hideThread/:post/*redirect', controller = 'Orphie_Ajax', action = 'hideThread', requirements = dict(post = '\d+'))
-    map.connect('ajShowThread', '/ajax/showThread/:post/*redirect', controller = 'Orphie_Ajax', action = 'showThread', requirements = dict(post = '\d+'))
-    map.connect('ajGetPost', '/ajax/getPost/:post', controller = 'Orphie_Ajax', action = 'getPost', requirements = dict(post = '\d+'))
-    map.connect('ajGetRenderedPost', '/ajax/getRenderedPost/:post', controller = 'Orphie_Ajax', action = 'getRenderedPost', requirements = dict(post = '\d+'))
-    map.connect('ajGetRenderedReplies', '/ajax/getRenderedReplies/:thread', controller = 'Orphie_Ajax', action = 'getRenderedReplies', requirements = dict(thread = '\d+'))
-    map.connect('ajAddUserFilter', '/ajax/addUserFilter/:filter', controller = 'Orphie_Ajax', action = 'addUserFilter')
-    map.connect('ajEditUserFilter', '/ajax/editUserFilter/:fid/:filter', controller = 'Orphie_Ajax', action = 'editUserFilter', requirements = dict(fid = '\d+'))
-    map.connect('ajDeleteUserFilter', '/ajax/deleteUserFilter/:fid', controller = 'Orphie_Ajax', action = 'deleteUserFilter', requirements = dict(fid = '\d+'))
-    map.connect('ajCheckCaptcha', '/ajax/checkCaptcha/:id/:text', controller = 'Orphie_Ajax', action = 'checkCaptcha', text = '', requirements = dict(id = '\d+'))
-    map.connect('ajPostThread', '/ajax/postThread/:board', controller = 'Orphie_Main', action = 'ajaxPostThread', conditions = dict(method = ['POST']))
-    map.connect('ajPostReply', '/ajax/postReply/:post', controller = 'Orphie_Main', action = 'ajaxPostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
-    # routines below isn't actually used
-    map.connect('ajGetText', '/ajax/getText/:text', controller = 'Orphie_Ajax', action = 'getText', text = '')
-    map.connect('/ajax/getRepliesCountForThread/:post', controller = 'Orphie_Ajax', action = 'getRepliesCountForThread', requirements = dict(post = '\d+'))
-    map.connect('/ajax/getRepliesIds/:post', controller = 'Orphie_Ajax', action = 'getRepliesIds', requirements = dict(post = '\d+'))
-    map.connect('/ajax/getUserSettings', controller = 'Orphie_Ajax', action = 'getUserSettings')
-    map.connect('/ajax/getUploadsPath', controller = 'Orphie_Ajax', action = 'getUploadsPath')
-
     # Threads
     map.connect('postReply', '/:post', controller = 'Orphie_Main', action = 'PostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
     map.connect('delete', '/:board/delete', controller = 'Orphie_Main', action = 'DeletePost', conditions = dict(method = ['POST']))

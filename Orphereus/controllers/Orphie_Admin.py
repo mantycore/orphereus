@@ -43,7 +43,6 @@ from Orphereus.lib.menuItem import MenuItem
 log = logging.getLogger(__name__)
 
 def routingInit(map):
-    # Admin subsystem
     map.connect('holySynod', '/holySynod', controller = 'Orphie_Admin', action = 'index')
     map.connect('hsViewLogBase', '/holySynod/viewLog', controller = 'Orphie_Admin', action = 'viewLog', page = 0)
     map.connect('hsViewLog', '/holySynod/viewLog/page/:page', controller = 'Orphie_Admin', action = 'viewLog', requirements = dict(page = '\d+'))

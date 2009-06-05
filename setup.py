@@ -73,6 +73,7 @@ setup(
     message_extractors = {'Orphereus': [
             ('**.py', 'python', None),
             ('templates/**.mako', 'mako', None),
+            ('templates/**.js', 'mako', None),
             ('public/**', 'ignore', None)]},
 
     entry_points = entry_points,

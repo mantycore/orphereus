@@ -68,7 +68,7 @@ msgstr "Доски"
 #: Orphereus/controllers/Orphie_Admin.py:346
 #: Orphereus/templates/wakaba/wakaba.manageMappings.mako:7
 msgid "Manage mappings"
-msgstr "Управление тегами постов"
+msgstr "Тэги тредов"
 
 #: Orphereus/controllers/Orphie_Admin.py:101
 msgid "View logs"
@@ -231,7 +231,7 @@ msgstr "Введены неверные значения."
 
 #: Orphereus/controllers/Orphie_Admin.py:375
 msgid "This is not op-post"
-msgstr "Редактировать теги можно только у ОП-постов."
+msgstr "Редактировать тэи можно только у ОП-постов."
 
 #: Orphereus/controllers/Orphie_Admin.py:387
 #, python-format
@@ -579,7 +579,7 @@ msgstr "Кросс-постинг запрещён."
 
 #: Orphereus/controllers/Orphie_Main.py:836
 msgid "Crossposting allowed only for service tags"
-msgstr "Кросс-постинг разрешён только для служебных тегов."
+msgstr "Кросс-постинг разрешён только для служебных тэгов."
 
 #: Orphereus/controllers/Orphie_Main.py:839
 msgid "Can't post with service tags only"
@@ -588,11 +588,11 @@ msgstr "Нельзя постить только со служебными тэ�
 #: Orphereus/controllers/Orphie_Main.py:845
 #, python-format
 msgid "Tags restrictions violations:<br/> %s"
-msgstr "Нарушение разрешений по тегу: <br/> %s"
+msgstr "Нарушение разрешений по тэгу: <br/> %s"
 
 #: Orphereus/controllers/Orphie_Main.py:849
 msgid "Unacceptable combination of tags"
-msgstr "Недопустимое сочетание тегов."
+msgstr "Недопустимое сочетание тэгов."
 
 #: Orphereus/controllers/Orphie_Main.py:884
 msgid "Message is too long"
@@ -779,19 +779,19 @@ msgstr "\"Невидимые\" бампы"
 
 #: Orphereus/lib/constantValues.py:46
 msgid "Max tags per thread"
-msgstr "Максимальное число тегов треда"
+msgstr "Максимальное число тэгов треда"
 
 #: Orphereus/lib/constantValues.py:47
 msgid "Max tag length"
-msgstr "Максимальная длина тега"
+msgstr "Максимальная длина тэга"
 
 #: Orphereus/lib/constantValues.py:48
 msgid "Disallowed tag names"
-msgstr "Запрещённые теги"
+msgstr "Запрещённые тэги"
 
 #: Orphereus/lib/constantValues.py:49
 msgid "Admin-only tags"
-msgstr "Администраторские теги"
+msgstr "Администраторские тэги"
 
 #: Orphereus/lib/constantValues.py:50
 msgid "Cut post after X lines"
@@ -883,7 +883,7 @@ msgstr "(только файл)"
 #: Orphereus/model/Tag.py:227
 #, python-format
 msgid "Too long. Maximal length: %s"
-msgstr "Слишком длинный тег. Максимальная длина: %s."
+msgstr "Слишком длинный тэг. Максимальная длина: %s."
 
 #: Orphereus/model/Tag.py:229
 msgid "Disabled"
@@ -1107,7 +1107,7 @@ msgstr "Сообщение:"
 
 #: Orphereus/templates/wakaba/wakaba.error.mako:28
 msgid "Tags:"
-msgstr "Теги:"
+msgstr "тэги:"
 
 #: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:10
 msgid "Anonymize ALL posts older than this one"
@@ -1178,7 +1178,7 @@ msgstr " "
 
 #: Orphereus/templates/wakaba/wakaba.home.mako:55
 msgid "Special tags"
-msgstr "Специальные теги"
+msgstr "Специальные тэги"
 
 #: Orphereus/templates/wakaba/wakaba.home.mako:56
 msgid "Useful stuff is so useful"
@@ -1186,7 +1186,7 @@ msgstr " "
 
 #: Orphereus/templates/wakaba/wakaba.home.mako:61
 msgid "Tags"
-msgstr "Теги"
+msgstr "тэги"
 
 #: Orphereus/templates/wakaba/wakaba.home.mako:63
 msgid "Every small TAG has hidden powers. And it has everything to become a BOARD"
@@ -1317,7 +1317,7 @@ msgstr "нет"
 
 #: Orphereus/templates/wakaba/wakaba.manageBoard.mako:18
 msgid "Tag"
-msgstr "Тег"
+msgstr "тэг"
 
 #: Orphereus/templates/wakaba/wakaba.manageBoard.mako:35
 msgid "Special board rules (split with \";\")"
@@ -1497,7 +1497,7 @@ msgstr "Настройка расширений"
 
 #: Orphereus/templates/wakaba/wakaba.manageUser.mako:82
 msgid "Can manage mappings"
-msgstr "Управление тегами постов"
+msgstr "Управление тэгами постов"
 
 #: Orphereus/templates/wakaba/wakaba.manageUser.mako:89
 msgid "Can run maintenance"
@@ -1961,7 +1961,7 @@ msgstr "Фильтр обзора"
 
 #: Orphereus/templates/wakaba/wakaba.profile.mako:113
 msgid "(You can ignore only existing tags)"
-msgstr "(Можно игнорировать только существующие теги)"
+msgstr "(Можно игнорировать только существующие тэги)"
 
 #: Orphereus/templates/wakaba/wakaba.profile.mako:118
 msgid "By default Go To"

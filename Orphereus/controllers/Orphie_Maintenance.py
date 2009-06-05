@@ -528,8 +528,7 @@ def pluginInit(globj = None):
 class OrphieMaintenanceController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        if not "managementMenu" in self.requestedMenus:
-            self.requestedMenus.append("managementMenu")
+        self.requestForMenu("managementMenu")
 
     def mtnAction(self, actid): #, secid):
         secTestPassed = False

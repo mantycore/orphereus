@@ -166,6 +166,10 @@ class OrphieBaseController(BaseController):
             c.remPass = remPassCookie
             response.set_cookie('orhpieRemPass', unicode(remPassCookie), max_age = 3600)
 
+    def requestForMenu(self, menuId):
+        if not menuId in self.requestedMenus:
+            self.requestedMenus.append(menuId)
+
     def buildMenu(self, id, level, source, target):
         if source and id in source:
             for item in source[id]:

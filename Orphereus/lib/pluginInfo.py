@@ -1,4 +1,4 @@
-
+from pylons.i18n import get_lang
 
 class PluginInfo():
     def __init__(self, pluginId, pluginConfig = False):
@@ -57,10 +57,11 @@ class PluginInfo():
     def menuItems(self, menuId):
         ret = None
         if self.__pmenuInit:
-            ret = self.__pmenuItems.get(menuId, False)
+            id = menuId + get_lang()[0]
+            ret = self.__pmenuItems.get(id, False)
             if not ret:
                 ret = self.__pmenuInit(menuId)
-                self.__pmenuItems[menuId] = ret
+                self.__pmenuItems[id] = ret
         return ret
 
     def menuTest(self):

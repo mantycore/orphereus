@@ -21,6 +21,7 @@
 
 """The application's Globals object"""
 from pylons import config
+from pylons.i18n import get_lang
 import sys
 import os
 
@@ -129,7 +130,7 @@ class OptHolder(object):
             self.allowAnonymousPosting = self.allowAnonymous and self.allowAnonymousPosting
             self.allowAnonProfile = self.allowAnonymous and self.allowAnonProfile
             self.jsFiles = ['jquery.js', 'ui.js']
-            #self.defaultLang = config['lang']
+            self.defaultLang = config['lang']
 
     @staticmethod
     def booleanGetter(value):
@@ -286,7 +287,8 @@ class Globals(object):
     def getMenuItems(self, menuId):
         def itemsscmp(a, b):
             return cmp(a.weight, b.weight)
-        mitems = self.menuCache.get(menuId, False)
+        id = menuId + get_lang()[0]
+        mitems = self.menuCache.get(id, False)
         if not mitems:
             parentedItems = {}
             uniqueIds = []
@@ -308,6 +310,6 @@ class Globals(object):
 
             for key in parentedItems.keys():
                 parentedItems[key] = sorted(parentedItems[key], itemsscmp)
-            self.menuCache[menuId] = parentedItems
+            self.menuCache[id] = parentedItems
             mitems = parentedItems
         return mitems

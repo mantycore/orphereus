@@ -506,9 +506,8 @@ def menuItems(menuId):
     #          id        link       name                weight   parent
     menu = None
     if menuId == "managementMenu":
-        menu = (MenuItem('id_hsMaintenance', N_("Maintenance"), h.url_for('hsMaintenance'), 300, False),
+        menu = (MenuItem('id_hsMaintenance', _("Maintenance"), h.url_for('hsMaintenance'), 300, False),
                 )
-
     return menu
 
 def pluginInit(globj = None):

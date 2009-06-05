@@ -87,19 +87,18 @@ def menuItems(menuId):
     #          id        link       name                weight   parent
     menu = None
     if menuId == "managementMenu":
-        menu = (MenuItem('id_adminDashboard', N_("Dashboard"), h.url_for('holySynod'), 200, False),
-                MenuItem('id_adminBoard', N_("Common settings"), None, 200, False),
-                MenuItem('id_adminUsers', N_("Users"), None, 210, False),
-                MenuItem('id_adminPosts', N_("Threads and posts"), None, 220, False),
-                MenuItem('id_hsSettings', N_("Manage settings"), h.url_for('hsSettings'), 200, 'id_adminBoard'),
-                MenuItem('id_hsExtensions', N_("Manage extensions"), h.url_for('hsExtensions'), 240, 'id_adminBoard'),
-                MenuItem('id_hsUsers', N_("Manage users"), h.url_for('hsUsers'), 220, 'id_adminUsers'),
-                MenuItem('id_hsBans', N_("Manage bans"), h.url_for('hsBans'), 230, 'id_adminUsers'),
-                MenuItem('id_hsInvite', N_("Generate invite"), h.url_for('hsInvite'), 270, 'id_adminUsers'),
-                MenuItem('id_hsBoards', N_("Manage boards"), h.url_for('hsBoards'), 210, 'id_adminPosts'),
-                MenuItem('id_hsMappings', N_("Manage mappings"), h.url_for('hsMappings'), 250, 'id_adminPosts'),
-                MenuItem('id_hsViewLogBase', N_("View logs"), h.url_for('hsViewLogBase'), 260, False),
-
+        menu = (MenuItem('id_adminDashboard', _("Dashboard"), h.url_for('holySynod'), 200, False),
+                MenuItem('id_adminBoard', _("Common settings"), None, 200, False),
+                MenuItem('id_adminUsers', _("Users"), None, 210, False),
+                MenuItem('id_adminPosts', _("Threads and posts"), None, 220, False),
+                MenuItem('id_hsSettings', _("Manage settings"), h.url_for('hsSettings'), 200, 'id_adminBoard'),
+                MenuItem('id_hsExtensions', _("Manage extensions"), h.url_for('hsExtensions'), 240, 'id_adminBoard'),
+                MenuItem('id_hsUsers', _("Manage users"), h.url_for('hsUsers'), 220, 'id_adminUsers'),
+                MenuItem('id_hsBans', _("Manage bans"), h.url_for('hsBans'), 230, 'id_adminUsers'),
+                MenuItem('id_hsInvite', _("Generate invite"), h.url_for('hsInvite'), 270, 'id_adminUsers'),
+                MenuItem('id_hsBoards', _("Manage boards"), h.url_for('hsBoards'), 210, 'id_adminPosts'),
+                MenuItem('id_hsMappings', _("Manage mappings"), h.url_for('hsMappings'), 250, 'id_adminPosts'),
+                MenuItem('id_hsViewLogBase', _("View logs"), h.url_for('hsViewLogBase'), 260, False),
                 )
 
     return menu

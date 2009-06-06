@@ -19,7 +19,6 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-import pickle
 import random
 
 from Orphereus.lib.base import *
@@ -77,19 +76,6 @@ class FakeUser(AbstractUser):
 
     def authid(self):
         return random.randint(1000, 10000)
-
-    def sessPickleValue(self, name, value, default):
-        if value != None:
-            session[name] = pickle.dumps(value)
-            session.save()
-        return  pickle.loads(session.get(name, default))
-
-    #customizable options
-    def homeExclude(self, value = None):
-        return self.sessPickleValue('homeExclude', value, self.__user.options.homeExclude)
-
-    def hideThreads(self, value = None):
-        return self.sessPickleValue('hideThreads', value, self.__user.options.hideThreads)
 
     # disable any dangerous action
     def isAdmin(self):

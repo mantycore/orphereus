@@ -1,3 +1,5 @@
+import pickle
+
 from Orphereus.lib.constantValues import *
 import Orphereus.lib.helpers as h
 from pylons import g
@@ -26,7 +28,9 @@ class AbstractUser(object):
                     'lang',
                     'cLang',
                     )
-
+    pickleValues = ('homeExclude',
+                    'hideThreads',
+                    )
     restrictions = {'threadsPerPage' : lambda val: 0 < val < 30,
                     'repliesPerThread' : lambda val: 0 < val < 100,
                     'maxExpandWidth' : lambda val: 0 < val < 4096,
@@ -41,18 +45,30 @@ class AbstractUser(object):
 
     proxies = {'lang' : lambda val: h.makeLangValid(val),
                'cLang' : lambda val: h.makeLangValid(val),
+               'homeExclude' : lambda val: pickle.dumps(val),
+               'hideThreads' : lambda val: pickle.dumps(val),
               }
 
-    simpleValues = booleanValues + intValues + stringValues
+    preparators = {'homeExclude' : lambda val: pickle.loads(val),
+                   'hideThreads' : lambda val: pickle.loads(val),
+                  }
+    simpleValues = booleanValues + intValues + stringValues + pickleValues
 
     def __getattr__(self, name):
         if name in self.simpleValues:
-            return self.simpleGetter(name)
-        else:
-            return object.__getattr__(self, name)
+            val = self.simpleGetter(name)
+            preparator = self.preparators.get(name, None)
+            if preparator:
+                val = preparator(val)
+            return val
+        #else:
+        #    return object.__getattr__(self, name)
 
     def __setattr__(self, name, value):
         if name in self.simpleValues:
+            proxy = self.proxies.get(name, None)
+            if proxy:
+                value = proxy(value)
             self.simpleSetter(name, value)
         else:
             object.__setattr__(self, name, value)

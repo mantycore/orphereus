@@ -170,7 +170,7 @@ class OrphieMainController(OrphieBaseController):
         c.invisibleBumps = asbool(meta.globj.settingsMap['invisibleBump'].value)
         c.tagList = ' '.join(tagList)
 
-        hiddenThreads = self.userInst.hideThreads()
+        hiddenThreads = self.userInst.hideThreads
         for thread in c.threads:
             thread.hideFromBoards = (str(thread.id) in hiddenThreads)
             thread.hidden = thread.hideFromBoards
@@ -381,7 +381,7 @@ class OrphieMainController(OrphieBaseController):
             homeExcludeList = []
             for t in homeExcludeTags:
                 homeExcludeList.append(t.id)
-            self.userInst.homeExclude(homeExcludeList)
+            self.userInst.homeExclude = homeExcludeList
 
             if not c.userInst.Anonymous:
                 c.profileMsg = _('Password was NOT changed.')
@@ -404,12 +404,12 @@ class OrphieMainController(OrphieBaseController):
             if c.reload:
                 c.profileMsg += _(' Reload page for language changes to take effect.')
 
-        homeExcludeTags = Tag.getAllByIds(self.userInst.homeExclude())
+        homeExcludeTags = Tag.getAllByIds(self.userInst.homeExclude)
         homeExcludeList = []
         for t in homeExcludeTags:
             homeExcludeList.append(t.tag)
         c.homeExclude = ', '.join(homeExcludeList)
-        c.hiddenThreads = Post.filter(Post.id.in_(self.userInst.hideThreads())).options(eagerload('file')).options(eagerload('tags')).all()
+        c.hiddenThreads = Post.filter(Post.id.in_(self.userInst.hideThreads)).options(eagerload('file')).options(eagerload('tags')).all()
         for t in c.hiddenThreads:
             tl = []
             for tag in t.tags:

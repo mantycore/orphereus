@@ -129,10 +129,10 @@ class OrphieAjaxController(OrphieBaseController):
             abort(403)
         postInst = Post.getPost(post)
         if postInst and not postInst.parentPost:
-            hideThreads = self.userInst.hideThreads()
+            hideThreads = self.userInst.hideThreads
             if not post in hideThreads:
                 hideThreads.append(post)
-                self.userInst.hideThreads(hideThreads)
+                self.userInst.hideThreads = hideThreads
                 meta.Session.commit()
         if redirect:
             return redirect_to(str('/%s' % redirect.encode('utf-8')))
@@ -143,10 +143,10 @@ class OrphieAjaxController(OrphieBaseController):
             abort(403)
         postInst = Post.getPost(post)
         if postInst and not postInst.parentPost:
-            hideThreads = self.userInst.hideThreads()
+            hideThreads = self.userInst.hideThreads
             if post in hideThreads:
                 hideThreads.remove(post)
-                self.userInst.hideThreads(hideThreads)
+                self.userInst.hideThreads = hideThreads
                 meta.Session.commit()
         if redirect:
             return redirect_to(str('/%s' % redirect.encode('utf-8')))

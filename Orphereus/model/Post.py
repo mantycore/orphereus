@@ -192,7 +192,7 @@ class Post(object):
                 if arg == '@':
                     return (buildMyPostsFilter(), [])
                 elif arg == '~':
-                    return (not_(Post.tags.any(Tag.id.in_(userInst.homeExclude()))), [])
+                    return (not_(Post.tags.any(Tag.id.in_(userInst.homeExclude))), [])
                 else:
                     return (Post.tags.any(tag = arg), [arg])
             else:

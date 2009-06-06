@@ -178,17 +178,6 @@ class User(AbstractUser):
         meta.Session.commit()
         return True
 
-###
-    def homeExclude(self, value = None):
-        if value != None:
-            self.options.homeExclude = pickle.dumps(value)
-        return pickle.loads(self.options.homeExclude)
-
-    def hideThreads(self, value = None):
-        if value != None:
-            self.options.hideThreads = pickle.dumps(value)
-        return pickle.loads(self.options.hideThreads)
-###
     def optionsDump(self):
         return UserOptions.optionsDump(self.options)
 

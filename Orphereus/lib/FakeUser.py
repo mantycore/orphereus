@@ -62,15 +62,26 @@ class FakeUser(AbstractUser):
             session.save()
         #return session.get(name, default)
 
+    def optionsDump(self):
+        return UserOptions.optionsDump(self.options)
+
     def isValid(self):
         return self.__valid
 
     def setUid(self, value = None):
         return self.__user.uid
 
+    # bans
+    def bantime(self):
+        return 0
+
+    def banreason(self):
+        return u''
+
     def isBanned(self):
         return False
 
+    # auth stubs
     def secid(self):
         return 0
 
@@ -83,13 +94,3 @@ class FakeUser(AbstractUser):
 
     def canDeleteAllPosts(self):
         return False
-
-    def bantime(self):
-        return 0
-
-    def banreason(self):
-        return u''
-
-    def optionsDump(self):
-        return UserOptions.optionsDump(self.options)
-

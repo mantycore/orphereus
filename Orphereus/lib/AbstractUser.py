@@ -4,6 +4,10 @@ from Orphereus.lib.constantValues import *
 import Orphereus.lib.helpers as h
 from pylons import g
 
+class EAbstractFunctionCall(Exception):
+    def __repr__(self):
+        return "Call to abstract function"
+
 class AbstractUser(object):
     booleanValues = ('hideLongComments',
                           'useFrame',
@@ -74,3 +78,56 @@ class AbstractUser(object):
                 self.simpleSetter(name, value)
         else:
             object.__setattr__(self, name, value)
+
+    def isValid(self):
+        raise EAbstractFunctionCall()
+
+    def setUid(self, value = None):
+        raise EAbstractFunctionCall()
+
+    def secid(self):
+        raise EAbstractFunctionCall()
+
+    def authid(self):
+        raise EAbstractFunctionCall()
+
+    # bans
+    def isBanned(self):
+        raise EAbstractFunctionCall()
+
+    def bantime(self):
+        raise EAbstractFunctionCall()
+
+    def banreason(self):
+        raise EAbstractFunctionCall()
+
+    #rights
+    def isAdmin(self):
+        raise EAbstractFunctionCall()
+
+    def canDeleteAllPosts(self):
+        raise EAbstractFunctionCall()
+
+    def canMakeInvite(self):
+        raise EAbstractFunctionCall()
+
+    def canChangeRights(self):
+        raise EAbstractFunctionCall()
+
+    def canChangeSettings(self):
+        raise EAbstractFunctionCall()
+
+    def canManageBoards(self):
+        raise EAbstractFunctionCall()
+
+    def canManageUsers(self):
+        raise EAbstractFunctionCall()
+
+    def canManageExtensions(self):
+        raise EAbstractFunctionCall()
+
+    def canManageMappings(self):
+        raise EAbstractFunctionCall()
+
+    def canRunMaintenance(self):
+        return self.options.canRunMaintenance

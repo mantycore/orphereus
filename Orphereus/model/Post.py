@@ -24,9 +24,6 @@ from sqlalchemy import orm
 from sqlalchemy.orm import eagerload
 from sqlalchemy.sql import and_, or_, not_
 
-# TODO: remove mySQL dependency
-from sqlalchemy.databases import mysql
-
 from Orphereus.model import meta
 from Orphereus.model.Picture import Picture
 from Orphereus.model.Tag import Tag
@@ -60,7 +57,7 @@ t_posts = sa.Table("post", meta.metadata,
     sa.Column("spoiler"  , sa.types.Boolean, nullable = True),
     sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
     sa.Column("removemd5"  , sa.types.String(32), nullable = True),
-    sa.Column("ip"         , mysql.MSInteger(unsigned = True), nullable = True),
+    sa.Column("ip"         , meta.UIntType, nullable = True),
     )
 
 class Post(object):

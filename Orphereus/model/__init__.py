@@ -30,12 +30,14 @@ def init_model(engine):
         return newType
     if (isinstance(engine.dialect, sa.databases.mysql.MySQLDialect)):
         log.info("Currently using MySQL dialect, adjusting types...")
-        meta.FloatType = logAndChange(meta.FloatType, mysql.MSDouble)
-        meta.BlobType = logAndChange(meta.BlobType, mysql.MSLongBlob)
+        meta.FloatType = logAndChange(meta.FloatType, sa.databases.mysql.MSDouble)
+        meta.BlobType = logAndChange(meta.BlobType, sa.databases.mysql.MSLongBlob)
+        meta.UIntType = logAndChange(meta.UIntType, sa.databases.mysql.MSInteger(unsigned = True))
     elif (isinstance(engine.dialect, sa.databases.postgres.PGDialect)):
         log.info("Currently using PostgreSQL dialect, adjusting types...")
-        meta.FloatType = logAndChange(meta.FloatType, postgres.PGFloat)
-        meta.BlobType = logAndChange(meta.BlobType, postgres.PGBinary)
+        meta.FloatType = logAndChange(meta.FloatType, sa.databases.postgres.PGFloat)
+        meta.BlobType = logAndChange(meta.BlobType, sa.databases.postgres.PGBinary)
+        meta.UIntType = logAndChange(meta.UIntType, sa.databases.postgres.PGBigInteger)
     else:
         log.info("[WARNING] Unknown SQL Dialect!")
     log.info("Adjusting completed")

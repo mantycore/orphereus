@@ -21,7 +21,6 @@
 
 import sqlalchemy as sa
 from sqlalchemy import orm
-from sqlalchemy.databases import mysql
 
 from Orphereus.model import meta
 import datetime
@@ -29,14 +28,12 @@ import datetime
 import logging
 log = logging.getLogger(__name__)
 
-# TODO: remove mySQL-specific type
-
 t_bans = sa.Table("bans", meta.metadata,
     sa.Column("id"          , sa.types.Integer, primary_key = True),
 #    sa.Column("ip"          , sa.types.Integer, nullable=False),
 #    sa.Column("mask"        , sa.types.Integer, nullable=False),
-    sa.Column("ip"          , mysql.MSInteger(unsigned = True), nullable = False),
-    sa.Column("mask"        , mysql.MSInteger(unsigned = True), nullable = False),
+    sa.Column("ip"          , meta.UIntType, nullable = False),
+    sa.Column("mask"        , meta.UIntType, nullable = False),
     sa.Column("type"        , sa.types.Integer, nullable = False),
     sa.Column("reason"      , sa.types.Text, nullable = True),
     sa.Column("date"        , sa.types.DateTime, nullable = False),

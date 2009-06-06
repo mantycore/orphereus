@@ -347,45 +347,46 @@ class OrphieMainController(OrphieBaseController):
         c.profileChanged = False
         c.boardName = _('Profile')
         if request.POST.get('update', False):
-            self.userInst.hideLongComments(request.POST.get('hideLongComments', False))
-            self.userInst.useFrame(request.POST.get('useFrame', False))
-            self.userInst.useAjax(bool(request.POST.get('useAjax', False)))
-            self.userInst.expandImages(request.POST.get('expandImages', False))
-            self.userInst.mixOldThreads(bool(request.POST.get('mixOldThreads', False)))
-            self.userInst.useTitleCollapse(bool(request.POST.get('useTitleCollapse', False)))
-            self.userInst.hlOwnPosts(bool(request.POST.get('hlOwnPosts', False)))
-            self.userInst.invertSortingMode(bool(request.POST.get('invertSortingMode', False)))
-            self.userInst.oekUseSelfy(bool(request.POST.get('oekUseSelfy', False)))
-            self.userInst.oekUseAnim(bool(request.POST.get('oekUseAnim', False)))
-            self.userInst.oekUsePro(bool(request.POST.get('oekUsePro', False)))
-            threadsPerPage = request.POST.get('threadsPerPage', self.userInst.threadsPerPage())
-            if isNumber(threadsPerPage) and (0 < int(threadsPerPage) < 30):
-                self.userInst.threadsPerPage(int(threadsPerPage))
-            repliesPerThread = request.POST.get('repliesPerThread', self.userInst.repliesPerThread())
-            if isNumber(repliesPerThread) and (0 < int(repliesPerThread) < 100):
-                self.userInst.repliesPerThread(int(repliesPerThread))
-            maxExpandWidth = request.POST.get('maxExpandWidth', self.userInst.maxExpandWidth())
-            if isNumber(maxExpandWidth) and (0 < int(maxExpandWidth) < 4096):
-                self.userInst.maxExpandWidth(int(maxExpandWidth))
-            maxExpandHeight = request.POST.get('maxExpandHeight', self.userInst.maxExpandHeight())
-            if isNumber(maxExpandHeight) and (0 < int(maxExpandHeight) < 4096):
-                self.userInst.maxExpandHeight(int(maxExpandHeight))
-            template = filterText(request.POST.get('template', self.userInst.template()))
-            if template in c.templates:
-                self.userInst.template(template)
-            style = filterText(request.POST.get('style', self.userInst.style()))
-            if style in c.styles:
-                self.userInst.style(style)
+            """
+                self.userInst.hideLongComments(request.POST.get('hideLongComments', False))
+                self.userInst.useFrame(request.POST.get('useFrame', False))
+                self.userInst.useAjax(bool(request.POST.get('useAjax', False)))
+                self.userInst.expandImages(request.POST.get('expandImages', False))
+                self.userInst.mixOldThreads(bool(request.POST.get('mixOldThreads', False)))
+                self.userInst.useTitleCollapse(bool(request.POST.get('useTitleCollapse', False)))
+                self.userInst.hlOwnPosts(bool(request.POST.get('hlOwnPosts', False)))
+                self.userInst.invertSortingMode(bool(request.POST.get('invertSortingMode', False)))
+                self.userInst.oekUseSelfy(bool(request.POST.get('oekUseSelfy', False)))
+                self.userInst.oekUseAnim(bool(request.POST.get('oekUseAnim', False)))
+                self.userInst.oekUsePro(bool(request.POST.get('oekUsePro', False)))
+            """
+            for valueName in self.userInst.booleanValues:
+                val = bool(request.POST.get(valueName, False))
+                setattr(self.userInst, valueName, val)
+
+            for valueName in self.userInst.intValues:
+                val = request.POST.get(valueName, getattr(self.userInst, valueName)())
+                restriction = self.userInst.restrictions.get(valueName, False)
+                proxy = self.userInst.proxies.get(valueName, False)
+                if isNumber(val):
+                    val = int(val)
+                    if not restriction or restriction(val):
+                        if proxy:
+                            val = proxy(val)
+                        setattr(self.userInst, valueName, val)
+
+            for valueName in self.userInst.stringValues:
+                val = filterText(request.POST.get(valueName, getattr(self.userInst, valueName)()))
+                restriction = self.userInst.restrictions.get(valueName, False)
+                proxy = self.userInst.proxies.get(valueName, False)
+                if not restriction or restriction(val):
+                    if proxy:
+                        val = proxy(val)
+                    setattr(self.userInst, valueName, val)
+
             lang = filterText(request.POST.get('lang', self.userInst.lang()))
             c.reload = (lang != self.userInst.lang())
-            if lang in c.languages:
-                self.userInst.lang(lang)
-            cLang = filterText(request.POST.get('cLang', self.userInst.cLang()))
-            if cLang in c.languages:
-                self.userInst.cLang(cLang)
-            gotodest = filterText(request.POST.get('defaultGoto', self.userInst.defaultGoto()))
-            if isNumber(gotodest) and (int(gotodest) in destinations.keys()):
-                self.userInst.defaultGoto(int(gotodest))
+
             homeExcludeTags = Tag.stringToTagList(request.POST.get('homeExclude', u''), False)
             #log.debug(homeExcludeTags)
             homeExcludeList = []

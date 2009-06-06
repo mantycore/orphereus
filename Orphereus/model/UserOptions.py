@@ -86,28 +86,7 @@ class UserOptions(object):
 
     @staticmethod
     def initDefaultOptions(optionsObject, globalOptHolder):
-        optionsObject.style = globalOptHolder.styles[0]
-        optionsObject.template = globalOptHolder.templates[0]
-        optionsObject.threadsPerPage = 10
-        optionsObject.repliesPerThread = 10
-        optionsObject.bantime = 0
         optionsObject.isAdmin = False
-        optionsObject.hideLongComments = True
-        optionsObject.useFrame = True
-        optionsObject.useAjax = True
-        optionsObject.mixOldThreads = True
-        optionsObject.defaultGoto = 0
-        optionsObject.expandImages = True
-        optionsObject.oekUseSelfy = False
-        optionsObject.oekUseAnim = False
-        optionsObject.oekUsePro = False
-        optionsObject.maxExpandWidth = 1024
-        optionsObject.maxExpandHeight = 768
-        optionsObject.useTitleCollapse = False
-        optionsObject.hlOwnPosts = False
-        optionsObject.invertSortingMode = False
-        optionsObject.homeExclude = pickle.dumps([])
-        optionsObject.hideThreads = pickle.dumps([])
         optionsObject.canDeleteAllPosts = False
         optionsObject.canMakeInvite = False
         optionsObject.canChangeRights = False
@@ -117,7 +96,29 @@ class UserOptions(object):
         optionsObject.canManageExtensions = False
         optionsObject.canManageMappings = False
         optionsObject.canRunMaintenance = False
+        optionsObject.bantime = 0
+        #
+        optionsObject.style = globalOptHolder.styles[0]
+        optionsObject.template = globalOptHolder.templates[0]
         optionsObject.lang = ''
         optionsObject.cLang = ''
+        optionsObject.threadsPerPage = 10
+        optionsObject.repliesPerThread = 10
+        optionsObject.maxExpandWidth = 1024
+        optionsObject.maxExpandHeight = 768
+        optionsObject.defaultGoto = 0
+        optionsObject.homeExclude = pickle.dumps([])
+        optionsObject.hideThreads = pickle.dumps([])
+        optionsObject.hideLongComments = True
+        optionsObject.useFrame = True
+        optionsObject.useAjax = True
+        optionsObject.mixOldThreads = True
+        optionsObject.expandImages = True
+        optionsObject.oekUseSelfy = False
+        optionsObject.oekUseAnim = False
+        optionsObject.oekUsePro = False
+        optionsObject.useTitleCollapse = False
+        optionsObject.hlOwnPosts = False
+        optionsObject.invertSortingMode = False
 
 

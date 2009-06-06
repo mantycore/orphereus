@@ -53,8 +53,10 @@ class OrphieBaseController(BaseController):
         uid = self.sessUid()
         if uid > 0 and g.OPT.allowLogin:
             self.userInst = User.getUser(uid)
+            log.debug(uid)
         if not self.userInst:
             self.userInst = FakeUser()
+            log.debug('anon')
 
         c.userInst = self.userInst
         c.uidNumber = self.userInst.uidNumber

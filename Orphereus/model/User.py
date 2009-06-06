@@ -29,6 +29,7 @@ from Orphereus.model.LogEntry import LogEntry
 from Orphereus.model.UserFilters import UserFilters
 from Orphereus.lib.miscUtils import isNumber, toLog, filterText
 from Orphereus.lib.constantValues import *
+from Orphereus.lib.AbstractUser import AbstractUser
 
 import Orphereus.lib.helpers as h
 
@@ -47,7 +48,15 @@ t_users = sa.Table("user", meta.metadata,
     )
 
 #TODO: universal setter/getter, FakeUser-like
-class User(object):
+class User(AbstractUser):
+    def simpleGetter(self, name):
+        return getattr(self.options, name)
+
+    def simpleSetter(self, name, value):
+        if value != None:
+            log.debug("setter %s = %s" % (name, str(value)))
+            setattr(self.options, name, value)
+
     def __init__(self, uid):
         self.uid = uid
         self.options = UserOptions()
@@ -170,26 +179,7 @@ class User(object):
         meta.Session.commit()
         return True
 
-    def hideLongComments(self, value = None):
-        if value != None:
-            self.options.hideLongComments = value
-        return self.options.hideLongComments
-
-    def useFrame(self, value = None):
-        if value != None:
-            self.options.useFrame = value
-        return self.options.useFrame
-
-    def mixOldThreads(self, value = None):
-        if value != None:
-            self.options.mixOldThreads = value
-        return self.options.mixOldThreads
-
-    def useAjax(self, value = None):
-        if value != None:
-            self.options.useAjax = value
-        return self.options.useAjax
-
+###
     def homeExclude(self, value = None):
         if value != None:
             self.options.homeExclude = pickle.dumps(value)
@@ -199,89 +189,7 @@ class User(object):
         if value != None:
             self.options.hideThreads = pickle.dumps(value)
         return pickle.loads(self.options.hideThreads)
-
-    def threadsPerPage(self, value = None):
-        if value != None and isNumber(value) or value == 0:
-            self.options.threadsPerPage = value
-        return self.options.threadsPerPage
-
-    def repliesPerThread(self, value = None):
-        if value != None and isNumber(value) or value == 0:
-            self.options.repliesPerThread = value
-        return self.options.repliesPerThread
-
-    def style(self, value = None):
-        if value:
-            self.options.style = value
-        return self.options.style
-
-    def lang(self, value = None):
-        if value:
-            self.options.lang = h.makeLangValid(value)
-        return self.options.lang
-
-    def cLang(self, value = None):
-        if value:
-            self.options.cLang = h.makeLangValid(value)
-        return self.options.cLang
-
-    def template(self, value = None):
-        if value:
-            self.options.template = value
-        return self.options.template
-
-    def defaultGoto(self, value = None):
-        if value != None and isNumber(value) or value == 0:
-            if (value < 0 or value >= len(destinations)):
-                value = 0
-            self.options.defaultGoto = value
-        return self.options.defaultGoto
-
-    def expandImages(self, value = None):
-        if value != None:
-            self.options.expandImages = value
-        return self.options.expandImages
-
-    def oekUseSelfy(self, value = None):
-        if value != None:
-            self.options.oekUseSelfy = value
-        return self.options.oekUseSelfy
-
-    def oekUseAnim(self, value = None):
-        if value != None:
-            self.options.oekUseAnim = value
-        return self.options.oekUseAnim
-
-    def oekUsePro(self, value = None):
-        if value != None:
-            self.options.oekUsePro = value
-        return self.options.oekUsePro
-
-    def maxExpandWidth(self, value = None):
-        if value != None and isNumber(value) or value == 0:
-            self.options.maxExpandWidth = value
-        return self.options.maxExpandWidth
-
-    def maxExpandHeight(self, value = None):
-        if value != None and isNumber(value) or value == 0:
-            self.options.maxExpandHeight = value
-        return self.options.maxExpandHeight
-
-    def useTitleCollapse(self, value = None):
-        if value != None:
-            self.options.useTitleCollapse = value
-        return self.options.useTitleCollapse
-
-    def hlOwnPosts(self, value = None):
-        if value != None:
-            self.options.hlOwnPosts = value
-        return self.options.hlOwnPosts
-
-    def invertSortingMode(self, value = None):
-        if value != None:
-            self.options.invertSortingMode = value
-        return self.options.invertSortingMode
-
+###
     def optionsDump(self):
         return UserOptions.optionsDump(self.options)
 

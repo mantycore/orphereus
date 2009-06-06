@@ -358,23 +358,12 @@ class OrphieMainController(OrphieBaseController):
 
             for valueName in self.userInst.intValues:
                 val = request.POST.get(valueName, getattr(self.userInst, valueName))
-                restriction = self.userInst.restrictions.get(valueName, False)
-                proxy = self.userInst.proxies.get(valueName, False)
                 if isNumber(val):
-                    val = int(val)
-                    if not restriction or restriction(val):
-                        if proxy:
-                            val = proxy(val)
-                        setattr(self.userInst, valueName, val)
+                    setattr(self.userInst, valueName, int(val))
 
             for valueName in self.userInst.stringValues:
                 val = filterText(request.POST.get(valueName, getattr(self.userInst, valueName)))
-                restriction = self.userInst.restrictions.get(valueName, False)
-                proxy = self.userInst.proxies.get(valueName, False)
-                if not restriction or restriction(val):
-                    if proxy:
-                        val = proxy(val)
-                    setattr(self.userInst, valueName, val)
+                setattr(self.userInst, valueName, val)
 
             homeExcludeTags = Tag.stringToTagList(request.POST.get('homeExclude', u''), False)
             #log.debug(homeExcludeTags)

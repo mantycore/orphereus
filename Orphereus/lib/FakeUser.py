@@ -53,10 +53,10 @@ class FakeUser(AbstractUser):
             self.__user.options = empty()
             UserOptions.initDefaultOptions(self.__user.options, g.OPT)
 
-    def simpleSetter(self, name):
+    def simpleGetter(self, name):
         return session.get(name, getattr(self.__user.options, name))
 
-    def simpleGetter(self, name, value):
+    def simpleSetter(self, name, value):
         if value != None:
             session[name] = value
             session.save()

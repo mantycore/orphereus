@@ -67,8 +67,10 @@ class AbstractUser(object):
     def __setattr__(self, name, value):
         if name in self.simpleValues:
             proxy = self.proxies.get(name, None)
-            if proxy:
-                value = proxy(value)
-            self.simpleSetter(name, value)
+            restriction = self.restrictions.get(name, None)
+            if not restriction or restriction(value):
+                if proxy:
+                    value = proxy(value)
+                self.simpleSetter(name, value)
         else:
             object.__setattr__(self, name, value)

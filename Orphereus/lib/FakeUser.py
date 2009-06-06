@@ -59,7 +59,6 @@ class FakeUser(AbstractUser):
 
     def simpleGetter(self, name, value):
         if value != None:
-            log.debug("setter %s = %s" % (name, str(value)))
             session[name] = value
             session.save()
         #return session.get(name, default)

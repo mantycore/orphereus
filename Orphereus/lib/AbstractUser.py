@@ -45,14 +45,14 @@ class AbstractUser(object):
 
     simpleValues = booleanValues + intValues + stringValues
 
-    def __getattribute__(self, name):
-        if name in object.__getattribute__(self, 'simpleValues'):
-            return object.__getattribute__(self, 'simpleGetter')(name)
+    def __getattr__(self, name):
+        if name in self.simpleValues:
+            return self.simpleGetter(name)
         else:
-            return object.__getattribute__(self, name)
+            return object.__getattr__(self, name)
 
     def __setattr__(self, name, value):
-        if name in object.__getattribute__(self, 'simpleValues'):
-            object.__getattribute__(self, 'simpleSetter')(name, value)
+        if name in self.simpleValues:
+            self.simpleSetter(name, value)
         else:
             object.__setattr__(self, name, value)

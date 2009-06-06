@@ -54,7 +54,6 @@ class User(AbstractUser):
 
     def simpleSetter(self, name, value):
         if value != None:
-            log.debug("setter %s = %s" % (name, str(value)))
             setattr(self.options, name, value)
 
     def __init__(self, uid):

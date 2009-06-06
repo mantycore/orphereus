@@ -50,8 +50,6 @@ def routingInit(map):
     map.connect('/ajax/getUserSettings', controller = 'Orphie_Ajax', action = 'getUserSettings')
     map.connect('/ajax/getUploadsPath', controller = 'Orphie_Ajax', action = 'getUploadsPath')
 
-
-
 def pluginInit(globj = None):
     if globj:
         pass

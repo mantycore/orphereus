@@ -53,6 +53,7 @@ core.disabledModules = mod1.py,mod2.py
 
 # Basic IB settings
 core.devMode = false
+jsCompressor.disableJSRegeneration = false
 # We will hash hashSecret by sha512, so no need to have it long
 core.hashSecret = smallSecret
 core.baseDomain= anoma.ch

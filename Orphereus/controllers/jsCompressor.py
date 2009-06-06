@@ -11,7 +11,7 @@ import logging
 log = logging.getLogger(__name__)
 
 def requestHook(baseController):
-    if g.firstRequest:
+    if g.firstRequest and not g.OPT.disableJSRegeneration:
         oldLang = get_lang()
         log.info('Generating js files...')
         for lang in g.OPT.languages:
@@ -43,7 +43,13 @@ def requestHook(baseController):
 
 def pluginInit(g = None):
     if g:
-        pass
+        booleanValues = [('jsCompressor',
+                               ('disableJSRegeneration',
+                               )
+                              ),
+                            ]
+
+        g.OPT.setValues(booleanValues, g.OPT.booleanGetter)
 
     config = {'name' : N_('Javascript compression tool'),
               'basehook' : requestHook,

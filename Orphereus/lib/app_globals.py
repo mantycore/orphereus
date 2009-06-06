@@ -50,7 +50,7 @@ class OptHolder(object):
                                 'allowFeeds', 'allowOverview', 'framedMain',
                                 'useFrameLogo', 'permissiveFileSizeConjunction',
                                 'allowAnonymousPosting', 'allowAnonProfile',
-                                'obligatoryFrameCreation', 'newsSiteMode'
+                                'obligatoryFrameCreation', 'newsSiteMode',
                                )
                               ),
 

@@ -24,7 +24,7 @@
 %endfor
 </table>
 
-%if c.userInst.useAjax():
+%if c.userInst.useAjax:
     <script type="text/javascript">popup_posts({ajax: true});</script>
 %endif
 

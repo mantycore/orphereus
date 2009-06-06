@@ -14,7 +14,7 @@ ${c.title}
         <meta name="robots" content="noarchive">
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
         <link rel="icon" type="image/x-icon" href="/favicon.ico">
-        <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style() + ".css")}" title="${c.userInst.style()}">
+        <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style + ".css")}" title="${c.userInst.style}">
 </head>
 <frameset cols="200,*">
         <frame src="${h.url_for('frameMenu')}" name="list" noresize="noresize" scrolling="auto" frameborder="1">

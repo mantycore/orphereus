@@ -95,7 +95,7 @@ ${thread.date}
 
 %if c.currentUserCanPost:
     %if thread.file and thread.file.width:
-        [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy() and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim() and '+anim' or '-anim', tool=c.userInst.oekUsePro() and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
+        [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
     %endif
     [<a href="${h.url_for('thread', post=thread.id)}">${_('Reply')}</a>]
 %else:
@@ -103,7 +103,7 @@ ${thread.date}
 %endif
 
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
-    %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments():
+    %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments:
         ${thread.messageShort}
         <br />
         ${_('Comment is too long.')} <a href="${h.postUrl(thread.id, thread.id)}" onclick="getFullText(event,${thread.id},${thread.id});" class="expandPost">${_('Full version')}</a>

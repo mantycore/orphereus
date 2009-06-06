@@ -16,7 +16,7 @@
 %for thread in c.threads:
 %if not thread.hideFromBoards:
     <div
-    %if thread.uidNumber != c.uidNumber or not c.userInst.hlOwnPosts():
+    %if thread.uidNumber != c.uidNumber or not c.userInst.hlOwnPosts:
     class="thread"
     %else:
     class="thread mythread"

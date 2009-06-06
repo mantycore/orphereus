@@ -47,10 +47,7 @@ class AbstractUser(object):
 
     def __getattribute__(self, name):
         if name in object.__getattribute__(self, 'simpleValues'):
-            val = object.__getattribute__(self, 'simpleGetter')(name)
-            def clos():
-                return val
-            return clos
+            return object.__getattribute__(self, 'simpleGetter')(name)
         else:
             return object.__getattribute__(self, name)
 

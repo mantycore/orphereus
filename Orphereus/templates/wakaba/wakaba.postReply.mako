@@ -4,7 +4,7 @@
 <table id="quickReplyNode${post.id}"><tbody><tr>
 <td class="doubledash">&gt;&gt;</td>
 <td
-%if post.uidNumber != c.uidNumber or not c.userInst.hlOwnPosts():
+%if post.uidNumber != c.uidNumber or not c.userInst.hlOwnPosts:
 class="reply"
 %else:
 class="reply myreply"
@@ -44,7 +44,7 @@ id="reply${post.id}">
         <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
     %endif
     %if c.currentUserCanPost and post.file and post.file.width:
-        [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy() and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim() and '+anim' or '-anim', tool=c.userInst.oekUsePro() and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
+        [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
     %endif
 
     %if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
@@ -84,7 +84,7 @@ id="reply${post.id}">
         <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb"  alt="Removed" />
     %endif
     <blockquote class="postbody" id="postBQId${post.id}">
-        %if (c.count > 1) and post.messageShort and c.userInst.hideLongComments() and getattr(thread, 'enableShortMessages', True):
+        %if (c.count > 1) and post.messageShort and c.userInst.hideLongComments and getattr(thread, 'enableShortMessages', True):
             ${post.messageShort}
             <br />
             ${_('Comment is too long.')} <a href="${h.postUrl(thread.id, post.id)}" onclick="getFullText(event,${thread.id},${post.id});" class="expandPost">${_('Full version')}</a>

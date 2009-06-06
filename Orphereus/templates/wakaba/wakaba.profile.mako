@@ -52,41 +52,41 @@
                 </tr>
                 <tr id="trtpp">
                     <td class="postblock">${_('Threads per page')}</td>
-                    <td><input name="threadsPerPage" value="${c.userInst.threadsPerPage()}" /></td>
+                    <td><input name="threadsPerPage" value="${c.userInst.threadsPerPage}" /></td>
                 </tr>
                 <tr id="trrpt">
                     <td class="postblock">${_('Replies per thread')}</td>
-                    <td><input name="repliesPerThread" value="${c.userInst.repliesPerThread()}" /></td>
+                    <td><input name="repliesPerThread" value="${c.userInst.repliesPerThread}" /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Mix old threads into boards')}</td>
-                    <td><input type="checkbox" name="mixOldThreads" ${c.userInst.mixOldThreads() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="mixOldThreads" ${c.userInst.mixOldThreads and 'checked="checked"' or ""} /></td>
                 </tr>
                 %if g.OPT.framedMain: 
                 <tr>
                     <td class="postblock">${_('Use frames')}</td>
-                    <td><input type="checkbox" name="useFrame" ${c.userInst.useFrame() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="useFrame" ${c.userInst.useFrame and 'checked="checked"' or ""} /></td>
                 </tr>
                 %endif
                 <tr>
                     <td class="postblock">${_('Hide long comments')}</td>
-                    <td><input type="checkbox" name="hideLongComments" ${c.userInst.hideLongComments() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="hideLongComments" ${c.userInst.hideLongComments and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Use AJAX hints')}</td>
-                    <td><input type="checkbox" name="useAjax" ${c.userInst.useAjax() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="useAjax" ${c.userInst.useAjax and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Expand images in threads')}</td>
-                    <td><input type="checkbox" name="expandImages" ${c.userInst.expandImages() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="expandImages" ${c.userInst.expandImages and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Use initial title shrinking')}</td>
-                    <td><input type="checkbox" name="useTitleCollapse" ${c.userInst.useTitleCollapse() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="useTitleCollapse" ${c.userInst.useTitleCollapse and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Highlight my posts')}</td>
-                    <td><input type="checkbox" name="hlOwnPosts" ${c.userInst.hlOwnPosts() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="hlOwnPosts" ${c.userInst.hlOwnPosts and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Invert thread sorting mode')}
@@ -96,16 +96,16 @@
                         <div style="font-size: 60%; font-style:italic;">${_('(Sort by op-post date)')}</div>
                     %endif
                     </td>
-                    <td><input type="checkbox" name="invertSortingMode" ${c.userInst.invertSortingMode() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="invertSortingMode" ${c.userInst.invertSortingMode and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Max size to expand')}
                     <div style="font-size: 60%; font-style:italic;">${_('(Stricter condition will be used)')}</div>
                     </td>
                     <td>
-                    <input name="maxExpandWidth" value="${c.userInst.maxExpandWidth()}" size="5"/>
+                    <input name="maxExpandWidth" value="${c.userInst.maxExpandWidth}" size="5"/>
                     &#215;
-                    <input name="maxExpandHeight" value="${c.userInst.maxExpandHeight()}"  size="5" />
+                    <input name="maxExpandHeight" value="${c.userInst.maxExpandHeight}"  size="5" />
                     </td>
                 </tr>
                 <tr>
@@ -121,7 +121,7 @@
                             %for dest in c.destinations.keys():
                                %if dest != 3 or g.OPT.allowOverview:
                                    <option value="${dest}"
-                                     %if dest == c.userInst.defaultGoto():
+                                     %if dest == c.userInst.defaultGoto:
                                         selected="selected"
                                      %endif
                                    >
@@ -139,7 +139,7 @@
 
                             %for t in c.templates:
                                <option value="${t}"
-                                 %if t == c.userInst.template():
+                                 %if t == c.userInst.template:
                                     selected="selected"
                                  %endif
                                >
@@ -155,7 +155,7 @@
                         <select name="style" style="width: 170px;">
                             %for style in c.styles:
                                <option value="${style}"
-                                 %if style == c.userInst.style():
+                                 %if style == c.userInst.style:
                                     selected="selected"
                                  %endif
                                >
@@ -171,7 +171,7 @@
                         <select name="lang" style="width: 170px;">
                             %for lang in c.languages:
                                <option value="${lang}"
-                                 %if lang == c.userInst.lang():
+                                 %if lang == c.userInst.lang:
                                     selected="selected"
                                  %endif
                                >
@@ -188,7 +188,7 @@
                         <select name="cLang" style="width: 170px;">
                             %for lang in c.languages:
                                <option value="${lang}"
-                                 %if lang == c.userInst.cLang():
+                                 %if lang == c.userInst.cLang:
                                     selected="selected"
                                  %endif
                                >
@@ -204,15 +204,15 @@
                 </tr>
                 <tr>
                     <td class="postblock">${_('Use Selfy')}</td>
-                    <td><input type="checkbox" name="oekUseSelfy" ${c.userInst.oekUseSelfy() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="oekUseSelfy" ${c.userInst.oekUseSelfy and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Record animation')}</td>
-                    <td><input type="checkbox" name="oekUseAnim" ${c.userInst.oekUseAnim() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="oekUseAnim" ${c.userInst.oekUseAnim and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Use Shi Pro')}</td>
-                    <td><input type="checkbox" name="oekUsePro" ${c.userInst.oekUsePro() and 'checked="checked"' or ""} /></td>
+                    <td><input type="checkbox" name="oekUsePro" ${c.userInst.oekUsePro and 'checked="checked"' or ""} /></td>
                 </tr>
                 <tr>
                     <td colspan="2"><input name="update" type="submit" value="${_('Update')}" /></td>

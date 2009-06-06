@@ -95,8 +95,8 @@ class OrphieBaseController(BaseController):
                     self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") % hashlib.md5(ua).hexdigest(), -1)
                     break
 
-        if self.userInst.isValid(): # and self.userInst.lang():
-            h.setLang(self.userInst.lang())
+        if self.userInst.isValid(): # and self.userInst.lang:
+            h.setLang(self.userInst.lang)
 
     def sessUid(self):
         if g.OPT.allowLogin:
@@ -154,7 +154,7 @@ class OrphieBaseController(BaseController):
             anonCaptId = session.get('anonCaptId', False)
             if not anonCaptId or not Captcha.exists(anonCaptId):
                 #log.debug('recreate')
-                oldLang = h.setLang(self.userInst.cLang())
+                oldLang = h.setLang(self.userInst.cLang)
                 captcha = Captcha.create()
                 h.setLang(oldLang)
                 session['anonCaptId'] = captcha.id
@@ -189,7 +189,7 @@ class OrphieBaseController(BaseController):
             if not tmplName == 'std' and self.userInst and not self.userInst.isBanned():
                 tname = tmplName
                 if not tname:
-                    tname = self.userInst.template()
+                    tname = self.userInst.template
                 tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
                 c.actuatorTest = "%s/actuators/%s/" % (tname, g.OPT.actuator)
         except: #userInst not defined or user banned

@@ -113,19 +113,19 @@ class OrphieMainController(OrphieBaseController):
         c.extLine = ', '.join(extList)
 
         count = threadFilter.count()
-        tpp = self.userInst.threadsPerPage()
+        tpp = self.userInst.threadsPerPage
         if page * tpp >= count and count > 0:
             c.errorText = _("Incorrect page")
             return self.render('error')
         self.paginate(count, page, tpp)
 
         if count > 1:
-            if bool(g.OPT.newsSiteMode) ^ bool(self.userInst.invertSortingMode()):
+            if bool(g.OPT.newsSiteMode) ^ bool(self.userInst.invertSortingMode):
                 sortClause = Post.date.desc()
             else:
                 sortClause = Post.bumpDate.desc()
             c.threads = threadFilter.order_by(sortClause)[page * tpp: (page + 1) * tpp]
-            if self.userInst.mixOldThreads() and not board == '@':
+            if self.userInst.mixOldThreads and not board == '@':
                 if g.OPT.newsSiteMode:
                     filterClause = Post.date < c.threads[-1].date
                 else:
@@ -183,7 +183,7 @@ class OrphieMainController(OrphieBaseController):
             if count > 1:
                 replyCount = thread.replyCount
                 #replyCount = Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).count()
-                replyLim = replyCount - self.userInst.repliesPerThread()
+                replyLim = replyCount - self.userInst.repliesPerThread
                 if replyLim < 0:
                     replyLim = 0
                 thread.omittedPosts = replyLim
@@ -205,7 +205,7 @@ class OrphieMainController(OrphieBaseController):
 
     def GetBoard(self, board, tempid, page = 0):
         if board == None:
-            if (g.OPT.framedMain and self.userInst and self.userInst.useFrame()):
+            if (g.OPT.framedMain and self.userInst and self.userInst.useFrame):
                 c.frameTarget = request.params.get('frameTarget', g.OPT.defaultFrame)
                 return self.render('frameMain')
             else:
@@ -347,19 +347,6 @@ class OrphieMainController(OrphieBaseController):
         c.profileChanged = False
         c.boardName = _('Profile')
         if request.POST.get('update', False):
-            """
-                self.userInst.hideLongComments(request.POST.get('hideLongComments', False))
-                self.userInst.useFrame(request.POST.get('useFrame', False))
-                self.userInst.useAjax(bool(request.POST.get('useAjax', False)))
-                self.userInst.expandImages(request.POST.get('expandImages', False))
-                self.userInst.mixOldThreads(bool(request.POST.get('mixOldThreads', False)))
-                self.userInst.useTitleCollapse(bool(request.POST.get('useTitleCollapse', False)))
-                self.userInst.hlOwnPosts(bool(request.POST.get('hlOwnPosts', False)))
-                self.userInst.invertSortingMode(bool(request.POST.get('invertSortingMode', False)))
-                self.userInst.oekUseSelfy(bool(request.POST.get('oekUseSelfy', False)))
-                self.userInst.oekUseAnim(bool(request.POST.get('oekUseAnim', False)))
-                self.userInst.oekUsePro(bool(request.POST.get('oekUsePro', False)))
-            """
             for valueName in self.userInst.booleanValues:
                 val = bool(request.POST.get(valueName, False))
                 setattr(self.userInst, valueName, val)
@@ -384,8 +371,8 @@ class OrphieMainController(OrphieBaseController):
                         val = proxy(val)
                     setattr(self.userInst, valueName, val)
 
-            lang = filterText(request.POST.get('lang', self.userInst.lang()))
-            c.reload = (lang != self.userInst.lang())
+            lang = filterText(request.POST.get('lang', self.userInst.lang))
+            c.reload = (lang != self.userInst.lang)
 
             homeExcludeTags = Tag.stringToTagList(request.POST.get('homeExclude', u''), False)
             #log.debug(homeExcludeTags)
@@ -475,7 +462,7 @@ class OrphieMainController(OrphieBaseController):
         else:
             page = 0
 
-        pp = self.userInst.threadsPerPage()
+        pp = self.userInst.threadsPerPage
         c.boardName = _("Search")
         c.query = text
 

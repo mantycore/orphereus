@@ -36,7 +36,7 @@ def requestHook(baseController):
         set_lang(oldLang)
 
     if baseController.userInst.isValid():
-        lang = baseController.userInst.lang()
+        lang = baseController.userInst.lang
         if not lang:
             lang = g.OPT.languages[0]
         c.jsFiles = ["full_%s.js" % lang]

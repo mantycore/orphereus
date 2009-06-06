@@ -83,9 +83,9 @@ class OrphiePublicController(OrphieBaseController):
 
     def captchaPic(self, cid):
         # TODO: fix shitty code
-        #log.debug('user cap lang: %s' %c.userInst.cLang())
+        #log.debug('user cap lang: %s' %c.userInst.cLang)
         if c.userInst.isValid():
-            h.setLang(str(c.userInst.cLang()))
+            h.setLang(str(c.userInst.cLang))
 
         sessionCid = None
         if session.has_key('anonCaptId'):
@@ -140,7 +140,7 @@ class OrphiePublicController(OrphieBaseController):
 
             if not captcha:
                 if c.userInst.isValid():
-                    oldLang = h.setLang(self.userInst.cLang())
+                    oldLang = h.setLang(self.userInst.cLang)
                 captcha = Captcha.create()
                 if c.userInst.isValid():
                     h.setLang(oldLang)
@@ -164,7 +164,7 @@ class OrphiePublicController(OrphieBaseController):
                     captcha = False
                     if not captchaOk:
                         if c.userInst.isValid():
-                            oldLang = h.setLang(self.userInst.cLang())
+                            oldLang = h.setLang(self.userInst.cLang)
                         captcha = Captcha.create()
                         if c.userInst.isValid():
                             h.setLang(oldLang)
@@ -183,7 +183,7 @@ class OrphiePublicController(OrphieBaseController):
 
             meta.Session.commit()
             #log.debug("redir: %s" % c.currentURL)
-            if (not g.OPT.framedMain or (user and not(user.useFrame()))): # (1) frame turned off
+            if (not g.OPT.framedMain or (user and not(user.useFrame))): # (1) frame turned off
                 if (g.OPT.allowAnonymous): # (1.1) remove navigation frame if exists
                     c.proceedRedirect = True
                     c.frameEnabled = False
@@ -233,7 +233,7 @@ class OrphiePublicController(OrphieBaseController):
                 session['cid'] = None
                 session.save()
             if not captchaOk:
-                oldLang = h.setLang(self.userInst.cLang())
+                oldLang = h.setLang(self.userInst.cLang)
                 captcha = Captcha.create()
                 h.setLang(oldLang)
                 session['cid'] = captcha.id
@@ -370,7 +370,7 @@ class OrphiePublicController(OrphieBaseController):
         else:
             title = _(u"%s: %s") % (g.settingsMap['title'].value, watch)
             filter = Post.buildMetaboardFilter(watch, user)[0]
-            tpp = user.threadsPerPage()
+            tpp = user.threadsPerPage
             posts = filter.order_by(Post.bumpDate.desc())[0 : tpp]
 
         feed = None

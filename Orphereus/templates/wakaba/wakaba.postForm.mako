@@ -15,7 +15,7 @@
 </a>
 </div>
 
-<div id="newThreadPlaceholder" ${c.userInst.useTitleCollapse() and 'style="display:none"' or ""}>
+<div id="newThreadPlaceholder" ${c.userInst.useTitleCollapse and 'style="display:none"' or ""}>
 <div class="postarea" id="postFormDiv">
 
 <table>
@@ -95,7 +95,7 @@
                     %for dest in c.destinations.keys():
                       %if dest != 3 or g.OPT.allowOverview:
                           <option value="${dest}"
-                          %if dest == c.userInst.defaultGoto():
+                          %if dest == c.userInst.defaultGoto:
                             selected="selected"
                           %endif
                           >
@@ -123,8 +123,8 @@
                    <td class="postblock">${_('Oekaki')}</td>
                    <td>
                     <select name="oekaki_painter">
-                        <option value="shiNormal" ${not c.userInst.oekUsePro() and 'selected="selected"' or ""}>Shi Normal</option>
-                        <option value="shiPro" ${c.userInst.oekUsePro() and 'selected="selected"' or ""}>Shi Pro</option>
+                        <option value="shiNormal" ${not c.userInst.oekUsePro and 'selected="selected"' or ""}>Shi Normal</option>
+                        <option value="shiPro" ${c.userInst.oekUsePro and 'selected="selected"' or ""}>Shi Pro</option>
                     </select>
 
                     ${_('Size')}:
@@ -132,8 +132,8 @@
                     &#215;
                     <input type="text" value="300" size="3" name="oekaki_y"/>
 
-                    <label><input type="checkbox" name="selfy" ${c.userInst.oekUseSelfy() and 'checked="checked"' or ""} /> ${_('Selfy')}</label>
-                    <label><input type="checkbox" name="animation" ${c.userInst.oekUseAnim() and 'checked="checked"' or ""} /> ${_('Animation')}</label>
+                    <label><input type="checkbox" name="selfy" ${c.userInst.oekUseSelfy and 'checked="checked"' or ""} /> ${_('Selfy')}</label>
+                    <label><input type="checkbox" name="animation" ${c.userInst.oekUseAnim and 'checked="checked"' or ""} /> ${_('Animation')}</label>
 
                     <input type="hidden" value="New" name="oekaki_type"/>
                     <input type="submit" value="${_('Draw')}"/>
@@ -183,7 +183,7 @@ ${g.OPT.enableFinalAnonymity and not g.OPT.hlAnonymizedPosts and _('(without mar
 <li>${_('IP logging')}:  ${not g.OPT.saveAnyIP and (g.OPT.allowAnonymous and _('only for anonymous') or _('disabled')) or _('for all users')}</li>
 <li>${_('Invisible bumps')}:  ${not c.invisibleBumps and _('disabled') or _('enabled')}</li>
 <li>${_('News site mode')}:  ${not g.OPT.newsSiteMode and _('off') or _('on')}
-%if c.userInst.invertSortingMode():
+%if c.userInst.invertSortingMode:
 ${_('(but inverted in your profile)')}
 %endif
 </li>

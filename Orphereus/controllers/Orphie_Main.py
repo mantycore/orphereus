@@ -348,8 +348,6 @@ class OrphieMainController(OrphieBaseController):
         c.boardName = _('Profile')
         if request.POST.get('update', False):
             lang = filterText(request.POST.get('lang', self.userInst.lang))
-            log.debug(lang)
-            log.debug(self.userInst.lang)
             c.reload = (h.makeLangValid(lang) != self.userInst.lang)
 
             for valueName in self.userInst.booleanValues:

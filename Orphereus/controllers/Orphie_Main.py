@@ -216,13 +216,21 @@ class OrphieMainController(OrphieBaseController):
                 ct = time.time()
             c.boardName = _('Home')
             c.hometemplates = []
+            homeModules = {}
             for plugin in g.plugins:
                 config = plugin.config
                 generator = config.get('homeGenerator', None)
                 template = config.get('homeTemplate', None)
                 if generator and template:
+                    homeModules[plugin.pluginId()] = (generator, template)
+
+            for module in g.OPT.homeModules:
+                if module in homeModules.keys():
+                    generator = homeModules[module][0]
+                    template = homeModules[module][1]
                     c.hometemplates.append(template)
                     generator(self, c)
+
             if g.OPT.devMode:
                 c.log.append("home: " + str(time.time() - ct))
             return self.render('home')

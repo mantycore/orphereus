@@ -53,7 +53,6 @@ core.disabledModules = mod1.py,mod2.py
 
 # Basic IB settings
 core.devMode = false
-jsCompressor.disableJSRegeneration = false
 # We will hash hashSecret by sha512, so no need to have it long
 core.hashSecret = smallSecret
 core.baseDomain= anoma.ch
@@ -80,7 +79,6 @@ core.allowCrosspostingSvc = true
 core.allowPureSvcTagline = true
 core.allowTagCreation = true
 core.newsSiteMode = false
-core.statsCacheTime = 180
 core.permissiveFileSizeConjunction = true
 core.boardWideProoflabels = true
 core.allowFeeds = true
@@ -91,6 +89,11 @@ core.frameLogo = logo.png
 core.defaultFrame = /!/
 core.obligatoryFrameCreation = false
 core.showShortStatistics = true
+core.homeModules = newsgenerator,statistics
+
+# plugins
+jsCompressor.disableJSRegeneration = false
+statistics.statsCacheTime = 180
 
 # Board defaults
 defaults.defThumbSize = 200

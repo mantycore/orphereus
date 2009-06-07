@@ -85,7 +85,7 @@ class OptHolder(object):
                             ]
 
         self.intValues = [('core',
-                               ('minPassLength', 'statsCacheTime',
+                               ('minPassLength',
                                )
                               ),
 
@@ -103,6 +103,7 @@ class OptHolder(object):
 
         self.strListValues = [('core',
                                ('disabledModules', 'templates', 'styles', 'languages',
+                                'homeModules',
                                )
                               ),
 

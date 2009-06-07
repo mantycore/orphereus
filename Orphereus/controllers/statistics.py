@@ -50,13 +50,19 @@ def statGenerator(controller, container):
     c.lastWeekMessages = vts.lastWeekMessages
     c.prevWeekMessages = vts.prevWeekMessages
 
-def pluginInit(globj = None):
-    if globj:
-        pass
+def pluginInit(g = None):
+    if g:
+        booleanValues = [('statistics',
+                               ('statsCacheTime',
+                               )
+                              ),
+                            ]
+
+        g.OPT.setValues(booleanValues, g.OPT.booleanGetter)
 
     config = {'homeTemplate' : "statistics", # hook for base controller constructor
               'homeGenerator' : statGenerator,
-             'name' : N_('Statistics for main page'),
+              'name' : N_('Statistics for main page'),
              }
 
     return PluginInfo('statistics', config)

@@ -90,6 +90,7 @@ core.useFrameLogo = true
 core.frameLogo = logo.png
 core.defaultFrame = /!/
 core.obligatoryFrameCreation = false
+core.showShortStatistics = true
 
 # Board defaults
 defaults.defThumbSize = 200
@@ -118,7 +119,6 @@ security.badUAs = Wget,Offline Explorer,Web Downloader,WebCopier,WebZIP,Teleport
 security.obfuscator=http://anonym.to/?$(url)s
 security.checkUAs = true
 security.spiderTrap = true
-security.interestingNumbers = true
 security.useAnalBarriering = true
 security.enableFinalAnonymity = true
 security.finalAHoursDelay = 24

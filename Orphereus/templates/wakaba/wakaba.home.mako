@@ -14,24 +14,18 @@
 ${_('Vital signs')}
 <br/><br/>
 <font size="-1">
-LKA: ${c.last1KUsersCount};
-PKA: ${c.prev1KUsersCount}
+${_("Unique users in last 1000 posts: %d") % c.last1KUsersCount}<br/>
+${_("Unique users in previous 1000 posts: %d") % c.prev1KUsersCount}
 </font>
 <br/>
-ADK: <span style="color: ${c.last1KUsersCount / (c.prev1KUsersCount + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.last1KUsersCount / (c.prev1KUsersCount + 0.01))}</span>
+${_("Rate:")} <span style="color: ${c.last1KUsersCount / (c.prev1KUsersCount + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.last1KUsersCount / (c.prev1KUsersCount + 0.01))}</span>
 <br/><br/>
 <font size="-1">
-LWA: ${c.lastWeekMessages};
-PWA: ${c.prevWeekMessages}
+${_("Posts during last week: %d") % c.lastWeekMessages}<br/>
+${_("Posts during previous week: %d") % c.prevWeekMessages}
 </font>
 <br/>
-ADW: <span style="color: ${c.lastWeekMessages / (c.prevWeekMessages + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.lastWeekMessages / (c.prevWeekMessages + 0.01))}</span>
-
-%if g.OPT.interestingNumbers and not c.userInst.Anonymous:
-<br/><br/>
-SID: ${abs(c.userInst.secid()*c.userInst.secid() - c.userInst.secid()*c.totalPostsCount)}
-%endif
-
+${_("Rate:")} <span style="color: ${c.lastWeekMessages / (c.prevWeekMessages + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.lastWeekMessages / (c.prevWeekMessages + 0.01))}</span>
 </div>
 </%def>
 
@@ -39,10 +33,11 @@ ${vitalSigns()}
 %endif
 
 <%def name="stats()" cached=${g.OPT.statsCacheTime>0} cache_timeout=${g.OPT.statsCacheTime} cache_type="memory">
-<h3>${_('Boards')}</h3>
-%if g.OPT.interestingNumbers and not c.userInst.Anonymous:
+<h3 class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('boardsStatistics');">${_('Boards')}</a></h3>
+<div id="boardsStatistics">
+%if g.OPT.showShortStatistics and not c.userInst.Anonymous:
 <span style="float: right;">
-<i>Interesting numbers: ${c.totalPostsCount} [${abs(c.userInst.secid()*c.userInst.secid() - c.totalPostsCount*c.totalPostsCount)}]</i>
+<i>${_("Total posts: %d; total users: %d (banned: %d, active: %d)") % (c.totalPostsCount, c.totalUsersCount, c.bannedUsersCount,  c.totalUsersCount - c.bannedUsersCount)} </i>
 </span>
 %endif
 
@@ -50,20 +45,27 @@ ${vitalSigns()}
 <i>${_('Let my BOARDS go!')}</i>
 <%include file="wakaba.homeStatTable.mako" args="boards=c.boards,totalThreads=c.totalBoardsThreads,totalPosts=c.totalBoardsPosts"/>
 %endif
+</div>
 
 %if c.stags:
-<h3>${_('Special tags')}</h3>
+<h3 class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('specialTagsStatistics');">${_('Special tags')}</a></h3>
+<div id="specialTagsStatistics">
 <i>${_('Useful stuff is so useful')}</i>
 <%include file="wakaba.homeStatTable.mako" args="boards=c.stags,totalThreads=c.totalSTagsThreads,totalPosts=c.totalSTagsPosts"/>
+</div>
 %endif
 
 %if c.tags:
-<h3>${_('Tags')}</h3>
-
+<h3 class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('tagsStatistics');">${_('Tags')}</a></h3>
+<div id="tagsStatistics"
+%if c.userInst.useTitleCollapse:
+style="display: none;"
+%endif
+>
 <i>${_('Every small TAG has hidden powers. And it has everything to become a BOARD')}</i>
 <%include file="wakaba.homeStatTable.mako" args="boards=c.tags,totalThreads=c.totalTagsThreads,totalPosts=c.totalTagsPosts"/>
+</div>
 %endif
-
 <hr />
 <br clear="all" />
 </%def>

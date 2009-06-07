@@ -50,7 +50,7 @@ class OptHolder(object):
                                 'allowFeeds', 'allowOverview', 'framedMain',
                                 'useFrameLogo', 'permissiveFileSizeConjunction',
                                 'allowAnonymousPosting', 'allowAnonProfile',
-                                'obligatoryFrameCreation', 'newsSiteMode',
+                                'obligatoryFrameCreation', 'newsSiteMode', 'showShortStatistics',
                                )
                               ),
 
@@ -62,7 +62,7 @@ class OptHolder(object):
 
                               ('security',
                                ('useXRealIP', 'saveAnyIP', 'refControlEnabled',
-                                'checkUAs', 'spiderTrap', 'interestingNumbers',
+                                'checkUAs', 'spiderTrap',
                                 'useAnalBarriering', 'enableFinalAnonymity', 'hlAnonymizedPosts',
                                ),
 

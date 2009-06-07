@@ -218,6 +218,7 @@ class OrphieMainController(OrphieBaseController):
             c.totalPostsCount = 0
             mstat = False
             vts = False
+            userStats = (0, 0)
             chTime = g.OPT.statsCacheTime
 
             if chTime > 0:
@@ -225,14 +226,19 @@ class OrphieMainController(OrphieBaseController):
                 cch = cm.get_cache('home_stats')
                 c.totalPostsCount = cch.get_value(key = "totalPosts", createfunc = Post.getPostsCount, expiretime = chTime)
                 mstat = cch.get_value(key = "mainStats", createfunc = Tag.getStats, expiretime = chTime)
+                userStats = cch.get_value(key = "userStats", createfunc = User.getStats, expiretime = chTime)
                 vts = cch.get_value(key = "vitalSigns", createfunc = Post.vitalSigns, expiretime = chTime)
             else:
                 c.totalPostsCount = Post.getPostsCount()
+                userStats = User.getStats()
                 mstat = Tag.getStats()
                 vts = Post.vitalSigns()
 
             def taglistcmp(a, b):
                 return cmp(b.count, a.count) or cmp(a.board.tag, b.board.tag)
+
+            c.totalUsersCount = userStats[0]
+            c.bannedUsersCount = userStats[1]
 
             c.boards = sorted(mstat.boards, taglistcmp)
             c.tags = sorted(mstat.tags, taglistcmp)

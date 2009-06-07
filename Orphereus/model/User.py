@@ -62,6 +62,10 @@ class User(AbstractUser):
         UserOptions.initDefaultOptions(self.options, meta.globj.OPT)
 
     @staticmethod
+    def getStats():
+        return (User.query.count(), User.query.filter(User.options.has(UserOptions.bantime > 0)).count())
+
+    @staticmethod
     def create(uid):
         user = User(uid)
         meta.Session.add(user)

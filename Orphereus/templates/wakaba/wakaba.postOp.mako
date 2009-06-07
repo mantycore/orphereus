@@ -48,6 +48,14 @@
 %if c.userInst.isAdmin() and c.userInst.canManageMappings():
     <a href="${h.url_for('hsMappings', act='show', id=thread.id)}">[Tags]</a>
 %endif
+
+%if c.userInst.isAdmin() and c.userInst.canManageMappings():
+%if thread.pinned:
+    <a href="${h.url_for('hsPin', act='unpin', id=thread.id)}">[Unpin]</a>
+%else:
+    <a href="${h.url_for('hsPin', act='pin', id=thread.id)}">[Pin]</a>
+%endif
+%endif
 &nbsp;
 </span>
 %if thread.title:
@@ -58,6 +66,8 @@
 <span
 %if getattr(thread, 'mixed', False):
  style="color: red;"
+%elif thread.pinned:
+ style="font-weight: bold;"
 %endif
 >
 ${thread.date}

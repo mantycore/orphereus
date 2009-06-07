@@ -60,6 +60,7 @@ def routingInit(map):
     map.connect('hsIpBanAttempt', '/holySynod/manageUsers/banAttempt/:pid', controller = 'Orphie_Admin', action = 'ipBanAttempt', requirements = dict(pid = '\d+'))
     map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/:pid', controller = 'Orphie_Admin', action = 'editUserByPost', requirements = dict(pid = '\d+'))
     map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller = 'Orphie_Admin', action = 'editUser', requirements = dict(uid = '\d+'))
+    map.connect('hsPin', '/holySynod/pinThread/:act/:id', controller = 'Orphie_Admin', action = 'pinThread', requirements = dict(id = '\d+'))
 
 def menuTest(id, baseController):
     user = baseController.userInst
@@ -334,6 +335,27 @@ class OrphieAdminController(OrphieBaseController):
                 else:
                     c.message = _("Can't delete extension. Uploaded files with this extension exists.")
         return self.render('manageExtension')
+
+    def pinThread(self, act, id):
+        if not self.userInst.canManageMappings():
+            c.errorText = _("No way! You aren't holy enough!")
+            return self.render('error')
+
+        c.boardName = _('Pin thread')
+        if isNumber(id):
+            id = int(id)
+            post = Post.getPost(id)
+            if post:
+                if act == 'pin':
+                    post.pinned = True
+                else:
+                    post.pinned = None
+                meta.Session.commit()
+                c.message = _('Post %d is %s now') % (id, post.pinned and "pinned" or "not pinned")
+                return self.render('managementMessage')
+
+        c.errorText = _("Incorrect thread number")
+        return self.render('error')
 
     def manageMappings(self, act, id, tagid):
         if not self.userInst.canManageMappings():

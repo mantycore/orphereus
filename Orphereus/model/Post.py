@@ -52,13 +52,15 @@ t_posts = sa.Table("post", meta.metadata,
     sa.Column("sage"     , sa.types.Boolean, nullable = True),
     sa.Column("uidNumber", sa.types.Integer, nullable = True),
     sa.Column("picid"    , sa.types.Integer, sa.ForeignKey('picture.id')),
-    sa.Column("date"     , sa.types.DateTime, nullable = False),
+    sa.Column("date"     , sa.types.DateTime, nullable = False, index = True),
     sa.Column("bumpDate", sa.types.DateTime, nullable = True, index = True),
     sa.Column("spoiler"  , sa.types.Boolean, nullable = True),
     sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
     sa.Column("removemd5"  , sa.types.String(32), nullable = True),
     sa.Column("ip"         , meta.UIntType, nullable = True),
+    sa.Column("pinned"  , sa.types.Boolean, nullable = True, index = True),
     )
+#sa.Index('idx_BumpPin', t_posts.c.bumpDate, t_posts.c.pinned)
 
 class Post(object):
     def __init__(self):

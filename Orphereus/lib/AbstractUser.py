@@ -130,4 +130,4 @@ class AbstractUser(object):
         raise EAbstractFunctionCall()
 
     def canRunMaintenance(self):
-        return self.options.canRunMaintenance
+        raise EAbstractFunctionCall()

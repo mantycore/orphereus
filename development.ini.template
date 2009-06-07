@@ -94,6 +94,8 @@ core.homeModules = newsgenerator,statistics
 # plugins
 jsCompressor.disableJSRegeneration = false
 statistics.statsCacheTime = 180
+newsgenerator.newsToShow = 4
+newsgenerator.newsTag = news
 
 # Board defaults
 defaults.defThumbSize = 200

@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 #  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
@@ -22,7 +22,7 @@
 
 from pylons.i18n import _, ungettext, N_
 
-decimalVersion = "1.1.0"
+decimalVersion = "1.1.1"
 engineVersion = "Orphereus %s" % decimalVersion
 
 #this are the default values, the real ones are stored in the database

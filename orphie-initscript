@@ -6,7 +6,7 @@ USER=orphie
 LOG=/var/log/orphie.error.log
 INI=development.ini 
 
-cd /var/py/ach
+cd $ORPHIEPATH
 
 case "$1" in
   start)

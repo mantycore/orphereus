@@ -8,24 +8,34 @@
 <hr style="clear: both;"/>
 
 %if g.OPT.vitalSigns:
-
 <%def name="vitalSigns()" cached=${g.OPT.statsCacheTime>0} cache_timeout=${g.OPT.statsCacheTime} cache_type="memory">
-<div class="theader">
-${_('Vital signs')}
-<br/><br/>
-<font size="-1">
-${_("Unique users in last 1000 posts: %d") % c.last1KUsersCount}<br/>
-${_("Unique users in previous 1000 posts: %d") % c.prev1KUsersCount}
-</font>
-<br/>
-${_("Rate:")} <span style="color: ${c.last1KUsersCount / (c.prev1KUsersCount + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.last1KUsersCount / (c.prev1KUsersCount + 0.01))}</span>
-<br/><br/>
-<font size="-1">
-${_("Posts during last week: %d") % c.lastWeekMessages}<br/>
-${_("Posts during previous week: %d") % c.prevWeekMessages}
-</font>
-<br/>
-${_("Rate:")} <span style="color: ${c.lastWeekMessages / (c.prevWeekMessages + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.lastWeekMessages / (c.prevWeekMessages + 0.01))}</span>
+
+<h3 class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('activityStatistics');">${_('Vital signs')}</a></h3>
+<div id="activityStatistics">
+<table class="hlTable" align="center">
+<thead>
+<tr>
+    <td>&nbsp;</td>
+    <td>${_("Last")}</td>
+    <td>${_("Previous")}</td>
+    <td>${_("Rate")}</td>
+</tr>    
+</thead>
+<tbody>
+<tr>
+    <td>${_("Unique users for 1000 posts")}</td>
+    <td>${c.last1KUsersCount}</td>
+    <td>${c.prev1KUsersCount}</td>
+    <td><span style="color: ${c.last1KUsersCount / (c.prev1KUsersCount + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.last1KUsersCount / (c.prev1KUsersCount + 0.01))}</span></td>
+</tr>
+<tr>
+    <td>${_("Posts during week")}</td>
+    <td>${c.lastWeekMessages}</td>
+    <td>${c.prevWeekMessages}</td>
+    <td><span style="color: ${c.lastWeekMessages / (c.prevWeekMessages + 0.01) > 1.0 and "green" or "red"}">${'%.2f' % (c.lastWeekMessages / (c.prevWeekMessages + 0.01))}</span></td>
+</tr>
+</tbody>
+</table>
 </div>
 </%def>
 

@@ -115,7 +115,7 @@ function popup_posts(options){
     }else if(options.ajax){
         var e = $(this)
         load_on(e)
-        $.ajax({type: 'get', url: "/ajax/getRenderedPost/"+m[0], success: function(html){
+        $.ajax({type: 'get', url: "${g.OPT.urlPrefix}ajax/getRenderedPost/"+m[0], success: function(html){
           load_off(e)
           html = html.replace(/<\/?table[^>]*>/,'')
           show_it(html);
@@ -271,7 +271,7 @@ YForm.Captcha.prototype = {
             me.error()
         }
 
-        $.ajax({type: 'get', url: "/ajax/checkCaptcha/" + this.captcha_id + '/' + this.captcha, success: callback, error: error });
+        $.ajax({type: 'get', url: "${g.OPT.urlPrefix}ajax/checkCaptcha/" + this.captcha_id + '/' + this.captcha, success: callback, error: error });
     }
 }
 
@@ -300,7 +300,7 @@ function expandable_threads(){
       me.data("orig_html", me.html())
       me.data("oldreplies", thread.find(".replies").html())
       me.html("<img src='"+window.loading_icon_path+"'>"+"${_('Loading')}"+"…")
-      thread.find(".replies").load("/ajax/getRenderedReplies/" + thread.attr("id").match(/\d+/)[0], function() {
+      thread.find(".replies").load("${g.OPT.urlPrefix}ajax/getRenderedReplies/" + thread.attr("id").match(/\d+/)[0], function() {
         me.parent().toggleClass("expanded")
         me.html("${_('Collapse thread')}")
         expandable_threads.mass_repair(thread.find(".replies"))
@@ -400,7 +400,7 @@ function getFullText(event, thread, post)
         loadingString = "<img class='comment_loading_img' src='"+window.loading_icon_path+"'> "+"${_('Loading')}"+"…"
     }
     $("a.expandPost[href=/" + thread + "#i" + post + "]").html(loadingString)
-    $.get('/ajax/getPost/' + post, {}, function(response)
+    $.get('${g.OPT.urlPrefix}ajax/getPost/' + post, {}, function(response)
     {
       $(bq).html(response);
     popup_posts.repair($(bq).find("a"))
@@ -412,7 +412,7 @@ function userFiltersAdd(event)
 {
   if ($('#newFilterInput').get()[0].value)
   {
-    $.get('/ajax/addUserFilter/' + $('#newFilterInput').get()[0].value, {}, function(response)
+    $.get('${g.OPT.urlPrefix}ajax/addUserFilter/' + $('#newFilterInput').get()[0].value, {}, function(response)
     {
       $(response).insertBefore('#newFilterTR')
     });
@@ -421,7 +421,7 @@ function userFiltersAdd(event)
 }
 function userFiltersEdit(event,fid)
 {
-  $.get('/ajax/editUserFilter/' + fid + '/' + $('#filterId' + fid + 'Input').get()[0].value, {}, function(response)
+  $.get('${g.OPT.urlPrefix}ajax/editUserFilter/' + fid + '/' + $('#filterId' + fid + 'Input').get()[0].value, {}, function(response)
   {
     $('#filterId' + fid + 'Input').get()[0].value = response
   });
@@ -429,7 +429,7 @@ function userFiltersEdit(event,fid)
 }
 function userFiltersDelete(event,fid)
 {
-  $.get('/ajax/deleteUserFilter/' + fid, {}, function(response)
+  $.get('${g.OPT.urlPrefix}ajax/deleteUserFilter/' + fid, {}, function(response)
   {
     $('#filterId' + fid).remove()
   });

@@ -125,12 +125,12 @@ function popup_posts(options){
   }
 
   $("blockquote a").filter(function(){
-    return $(this).attr('href').match(/^\/-?\d+(\#i\d+)?$/)
+    return $(this).attr('href').match(/^\/(.*\/)*-?\d+(\#i\d+)?$/)
   }).hover(hover_it,hide_it)
 
   popup_posts.repair = function(links){
     links.filter(function(){
-      return $(this).attr('href').match(/^\/-?\d+(\#i\d+)?$/)
+      return $(this).attr('href').match(/^\/(.*\/)*-?\d+(\#i\d+)?$/)
     }).hover(hover_it,hide_it)
   }
 }

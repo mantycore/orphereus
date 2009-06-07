@@ -225,9 +225,7 @@ class OrphiePublicController(OrphieBaseController):
         if session['openReg']:
             captchaOk = False
             if session.get('cid', False):
-                log.debug("session['cid']=%s" % session['cid'])
                 captcha = Captcha.getCaptcha(session['cid'])
-                log.debug("session[val]=%s" % captcha.text)
                 if captcha:
                     captchaOk = captcha.test(request.POST.get('captcha', False))
                 session['cid'] = None
@@ -242,7 +240,6 @@ class OrphiePublicController(OrphieBaseController):
 
         key = request.POST.get('key', '').encode('utf-8')
         key2 = request.POST.get('key2', '').encode('utf-8')
-
         if key and captchaOk:
             if len(key) >= g.OPT.minPassLength and key == key2:
                 uid = User.genUid(key)

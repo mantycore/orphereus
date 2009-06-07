@@ -65,8 +65,8 @@ class AbstractUser(object):
             if preparator:
                 val = preparator(val)
             return val
-        #else:
-        #    return object.__getattr__(self, name)
+        else:
+            return object.__getattr__(self, name)
 
     def __setattr__(self, name, value):
         if name in self.simpleValues:

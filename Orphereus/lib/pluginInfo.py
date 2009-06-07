@@ -13,7 +13,8 @@ class PluginInfo():
         if pluginConfig:
             self.config = pluginConfig
             self.__proutingInit = pluginConfig.get('routeinit', False)
-            self.__poutHook = pluginConfig.get('filters', False)
+            self.__pfilters = pluginConfig.get('filters', False)
+            self.__pGlobalFilters = pluginConfig.get('globfilters', False)
             self.__prequestHook = pluginConfig.get('basehook', False)
             self.__pormInit = pluginConfig.get('orminit', False)
             self.__pdeps = pluginConfig.get('deps', False)
@@ -38,8 +39,11 @@ class PluginInfo():
         return self.pnamespace
 
     # HOOKS BEGIN
-    def outHook(self):
-        return self.__poutHook
+    def filters(self):
+        return self.__pfilters
+
+    def globalFilters(self):
+        return self.__pGlobalFilters
 
     def routingInit(self):
         return self.__proutingInit

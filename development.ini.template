@@ -86,7 +86,8 @@ core.boardWideProoflabels = true
 core.allowFeeds = true
 core.allowOverview = true
 core.framedMain = true
-core.useFrameLogo = false
+core.useFrameLogo = true
+core.frameLogo = logo.png
 core.defaultFrame = /!/
 core.obligatoryFrameCreation = false
 

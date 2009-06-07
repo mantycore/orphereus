@@ -121,7 +121,8 @@ def pluginInit(globj = None):
     if globj:
         h.exampleHelper = exampleHelper
 
-    config = {'filters' : textFilter, # filter helper
+    config = {'filters' : (textFilter,), # filter helper
+              'globfilters' : (textFilter,), # filter helper
              'basehook' : requestHook, # hook for base controller constructor
              'routeinit' : routingInit, # routing initializer
              'orminit' : ormInit, # ORM initializer

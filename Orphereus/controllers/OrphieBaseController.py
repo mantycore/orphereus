@@ -206,7 +206,11 @@ class OrphieBaseController(BaseController):
 
         #TODO: it may be excessive
         if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/') == fpath.replace('\\', '/'):
-            return render('/' + tpath, **options)
+            output = render('/' + tpath, **options)
+            if g.globalFilterStack:
+                return h.applyFilters(output, True)
+            else:
+                return output
         else:
             log.debug ("Template problem:  %s" % page)
             abort(404)

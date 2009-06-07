@@ -38,14 +38,15 @@ log = logging.getLogger(__name__)
 
 from pylons.i18n import get_lang, set_lang
 
-def applyFilters(inp):
+def applyFilters(inp, glob = False):
     gvars = config['pylons.app_globals']
+    if glob:
+        filters = gvars.globalFilterStack
+    else:
+        filters = gvars.filterStack
     out = inp
-    for plugin in gvars.plugins:
-        filter = plugin.outHook()
-        if filter:
-            out = filter(out)
-
+    for filter in filters:
+        out = filter(out)
     return out
 
 def postKwargs(threadId, postId):

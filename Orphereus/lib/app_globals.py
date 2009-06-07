@@ -73,6 +73,7 @@ class OptHolder(object):
                                ('urlPrefix', 'hashSecret', 'baseDomain',
                                 'staticPathWeb', 'filesPathWeb', 'actuator',
                                 'defaultFrame', 'staticPath', 'uploadPath',
+                                'frameLogo'
                                )
                               ),
 
@@ -175,6 +176,7 @@ class Globals(object):
         self.plugins = []
         self.pluginsDict = {}
         self.filterStack = []
+        self.globalFilterStack = []
         self.enumeratePlugins('%s.controllers.' % appName)
         self.firstRequest = True
         self.version = engineVersion
@@ -277,10 +279,16 @@ class Globals(object):
         # creating filters stack
         log.info("Populating filter's stack...")
         for plugin in self.plugins:
-            filter = plugin.outHook()
-            if filter:
-                self.filterStack.append(filter)
-                log.info('Added text filter %s from %s' % (str(filter), plugin.pluginId()))
+            filters = plugin.filters()
+            if filters:
+                for filter in filters:
+                    self.filterStack.append(filter)
+                    log.info('Added text filter %s from %s' % (str(filter), plugin.pluginId()))
+            filters = plugin.globalFilters()
+            if filters:
+                for filter in filters:
+                    self.globalFilterStack.append(filter)
+                    log.info('Added global text filter %s from %s' % (str(filter), plugin.pluginId()))
 
         log.info('COMPLETED PLUGINS CONNECTION STAGE')
 

@@ -2,10 +2,10 @@
     %if g.OPT.devMode:
         [DEV]
     %endif
-	%if (g.OPT.useFrameLogo and not(c.boardName)):        
-		<div align="center"><a href="${g.OPT.defaultFrame}" target="board"><img src="/logo.png" alt="${c.title}" /></a></div>
+	%if (g.OPT.useFrameLogo and not(c.boardName)):
+		<div align="center"><a href="${g.OPT.defaultFrame}" target="board"><img src="${g.OPT.staticPathWeb}images/${g.OPT.frameLogo}" alt="${c.title}" /></a></div>
 	%endif
-	%if not(g.OPT.useFrameLogo and not(c.boardName)):        
+	%if not(g.OPT.useFrameLogo and not(c.boardName)):
 		${c.title}
 		%if c.boardName:
 			&mdash; ${c.boardName}
@@ -13,5 +13,5 @@
 			  (${c.page})
 			%endif
 		%endif
-	%endif	
+	%endif
 </div>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orphereus 1.1.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2009-06-08 06:20+0400\n"
+"POT-Creation-Date: 2009-06-08 06:49+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -95,7 +95,7 @@ msgstr ""
 #: Orphereus/controllers/Orphie_Admin.py:571
 #: Orphereus/controllers/Orphie_Admin.py:589
 #: Orphereus/controllers/Orphie_Maintenance.py:539
-#: Orphereus/controllers/jsCompressor.py:93
+#: Orphereus/controllers/jsCompressor.py:94
 msgid "No way! You aren't holy enough!"
 msgstr ""
 
@@ -781,23 +781,23 @@ msgstr ""
 msgid "Rebuild JavaScript"
 msgstr ""
 
-#: Orphereus/controllers/jsCompressor.py:72
+#: Orphereus/controllers/jsCompressor.py:73
 msgid "Javascript compression tool"
 msgstr ""
 
-#: Orphereus/controllers/jsCompressor.py:101
+#: Orphereus/controllers/jsCompressor.py:102
 msgid "Rebuild JavaScrtipt"
 msgstr ""
 
-#: Orphereus/controllers/jsCompressor.py:102
+#: Orphereus/controllers/jsCompressor.py:103
 msgid "Rebuild completed"
 msgstr ""
 
-#: Orphereus/controllers/newsfeed.py:42
+#: Orphereus/controllers/newsfeed.py:43
 msgid "News feed for main page"
 msgstr ""
 
-#: Orphereus/controllers/statistics.py:65
+#: Orphereus/controllers/statistics.py:66
 msgid "Statistics for main page"
 msgstr ""
 
@@ -1841,8 +1841,10 @@ msgstr ""
 
 #: Orphereus/templates/wakaba/wakaba.postOp.mako:131
 #, python-format
-msgid "%s posts omitted."
-msgstr ""
+msgid "%s post omitted."
+msgid_plural "%s posts omitted."
+msgstr[0] ""
+msgstr[1] ""
 
 #: Orphereus/templates/wakaba/wakaba.postOp.mako:131
 msgid "Expand thread"

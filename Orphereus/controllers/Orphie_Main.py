@@ -124,7 +124,7 @@ class OrphieMainController(OrphieBaseController):
                 sortClause = Post.date.desc()
             else:
                 sortClause = Post.bumpDate.desc()
-            c.threads = threadFilter.order_by(Post.pinned.desc()).order_by(sortClause)[page * tpp: (page + 1) * tpp]
+            c.threads = threadFilter.order_by(Post.pinned.desc(), sortClause)[page * tpp: (page + 1) * tpp]
             if self.userInst.mixOldThreads and not board == '@':
                 if g.OPT.newsSiteMode:
                     filterClause = Post.date < c.threads[-1].date

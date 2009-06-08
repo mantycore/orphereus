@@ -33,8 +33,9 @@ def pluginInit(globj = None):
                               ),
                             ]
 
-        globj.OPT.setValues(intValues, globj.OPT.intGetter)
-        globj.OPT.setValues(stringValues, globj.OPT.stringGetter)
+        if not globj.OPT.eggSetupMode:
+            globj.OPT.setValues(intValues, globj.OPT.intGetter)
+            globj.OPT.setValues(stringValues, globj.OPT.stringGetter)
 
     config = {'homeTemplate' : "newsfeed",
               'homeGenerator' : newsGenerator,

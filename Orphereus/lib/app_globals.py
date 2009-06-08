@@ -34,6 +34,7 @@ log = logging.getLogger("CORE")
 class OptHolder(object):
     def __init__(self, appName, eggSetupMode = False):
         #in most cases you don't need to change these paths
+        self.eggSetupMode = eggSetupMode
         self.appRoot = os.path.dirname(__file__).replace('/%s/lib' % appName, '').replace('\\%s\\lib' % appName, '')
         self.appPath = os.path.join(self.appRoot, appName)
         self.templPath = os.path.join(self.appPath, 'templates')

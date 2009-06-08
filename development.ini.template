@@ -96,6 +96,7 @@ jsCompressor.disableJSRegeneration = false
 statistics.statsCacheTime = 180
 newsgenerator.newsToShow = 4
 newsgenerator.newsTag = news
+newsgenerator.onlyAdminsCanPostNews = true
 
 # Board defaults
 defaults.defThumbSize = 200

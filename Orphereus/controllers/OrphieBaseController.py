@@ -219,7 +219,7 @@ class OrphieBaseController(BaseController):
         c.errorText = text
         if not header:
             header = _('Error')
-        c.pageTitle = header
+        c.boardName = header
         return self.render('error')
 
     def showStatic(self, page):

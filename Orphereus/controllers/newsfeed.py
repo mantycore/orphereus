@@ -19,7 +19,7 @@ def newsGenerator(controller, container):
         c.newsFeed = posts
 
 def restrictor(controller, request):
-    if not controller.userInst.isAdmin():
+    if g.OPT.onlyAdminsCanPostNews and (not controller.userInst.isAdmin()):
         log.critical('here')
         tagstr = filterText(request.POST.get('tags', ''))
         taglist = Tag.stringToTagList(tagstr, False)
@@ -30,6 +30,11 @@ def restrictor(controller, request):
 
 def pluginInit(globj = None):
     if globj:
+        booleanValues = [('newsgenerator',
+                               ('onlyAdminsCanPostNews',
+                               )
+                              ),
+                            ]
         intValues = [('newsgenerator',
                                ('newsToShow',
                                )
@@ -42,6 +47,7 @@ def pluginInit(globj = None):
                             ]
 
         if not globj.OPT.eggSetupMode:
+            globj.OPT.setValues(booleanValues, globj.OPT.booleanGetter)
             globj.OPT.setValues(intValues, globj.OPT.intGetter)
             globj.OPT.setValues(stringValues, globj.OPT.stringGetter)
 

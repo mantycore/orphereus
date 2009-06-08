@@ -143,7 +143,6 @@ from OrphieBaseController import *
 class ExampleController(OrphieBaseController):
     def __init__(self):
         OrphieBaseController.__init__(self)
-        #c.pageTitle = _('Test controller 2')
 
     def index(self):
         c.pageText = TextValue.get('indexContent').value

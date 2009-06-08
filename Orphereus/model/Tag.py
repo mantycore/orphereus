@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -37,10 +37,10 @@ log = logging.getLogger(__name__)
 from Orphereus.model import meta
 
 t_tags = sa.Table("tag", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("tag"      , sa.types.UnicodeText, nullable=False),
-    sa.Column("replyCount" , sa.types.Integer, nullable=False, server_default='0'),
-    sa.Column("threadCount" , sa.types.Integer, nullable=False, server_default='0'),
+    sa.Column("id"       , sa.types.Integer, primary_key = True),
+    sa.Column("tag"      , sa.types.UnicodeText, nullable = False),
+    sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
+    sa.Column("threadCount" , sa.types.Integer, nullable = False, server_default = '0'),
     )
 
 t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
@@ -50,6 +50,8 @@ t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
     )
 
 class Tag(object):
+    def __repr__(self):
+        return "Tag #%d, name = %s" % (self.id, self.tag)
     def __init__(self, tag):
         self.tag = tag
         self.replyCount = 0
@@ -61,7 +63,7 @@ class Tag(object):
 
     def getExactThreadCount(self):
         from Orphereus.model.Post import Post
-        return Post.query.filter(Post.tags.any(Tag.id==self.id)).count()
+        return Post.query.filter(Post.tags.any(Tag.id == self.id)).count()
     """
     def __le__(self, other):
         return cmp(self.tag, other.tag)
@@ -71,7 +73,7 @@ class Tag(object):
     """
     @staticmethod
     def getBoards():
-        return Tag.query.join('options').filter(TagOptions.persistent==True).order_by(TagOptions.sectionId).all()
+        return Tag.query.join('options').filter(TagOptions.persistent == True).order_by(TagOptions.sectionId).all()
 
     @staticmethod
     def getTag(tagName):
@@ -96,7 +98,7 @@ class Tag(object):
     @staticmethod
     def stringToTagList(tagstr, createNewTags = True):
         tags = []
-        tagsl= []
+        tagsl = []
         if tagstr:
             tagstr = tagstr.replace('&amp;', '&')
             regex = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""")
@@ -118,7 +120,7 @@ class Tag(object):
         result = []
         tags = string.split('|')
         for tag in tags:
-            aTag = Tag.query.options(eagerload('options')).filter(Tag.tag==tag).first()
+            aTag = Tag.query.options(eagerload('options')).filter(Tag.tag == tag).first()
             if aTag:
                 result.append(aTag.id)
         return result
@@ -132,8 +134,8 @@ class Tag(object):
             if t.options:
                 if optionsFlag:
                     options.imagelessThread = t.options.imagelessThread
-                    options.imagelessPost   = t.options.imagelessPost
-                    options.images   = t.options.images
+                    options.imagelessPost = t.options.imagelessPost
+                    options.images = t.options.images
                     options.enableSpoilers = t.options.enableSpoilers
                     options.maxFileSize = t.options.maxFileSize
                     options.minPicSize = t.options.minPicSize
@@ -167,7 +169,7 @@ class Tag(object):
 
         if optionsFlag:
             options.imagelessThread = meta.globj.OPT.defImagelessThread
-            options.imagelessPost   = meta.globj.OPT.defImagelessPost
+            options.imagelessPost = meta.globj.OPT.defImagelessPost
             options.images = meta.globj.OPT.defImages
             options.enableSpoilers = meta.globj.OPT.defEnableSpoilers
             options.canDeleteOwnThreads = meta.globj.OPT.defCanDeleteOwnThreads
@@ -182,9 +184,9 @@ class Tag(object):
     def getStats():
         boards = Tag.getAll()
         ret = empty()
-        ret.boards=[]
-        ret.tags=[]
-        ret.stags=[]
+        ret.boards = []
+        ret.tags = []
+        ret.stags = []
         ret.totalBoardsThreads = 0
         ret.totalBoardsPosts = 0
         ret.totalTagsThreads = 0
@@ -229,3 +231,7 @@ class Tag(object):
                     errorMsg = N_("Disabled")
                 problemTags.append(tag.tag + " [%s]" % errorMsg)
         return (tagsPermOk, problemTags)
+
+    @staticmethod
+    def tagsInConflict(options, postid):
+        return not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost))

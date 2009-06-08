@@ -94,8 +94,7 @@ class OrphieMainController(OrphieBaseController):
         if not g.OPT.allowTagCreation:
             for tag in tagList:
                 if not Tag.getTag(tag):
-                    c.errorText = _(u"Board creation denied: %s") % tag
-                    return self.render('error')
+                    return self.error(_(u"Board creation denied: %s") % tag)
         if isNumber(page):
             page = int(page)
         else:
@@ -115,8 +114,7 @@ class OrphieMainController(OrphieBaseController):
         count = threadFilter.count()
         tpp = self.userInst.threadsPerPage
         if page * tpp >= count and count > 0:
-            c.errorText = _("Incorrect page")
-            return self.render('error')
+            return self.error(_("Incorrect page"))
         self.paginate(count, page, tpp)
 
         if count > 1:
@@ -237,8 +235,7 @@ class OrphieMainController(OrphieBaseController):
 
         board = filterText(board)
         if not g.OPT.allowOverview and '~' in board:
-            c.errorText = _("Overview is disabled.")
-            return self.render('error')
+            return self.error(_("Overview is disabled."))
         c.PostAction = board
 
         if isNumber(page):
@@ -260,8 +257,7 @@ class OrphieMainController(OrphieBaseController):
                 redirect_to('thread', **h.postKwargs(thePost.parentid, thePost.id))
 
         if not thePost:
-            c.errorText = _("No such post exist.")
-            return self.render('error')
+            return self.error(_("No such post exist."))
 
         c.PostAction = thePost.id
         filter = Post.buildThreadFilter(self.userInst, thePost.id)
@@ -273,8 +269,7 @@ class OrphieMainController(OrphieBaseController):
             tags = tagsStr.split(' ')
             return redirect_to('boardBase', board = '%2B'.join(tags).encode('utf-8'))
         else:
-            c.errorText = _("You must specify post tagline.")
-            return self.render('error')
+            return self.error(_("You must specify post tagline."))
 
     def gotoDestination(self, post, postid):
         taglineSource = post
@@ -318,8 +313,7 @@ class OrphieMainController(OrphieBaseController):
 
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
-            c.errorText = _("Profile is not avaiable to Anonymous users.")
-            return self.render('error')
+            return self.error(_("Profile is not avaiable to Anonymous users."))
 
         c.templates = g.OPT.templates
         c.styles = g.OPT.styles
@@ -361,9 +355,7 @@ class OrphieMainController(OrphieBaseController):
                 elif passwdRet == False:
                     c.message = _('Incorrect security codes')
                 else:
-                    c.boardName = _('Error')
-                    c.errorText = passwdRet
-                    return self.render('error')
+                    return self.error(passwdRet)
                 meta.Session.commit()
 
             c.profileChanged = True
@@ -387,8 +379,7 @@ class OrphieMainController(OrphieBaseController):
 
     def DeletePost(self, board):
         if not self.currentUserCanPost():
-            c.errorText = _("Deletion disabled")
-            return self.render('error')
+            return self.error(_("Removing prohibited"))
 
         fileonly = 'fileonly' in request.POST
         redirectAddr = board
@@ -422,9 +413,7 @@ class OrphieMainController(OrphieBaseController):
 
         minLen = 3
         if not text or len(rawtext) < minLen:
-            c.boardName = _('Error')
-            c.errorText = _("Query too short (minimal length: %d)") % minLen
-            return self.render('error')
+            return self.error(_("Query too short (minimal length: %d)") % minLen)
 
         if isNumber(page):
             page = int(page)
@@ -531,8 +520,7 @@ class OrphieMainController(OrphieBaseController):
 
     def oekakiDraw(self, url, selfy, anim, tool):
         if not self.currentUserCanPost():
-            c.errorText = _("Posting is disabled")
-            return self.render('error')
+            return self.error(_("Posting is disabled"))
 
         c.url = url
         enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
@@ -576,8 +564,7 @@ class OrphieMainController(OrphieBaseController):
     def viewAnimation(self, source):
         post = Post.getPost(source)
         if not post or not post.file or not post.file.animpath:
-            c.errorText = _("No animation associated with this post")
-            return self.render('error')
+            return self.error(_("No animation associated with this post"))
 
         c.pchPath = h.modLink(post.file.animpath, c.userInst.secid())
         return self.render('shiAnimation')
@@ -678,8 +665,7 @@ class OrphieMainController(OrphieBaseController):
         def ajaxError(message):
             return message
         def usualError(message):
-            c.errorText = message
-            return self.render('error')
+            return self.error(message)
 
         errorHandler = usualError
         if ajaxRequest:
@@ -810,7 +796,7 @@ class OrphieMainController(OrphieBaseController):
                 return errorHandler(_("Tags restrictions violations:<br/> %s") % ('<br/>'.join(permCheckRes[1])))
 
         options = Tag.conjunctedOptionsDescript(tags)
-        if not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
+        if Tag.tagsInConflict(options, postid): #not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
             return errorHandler(_("Unacceptable combination of tags"))
 
         postMessageInfo = None
@@ -858,8 +844,7 @@ class OrphieMainController(OrphieBaseController):
             existentPic = fileDescriptors[2]
             errorMessage = fileDescriptors[3]
             if errorMessage:
-                c.errorText = errorMessage
-                return self.render('error')
+                return self.error(errorMessage)
 
         if picInfo:
             if not options.images:

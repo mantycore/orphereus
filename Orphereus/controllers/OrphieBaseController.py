@@ -215,6 +215,13 @@ class OrphieBaseController(BaseController):
             log.debug ("Template problem:  %s" % page)
             abort(404)
 
+    def error(self, text, header = None):
+        c.errorText = text
+        if not header:
+            header = _('Error')
+        c.pageTitle = header
+        return self.render('error')
+
     def showStatic(self, page):
         c.boardName = _(page)
         return self.render('static.%s' % page)

@@ -61,12 +61,9 @@ class OrphiePublicController(OrphieBaseController):
 
     def ipBanned(self):
         if c.ban:
-            c.errorText = _('You are banned on %s for %s days for the following reason:<br/>%s') % (c.ban.date, c.ban.period, c.ban.reason)
-            return self.render('error')
+            return self.error(_('You are banned on %s for %s days for the following reason:<br/>%s') % (c.ban.date, c.ban.period, c.ban.reason))
         else:
-            c.boardName = _('Error')
-            c.errorText = _("ORLY?")
-            return self.render('error')
+            return self.error(_("ORLY?"))
 
     def login(self, user):
         if g.OPT.allowLogin:
@@ -112,9 +109,7 @@ class OrphiePublicController(OrphieBaseController):
             c.currentURL = u''
 
         if not g.OPT.allowLogin:
-            c.boardName = _('Error')
-            c.errorText = _("Authorization disabled")
-            return self.render('error')
+            return self.error(_("Authorization disabled"))
 
         ip = getUserIp()
         tracker = LoginTracker.getTracker(ip)
@@ -248,9 +243,7 @@ class OrphiePublicController(OrphieBaseController):
                     user.ban(7777, _("Your Security Code was used during registration by another user. Contact administrator immediately please."), -1)
                     del session['invite']
                     del session['iid']
-                    c.boardName = _('Error')
-                    c.errorText = _("You entered already existing password. Previous account was banned. Contact administrator please.")
-                    return self.render('error')
+                    return self.error(_("You entered already existing password. Previous account was banned. Contact administrator please."))
 
                 user = User.create(uid)
                 regId = user.secid() * user.secid() - user.secid()
@@ -269,15 +262,11 @@ class OrphiePublicController(OrphieBaseController):
             c.boardName = _('Banned')
             return self.render('banned')
         else:
-            c.boardName = _('Error')
-            c.errorText = _("ORLY?")
-            return self.render('error')
+            return self.error(_("ORLY?"))
 
     def UnknownAction(self):
-        c.userInst = self.userInst
-        c.boardName = _('Error')
-        c.errorText = _("Excuse me, WTF are you?")
-        return self.render('error')
+        c.userInst = self.userInstj
+        return self.error(_("Excuse me, WTF are you?"))
 
     def uaInfo(self):
         out = ''

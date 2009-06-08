@@ -49,6 +49,7 @@ def routingInit(map):
     map.connect('hsInvite', '/holySynod/makeInvite', controller = 'Orphie_Admin', action = 'makeInvite')
     map.connect('hsSettings', '/holySynod/manageSettings', controller = 'Orphie_Admin', action = 'manageSettings')
     map.connect('hsMappings', '/holySynod/manageMappings/:act/:id/:tagid', controller = 'Orphie_Admin', action = 'manageMappings', act = 'show', id = 0, tagid = 0, requirements = dict(id = '\d+', tagid = '\d+'))
+    map.connect('hsMergeTags', '/holySynod/mergeTags/:act', controller = 'Orphie_Admin', action = 'mergeTags', act = None)
     map.connect('hsBans', '/holySynod/manageBans', controller = 'Orphie_Admin', action = 'manageBans')
     map.connect('hsBanEdit', '/holySynod/manageBans/edit/:id', controller = 'Orphie_Admin', id = 0, action = 'editBan')
     map.connect('hsExtensions', '/holySynod/manageExtensions', controller = 'Orphie_Admin', action = 'manageExtensions')
@@ -76,6 +77,8 @@ def menuTest(id, baseController):
         return user.canManageExtensions()
     if id == 'id_hsMappings':
         return user.canManageMappings()
+    if id == 'id_hsMergeTags':
+        return user.canManageMappings()
     if id == 'id_hsInvite':
         return user.canMakeInvite()
     if id == 'id_hsViewLogBase':
@@ -98,6 +101,7 @@ def menuItems(menuId):
                 MenuItem('id_hsInvite', _("Generate invite"), h.url_for('hsInvite'), 270, 'id_adminUsers'),
                 MenuItem('id_hsBoards', _("Manage boards"), h.url_for('hsBoards'), 210, 'id_adminPosts'),
                 MenuItem('id_hsMappings', _("Manage mappings"), h.url_for('hsMappings'), 250, 'id_adminPosts'),
+                MenuItem('id_hsMergeTags', _("Merge tags"), h.url_for('hsMergeTags'), 270, 'id_adminPosts'),
                 MenuItem('id_hsViewLogBase', _("View logs"), h.url_for('hsViewLogBase'), 260, False),
                 )
 
@@ -142,15 +146,13 @@ class OrphieAdminController(OrphieBaseController):
 
         if request.POST.get('update', False):
             if not self.userInst.canChangeSettings():
-                c.errorText = _("No way! You aren't holy enough!")
-                return self.render('error')
+                return self.error(_("No way! You aren't holy enough!"))
 
             for s in request.POST:
                 if s in settingsDef:
                     val = filterText(request.POST[s])
                     if settingsDescription[s][1] == int and not isNumber(val):
-                        c.errorText = _("'%s' isn't correct number, but '%s' must be an integer number.") % (val, s)
-                        return self.render('error')
+                        return self.error(_("'%s' isn't correct number, but '%s' must be an integer number.") % (val, s))
                     if settingsDescription[s][1] == list:
                         valarr = filter(lambda l: l, re.split('\r+|\n+|\r+\n+', val))
                         val = '|'.join(valarr)
@@ -174,8 +176,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def invitePage(self):
         if not self.userInst.canMakeInvite():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.boardName = _('Invites')
         c.currentItemId = 'id_hsInvite'
@@ -184,8 +185,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def makeInvite(self):
         if not self.userInst.canMakeInvite():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.boardName = _('Invite creation')
         c.currentItemId = 'id_hsInvite'
@@ -201,8 +201,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def manageBans(self):
         if not self.userInst.canManageUsers():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.boardName = _('Bans management')
         c.currentItemId = 'id_hsBans'
@@ -215,8 +214,7 @@ class OrphieAdminController(OrphieBaseController):
     def editBan(self, id):
         #log.debug('ban')
         if not self.userInst.canManageUsers():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsBans'
         c.boardName = _('Editing ban %s') % id
@@ -242,8 +240,7 @@ class OrphieAdminController(OrphieBaseController):
                     ip = h.dottedToInt(filterText(request.POST.get('ip', 0)))
                     mask = h.dottedToInt(filterText(request.POST.get('mask', 0)))
                 except:
-                    c.errorText = _("Please check the format of IP addresses and masks.")
-                    return self.render('error')
+                    return self.error(_("Please check the format of IP addresses and masks."))
 
                 type = request.POST.get('type', False) == 'on'
                 enabled = request.POST.get('enabled', False) == 'on'
@@ -268,8 +265,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def manageExtensions(self):
         if not self.userInst.canManageExtensions():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsExtensions'
         c.boardName = _('Extensions management')
@@ -279,8 +275,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def editExtension(self, name):
         if not self.userInst.canManageExtensions():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsExtensions'
         c.boardName = _('Editing extension %s') % name
@@ -289,8 +284,7 @@ class OrphieAdminController(OrphieBaseController):
 
         name = filterText(request.POST.get('ext', name))
         if len(name) > 10:
-            c.errorText = _('Too long extension')
-            return self.render('error')
+            return self.error(_('Too long extension'))
 
         c.exists = True
         ext = Extension.getExtension(name)
@@ -338,8 +332,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def pinThread(self, act, id):
         if not self.userInst.canManageMappings():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.boardName = _('Pin thread')
         if isNumber(id):
@@ -354,13 +347,48 @@ class OrphieAdminController(OrphieBaseController):
                 c.message = _('Post %d is %s now') % (id, post.pinned and "pinned" or "not pinned")
                 return self.render('managementMessage')
 
-        c.errorText = _("Incorrect thread number")
-        return self.render('error')
+        return self.error(_("Incorrect thread number"))
+
+    def mergeTags(self, act):
+        if not self.userInst.canManageMappings():
+            return self.error(_("No way! You aren't holy enough!"))
+
+        if act == 'merge':
+            source = filterText(request.POST.get('sourceTags', '')).strip()
+            target = filterText(request.POST.get('targetTag', '')).strip()
+            if source:
+                targetTag = Tag.getTag(target)
+                source = source.split(',')
+                sourceTags = Tag.getAllByNames(source)
+                if targetTag and sourceTags:
+                    if not targetTag in sourceTags:
+                        #TODO: implement Post.addTag, Post.removeTag
+                        c.result = []
+                        for tag in sourceTags:
+                            posts = Post.filter(and_(Post.parentid == None, Post.tags.any(Tag.id == tag.id))).all()
+                            for post in posts:
+                                tmp = [post.id, str(post.tags)]
+                                tags = post.tags
+                                tags.remove(tag)
+                                tags.append(targetTag)
+                                tmp.append(str(tags))
+                                options = Tag.conjunctedOptionsDescript(tags)
+                                if not Tag.tagsInConflict(options, None):
+                                    tmp.append(_('Accepted'))
+                                else:
+                                    tmp.append(_("Declined: unacceptable combination of tags"))
+                                c.result.append(tmp)
+                    else:
+                        return self.error(_("Source tags contains target tag"))
+                else:
+                    return self.error(_("Incorrect source or target"))
+        c.currentItemId = 'id_hsMergeTags'
+        c.boardName = _('Merge tags')
+        return self.render('mergeTags')
 
     def manageMappings(self, act, id, tagid):
         if not self.userInst.canManageMappings():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsMappings'
         c.boardName = _('Manage mappings')
@@ -383,8 +411,7 @@ class OrphieAdminController(OrphieBaseController):
                     if tag:
                         tagid = tag.id
         else:
-            c.errorText = _("Incorrect input values")
-            return self.render('error')
+            return self.error(_("Incorrect input values"))
 
         if act == 'show':
             if id and id > 0:
@@ -392,8 +419,7 @@ class OrphieAdminController(OrphieBaseController):
                 if post and not post.parentid:
                     c.post = post
                 else:
-                    c.errorText = _("This is not op-post")
-                    return self.render('error')
+                    return self.error(_("This is not op-post"))
 
             return self.render('manageMappings')
         elif act in ['del', 'add']:
@@ -407,8 +433,7 @@ class OrphieAdminController(OrphieBaseController):
                         toLog(LOG_EVENT_EDITEDPOST, _('Removed tag %s from post %d') % (tag.tag, post.id))
                         post.tags.remove(tag)
                     else:
-                        c.errorText = _("Can't delete last tag!")
-                        return self.render('error')
+                        return self.error(_("Can't delete last tag!"))
                 elif act == 'add':
                     tag = Tag.getById(tagid)
                     if tag:
@@ -417,8 +442,7 @@ class OrphieAdminController(OrphieBaseController):
                         tag.threadCount += 1
                         tag.replyCount += post.replyCount
                     else:
-                        c.errorText = _("Non-existent tag")
-                        return self.render('error')
+                        return self.error(_("Non-existent tag"))
 
                 meta.Session.commit()
 
@@ -429,8 +453,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def manageBoards(self):
         if not self.userInst.canManageBoards():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsBoards'
         c.boardName = _('Boards management')
@@ -457,8 +480,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def editBoard(self, tag):
         if not self.userInst.canManageBoards():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsBoards'
         c.boardName = _('Edit board')
@@ -527,8 +549,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def manageUsers(self):
         if not self.userInst.canManageUsers():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsUsers'
         c.boardName = _('Users management')
@@ -547,8 +568,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def editUserAttempt(self, pid):
         if not self.userInst.canManageUsers():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsUsers'
         c.boardName = _('User edit attemption')
@@ -558,8 +578,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def ipBanAttempt(self, pid):
         if not self.userInst.canManageUsers():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         # TODO: perform reason request
         post = Post.getPost(pid)
@@ -568,8 +587,7 @@ class OrphieAdminController(OrphieBaseController):
 
     def editUserByPost(self, pid):
         if not self.userInst.canManageUsers():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsUsers'
         c.boardName = _('User management')
@@ -581,13 +599,11 @@ class OrphieAdminController(OrphieBaseController):
             toLog(LOG_EVENT_USER_GETUID, _("Viewed UID for user '%s' from post '%s'. Reason: %s") % (post.uidNumber, post.id, reason))
             return redirect_to('hsUserEdit', uid = post.uidNumber)
         else:
-            c.errorText = _("Post not found")
-            return self.render('error')
+            return self.error(_("Post not found"))
 
     def editUser(self, uid):
         if not self.userInst.canManageUsers():
-            c.errorText = _("No way! You aren't holy enough!")
-            return self.render('error')
+            return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsUsers'
         c.boardName = 'Edit user %s' % uid
@@ -661,9 +677,7 @@ class OrphieAdminController(OrphieBaseController):
                 elif passwdRet == False:
                     c.message = _('Incorrect security codes')
                 else:
-                    c.boardName = _('Error')
-                    c.errorText = passwdRet
-                    return self.render('error')
+                    return self.error(passwdRet)
             elif request.POST.get('delete', False):
                 reason = filterText(request.POST.get('deletereason', u''))
                 deleteLegacy = request.POST.get('deleteLegacy', False)
@@ -689,6 +703,5 @@ class OrphieAdminController(OrphieBaseController):
                     c.message = _("You haven't rights to delete user")
             return self.render('manageUser')
         else:
-            c.errorText = _('No such user exists.')
-            return self.render('error')
+            return self.error(_('No such user exists.'))
 

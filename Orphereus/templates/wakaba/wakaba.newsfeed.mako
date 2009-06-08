@@ -1,5 +1,5 @@
 %if c.newsFeed:
-<h3 class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('lastNews');">${_('Last news')}</a></h3>
+<h3 class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('lastNews');">${_('Latest news')}</a></h3>
 <div align="center">
 <div id="lastNews" style="width: 90%; text-align: left;" >
     %for post in c.newsFeed:
@@ -22,7 +22,7 @@
         <blockquote class="postbody" id="quickReplyNode${post.id}">${post.message}</blockquote>
             <br clear="all" />
         <a class="adminMenu" style="display: block; text-align: center;" href="${h.postUrl(post.id, post.id)}">
-            #${g.OPT.secondaryIndex and post.secondaryIndex or post.id} ${"(%d replies)" % post.replyCount}
+            #${g.OPT.secondaryIndex and post.secondaryIndex or post.id} (${ungettext('%d reply', '%d replies', post.replyCount) % post.replyCount})
         </a>
     </div>
     %endfor

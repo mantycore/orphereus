@@ -67,7 +67,8 @@ def pluginInit(g = None):
                               ),
                             ]
 
-        g.OPT.setValues(booleanValues, g.OPT.booleanGetter)
+        if not g.OPT.eggSetupMode:
+            g.OPT.setValues(booleanValues, g.OPT.booleanGetter)
 
     config = {'name' : N_('Javascript compression tool'),
               'routeinit' : routingInit,

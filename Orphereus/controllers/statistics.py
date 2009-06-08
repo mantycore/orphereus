@@ -58,7 +58,8 @@ def pluginInit(g = None):
                               ),
                             ]
 
-        g.OPT.setValues(booleanValues, g.OPT.booleanGetter)
+        if not g.OPT.eggSetupMode:
+            g.OPT.setValues(booleanValues, g.OPT.booleanGetter)
 
     config = {'homeTemplate' : "statistics", # hook for base controller constructor
               'homeGenerator' : statGenerator,

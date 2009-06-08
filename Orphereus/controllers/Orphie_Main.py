@@ -699,6 +699,14 @@ class OrphieMainController(OrphieBaseController):
         if not self.currentUserCanPost():
             return errorHandler(_("Posting is disabled"))
 
+        for plugin in g.plugins:
+            config = plugin.config
+            postingRestrictor = config.get('postingRestrictor', None)
+            if postingRestrictor:
+                prohibition = postingRestrictor(self, request)
+                if prohibition:
+                    return errorHandler(prohibition)
+
         baseEncoded = 'baseAndUrlEncoded' in request.POST
         def normalFilter(text):
             return filterText(text)

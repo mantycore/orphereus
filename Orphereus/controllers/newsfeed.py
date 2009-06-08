@@ -21,7 +21,7 @@ def newsGenerator(controller, container):
 def restrictor(controller, request):
     if not controller.userInst.isAdmin():
         log.critical('here')
-        tagstr = filterText(request.POST.get('tags', False))
+        tagstr = filterText(request.POST.get('tags', ''))
         taglist = Tag.stringToTagList(tagstr, False)
         for tag in taglist:
             if tag.tag == g.OPT.newsTag:

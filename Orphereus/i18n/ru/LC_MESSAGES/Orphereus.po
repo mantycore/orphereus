@@ -784,7 +784,6 @@ msgid "Example"
 msgstr "Пример"
 
 #: Orphereus/controllers/jsCompressor.py:53
-#, fuzzy
 msgid "Plug-in actions"
 msgstr "Дополнительно"
 
@@ -1629,7 +1628,7 @@ msgid "Latest news"
 msgstr "Новости"
 
 #: Orphereus/templates/wakaba/wakaba.newsfeed.mako:25
-#, fuzzy, python-format
+#, python-format
 msgid "%d reply"
 msgid_plural "%d replies"
 msgstr[0] "%d ответ"

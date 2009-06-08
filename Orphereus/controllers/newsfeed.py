@@ -18,12 +18,10 @@ def newsGenerator(controller, container):
         posts = posts[0:g.OPT.newsToShow]
         c.newsFeed = posts
 
-def restrictor(controller, request):
-    if g.OPT.onlyAdminsCanPostNews and (not controller.userInst.isAdmin()):
-        log.critical('here')
-        tagstr = filterText(request.POST.get('tags', ''))
-        taglist = Tag.stringToTagList(tagstr, False)
-        for tag in taglist:
+def restrictor(controller, request, **kwargs):
+    tags = kwargs.get('tags', None)
+    if tags and g.OPT.onlyAdminsCanPostNews and (not controller.userInst.isAdmin()):
+        for tag in tags:
             if tag.tag == g.OPT.newsTag:
                 return _("Posting into board /%s/ is prohibited" % g.OPT.newsTag)
     return None

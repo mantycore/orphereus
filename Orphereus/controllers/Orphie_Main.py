@@ -661,7 +661,7 @@ class OrphieMainController(OrphieBaseController):
     def ajaxPostThread(self, board):
         return self.processPost(board = board, ajaxRequest = True)
 
-    def processPost(self, postid = 0, board = u'', ajaxRequest = False):
+    def processPost(self, postid = None, board = u'', ajaxRequest = False):
         def ajaxError(message):
             return message
         def usualError(message):
@@ -685,13 +685,10 @@ class OrphieMainController(OrphieBaseController):
         if not self.currentUserCanPost():
             return errorHandler(_("Posting is disabled"))
 
-        for plugin in g.plugins:
-            config = plugin.config
-            postingRestrictor = config.get('postingRestrictor', None)
-            if postingRestrictor:
-                prohibition = postingRestrictor(self, request)
-                if prohibition:
-                    return errorHandler(prohibition)
+        if isNumber(postid):
+            postid = int(postid)
+        else:
+            postid = None
 
         baseEncoded = 'baseAndUrlEncoded' in request.POST
         def normalFilter(text):
@@ -704,6 +701,7 @@ class OrphieMainController(OrphieBaseController):
         textFilter = normalFilter
         if baseEncoded:
             textFilter = base64TextFilter
+
 
         # VERY-VERY BIG CROCK OF SHIT !!!
         # VERY-VERY BIG CROCK OF SHIT !!!
@@ -748,13 +746,13 @@ class OrphieMainController(OrphieBaseController):
 
         thread = None
         tags = []
-        if postid:
+        if postid != None:
             thePost = Post.getPost(postid)
 
             if not thePost:
                 return errorHandler(_("Can't post into non-existent thread"))
 
-            if thePost.parentid:
+            if thePost.parentid != None:
                 thread = thePost.parentPost
             else:
                 thread = thePost
@@ -794,6 +792,14 @@ class OrphieMainController(OrphieBaseController):
             permCheckRes = Tag.checkForConfilcts(tags)
             if not permCheckRes[0]:
                 return errorHandler(_("Tags restrictions violations:<br/> %s") % ('<br/>'.join(permCheckRes[1])))
+
+        for plugin in g.plugins:
+            config = plugin.config
+            postingRestrictor = config.get('postingRestrictor', None)
+            if postingRestrictor:
+                prohibition = postingRestrictor(self, request, thread = thread, tags = tags)
+                if prohibition:
+                    return errorHandler(prohibition)
 
         options = Tag.conjunctedOptionsDescript(tags)
         if Tag.tagsInConflict(options, postid): #not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):

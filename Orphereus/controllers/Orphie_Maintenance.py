@@ -66,6 +66,7 @@ class MaintenanceWorker(object):
     obligatoryActions = ['banRotate', 'destroyTrackers', 'destroyInvites', 'cleanOekaki']
     optionalActions = ['integrityChecks', 'updateCaches', 'updateStats', 'banInactive',
                        'removeEmptyTags', 'reparseAll', 'sortUploads',
+                       'findOrphanedPosts'
                       ]
     descriptions = {'banRotate' : N_('Remove old bans'),
                     'destroyTrackers' : N_('Destroy IP trackers (older than one day)'),
@@ -79,6 +80,7 @@ class MaintenanceWorker(object):
                     'removeEmptyTags' : N_('Remove empty tags and fix incorrect XHTML if any'),
                     'reparseAll' : N_('Reparse posts which can be reparsed'),
                     'sortUploads' : N_('Sort uploads'),
+                    'findOrphanedPosts' : N_('Search for orphaned posts and group them into thread #0'),
                     }
 
     def banRotate(self):
@@ -424,6 +426,43 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
+    def findOrphanedPosts(self):
+        def createOrphanedThread():
+            orphanedThread = Post()
+            orphanedThread.message = u'Orphereus maintenance subsystem'
+            orphanedThread.title = u'Orphaned posts'
+            orphanedThread.date = datetime.datetime(1970, 1, 1)
+            orphanedThread.bumpDate = orphanedThread.date
+
+            orphanedThread.messageInfo = u'Service thread'
+            meta.Session.commit()
+            orphanedThread.id = 0
+            meta.Session.commit()
+            return orphanedThread
+
+        mtnLog = []
+        mtnLog.append(LogElement('Task', 'Searching for orphaned posts...'))
+        self.formatPostReference = OrphieBaseController.formatPostReference
+        posts = Post.query.all()
+        for post in posts:
+            parent = None
+            if post.parentid != None:
+                parent = Post.getPost(post.parentid)
+            orphaned = post.parentid != None and not parent
+            treelike = post.parentid != None and parent and parent.parentid != None
+            if orphaned or treelike:
+                orphanedThread = Post.getPost(0)
+                if not orphanedThread:
+                    orphanedThread = createOrphanedThread()
+                    mtnLog.append(LogElement('Info', 'Thread #0 created'))
+                post.parentid = 0
+                if orphaned:
+                    mtnLog.append(LogElement('Info', 'Orphaned post #%d moved into thread #0' % post.id))
+                if treelike:
+                    mtnLog.append(LogElement('Info', 'Post #%d was tree-like reply to reply and moved into thread #0' % post.id))
+        mtnLog.append(LogElement('Task', 'Done'))
+        return mtnLog
+
 from paste.script import command
 from Orphereus.config.environment import load_environment
 import Orphereus.lib.app_globals as app_globals
@@ -481,7 +520,7 @@ class MaintenanceCommand(command.Command):
                     try:
                         log += getattr(worker, action)()
                     except Exception, e:
-                        errorMsg = "Exception occured: %s" % str(e)
+                        errorMsg = "Exception occured in %s: %s" % (action, str(e))
                         if printMessages:
                             print errorMsg
                         toLog(LOG_EVENT_MTN_ERROR, errorMsg)
@@ -510,6 +549,12 @@ def menuItems(menuId):
                 )
     return menu
 
+def restrictor(controller, request, **kwargs):
+    thread = kwargs.get("thread", None)
+    if thread and thread.id == 0:
+        return _("Posting into service thread #0 is prohibited")
+    return None
+
 def pluginInit(globj = None):
     if globj:
         pass
@@ -520,6 +565,7 @@ def pluginInit(globj = None):
              'routeinit' : routingInit,
              'menutest' : menuTest,
              'menuitems' : menuItems,
+             'postingRestrictor' : restrictor,
              }
 
     return PluginInfo('maintenance', config)

@@ -15,9 +15,6 @@ def newsGenerator(controller, container):
     c.newsFeed = []
     if count > 0:
         posts = posts[0:g.OPT.newsToShow]
-        for post in posts:
-            #post.hidden = False
-            log.warning(post.file)
         c.newsFeed = posts
 
 def pluginInit(globj = None):

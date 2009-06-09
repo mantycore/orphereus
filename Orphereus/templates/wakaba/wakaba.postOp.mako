@@ -43,7 +43,9 @@
 %endif
 %if c.userInst.isAdmin() and c.userInst.canManageUsers():
     <a href="${h.url_for('hsUserEditAttempt', pid=thread.id)}">[User]</a>
-    <a href="${h.url_for('hsIpBanAttempt', pid=thread.id)}">[Ban]</a>
+	%if thread.ip:
+	   	<a href="${h.url_for('hsIpBanAttempt', pid=thread.id)}">[IP Ban]</a>
+    %endif
 %endif
 %if c.userInst.isAdmin() and c.userInst.canManageMappings():
     <a href="${h.url_for('hsMappings', act='show', id=thread.id)}">[Tags]</a>

@@ -42,7 +42,9 @@
     %endif
 %endif
 %if c.userInst.isAdmin() and c.userInst.canManageUsers():
-    <a href="${h.url_for('hsUserEditAttempt', pid=thread.id)}">[User]</a>
+	%if thread.uidNumber:
+    	<a href="${h.url_for('hsUserEditAttempt', pid=thread.id)}">[User]</a>
+	%endif    	
 	%if thread.ip:
 	   	<a href="${h.url_for('hsIpBanAttempt', pid=thread.id)}">[IP Ban]</a>
     %endif

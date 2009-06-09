@@ -23,7 +23,9 @@ id="reply${post.id}">
         %endif
     %endif
     %if c.userInst.isAdmin() and c.userInst.canManageUsers():
-        <a href="${h.url_for('hsUserEditAttempt', pid=post.id)}">[User]</a>
+		%if post.uidNumber:
+    		<a href="${h.url_for('hsUserEditAttempt', pid=post.id)}">[User]</a>
+		%endif    	
 	    %if post.ip:
 	    	<a href="${h.url_for('hsIpBanAttempt', pid=post.id)}">[IP Ban]</a>
 	    %endif

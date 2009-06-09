@@ -26,6 +26,21 @@ def restrictor(controller, request, **kwargs):
                 return _("Posting into board /%s/ is prohibited" % g.OPT.newsTag)
     return None
 
+def deployHook(ns):
+    tagname = config['newsgenerator.newsTag']
+    newsTag = None
+    try:
+        newsTag = Tag.getTag(tagname)
+    except:
+        newsTag = None
+        log.info(("News tag %s doesn't exists") % tagname)
+
+    if not newsTag:
+        log.info("Creating news tag...")
+        newTag = Tag(tagname)
+        meta.Session.add(newTag)
+        meta.Session.commit()
+
 def pluginInit(globj = None):
     if globj:
         booleanValues = [('newsgenerator',
@@ -54,6 +69,7 @@ def pluginInit(globj = None):
               'postingRestrictor' : restrictor,
              'deps' : False,
              'name' : N_('News feed for main page'),
+             'deployHook' : deployHook,
              }
 
     return PluginInfo('newsgenerator', config)

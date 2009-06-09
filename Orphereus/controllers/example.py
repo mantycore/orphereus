@@ -34,7 +34,7 @@ def deployHook(ns):
         uc = meta.Session.query(TextValue).filter(TextValue.name == 'indexContent').count()
     except:
         uc = 0
-    log.info('Page content not created')
+        log.info('Page content not created')
 
     if uc == 0:
         log.info("Creating main page content")

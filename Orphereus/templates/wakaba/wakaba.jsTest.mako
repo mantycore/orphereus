@@ -6,9 +6,7 @@ var CSSRules = function() {
  styleElement.type = "text/css";
  headElement.appendChild(styleElement);
  
- // memoize the browser-dependent add function
  var add = function() {
-  // IE doesn't allow you to append text nodes to <style> elements
   if (styleElement.styleSheet) {
    return function(selector, rule) {
     if (styleElement.styleSheet.cssText == '') {

@@ -443,23 +443,31 @@ class MaintenanceWorker(object):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Searching for orphaned posts...'))
         self.formatPostReference = OrphieBaseController.formatPostReference
-        posts = Post.query.all()
-        for post in posts:
-            parent = None
-            if post.parentid != None:
-                parent = Post.getPost(post.parentid)
-            orphaned = post.parentid != None and not parent
-            treelike = post.parentid != None and parent and parent.parentid != None
-            if orphaned or treelike:
-                orphanedThread = Post.getPost(0)
-                if not orphanedThread:
-                    orphanedThread = createOrphanedThread()
-                    mtnLog.append(LogElement('Info', 'Thread #0 created'))
-                post.parentid = 0
-                if orphaned:
-                    mtnLog.append(LogElement('Info', 'Orphaned post #%d moved into thread #0' % post.id))
-                if treelike:
-                    mtnLog.append(LogElement('Info', 'Post #%d was tree-like reply to reply and moved into thread #0' % post.id))
+        postCount = Post.query().count()
+        currentPacket = 0
+        packetSize = 3
+        while currentPacket < postCount:
+            maxId = currentPacket + packetSize
+            if maxId > postCount:
+                maxId = postCount
+            posts = Post.query().order_by(Post.id.asc())[currentPacket:maxId]
+            for post in posts:
+                parent = None
+                if post.parentid != None:
+                    parent = Post.getPost(post.parentid)
+                orphaned = post.parentid != None and not parent
+                treelike = post.parentid != None and parent and parent.parentid != None
+                if orphaned or treelike:
+                    orphanedThread = Post.getPost(0)
+                    if not orphanedThread:
+                        orphanedThread = createOrphanedThread()
+                        mtnLog.append(LogElement('Info', 'Thread #0 created'))
+                    post.parentid = 0
+                    if orphaned:
+                        mtnLog.append(LogElement('Info', 'Orphaned post #%d moved into thread #0' % post.id))
+                    if treelike:
+                        mtnLog.append(LogElement('Info', 'Post #%d was tree-like reply to reply and moved into thread #0' % post.id))
+            currentPacket += packetSize
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 

@@ -26,6 +26,7 @@ ${c.title}
         <%include file="wakaba.redirector.mako" />
     </head>
     <body>
+        <%include file="wakaba.jsTest.mako" />
         %if not c.disableMenu:
         <%include file="wakaba.menu.mako" />
         %endif

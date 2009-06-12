@@ -81,23 +81,27 @@ class OrphiePublicController(OrphieBaseController):
     def captchaPic(self, cid):
         # TODO: fix shitty code
         #log.debug('user cap lang: %s' %c.userInst.cLang)
-        if c.userInst.isValid():
-            h.setLang(str(c.userInst.cLang))
+        self.setLang(True)
 
-        sessionCid = None
-        if session.has_key('anonCaptId'):
-            sessionCid = session['anonCaptId']
-        if session.has_key('cid'):
-            sessionCid = session['cid']
+        """
+            sessionCid = None
+            if session.has_key('anonCaptId'):
+                sessionCid = session['anonCaptId']
+            if session.has_key('cid'):
+                sessionCid = session['cid']
+        """
         pic = Captcha.picture(cid, g.OPT.captchaFont)
-        if sessionCid:
-            if (str(cid) != str(sessionCid)):
-               redirect_to('captcha', cid = sessionCid)
-            elif ("Wrong ID" == pic):
-               newCaptcha = Captcha.create()
-               session['anonCaptId'] = newCaptcha.id
-               session.save()
-               redirect_to('captcha', cid = newCaptcha.id)
+        """
+            if sessionCid:
+                log.debug("%s:%s" % (str(cid), str(sessionCid)))
+                if (str(cid) != str(sessionCid)):
+                   redirect_to('captcha', cid = sessionCid)
+        """
+        if ("Wrong ID" == pic):
+           newCaptcha = Captcha.create()
+           session['anonCaptId'] = newCaptcha.id
+           session.save()
+           redirect_to('captcha', cid = newCaptcha.id)
         response.headers['Content-Length'] = len(pic)
         response.headers['Content-Type'] = 'image/png'
         return str(pic)

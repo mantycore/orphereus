@@ -30,6 +30,7 @@ import datetime
 import os
 import miscUtils as utils
 from routes.util import url_for
+from pylons import request
 
 import socket, struct
 
@@ -107,7 +108,14 @@ def setLang(lang):
     if (lang and (len(lang) == 2)):
         set_lang(lang)
     else:
-        set_lang(config['pylons.app_globals'].OPT.defaultLang)
+        g = config['pylons.app_globals']
+        langToSet = g.OPT.defaultLang
+        for lang in request.languages:
+            lang = lang[0:2]
+            if lang in g.OPT.languages:
+                langToSet = lang
+                break
+        set_lang(lang)
     return oldLang[0]
 
 def makeLangValid(lang):

@@ -63,7 +63,7 @@
             </tr>
         %endif
 
-        %if c.captcha:
+        %if c.captcha and not (not c.board and g.OPT.allowAnswersWithoutCaptcha):
             <tr id="trcaptcha">
                 <td class="postblock">${_('Captcha')}</td>
                 <td>

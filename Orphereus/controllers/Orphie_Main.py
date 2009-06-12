@@ -727,13 +727,13 @@ class OrphieMainController(OrphieBaseController):
         fileHolder = False
         postRemovemd5 = None
         if self.userInst.Anonymous:
-            captchaOk = False
-            anonCaptId = session.get('anonCaptId', False)
-            captcha = Captcha.getCaptcha(anonCaptId)
-            #log.debug("captcha id: " + str(anonCaptId))
-            #log.debug("captcha object: " + str(captcha))
-            if captcha:
-                captchaOk = captcha.test(request.POST.get('captcha', False))
+            captchaOk = g.OPT.allowAnswersWithoutCaptcha and postid
+            if not captchaOk:
+                anonCaptId = session.get('anonCaptId', False)
+                captcha = Captcha.getCaptcha(anonCaptId)
+                #log.debug("captcha: id == %s, object == %s " %(str(anonCaptId), str(captcha)))
+                if captcha:
+                    captchaOk = captcha.test(request.POST.get('captcha', False))
 
             if not captchaOk:
                 return errorHandler(_("Incorrect Captcha value"))

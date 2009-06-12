@@ -11,12 +11,14 @@ import logging
 log = logging.getLogger(__name__)
 
 def newsGenerator(controller, container):
-    posts = Post.buildMetaboardFilter(g.OPT.newsTag, controller.userInst)[0].order_by(Post.date.desc())
-    count = posts.count()
     c.newsFeed = []
-    if count > 0:
-        posts = posts[0:g.OPT.newsToShow]
-        c.newsFeed = posts
+    newsTag = unicode(g.OPT.newsTag)
+    if Tag.getTag(newsTag):
+        posts = Post.buildMetaboardFilter(newsTag, controller.userInst)[0].order_by(Post.date.desc())
+        count = posts.count()
+        if count > 0:
+            posts = posts[0:g.OPT.newsToShow]
+            c.newsFeed = posts
 
 def restrictor(controller, request, **kwargs):
     tags = kwargs.get('tags', None)

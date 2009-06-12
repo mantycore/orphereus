@@ -61,11 +61,6 @@ class OrphieBaseController(BaseController):
         self.requestedMenus = []
         self.builtMenus = {}
 
-        for plugin in g.plugins:
-            hook = plugin.requestHook()
-            if hook:
-                hook(self)
-
         if g.firstRequest:
             g.firstRequest = False
 
@@ -93,8 +88,23 @@ class OrphieBaseController(BaseController):
                     self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") % hashlib.md5(ua).hexdigest(), -1)
                     break
 
-        if self.userInst.isValid(): # and self.userInst.lang:
-            h.setLang(self.userInst.lang)
+        #log.debug(request.cookies)
+        #log.debug(session)
+        self.setLang()
+
+        for plugin in g.plugins:
+            hook = plugin.requestHook()
+            if hook:
+                hook(self)
+
+    def setLang(self, captcha = False):
+        lang = ""
+        if self.userInst.isValid():
+            if captcha:
+                lang = self.userInst.cLang
+            else:
+                lang = self.userInst.lang
+        h.setLang(lang)
 
     def sessUid(self):
         if g.OPT.allowLogin:

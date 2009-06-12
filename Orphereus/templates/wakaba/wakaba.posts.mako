@@ -80,7 +80,11 @@
     <div><textarea id="y_replyform_text" name="message" rows="5" cols="40" tabindex="10"></textarea></div>
 
     <div class="y_replyform_fields">
-        <p id="y_replyform_captcha">
+        <p id="y_replyform_captcha"
+        %if g.OPT.allowAnswersWithoutCaptcha:
+            style="display: none;"
+        %endif
+        >
             <label for="y_replyform_captcha_field">
                 <img width="150" height="40" alt="Captcha" src="${g.OPT.staticPathWeb}images/loading.gif"  onclick="update_captcha(this)"/>
             </label>

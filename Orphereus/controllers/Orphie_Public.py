@@ -265,7 +265,7 @@ class OrphiePublicController(OrphieBaseController):
             return self.error(_("ORLY?"))
 
     def UnknownAction(self):
-        c.userInst = self.userInstj
+        c.userInst = self.userInst
         return self.error(_("Excuse me, WTF are you?"))
 
     def uaInfo(self):

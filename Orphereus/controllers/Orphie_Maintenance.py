@@ -399,30 +399,37 @@ class MaintenanceWorker(object):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Reparsing...'))
         self.formatPostReference = OrphieBaseController.formatPostReference
-        posts = Post.query.all()
-        for post in posts:
-            #log.debug("Reparsing %d..." % post.id)
-            if post.messageRaw:
-               self.currentUserId = post.uidNumber
-               parser = WakabaParser(g.OPT, post.parentPost and post.parentPost.id or - 1)
-               maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
-               cutSymbols = int(g.settingsMap["cutSymbols"].value)
-               parsedMessage = parser.parseWakaba(post.messageRaw, self, lines = maxLinesInPost, maxLen = cutSymbols)
-               fullMessage = parsedMessage[0]
-               #if painterMark:
-               #    fullMessage += painterMark
-               mtnLog.append(LogElement('Info', "Reparsed post %d" % post.id))
-               post.message = fullMessage
-               post.messageShort = parsedMessage[1]
-            else:
-                if post.message:
-                    post.message = fixHtml(post.message)
-                    mtnLog.append(LogElement('Info', "Fixed message for post %d" % post.id))
-                if post.messageShort:
-                    mtnLog.append(LogElement('Info', "Fixed short message for post %d" % post.id))
-                    post.messageShort = fixHtml(post.messageShort)
-
-        meta.Session.commit()
+        postCount = Post.query().count()
+        currentPacket = 0
+        packetSize = 250
+        while currentPacket < postCount:
+            maxId = currentPacket + packetSize
+            if maxId > postCount:
+                maxId = postCount
+            posts = Post.query().order_by(Post.id.asc())[currentPacket:maxId]
+            for post in posts:
+                #log.debug("Reparsing %d..." % post.id)
+                if post.messageRaw:
+                   self.currentUserId = post.uidNumber
+                   parser = WakabaParser(g.OPT, post.parentPost and post.parentPost.id or - 1)
+                   maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
+                   cutSymbols = int(g.settingsMap["cutSymbols"].value)
+                   parsedMessage = parser.parseWakaba(post.messageRaw, self, lines = maxLinesInPost, maxLen = cutSymbols)
+                   fullMessage = parsedMessage[0]
+                   #if painterMark:
+                   #    fullMessage += painterMark
+                   mtnLog.append(LogElement('Info', "Reparsed post %d" % post.id))
+                   post.message = fullMessage
+                   post.messageShort = parsedMessage[1]
+                else:
+                    if post.message:
+                        post.message = fixHtml(post.message)
+                        mtnLog.append(LogElement('Info', "Fixed message for post %d" % post.id))
+                    if post.messageShort:
+                        mtnLog.append(LogElement('Info', "Fixed short message for post %d" % post.id))
+                        post.messageShort = fixHtml(post.messageShort)
+            currentPacket += packetSize
+            meta.Session.commit()
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -442,10 +449,9 @@ class MaintenanceWorker(object):
 
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Searching for orphaned posts...'))
-        self.formatPostReference = OrphieBaseController.formatPostReference
         postCount = Post.query().count()
         currentPacket = 0
-        packetSize = 3
+        packetSize = 250
         while currentPacket < postCount:
             maxId = currentPacket + packetSize
             if maxId > postCount:
@@ -468,6 +474,7 @@ class MaintenanceWorker(object):
                     if treelike:
                         mtnLog.append(LogElement('Info', 'Post #%d was tree-like reply to reply and moved into thread #0' % post.id))
             currentPacket += packetSize
+            meta.Session.commit()
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 

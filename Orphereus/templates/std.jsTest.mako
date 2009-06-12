@@ -36,13 +36,13 @@ ${_("<b>Warning</b>: It's strongly recommended to enable JavaScript for this sit
 <div id="systemAlertMargin">&nbsp;</div>
 </div>
 
-<script type="text/javascript">
+<script type="text/javascript"><!--
  if (!document.cookie) {
      var rnd = Math.random();
      document.cookie = rnd;
      if (!document.cookie != rnd)
      {
-     $("#systemAlertText").html("${_("<b>Warning</b>: It's strongly recommended to turn cookies on for this site.")}");
+     $("#systemAlertText").html("${_("<b>Warning<\/b>: It's strongly recommended to turn cookies on for this site.")}");
         $("#systemAlert").show();
      }
      else
@@ -50,4 +50,4 @@ ${_("<b>Warning</b>: It's strongly recommended to enable JavaScript for this sit
          document.cookie = "";
      }
  }
-</script>
+//--></script>

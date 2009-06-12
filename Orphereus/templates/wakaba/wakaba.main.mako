@@ -17,7 +17,7 @@ ${c.title}
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style + ".css")}" title="${c.userInst.style}" />
 %for jsFile in c.jsFiles:
-        <script type="text/javascript" src="${h.staticFile(jsFile)}" />
+        <script type="text/javascript" src="${h.staticFile(jsFile)}"></script>
 %endfor
 %if g.OPT.allowFeeds and c.userInst.isValid() and c.threads:
         <link rel="alternate" type="application/rss+xml" title="RSS" href="${h.url_for('feed', uid=c.userInst.uid, authid=c.userInst.authid(), watch=c.PostAction, feedType='rss')}" />

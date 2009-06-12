@@ -8,7 +8,7 @@
         <link rel="stylesheet" type="text/css" href="${h.staticFile("std_gray.css")}" title="Anoma std::" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <script type="text/javascript" src="${h.staticFile("jquery.js")}" />
+        <script type="text/javascript" src="${h.staticFile("jquery.js")}" ></script>
     </head>
     <body>
         <%include file="std.jsTest.mako" />

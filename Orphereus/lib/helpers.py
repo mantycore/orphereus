@@ -39,6 +39,10 @@ log = logging.getLogger(__name__)
 
 from pylons.i18n import get_lang, set_lang
 
+def currentTime():
+    import time
+    return time.time()
+
 def applyFilters(inp, glob = False):
     gvars = config['pylons.app_globals']
     if glob:

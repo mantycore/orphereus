@@ -12,6 +12,7 @@
   %for l in c.log:
     ${l}<br/><br/>
   %endfor
+  ${"rendering: %s" % str(h.currentTime() - c.renderStartTime)}
   <span style="display: none"><a href="${h.url_for('botTrap2')}">.</a></span>
 </font>
 %endif

@@ -46,6 +46,7 @@ class OrphieBaseController(BaseController):
         if g.OPT.devMode:
             c.log = []
             c.sum = 0
+            self.startTime = time.time()
 
         c.jsFiles = g.OPT.jsFiles
 
@@ -216,6 +217,9 @@ class OrphieBaseController(BaseController):
 
         #TODO: it may be excessive
         if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/') == fpath.replace('\\', '/'):
+            if g.OPT.devMode:
+                c.renderStartTime = time.time()
+                c.log.append("processing: %s" % str(c.renderStartTime - self.startTime))
             output = render('/' + tpath, **options)
             if g.globalFilterStack:
                 return h.applyFilters(output, True)

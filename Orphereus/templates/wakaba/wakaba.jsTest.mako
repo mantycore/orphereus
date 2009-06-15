@@ -38,11 +38,11 @@ ${_("<b>Warning</b>: It's strongly recommended to enable JavaScript for this sit
 
 <script type="text/javascript"><!--
  if (!document.cookie) {
-     var rnd = Math.random();
+     var rnd = Math.round(Math.random() * 100).toString();
      document.cookie = rnd;
-     if (!document.cookie != rnd)
+     if (document.cookie != rnd)
      {
-     $("#systemAlertText").html("${_("<b>Warning<\/b>: It's strongly recommended to turn cookies on for this site.")}");
+        $("#systemAlertText").html("${_("<b>Warning<\/b>: It's strongly recommended to turn cookies on for this site.")}");
         $("#systemAlert").show();
      }
      else

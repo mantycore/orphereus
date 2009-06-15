@@ -6,22 +6,22 @@
 
 %if not c.FAResult:
 <form action="${h.url_for('anonymize', post=c.postId)}" method="post">
-    <p>You are trying to anonymize post #${c.postId}.</p>
+    <p>${_("You are trying to anonymize post #%s.") % c.postId}</p>
     <h3><input type="checkbox" name="batchFA">${_('Anonymize ALL posts older than this one')}</h3>
-    <p>This action will remove mapping to your UID. You will loss abilities to:</p>
+    <p>${_("This action will remove mapping to your UID. You will loss abilities to:")}</p>
     <ol>
-    <li>delete this post</li>
-    <li>view this post in <a href="${h.url_for('boardBase', board='@')}">/@/</a></li>
-    <li>use ID of this posts in prooflabels</li>
+    <li>${_("delete this post")}</li>
+    <li>${_('view this post in <a href="%s">/@/</a>') % h.url_for('boardBase', board='@')} </li>
+    <li>${_("use ID of this posts in prooflabels")}</li>
     </ol>
-    <h3>Do you want to continue?</h3>
+    <h3>${_("Do you want to continue?")}</h3>
 
     <input type="hidden" name="postId" value="${c.postId}">
     <p><input type="submit" value="${_('Yes, I want!')}"></p>
 </form>
 
 %else:
-<h3>Result</h3>
+<h3>${_("Result")}</h3>
 %for res in c.FAResult:
 ${res}<br/>
 %endfor

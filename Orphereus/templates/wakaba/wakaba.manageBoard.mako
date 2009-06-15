@@ -112,6 +112,20 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Show tag in overview')}</td>
+                    <td>
+                        <input type="checkbox" name="showInOverview" ${c.tag.options.showInOverview and 'checked="checked"' or ""} />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Bumplimit')}
+                    <div style="font-size: 60%; font-style:italic;">${_('(0 for unlimited)')}</div>
+                    </td>
+                    <td>
+                        <input type="text" name="bumplimit" size="35" value="${c.tag.options.bumplimit and c.tag.options.bumplimit or "0"}" />
+                    </td>
+                </tr>
+                <tr>
                     <td class="postblock">${_('DELETE BOARD')}</td>
                     <td>
                         <input type="checkbox" name="deleteBoard" />

@@ -109,6 +109,9 @@ defaults.defImages = true
 defaults.defEnableSpoilers = false
 defaults.defCanDeleteOwnThreads = true
 defaults.defSelfModeration = false
+defaults.defShowInOverview = true
+# 0 for unlimited
+defaults.defBumplimit = 0
 
 # Security settings
 #use this option only with httpd configured as proxy

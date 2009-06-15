@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -31,22 +31,24 @@ log = logging.getLogger(__name__)
 from Orphereus.model import meta
 
 t_tagOptions = sa.Table("tagOptions", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("tagId"   , sa.types.Integer,  sa.ForeignKey('tag.id')),
-    sa.Column("comment"  , sa.types.UnicodeText, nullable=True),
-    sa.Column("sectionId", sa.types.Integer, nullable=False),
-    sa.Column("persistent", sa.types.Boolean, nullable=False),
-    sa.Column("service",    sa.types.Boolean, nullable=False),
-    sa.Column("imagelessThread", sa.types.Boolean, nullable=False),
-    sa.Column("imagelessPost", sa.types.Boolean, nullable=False),
-    sa.Column("images"   , sa.types.Boolean, nullable=False),
-    sa.Column("maxFileSize" , sa.types.Integer, nullable=False),
-    sa.Column("minPicSize" , sa.types.Integer, nullable=False),
-    sa.Column("thumbSize", sa.types.Integer, nullable=False),
-    sa.Column("enableSpoilers", sa.types.Boolean, nullable=False),
-    sa.Column("canDeleteOwnThreads", sa.types.Boolean, server_default='1'),
-    sa.Column("specialRules"  , sa.types.UnicodeText, nullable=True),
-    sa.Column("selfModeration", sa.types.Boolean, nullable=False),
+    sa.Column("id"       , sa.types.Integer, primary_key = True),
+    sa.Column("tagId"   , sa.types.Integer, sa.ForeignKey('tag.id')),
+    sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
+    sa.Column("sectionId", sa.types.Integer, nullable = False),
+    sa.Column("persistent", sa.types.Boolean, nullable = False),
+    sa.Column("service", sa.types.Boolean, nullable = False),
+    sa.Column("imagelessThread", sa.types.Boolean, nullable = False),
+    sa.Column("imagelessPost", sa.types.Boolean, nullable = False),
+    sa.Column("images"   , sa.types.Boolean, nullable = False),
+    sa.Column("maxFileSize" , sa.types.Integer, nullable = False),
+    sa.Column("minPicSize", sa.types.Integer, nullable = False),
+    sa.Column("thumbSize", sa.types.Integer, nullable = False),
+    sa.Column("enableSpoilers", sa.types.Boolean, nullable = False),
+    sa.Column("canDeleteOwnThreads", sa.types.Boolean, server_default = '1'),
+    sa.Column("specialRules"  , sa.types.UnicodeText, nullable = True),
+    sa.Column("selfModeration", sa.types.Boolean, nullable = False),
+    sa.Column("showInOverview", sa.types.Boolean, server_default = '1'),
+    sa.Column("bumplimit", sa.types.Integer, nullable = True),
     )
 
 class TagOptions(object):
@@ -65,3 +67,6 @@ class TagOptions(object):
         self.minPicSize = meta.globj.OPT.defMinPicSize
         self.thumbSize = meta.globj.OPT.defThumbSize
         self.selfModeration = meta.globj.OPT.defSelfModeration
+        self.showInOverview = meta.globj.OPT.defShowInOverview
+        self.bumplimit = meta.globj.OPT.defBumplimit
+

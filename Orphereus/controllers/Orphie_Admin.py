@@ -62,6 +62,7 @@ def routingInit(map):
     map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/:pid', controller = 'Orphie_Admin', action = 'editUserByPost', requirements = dict(pid = '\d+'))
     map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller = 'Orphie_Admin', action = 'editUser', requirements = dict(uid = '\d+'))
     map.connect('hsPin', '/holySynod/pinThread/:act/:id', controller = 'Orphie_Admin', action = 'pinThread', requirements = dict(id = '\d+'))
+    map.connect('hsManageByIp', '/holySynod/manageByIp/:ip/:act', controller = 'Orphie_Admin', action = 'manageByIp', act = 'show', requirements = dict(ip = '\d+'))
 
 def menuTest(id, baseController):
     user = baseController.userInst
@@ -588,6 +589,37 @@ class OrphieAdminController(OrphieBaseController):
         c.ipToBan = post.ip
         return self.editBan(-1)
 
+    def manageByIp(self, ip, act):
+        if not self.userInst.canManageUsers():
+            return self.error(_("No way! You aren't holy enough!"))
+
+        c.currentItemId = 'id_hsManageByIp'
+        c.boardName = _('IP-based moderation')
+
+        c.act = act
+        c.ip = ip
+        allFilter = Post.filter(Post.ip == ip)
+        unregFilter = Post.filter(and_(Post.ip == ip, not_(Post.uidNumber > 0)))
+        c.postsCount = allFilter.count()
+        c.unregPostsCount = unregFilter.count()
+        if act == 'showAll':
+            c.postsList = allFilter.all()
+        elif act == 'showUnreg':
+            c.postsList = unregFilter.all()
+        if 'removeAll' in request.POST:
+            reason = filterText(request.POST.get('deletereason', u'No reason given'))
+            threads = []
+            replies = []
+            for post in c.postsList:
+                if post.parentid:
+                    replies.append(post)
+                else:
+                    threads.append(post)
+            for post in replies + threads:
+                post.deletePost(self.userInst, False, True, reason)
+            return redirect_to('hsManageByIp', ip = post.ip, act = act)
+        return self.render('manageByIp')
+
     def editUserByPost(self, pid):
         if not self.userInst.canManageUsers():
             return self.error(_("No way! You aren't holy enough!"))
@@ -689,13 +721,23 @@ class OrphieAdminController(OrphieBaseController):
                 else:
                     return self.error(passwdRet)
             elif request.POST.get('delete', False):
-                reason = filterText(request.POST.get('deletereason', u''))
+                reason = filterText(request.POST.get('deletereason', u'No reason given'))
                 deleteLegacy = request.POST.get('deleteLegacy', False)
                 if self.userInst.canChangeRights():
                     if len(reason) > 1:
                         if deleteLegacy:
                             posts = Post.filterByUid(user.uidNumber).all()
                             removed = []
+
+                            threads = []
+                            replies = []
+                            for post in posts:
+                                if post.parentid:
+                                    replies.append(post)
+                                else:
+                                    threads.append(post)
+                            posts = replies + threads
+
                             for post in posts:
                                 if not post.parentid:
                                     removed.append(str(post.id))

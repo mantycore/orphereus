@@ -79,6 +79,7 @@ core.allowCrosspostingSvc = true
 core.allowPureSvcTagline = true
 core.allowTagCreation = true
 core.allowAnswersWithoutCaptcha = true
+core.forbidCaptcha = false
 core.newsSiteMode = false
 core.permissiveFileSizeConjunction = true
 core.boardWideProoflabels = true

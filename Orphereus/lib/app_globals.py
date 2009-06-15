@@ -52,7 +52,7 @@ class OptHolder(object):
                                 'useFrameLogo', 'permissiveFileSizeConjunction',
                                 'allowAnonymousPosting', 'allowAnonProfile',
                                 'obligatoryFrameCreation', 'newsSiteMode', 'showShortStatistics',
-                                'allowAnswersWithoutCaptcha'
+                                'allowAnswersWithoutCaptcha', 'forbidCaptcha'
                                )
                               ),
 

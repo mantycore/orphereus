@@ -727,7 +727,7 @@ class OrphieMainController(OrphieBaseController):
         fileHolder = False
         postRemovemd5 = None
         if self.userInst.Anonymous:
-            captchaOk = g.OPT.allowAnswersWithoutCaptcha and postid
+            captchaOk = (g.OPT.allowAnswersWithoutCaptcha and postid) or g.OPT.forbidCaptcha
             if not captchaOk:
                 anonCaptId = session.get('anonCaptId', False)
                 captcha = Captcha.getCaptcha(anonCaptId)

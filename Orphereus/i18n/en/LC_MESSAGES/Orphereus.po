@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Orphereus 1.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2009-05-17 13:26+0400\n"
-"PO-Revision-Date: 2009-06-08 06:51+0400\n"
+"PO-Revision-Date: 2009-06-15 20:29+0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -17,118 +17,128 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: Orphereus/controllers/OrphieBaseController.py:93
+#: Orphereus/controllers/OrphieBaseController.py:89
 #, python-format
 msgid "[AUTOMATIC BAN] Security alert type 1: %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:90
-msgid "Dashboard"
-msgstr ""
-
-#: Orphereus/controllers/Orphie_Admin.py:91
-msgid "Common settings"
-msgstr ""
-
-#: Orphereus/controllers/Orphie_Admin.py:92
-msgid "Users"
+#: Orphereus/controllers/OrphieBaseController.py:235
+msgid "Error"
 msgstr ""
 
 #: Orphereus/controllers/Orphie_Admin.py:93
-msgid "Threads and posts"
+msgid "Dashboard"
 msgstr ""
 
 #: Orphereus/controllers/Orphie_Admin.py:94
-msgid "Manage settings"
+msgid "Common settings"
 msgstr ""
 
 #: Orphereus/controllers/Orphie_Admin.py:95
-msgid "Manage extensions"
+msgid "Users"
 msgstr ""
 
 #: Orphereus/controllers/Orphie_Admin.py:96
-msgid "Manage users"
+msgid "Threads and posts"
 msgstr ""
 
 #: Orphereus/controllers/Orphie_Admin.py:97
-msgid "Manage bans"
+msgid "Manage settings"
 msgstr ""
 
 #: Orphereus/controllers/Orphie_Admin.py:98
+msgid "Manage extensions"
+msgstr ""
+
+#: Orphereus/controllers/Orphie_Admin.py:99
+msgid "Manage users"
+msgstr ""
+
+#: Orphereus/controllers/Orphie_Admin.py:100
+msgid "Manage bans"
+msgstr ""
+
+#: Orphereus/controllers/Orphie_Admin.py:101
 #: Orphereus/templates/wakaba/wakaba.manageInvites.mako:20
 msgid "Generate invite"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:99
+#: Orphereus/controllers/Orphie_Admin.py:102
 msgid "Manage boards"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:100
-#: Orphereus/controllers/Orphie_Admin.py:366
+#: Orphereus/controllers/Orphie_Admin.py:103
+#: Orphereus/controllers/Orphie_Admin.py:394
 #: Orphereus/templates/wakaba/wakaba.manageMappings.mako:7
 msgid "Manage mappings"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:101
+#: Orphereus/controllers/Orphie_Admin.py:104
+#: Orphereus/controllers/Orphie_Admin.py:386
+msgid "Merge tags"
+msgstr ""
+
+#: Orphereus/controllers/Orphie_Admin.py:105
 msgid "View logs"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:110
+#: Orphereus/controllers/Orphie_Admin.py:114
 msgid "Administration panel"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:125
-#: Orphereus/controllers/Orphie_Admin.py:145
-#: Orphereus/controllers/Orphie_Admin.py:177
-#: Orphereus/controllers/Orphie_Admin.py:187
+#: Orphereus/controllers/Orphie_Admin.py:129
+#: Orphereus/controllers/Orphie_Admin.py:149
+#: Orphereus/controllers/Orphie_Admin.py:179
+#: Orphereus/controllers/Orphie_Admin.py:188
 #: Orphereus/controllers/Orphie_Admin.py:204
-#: Orphereus/controllers/Orphie_Admin.py:218
-#: Orphereus/controllers/Orphie_Admin.py:271
-#: Orphereus/controllers/Orphie_Admin.py:282
-#: Orphereus/controllers/Orphie_Admin.py:341
-#: Orphereus/controllers/Orphie_Admin.py:362
-#: Orphereus/controllers/Orphie_Admin.py:432
-#: Orphereus/controllers/Orphie_Admin.py:460
-#: Orphereus/controllers/Orphie_Admin.py:530
-#: Orphereus/controllers/Orphie_Admin.py:550
-#: Orphereus/controllers/Orphie_Admin.py:561
+#: Orphereus/controllers/Orphie_Admin.py:217
+#: Orphereus/controllers/Orphie_Admin.py:268
+#: Orphereus/controllers/Orphie_Admin.py:278
+#: Orphereus/controllers/Orphie_Admin.py:335
+#: Orphereus/controllers/Orphie_Admin.py:354
+#: Orphereus/controllers/Orphie_Admin.py:391
+#: Orphereus/controllers/Orphie_Admin.py:456
+#: Orphereus/controllers/Orphie_Admin.py:483
+#: Orphereus/controllers/Orphie_Admin.py:552
 #: Orphereus/controllers/Orphie_Admin.py:571
-#: Orphereus/controllers/Orphie_Admin.py:589
-#: Orphereus/controllers/Orphie_Maintenance.py:539
+#: Orphereus/controllers/Orphie_Admin.py:581
+#: Orphereus/controllers/Orphie_Admin.py:590
+#: Orphereus/controllers/Orphie_Admin.py:606
+#: Orphereus/controllers/Orphie_Maintenance.py:600
 #: Orphereus/controllers/jsCompressor.py:94
 msgid "No way! You aren't holy enough!"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:133
-#: Orphereus/controllers/Orphie_Maintenance.py:569
+#: Orphereus/controllers/Orphie_Admin.py:137
+#: Orphereus/controllers/Orphie_Maintenance.py:630
 msgid "Index"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:139
+#: Orphereus/controllers/Orphie_Admin.py:143
 msgid "Settings management"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:152
+#: Orphereus/controllers/Orphie_Admin.py:155
 #, python-format
 msgid "'%s' isn't correct number, but '%s' must be an integer number."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:158
+#: Orphereus/controllers/Orphie_Admin.py:160
 #, python-format
 msgid "Changed %s from '%s' to '%s'"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:162
+#: Orphereus/controllers/Orphie_Admin.py:164
 msgid "Settings updated"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:166
+#: Orphereus/controllers/Orphie_Admin.py:168
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:77
 #: Orphereus/templates/wakaba/wakaba.menu.mako:39
 msgid "Logs"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:180
+#: Orphereus/controllers/Orphie_Admin.py:181
 msgid "Invites"
 msgstr ""
 
@@ -141,293 +151,298 @@ msgstr ""
 msgid "Generated invite id %s. Reason: %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:207
+#: Orphereus/controllers/Orphie_Admin.py:206
 msgid "Bans management"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:222
+#: Orphereus/controllers/Orphie_Admin.py:220
 #, python-format
 msgid "Editing ban %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:230
+#: Orphereus/controllers/Orphie_Admin.py:228
 msgid "New IP ban"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:234
+#: Orphereus/controllers/Orphie_Admin.py:232
 #, python-format
 msgid "Added ban no. %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:245
+#: Orphereus/controllers/Orphie_Admin.py:243
 msgid "Please check the format of IP addresses and masks."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:257
+#: Orphereus/controllers/Orphie_Admin.py:254
 #, python-format
 msgid "Updated ban no. %s, reason: %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:259
+#: Orphereus/controllers/Orphie_Admin.py:256
 msgid "Ban properties were updated"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:264
+#: Orphereus/controllers/Orphie_Admin.py:261
 #, python-format
 msgid "Deleted ban %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:265
+#: Orphereus/controllers/Orphie_Admin.py:262
 #, python-format
 msgid "Ban record no. %s deleted"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:275
+#: Orphereus/controllers/Orphie_Admin.py:271
 msgid "Extensions management"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:286
+#: Orphereus/controllers/Orphie_Admin.py:281
 #, python-format
 msgid "Editing extension %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:292
+#: Orphereus/controllers/Orphie_Admin.py:287
 msgid "Too long extension"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:322
+#: Orphereus/controllers/Orphie_Admin.py:316
 #, python-format
 msgid "Created extension %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:324
+#: Orphereus/controllers/Orphie_Admin.py:318
 msgid "Extension created"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:327
+#: Orphereus/controllers/Orphie_Admin.py:321
 #, python-format
 msgid "Edited extension %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:328
+#: Orphereus/controllers/Orphie_Admin.py:322
 msgid "Extension edited"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:332
+#: Orphereus/controllers/Orphie_Admin.py:326
 #, python-format
 msgid "Deleted extension %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:333
+#: Orphereus/controllers/Orphie_Admin.py:327
 msgid "Extension deleted"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:336
+#: Orphereus/controllers/Orphie_Admin.py:330
 msgid "Can't delete extension. Uploaded files with this extension exists."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:344
+#: Orphereus/controllers/Orphie_Admin.py:337
 msgid "Pin thread"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:354
+#: Orphereus/controllers/Orphie_Admin.py:347
 #, python-format
 msgid "Post %d is %s now"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:357
+#: Orphereus/controllers/Orphie_Admin.py:350
 msgid "Incorrect thread number"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:386
+#: Orphereus/controllers/Orphie_Admin.py:377
+msgid "Accepted"
+msgstr ""
+
+#: Orphereus/controllers/Orphie_Admin.py:379
+msgid "Declined: unacceptable combination of tags"
+msgstr ""
+
+#: Orphereus/controllers/Orphie_Admin.py:382
+msgid "Source tags contains target tag"
+msgstr ""
+
+#: Orphereus/controllers/Orphie_Admin.py:384
+msgid "Incorrect source or target"
+msgstr ""
+
+#: Orphereus/controllers/Orphie_Admin.py:414
 msgid "Incorrect input values"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:395
+#: Orphereus/controllers/Orphie_Admin.py:422
 msgid "This is not op-post"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:407
+#: Orphereus/controllers/Orphie_Admin.py:433
 #, python-format
 msgid "Removed tag %s from post %d"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:410
+#: Orphereus/controllers/Orphie_Admin.py:436
 msgid "Can't delete last tag!"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:415
+#: Orphereus/controllers/Orphie_Admin.py:440
 #, python-format
 msgid "Added tag %s to post %d"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:420
+#: Orphereus/controllers/Orphie_Admin.py:445
 msgid "Non-existent tag"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:436
+#: Orphereus/controllers/Orphie_Admin.py:459
 msgid "Boards management"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:464
+#: Orphereus/controllers/Orphie_Admin.py:486
 msgid "Edit board"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:509
+#: Orphereus/controllers/Orphie_Admin.py:531
 msgid "Board must be empty for deletion"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:512
+#: Orphereus/controllers/Orphie_Admin.py:534
 #, python-format
 msgid "Deleted board %s %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:518
+#: Orphereus/controllers/Orphie_Admin.py:540
 msgid "Updated board"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:519
+#: Orphereus/controllers/Orphie_Admin.py:541
 #, python-format
 msgid "Edited board %s %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:523
+#: Orphereus/controllers/Orphie_Admin.py:545
 #, python-format
 msgid "Board %s already exists!"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:525
+#: Orphereus/controllers/Orphie_Admin.py:547
 msgid "Board name should be non-empty and should contain only valid symbols"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:534
+#: Orphereus/controllers/Orphie_Admin.py:555
 msgid "Users management"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:545
-#: Orphereus/controllers/Orphie_Admin.py:692
+#: Orphereus/controllers/Orphie_Admin.py:566
+#: Orphereus/controllers/Orphie_Admin.py:706
 msgid "No such user exists."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:554
+#: Orphereus/controllers/Orphie_Admin.py:574
 msgid "User edit attemption"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:575
+#: Orphereus/controllers/Orphie_Admin.py:593
 msgid "User management"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:579
+#: Orphereus/controllers/Orphie_Admin.py:597
 msgid "No reason given!"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:581
+#: Orphereus/controllers/Orphie_Admin.py:599
 #, python-format
 msgid "Viewed UID for user '%s' from post '%s'. Reason: %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:584 Orphereus/templates/ui.js:112
+#: Orphereus/controllers/Orphie_Admin.py:602 Orphereus/templates/ui.js:112
 #: Orphereus/templates/ui.js:123
 msgid "Post not found"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:603
+#: Orphereus/controllers/Orphie_Admin.py:619
 #, python-format
 msgid "Changed user %s isAdmin to %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:609
+#: Orphereus/controllers/Orphie_Admin.py:625
 #, python-format
 msgid "Changed right \"%s\" for user #%s to %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:620
+#: Orphereus/controllers/Orphie_Admin.py:636
 msgid "User access was changed"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:623
+#: Orphereus/controllers/Orphie_Admin.py:639
 msgid "This user is already banned"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:634
+#: Orphereus/controllers/Orphie_Admin.py:650
 #, python-format
 msgid "Unbanned user %s (%s days for reason \"%s\")"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:635
+#: Orphereus/controllers/Orphie_Admin.py:651
 msgid "User was unbanned"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:637
+#: Orphereus/controllers/Orphie_Admin.py:653
 msgid "This user is not banned"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:644
+#: Orphereus/controllers/Orphie_Admin.py:660
 #, python-format
 msgid "Performed posts lookup for user %s for \"%s\", quantity: %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:648
+#: Orphereus/controllers/Orphie_Admin.py:664
 msgid "No posts found"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:650
+#: Orphereus/controllers/Orphie_Admin.py:666
 msgid "You should specify lookup reason"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:652
+#: Orphereus/controllers/Orphie_Admin.py:668
 msgid "Incorrect quantity value"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:658
-#: Orphereus/controllers/Orphie_Main.py:360
+#: Orphereus/controllers/Orphie_Admin.py:674
+#: Orphereus/controllers/Orphie_Main.py:354
 msgid "Password was successfully changed."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:659
+#: Orphereus/controllers/Orphie_Admin.py:675
 #, python-format
 msgid "Changed password for user \"%s\""
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:660
+#: Orphereus/controllers/Orphie_Admin.py:676
 msgid "Security code changed"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:662
-#: Orphereus/controllers/Orphie_Main.py:362
+#: Orphereus/controllers/Orphie_Admin.py:678
+#: Orphereus/controllers/Orphie_Main.py:356
 msgid "Incorrect security codes"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:664
-#: Orphereus/controllers/Orphie_Main.py:364
-#: Orphereus/controllers/Orphie_Main.py:425
-#: Orphereus/controllers/Orphie_Public.py:67
-#: Orphereus/controllers/Orphie_Public.py:115
-#: Orphereus/controllers/Orphie_Public.py:251
-#: Orphereus/controllers/Orphie_Public.py:272
-#: Orphereus/controllers/Orphie_Public.py:278
-msgid "Error"
-msgstr ""
-
-#: Orphereus/controllers/Orphie_Admin.py:681
+#: Orphereus/controllers/Orphie_Admin.py:695
 #, python-format
 msgid "Removed legacy of %s for \"%s\" [%s]"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:683
+#: Orphereus/controllers/Orphie_Admin.py:697
 #, python-format
 msgid "Deleted user %s for \"%s\""
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:684
+#: Orphereus/controllers/Orphie_Admin.py:698
 msgid "User deleted"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:687
+#: Orphereus/controllers/Orphie_Admin.py:701
 msgid "You should specify deletion reason"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Admin.py:689
+#: Orphereus/controllers/Orphie_Admin.py:703
 msgid "You haven't rights to delete user"
 msgstr ""
 
@@ -444,164 +459,164 @@ msgstr ""
 msgid "Board creation denied: %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:118
+#: Orphereus/controllers/Orphie_Main.py:117
 msgid "Incorrect page"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:165 Orphereus/lib/constantValues.py:97
+#: Orphereus/controllers/Orphie_Main.py:163 Orphereus/lib/constantValues.py:97
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:13
 #: Orphereus/templates/wakaba/wakaba.menu.mako:4
 msgid "Overview"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:167
+#: Orphereus/controllers/Orphie_Main.py:165
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:16
 #: Orphereus/templates/wakaba/wakaba.menu.mako:7
 msgid "Related threads"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:217
+#: Orphereus/controllers/Orphie_Main.py:215
 #: Orphereus/templates/wakaba/wakaba.menu.mako:9
 msgid "Home"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:240
+#: Orphereus/controllers/Orphie_Main.py:238
 msgid "Overview is disabled."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:263
+#: Orphereus/controllers/Orphie_Main.py:260
 msgid "No such post exist."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:276
+#: Orphereus/controllers/Orphie_Main.py:272
 msgid "You must specify post tagline."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:321
+#: Orphereus/controllers/Orphie_Main.py:316
 msgid "Profile is not avaiable to Anonymous users."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:328
+#: Orphereus/controllers/Orphie_Main.py:322
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:69
 #: Orphereus/templates/wakaba/wakaba.menu.mako:31
 #: Orphereus/templates/wakaba/wakaba.profile.mako:3
 msgid "Profile"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:354
+#: Orphereus/controllers/Orphie_Main.py:348
 msgid "Password was NOT changed."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:370
+#: Orphereus/controllers/Orphie_Main.py:362
 msgid " Profile was updated."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:372
+#: Orphereus/controllers/Orphie_Main.py:364
 msgid " Reload page for language changes to take effect."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:390
-msgid "Deletion disabled"
+#: Orphereus/controllers/Orphie_Main.py:382
+msgid "Removing prohibited"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:426
+#: Orphereus/controllers/Orphie_Main.py:416
 #, python-format
 msgid "Query too short (minimal length: %d)"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:435
+#: Orphereus/controllers/Orphie_Main.py:424
 #: Orphereus/templates/wakaba/wakaba.posts.mako:68
 msgid "Search"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:478
+#: Orphereus/controllers/Orphie_Main.py:467
 #: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:5
 msgid "Final Anonymization"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:485
+#: Orphereus/controllers/Orphie_Main.py:474
 msgid "Final Anonymity is disabled"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:488
+#: Orphereus/controllers/Orphie_Main.py:477
 msgid "Final Anonymity available only for registered users"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:500
+#: Orphereus/controllers/Orphie_Main.py:489
 #, python-format
 msgid "You are not author of post #%s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:507
+#: Orphereus/controllers/Orphie_Main.py:496
 #, python-format
 msgid "Post #%d successfully anonymized"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:510
+#: Orphereus/controllers/Orphie_Main.py:499
 #, python-format
 msgid "Can't anomymize post #%d now, it will be allowed after %s (now: %s)"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:513
+#: Orphereus/controllers/Orphie_Main.py:502
 msgid "Nothing to anonymize"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:534
-#: Orphereus/controllers/Orphie_Main.py:700
+#: Orphereus/controllers/Orphie_Main.py:523
+#: Orphereus/controllers/Orphie_Main.py:686
 msgid "Posting is disabled"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:579
+#: Orphereus/controllers/Orphie_Main.py:567
 msgid "No animation associated with this post"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:598
+#: Orphereus/controllers/Orphie_Main.py:585
 msgid "Can't post files without extension"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:603
+#: Orphereus/controllers/Orphie_Main.py:590
 #, python-format
 msgid "Extension \"%s\" is disallowed"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:659
+#: Orphereus/controllers/Orphie_Main.py:646
 msgid "Broken picture. Maybe it is interlaced PNG?"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:695
+#: Orphereus/controllers/Orphie_Main.py:681
 msgid "IP banned"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:747
+#: Orphereus/controllers/Orphie_Main.py:739
 msgid "Incorrect Captcha value"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:761
+#: Orphereus/controllers/Orphie_Main.py:753
 msgid "Can't post into non-existent thread"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:771
+#: Orphereus/controllers/Orphie_Main.py:763
 msgid "You should specify at least one board"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:775
+#: Orphereus/controllers/Orphie_Main.py:767
 #, python-format
 msgid "Too many tags. Maximum allowed: %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:790
+#: Orphereus/controllers/Orphie_Main.py:782
 msgid "Crossposting disabled"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:793
+#: Orphereus/controllers/Orphie_Main.py:785
 msgid "Crossposting allowed only for service tags"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:796
+#: Orphereus/controllers/Orphie_Main.py:788
 msgid "Can't post with service tags only"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:802
+#: Orphereus/controllers/Orphie_Main.py:794
 #, python-format
 msgid "Tags restrictions violations:<br/> %s"
 msgstr ""
@@ -614,79 +629,87 @@ msgstr ""
 msgid "Message is too long"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:858
+#: Orphereus/controllers/Orphie_Main.py:857
 msgid "Files are not allowed on this board"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:860
+#: Orphereus/controllers/Orphie_Main.py:859
 #, python-format
 msgid "File size (%d) exceeds the limit (%d)"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:862
+#: Orphereus/controllers/Orphie_Main.py:861
 #, python-format
 msgid "Image is too small. At least one side should be %d or more pixels."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:886
+#: Orphereus/controllers/Orphie_Main.py:885
 msgid "At least message or file should be specified"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:895
+#: Orphereus/controllers/Orphie_Main.py:894
 msgid "Replies without image are not allowed"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Main.py:898
+#: Orphereus/controllers/Orphie_Main.py:897
 msgid "Threads without image are not allowed"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:70
+#: Orphereus/controllers/Orphie_Maintenance.py:71
 msgid "Remove old bans"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:71
+#: Orphereus/controllers/Orphie_Maintenance.py:72
 msgid "Destroy IP trackers (older than one day)"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:72
+#: Orphereus/controllers/Orphie_Maintenance.py:73
 msgid "Destroy unused invites (older than one week)"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:73
+#: Orphereus/controllers/Orphie_Maintenance.py:74
 msgid "Destroy unused oekaki IDs (older than one day)"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:75
+#: Orphereus/controllers/Orphie_Maintenance.py:76
 msgid "Integrity checks"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:76
+#: Orphereus/controllers/Orphie_Maintenance.py:77
 msgid "Update caches"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:77
+#: Orphereus/controllers/Orphie_Maintenance.py:78
 msgid "Update statistics"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:78
+#: Orphereus/controllers/Orphie_Maintenance.py:79
 msgid "Ban ALL users without posts"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:79
+#: Orphereus/controllers/Orphie_Maintenance.py:80
 msgid "Remove empty tags and fix incorrect XHTML if any"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:80
+#: Orphereus/controllers/Orphie_Maintenance.py:81
 msgid "Reparse posts which can be reparsed"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:81
+#: Orphereus/controllers/Orphie_Maintenance.py:82
 msgid "Sort uploads"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Maintenance.py:509
-#: Orphereus/controllers/Orphie_Maintenance.py:517
+#: Orphereus/controllers/Orphie_Maintenance.py:83
+msgid "Search for orphaned posts and group them into thread #0"
+msgstr ""
+
+#: Orphereus/controllers/Orphie_Maintenance.py:563
+#: Orphereus/controllers/Orphie_Maintenance.py:577
 msgid "Maintenance"
+msgstr ""
+
+#: Orphereus/controllers/Orphie_Maintenance.py:570
+msgid "Posting into service thread #0 is prohibited"
 msgstr ""
 
 #: Orphereus/controllers/Orphie_Public.py:64
@@ -694,8 +717,8 @@ msgstr ""
 msgid "You are banned on %s for %s days for the following reason:<br/>%s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:68
-#: Orphereus/controllers/Orphie_Public.py:273
+#: Orphereus/controllers/Orphie_Public.py:66
+#: Orphereus/controllers/Orphie_Public.py:269
 msgid "ORLY?"
 msgstr ""
 
@@ -703,60 +726,60 @@ msgstr ""
 msgid "Authorization disabled"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:202
+#: Orphereus/controllers/Orphie_Public.py:201
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:84
 #: Orphereus/templates/wakaba/wakaba.menu.mako:55
 #: Orphereus/templates/wakaba/wakaba.menu.mako:57
 msgid "Login"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:248
+#: Orphereus/controllers/Orphie_Public.py:247
 msgid ""
 "Your Security Code was used during registration by another user. Contact "
 "administrator immediately please."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:252
+#: Orphereus/controllers/Orphie_Public.py:250
 msgid ""
 "You entered already existing password. Previous account was banned. "
 "Contact administrator please."
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:257
+#: Orphereus/controllers/Orphie_Public.py:254
 #, python-format
 msgid "Utilized invite #%d [RID:%d]"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:263
+#: Orphereus/controllers/Orphie_Public.py:260
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:88
 #: Orphereus/templates/wakaba/wakaba.menu.mako:62
 msgid "Register"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:269
+#: Orphereus/controllers/Orphie_Public.py:266
 msgid "Banned"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:279
+#: Orphereus/controllers/Orphie_Public.py:273
 msgid "Excuse me, WTF are you?"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:359
+#: Orphereus/controllers/Orphie_Public.py:352
 #, python-format
 msgid "%s: thread #%d"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:368
+#: Orphereus/controllers/Orphie_Public.py:361
 #, python-format
 msgid "%s: %s"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:396
+#: Orphereus/controllers/Orphie_Public.py:389
 #, python-format
 msgid "Thread #%d"
 msgstr ""
 
-#: Orphereus/controllers/Orphie_Public.py:399
+#: Orphereus/controllers/Orphie_Public.py:392
 #, python-format
 msgid "#%d"
 msgstr ""
@@ -793,7 +816,12 @@ msgstr ""
 msgid "Rebuild completed"
 msgstr ""
 
-#: Orphereus/controllers/newsfeed.py:43
+#: Orphereus/controllers/newsfeed.py:28
+#, python-format
+msgid "Posting into board /%s/ is prohibited"
+msgstr ""
+
+#: Orphereus/controllers/newsfeed.py:73
 msgid "News feed for main page"
 msgstr ""
 
@@ -913,12 +941,12 @@ msgstr ""
 msgid "(file only)"
 msgstr ""
 
-#: Orphereus/model/Tag.py:227
+#: Orphereus/model/Tag.py:229
 #, python-format
 msgid "Too long. Maximal length: %s"
 msgstr ""
 
-#: Orphereus/model/Tag.py:229
+#: Orphereus/model/Tag.py:231
 msgid "Disabled"
 msgstr ""
 
@@ -995,6 +1023,20 @@ msgstr ""
 msgid "You are banned on %s for %s days for following reason:<br/>%s"
 msgstr ""
 
+#: Orphereus/templates/std.jsTest.mako:34
+#: Orphereus/templates/wakaba/wakaba.jsTest.mako:34
+msgid ""
+"<b>Warning</b>: It's strongly recommended to enable JavaScript for this "
+"site!"
+msgstr ""
+
+#: Orphereus/templates/std.jsTest.mako:45
+#: Orphereus/templates/wakaba/wakaba.jsTest.mako:45
+msgid ""
+"<b>Warning<\\/b>: It's strongly recommended to turn cookies on for this "
+"site."
+msgstr ""
+
 #: Orphereus/templates/std.login.mako:7
 #: Orphereus/templates/std.register.mako:19
 #: Orphereus/templates/actuators/anomach/std.login.mako:8
@@ -1055,7 +1097,7 @@ msgid "Enter captcha"
 msgstr ""
 
 #: Orphereus/templates/std.rssPost.mako:17
-#: Orphereus/templates/wakaba/wakaba.postReply.mako:57
+#: Orphereus/templates/wakaba/wakaba.postReply.mako:61
 #: Orphereus/templates/wakaba/wakaba.search.mako:44
 msgid "File:"
 msgstr ""
@@ -1065,22 +1107,22 @@ msgstr ""
 #: Orphereus/templates/wakaba/wakaba.postForm.mako:166
 #: Orphereus/templates/wakaba/wakaba.postOp.mako:15
 #: Orphereus/templates/wakaba/wakaba.postOp.mako:17
-#: Orphereus/templates/wakaba/wakaba.postReply.mako:67
-#: Orphereus/templates/wakaba/wakaba.postReply.mako:69
+#: Orphereus/templates/wakaba/wakaba.postReply.mako:71
+#: Orphereus/templates/wakaba/wakaba.postReply.mako:73
 msgid "Kbytes"
 msgstr ""
 
 #: Orphereus/templates/std.rssPost.mako:43
 #: Orphereus/templates/wakaba/wakaba.postOp.mako:32
-#: Orphereus/templates/wakaba/wakaba.postReply.mako:83
+#: Orphereus/templates/wakaba/wakaba.postReply.mako:87
 #: Orphereus/templates/wakaba/wakaba.search.mako:64
 msgid "Picture was removed by user or administrator"
 msgstr ""
 
 #: Orphereus/templates/std.rssPost.mako:52
 #: Orphereus/templates/wakaba/wakaba.postForm.mako:136
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:127
-#: Orphereus/templates/wakaba/wakaba.postReply.mako:98
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:131
+#: Orphereus/templates/wakaba/wakaba.postReply.mako:102
 msgid "Animation"
 msgstr ""
 
@@ -1100,7 +1142,7 @@ msgid "Loading"
 msgstr ""
 
 #: Orphereus/templates/ui.js:222
-#: Orphereus/templates/wakaba/wakaba.posts.mako:87
+#: Orphereus/templates/wakaba/wakaba.posts.mako:91
 msgid "Captcha required"
 msgstr ""
 
@@ -1136,12 +1178,42 @@ msgstr ""
 msgid "Tags:"
 msgstr ""
 
+#: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:9
+#, python-format
+msgid "You are trying to anonymize post #%s."
+msgstr ""
+
 #: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:10
 msgid "Anonymize ALL posts older than this one"
 msgstr ""
 
+#: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:11
+msgid "This action will remove mapping to your UID. You will loss abilities to:"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:13
+msgid "delete this post"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:14
+#, python-format
+msgid "view this post in <a href=\"%s\">/@/</a>"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:15
+msgid "use ID of this posts in prooflabels"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:17
+msgid "Do you want to continue?"
+msgstr ""
+
 #: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:20
 msgid "Yes, I want!"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.finalAnonymization.mako:24
+msgid "Result"
 msgstr ""
 
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:7
@@ -1591,6 +1663,41 @@ msgstr ""
 msgid "Current members of Holy Synod"
 msgstr ""
 
+#: Orphereus/templates/wakaba/wakaba.mergeTags.mako:7
+#: Orphereus/templates/wakaba/wakaba.postForm.mako:50
+#: Orphereus/templates/wakaba/wakaba.posts.mako:111
+msgid "Post"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.mergeTags.mako:8
+#: Orphereus/templates/wakaba/wakaba.statistics.mako:62
+msgid "Tags"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.mergeTags.mako:9
+msgid "New tags"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.mergeTags.mako:10
+msgid "Action"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.mergeTags.mako:23
+msgid "Move all posts from:"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.mergeTags.mako:24
+msgid "(comma-separated list)"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.mergeTags.mako:25
+msgid "into:"
+msgstr ""
+
+#: Orphereus/templates/wakaba/wakaba.mergeTags.mako:27
+msgid "Merge"
+msgstr ""
+
 #: Orphereus/templates/wakaba/wakaba.mtn.mako:5
 msgid "Maintenance panel"
 msgstr ""
@@ -1623,7 +1730,7 @@ msgid "Back"
 msgstr ""
 
 #: Orphereus/templates/wakaba/wakaba.postForm.mako:11
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:110
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:114
 msgid "Reply"
 msgstr ""
 
@@ -1637,11 +1744,6 @@ msgstr ""
 
 #: Orphereus/templates/wakaba/wakaba.postForm.mako:42
 msgid "Spoiler"
-msgstr ""
-
-#: Orphereus/templates/wakaba/wakaba.postForm.mako:50
-#: Orphereus/templates/wakaba/wakaba.posts.mako:107
-msgid "Post"
 msgstr ""
 
 #: Orphereus/templates/wakaba/wakaba.postForm.mako:54
@@ -1662,7 +1764,7 @@ msgid "File"
 msgstr ""
 
 #: Orphereus/templates/wakaba/wakaba.postForm.mako:92
-#: Orphereus/templates/wakaba/wakaba.posts.mako:97
+#: Orphereus/templates/wakaba/wakaba.posts.mako:101
 msgid "Go to"
 msgstr ""
 
@@ -1679,8 +1781,8 @@ msgid "Selfy"
 msgstr ""
 
 #: Orphereus/templates/wakaba/wakaba.postForm.mako:139
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:108
-#: Orphereus/templates/wakaba/wakaba.postReply.mako:47
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:112
+#: Orphereus/templates/wakaba/wakaba.postReply.mako:51
 msgid "Draw"
 msgstr ""
 
@@ -1816,42 +1918,42 @@ msgstr ""
 msgid "Board-specific rules:"
 msgstr ""
 
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:87
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:91
 msgid "Posted in"
 msgstr ""
 
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:100
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:104
 msgid "Hide"
 msgstr ""
 
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:102
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:106
 #: Orphereus/templates/wakaba/wakaba.posts.mako:36
 #: Orphereus/templates/wakaba/wakaba.profile.mako:244
 msgid "Unhide"
 msgstr ""
 
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:112
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:116
 msgid "Read"
 msgstr ""
 
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:119
-#: Orphereus/templates/wakaba/wakaba.postReply.mako:90
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:123
+#: Orphereus/templates/wakaba/wakaba.postReply.mako:94
 msgid "Comment is too long."
 msgstr ""
 
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:119
-#: Orphereus/templates/wakaba/wakaba.postReply.mako:90
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:123
+#: Orphereus/templates/wakaba/wakaba.postReply.mako:94
 msgid "Full version"
 msgstr ""
 
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:131
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:135
 #, python-format
 msgid "%s post omitted."
 msgid_plural "%s posts omitted."
 msgstr[0] ""
 msgstr[1] ""
 
-#: Orphereus/templates/wakaba/wakaba.postOp.mako:131
+#: Orphereus/templates/wakaba/wakaba.postOp.mako:135
 msgid "Expand thread"
 msgstr ""
 
@@ -1859,7 +1961,7 @@ msgstr ""
 msgid "[REMOVABLE]"
 msgstr ""
 
-#: Orphereus/templates/wakaba/wakaba.postReply.mako:73
+#: Orphereus/templates/wakaba/wakaba.postReply.mako:77
 #: Orphereus/templates/wakaba/wakaba.search.mako:53
 msgid "This is resized copy. Click it to view original image"
 msgstr ""
@@ -1877,7 +1979,7 @@ msgstr ""
 msgid "Delete post(s)"
 msgstr ""
 
-#: Orphereus/templates/wakaba/wakaba.posts.mako:107
+#: Orphereus/templates/wakaba/wakaba.posts.mako:111
 msgid "Close"
 msgstr ""
 
@@ -2108,10 +2210,6 @@ msgstr ""
 
 #: Orphereus/templates/wakaba/wakaba.statistics.mako:56
 msgid "Useful stuff is so useful"
-msgstr ""
-
-#: Orphereus/templates/wakaba/wakaba.statistics.mako:62
-msgid "Tags"
 msgstr ""
 
 #: Orphereus/templates/wakaba/wakaba.statistics.mako:68

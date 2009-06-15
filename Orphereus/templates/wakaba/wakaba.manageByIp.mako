@@ -5,7 +5,7 @@
 <tr>
 <td>${_("IP from which this post was created")}</td>
 <td>${h.intToDotted(int(c.ip))}</td>
-<td><a href="">${_("Ban")}</a></td>
+<td><a href="${h.url_for('hsIpBanAttempt', pid=c.firstPost.id)}">${_("Ban")}</a></td>
 </tr>
 <tr>
 <td>${_("Posts count for this IP")}</td>

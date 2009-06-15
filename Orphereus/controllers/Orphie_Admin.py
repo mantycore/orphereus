@@ -601,6 +601,10 @@ class OrphieAdminController(OrphieBaseController):
         allFilter = Post.filter(Post.ip == ip)
         unregFilter = Post.filter(and_(Post.ip == ip, not_(Post.uidNumber > 0)))
         c.postsCount = allFilter.count()
+        if not c.postsCount:
+            return self.error(_("No posts are associated with this IP"))
+
+        c.firstPost = allFilter.first() # TODO: it's hack for bad IP ban logic
         c.unregPostsCount = unregFilter.count()
         if act == 'showAll':
             c.postsList = allFilter.all()

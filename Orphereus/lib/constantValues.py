@@ -36,7 +36,7 @@ settingsDef = {
     "maxLinesInPost": u'15',
     "cutSymbols"    : u'5000',
     "usersCanViewLogs"  : u'false',
-    "additionalLinks" : u'http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma',
+    "additionalLinks" : u'http://orphereus.anoma.ch,Orphereus|http://anoma.ch,Anoma',
     "sectionNames" : u'Main',
 }
 

@@ -600,6 +600,13 @@ class OrphieAdminController(OrphieBaseController):
             reason = request.POST.get("UIDViewReason", _('No reason given!'))
             #toLog(LOG_EVENT_USER_GETUID, "Viewed UID for user '%s' from post '<a href='/%s#i%s'>%s</a>'. Reason: %s" % (post.uidNumber, post.parentid > 0 and post.parentid or post.id, pid, pid, reason))
             toLog(LOG_EVENT_USER_GETUID, _("Viewed UID for user '%s' from post '%s'. Reason: %s") % (post.uidNumber, post.id, reason))
+            if post.uidNumber == -1:
+                if not post.ip:
+                    return self.error(_("This post created by non-registered user whose IP was not saved"))
+                else:
+                    return redirect_to('hsManageByIp', ip = post.ip)
+            elif not post.uidNumber:
+                return self.error(_("This post was anonymized"))
             return redirect_to('hsUserEdit', uid = post.uidNumber)
         else:
             return self.error(_("Post not found"))

@@ -59,6 +59,7 @@ class OptHolder(object):
                               ('defaults',
                                ('defImagelessThread', 'defImagelessPost', 'defImages',
                                 'defEnableSpoilers', 'defCanDeleteOwnThreads', 'defSelfModeration',
+                                'defShowInOverview',
                                )
                               ),
 
@@ -92,7 +93,8 @@ class OptHolder(object):
                               ),
 
                               ('defaults',
-                               ('defThumbSize', 'defMinPicSize', 'defMaxFileSize',
+                               ('defThumbSize', 'defMinPicSize', 'defMaxFileSize', 'defBumplimit',
+
                                )
                               ),
 

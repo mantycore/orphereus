@@ -911,6 +911,8 @@ class OrphieMainController(OrphieBaseController):
         postParams.tags = tags
         postParams.existentPic = existentPic
         postParams.picInfo = picInfo
+        postParams.bumplimit = options.bumplimit
+
         if postParams.picInfo:
             postParams.picInfo.animPath = animPath
 

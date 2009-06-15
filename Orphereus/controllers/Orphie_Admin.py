@@ -471,9 +471,7 @@ class OrphieAdminController(OrphieBaseController):
                 c.boards[-1].append(b)
 
         for sid in c.boards.keys():
-            def tagcmp(a, b):
-                return cmp(a.tag, b.tag)
-            c.boards[sid] = sorted(c.boards[sid], tagcmp)
+            c.boards[sid] = sorted(c.boards[sid], lambda a, b: cmp(a.tag, b.tag))
         c.sectionList = sorted(c.sectionList)
         c.sectionList.append(-1)
         return self.render('manageBoards')
@@ -521,9 +519,14 @@ class OrphieAdminController(OrphieBaseController):
                     c.tag.options.enableSpoilers = request.POST.get('spoilers', False)
                     c.tag.options.canDeleteOwnThreads = request.POST.get('canDeleteOwnThreads', False)
                     c.tag.options.selfModeration = request.POST.get('selfModeration', False)
+                    c.tag.options.showInOverview = request.POST.get('showInOverview', False)
                     c.tag.options.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
                     c.tag.options.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
                     c.tag.options.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
+                    bumplimit = request.POST.get('bumplimit', g.OPT.defBumplimit)
+                    if not isNumber(bumplimit) or int(bumplimit) == 0:
+                        bumplimit = None
+                    c.tag.options.bumplimit = bumplimit
                     c.tag.save()
                     if request.POST.get('deleteBoard', False) and c.tag.id:
                         count = c.tag.getExactThreadCount()

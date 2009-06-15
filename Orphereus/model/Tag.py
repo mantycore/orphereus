@@ -142,6 +142,8 @@ class Tag(object):
                     options.thumbSize = t.options.thumbSize
                     options.canDeleteOwnThreads = t.options.canDeleteOwnThreads
                     options.selfModeration = t.options.selfModeration
+                    options.showInOverview = t.options.showInOverview
+                    options.bumplimit = t.options.bumplimit
                     optionsFlag = False
                 else:
                     options.imagelessThread = options.imagelessThread & t.options.imagelessThread
@@ -150,6 +152,10 @@ class Tag(object):
                     options.canDeleteOwnThreads = options.canDeleteOwnThreads & t.options.canDeleteOwnThreads
                     options.images = options.images & t.options.images
                     options.selfModeration = options.selfModeration | t.options.selfModeration
+                    options.showInOverview = options.showInOverview & t.options.showInOverview
+
+                    if t.options.bumplimit and (not options.bumplimit or (t.options.bumplimit < options.bumplimit)):
+                        options.bumplimit = t.options.bumplimit
 
                     perm = meta.globj.OPT.permissiveFileSizeConjunction
                     if (perm and t.options.maxFileSize > options.maxFileSize) or (not perm and t.options.maxFileSize < options.maxFileSize):
@@ -177,6 +183,8 @@ class Tag(object):
             options.minPicSize = meta.globj.OPT.defMinPicSize
             options.thumbSize = meta.globj.OPT.defThumbSize
             options.selfModeration = meta.globj.OPT.defSelfModeration
+            options.showInOverview = meta.globj.OPT.defShowInOverview
+            options.bumplimit = meta.globj.OPT.defBumplimit
             options.specialRules = u''
         return options
 

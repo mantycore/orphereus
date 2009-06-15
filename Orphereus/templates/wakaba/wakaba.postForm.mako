@@ -171,6 +171,8 @@
 <li>${_('Spoiler alerts')}:  ${not c.boardOptions.enableSpoilers and _('not') or ''} ${_('allowed')}</li>
 <li>${_('Op can delete thread')}:  ${c.boardOptions.canDeleteOwnThreads and _('yes') or _('no')}</li>
 <li>${_('Op can moderate thread')}:  ${c.boardOptions.selfModeration and _('yes') or _('no')}</li>
+<li>${_('Visible in Overview')}:  ${c.boardOptions.showInOverview and _('yes') or _('no')}</li>
+<li>${_('Bumplimit')}:  ${c.boardOptions.bumplimit and c.boardOptions.bumplimit or _('unlimited')}</li>
 </ul>
 <b>${_('Additional information')}:</b>
 <ul class="nomargin">

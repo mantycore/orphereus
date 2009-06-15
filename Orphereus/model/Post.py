@@ -27,6 +27,7 @@ from sqlalchemy.sql import and_, or_, not_
 from Orphereus.model import meta
 from Orphereus.model.Picture import Picture
 from Orphereus.model.Tag import Tag
+from Orphereus.model.TagOptions import TagOptions
 from Orphereus.model.LogEntry import LogEntry
 from Orphereus.lib.miscUtils import getRPN, empty
 from Orphereus.lib.constantValues import *
@@ -85,8 +86,11 @@ class Post(object):
         if thread:
             post.parentid = thread.id
             thread.replyCount += 1
+            log.debug(postParams.bumplimit)
+            log.debug(thread.replyCount)
             post.sage = postParams.postSage
-            if not postParams.postSage:
+            limitOk = not postParams.bumplimit or (postParams.bumplimit >= thread.replyCount)
+            if (not postParams.postSage) and limitOk:
                 thread.bumpDate = datetime.datetime.now()
         else:
             post.parentid = None
@@ -191,7 +195,9 @@ class Post(object):
                 if arg == '@':
                     return (buildMyPostsFilter(), [])
                 elif arg == '~':
-                    return (not_(Post.tags.any(Tag.id.in_(userInst.homeExclude))), [])
+                    disableExclusions = Post.tags.any(Tag.id.in_(userInst.homeExclude))
+                    disableHidden = Post.tags.any(Tag.options.has(not_(TagOptions.showInOverview)))
+                    return (not_(or_(disableExclusions, disableHidden)), [])
                 else:
                     return (Post.tags.any(tag = arg), [arg])
             else:

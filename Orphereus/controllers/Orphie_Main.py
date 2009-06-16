@@ -65,7 +65,7 @@ class OrphieMainController(OrphieBaseController):
             return redirect_to('authorizeToUrl', url = c.currentURL)
         if self.userInst.isBanned():
             #abort(500, 'Internal Server Error')     # calm hidden ban
-            return redirect_to('youAreBanned')
+            return redirect_to('banned')
         #c.currentUserCanPost = self.currentUserCanPost()
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('boardBase')

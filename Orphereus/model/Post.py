@@ -115,6 +115,24 @@ class Post(object):
         meta.Session.commit()
         return post
 
+    def removeTag(self, tag):
+        if not self.parentid:
+            if tag in self.tags:
+                tag.threadCount -= 1
+                tag.replyCount -= (self.replyCount + 1)
+                self.tags.remove(tag)
+        else:
+            raise "Can't remove tags from reply"
+
+    def appendTag(self, tag):
+        if not self.parentid:
+            if not tag in self.tags:
+                tag.threadCount += 1
+                tag.replyCount += (self.replyCount + 1)
+                self.tags.append(tag)
+        else:
+            raise "Can't remove tags from reply"
+
     def incrementStats(self):
         taglist = self.tags
 

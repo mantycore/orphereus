@@ -4,28 +4,32 @@
 %for item in menuSource[menuId]:
 	%if item[0].route:
 		<a href="${item[0].route}" 
-		  class="menuItem_${item[1]}"
+		  class="simpleMenuItem menuItem_${item[1]}"
 		  style="
 		  %if currentItemId and currentItemId == item[0].id:
 		  	color: green;
 		  %endif
 		  padding-left: ${item[1]*8}px;
-		  " 
+          display: block;
+		  "
+          id="${item[0].id}"
 		> 
 		 ${item[0].text}
-		</a><br/>
+		</a>
 	%else:
 		<span 
-		  class="menuSpan_${item[1]}"
+		  class="simpleMenuSpan menuSpan_${item[1]}"
 		  style="
 		  %if currentItemId and currentItemId == item[0].id:
 		  	color: green;
 		  %endif
 		  padding-left: ${item[1]*8}px;
-		  "  
+          display: block;
+		  "
+          id="${item[0].id}"
 		> 
 		 ${item[0].text}
-		</span><br/>
+		</span>
 	%endif		
 %endfor 
 %endif

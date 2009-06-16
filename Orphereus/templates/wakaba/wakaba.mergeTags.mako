@@ -21,9 +21,9 @@
 %else:
     <form method="post" action="${h.url_for('hsMergeTags', act='merge')}">
         ${_('Move all posts from:')}<br/>
-        <input type='text' name='sourceTags' /> ${_("(comma-separated list)")}<br/>
+        <input type='text' name='sourceTags' value='${c.proposedTags}' /> ${_("(comma-separated list)")}<br/>
         ${_('into:')}<br/>
-        <input type='text' name='targetTag' /><br/>
+        <input type='text' name='targetTag' value='b' /><br/>
         <input type='submit' value='${_('Merge')}' />
     </form>
 %endif

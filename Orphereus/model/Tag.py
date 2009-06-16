@@ -51,7 +51,8 @@ t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
 
 class Tag(object):
     def __repr__(self):
-        return "Tag #%d, name = %s" % (self.id, self.tag)
+        return u"%s (#%d)" % (self.tag, self.id)
+
     def __init__(self, tag):
         self.tag = tag
         self.replyCount = 0
@@ -94,6 +95,10 @@ class Tag(object):
     @staticmethod
     def getAllByNames(names):
         return Tag.query.options(eagerload('options')).filter(Tag.tag.in_(names)).all()
+
+    @staticmethod
+    def getAllByThreadCount(tc):
+        return Tag.query.filter(Tag.threadCount == tc).all()
 
     @staticmethod
     def stringToTagList(tagstr, createNewTags = True):

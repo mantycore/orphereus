@@ -77,8 +77,8 @@ class MaintenanceWorker(object):
                     'updateCaches' : N_('Update caches'),
                     'updateStats' : N_('Update statistics'),
                     'banInactive' : N_('Ban ALL users without posts'),
-                    'removeEmptyTags' : N_('Remove empty tags and fix incorrect XHTML if any'),
-                    'reparseAll' : N_('Reparse posts which can be reparsed'),
+                    'removeEmptyTags' : N_('Remove empty tags'),
+                    'reparseAll' : N_('Reparse posts which can be reparsed and fix incorrect XHTML if any'),
                     'sortUploads' : N_('Sort uploads'),
                     'findOrphanedPosts' : N_('Search for orphaned posts and group them into thread #0'),
                     }

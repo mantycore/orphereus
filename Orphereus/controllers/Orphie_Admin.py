@@ -354,6 +354,11 @@ class OrphieAdminController(OrphieBaseController):
         if not self.userInst.canManageMappings():
             return self.error(_("No way! You aren't holy enough!"))
 
+        badTags = Tag.getAllByThreadCount(1)
+        badTagList = []
+        for tag in badTags:
+            badTagList.append(tag.tag)
+        c.proposedTags = ','.join(badTagList)
         if act == 'merge':
             source = filterText(request.POST.get('sourceTags', '')).strip()
             target = filterText(request.POST.get('targetTag', '')).strip()
@@ -364,22 +369,33 @@ class OrphieAdminController(OrphieBaseController):
                 if targetTag and sourceTags:
                     if not targetTag in sourceTags:
                         #TODO: implement Post.addTag, Post.removeTag
+                        def tagsToStr(tags):
+                            taglist = []
+                            for tag in post.tags:
+                                taglist.append(unicode(tag))
+                            return '; '.join(taglist)
                         c.result = []
                         for tag in sourceTags:
                             posts = Post.filter(and_(Post.parentid == None, Post.tags.any(Tag.id == tag.id))).all()
                             for post in posts:
-                                tmp = [post.id, str(post.tags)]
+                                tmp = [post.id, tagsToStr(post.tags)]
                                 tags = post.tags
                                 tags.remove(tag)
+                                tag.threadCount -= 1
+                                tag.replyCount -= (post.replyCount + 1)
+                                log.debug(post.replyCount)
                                 if not targetTag in tags:
                                     tags.append(targetTag)
-                                tmp.append(str(tags))
+                                    targetTag.threadCount += 1
+                                    targetTag.replyCount += (post.replyCount + 1)
+                                tmp.append(tagsToStr(tags))
                                 options = Tag.conjunctedOptionsDescript(tags)
                                 if not Tag.tagsInConflict(options, None):
                                     tmp.append(_('Accepted'))
                                 else:
                                     tmp.append(_("Declined: unacceptable combination of tags"))
                                 c.result.append(tmp)
+                        meta.Session.commit()
                     else:
                         return self.error(_("Source tags contains target tag"))
                 else:
@@ -431,7 +447,7 @@ class OrphieAdminController(OrphieBaseController):
                     if len(post.tags) > 1:
                         tag = Tag.getById(tagid)
                         tag.threadCount -= 1
-                        tag.replyCount -= post.replyCount
+                        tag.replyCount -= (post.replyCount + 1)
                         toLog(LOG_EVENT_EDITEDPOST, _('Removed tag %s from post %d') % (tag.tag, post.id))
                         post.tags.remove(tag)
                     else:
@@ -442,7 +458,7 @@ class OrphieAdminController(OrphieBaseController):
                         toLog(LOG_EVENT_EDITEDPOST, _('Added tag %s to post %d') % (tag.tag, post.id))
                         post.tags.append(tag)
                         tag.threadCount += 1
-                        tag.replyCount += post.replyCount
+                        tag.replyCount += (post.replyCount + 1)
                     else:
                         return self.error(_("Non-existent tag"))
 

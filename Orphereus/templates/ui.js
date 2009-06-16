@@ -282,9 +282,20 @@ function expandable_threads(){
     YForm.repair(node)
   }
 
+  expandable_threads.repair_deleteboxes = function(visible)
+  {
+     var allDeleteBoxesSpans = $(".delete");
+     if (visible) {
+        allDeleteBoxesSpans.show()
+     }
+     else {
+        allDeleteBoxesSpans.hide()
+     }
+  }
   $(".thread .omittedposts a").click(function() {
     var me = $(this)
     var thread = me.parent().parent();
+    var deleteBoxesShown = thread.find('.delete').is(':visible');
     if(me.data("oldreplies")){
       var t = me.data("oldreplies")
       me.data("oldreplies", thread.find(".replies").html())
@@ -295,6 +306,7 @@ function expandable_threads(){
       me.html(t)
 
       expandable_threads.mass_repair(thread.find(".replies"))
+      expandable_threads.repair_deleteboxes(deleteBoxesShown);
       me.parent().toggleClass("expanded")
     }else{
       me.data("orig_html", me.html())
@@ -304,6 +316,7 @@ function expandable_threads(){
         me.parent().toggleClass("expanded")
         me.html("${_('Collapse thread')}")
         expandable_threads.mass_repair(thread.find(".replies"))
+        expandable_threads.repair_deleteboxes(deleteBoxesShown);
       })
     }
     return false;

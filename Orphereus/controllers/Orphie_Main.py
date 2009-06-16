@@ -66,7 +66,7 @@ class OrphieMainController(OrphieBaseController):
         if self.userInst.isBanned():
             #abort(500, 'Internal Server Error')     # calm hidden ban
             return redirect_to('youAreBanned')
-        c.currentUserCanPost = self.currentUserCanPost()
+        #c.currentUserCanPost = self.currentUserCanPost()
         if self.userInst.isAdmin() and not checkAdminIP():
             return redirect_to('boardBase')
         self.initEnvironment()
@@ -101,8 +101,6 @@ class OrphieMainController(OrphieBaseController):
             page = 0
 
         c.board = board
-        c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
-        c.isAdmin = self.userInst.isAdmin()
 
         #TODO: move into GLOBAL object???
         extensions = Extension.getList(True)

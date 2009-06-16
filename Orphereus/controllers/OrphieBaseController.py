@@ -175,6 +175,7 @@ class OrphieBaseController(BaseController):
             remPassCookie = request.cookies.get('orhpieRemPass', randomStr())
             c.remPass = remPassCookie
             response.set_cookie('orhpieRemPass', unicode(remPassCookie), max_age = 3600)
+        self.setRightsInfo()
 
     def requestForMenu(self, menuId):
         if not menuId in self.requestedMenus:
@@ -274,6 +275,12 @@ class OrphieBaseController(BaseController):
 
     def currentUserIsAuthorized(self):
         return self.userInst.isValid() and (self.sessUid() == self.userInst.uidNumber)
+
+    def setRightsInfo(self):
+        c.currentUserCanPost = self.currentUserCanPost()
+        c.uidNumber = self.userInst.uidNumber
+        c.enableAllPostDeletion = self.userInst.canDeleteAllPosts()
+        c.isAdmin = self.userInst.isAdmin()
 
     # Parser callbacks
     @staticmethod

@@ -86,8 +86,8 @@ class Post(object):
         if thread:
             post.parentid = thread.id
             thread.replyCount += 1
-            log.debug(postParams.bumplimit)
-            log.debug(thread.replyCount)
+            #log.debug(postParams.bumplimit)
+            #log.debug(thread.replyCount)
             post.sage = postParams.postSage
             limitOk = not postParams.bumplimit or (postParams.bumplimit >= thread.replyCount)
             if (not postParams.postSage) and limitOk:

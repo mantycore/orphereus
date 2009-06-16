@@ -89,18 +89,19 @@ class OrphieAjaxController(OrphieBaseController):
                 parent = postInst
             #uncomment to disable folding for big posts
             #parent.enableShortMessages=False
+            self.setRightsInfo()
             return self.render('postReply', None, thread = parent, post = postInst)
         abort(404)
 
     def getRenderedReplies(self, thread):
         postInst = Post.getPost(thread)
-        c.currentUserCanPost = self.currentUserCanPost()
         if postInst and not postInst.parentPost:
             if not self.userInst.isAdmin():
                 for t in postInst.tags:
                     if t.id in g.forbiddenTags:
                         abort(403)
             postInst.Replies = postInst.filterReplies().all()
+            self.setRightsInfo()
             return self.render('replies', None, thread = postInst)
         abort(404)
 

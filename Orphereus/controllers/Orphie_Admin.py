@@ -371,7 +371,8 @@ class OrphieAdminController(OrphieBaseController):
                                 tmp = [post.id, str(post.tags)]
                                 tags = post.tags
                                 tags.remove(tag)
-                                tags.append(targetTag)
+                                if not targetTag in tags:
+                                    tags.append(targetTag)
                                 tmp.append(str(tags))
                                 options = Tag.conjunctedOptionsDescript(tags)
                                 if not Tag.tagsInConflict(options, None):

@@ -72,7 +72,6 @@
 <form action="/1" method="post" enctype="multipart/form-data" id="y_replyform" class="y_replyform_anon">
     <div class="hidden">
     <input type="hidden" name="task" value="post" />
-    <input type="hidden" name="akane" />
     <input type="hidden" name="title" value="" />
     <input type="hidden" name="tagLine" value="b" />
     <input type="hidden" name="curPage" value="0" />
@@ -80,13 +79,9 @@
     <div><textarea id="y_replyform_text" name="message" rows="5" cols="40" tabindex="10"></textarea></div>
 
     <div class="y_replyform_fields">
-        <p id="y_replyform_captcha"
-        %if g.OPT.allowAnswersWithoutCaptcha:
-            style="display: none;"
-        %endif
-        >
+        <p id="y_replyform_captcha">
             <label for="y_replyform_captcha_field">
-                <img width="150" height="40" alt="Captcha" src="${g.OPT.staticPathWeb}images/loading.gif"  onclick="update_captcha(this)"/>
+                <img width="150" height="40" alt="Captcha" src="${g.OPT.staticPathWeb}images/placeholder.png"  onclick="update_captcha(this)"/>
             </label>
             <input type="text" size="35" name="captcha" id="y_replyform_captcha_field" class="inactive" value="${_('Captcha required')}" title="Captcha text" tabindex="20"/>
             <input type="password" value="risiku" size="35" name="remPass" id="y_replyform_password" title="You can use this password to remove posts"/>

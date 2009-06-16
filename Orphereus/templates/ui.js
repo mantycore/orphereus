@@ -166,8 +166,17 @@ YForm.prototype = {
         this.form.addClass("y_replyform_anon")
     },
     reg: function() {
-        this.form.removeClass("y_replyform_anon")
-        this.form.find("#y_replyform_password").remove() // no save password query!
+
+        var passField = $("#postform input[name=remPass]");
+        if (passField.size()) {
+            //this.form.addClass("y_replyform_anon");
+            $("#y_replyform_captcha_field").attr("disabled", true);
+            $("#y_replyform_captcha img").attr("onclick", "");
+        }
+        else {
+            this.form.removeClass("y_replyform_anon");
+            this.form.find("#y_replyform_password").remove() // no save password query!
+        }
     },
     set_fields: function(thread_id) {
         var form = this.form;

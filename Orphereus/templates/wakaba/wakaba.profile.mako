@@ -297,6 +297,8 @@
 
 
     </div>
-    <div style="text-align: center;"><input name="update" type="submit" value="${_('Update')}" style="width: 100%;" /></div>
+    <hr/>
+    <div style="text-align: center;"><input name="update" type="submit" value="${_('Update')}" style="width: 30%;" /></div>
+    <hr/>
 </form>
 <br clear="all" />

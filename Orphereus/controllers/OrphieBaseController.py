@@ -113,7 +113,7 @@ class OrphieBaseController(BaseController):
         return - 1
 
     def setCookie(self):
-        sessCookie = request.cookies.get('Orphereus', '')
+        sessCookie = request.cookies.get('Orphereus', '^_^') # ^_^ is Workaround for cookie tester
         if sessCookie:
             response.set_cookie('Orphereus', str(sessCookie), domain = '.' + g.OPT.baseDomain)
 

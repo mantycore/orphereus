@@ -58,6 +58,8 @@ class OrphiePublicController(OrphieBaseController):
 
         if (self.userInst and self.userInst.isValid()) or g.OPT.allowAnonymous:
             self.initEnvironment()
+        else:
+            self.setCookie()
 
     def ipBanned(self):
         if c.ban:

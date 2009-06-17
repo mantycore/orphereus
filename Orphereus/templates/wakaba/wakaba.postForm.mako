@@ -22,6 +22,15 @@
 <tr>
 <td>
     <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
+    %if c.userInst.Anonymous:
+        <input type="hidden" name="nonregged" value="yes" />
+        %if g.OPT.allowAnswersWithoutCaptcha:
+            <input type="hidden" name="allowAnswersWithoutCaptcha" value="yes" />
+        %endif
+        %if g.OPT.forbidCaptcha:
+            <input type="hidden" name="forbidCaptcha" value="yes" />
+        %endif
+    %endif
     <input type="hidden" name="tagLine" value="${c.tagLine}" />
     <input type="hidden" name="curPage" value="${c.curPage}" />
     <input type="hidden" name="task" value="post" />

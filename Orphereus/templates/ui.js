@@ -139,7 +139,13 @@ function popup_posts(options){
 var YForm = function(){
     this.form = $("#y_replyform")
 
-    if($("#trcaptcha img").size()){
+    var nonreggedField = $('#postform input[name=nonregged]');
+    var captchaForbiddenField = $('#postform input[name=forbidCaptcha]');
+    var repliesAllowedWithoutCaptchaField = $('#postform input[name=allowAnswersWithoutCaptcha]');
+    var nonregged = nonreggedField && nonreggedField.val();
+    var captchaForbidden = captchaForbiddenField && captchaForbiddenField.val();
+    var repliesAllowedWithoutCaptcha = repliesAllowedWithoutCaptchaField && repliesAllowedWithoutCaptchaField.val();
+    if(nonregged && !(captchaForbidden || repliesAllowedWithoutCaptcha)){
         this.anon();
         this.captcha = new YForm.Captcha(this.form)
     }else{
@@ -163,13 +169,11 @@ YForm.repair = function(node){
 
 YForm.prototype = {
     anon: function() {
-        this.form.addClass("y_replyform_anon")
+        this.form.addClass("y_replyform_anon");
     },
     reg: function() {
-
         var passField = $("#postform input[name=remPass]");
         if (passField.size()) {
-            //this.form.addClass("y_replyform_anon");
             $("#y_replyform_captcha_field").attr("disabled", true);
             $("#y_replyform_captcha img").attr("onclick", "");
         }
@@ -187,8 +191,8 @@ YForm.prototype = {
         var select = $("#trgetback select");
         if(select.size()) form.find("#y_replyform_goto_field").html(select.html())
 
-        var captcha = $("#trcaptcha img")
-        if(captcha.size()) this.captcha.cimg.attr("src",captcha.attr("src"))
+        var captcha = $("#trcaptcha img");
+        if(captcha.size() && this.captcha) this.captcha.cimg.attr("src",captcha.attr("src"))
 
         $(["tagLine", "curPage", "remPass"]).each(function() {
             var field = $("#postform input[name="+this+"]")

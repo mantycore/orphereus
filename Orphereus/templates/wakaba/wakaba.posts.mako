@@ -81,16 +81,18 @@
     <div class="y_replyform_fields">
         <p id="y_replyform_captcha">
             <label for="y_replyform_captcha_field">
-                <img width="150" height="40" alt="Captcha" src="${g.OPT.staticPathWeb}images/placeholder.png"  onclick="update_captcha(this)"/>
+                <img width="150" height="40" alt="${_("Captcha")}" src="${g.OPT.staticPathWeb}images/placeholder.png"  onclick="update_captcha(this)"/>
             </label>
-            <input type="text" size="35" name="captcha" id="y_replyform_captcha_field" class="inactive" value="${_('Captcha required')}" title="Captcha text" tabindex="20"/>
-            <input type="password" value="risiku" size="35" name="remPass" id="y_replyform_password" title="You can use this password to remove posts"/>
+            <input type="text" size="35" name="captcha" id="y_replyform_captcha_field" class="inactive" value="${_('Captcha required')}" title="${_("Captcha text")}" tabindex="20"/>
+            <input type="password" value="risiku" size="35" name="remPass" id="y_replyform_password" title="${_("You can use this password to remove posts")}"/>
         </p>
         <p id="y_replyform_file">
             <input type="file" id="y_replyform_file_field" name="file" size="10" tabindex="40" />
         </p>
         <p id="y_replyform_sage">
-            <label for="y_replyform_sage_field" title="sage"><input type="checkbox" id="y_replyform_sage_field" name="sage" tabindex="50"/>sage</label>
+            <label for="y_replyform_sage_field" title="sage">
+                <input type="checkbox" id="y_replyform_sage_field" name="sage" tabindex="50"/>${_("sage")}
+            </label>
         </p>
         <p id="y_replyform_goto">
             <label for="y_replyform_goto_field" title="goto">${_('Go to')}</label>

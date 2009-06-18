@@ -32,8 +32,8 @@ from Orphereus.lib.pluginInfo import PluginInfo
 log = logging.getLogger(__name__)
 
 def routingInit(map):
-    map.connect('ajHideThread', '/ajax/hideThread/:post/*redirect', controller = 'Orphie_Ajax', action = 'hideThread', requirements = dict(post = '\d+'))
-    map.connect('ajShowThread', '/ajax/showThread/:post/*redirect', controller = 'Orphie_Ajax', action = 'showThread', requirements = dict(post = '\d+'))
+    map.connect('ajHideThread', '/ajax/hideThread/:post/:redirect/:realm/:page', controller = 'Orphie_Ajax', action = 'hideThread', redirect = '', realm = '', page = 0, requirements = dict(post = '\d+', page = '\d+'))
+    map.connect('ajShowThread', '/ajax/showThread/:post/:redirect/:realm/:page', controller = 'Orphie_Ajax', action = 'showThread', redirect = '', realm = '', page = 0, requirements = dict(post = '\d+', page = '\d+'))
     map.connect('ajGetPost', '/ajax/getPost/:post', controller = 'Orphie_Ajax', action = 'getPost', requirements = dict(post = '\d+'))
     map.connect('ajGetRenderedPost', '/ajax/getRenderedPost/:post', controller = 'Orphie_Ajax', action = 'getRenderedPost', requirements = dict(post = '\d+'))
     map.connect('ajGetRenderedReplies', '/ajax/getRenderedReplies/:thread', controller = 'Orphie_Ajax', action = 'getRenderedReplies', requirements = dict(thread = '\d+'))
@@ -66,6 +66,50 @@ class OrphieAjaxController(OrphieBaseController):
         c.userInst = self.userInst
         if not self.currentUserIsAuthorized() or self.userInst.isBanned():
             abort(403)
+
+    def realmRedirect(self, redirect, realm, page):
+        args = {}
+        if page and isNumber(page):
+            page = int(page)
+        else:
+            page = 0
+        if realm:
+            if 'board' == redirect:
+                args['board'] = realm
+                args['page'] = page
+            elif 'thread' == redirect:
+                args['post'] = realm
+        return redirect_to(redirect, **args)
+
+    def hideThread(self, post, redirect, realm, page):
+        if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
+            abort(403)
+        postInst = Post.getPost(post)
+        if postInst and not postInst.parentPost:
+            hideThreads = self.userInst.hideThreads
+            if not post in hideThreads:
+                hideThreads.append(post)
+                self.userInst.hideThreads = hideThreads
+                meta.Session.commit()
+        if redirect:
+            return self.realmRedirect(redirect, realm, page)
+            #return redirect_to(str('/%s' % redirect.encode('utf-8')))
+        return ''
+
+    def showThread(self, post, redirect, realm, page):
+        if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
+            abort(403)
+        postInst = Post.getPost(post)
+        if postInst and not postInst.parentPost:
+            hideThreads = self.userInst.hideThreads
+            if post in hideThreads:
+                hideThreads.remove(post)
+                self.userInst.hideThreads = hideThreads
+                meta.Session.commit()
+        if redirect:
+            return self.realmRedirect(redirect, realm, page)
+            #return redirect_to(str('/%s' % redirect.encode('utf-8')))
+        return ''
 
     def getPost(self, post):
         postInst = Post.getPost(post)
@@ -124,34 +168,6 @@ class OrphieAjaxController(OrphieBaseController):
                     ret.append(str(reply.id))
                 return str(','.join(ret))
         abort(404)
-
-    def hideThread(self, post, redirect):
-        if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
-            abort(403)
-        postInst = Post.getPost(post)
-        if postInst and not postInst.parentPost:
-            hideThreads = self.userInst.hideThreads
-            if not post in hideThreads:
-                hideThreads.append(post)
-                self.userInst.hideThreads = hideThreads
-                meta.Session.commit()
-        if redirect:
-            return redirect_to(str('/%s' % redirect.encode('utf-8')))
-        return ''
-
-    def showThread(self, post, redirect):
-        if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
-            abort(403)
-        postInst = Post.getPost(post)
-        if postInst and not postInst.parentPost:
-            hideThreads = self.userInst.hideThreads
-            if post in hideThreads:
-                hideThreads.remove(post)
-                self.userInst.hideThreads = hideThreads
-                meta.Session.commit()
-        if redirect:
-            return redirect_to(str('/%s' % redirect.encode('utf-8')))
-        return ''
 
     def getUserSettings(self):
         return str(self.userInst.optionsDump())

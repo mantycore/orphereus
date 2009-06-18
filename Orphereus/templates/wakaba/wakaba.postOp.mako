@@ -101,9 +101,9 @@ ${thread.date}
 &nbsp;
 %if not c.userInst.Anonymous or g.OPT.allowAnonProfile:
     %if not thread.hidden:
-        [<a href="${h.url_for('ajHideThread', post=thread.id, redirect=u'%s%s' % ((not c.board and c.tagLine) and c.tagLine or unicode(c.currentRealm), c.curPage and '/page/'+str(c.curPage) or '') )}">${_('Hide')}</a>]
+        [<a href="${h.url_for('ajHideThread', post=thread.id, redirect='board', realm=(not c.board and c.tagLine) and c.tagLine or unicode(c.currentRealm), page=c.curPage)}">${_('Hide')}</a>]
     %else:
-        [<a href="${h.url_for('ajShowThread', post=thread.id, redirect=u'%s%s' % (unicode(c.currentRealm), c.curPage and '/page/'+str(c.curPage) or '') )}">${_('Unhide')}</a>]
+        [<a href="${h.url_for('ajShowThread', post=thread.id, redirect=c.board and 'board' or 'thread', realm=unicode(c.currentRealm), page=c.curPage)}">${_('Unhide')}</a>]
     %endif
 %endif
 

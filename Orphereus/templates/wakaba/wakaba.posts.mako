@@ -33,7 +33,7 @@
 <div id="hiddenThread${thread.id}">
     <img style="vertical-align: bottom;" src="${g.OPT.staticPathWeb}images/hidden.png" alt="Hidden"/>
     ${_('Hidden thread <a href="%s">#%s</a> (%s replies) posted in /%s/') % (h.url_for('thread', post=thread.id) , thread.id, thread.replyCount, thread.tagLine)}
-    [<a href="${h.url_for('ajShowThread', post=thread.id, redirect=u'%s%s' % (unicode(c.currentRealm), c.curPage and '/page/'+str(c.curPage) or ''))}">${_('Unhide')}</a>]
+    [<a href="${h.url_for('ajShowThread', post=thread.id, redirect='board', realm=unicode(c.currentRealm), page=c.curPage)}">${_('Unhide')}</a>]
 </div>
 %endif
     <hr/>

@@ -234,7 +234,8 @@ class OrphieMainController(OrphieBaseController):
         board = filterText(board)
         if not g.OPT.allowOverview and '~' in board:
             return self.error(_("Overview is disabled."))
-        c.PostAction = board
+        c.PostAction = h.url_for('postThread', board = board) #board
+        c.currentRealm = board
 
         if isNumber(page):
             page = int(page)
@@ -257,7 +258,8 @@ class OrphieMainController(OrphieBaseController):
         if not thePost:
             return self.error(_("No such post exist."))
 
-        c.PostAction = thePost.id
+        c.PostAction = h.url_for('postReply', post = thePost.id) #thePost.id
+        c.currentRealm = thePost.id
         filter = Post.buildThreadFilter(self.userInst, thePost.id)
         return self.showPosts(threadFilter = filter, tempid = tempid, page = 0, board = '', tags = thePost.tags)
 

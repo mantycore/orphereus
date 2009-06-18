@@ -18,10 +18,14 @@
 <div id="newThreadPlaceholder" ${c.userInst.useTitleCollapse and 'style="display:none"' or ""}>
 <div class="postarea" id="postFormDiv">
 
+<script type="text/javascript"><!--
+
+//--></script>
+
 <table>
 <tr>
 <td>
-    <form id="postform" action="/${c.PostAction}" method="post" enctype="multipart/form-data">
+    <form id="postform" action="${c.PostAction}" method="post" enctype="multipart/form-data">
     %if c.userInst.Anonymous:
         <input type="hidden" name="nonregged" value="yes" />
         %if g.OPT.allowAnswersWithoutCaptcha:
@@ -126,7 +130,7 @@
     </table>
     </form>
     %if c.boardOptions.images and not c.oekaki:
-            <form method="post" action="${h.url_for('oekakiDraw', url=c.PostAction)}">
+            <form method="post" action="${h.url_for('oekakiDraw', url=c.currentRealm)}">
                 <table style="display: block;">
                 <tr id="troekaki">
                    <td class="postblock">${_('Oekaki')}</td>

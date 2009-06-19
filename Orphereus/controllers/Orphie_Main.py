@@ -145,15 +145,6 @@ class OrphieMainController(OrphieBaseController):
             tagDescr = Post.tagLine(tags)
             c.boardName = tagDescr[1]
             c.tagLine = tagDescr[0]
-            """
-                names = []
-                rawNames = []
-                for t in tags:
-                    names.append(t.options and t.options.comment or (u"/%s/" % t.tag))
-                    rawNames.append(t.tag)
-                c.boardName = " + ".join(names)
-                c.tagLine ="+".join(rawNames)
-            """
         else:
             c.boardName = board
             c.tagLine = c.boardName

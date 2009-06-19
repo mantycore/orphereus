@@ -43,6 +43,7 @@ def routingInit(map):
     map.connect('ajCheckCaptcha', '/ajax/checkCaptcha/:id/:text', controller = 'Orphie_Ajax', action = 'checkCaptcha', text = '', requirements = dict(id = '\d+'))
     map.connect('ajPostThread', '/ajax/postThread/:board', controller = 'Orphie_Main', action = 'ajaxPostThread', conditions = dict(method = ['POST']))
     map.connect('ajPostReply', '/ajax/postReply/:post', controller = 'Orphie_Main', action = 'ajaxPostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
+    map.connect('ajTagsCheck', '/ajax/checkTags', controller = 'Orphie_Ajax', action = 'checkTags')
     # routines below isn't actually used
     map.connect('ajGetText', '/ajax/getText/:text', controller = 'Orphie_Ajax', action = 'getText', text = '')
     map.connect('/ajax/getRepliesCountForThread/:post', controller = 'Orphie_Ajax', action = 'getRepliesCountForThread', requirements = dict(post = '\d+'))
@@ -66,6 +67,15 @@ class OrphieAjaxController(OrphieBaseController):
         c.userInst = self.userInst
         if not self.currentUserIsAuthorized() or self.userInst.isBanned():
             abort(403)
+
+    def checkTags(self):
+        tags = request.POST.get('tags', '')
+        freeNames = Tag.stringToTagLists(tags, False)[2]
+        if freeNames:
+            c.tags = freeNames
+            return self.render('tagNames')
+        else:
+            return ''
 
     def realmRedirect(self, redirect, realm, page):
         args = {}

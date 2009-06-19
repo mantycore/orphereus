@@ -1,6 +1,6 @@
 <script type="text/javascript">
- $(YForm.init)
-window.loading_icon_path = "${g.OPT.staticPathWeb}images/loading.gif"
+ $(YForm.init);
+window.loading_icon_path = "${g.OPT.staticPathWeb}images/loading.gif";
 %if c.userInst.useAjax:
     popup_posts({ajax: true,
                  loading_icon_path: "${g.OPT.staticPathWeb}images/loading.gif"
@@ -12,6 +12,6 @@ window.loading_icon_path = "${g.OPT.staticPathWeb}images/loading.gif"
                    loading_icon_path: "${g.OPT.staticPathWeb}images/loading.gif"
                    });
 %endif
-$(expandable_threads)
+$(expandable_threads);
 </script>
 

@@ -27,7 +27,7 @@ def generateFiles():
         basePath = os.path.join(g.OPT.staticPath, "js")
         path = os.path.join(basePath, path)
         f = open(path, 'w')
-        f.write(newJS)
+        f.write(newJS.encode('utf-8'))
         f.close()
         newLen = len(newJS)
         log.info("Done. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))

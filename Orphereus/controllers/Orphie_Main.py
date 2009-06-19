@@ -141,7 +141,7 @@ class OrphieMainController(OrphieBaseController):
             currentBoard = tags[0]
             c.boardName = currentBoard.options and currentBoard.options.comment or (u"/%s/" % currentBoard.tag)
             c.tagLine = currentBoard.tag
-        elif not tagList and tags:
+        elif tagList and tags:
             tagDescr = Post.tagLine(tags)
             c.boardName = tagDescr[1]
             c.tagLine = tagDescr[0]
@@ -337,7 +337,7 @@ class OrphieMainController(OrphieBaseController):
                 val = filterText(request.POST.get(valueName, getattr(self.userInst, valueName)))
                 setattr(self.userInst, valueName, val)
 
-            homeExcludeTags = Tag.stringToTagList(request.POST.get('homeExclude', u''), False)
+            homeExcludeTags = Tag.stringToTagLists(request.POST.get('homeExclude', u''), False)[0]
             #log.debug(homeExcludeTags)
             homeExcludeList = []
             for t in homeExcludeTags:
@@ -758,7 +758,20 @@ class OrphieMainController(OrphieBaseController):
                 thread = thePost
             tags = thread.tags
         else:
-            tags = Tag.stringToTagList(tagstr, g.OPT.allowTagCreation)
+            tags, createdTags, dummy = Tag.stringToTagLists(tagstr, g.OPT.allowTagCreation)
+
+            def getDescription(tagName):
+                rex = re.compile(r"^tagname_(\d+)$")
+                for name in request.POST.keys():
+                    matcher = rex.match(name)
+                    if matcher and request.POST[name] == tagName:
+                        return textFilter(request.POST.get('tagdef_%s' % matcher.group(1), ''))
+
+            for tag in createdTags:
+                tagdef = getDescription(tag.tag)
+                if tagdef:
+                    tag.options.comment = tagdef
+
             if not tags:
                 return errorHandler(_("You should specify at least one board"))
 

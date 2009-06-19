@@ -101,24 +101,33 @@ class Tag(object):
         return Tag.query.filter(Tag.threadCount == tc).all()
 
     @staticmethod
-    def stringToTagList(tagstr, createNewTags = True):
-        tags = []
-        tagsl = []
+    def splitTagString(tagstr):
         if tagstr:
             tagstr = tagstr.replace('&amp;', '&')
             regex = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""")
-            tlist = regex.findall(tagstr)
-            for t in tlist:
-                if not t in tagsl:
-                    tag = Tag.getTag(t)
+            return regex.findall(tagstr)
+        return []
 
-                    if tag:
-                        tags.append(tag)
-                    elif createNewTags:
-                        tags.append(Tag(t))
-                    if tag or createNewTags:
-                        tagsl.append(t)
-        return tags
+    @staticmethod
+    def stringToTagLists(tagstr, createNewTags = True):
+        processedTags = []
+        existentTags = []
+        nonExistentTagNames = []
+        createdTags = []
+        for t in Tag.splitTagString(tagstr):
+            if not t in processedTags:
+                tag = Tag.getTag(t)
+                if tag:
+                    existentTags.append(tag)
+                elif createNewTags:
+                    tag = Tag(t)
+                    existentTags.append(tag)
+                    createdTags.append(tag)
+                if tag or createNewTags:
+                    processedTags.append(t)
+                else:
+                    nonExistentTagNames.append(t)
+        return (existentTags, createdTags, nonExistentTagNames)
 
     @staticmethod
     def csStringToExTagIdList(string):

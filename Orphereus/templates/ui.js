@@ -472,169 +472,43 @@ window.onload=function(e)
     }
 }
 
-/*
-function createElementEx(strTagName, arrAttrs, arrChildren)
-{
-    var objElement = document.createElement(strTagName);
-    for (strIndex in arrAttrs)
-    {
-        objElement.setAttribute(strIndex, arrAttrs[strIndex]);
+function tagCheckComplete(data) {
+    if (data) {
+        $("#paramPlaceholder").html(data);
+        $("#additionalPostParameters input").attr('disabled', '');
     }
-    for (strIndex in arrChildren)
-    {
-        objElement.appendChild(arrChildren[strIndex]);
+    else {
+        $("#postform").submit();
     }
-    return objElement;
 }
-*/
-/*
-var g_objReplyForm = null; // "Global" variable
-function getReplyForm(iThreadId)
-{
-    if (!g_objReplyForm)
+
+function checkForTagNames(){
+    var checkedField = $('#postform input[name=tagsChecked]');
+    if (!checkedField.val() && $('#postform input[name=newThread]').val())
     {
-        g_objReplyForm = createElementEx('form',{
-            'action': ('/' + iThreadId),
-            'method': 'post',
-            'enctype': 'multipart/form-data'
-        });
-        g_objReplyForm.id = 'x_replyform';
-        g_objReplyForm.appendChild(createElementEx('input', {'name': 'task', 'value': 'post', 'type': 'hidden'}));
-        g_objReplyForm.appendChild(createElementEx('input', {'name': 'akane', 'type': 'hidden'}));
-        g_objReplyForm.appendChild(createElementEx('input', {'name': 'title', 'value': '', 'type': 'hidden'}));
-
-        var origForm = document.getElementById('postform');
-        g_objReplyForm.appendChild(createElementEx('input', {'name': 'tagLine', 'value': origForm.tagLine.value, 'type': 'hidden'}));
-        g_objReplyForm.appendChild(createElementEx('input', {'name': 'curPage', 'value': origForm.curPage.value, 'type': 'hidden'}));
-
-        g_objReplyForm.appendChild(createElementEx('textarea', {'id': 'x_replyform_text', 'name': 'message', 'rows': '5', 'cols': '40'}));
-        var objBottomDiv = document.createElement('div');
-
-        var objFileLabel = createElementEx('label', {'for': 'x_replyform_file', 'title': 'File'});
-        objFileLabel.appendChild(document.createTextNode('File: '));
-        objFileLabel.appendChild(createElementEx('input', {'id': 'x_replyform_file', 'name': 'file', 'size': '20', 'type': 'file'}));
-
-        var objSageLabel = createElementEx('label', {'for': 'x_replyform_sage', 'title': 'sage'});
-        objSageLabel.appendChild(createElementEx('input', {'id': 'x_replyform_sage', 'type': 'checkbox', 'name': 'sage'}));
-        objSageLabel.appendChild(document.createTextNode('sage'));
-
-        var objGotoLabel = createElementEx('label', {'for': 'x_replyform_goto', 'title': 'goto'});
-        var GotoSelect = createElementEx('select', {'name': 'goto', 'id': 'x_replyform_goto'});
-        for (i=0;i<origForm.goto.options.length;i++)
-        {
-            var opt = createElementEx('option', {'value':origForm.goto.options[i].value});
-            opt.appendChild(document.createTextNode(origForm.goto.options[i].text));
-            if (origForm.goto.options[i].selected)
-            opt.selected = true;
-            GotoSelect.appendChild(opt);
-        }
-        objGotoLabel.appendChild(document.createTextNode('Go to'));
-        objGotoLabel.appendChild(GotoSelect);
-
-        objBottomDiv.appendChild(objFileLabel);
-        objBottomDiv.appendChild(objSageLabel);
-        objBottomDiv.appendChild(objGotoLabel);
-        // new form fields:
-        if($("#trcaptcha").size()){
-          var captcha_label = $("<label style='float:none' id='x_replyform_captcha_label'>" + $("#trcaptcha td:first").html() + "</label>");
-          var captcha_img = $("#trcaptcha img").clone().attr("id","x_replyform_captcha_img");
-          var captcha_input = $("#trcaptcha input").clone().attr("id","x_replyform_captcha_input");
-          var password_label = $("<label style='float:none' id='x_replyform_password_label'>" + $("#trrempass td:first").html() + "</label>");
-          var password_input = $("#trrempass input").clone().attr("id","x_replyform_password_input");;
-          $([captcha_label, captcha_img, captcha_input, password_label, password_input]).each(function() {$(objBottomDiv).append(this)})
-        }
-        // end of new form fields
-        objBottomDiv.appendChild(createElementEx('input', {'type': 'submit', 'value': 'Post'}));
-        var objCloseBtn = document.createElement('button');
-        objCloseBtn.addEventListener('click', hideQuickReplyForm, true);
-        if (window.opera)
-        {
-            objCloseBtn.onclick = hideQuickReplyForm;
-        }
-        objCloseBtn.appendChild(document.createTextNode('Close'));
-        objBottomDiv.appendChild(objCloseBtn);
-        g_objReplyForm.appendChild(objBottomDiv);
-
+        var tags = $('#postform input[name=tags]').val();
+        $.post("${h.url_for('ajTagsCheck')}", { tags: tags}, tagCheckComplete);
+        $("#additionalPostParameters input").attr('disabled', 'disabled');
+        $("#oekakiForm").hide();
+        $("#postControls").hide();
+        $("#postFormBanner").hide();
+        $("#additionalPostParameters").show();
+        $("#paramPlaceholder").html($("#paramPlaceholderContent").html());
+        checkedField.val('yes');
+        return false;
     }
     else
     {
-        var objInputParent = document.getElementById('x_replyform_iparent');
-        if (!objInputParent)
-        {
-            return null;
-        }
-        objInputParent.value = iThreadId;
+        checkedField.val('');
+        return true;
     }
-    return g_objReplyForm;
 }
 
-function doQuickReplyForm(objEvent,iThreadId,iPostId)
-{
-    if (!iThreadId)
-    {
-        return;
-    }
-    var objRText = document.getElementById('x_replyform_text');
-    if (!objRText || !objEvent.shiftKey)
-    {
-        var objPost = document.getElementById('quickReplyNode'+iPostId);
-        var objReplyForm;
-        if (!g_objReplyForm)
-            objReplyForm = getReplyForm(iThreadId);
-        else
-            objReplyForm = g_objReplyForm;
-        objReplyForm.action = '/'+iThreadId;
-        objReplyForm.style.display = 'block';
-        objPost.parentNode.insertBefore(objReplyForm, objPost.nextSibling);
-        var objRPass = document.getElementById('x_replyform_pass');
-        if (objRPass)
-        {
-            try
-            {
-                var objRealPass = document.evaluate("//tr[@id='trpassword']/td/input[@name='password']", document,
-                                              null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                if (objRealPass)
-                {
-                    if (objRPass.value == '')
-                    {
-                        objRPass.value = objRealPass.value;
-                    }
-                }
-            }
-            catch(e)
-            {
-                return;
-            }
-        }
-    }
-    if (!objRText)
-    {
-        objRText = document.getElementById('x_replyform_text');
-    }
-    if (objRText && iPostId)
-    {
-        objRText = document.getElementById('x_replyform_text');
-        objRText.value += '>>' + iPostId + '\n';
-    }
-    objEvent.preventDefault();
+function restoreForm() {
+    $("#additionalPostParameters").hide();
+    $("#postControls").show();
+    $("#oekakiForm").show();
+    $("#postFormBanner").show();
+    $('#postform input[name=tagsChecked]').val('');
+    $("#paramPlaceholder").html('&nbsp;');
 }
-function hideQuickReplyForm(objEvent)
-{
-    try
-    {
-        if (!g_objReplyForm)
-        {
-            return;
-        }
-        var objTemp = document.getElementById('x_replyform_text');
-        if (objTemp)
-        {
-            objTemp.value = '';
-        }
-        g_objReplyForm.style.display = 'none';
-    }
-    catch(e)
-    { ; }
-    objEvent.preventDefault();
-}
-*/

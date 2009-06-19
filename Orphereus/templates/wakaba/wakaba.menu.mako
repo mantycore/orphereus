@@ -1,12 +1,12 @@
 <div class="adminbar">
-    [
+    [ \
     %if g.OPT.allowOverview:
-    <a href="${h.url_for('boardBase', board='~')}" title="${_('Overview')}">/~/</a>
+    <a href="${h.url_for('boardBase', board='~')}" title="${_('Overview')}">/~/</a> \
     %endif
     %if not c.userInst.Anonymous:
-    <a href="${h.url_for('boardBase', board='@')}" title="${_('Related threads')}">/@/</a>
+    <a href="${h.url_for('boardBase', board='@')}" title="${_('Related threads')}">/@/</a> \
     %endif
-    <a href="${h.url_for('boardBase', board='!')}" title="${_('Home')}">/!/</a>
+    <a href="${h.url_for('boardBase', board='!')}" title="${_('Home')}">/!/</a> \
     ]
 
 %if c.boardlist:
@@ -19,9 +19,9 @@
         %else:
             <!-- ${_('Unnamed section')} -->
         %endif
-        [
+        [ \
         %for board in section[0]:
-            <a href="${h.url_for('boardBase', board=board.tag)}" title="${board.comment}"><b>/${board.tag}/</b></a>
+            <a href="${h.url_for('boardBase', board=board.tag)}" title="${board.comment}"><b>/${board.tag}/</b></a> \
         %endfor
         ]
     %endfor
@@ -64,9 +64,9 @@
 %endif
 %if not c.userInst.Anonymous and c.userInst.filters:
     <br />
-    [
+    [ \
     %for f in c.userInst.filters:
-        <a href="${h.url_for('boardBase', board=f.filter)}">/${f.filter}/</a>
+        <a href="${h.url_for('boardBase', board=f.filter)}">/${f.filter}/</a> \
     %endfor
     ]
 %endif

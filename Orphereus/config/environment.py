@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -41,14 +41,14 @@ log = logging.getLogger(__name__)
 def load_environment(global_conf, app_conf, setupMode):
     # Pylons paths
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    paths = dict(root=root,
-                 controllers=os.path.join(root, 'controllers'),
-                 static_files=os.path.join(root, 'public'),
-                 templates=[os.path.join(root, 'templates')])
+    paths = dict(root = root,
+                 controllers = os.path.join(root, 'controllers'),
+                 static_files = os.path.join(root, 'public'),
+                 templates = [os.path.join(root, 'templates')])
 
     # Initialize config with the basic options
-    config.init_app(global_conf, app_conf, package='Orphereus',
-                    template_engine='mako', paths=paths)
+    config.init_app(global_conf, app_conf, package = 'Orphereus',
+                    template_engine = 'mako', paths = paths)
 
     #config['pylons.strict_c'] = False
     #config['pylons.c_attach_args'] = True
@@ -62,12 +62,13 @@ def load_environment(global_conf, app_conf, setupMode):
     #tmpl_options = config['buffet.template_options']
 
     config['pylons.app_globals'].mako_lookup = TemplateLookup(
-        directories=paths['templates'],
-        error_handler=handle_mako_error,
-        module_directory=os.path.join(app_conf['cache_dir'], 'templates'),
-        input_encoding='utf-8', output_encoding='utf-8',
-        imports=['from webhelpers.html import escape'],
-        default_filters=['escape'])
+        directories = paths['templates'],
+        error_handler = handle_mako_error,
+        module_directory = os.path.join(app_conf['cache_dir'], 'templates'),
+        input_encoding = 'utf-8', output_encoding = 'utf-8',
+        imports = ['from webhelpers.html import escape'],
+        default_filters = ['unicode', 'trim', ]) # 'escape', ])
+        #TODO:turn escape filter on and use h.literal for all strings in templates
 
     engine = engine_from_config(config, 'sqlalchemy.')
     init_model(engine)

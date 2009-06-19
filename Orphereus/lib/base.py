@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -29,9 +29,8 @@ from pylons.controllers import WSGIController
 from pylons.controllers.util import abort, etag_cache, redirect_to
 from pylons.decorators import jsonify, validate
 from pylons.i18n import _, ungettext, N_
-from pylons.templating import render
-#TODO: use new render and h.literal for all strings in templates
-# from pylons.templating import render_mako as render
+#from pylons.templating import render
+from pylons.templating import render_mako as render
 
 import Orphereus.lib.helpers as h
 import Orphereus.model as model

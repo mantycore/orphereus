@@ -5,7 +5,9 @@
         <title>${c.title} - ${_('Maintenance panel')} - ${c.boardName}</title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <link rel="stylesheet" type="text/css" href="${h.staticFile("photon.css")}" title="Photon" />
-    <script type="text/javascript" src="/ui.js"></script>
+%for jsFile in c.jsFiles:
+        <script type="text/javascript" src="${h.staticFile(jsFile)}"></script>
+%endfor
     </head>
     <body>
         <%include file="wakaba.menu.mako" />

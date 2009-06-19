@@ -18,30 +18,42 @@
 <div id="newThreadPlaceholder" ${c.userInst.useTitleCollapse and 'style="display:none"' or ""}>
 <div class="postarea" id="postFormDiv">
 
-<script type="text/javascript"><!--
-
-//--></script>
-
 <table>
 <tr>
 <td>
-    <form id="postform" action="${c.PostAction}" method="post" enctype="multipart/form-data">
+    <form id="postform" action="${c.PostAction}" method="post" enctype="multipart/form-data" onsubmit="return checkForTagNames();">
+    <!-- JS Params -->
+    <input type="hidden" name="newThread" value="${c.board and 'yes' or ''}" />
+    <input type="hidden" name="tagsChecked" value="" />
     %if c.userInst.Anonymous:
-        <input type="hidden" name="nonregged" value="yes" />
-        %if g.OPT.allowAnswersWithoutCaptcha:
-            <input type="hidden" name="allowAnswersWithoutCaptcha" value="yes" />
-        %endif
-        %if g.OPT.forbidCaptcha:
-            <input type="hidden" name="forbidCaptcha" value="yes" />
-        %endif
+    <input type="hidden" name="nonregged" value="yes" />
+    %if g.OPT.allowAnswersWithoutCaptcha:
+    <input type="hidden" name="allowAnswersWithoutCaptcha" value="yes" />
     %endif
+    %if g.OPT.forbidCaptcha:
+    <input type="hidden" name="forbidCaptcha" value="yes" />
+    %endif
+    %endif
+    
+    <!-- Main section -->
     <input type="hidden" name="tagLine" value="${c.tagLine}" />
     <input type="hidden" name="curPage" value="${c.curPage}" />
-    <input type="hidden" name="task" value="post" />
     %if c.boardOptions.images and c.oekaki:
-        <input type="hidden" name="tempid" value="${c.oekaki.tempid}" />
+    <input type="hidden" name="tempid" value="${c.oekaki.tempid}" />
     %endif
-    <table>
+    
+    <div id="paramPlaceholderContent" style="display: none;">
+        <img  alt="${_("Loading")}" src="${g.OPT.staticPathWeb}images/loading.gif" />
+    </div>
+    <div id="additionalPostParameters" style="display: none; text-align: center;">
+        <div id="paramPlaceholder">
+        &nbsp;
+        </div>
+        <hr/>
+        <input type="button" value="${_('Cancel')}" onclick="restoreForm()" name="cancelPostingButton" />
+        <input type="submit" value="${_('Post')}" name="secondSubmitButton" />
+    </div>
+    <table id="postControls">
         <tbody >
     %if not c.board:
         <tr id="trsage">
@@ -129,37 +141,38 @@
     </tbody>
     </table>
     </form>
+    
     %if c.boardOptions.images and not c.oekaki:
-            <form method="post" action="${h.url_for('oekakiDraw', url=c.currentRealm)}">
-                <table style="display: block;">
-                <tr id="troekaki">
-                   <td class="postblock">${_('Oekaki')}</td>
-                   <td>
-                    <select name="oekaki_painter">
-                        <option value="shiNormal" ${not c.userInst.oekUsePro and 'selected="selected"' or ""}>Shi Normal</option>
-                        <option value="shiPro" ${c.userInst.oekUsePro and 'selected="selected"' or ""}>Shi Pro</option>
-                    </select>
+    <form id="oekakiForm" method="post" action="${h.url_for('oekakiDraw', url=c.currentRealm)}">
+        <table style="display: block;" >
+        <tr id="troekaki">
+           <td class="postblock">${_('Oekaki')}</td>
+           <td>
+            <select name="oekaki_painter">
+                <option value="shiNormal" ${not c.userInst.oekUsePro and 'selected="selected"' or ""}>Shi Normal</option>
+                <option value="shiPro" ${c.userInst.oekUsePro and 'selected="selected"' or ""}>Shi Pro</option>
+            </select>
 
-                    ${_('Size')}:
-                    <input type="text" value="300" size="3" name="oekaki_x"/>
-                    &#215;
-                    <input type="text" value="300" size="3" name="oekaki_y"/>
+            ${_('Size')}:
+            <input type="text" value="300" size="3" name="oekaki_x"/>
+            &#215;
+            <input type="text" value="300" size="3" name="oekaki_y"/>
 
-                    <label><input type="checkbox" name="selfy" ${c.userInst.oekUseSelfy and 'checked="checked"' or ""} /> ${_('Selfy')}</label>
-                    <label><input type="checkbox" name="animation" ${c.userInst.oekUseAnim and 'checked="checked"' or ""} /> ${_('Animation')}</label>
+            <label><input type="checkbox" name="selfy" ${c.userInst.oekUseSelfy and 'checked="checked"' or ""} /> ${_('Selfy')}</label>
+            <label><input type="checkbox" name="animation" ${c.userInst.oekUseAnim and 'checked="checked"' or ""} /> ${_('Animation')}</label>
 
-                    <input type="hidden" value="New" name="oekaki_type"/>
-                    <input type="submit" value="${_('Draw')}"/>
+            <input type="hidden" value="New" name="oekaki_type"/>
+            <input type="submit" value="${_('Draw')}"/>
 
-                    </td>
-                </tr>
-               </table>
-            </form>
+            </td>
+        </tr>
+       </table>
+    </form>
     %endif
 
 </td>
 
-<td class="reply" style="padding: 10px; vertical-align: top;">
+<td id="postFormBanner" class="reply" style="padding: 10px; vertical-align: top;">
 
 %if h.templateExists(c.actuatorTest+'wakaba.postFormAdv.mako'):
     <%include file="${c.actuator+'wakaba.postFormAdv.mako'}" />
@@ -220,9 +233,9 @@ ${_('Board-specific rules:')}
 </table>
 
 %if c.oekaki:
-            <div id="trfile" class="theader">
-                <img src="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" alt="Oekaki preview" />
-            </div>
+<div id="trfile" class="theader">
+    <img src="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" alt="Oekaki preview" />
+</div>
 %endif
 
 </div>

@@ -63,9 +63,10 @@ core.staticPath = /var/www/OrhpieStatic/
 core.staticPathWeb = http://wut.anoma.ch/
 core.filesPathWeb = http://wut.anoma.ch/img1/
 core.actuator = anomach
-core.templates = wakaba
 core.languages = en,ru
-core.styles = photon_blue,photon,bluemoon,burichan,gurochan,futaba,kusaba
+core.templates = wakaba
+core.javascripts = wakaba=jquery.js|ui.js
+core.styles = wakaba=photon_blue|bluemoon|photon|burichan|gurochan|futaba|kusaba
 core.secondaryIndex = false
 core.vitalSigns = true
 core.allowPosting = true

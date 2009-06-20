@@ -24,6 +24,7 @@ from pylons import config
 from pylons.i18n import get_lang
 import sys
 import os
+import re
 
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.constantValues import engineVersion
@@ -106,7 +107,8 @@ class OptHolder(object):
                             ]
 
         self.strListValues = [('core',
-                               ('disabledModules', 'templates', 'styles', 'languages',
+                               ('disabledModules', 'languages',
+                                'templates', 'javascripts', 'styles',
                                 'homeModules',
                                )
                               ),
@@ -135,7 +137,27 @@ class OptHolder(object):
             self.obfuscator = self.obfuscator.replace('$(', '%(')
             self.allowAnonymousPosting = self.allowAnonymous and self.allowAnonymousPosting
             self.allowAnonProfile = self.allowAnonymous and self.allowAnonProfile
-            self.jsFiles = ['jquery.js', 'ui.js']
+
+            self.cssFiles = {}
+            self.jsFiles = {}
+            rex = re.compile(r"^(.+)=(.+)$")
+            for elem in self.styles:
+                matcher = rex.match(elem)
+                if not matcher:
+                    raise "Incorrect styles list"
+                else:
+                    self.cssFiles[matcher.group(1)] = matcher.group(2).split('|')
+            for elem in self.javascripts:
+                matcher = rex.match(elem)
+                if not matcher:
+                    raise "Incorrect js list"
+                else:
+                    self.jsFiles[matcher.group(1)] = matcher.group(2).split('|')
+            fullCssList = []
+            for cssList in self.cssFiles.values():
+                fullCssList += cssList
+            self.styles = fullCssList
+            log.critical(self.styles)
             self.defaultLang = config['lang']
 
     @staticmethod

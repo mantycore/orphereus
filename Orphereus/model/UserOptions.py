@@ -98,8 +98,8 @@ class UserOptions(object):
         optionsObject.canRunMaintenance = False
         optionsObject.bantime = 0
         #
-        optionsObject.style = globalOptHolder.styles[0]
         optionsObject.template = globalOptHolder.templates[0]
+        optionsObject.style = globalOptHolder.cssFiles[optionsObject.template][0]
         optionsObject.lang = ''
         optionsObject.cLang = ''
         optionsObject.threadsPerPage = 10

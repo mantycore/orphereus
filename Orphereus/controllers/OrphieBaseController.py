@@ -48,8 +48,6 @@ class OrphieBaseController(BaseController):
             c.sum = 0
             self.startTime = time.time()
 
-        c.jsFiles = g.OPT.jsFiles
-
         self.userInst = False
         uid = self.sessUid()
         if uid > 0 and g.OPT.allowLogin:
@@ -58,6 +56,8 @@ class OrphieBaseController(BaseController):
             self.userInst = FakeUser()
 
         c.userInst = self.userInst
+        if self.userInst.isValid():
+            c.jsFiles = g.OPT.jsFiles[self.userInst.template]
         c.uidNumber = self.userInst.uidNumber
         self.requestedMenus = []
         self.builtMenus = {}

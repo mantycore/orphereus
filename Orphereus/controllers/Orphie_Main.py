@@ -307,7 +307,7 @@ class OrphieMainController(OrphieBaseController):
             return self.error(_("Profile is not avaiable to Anonymous users."))
 
         c.templates = g.OPT.templates
-        c.styles = g.OPT.styles
+        c.styles = g.OPT.cssFiles[self.userInst.template]
         c.languages = g.OPT.languages
         c.profileChanged = False
         c.boardName = _('Profile')

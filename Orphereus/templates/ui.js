@@ -402,6 +402,9 @@ function highlight(post)
 
 function showDeleteBoxes()
 {
+    $('.delete').animate({'opacity' : 'toggle',}, 250);
+
+    /*
     var chboxes = getElementsByClass('delete');
     for(i=0; i<chboxes.length; i++)
     {
@@ -414,6 +417,7 @@ function showDeleteBoxes()
             chboxes[i].style.display = 'none';
         }
     }
+    */
 }
 
 function getFullText(event, thread, post)

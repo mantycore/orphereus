@@ -21,154 +21,155 @@
 <table>
 <tr>
 <td>
-    <form id="postform" action="${c.PostAction}" method="post" enctype="multipart/form-data" onsubmit="return checkForTagNames();">
-    <!-- JS Params -->
-    <input type="hidden" name="newThread" value="${c.board and 'yes' or ''}" />
-    <input type="hidden" name="tagsChecked" value="" />
+
+<form id="postform" action="${c.PostAction}" method="post" enctype="multipart/form-data" onsubmit="return checkForTagNames();">
+<!-- JS Params -->
+<input type="hidden" name="newThread" value="${c.board and 'yes' or ''}" />
+<input type="hidden" name="tagsChecked" value="" />
+%if c.userInst.Anonymous:
+<input type="hidden" name="nonregged" value="yes" />
+%if g.OPT.allowAnswersWithoutCaptcha:
+<input type="hidden" name="allowAnswersWithoutCaptcha" value="yes" />
+%endif
+%if g.OPT.forbidCaptcha:
+<input type="hidden" name="forbidCaptcha" value="yes" />
+%endif
+%endif
+
+<!-- Main section -->
+<input type="hidden" name="tagLine" value="${c.tagLine}" />
+<input type="hidden" name="curPage" value="${c.curPage}" />
+%if c.boardOptions.images and c.oekaki:
+<input type="hidden" name="tempid" value="${c.oekaki.tempid}" />
+%endif
+
+<div id="paramPlaceholderContent" style="display: none;">
+    <img  alt="${_("Loading")}" src="${g.OPT.staticPathWeb}images/loading.gif" />
+</div>
+<div id="additionalPostParameters" style="display: none; text-align: center;">
+    <div id="paramPlaceholder">
+    &nbsp;
+    </div>
+    <hr/>
+    <input type="button" value="${_('Cancel')}" onclick="restoreForm()" name="cancelPostingButton" />
+    <input type="submit" value="${_('Post')}" name="secondSubmitButton" />
+</div>
+<table id="postControls">
+    <tbody >
+%if not c.board:
+    <tr id="trsage">
+        <td class="postblock">${_('Sage')}</td>
+        <td><input type="checkbox" name="sage" /></td>
+    </tr>
+%endif
+
+%if c.boardOptions.enableSpoilers:
+    <tr id="trspoiler">
+        <td class="postblock">${_('Spoiler')}</td>
+        <td><input type="checkbox" name="spoiler" /></td>
+    </tr>
+%endif
+    <tr id="trsubject">
+        <td class="postblock">${_('Title')}</td>
+        <td>
+            <input type="text" name="title" size="35" />
+            <input type="submit" value="${_('Post')}" />
+        </td>
+    </tr>
+    <tr id="trcomment">
+        <td class="postblock">${_('Text')}</td>
+        <td><textarea id="replyText" name="message" cols="60" rows="6"></textarea></td>
+    </tr>
+    %if c.board:
+        <tr id="trtags">
+            <td class="postblock">${_('Boards')}</td>
+            <td>
+                <input type="text" name="tags" size="35" value="${c.tagList}" />
+            </td>
+        </tr>
+    %endif
+
+    %if c.captcha and not (not c.board and g.OPT.allowAnswersWithoutCaptcha) and not g.OPT.forbidCaptcha:
+        <tr id="trcaptcha">
+            <td class="postblock">${_('Captcha')}</td>
+            <td>
+                <img src="${h.url_for('captcha', cid=c.captcha.id)}" alt="Captcha" onclick="update_captcha(this)"/><br/>
+                <input type="text" name="captcha" size="35"/>
+            </td>
+        </tr>
+    %endif
     %if c.userInst.Anonymous:
-    <input type="hidden" name="nonregged" value="yes" />
-    %if g.OPT.allowAnswersWithoutCaptcha:
-    <input type="hidden" name="allowAnswersWithoutCaptcha" value="yes" />
-    %endif
-    %if g.OPT.forbidCaptcha:
-    <input type="hidden" name="forbidCaptcha" value="yes" />
-    %endif
-    %endif
-    
-    <!-- Main section -->
-    <input type="hidden" name="tagLine" value="${c.tagLine}" />
-    <input type="hidden" name="curPage" value="${c.curPage}" />
-    %if c.boardOptions.images and c.oekaki:
-    <input type="hidden" name="tempid" value="${c.oekaki.tempid}" />
-    %endif
-    
-    <div id="paramPlaceholderContent" style="display: none;">
-        <img  alt="${_("Loading")}" src="${g.OPT.staticPathWeb}images/loading.gif" />
-    </div>
-    <div id="additionalPostParameters" style="display: none; text-align: center;">
-        <div id="paramPlaceholder">
-        &nbsp;
-        </div>
-        <hr/>
-        <input type="button" value="${_('Cancel')}" onclick="restoreForm()" name="cancelPostingButton" />
-        <input type="submit" value="${_('Post')}" name="secondSubmitButton" />
-    </div>
-    <table id="postControls">
-        <tbody >
-    %if not c.board:
-        <tr id="trsage">
-            <td class="postblock">${_('Sage')}</td>
-            <td><input type="checkbox" name="sage" /></td>
-        </tr>
-    %endif
-
-    %if c.boardOptions.enableSpoilers:
-        <tr id="trspoiler">
-            <td class="postblock">${_('Spoiler')}</td>
-            <td><input type="checkbox" name="spoiler" /></td>
-        </tr>
-    %endif
-        <tr id="trsubject">
-            <td class="postblock">${_('Title')}</td>
+        <tr id="trrempass">
+            <td class="postblock">${_('Password')}</td>
             <td>
-                <input type="text" name="title" size="35" />
-                <input type="submit" value="${_('Post')}" />
+                <input type="password" name="remPass" size="35" value="${c.remPass}" />
             </td>
         </tr>
-        <tr id="trcomment">
-            <td class="postblock">${_('Text')}</td>
-            <td><textarea id="replyText" name="message" cols="60" rows="6"></textarea></td>
-        </tr>
-        %if c.board:
-            <tr id="trtags">
-                <td class="postblock">${_('Boards')}</td>
-                <td>
-                    <input type="text" name="tags" size="35" value="${c.tagList}" />
-                </td>
-            </tr>
-        %endif
+    %endif
 
-        %if c.captcha and not (not c.board and g.OPT.allowAnswersWithoutCaptcha) and not g.OPT.forbidCaptcha:
-            <tr id="trcaptcha">
-                <td class="postblock">${_('Captcha')}</td>
-                <td>
-                    <img src="${h.url_for('captcha', cid=c.captcha.id)}" alt="Captcha" onclick="update_captcha(this)"/><br/>
-                    <input type="text" name="captcha" size="35"/>
-                </td>
-            </tr>
-        %endif
-        %if c.userInst.Anonymous:
-            <tr id="trrempass">
-                <td class="postblock">${_('Password')}</td>
-                <td>
-                    <input type="password" name="remPass" size="35" value="${c.remPass}" />
-                </td>
-            </tr>
-        %endif
-
-        %if c.boardOptions.images and not c.oekaki:
-            <tr id="trfile">
-                <td class="postblock">${_('File')}</td>
-                <td><input type="file" name="file" size="35" /></td>
-            </tr>
-        %endif
-
-        <tr id="trgetback">
-            <td class="postblock">${_('Go to')}</td>
-            <td>
-                <select name="goto">
-                    %for dest in c.destinations.keys():
-                      %if dest != 3 or g.OPT.allowOverview:
-                          <option value="${dest}"
-                          %if dest == c.userInst.defaultGoto:
-                            selected="selected"
-                          %endif
-                          >
-                          ${_(c.destinations[dest])}
-                          %if dest == 1 or dest == 2:
-                            (${c.tagLine}
-                            %if dest == 2:
-                              /page/${c.curPage}
-                            %endif
-                            )
-                          %endif
-                          </option>
-                      %endif
-                    %endfor
-                </select>
-            </td>
-        </tr>
-    </tbody>
-    </table>
-    </form>
-    
     %if c.boardOptions.images and not c.oekaki:
-    <form id="oekakiForm" method="post" action="${h.url_for('oekakiDraw', url=c.currentRealm)}">
-        <table style="display: block;" >
-        <tr id="troekaki">
-           <td class="postblock">${_('Oekaki')}</td>
-           <td>
-            <select name="oekaki_painter">
-                <option value="shiNormal" ${not c.userInst.oekUsePro and 'selected="selected"' or ""}>Shi Normal</option>
-                <option value="shiPro" ${c.userInst.oekUsePro and 'selected="selected"' or ""}>Shi Pro</option>
-            </select>
-
-            ${_('Size')}:
-            <input type="text" value="300" size="3" name="oekaki_x"/>
-            &#215;
-            <input type="text" value="300" size="3" name="oekaki_y"/>
-
-            <label><input type="checkbox" name="selfy" ${c.userInst.oekUseSelfy and 'checked="checked"' or ""} /> ${_('Selfy')}</label>
-            <label><input type="checkbox" name="animation" ${c.userInst.oekUseAnim and 'checked="checked"' or ""} /> ${_('Animation')}</label>
-
-            <input type="hidden" value="New" name="oekaki_type"/>
-            <input type="submit" value="${_('Draw')}"/>
-
-            </td>
+        <tr id="trfile">
+            <td class="postblock">${_('File')}</td>
+            <td><input type="file" name="file" size="35" /></td>
         </tr>
-       </table>
-    </form>
     %endif
+
+    <tr id="trgetback">
+        <td class="postblock">${_('Go to')}</td>
+        <td>
+            <select name="goto">
+                %for dest in c.destinations.keys():
+                  %if dest != 3 or g.OPT.allowOverview:
+                      <option value="${dest}" \
+                      %if dest == c.userInst.defaultGoto:
+                        selected="selected" \
+                      %endif
+                      > \
+                      ${_(c.destinations[dest])} \
+                      %if dest == 1 or dest == 2:
+                        (${c.tagLine} \
+                        %if dest == 2:
+                          /page/${c.curPage} \
+                        %endif
+                        ) \
+                      %endif
+                      </option>
+                  %endif
+                %endfor
+            </select>
+        </td>
+    </tr>
+</tbody>
+</table>
+</form>
+
+%if c.boardOptions.images and not c.oekaki:
+<form id="oekakiForm" method="post" action="${h.url_for('oekakiDraw', url=c.currentRealm)}">
+    <table style="display: block;" >
+    <tr id="troekaki">
+       <td class="postblock">${_('Oekaki')}</td>
+       <td>
+        <select name="oekaki_painter">
+            <option value="shiNormal" ${not c.userInst.oekUsePro and 'selected="selected"' or ""}>Shi Normal</option>
+            <option value="shiPro" ${c.userInst.oekUsePro and 'selected="selected"' or ""}>Shi Pro</option>
+        </select>
+
+        ${_('Size')}:
+        <input type="text" value="300" size="3" name="oekaki_x"/>
+        &#215;
+        <input type="text" value="300" size="3" name="oekaki_y"/>
+
+        <label><input type="checkbox" name="selfy" ${c.userInst.oekUseSelfy and 'checked="checked"' or ""} /> ${_('Selfy')}</label>
+        <label><input type="checkbox" name="animation" ${c.userInst.oekUseAnim and 'checked="checked"' or ""} /> ${_('Animation')}</label>
+
+        <input type="hidden" value="New" name="oekaki_type"/>
+        <input type="submit" value="${_('Draw')}"/>
+
+        </td>
+    </tr>
+   </table>
+</form>
+%endif
 
 </td>
 

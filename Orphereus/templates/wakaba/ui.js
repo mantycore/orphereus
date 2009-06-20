@@ -336,25 +336,106 @@ function expandable_threads(){
   })
 }
 
-// code below should be refactored
-function getElementsByClass(searchClass, domNode, tagName)
+function showDeleteBoxes()
 {
-    if (domNode == null)
-        domNode = document;
-    if (tagName == null)
-        tagName = '*';
-    var el = new Array();
-    var tags = domNode.getElementsByTagName(tagName);
-    var tcl = " "+searchClass+" ";
-    for(i=0,j=0; i<tags.length; i++)
-    {
-        var test = " " + tags[i].className + " ";
-        if (test.indexOf(tcl) != -1)
-            el[j++] = tags[i];
-    }
-    return el;
+    $('.delete').animate({'opacity' : 'toggle',}, 250);
 }
 
+function tagCheckComplete(data) {
+    if (data) {
+        $("#paramPlaceholder").html(data);
+        $("#additionalPostParameters input").attr('disabled', '');
+    }
+    else {
+        $("#postform").submit();
+    }
+}
+
+function checkForTagNames(){
+    var checkedField = $('#postform input[name=tagsChecked]');
+    if (!checkedField.val() && $('#postform input[name=newThread]').val())
+    {
+        var tags = $('#postform input[name=tags]').val();
+        $.post("${h.url_for('ajTagsCheck')}", { tags: tags}, tagCheckComplete);
+        $("#additionalPostParameters input").attr('disabled', 'disabled');
+        $("#oekakiForm").hide();
+        $("#postControls").hide();
+        $("#postFormBanner").hide();
+        $("#additionalPostParameters").show();
+        $("#paramPlaceholder").html($("#paramPlaceholderContent").html());
+        checkedField.val('yes');
+        return false;
+    }
+    else
+    {
+        checkedField.val('');
+        return true;
+    }
+}
+
+function restoreForm() {
+    $("#additionalPostParameters").hide();
+    $("#postControls").show();
+    $("#oekakiForm").show();
+    $("#postFormBanner").show();
+    $('#postform input[name=tagsChecked]').val('');
+    $("#paramPlaceholder").html('&nbsp;');
+}
+
+
+function getFullText(event, thread, post)
+{
+    var bq = document.getElementById('postBQId' + post);
+    if (!bq) bq = document.getElementById('quickReplyNode' + post);
+    var loadingString = "${_('Loading')}"+'…'
+    if (window.loading_icon_path)
+    {
+        loadingString = "<img class='comment_loading_img' src='"+window.loading_icon_path+"'> "+"${_('Loading')}"+"…"
+    }
+    $("a.expandPost[href=/" + thread + "#i" + post + "]").html(loadingString)
+    $.get('${g.OPT.urlPrefix}ajax/getPost/' + post, {}, function(response)
+    {
+      $(bq).html(response);
+    popup_posts.repair($(bq).find("a"))
+    });
+    event.preventDefault();
+}
+
+function userFiltersAdd(event)
+{
+  if ($('#newFilterInput').val())
+  {
+    $('#newFilterInput').fadeTo("fast", 0.2);
+    $.get('${g.OPT.urlPrefix}ajax/addUserFilter/' + $('#newFilterInput').val(), {}, function(response)
+    {
+      $('#newFilterInput').fadeTo("fast", 1, function() {$('#newFilterInput').val('');});
+      $(response).insertBefore('#newFilterTR');
+    });
+  }
+  event.preventDefault();
+}
+function userFiltersEdit(event,fid)
+{
+  $('#filterId' + fid + 'Input').fadeTo("slow", 0.2);
+  $.get('${g.OPT.urlPrefix}ajax/editUserFilter/' + fid + '/' + $('#filterId' + fid + 'Input').val(), {}, function(response)
+  {
+    $('#filterId' + fid + 'Input').val(response);
+    $('#filterId' + fid + 'Input').fadeTo("slow", 1);
+  });
+  event.preventDefault();
+}
+function userFiltersDelete(event,fid)
+{
+  $.get('${g.OPT.urlPrefix}ajax/deleteUserFilter/' + fid, {}, function(response)
+  {
+    $('#filterId' + fid + 'Input').fadeOut('fast', function(){
+        $('#filterId' + fid).remove();
+    })
+  });
+  event.preventDefault();
+}
+
+// code below should be refactored
 function insert(text,notFocus)
 {
     var textarea=document.forms.postform.message;
@@ -400,71 +481,6 @@ function highlight(post)
     return true;
 }
 
-function showDeleteBoxes()
-{
-    $('.delete').animate({'opacity' : 'toggle',}, 250);
-
-    /*
-    var chboxes = getElementsByClass('delete');
-    for(i=0; i<chboxes.length; i++)
-    {
-        if(chboxes[i].style.display == 'none')
-        {
-            chboxes[i].style.display = 'inline';
-        }
-        else
-        {
-            chboxes[i].style.display = 'none';
-        }
-    }
-    */
-}
-
-function getFullText(event, thread, post)
-{
-    var bq = document.getElementById('postBQId' + post);
-    if (!bq) bq = document.getElementById('quickReplyNode' + post);
-    var loadingString = "${_('Loading')}"+'…'
-    if (window.loading_icon_path)
-    {
-        loadingString = "<img class='comment_loading_img' src='"+window.loading_icon_path+"'> "+"${_('Loading')}"+"…"
-    }
-    $("a.expandPost[href=/" + thread + "#i" + post + "]").html(loadingString)
-    $.get('${g.OPT.urlPrefix}ajax/getPost/' + post, {}, function(response)
-    {
-      $(bq).html(response);
-    popup_posts.repair($(bq).find("a"))
-    });
-    event.preventDefault();
-}
-
-function userFiltersAdd(event)
-{
-  if ($('#newFilterInput').get()[0].value)
-  {
-    $.get('${g.OPT.urlPrefix}ajax/addUserFilter/' + $('#newFilterInput').get()[0].value, {}, function(response)
-    {
-      $(response).insertBefore('#newFilterTR')
-    });
-  }
-  event.preventDefault();
-}
-function userFiltersEdit(event,fid)
-{
-  $.get('${g.OPT.urlPrefix}ajax/editUserFilter/' + fid + '/' + $('#filterId' + fid + 'Input').get()[0].value, {}, function(response)
-  {
-    $('#filterId' + fid + 'Input').get()[0].value = response
-  });
-  event.preventDefault();
-}
-function userFiltersDelete(event,fid)
-{
-  $.get('${g.OPT.urlPrefix}ajax/deleteUserFilter/' + fid, {}, function(response)
-  {
-    $('#filterId' + fid).remove()
-  });
-  event.preventDefault();
-}
 window.onload=function(e)
 {
     var match;
@@ -474,45 +490,4 @@ window.onload=function(e)
             insert(">>"+match[1],1);
         highlight(match[1]);
     }
-}
-
-function tagCheckComplete(data) {
-    if (data) {
-        $("#paramPlaceholder").html(data);
-        $("#additionalPostParameters input").attr('disabled', '');
-    }
-    else {
-        $("#postform").submit();
-    }
-}
-
-function checkForTagNames(){
-    var checkedField = $('#postform input[name=tagsChecked]');
-    if (!checkedField.val() && $('#postform input[name=newThread]').val())
-    {
-        var tags = $('#postform input[name=tags]').val();
-        $.post("${h.url_for('ajTagsCheck')}", { tags: tags}, tagCheckComplete);
-        $("#additionalPostParameters input").attr('disabled', 'disabled');
-        $("#oekakiForm").hide();
-        $("#postControls").hide();
-        $("#postFormBanner").hide();
-        $("#additionalPostParameters").show();
-        $("#paramPlaceholder").html($("#paramPlaceholderContent").html());
-        checkedField.val('yes');
-        return false;
-    }
-    else
-    {
-        checkedField.val('');
-        return true;
-    }
-}
-
-function restoreForm() {
-    $("#additionalPostParameters").hide();
-    $("#postControls").show();
-    $("#oekakiForm").show();
-    $("#postFormBanner").show();
-    $('#postform input[name=tagsChecked]').val('');
-    $("#paramPlaceholder").html('&nbsp;');
 }

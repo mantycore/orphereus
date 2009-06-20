@@ -203,8 +203,7 @@ class OrphieAjaxController(OrphieBaseController):
         if self.userInst.Anonymous:
             abort(403)
         userFilter = self.userInst.addFilter(filter)
-        c.userFilter = userFilter
-        return self.render('ajax.addUserFilter')
+        return self.render('ajax.userFilter', None, userFilter = userFilter)
 
     def checkCaptcha(self, id, text):
         ct = Captcha.getCaptcha(id)

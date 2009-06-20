@@ -157,7 +157,6 @@ class OptHolder(object):
             for cssList in self.cssFiles.values():
                 fullCssList += cssList
             self.styles = fullCssList
-            log.critical(self.styles)
             self.defaultLang = config['lang']
 
     @staticmethod

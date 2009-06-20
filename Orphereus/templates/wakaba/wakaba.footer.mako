@@ -1,6 +1,6 @@
 <br/>
 <p class="footer">
-    - <a target="_top" href="http://orphereus.anoma.ch/">${g.version}</a> -
+- <a target="_top" href="http://orphereus.anoma.ch/">${g.version}</a> -
 </p>
 
 %if g.OPT.devMode and c.sum:
@@ -9,11 +9,11 @@
 
 %if g.OPT.devMode and c.log:
 <font size="-2">
-  %for l in c.log:
-    ${l}<br/><br/>
-  %endfor
-  ${"rendering: %s" % str(h.currentTime() - c.renderStartTime)}
-  <span style="display: none"><a href="${h.url_for('botTrap2')}">.</a></span>
+%for l in c.log:
+${l}<br/><br/>
+%endfor
+${"rendering: %s" % str(h.currentTime() - c.renderStartTime)}
+<span style="display: none"><a href="${h.url_for('botTrap2')}">.</a></span>
 </font>
 %endif
 

@@ -41,32 +41,31 @@ id="reply${post.id}">
 
      ${post.date}
 
-    <span class="reflink">
+    <span class="reflink"> \
     %if c.board:
-        <a href="${h.postUrl(thread.id, post.id)}">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
+        <a href="${h.postUrl(thread.id, post.id)}">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a> \
     %else:
-        <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
+        <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a> \
     %endif
     %if c.currentUserCanPost and post.file and post.file.width:
-        [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
+        [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>] \
     %endif
-
     %if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
-        <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b>
+        <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b> \
     %endif
     </span>
 
     &nbsp;
     %if post.file:
         <br /><span class="filesize">${_('File:')}
-        <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}"
+        <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}" \
         %if post.file.extension.newWindow:
-            target="_blank"
+            target="_blank" \
         %endif
-        >
+        > \
         ${h.modLink(post.file.path, c.userInst.secid(), True)}</a>
 
-        (<em>${'%.2f' % (post.file.size / 1024.0)}
+        (<em>${'%.2f' % (post.file.size / 1024.0)} \
         %if post.file.width and post.file.height:
             ${_('Kbytes')}, ${post.file.width}x${post.file.height}</em>)
         %else:
@@ -75,9 +74,9 @@ id="reply${post.id}">
 
         </span>
         <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-        <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}"
+        <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}" \
         %if post.file.extension.newWindow:
-            target="_blank"
+            target="_blank" \
         %endif
         >
 

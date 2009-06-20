@@ -3,14 +3,14 @@
 
 %if thread.file:
 <span class="filesize">
-    <a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}"
+    <a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}" \
     %if thread.file.extension.newWindow:
-        target="_blank"
+        target="_blank" \
     %endif
     >
     ${h.modLink(thread.file.path, c.userInst.secid(), True)}</a>
 
-    (<em>${'%.2f' % (thread.file.size / 1024.0)}
+    (<em>${'%.2f' % (thread.file.size / 1024.0)} \
     %if thread.file.width and thread.file.height:
         ${_('Kbytes')}, ${thread.file.width}x${thread.file.height}</em>)
     %else:
@@ -19,9 +19,9 @@
 </span>
 
 <br />
-<a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}"
+<a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}" \
 %if thread.file.extension.newWindow:
-    target="_blank"
+    target="_blank" \
 %endif
 >
 
@@ -67,32 +67,32 @@
 %endif
 
 
-<span
+<span \
 %if getattr(thread, 'mixed', False):
- style="color: red;"
+ style="color: red;" \
 %elif thread.pinned:
- style="font-weight: bold;"
+ style="font-weight: bold;" \
 %endif
->
-${thread.date}
+> \
+${thread.date} \
 </span>
-<span class="reflink">
+<span class="reflink"> \
 %if c.board:
-    <a href="${h.postUrl(thread.id, thread.id)}">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
+    <a href="${h.postUrl(thread.id, thread.id)}">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a> \
 %else:
-    <a href="javascript:insert('&gt;&gt;${thread.id}')">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
+    <a href="javascript:insert('&gt;&gt;${thread.id}')">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a> \
 %endif
 %if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
-    <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b>
+    <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b> \
 %endif
 </span>
 
     &nbsp;
     ${_('Posted in')}:
 %for t in thread.tags:
-    <a href="${h.url_for('boardBase', board=t.tag)}"
+    <a href="${h.url_for('boardBase', board=t.tag)}" \
     %if t.options:
-        title="${t.options.comment}"
+        title="${t.options.comment}" \
     %endif
     >/${t.tag}/</a>
 %endfor

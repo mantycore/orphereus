@@ -125,13 +125,11 @@
             <select name="defaultGoto" style="width: 170px;">
                     %for dest in c.destinations.keys():
                        %if dest != 3 or g.OPT.allowOverview:
-                           <option value="${dest}"
+                           <option value="${dest}" \
                              %if dest == c.userInst.defaultGoto:
-                                selected="selected"
+                                selected="selected" \
                              %endif
-                           >
-        
-                          ${_(c.destinations[dest])}</option>
+                           >${_(c.destinations[dest])}</option>
                        %endif
                     %endfor
             </select>
@@ -143,13 +141,11 @@
                 <select name="template" style="width: 170px;">
         
                     %for t in c.templates:
-                       <option value="${t}"
+                       <option value="${t}" \
                          %if t == c.userInst.template:
-                            selected="selected"
+                            selected="selected" \
                          %endif
-                       >
-        
-                      ${t}</option>
+                       >${t}</option>
                     %endfor
                 </select>
             </td>
@@ -159,13 +155,11 @@
             <td>
                 <select name="style" style="width: 170px;">
                     %for style in c.styles:
-                       <option value="${style}"
+                       <option value="${style}" \
                          %if style == c.userInst.style:
-                            selected="selected"
+                            selected="selected" \
                          %endif
-                       >
-        
-                      ${style}</option>
+                       >${style}</option>
                     %endfor
                 </select>
             </td>
@@ -175,13 +169,11 @@
             <td>
                 <select name="lang" style="width: 170px;">
                     %for lang in c.languages:
-                       <option value="${lang}"
+                       <option value="${lang}" \
                          %if lang == c.userInst.lang:
-                            selected="selected"
+                            selected="selected" \
                          %endif
-                       >
-        
-                      ${lang}</option>
+                       >${lang}</option>
                     %endfor
                 </select>
             </td>
@@ -192,13 +184,11 @@
             <td>
                 <select name="cLang" style="width: 170px;">
                     %for lang in c.languages:
-                       <option value="${lang}"
+                       <option value="${lang}" \
                          %if lang == c.userInst.cLang:
-                            selected="selected"
+                            selected="selected" \
                          %endif
-                       >
-        
-                      ${lang}</option>
+                       >${lang}</option>
                     %endfor
                 </select>
             </td>
@@ -237,17 +227,11 @@
     <table>
     <tbody>
         %for f in c.userInst.filters:
-        <tr id="filterId${f.id}">
-            <td class="postblock">[<a href="" onclick="userFiltersEdit(event,${f.id});">${_('Edit')}</a>] [<a href="" onclick="userFiltersDelete(event,${f.id});">${_('Delete')}</a>]</td>
-            <td><input id='filterId${f.id}Input' name='filterId${f.id}' value='${f.filter}' /></td>
-        </tr>
+        <%include file="wakaba.ajax.userFilter.mako" args="userFilter=f" />
         %endfor
         <tr id="newFilterTR">
-            <td class="postblock">${_('New filter')}</td>
             <td><input id="newFilterInput" name="newFilter" value="" /></td>
-        </tr>
-        <tr>
-            <td colspan="2"><input name="update" type="button" value="${_('Add')}" onclick="userFiltersAdd(event)" /></td>
+            <td ><input name="update" type="button" value="${_('Add new filter')}" onclick="userFiltersAdd(event)" /></td>
         </tr>
     </tbody>
     </table>

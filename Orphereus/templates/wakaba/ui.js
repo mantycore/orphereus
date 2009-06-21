@@ -416,22 +416,28 @@ function userFiltersAdd(event)
 }
 function userFiltersEdit(event,fid)
 {
-  $('#filterId' + fid + 'Input').fadeTo("slow", 0.2);
-  $.get('${g.OPT.urlPrefix}ajax/editUserFilter/' + fid + '/' + $('#filterId' + fid + 'Input').val(), {}, function(response)
-  {
-    $('#filterId' + fid + 'Input').val(response);
-    $('#filterId' + fid + 'Input').fadeTo("slow", 1);
+  var input = $('#filterId' + fid + 'Input');
+  input.fadeTo('fast', 0.2, function(){
+    var filterText = input.val();
+    input.val('${_('Updating...')}');
+    $('#changeLinkId' + fid).hide();
+    $.get('${g.OPT.urlPrefix}ajax/editUserFilter/' + fid + '/' + filterText, {}, function(response)
+    {
+      $('#changeLinkId' + fid).show();
+      $('#filterId' + fid + 'Input').val(response);
+      $('#filterId' + fid + 'Input').fadeTo("slow", 1);
+    });
   });
   event.preventDefault();
 }
 function userFiltersDelete(event,fid)
 {
-  $.get('${g.OPT.urlPrefix}ajax/deleteUserFilter/' + fid, {}, function(response)
-  {
-    $('#filterId' + fid + 'Input').fadeOut('fast', function(){
-        $('#filterId' + fid).remove();
-    })
-  });
+  $('#filterId' + fid + 'Input').fadeTo('fast', 0.2, function(){
+      $.get('${g.OPT.urlPrefix}ajax/deleteUserFilter/' + fid, {}, function(response)
+      {
+            $('#filterId' + fid).remove();
+      });
+  })
   event.preventDefault();
 }
 

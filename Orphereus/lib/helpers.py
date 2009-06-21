@@ -53,6 +53,13 @@ def postPanelCallback(thread, post, userInst):
         result += cb(thread, post, userInst)
     return result
 
+threadInfoCallbacks = []
+def threadInfoCallback(thread, userInst):
+    result = ''
+    for cb in threadInfoCallbacks:
+        result += cb(thread, userInst)
+    return result
+
 def currentTime():
     import time
     return time.time()

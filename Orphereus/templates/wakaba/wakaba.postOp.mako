@@ -98,6 +98,8 @@ ${thread.date} \
     [<a href="${h.postUrl(thread.id, thread.id)}">${_('Read')}</a>]
 %endif
 
+${h.threadInfoCallback(thread, c.userInst)}
+
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments:
         ${thread.messageShort}

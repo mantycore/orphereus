@@ -23,6 +23,17 @@ from Ban import *
 import logging
 log = logging.getLogger("ORM (%s)" % __name__)
 
+def batchProcess(query, routine, packetSize = 250):
+    currentPacket = 0
+    totalSize = query.count()
+    while currentPacket < totalSize:
+        maxId = currentPacket + packetSize
+        if maxId > totalSize:
+            maxId = totalSize
+        routine(query[currentPacket:maxId])
+        currentPacket += packetSize
+        meta.Session.commit()
+
 def init_model(engine):
     log.info("Trying to adjust engine to current dialect...")
     def logAndChange(var, newType):

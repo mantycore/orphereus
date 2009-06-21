@@ -399,14 +399,7 @@ class MaintenanceWorker(object):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Reparsing...'))
         self.formatPostReference = OrphieBaseController.formatPostReference
-        postCount = Post.query().count()
-        currentPacket = 0
-        packetSize = 250
-        while currentPacket < postCount:
-            maxId = currentPacket + packetSize
-            if maxId > postCount:
-                maxId = postCount
-            posts = Post.query().order_by(Post.id.asc())[currentPacket:maxId]
+        def reparseRoutine(posts):
             for post in posts:
                 #log.debug("Reparsing %d..." % post.id)
                 if post.messageRaw:
@@ -428,8 +421,7 @@ class MaintenanceWorker(object):
                     if post.messageShort:
                         mtnLog.append(LogElement('Info', "Fixed short message for post %d" % post.id))
                         post.messageShort = fixHtml(post.messageShort)
-            currentPacket += packetSize
-            meta.Session.commit()
+        batchProcess(Post.query().order_by(Post.id.asc()), reparseRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -449,14 +441,8 @@ class MaintenanceWorker(object):
 
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Searching for orphaned posts...'))
-        postCount = Post.query().count()
-        currentPacket = 0
-        packetSize = 250
-        while currentPacket < postCount:
-            maxId = currentPacket + packetSize
-            if maxId > postCount:
-                maxId = postCount
-            posts = Post.query().order_by(Post.id.asc())[currentPacket:maxId]
+
+        def searchRoutine(posts):
             for post in posts:
                 parent = None
                 if post.parentid != None:
@@ -473,8 +459,8 @@ class MaintenanceWorker(object):
                         mtnLog.append(LogElement('Info', 'Orphaned post #%d moved into thread #0' % post.id))
                     if treelike:
                         mtnLog.append(LogElement('Info', 'Post #%d was tree-like reply to reply and moved into thread #0' % post.id))
-            currentPacket += packetSize
-            meta.Session.commit()
+
+        batchProcess(Post.query().order_by(Post.id.asc()), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 

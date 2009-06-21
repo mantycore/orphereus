@@ -180,44 +180,48 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'Checking for orphaned database entries...'))
 
         mtnLog.append(LogElement('Task', 'User options...'))
-        userOpts = meta.Session.query(UserOptions).all()
-        for opt in userOpts:
-            user = meta.Session.query(User).filter(User.uidNumber == opt.uidNumber).first()
-            if not user:
-                msg = u'Orphaned userOptions %d for %s, removing' % (opt.optid, str(opt.uidNumber))
-                mtnLog.append(LogElement('Warning', msg))
-                toLog(LOG_EVENT_INTEGR, msg)
-                meta.Session.delete(opt)
+        def userOptsSearch(userOpts):
+            for opt in userOpts:
+                user = User.query().filter(User.uidNumber == opt.uidNumber).first()
+                if not user:
+                    msg = u'Orphaned userOptions %d for %s, removing' % (opt.optid, str(opt.uidNumber))
+                    mtnLog.append(LogElement('Warning', msg))
+                    toLog(LOG_EVENT_INTEGR, msg)
+                    meta.Session.delete(opt)
+        batchProcess(UserOptions.query(), userOptsSearch)
 
         mtnLog.append(LogElement('Task', 'User filters...'))
-        userFl = meta.Session.query(UserFilters).all()
-        for fl in userFl:
-            user = meta.Session.query(User).filter(User.uidNumber == opt.uidNumber).first()
-            if not user:
-                msg = u'Orphaned userFilters %d for %s, removing' % (fl.id, str(fl.uidNumber))
-                mtnLog.append(LogElement('Warning', msg))
-                toLog(LOG_EVENT_INTEGR, msg)
-                meta.Session.delete(fl)
+        def userFiltersSearch(userFl):
+            for fl in userFl:
+                user = User.query().filter(User.uidNumber == fl.uidNumber).first()
+                if not user:
+                    msg = u'Orphaned userFilters %d for %s, removing' % (fl.id, str(fl.uidNumber))
+                    mtnLog.append(LogElement('Warning', msg))
+                    toLog(LOG_EVENT_INTEGR, msg)
+                    meta.Session.delete(fl)
+        batchProcess(UserFilters.query(), userFiltersSearch)
 
         mtnLog.append(LogElement('Task', 'Tag options...'))
-        tagOpts = meta.Session.query(TagOptions).all()
-        for opt in tagOpts:
-            tag = meta.Session.query(Tag).filter(Tag.id == opt.tagId).first()
-            if not tag:
-                msg = u'Orphaned tagOptions %d for %s, removing' % (opt.id, str(opt.tagId))
-                mtnLog.append(LogElement('Warning', msg))
-                toLog(LOG_EVENT_INTEGR, msg)
-                meta.Session.delete(opt)
+        def tagOptsSearch(tagOpts):
+            for opt in tagOpts:
+                tag = Tag.query().filter(Tag.id == opt.tagId).first()
+                if not tag:
+                    msg = u'Orphaned tagOptions %d for %s, removing' % (opt.id, str(opt.tagId))
+                    mtnLog.append(LogElement('Warning', msg))
+                    toLog(LOG_EVENT_INTEGR, msg)
+                    meta.Session.delete(opt)
+        batchProcess(TagOptions.query(), tagOptsSearch)
 
         mtnLog.append(LogElement('Task', 'Pictures...'))
-        pictures = meta.Session.query(Picture).all()
-        for pic in pictures:
-            post = Post.query.filter(Post.picid == pic.id).first()
-            if not post:
-                msg = u'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
-                mtnLog.append(LogElement('Warning', msg))
-                toLog(LOG_EVENT_INTEGR, msg)
-                meta.Session.delete(pic)
+        def picturesSearch(pictures):
+            for pic in pictures:
+                post = Post.query().filter(Post.picid == pic.id).first()
+                if not post:
+                    msg = u'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
+                    mtnLog.append(LogElement('Warning', msg))
+                    toLog(LOG_EVENT_INTEGR, msg)
+                    meta.Session.delete(pic)
+        batchProcess(Picture.query(), picturesSearch)
 
         meta.Session.commit()
         mtnLog.append(LogElement('Task', 'Orpaned database entries check completed'))
@@ -246,7 +250,7 @@ class MaintenanceWorker(object):
                 isThumb = (name[-1] == 's')
 
                 if isThumb:
-                    thumbIds = meta.Session.query(Picture).filter(Picture.thumpath.like('%%%s' % fullname)).all()
+                    thumbIds = Picture.query().filter(Picture.thumpath.like('%%%s' % fullname)).all()
                     if not thumbIds:
                         msg = u'Orphaned thumbnail %s moved into junk directory' % fn
                         mtnLog.append(LogElement('Info', msg))
@@ -254,7 +258,7 @@ class MaintenanceWorker(object):
                         shutil.move(fn, junkPath)
                         ccJunkThumbnails += 1
                 else:
-                    picIds = meta.Session.query(Picture).filter(Picture.path.like('%%%s' % fullname)).all()
+                    picIds = Picture.query().filter(Picture.path.like('%%%s' % fullname)).all()
                     if not picIds:
                         msg = u'Orphaned picture %s moved into junk directory' % fn
                         mtnLog.append(LogElement('Info', msg))

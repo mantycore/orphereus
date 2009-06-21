@@ -41,25 +41,7 @@
         <a href="${h.url_for('anonymize', post=thread.id)}">[FA]</a>
     %endif
 %endif
-%if c.userInst.isAdmin() and c.userInst.canManageUsers():
-	%if thread.uidNumber:
-    	<a href="${h.url_for('hsUserEditAttempt', pid=thread.id)}">[User]</a>
-	%endif
-	%if thread.ip:
-	   	<a href="${h.url_for('hsIpBanAttempt', pid=thread.id)}">[IP Ban]</a>
-    %endif
-%endif
-%if c.userInst.isAdmin() and c.userInst.canManageMappings():
-    <a href="${h.url_for('hsMappings', act='show', id=thread.id)}">[Tags]</a>
-%endif
-
-%if c.userInst.isAdmin() and c.userInst.canManageMappings():
-%if thread.pinned:
-    <a href="${h.url_for('hsPin', act='unpin', id=thread.id)}">[Unpin]</a>
-%else:
-    <a href="${h.url_for('hsPin', act='pin', id=thread.id)}">[Pin]</a>
-%endif
-%endif
+${h.threadPanelCallback(thread, c.userInst)}
 &nbsp;
 </span>
 %if thread.title:

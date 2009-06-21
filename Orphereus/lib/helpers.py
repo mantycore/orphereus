@@ -39,6 +39,20 @@ log = logging.getLogger(__name__)
 
 from pylons.i18n import get_lang, set_lang
 
+threadPanelCallbacks = []
+def threadPanelCallback(thread, userInst):
+    result = ''
+    for cb in threadPanelCallbacks:
+        result += cb(thread, userInst)
+    return result
+
+postPanelCallbacks = []
+def postPanelCallback(thread, post, userInst):
+    result = ''
+    for cb in postPanelCallbacks:
+        result += cb(thread, post, userInst)
+    return result
+
 def currentTime():
     import time
     return time.time()

@@ -22,14 +22,7 @@ id="reply${post.id}">
             <a href="${h.url_for('anonymize', post=post.id)}">[FA]</a>
         %endif
     %endif
-    %if c.userInst.isAdmin() and c.userInst.canManageUsers():
-		%if post.uidNumber:
-    		<a href="${h.url_for('hsUserEditAttempt', pid=post.id)}">[User]</a>
-		%endif    	
-	    %if post.ip:
-	    	<a href="${h.url_for('hsIpBanAttempt', pid=post.id)}">[IP Ban]</a>
-	    %endif
-    %endif
+    ${h.postPanelCallback(thread, post, c.userInst)}
     &nbsp;
     </span>
     %if post.sage:

@@ -108,9 +108,40 @@ def menuItems(menuId):
 
     return menu
 
+def postPanelCallback(thread, post, userInst):
+    from webhelpers.html.tags import link_to
+    result = ''
+    if userInst.isAdmin() and userInst.canManageUsers():
+        if post.uidNumber:
+            result += link_to(_("[User]"), h.url_for('hsUserEditAttempt', pid = post.id))
+        if post.ip:
+            result += link_to(_("[IP Ban]"), h.url_for('hsIpBanAttempt', pid = post.id))
+    return result
+
+def threadPanelCallback(thread, userInst):
+    from webhelpers.html.tags import link_to
+    result = postPanelCallback(thread, thread, userInst)
+    """
+        if userInst.isAdmin() and userInst.canManageUsers():
+            if post.uidNumber:
+                result += link_to(_("[User]"), h.url_for('hsUserEditAttempt', pid = thread.id))
+            if post.ip:
+                result += link_to(_("[IP Ban]"), h.url_for('hsIpBanAttempt', pid = thread.id))
+    """
+    if c.userInst.isAdmin() and c.userInst.canManageMappings():
+        result += link_to(_("[Tags]"), h.url_for('hsMappings', act = 'show', id = thread.id))
+
+    if c.userInst.isAdmin() and c.userInst.canManageMappings():
+        if thread.pinned:
+            result += link_to(_("[Unpin]"), h.url_for('hsPin', act = 'unpin', id = thread.id))
+        else:
+            result += link_to(_("[Pin]"), h.url_for('hsPin', act = 'pin', id = thread.id))
+    return result
+
 def pluginInit(globj = None):
     if globj:
-        pass
+        h.threadPanelCallbacks.append(threadPanelCallback)
+        h.postPanelCallbacks.append(postPanelCallback)
 
     config = {'name' : N_('Administration panel'),
              'menutest' : menuTest, # returns True if menu item should be visible. If False, all items will be visible

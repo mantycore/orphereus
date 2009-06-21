@@ -23,7 +23,7 @@ from Ban import *
 import logging
 log = logging.getLogger("ORM (%s)" % __name__)
 
-def batchProcess(query, routine, packetSize = 250):
+def batchProcess(query, routine, packetSize = 1000):
     currentPacket = 0
     totalSize = query.count()
     while currentPacket < totalSize:

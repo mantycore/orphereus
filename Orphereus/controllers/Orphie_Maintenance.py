@@ -87,47 +87,48 @@ class MaintenanceWorker(object):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Removing bans...'))
         currentTime = datetime.datetime.now()
-        users = meta.Session.query(User).all()
-        for user in users:
-            bantime = user.options.bantime
-            banDate = user.options.banDate
-            if bantime > 10000:
-                bantime = 10000
-            if banDate and bantime > 0 and banDate < currentTime - datetime.timedelta(days = bantime):
-                unbanMessage = (u"Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
-                mtnLog.append(LogElement('Info', unbanMessage))
-                toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
-                user.options.bantime = 0
-                user.options.banreason = u''
-        meta.Session.commit()
+        def usersSearch(users):
+            for user in users:
+                bantime = user.options.bantime
+                banDate = user.options.banDate
+                if bantime > 10000:
+                    bantime = 10000
+                if banDate and bantime > 0 and banDate < currentTime - datetime.timedelta(days = bantime):
+                    unbanMessage = (u"Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
+                    mtnLog.append(LogElement('Info', unbanMessage))
+                    toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
+                    user.options.bantime = 0
+                    user.options.banreason = u''
+        batchProcess(User.query(), usersSearch)
         mtnLog.append(LogElement('Task', 'Done'))
+
         mtnLog.append(LogElement('Task', 'Removing IP bans...'))
-        bans = meta.Session.query(Ban).all()
-        for ban in bans:
-            bantime = ban.period
-            banDate = ban.date
-            if bantime > 10000:
-                bantime = 10000
-            if banDate and bantime > 0 and banDate < (currentTime - datetime.timedelta(days = bantime)):
-                ban.disable()
-                unbanMessage = (u"Automatic unban: IP <b>#%s</b> (Reason was %s)") % (h.intToDotted(ban.ip), ban.reason)
-                mtnLog.append(LogElement('Info', unbanMessage))
-                toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
-        meta.Session.commit()
+        def banssSearch(bans):
+            for ban in bans:
+                bantime = ban.period
+                banDate = ban.date
+                if bantime > 10000:
+                    bantime = 10000
+                if banDate and bantime > 0 and banDate < (currentTime - datetime.timedelta(days = bantime)):
+                    ban.disable()
+                    unbanMessage = (u"Automatic unban: IP <b>#%s</b> (Reason was %s)") % (h.intToDotted(ban.ip), ban.reason)
+                    mtnLog.append(LogElement('Info', unbanMessage))
+                    toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
+        batchProcess(Ban.query(), usersSearch)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
     def cleanOekaki(self):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Clearing old oekaki entries...'))
-        oekakies = meta.Session.query(Oekaki).all()
         currentTime = datetime.datetime.now()
-        for oekaki in oekakies:
-            #oekaki.time==-1 and not oekaki.path and
-            if oekaki.timeStamp < currentTime - datetime.timedelta(days = 1):
-                mtnLog.append(LogElement('Info', "Deleted oekaki with <b>#%d</b>" % (oekaki.id)))
-                meta.Session.delete(oekaki)
-        meta.Session.commit()
+        def searchRoutine(oekakies):
+            for oekaki in oekakies:
+                #oekaki.time==-1 and not oekaki.path and
+                if oekaki.timeStamp < currentTime - datetime.timedelta(days = 1):
+                    mtnLog.append(LogElement('Info', "Deleted oekaki with <b>#%d</b>" % (oekaki.id)))
+                    meta.Session.delete(oekaki)
+        batchProcess(Oekaki.query(), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -135,15 +136,15 @@ class MaintenanceWorker(object):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Deleting old invites...'))
         currentTime = datetime.datetime.now()
-        invites = meta.Session.query(Invite).all()
-        for invite in invites:
-            if invite.date < currentTime - datetime.timedelta(weeks = 1):
-                msg1 = u"Deleted invite <b>#%d</b>" % (invite.id)
-                msg2 = u" from date <b>%s</b> with id <font size='-2'>%s</font>" % (invite.date, invite.invite)
-                toLog(LOG_EVENT_MTN_DELINVITE, msg1)
-                mtnLog.append(LogElement('Info', msg1 + msg2))
-                meta.Session.delete(invite)
-        meta.Session.commit()
+        def searchRoutine(invites):
+            for invite in invites:
+                if invite.date < currentTime - datetime.timedelta(weeks = 1):
+                    msg1 = u"Deleted invite <b>#%d</b>" % (invite.id)
+                    msg2 = u" from date <b>%s</b> with id <font size='-2'>%s</font>" % (invite.date, invite.invite)
+                    toLog(LOG_EVENT_MTN_DELINVITE, msg1)
+                    mtnLog.append(LogElement('Info', msg1 + msg2))
+                    meta.Session.delete(invite)
+        batchProcess(Invite.query(), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -151,28 +152,27 @@ class MaintenanceWorker(object):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Deleting old trackers...'))
         currentTime = datetime.datetime.now()
-        trackers = meta.Session.query(LoginTracker).all()
-        for tracker in trackers:
-            if tracker.lastAttempt < currentTime - datetime.timedelta(days = 1):
-                mtnLog.append(LogElement('Info', "Deleted ip tracker for <b>%s</b> with <b>%d</b> attempts" % (tracker.ip, tracker.attempts)))
-                if tracker.cid:
-                    captcha = meta.Session.query(Captcha).filter(Captcha.id == tracker.cid).first()
-                    if captcha:
-                        meta.Session.delete(captcha)
-                        mtnLog.append(LogElement('Info', "Deleted captcha <b>#%d</b>" % (captcha.id)))
+        def searchRoutine(trackers):
+            for tracker in trackers:
+                if tracker.lastAttempt < currentTime - datetime.timedelta(days = 1):
+                    mtnLog.append(LogElement('Info', "Deleted ip tracker for <b>%s</b> with <b>%d</b> attempts" % (tracker.ip, tracker.attempts)))
+                    if tracker.cid:
+                        captcha = Captcha.query().filter(Captcha.id == tracker.cid).first()
+                        if captcha:
+                            meta.Session.delete(captcha)
+                            mtnLog.append(LogElement('Info', "Deleted captcha <b>#%d</b>" % (captcha.id)))
+                    meta.Session.delete(tracker)
+        batchProcess(LoginTracker.query(), searchRoutine)
 
-                meta.Session.delete(tracker)
-
-        captchas = meta.Session.query(Captcha).all()
-        for ct in captchas:
-            if ct.timestamp < currentTime - datetime.timedelta(days = 1):
-                mtnLog.append(LogElement('Info', "Deleted old captcha <b>#%d</b>" % (ct.id)))
-                meta.Session.delete(ct)
-        meta.Session.commit()
+        def captchaSearch(captchas):
+            for ct in captchas:
+                if ct.timestamp < currentTime - datetime.timedelta(days = 1):
+                    mtnLog.append(LogElement('Info', "Deleted old captcha <b>#%d</b>" % (ct.id)))
+                    meta.Session.delete(ct)
+        batchProcess(Captcha.query(), captchaSearch)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
-    # Optional actions
     def integrityChecks(self):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Doing integrity checks...'))
@@ -317,77 +317,76 @@ class MaintenanceWorker(object):
     def updateCaches(self):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Updating caches...'))
-        posts = Post.query.filter(Post.parentid == None).all()
-        for post in posts:
-            repliesCount = Post.query.filter(Post.parentid == post.id).count()
-            if post.replyCount != repliesCount:
-                msg = 'Invalid RC: %d (actual: %d, cached: %d), updating' % (post.id, repliesCount, post.replyCount)
-                warnMsg = LogElement('Warning', msg)
-                mtnLog.append(warnMsg)
-                toLog(LOG_EVENT_INTEGR_RC, msg)
-                post.replyCount = repliesCount
-        meta.Session.commit()
+        def searchRoutine(posts):
+            for post in posts:
+                repliesCount = Post.query.filter(Post.parentid == post.id).count()
+                if post.replyCount != repliesCount:
+                    msg = 'Invalid RC: %d (actual: %d, cached: %d), updating' % (post.id, repliesCount, post.replyCount)
+                    warnMsg = LogElement('Warning', msg)
+                    mtnLog.append(warnMsg)
+                    toLog(LOG_EVENT_INTEGR_RC, msg)
+                    post.replyCount = repliesCount
+        batchProcess(Post.query.filter(Post.parentid == None), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
     def updateStats(self):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Updating statistics...'))
-        tags = meta.Session.query(Tag).all()
-        for tag in tags:
-            condition = Post.tags.any(Tag.id == tag.id)
-            threadCount = Post.query.filter(Post.parentid == None).filter(condition).count()
-            #log.debug("%s:%s" % (tag.tag, threadCount))
+        def searchRoutine(tags):
+            for tag in tags:
+                condition = Post.tags.any(Tag.id == tag.id)
+                threadCount = Post.query.filter(Post.parentid == None).filter(condition).count()
+                #log.debug("%s:%s" % (tag.tag, threadCount))
 
-            if tag.threadCount != threadCount:
-                msg = 'Invalid tag TC: %s (actual: %d, cached: %d), updating' % (tag.tag, threadCount, tag.threadCount)
-                warnMsg = LogElement('Warning', msg)
-                mtnLog.append(warnMsg)
-                toLog(LOG_EVENT_INTEGR_RC, msg)
-                tag.threadCount = threadCount
+                if tag.threadCount != threadCount:
+                    msg = 'Invalid tag TC: %s (actual: %d, cached: %d), updating' % (tag.tag, threadCount, tag.threadCount)
+                    warnMsg = LogElement('Warning', msg)
+                    mtnLog.append(warnMsg)
+                    toLog(LOG_EVENT_INTEGR_RC, msg)
+                    tag.threadCount = threadCount
 
-            replyCount = Post.query.filter(or_(condition, Post.parentPost.has(condition))).count()
-            #log.debug("%s:%s" % (tag.tag, replyCount))
+                replyCount = Post.query.filter(or_(condition, Post.parentPost.has(condition))).count()
+                #log.debug("%s:%s" % (tag.tag, replyCount))
 
-            if tag.replyCount != replyCount:
-                msg = 'Invalid tag RC: %s (actual: %d, cached: %d), updating' % (tag.tag, replyCount, tag.replyCount)
-                warnMsg = LogElement('Warning', msg)
-                mtnLog.append(warnMsg)
-                toLog(LOG_EVENT_INTEGR_RC, msg)
-                tag.replyCount = replyCount
-        meta.Session.commit()
+                if tag.replyCount != replyCount:
+                    msg = 'Invalid tag RC: %s (actual: %d, cached: %d), updating' % (tag.tag, replyCount, tag.replyCount)
+                    warnMsg = LogElement('Warning', msg)
+                    mtnLog.append(warnMsg)
+                    toLog(LOG_EVENT_INTEGR_RC, msg)
+                    tag.replyCount = replyCount
+
+        batchProcess(Tag.query(), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
     def banInactive(self):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Setting auto bans...'))
-        currentTime = datetime.datetime.now()
-        users = meta.Session.query(User).all()
-        for user in users:
-            postsCount = Post.query.filter(Post.uidNumber == user.uidNumber).count()
-            if user.options:
-                if postsCount == 0 and user.options.bantime == 0:
-                    user.ban(10000, "[AUTOMATIC BAN] You haven't any posts. Please, contact administration to get you access back", -1)
-                    mtnLog.append(LogElement('Info', "%d autobanned" % user.uidNumber))
-            else:
-                mtnLog.append(LogElement('Warning', "User %d haven't options object" % user.uidNumber))
-        meta.Session.commit()
+        def searchRoutine(users):
+            for user in users:
+                postsCount = Post.query.filter(Post.uidNumber == user.uidNumber).count()
+                if user.options:
+                    if postsCount == 0 and user.options.bantime == 0:
+                        user.ban(10000, "[AUTOMATIC BAN] You haven't any posts. Please, contact administration to get you access back", -1)
+                        mtnLog.append(LogElement('Info', "%d autobanned" % user.uidNumber))
+                else:
+                    mtnLog.append(LogElement('Warning', "User %d haven't options object" % user.uidNumber))
+        batchProcess(User.query(), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
     def removeEmptyTags(self):
         mtnLog = []
         mtnLog.append(LogElement('Task', 'Removing empty tags...'))
-        tags = meta.Session.query(Tag).all()
-        for tag in tags:
-            if not tag.options or not tag.options.persistent:
-                threadCount = Post.query.filter(Post.parentid == None).filter(Post.tags.any(Tag.id == tag.id)).count()
-                if threadCount == 0 and not (tag.options and tag.options.service):
-                    mtnLog.append(LogElement('Info', "Removed tag %s" % tag.tag))
-                    meta.Session.delete(tag)
-
-        meta.Session.commit()
+        def searchRoutine(tags):
+            for tag in tags:
+                if not tag.options or not tag.options.persistent:
+                    threadCount = Post.query.filter(Post.parentid == None).filter(Post.tags.any(Tag.id == tag.id)).count()
+                    if threadCount == 0 and not (tag.options and tag.options.service):
+                        mtnLog.append(LogElement('Info', "Removed tag %s" % tag.tag))
+                        meta.Session.delete(tag)
+        batchProcess(Tag.query(), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 

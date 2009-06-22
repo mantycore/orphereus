@@ -155,7 +155,7 @@ def init_model(engine):
         orminit = plugin.ormInit()
         if orminit:
             log.info('calling ORM initializer %s from: %s' % (str(orminit), plugin.pluginId()))
-            orminit(orm, plugin.namespace())
+            orminit(orm, plugin.namespace(), propDict)
     log.info('COMPLETED ORM INITIALIZATION STAGE')
 
 def init_globals(globalObject, setupMode):

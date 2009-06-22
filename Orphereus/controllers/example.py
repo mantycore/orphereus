@@ -18,7 +18,7 @@ class TextValue(object):
     def get(name):
         return meta.Session.query(TextValue).filter(TextValue.name == name).first()
 
-def ormInit(orm, namespace):
+def ormInit(orm, namespace, propDict):
     t_textValues = sa.Table('textValue', meta.metadata,
                        sa.Column("id"    , sa.types.Integer, primary_key = True),
                        sa.Column("name"      , sa.types.String(128), nullable = False),

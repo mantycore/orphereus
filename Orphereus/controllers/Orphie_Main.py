@@ -144,7 +144,7 @@ class OrphieMainController(OrphieBaseController):
             c.boardName = currentBoard.options and currentBoard.options.comment or (u"/%s/" % currentBoard.tag)
             c.tagLine = currentBoard.tag
         elif tagList and tags:
-            tagDescr = Post.tagLine(tags)
+            tagDescr = Post.tagLine(tags, tagList)
             c.boardName = tagDescr[1]
             c.tagLine = tagDescr[0]
         else:

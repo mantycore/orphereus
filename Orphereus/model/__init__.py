@@ -68,39 +68,86 @@ def init_model(engine):
     #logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.DEBUG)
     #logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.DEBUG)
 
-    #create mappings
-    meta.Session.mapper(LoginTracker, t_logins)
-    meta.Session.mapper(Captcha, t_captchas)
-    meta.Session.mapper(Oekaki, t_oekaki)
-    meta.Session.mapper(Invite, t_invites)
-    meta.Session.mapper(Setting, t_settings)
-    meta.Session.mapper(Ban, t_bans)
 
-    meta.Session.mapper(UserOptions, t_userOptions)
-    meta.Session.mapper(UserFilters, t_userFilters)
-    meta.Session.mapper(User, t_users, properties = {
+    LoginTrackerProps = {}
+    CaptchaProps = {}
+    OekakiProps = {}
+    InviteProps = {}
+    SettingProps = {}
+    BanProps = {}
+
+    UserOptionsProps = {}
+    UserFiltersProps = {}
+    UserProps = {
             'options' : orm.relation(UserOptions, uselist = False, backref = 'user', cascade = "all, delete, delete-orphan"),
             'filters' : orm.relation(UserFilters, backref = 'user', cascade = "all, delete, delete-orphan")
-        })
+                }
 
-    meta.Session.mapper(Extension, t_extension)
-    meta.Session.mapper(Picture, t_piclist, properties = {
+    ExtensionProps = {}
+    PictureProps = {
         'extension' : orm.relation(Extension)
-        })
-
-    meta.Session.mapper(TagOptions, t_tagOptions)
-    meta.Session.mapper(Tag, t_tags, properties = {
+        }
+    TagOptionsProps = {}
+    TagProps = {
             'options' : orm.relation(TagOptions, uselist = False, backref = 'tag', cascade = "all, delete, delete-orphan")
-        })
-    meta.Session.mapper(Post, t_posts, properties = {
+        }
+    PostProps = {
         'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
         'file': orm.relation(Picture),
         'parentPost' : orm.relation(Post, remote_side = [t_posts.c.id]),
-        })
-
-    meta.Session.mapper(LogEntry, t_log, properties = {
+        }
+    LogEntryProps = {
         'user' : orm.relation(User)
-        })
+        }
+
+    propDict = {
+                "LoginTracker" : LoginTrackerProps,
+                "Captcha" : CaptchaProps,
+                "Oekaki" : OekakiProps,
+                "Invite" : InviteProps,
+                "Settings" : SettingProps,
+                "Ban" : BanProps,
+                "UserOptions": UserOptionsProps,
+                "UserFilters" : UserFiltersProps,
+                "User" : UserProps,
+                "Extension" : ExtensionProps,
+                "Picture" : PictureProps,
+                "TagOptions" : TagOptionsProps,
+                "Tag" : TagProps,
+                "Post" : PostProps,
+                "LogEntry" : LogEntryProps,
+                }
+
+    gvars = config['pylons.app_globals']
+    log.info('Extending ORM properties, registered plugins: %d' % (len(gvars.plugins)),)
+    for plugin in gvars.plugins:
+        pconfig = plugin.config
+        ormPropChanger = pconfig.get('ormPropChanger', None)
+        if ormPropChanger:
+            log.info('calling ORM extender %s from: %s' % (str(ormPropChanger), plugin.pluginId()))
+            ormPropChanger(orm, propDict, plugin.namespace())
+    log.info('COMPLETED ORM EXTENDING STAGE')
+
+    #create mappings
+    meta.Session.mapper(LoginTracker, t_logins, properties = LoginTrackerProps)
+    meta.Session.mapper(Captcha, t_captchas, properties = CaptchaProps)
+    meta.Session.mapper(Oekaki, t_oekaki, properties = OekakiProps)
+    meta.Session.mapper(Invite, t_invites, properties = InviteProps)
+    meta.Session.mapper(Setting, t_settings, properties = SettingProps)
+    meta.Session.mapper(Ban, t_bans, properties = BanProps)
+
+    meta.Session.mapper(UserOptions, t_userOptions, properties = UserOptionsProps)
+    meta.Session.mapper(UserFilters, t_userFilters, properties = UserFiltersProps)
+    meta.Session.mapper(User, t_users, properties = UserProps)
+
+    meta.Session.mapper(Extension, t_extension, properties = ExtensionProps)
+    meta.Session.mapper(Picture, t_piclist, properties = PictureProps)
+
+    meta.Session.mapper(TagOptions, t_tagOptions, properties = TagOptionsProps)
+    meta.Session.mapper(Tag, t_tags, properties = TagProps)
+    meta.Session.mapper(Post, t_posts, properties = PostProps)
+
+    meta.Session.mapper(LogEntry, t_log, properties = LogEntryProps)
 
     gvars = config['pylons.app_globals']
     log.info('Initialzing ORM, registered plugins: %d' % (len(gvars.plugins)),)

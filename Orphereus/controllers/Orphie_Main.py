@@ -137,8 +137,6 @@ class OrphieMainController(OrphieBaseController):
         elif count == 0:
             c.threads = []
 
-        log.debug(tagList)
-        log.debug(tags)
         if tagList and len(tagList) == 1 and tags:
             currentBoard = tags[0]
             c.boardName = currentBoard.options and currentBoard.options.comment or (u"/%s/" % currentBoard.tag)

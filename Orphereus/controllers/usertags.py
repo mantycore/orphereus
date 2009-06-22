@@ -76,19 +76,35 @@ def threadInfoCallback(thread, userInst):
     tags = ns.UserTag.getPostTags(thread.id, userInst.uidNumber)
     result = " "
     for t in tags:
-        result += ("%s ") % link_to("/%s/" % t.tag, h.url_for('userTagsFilter', filter = t.tag), title = t.comment)
+        result += ("%s ") % link_to("/$%s/" % t.tag, h.url_for('boardBase', board = '$' + t.tag), title = t.comment)
     return result
+
+def tagHandler(tag, userInst):
+    ns = g.pluginsDict['usertags'].pnamespace
+    tag = ns.UserTag.query().filter(and_(ns.UserTag.tag == tag[1:], ns.UserTag.userId == userInst.uidNumber)).first()
+    if tag:
+        ids = []
+        for post in tag.posts:
+            ids.append(post.id)
+        #log.critical(ids)
+        if ids:
+            return Post.id.in_(ids)
+        return None
+
 
 def pluginInit(globj = None):
     if globj:
         h.threadPanelCallbacks.append(threadPanelCallback)
         h.threadInfoCallbacks.append(threadInfoCallback)
+        if not getattr(globj, 'tagHandlers', None):
+            globj.tagHandlers = []
+        globj.tagHandlers.append(tagHandler)
 
     config = {'basehook' : requestHook, # hook for base controller constructor
              'routeinit' : routingInit, # routing initializer
              'orminit' : ormInit, # ORM initializer
              'name' : N_('Personal tags module'),
-             'ormPropChanger' : ormPropChanger
+             'ormPropChanger' : ormPropChanger,
              }
 
     return PluginInfo('usertags', config)

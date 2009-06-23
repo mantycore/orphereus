@@ -291,13 +291,11 @@ class OrphieMainController(OrphieBaseController):
             return self.error(_("Profile is not avaiable to Anonymous users."))
 
         c.additionalProfileLinks = []
-        for plugin in g.plugins:
-            config = plugin.config
-            links = config.get('additionalProfileLinks', None)
-            if links:
-                linkslist = links()
-                if linkslist:
-                    c.additionalProfileLinks += linkslist
+        linkGenerators = g.extractFromConfigs('additionalProfileLinks')[0]
+        for links in linkGenerators:
+            linkslist = links(self.userInst)
+            if linkslist:
+                c.additionalProfileLinks += linkslist
 
         c.templates = g.OPT.templates
         c.styles = g.OPT.cssFiles[self.userInst.template]
@@ -751,15 +749,15 @@ class OrphieMainController(OrphieBaseController):
                 thread = thePost
             tags = thread.tags
         else:
-            for plugin in g.plugins:
-                config = plugin.config
-                handler = config.get('tagCreationHandler', None)
-                if handler:
-                    tagstr, afterPostCallbackParams[plugin.pluginId()] = handler(tagstr, self.userInst, textFilter)
+            handlers, plugins = g.extractFromConfigs('tagCreationHandler')
+            log.debug(handlers)
+            log.debug(plugins)
+            for num, handler in enumerate(handlers):
+                tagstr, afterPostCallbackParams[plugins[num].pluginId()] = handler(tagstr, self.userInst, textFilter)
 
             tags, createdTags, dummy = Tag.stringToTagLists(tagstr, g.OPT.allowTagCreation)
             for tag in createdTags:
-                tagdef = self.getTagDescription(tag.tag)
+                tagdef = self.getTagDescription(tag.tag, textFilter)
                 if tagdef:
                     tag.options.comment = tagdef
 
@@ -797,13 +795,11 @@ class OrphieMainController(OrphieBaseController):
             if not permCheckRes[0]:
                 return errorHandler(_("Tags restrictions violations:<br/> %s") % ('<br/>'.join(permCheckRes[1])))
 
-        for plugin in g.plugins:
-            config = plugin.config
-            postingRestrictor = config.get('postingRestrictor', None)
-            if postingRestrictor:
-                prohibition = postingRestrictor(self, request, thread = thread, tags = tags)
-                if prohibition:
-                    return errorHandler(prohibition)
+        restrictors = g.extractFromConfigs('postingRestrictor')[0]
+        for postingRestrictor in restrictors:
+            prohibition = postingRestrictor(self, request, thread = thread, tags = tags)
+            if prohibition:
+                return errorHandler(prohibition)
 
         options = Tag.conjunctedOptionsDescript(tags)
         if Tag.tagsInConflict(options, postid): #not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
@@ -929,11 +925,9 @@ class OrphieMainController(OrphieBaseController):
         if fileHolder:
             fileHolder.disableDeletion()
 
-        for plugin in g.plugins:
-            config = plugin.config
-            handler = config.get('afterPostCallback', None)
-            if handler:
-                 handler(post, self.userInst, afterPostCallbackParams.get(plugin.pluginId(), None))
+        callbacks, plugins = g.extractFromConfigs('afterPostCallback')
+        for num, cb in enumerate(callbacks):
+            cb(post, self.userInst, afterPostCallbackParams.get(plugins[num].pluginId(), None))
 
         response.set_cookie('orphie-postingCompleted', 'yes')
 

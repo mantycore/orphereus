@@ -105,9 +105,11 @@ def tagHandler(tag, userInst):
                 return Post.id.in_(ids)
     return None
 
-def profileLinks():
-    links = (('userTagsManager', {}, _('User tags')),)
-    return links
+def profileLinks(userInst):
+    links = []
+    if not userInst.Anonymous:
+        links = (('userTagsManager', {}, _('User tags')),)
+        return links
 
 def tagCheckHandler(tagName, userInst):
     ns = g.pluginsDict['usertags'].pnamespace

@@ -347,3 +347,14 @@ class Globals(object):
             self.menuCache[id] = parentedItems
             mitems = parentedItems
         return mitems
+
+    def extractFromConfigs(self, elementName):
+        result = []
+        plugins = []
+        for plugin in self.plugins:
+            config = plugin.config
+            element = config.get(elementName, None)
+            if element:
+                result.append(element)
+                plugins.append(plugin)
+        return (result, plugins)

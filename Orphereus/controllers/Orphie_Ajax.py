@@ -72,14 +72,12 @@ class OrphieAjaxController(OrphieBaseController):
         tags = request.POST.get('tags', '')
         freeNames = Tag.stringToTagLists(tags, False)[2]
         if freeNames:
-            for plugin in g.plugins:
-                config = plugin.config
-                tagCheckHandler = config.get('tagCheckHandler', None)
-                for tagname in freeNames:
-                    if tagCheckHandler:
-                        tag = tagCheckHandler(tagname, self.userInst)
-                        if tag:
-                            freeNames.remove(tagname)
+            handlers = g.extractFromConfigs('tagCheckHandler')[0]
+            for tagname in freeNames:
+                for tagCheckHandler in handlers:
+                    tag = tagCheckHandler(tagname, self.userInst)
+                    if tag:
+                        freeNames.remove(tagname)
             c.tags = freeNames
         if freeNames:
             return self.render('tagNames', disableFiltering = True)

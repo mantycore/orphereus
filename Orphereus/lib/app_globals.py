@@ -349,6 +349,7 @@ class Globals(object):
         return mitems
 
     def extractFromConfigs(self, elementName):
+        #TODO: cache results?
         result = []
         plugins = []
         for plugin in self.plugins:

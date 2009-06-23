@@ -93,17 +93,20 @@ def threadInfoCallback(thread, userInst):
     return result
 
 def tagHandler(tag, userInst):
-    ns = g.pluginsDict['usertags'].pnamespace
-    if not userInst.Anonymous:
-        tag = ns.UserTag.query().filter(and_(ns.UserTag.tag == tag[1:], ns.UserTag.userId == userInst.uidNumber)).first()
-        if tag:
-            ids = []
-            for post in tag.posts:
-                ids.append(post.id)
-            #log.critical(ids)
-            if ids:
-                return Post.id.in_(ids)
-    return None
+    if tag.startswith('$'):
+        ns = g.pluginsDict['usertags'].pnamespace
+        if not userInst.Anonymous:
+            newName = tag[1:]
+            tag = ns.UserTag.get(newName, userInst) #ns.UserTag.query().filter(and_(ns.UserTag.tag == newName, ns.UserTag.userId == userInst.uidNumber)).first()
+            if tag:
+                ids = []
+                for post in tag.posts:
+                    ids.append(post.id)
+                #log.critical(ids)
+                if ids:
+                    return Post.id.in_(ids), newName
+        return None, newName
+    return None, None
 
 def profileLinks(userInst):
     links = []

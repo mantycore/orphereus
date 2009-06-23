@@ -222,16 +222,15 @@ class Post(object):
                     disableHidden = Post.tags.any(Tag.options.has(not_(TagOptions.showInOverview)))
                     return (not_(or_(disableExclusions, disableHidden)), [])
                 else:
-                    if arg.startswith('$'):
-                        handlerResult = None
-                        if getattr(meta.globj, 'tagHandlers', None):
-                            for handler in meta.globj.tagHandlers:
-                                clause = handler(arg, userInst)
-                                if clause:
-                                    #log.critical(clause)
-                                    return (clause, [arg])
-                        arg = arg[1:]
-                    return (Post.tags.any(tag = arg), [arg])
+                    retarg = [arg]
+                    if getattr(meta.globj, 'tagHandlers', None):
+                        for handler in meta.globj.tagHandlers:
+                            clause, newName = handler(arg, userInst)
+                            if clause and newName:
+                                return (clause, [newName])
+                            elif newName:
+                                retarg = [newName]
+                    return (Post.tags.any(tag = arg), retarg)
             else:
                 return arg
 

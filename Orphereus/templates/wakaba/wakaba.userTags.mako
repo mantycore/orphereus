@@ -23,12 +23,18 @@
 <tr>
     <td><b>${_("Name")}</b></td>
     <td><b>${_("Description")}</b></td>
+    <td><b>${_("Mapped threads")}</b></td>
     <td><b>${_("Actions")}</b></td>
 </tr>
 %for tag in c.userTags:
 <tr>
-    <td>${tag.tag}</td>
-    <td>${tag.comment}</td>
+    <td><a href="${h.url_for('boardBase', board = '$' + tag.tag)}">/$${tag.tag}/</a></td>
+    <td>${tag.comment and tag.comment or '&nbsp;'}</td>
+    <td>
+    %for post in tag.posts:
+    <a href="${h.url_for('thread', post=post.id)}">#${post.id}</a>
+    %endfor
+    </td>
     <td><a href='${h.url_for('userTagsManager', act='delete', tagid=tag.id)}'>${_('Remove')}</a></td>
 </tr>
 %endfor

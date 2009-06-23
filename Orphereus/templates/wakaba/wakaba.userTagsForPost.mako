@@ -13,7 +13,7 @@
 %for tag in c.userTags:
 <tr>
     <td>${tag.tag}</td>
-    <td>${tag.comment}</td>
+    <td>${tag.comment and tag.comment or '&nbsp;'}</td>
     <td><a href='${h.url_for('userTagsMapper', act='delete', post=c.thread.id, tagid=tag.id)}'>${_('Remove')}</a></td>
 </tr>
 %endfor

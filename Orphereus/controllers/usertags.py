@@ -17,14 +17,20 @@ class UserTag(object):
         self.userId = uidNumber
 
     @staticmethod
-    def get(name):
-        return UserTag.query().filter(UserTag.name == name).first()
+    def get(tagName, userInst):
+        return UserTag.query().filter(and_(UserTag.tag == tagName, UserTag.userId == userInst.uidNumber)).first()
 
     @staticmethod
     def getPostTags(postid, userId):
         ns = g.pluginsDict['usertags'].pnamespace
         return ns.UserTag.query().filter(and_(ns.UserTag.userId == userId, ns.UserTag.posts.any(Post.id == postid))).all()
 
+    def addToThread(self, thread):
+        if not thread in self.posts:
+            self.posts.append(thread)
+            meta.Session.commit()
+            return True
+        return False
     """
         @staticmethod
         def getMappingTable():
@@ -95,6 +101,41 @@ def profileLinks():
     links = (('userTagsManager', {}, _('User tags')),)
     return links
 
+def tagCheckHandler(tagName, userInst):
+    ns = g.pluginsDict['usertags'].pnamespace
+    name = tagName
+    if name.startswith('$'):
+        name = tagName[1:]
+    return ns.UserTag.get(name, userInst)
+
+def tagCreationHandler(tagstring, userInst, textFilter):
+    afterPostCallbackParams = []
+    newTagString = tagstring
+    if not userInst.Anonymous:
+        from Orphereus.controllers.Orphie_Main import OrphieMainController
+        ns = g.pluginsDict['usertags'].pnamespace
+        tags, dummy, nonexistent = Tag.stringToTagLists(tagstring, False)
+        for usertag in nonexistent:
+            if usertag.startswith('$'):
+                nonexistent.remove(usertag)
+                usertag = usertag[1:]
+                tag = ns.UserTag.get(usertag, userInst)
+                if not tag:
+                    descr = OrphieMainController.getTagDescription(usertag, textFilter)
+                    tag = ns.UserTag(usertag, descr, userInst.uidNumber)
+                    meta.Session.commit()
+                afterPostCallbackParams.append(tag)
+        newTagString = ''
+        for tag in tags:
+            newTagString += '%s ' % tag.tag
+        newTagString += ' '.join(nonexistent)
+        log.critical(newTagString)
+    return (newTagString, afterPostCallbackParams)
+
+def afterPostCallback(post, userInst, params):
+    for tag in params:
+        tag.addToThread(post)
+
 def pluginInit(globj = None):
     if globj:
         h.threadPanelCallbacks.append(threadPanelCallback)
@@ -109,6 +150,9 @@ def pluginInit(globj = None):
              'name' : N_('Personal tags module'),
              'ormPropChanger' : ormPropChanger,
              'additionalProfileLinks' : profileLinks,
+             'tagCreationHandler' : tagCreationHandler,
+             'tagCheckHandler' : tagCheckHandler,
+             'afterPostCallback' : afterPostCallback,
              }
 
     return PluginInfo('usertags', config)
@@ -147,9 +191,7 @@ class UsertagsController(OrphieBaseController):
                     tag = UserTag.query().filter(and_(UserTag.id == int(tagid), UserTag.userId == self.userInst.uidNumber)).first()
                 if not tag:
                     return self.error(_("Tag doesn't exists"))
-                if not thread in tag.posts:
-                    tag.posts.append(thread)
-                    meta.Session.commit()
+                if tag.addToThread(thread):
                     doRedir = True
                 else:
                     return self.error(_("This tag already mapped to this post"))
@@ -170,7 +212,7 @@ class UsertagsController(OrphieBaseController):
         doRedir = False
         if act == 'add':
             tagName = filterText(request.params.get('tagName', ''))
-            tag = UserTag.query().filter(and_(UserTag.tag == tagName, UserTag.userId == self.userInst.uidNumber)).first()
+            tag = UserTag.get(tagName, self.userInst)
             tagDescr = filterText(request.params.get('tagDescr', ''))
             if tagName:
                 if not tag:

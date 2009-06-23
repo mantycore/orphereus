@@ -645,6 +645,14 @@ class OrphieMainController(OrphieBaseController):
     def ajaxPostThread(self, board):
         return self.processPost(board = board, ajaxRequest = True)
 
+    @staticmethod
+    def getTagDescription(tagName, textFilter):
+        rex = re.compile(r"^tagname_(\d+)$")
+        for name in request.POST.keys():
+            matcher = rex.match(name)
+            if matcher and request.POST[name] == tagName:
+                return textFilter(request.POST.get('tagdef_%s' % matcher.group(1), ''))
+
     def processPost(self, postid = None, board = u'', ajaxRequest = False):
         def ajaxError(message):
             return message
@@ -728,6 +736,7 @@ class OrphieMainController(OrphieBaseController):
                 response.set_cookie('orhpieRemPass', unicode(remPass), max_age = 3600)
                 #log.debug('setting pass cookie in post proc: %s' %str(remPass.encode('utf-8')))
 
+        afterPostCallbackParams = {}
         thread = None
         tags = []
         if postid != None:
@@ -742,17 +751,15 @@ class OrphieMainController(OrphieBaseController):
                 thread = thePost
             tags = thread.tags
         else:
+            for plugin in g.plugins:
+                config = plugin.config
+                handler = config.get('tagCreationHandler', None)
+                if handler:
+                    tagstr, afterPostCallbackParams[plugin.pluginId()] = handler(tagstr, self.userInst, textFilter)
+
             tags, createdTags, dummy = Tag.stringToTagLists(tagstr, g.OPT.allowTagCreation)
-
-            def getDescription(tagName):
-                rex = re.compile(r"^tagname_(\d+)$")
-                for name in request.POST.keys():
-                    matcher = rex.match(name)
-                    if matcher and request.POST[name] == tagName:
-                        return textFilter(request.POST.get('tagdef_%s' % matcher.group(1), ''))
-
             for tag in createdTags:
-                tagdef = getDescription(tag.tag)
+                tagdef = self.getTagDescription(tag.tag)
                 if tagdef:
                     tag.options.comment = tagdef
 
@@ -921,6 +928,13 @@ class OrphieMainController(OrphieBaseController):
 
         if fileHolder:
             fileHolder.disableDeletion()
+
+        for plugin in g.plugins:
+            config = plugin.config
+            handler = config.get('afterPostCallback', None)
+            if handler:
+                 handler(post, self.userInst, afterPostCallbackParams.get(plugin.pluginId(), None))
+
         response.set_cookie('orphie-postingCompleted', 'yes')
 
         if ajaxRequest:

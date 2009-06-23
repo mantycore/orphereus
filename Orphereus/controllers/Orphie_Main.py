@@ -53,23 +53,7 @@ log = logging.getLogger(__name__)
 class OrphieMainController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        c.userInst = self.userInst
-        c.destinations = destinations
-
-        c.currentURL = request.path_info.decode('utf-8', 'ignore')
-
-        if c.currentURL.endswith('/'):
-            c.currentURL = c.currentURL[:-1]
-
-        if not self.currentUserIsAuthorized():
-            return redirect_to('authorizeToUrl', url = c.currentURL)
-        if self.userInst.isBanned():
-            #abort(500, 'Internal Server Error')     # calm hidden ban
-            return redirect_to('banned')
-        #c.currentUserCanPost = self.currentUserCanPost()
-        if self.userInst.isAdmin() and not checkAdminIP():
-            return redirect_to('boardBase')
-        self.initEnvironment()
+        self.initiate()
 
     #parser callback
     def cbGetPostAndUser(self, id):
@@ -305,6 +289,15 @@ class OrphieMainController(OrphieBaseController):
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             return self.error(_("Profile is not avaiable to Anonymous users."))
+
+        c.additionalProfileLinks = []
+        for plugin in g.plugins:
+            config = plugin.config
+            links = config.get('additionalProfileLinks', None)
+            if links:
+                linkslist = links()
+                if linkslist:
+                    c.additionalProfileLinks += linkslist
 
         c.templates = g.OPT.templates
         c.styles = g.OPT.cssFiles[self.userInst.template]

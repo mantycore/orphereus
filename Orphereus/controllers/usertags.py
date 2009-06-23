@@ -60,7 +60,7 @@ def ormInit(orm, namespace, propDict):
 
 def routingInit(map):
     map.connect('userTagsMapper', '/postTags/:post/:act/:tagid', controller = 'usertags', action = 'postTags', act = 'show', tagid = 0, requirements = dict(post = '\d+', tagid = '\d+'))
-    map.connect('userTagsManager', '/managePostTags/:act/:tagid', controller = 'usertags', action = 'postTagsManage', act = 'show', tagid = 0, requirements = dict(tagid = '\d+'))
+    map.connect('userTagsManager', '/userProfile/manageUserTags/:act/:tagid', controller = 'usertags', action = 'postTagsManage', act = 'show', tagid = 0, requirements = dict(tagid = '\d+'))
 
 def requestHook(baseController):
     pass
@@ -68,7 +68,7 @@ def requestHook(baseController):
 def threadPanelCallback(thread, userInst):
     from webhelpers.html.tags import link_to
     if not userInst.Anonymous:
-        return link_to(_("[My tags]"), h.url_for('userTagsMapper', post = thread.id))
+        return link_to(_("[My tags]"), h.url_for('userTagsMapper', post = thread.id), target = "_blank")
 
 def threadInfoCallback(thread, userInst):
     ns = g.pluginsDict['usertags'].pnamespace
@@ -91,6 +91,9 @@ def tagHandler(tag, userInst):
             return Post.id.in_(ids)
         return None
 
+def profileLinks():
+    links = (('userTagsManager', {}, _('User tags')),)
+    return links
 
 def pluginInit(globj = None):
     if globj:
@@ -105,6 +108,7 @@ def pluginInit(globj = None):
              'orminit' : ormInit, # ORM initializer
              'name' : N_('Personal tags module'),
              'ormPropChanger' : ormPropChanger,
+             'additionalProfileLinks' : profileLinks,
              }
 
     return PluginInfo('usertags', config)
@@ -114,19 +118,23 @@ from OrphieBaseController import *
 
 class UsertagsController(OrphieBaseController):
     def __init__(self):
-        OrphieBaseController.__init__(self)
+        OrphieBaseController.__before__(self)
+        self.initiate()
 
     def postTags(self, post, act, tagid):
         if self.userInst.Anonymous:
             return self.error(_("User tags allowed only for registered users"))
+        c.boardName = _('User tags of thread')
         thread = Post.query().get(int(post))
         if thread:
+            doRedir = False
             if act == 'delete':
                 tag = UserTag.query().filter(and_(UserTag.id == int(tagid), UserTag.userId == self.userInst.uidNumber)).first()
                 if tag:
                     if thread in tag.posts:
                         tag.posts.remove(thread)
                         meta.Session.commit()
+                        doRedir = True
                     else:
                         return self.error(_("This tag isn't mapped to this post"))
                 else:
@@ -136,11 +144,20 @@ class UsertagsController(OrphieBaseController):
                 tagName = filterText(request.params.get('tagName', ''))
                 tag = UserTag.query().filter(and_(UserTag.tag == tagName, UserTag.userId == self.userInst.uidNumber)).first()
                 if not tag:
+                    tag = UserTag.query().filter(and_(UserTag.id == int(tagid), UserTag.userId == self.userInst.uidNumber)).first()
+                if not tag:
                     return self.error(_("Tag doesn't exists"))
-                tag.posts.append(thread)
-                meta.Session.commit()
+                if not thread in tag.posts:
+                    tag.posts.append(thread)
+                    meta.Session.commit()
+                    doRedir = True
+                else:
+                    return self.error(_("This tag already mapped to this post"))
+            if doRedir:
+                return redirect_to('userTagsMapper', post = thread.id)
             c.thread = thread
             c.userTags = UserTag.getPostTags(thread.id, self.userInst.uidNumber)
+            c.allTags = UserTag.query().filter(UserTag.userId == self.userInst.uidNumber).all()
             return self.render('userTagsForPost')
         else:
             return self.error(_("Incorrect thread id"))
@@ -149,6 +166,8 @@ class UsertagsController(OrphieBaseController):
         if self.userInst.Anonymous:
             return self.error(_("User tags allowed only for registered users"))
 
+        c.boardName = _('User tags management')
+        doRedir = False
         if act == 'add':
             tagName = filterText(request.params.get('tagName', ''))
             tag = UserTag.query().filter(and_(UserTag.tag == tagName, UserTag.userId == self.userInst.uidNumber)).first()
@@ -157,6 +176,7 @@ class UsertagsController(OrphieBaseController):
                 if not tag:
                     tag = UserTag(tagName, tagDescr, self.userInst.uidNumber)
                     meta.Session.commit()
+                    doRedir = True
                 else:
                     return self.error(_("Tag already exists"))
         elif act == 'delete':
@@ -164,8 +184,10 @@ class UsertagsController(OrphieBaseController):
             if tag:
                 meta.Session.delete(tag)
                 meta.Session.commit()
+                doRedir = True
             else:
                 return self.error(_("Incorrect tag id"))
-
+        if doRedir:
+            return redirect_to('userTagsManager')
         c.userTags = UserTag.query().filter(UserTag.userId == self.userInst.uidNumber).all()
         return self.render('userTags')

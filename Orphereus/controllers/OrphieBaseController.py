@@ -178,6 +178,24 @@ class OrphieBaseController(BaseController):
             response.set_cookie('orhpieRemPass', unicode(remPassCookie), max_age = 3600)
         self.setRightsInfo()
 
+    def initiate(self):
+        c.destinations = destinations
+
+        c.currentURL = request.path_info.decode('utf-8', 'ignore')
+
+        if c.currentURL.endswith('/'):
+            c.currentURL = c.currentURL[:-1]
+
+        if not self.currentUserIsAuthorized():
+            return redirect_to('authorizeToUrl', url = c.currentURL)
+        if self.userInst.isBanned():
+            #abort(500, 'Internal Server Error')     # calm hidden ban
+            return redirect_to('banned')
+        #c.currentUserCanPost = self.currentUserCanPost()
+        if self.userInst.isAdmin() and not checkAdminIP():
+            return redirect_to('boardBase')
+        self.initEnvironment()
+
     def requestForMenu(self, menuId):
         if not menuId in self.requestedMenus:
             self.requestedMenus.append(menuId)

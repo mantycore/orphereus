@@ -274,6 +274,15 @@
     </table>
     </div>
     
+%if c.additionalProfileLinks:
+    <div class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('additionalParameters');">${_('Additional parameters')}</a></div>
+    <div id="additionalParameters">
+    %for link in c.additionalProfileLinks:
+    <div style="text-align: center;"><a href="${h.url_for(link[0], **link[1])}" target="_blank">${link[2]}</a></div>
+    %endfor
+    </div>
+%endif
+
 </td>
 </tr>
 </tbody>

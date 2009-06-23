@@ -131,11 +131,11 @@ def tagCreationHandler(tagstring, userInst, textFilter):
         if usertag.startswith('$'):
             nonexistent.remove(usertag)
             if not userInst.Anonymous:
-                usertag = usertag[1:]
-                tag = ns.UserTag.get(usertag, userInst)
+                tagName = usertag[1:]
+                tag = ns.UserTag.get(tagName, userInst)
                 if not tag:
                     descr = OrphieMainController.getTagDescription(usertag, textFilter)
-                    tag = ns.UserTag(usertag, descr, userInst.uidNumber)
+                    tag = ns.UserTag(tagName, descr, userInst.uidNumber)
                     meta.Session.commit()
                 afterPostCallbackParams.append(tag)
     newTagString = ''

@@ -75,27 +75,31 @@ def threadPanelCallback(thread, userInst):
     from webhelpers.html.tags import link_to
     if not userInst.Anonymous:
         return link_to(_("[My tags]"), h.url_for('userTagsMapper', post = thread.id), target = "_blank")
+    return ''
 
 def threadInfoCallback(thread, userInst):
     ns = g.pluginsDict['usertags'].pnamespace
     from webhelpers.html.tags import link_to
-    tags = ns.UserTag.getPostTags(thread.id, userInst.uidNumber)
-    result = " "
-    for t in tags:
-        result += ("%s ") % link_to("/$%s/" % t.tag, h.url_for('boardBase', board = '$' + t.tag), title = t.comment)
+    result = ''
+    if not userInst.Anonymous:
+        tags = ns.UserTag.getPostTags(thread.id, userInst.uidNumber)
+        result = " "
+        for t in tags:
+            result += ("%s ") % link_to("/$%s/" % t.tag, h.url_for('boardBase', board = '$' + t.tag), title = t.comment)
     return result
 
 def tagHandler(tag, userInst):
     ns = g.pluginsDict['usertags'].pnamespace
-    tag = ns.UserTag.query().filter(and_(ns.UserTag.tag == tag[1:], ns.UserTag.userId == userInst.uidNumber)).first()
-    if tag:
-        ids = []
-        for post in tag.posts:
-            ids.append(post.id)
-        #log.critical(ids)
-        if ids:
-            return Post.id.in_(ids)
-        return None
+    if not userInst.Anonymous:
+        tag = ns.UserTag.query().filter(and_(ns.UserTag.tag == tag[1:], ns.UserTag.userId == userInst.uidNumber)).first()
+        if tag:
+            ids = []
+            for post in tag.posts:
+                ids.append(post.id)
+            #log.critical(ids)
+            if ids:
+                return Post.id.in_(ids)
+    return None
 
 def profileLinks():
     links = (('userTagsManager', {}, _('User tags')),)
@@ -106,18 +110,21 @@ def tagCheckHandler(tagName, userInst):
     name = tagName
     if name.startswith('$'):
         name = tagName[1:]
-    return ns.UserTag.get(name, userInst)
+    if not userInst.Anonymous:
+        return ns.UserTag.get(name, userInst)
+    else:
+         return name != tagName
 
 def tagCreationHandler(tagstring, userInst, textFilter):
     afterPostCallbackParams = []
     newTagString = tagstring
-    if not userInst.Anonymous:
-        from Orphereus.controllers.Orphie_Main import OrphieMainController
-        ns = g.pluginsDict['usertags'].pnamespace
-        tags, dummy, nonexistent = Tag.stringToTagLists(tagstring, False)
-        for usertag in nonexistent:
-            if usertag.startswith('$'):
-                nonexistent.remove(usertag)
+    from Orphereus.controllers.Orphie_Main import OrphieMainController
+    ns = g.pluginsDict['usertags'].pnamespace
+    tags, dummy, nonexistent = Tag.stringToTagLists(tagstring, False)
+    for usertag in nonexistent:
+        if usertag.startswith('$'):
+            nonexistent.remove(usertag)
+            if not userInst.Anonymous:
                 usertag = usertag[1:]
                 tag = ns.UserTag.get(usertag, userInst)
                 if not tag:
@@ -125,11 +132,10 @@ def tagCreationHandler(tagstring, userInst, textFilter):
                     tag = ns.UserTag(usertag, descr, userInst.uidNumber)
                     meta.Session.commit()
                 afterPostCallbackParams.append(tag)
-        newTagString = ''
-        for tag in tags:
-            newTagString += '%s ' % tag.tag
-        newTagString += ' '.join(nonexistent)
-        log.critical(newTagString)
+    newTagString = ''
+    for tag in tags:
+        newTagString += '%s ' % tag.tag
+    newTagString += ' '.join(nonexistent)
     return (newTagString, afterPostCallbackParams)
 
 def afterPostCallback(post, userInst, params):

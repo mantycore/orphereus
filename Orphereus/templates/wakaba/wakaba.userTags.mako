@@ -35,7 +35,13 @@
     <a href="${h.url_for('thread', post=post.id)}">#${post.id}</a>
     %endfor
     </td>
-    <td><a href='${h.url_for('userTagsManager', act='delete', tagid=tag.id)}'>${_('Remove')}</a></td>
+    <td>
+    %if not tag.posts:
+        <a href='${h.url_for('userTagsManager', act='delete', tagid=tag.id)}'>${_('Remove')}</a>
+    %else:
+        <a href='${h.url_for('userTagsManager', act='removefromall', tagid=tag.id)}'>${_('Remove from all threads')}</a>
+    %endif
+    </td>
 </tr>
 %endfor
 </table>

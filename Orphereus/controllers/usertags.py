@@ -21,6 +21,10 @@ class UserTag(object):
         return UserTag.query().filter(and_(UserTag.tag == tagName, UserTag.userId == userInst.uidNumber)).first()
 
     @staticmethod
+    def getById(tagid, userInst):
+        return UserTag.query().filter(and_(UserTag.id == int(tagid), UserTag.userId == userInst.uidNumber)).first()
+
+    @staticmethod
     def getPostTags(postid, userId):
         ns = g.pluginsDict['usertags'].pnamespace
         return ns.UserTag.query().filter(and_(ns.UserTag.userId == userId, ns.UserTag.posts.any(Post.id == postid))).all()
@@ -192,9 +196,9 @@ class UsertagsController(OrphieBaseController):
 
             if act == 'add':
                 tagName = filterText(request.params.get('tagName', ''))
-                tag = UserTag.query().filter(and_(UserTag.tag == tagName, UserTag.userId == self.userInst.uidNumber)).first()
+                tag = UserTag.get(tagName, self.userInst) #UserTag.query().filter(and_(UserTag.tag == tagName, UserTag.userId == self.userInst.uidNumber)).first()
                 if not tag:
-                    tag = UserTag.query().filter(and_(UserTag.id == int(tagid), UserTag.userId == self.userInst.uidNumber)).first()
+                    tag = UserTag.getById(tagid, self.userInst) #UserTag.query().filter(and_(UserTag.id == int(tagid), UserTag.userId == self.userInst.uidNumber)).first()
                 if not tag:
                     return self.error(_("Tag doesn't exists"))
                 if tag.addToThread(thread):
@@ -227,12 +231,20 @@ class UsertagsController(OrphieBaseController):
                     doRedir = True
                 else:
                     return self.error(_("Tag already exists"))
-        elif act == 'delete':
-            tag = UserTag.query().filter(and_(UserTag.id == int(tagid), UserTag.userId == self.userInst.uidNumber)).first()
+        elif act == 'delete' or act == 'removefromall':
+            tag = UserTag.getById(tagid, self.userInst) #UserTag.query().filter(and_(UserTag.id == int(tagid), UserTag.userId == self.userInst.uidNumber)).first()
             if tag:
-                meta.Session.delete(tag)
-                meta.Session.commit()
-                doRedir = True
+                if act == 'delete':
+                    if not tag.posts:
+                        meta.Session.delete(tag)
+                        meta.Session.commit()
+                        doRedir = True
+                    else:
+                        return self.error(_("Can't delete mapped tag"))
+                elif act == 'removefromall':
+                    tag.posts = []
+                    meta.Session.commit()
+                    doRedir = True
             else:
                 return self.error(_("Incorrect tag id"))
         if doRedir:

@@ -241,7 +241,7 @@ class OrphieBaseController(BaseController):
                 c.renderStartTime = time.time()
                 c.log.append("processing: %s" % str(c.renderStartTime - self.startTime))
             output = render('/' + tpath, extra_vars = options)
-            if g.globalFilterStack:
+            if g.globalFilterStack and not options.get('disableFiltering', None):
                 return h.applyFilters(output, True)
             else:
                 return output

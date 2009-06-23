@@ -73,7 +73,7 @@ class OrphieAjaxController(OrphieBaseController):
         freeNames = Tag.stringToTagLists(tags, False)[2]
         if freeNames:
             c.tags = freeNames
-            return self.render('tagNames')
+            return self.render('tagNames', disableFiltering = True)
         else:
             return ''
 
@@ -144,7 +144,7 @@ class OrphieAjaxController(OrphieBaseController):
             #uncomment to disable folding for big posts
             #parent.enableShortMessages=False
             self.setRightsInfo()
-            return self.render('postReply', None, thread = parent, post = postInst)
+            return self.render('postReply', None, disableFiltering = True, thread = parent, post = postInst)
         abort(404)
 
     def getRenderedReplies(self, thread):
@@ -156,7 +156,7 @@ class OrphieAjaxController(OrphieBaseController):
                         abort(403)
             postInst.Replies = postInst.filterReplies().all()
             self.setRightsInfo()
-            return self.render('replies', None, thread = postInst)
+            return self.render('replies', None, disableFiltering = True, thread = postInst)
         abort(404)
 
     def getRepliesCountForThread(self, post):
@@ -203,7 +203,7 @@ class OrphieAjaxController(OrphieBaseController):
         if self.userInst.Anonymous:
             abort(403)
         userFilter = self.userInst.addFilter(filter)
-        return self.render('ajax.userFilter', None, userFilter = userFilter)
+        return self.render('ajax.userFilter', None, disableFiltering = True, userFilter = userFilter)
 
     def checkCaptcha(self, id, text):
         ct = Captcha.getCaptcha(id)

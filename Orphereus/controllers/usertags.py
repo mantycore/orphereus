@@ -148,8 +148,9 @@ def tagCreationHandler(tagstring, userInst, textFilter):
     return (newTagString, afterPostCallbackParams)
 
 def afterPostCallback(post, userInst, params):
-    for tag in params:
-        tag.addToThread(post)
+    if params:
+        for tag in params:
+            tag.addToThread(post)
 
 def pluginInit(globj = None):
     if globj:

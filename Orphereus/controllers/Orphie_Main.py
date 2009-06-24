@@ -391,11 +391,7 @@ class OrphieMainController(OrphieBaseController):
         rawtext = text
         if not text:
             rawtext = request.POST.get('query', u'')
-            text = filterText(rawtext)
-
-        minLen = 3
-        if not text or len(rawtext) < minLen:
-            return self.error(_("Query too short (minimal length: %d)") % minLen)
+        text = filterText(rawtext)
 
         if isNumber(page):
             page = int(page)
@@ -417,16 +413,17 @@ class OrphieMainController(OrphieBaseController):
         if not tagfilter:
             tagfilter = Post.buildMetaboardFilter(False, self.userInst)[2]
 
-        base = Post.filter(or_(tagfilter,
-                                    Post.parentPost.has(tagfilter),
-                               ))
-        #else:
+        filteringClause = or_(tagfilter, Post.parentPost.has(tagfilter))
 
+        searchRoutine = g.pluginsDict[g.OPT.searchPluginId].config.get('searchRoutine', None)
+        if not searchRoutine:
+            return self.error(_("The plugin selected to search doesn't provide search features"))
 
-        filter = base.filter(Post.message.like('%%%s%%' % text))
-        count = filter.count()
+        postsIds, count, failInfo = searchRoutine(filteringClause, text, page, pp)
+        if failInfo:
+            return self.error(failInfo)
+        posts = Post.filter(Post.id.in_(postsIds)).order_by(Post.date.desc()).all()
         self.paginate(count, page, pp)
-        posts = filter.order_by(Post.date.desc())[(page * pp):(page + 1) * pp]
 
         c.posts = []
         for p in posts:

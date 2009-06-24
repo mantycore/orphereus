@@ -441,7 +441,7 @@ function userFiltersDelete(event,fid)
   event.preventDefault();
 }
 
-// code below should be refactored
+// code below should be rewritten using JQuery
 function insert(text,notFocus)
 {
     var textarea=document.forms.postform.message;

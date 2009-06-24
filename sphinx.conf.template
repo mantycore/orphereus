@@ -1,0 +1,56 @@
+source anomach_src
+{
+    type                    = mysql
+    sql_host                = localhost
+    sql_user                = root
+    sql_pass                =
+    sql_db                  = orphie
+    sql_port                = 3306    # optional, default is 3306
+
+    sql_query_pre           = SET NAMES utf8
+    #sql_query_range         = SELECT MIN(id),MAX(id) FROM documents
+    #sql_range_step          = 1000
+
+    sql_query               = SELECT id, id AS postId, title, message, UNIX_TIMESTAMP(date) AS date, UNIX_TIMESTAMP(bumpDate) AS bumpDate, parentId\
+                              FROM post
+    sql_attr_timestamp      = date
+    sql_attr_uint           = parentId
+    sql_attr_uint           = postId
+    sql_attr_timestamp      = bumpDate
+
+    #sql_query_info         = SELECT * FROM post WHERE id=$id
+}
+
+index anomach
+{
+    source                  = anomach_src
+    path                    = ./data/anomach
+    docinfo                 = extern
+    charset_type            = utf-8
+    html_strip              = 1
+     
+    morphology              = stem_ru, stem_en
+    #morphology              = stem_en, stem_ru, soundex
+    #morphology              = libstemmer_german
+    #morphology              = stem_enru
+}
+
+indexer
+{
+    mem_limit               = 32M
+}
+
+searchd
+{
+    address                 = 127.0.0.1
+    port                    = 3312
+    log                     = ./log/searchd.log
+    query_log               = ./log/query.log
+    read_timeout            = 5
+    max_children            = 30
+    pid_file                = ./log/searchd.pid
+    max_matches             = 1000
+    seamless_rotate         = 1
+    preopen_indexes         = 0
+    unlink_old              = 1
+}

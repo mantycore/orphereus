@@ -310,7 +310,6 @@ class OrphiePublicController(OrphieBaseController):
                     animPath = h.expandName('%s.%s' % (tempid, 'pch'))
                     self.saveUploaded(animPath, anim)
 
-
                 oekaki.setPathsAndTime(savedOekakiPath, animPath, time)
         return ['ok']
 

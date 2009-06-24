@@ -77,7 +77,7 @@ class OptHolder(object):
                                ('urlPrefix', 'hashSecret', 'baseDomain',
                                 'staticPathWeb', 'filesPathWeb', 'actuator',
                                 'defaultFrame', 'staticPath', 'uploadPath',
-                                'frameLogo'
+                                'frameLogo', 'searchPluginId'
                                )
                               ),
 

@@ -47,7 +47,7 @@ beaker.session.key = Orphereus
 beaker.session.secret = somesecret
 sqlalchemy.url = mysql://user:passwd@127.0.0.1/database?use_unicode=0&charset=utf8
 sqlalchemy.pool_recycle = 3600
-sqlalchemy.encoding=utf-8
+#sqlalchemy.encoding=utf-8
 
 core.disabledModules = example.py,httpinfo.py
 
@@ -92,6 +92,10 @@ core.defaultFrame = /!/
 core.obligatoryFrameCreation = false
 core.showShortStatistics = true
 core.homeModules = newsgenerator,statistics
+core.searchPluginId = search_like
+#if you want full-text search, use next line
+#core.searchPluginId = search_sphinx
+#(see http://www.sphinxsearch.com for information about Sphinx Search Engine)
 
 # plugins
 jsCompressor.disableJSRegeneration = false
@@ -100,6 +104,11 @@ newsgenerator.newsToShow = 4
 newsgenerator.newsTag = news
 newsgenerator.onlyAdminsCanPostNews = true
 rssfeed.allowFeeds = true
+sphinx.sphinxHost = 127.0.0.1
+sphinx.sphinxPort = 3312
+sphinx.sphinxIndexName = anomach
+sphinx.sphinxPostDatePseudo = date
+sphinx.sphinxPostIdPseudo = postId
 
 # Board defaults
 defaults.defThumbSize = 200

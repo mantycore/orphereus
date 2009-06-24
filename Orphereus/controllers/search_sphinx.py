@@ -29,7 +29,7 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
     count = 0
     failInfo = None
 
-    mode = SPH_MATCH_ALL
+    mode = SPH_MATCH_EXTENDED2
     host = g.OPT.sphinxHost
     port = g.OPT.sphinxPort
     index = g.OPT.sphinxIndexName

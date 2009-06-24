@@ -415,7 +415,10 @@ class OrphieMainController(OrphieBaseController):
 
         filteringClause = or_(tagfilter, Post.parentPost.has(tagfilter))
 
-        searchRoutine = g.pluginsDict[g.OPT.searchPluginId].config.get('searchRoutine', None)
+        searchPlugin = g.pluginsDict.get(g.OPT.searchPluginId, None)
+        if not searchPlugin:
+            return self.error(_("Search plugin isn't configured"))
+        searchRoutine = searchPlugin.config.get('searchRoutine', None)
         if not searchRoutine:
             return self.error(_("The plugin selected to search doesn't provide search features"))
 

@@ -750,8 +750,8 @@ class OrphieMainController(OrphieBaseController):
             tags = thread.tags
         else:
             handlers, plugins = g.extractFromConfigs('tagCreationHandler')
-            log.debug(handlers)
-            log.debug(plugins)
+            #log.debug(handlers)
+            #log.debug(plugins)
             for num, handler in enumerate(handlers):
                 tagstr, afterPostCallbackParams[plugins[num].pluginId()] = handler(tagstr, self.userInst, textFilter)
 

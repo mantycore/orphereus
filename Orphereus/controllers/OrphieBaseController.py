@@ -62,9 +62,6 @@ class OrphieBaseController(BaseController):
         self.requestedMenus = []
         self.builtMenus = {}
 
-        if g.firstRequest:
-            g.firstRequest = False
-
         ################# TODO: rewrite. Dont't like this.
         ipStr = getUserIp()
         ip = h.dottedToInt(ipStr)
@@ -97,6 +94,9 @@ class OrphieBaseController(BaseController):
             hook = plugin.requestHook()
             if hook:
                 hook(self)
+
+        if g.firstRequest:
+            g.firstRequest = False
 
     def setLang(self, captcha = False):
         lang = ""

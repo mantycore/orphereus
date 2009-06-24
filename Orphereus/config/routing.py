@@ -45,7 +45,6 @@ def make_map():
     # debug route
     gvars = config['pylons.app_globals']
     framedMain = gvars.OPT.framedMain
-    devMode = gvars.OPT.devMode
 
     log.info('Initialzing routes, registered plugins: %d' % (len(gvars.plugins)),)
     # Calling routing initializers from plugins
@@ -55,9 +54,6 @@ def make_map():
             log.info('calling routing initializer %s from: %s' % (str(rinit), plugin.pluginId()))
             rinit(map)
     log.info('COMPLETED ROUTING INITIALIZATION STAGE')
-
-    if devMode:
-        map.connect('/uaInfo', controller = 'Orphie_Public', action = 'uaInfo')
 
     map.connect('makeFwdTo', '/makeFwdTo', controller = 'Orphie_Main', action = 'makeFwdTo')
 

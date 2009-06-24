@@ -2,7 +2,6 @@ from pylons.i18n import N_
 from string import *
 
 from Orphereus.lib.pluginInfo import PluginInfo
-from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.base import *
 from Orphereus.model import *
 

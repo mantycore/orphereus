@@ -49,7 +49,7 @@ sqlalchemy.url = mysql://user:passwd@127.0.0.1/database?use_unicode=0&charset=ut
 sqlalchemy.pool_recycle = 3600
 sqlalchemy.encoding=utf-8
 
-core.disabledModules = mod1.py,mod2.py
+core.disabledModules = example.py,httpinfo.py
 
 # Basic IB settings
 core.devMode = false

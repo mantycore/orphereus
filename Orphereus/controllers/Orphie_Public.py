@@ -272,15 +272,6 @@ class OrphiePublicController(OrphieBaseController):
         c.userInst = self.userInst
         return self.error(_("Excuse me, WTF are you?"))
 
-    def uaInfo(self):
-        out = ''
-        response.headers['Content-type'] = "text/plain"
-        for key in request.environ.keys():
-            if 'HTTP' in key or 'SERVER' in key or 'REMOTE' in key:
-                out += key + ':' + request.environ[key] + '\n'
-        out += 'test:' + str(request.POST.get('test', ''))
-        return filterText(out)
-
     def saveUploaded(self, expandedName, content):
         localFilePath = os.path.join(g.OPT.uploadPath, expandedName)
         targetDir = os.path.dirname(localFilePath)

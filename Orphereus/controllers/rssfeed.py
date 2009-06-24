@@ -121,7 +121,7 @@ class RssfeedController(OrphieBaseController):
             else:
                 post.replies = None
                 title = _(u"#%d") % post.id
-            descr = self.render('rssPost', 'std', thread = parent, post = post).decode('utf-8')
+            descr = self.render('rssPost', 'std', thread = parent, post = post, disableFiltering = True) #.decode('utf-8')
 
             feed.add_item(title = title,
                           link = h.url_for('thread', post = post.id),

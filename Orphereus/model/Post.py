@@ -166,7 +166,7 @@ class Post(object):
             for name in tagNames:
                 if not name in rawNames:
                     rawNames.append(name)
-                    names.append(u"%s" % name)
+                    names.append(u"/%s/" % name)
         return ("+".join(rawNames), " + ".join(names))
 
     def getExactReplyCount(self):

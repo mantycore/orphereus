@@ -226,10 +226,10 @@ class UsertagsController(OrphieBaseController):
 
         c.boardName = _('User tags management')
         doRedir = False
+        tagDescr = filterText(request.params.get('tagDescr', ''))
         if act == 'add':
             tagName = filterText(request.params.get('tagName', ''))
             tag = UserTag.get(tagName, self.userInst)
-            tagDescr = filterText(request.params.get('tagDescr', ''))
             if tagName:
                 if not tag:
                     tag = UserTag(tagName, tagDescr, self.userInst.uidNumber)
@@ -237,7 +237,7 @@ class UsertagsController(OrphieBaseController):
                     doRedir = True
                 else:
                     return self.error(_("Tag already exists"))
-        elif act == 'delete' or act == 'removefromall':
+        elif act in ['delete', 'removefromall', 'rename']:
             tag = UserTag.getById(tagid, self.userInst) #UserTag.query().filter(and_(UserTag.id == int(tagid), UserTag.userId == self.userInst.uidNumber)).first()
             if tag:
                 if act == 'delete':
@@ -249,6 +249,10 @@ class UsertagsController(OrphieBaseController):
                         return self.error(_("Can't delete mapped tag"))
                 elif act == 'removefromall':
                     tag.posts = []
+                    meta.Session.commit()
+                    doRedir = True
+                elif act == 'rename':
+                    tag.comment = tagDescr
                     meta.Session.commit()
                     doRedir = True
             else:

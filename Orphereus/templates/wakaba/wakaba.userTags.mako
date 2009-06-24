@@ -17,6 +17,7 @@
     <td colspan="2"><input type='submit' value='${_('Append')}' /></td>
 </tr>
 </table>
+</form>
 
 <h3>${_("Tags")}</h3>
 <table class="hlTable">
@@ -41,11 +42,17 @@
     %else:
         <a href='${h.url_for('userTagsManager', act='removefromall', tagid=tag.id)}'>${_('Remove from all threads')}</a>
     %endif
+    <a style="cursor:pointer;" href="#" onclick="toggle_div('tag_${tag.id}');">${_('Change description')}</a>
+    <div id="tag_${tag.id}" style="display: none;">
+    <form id="userTagsForm" method="post" action="${h.url_for('userTagsManager', act='rename', tagid=tag.id)}">
+        <input type='text' name='tagDescr' />
+        <input type='submit' value='${_('Change')}' />
+    </form>
+    </div>
     </td>
 </tr>
 %endfor
 </table>
 
-</form>
 </div>
 <hr/>

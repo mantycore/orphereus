@@ -60,6 +60,14 @@ def threadInfoCallback(thread, userInst):
         result += cb(thread, userInst)
     return result
 
+headCallbacks = []
+def headCallback(context):
+    result = ''
+    for cb in headCallbacks:
+        result += cb(context)
+    return result
+
+
 def currentTime():
     import time
     return time.time()

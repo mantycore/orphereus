@@ -84,7 +84,6 @@ core.forbidCaptcha = false
 core.newsSiteMode = false
 core.permissiveFileSizeConjunction = true
 core.boardWideProoflabels = true
-core.allowFeeds = true
 core.allowOverview = true
 core.framedMain = true
 core.useFrameLogo = true
@@ -100,6 +99,7 @@ statistics.statsCacheTime = 180
 newsgenerator.newsToShow = 4
 newsgenerator.newsTag = news
 newsgenerator.onlyAdminsCanPostNews = true
+rssfeed.allowFeeds = true
 
 # Board defaults
 defaults.defThumbSize = 200

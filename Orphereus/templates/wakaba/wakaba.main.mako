@@ -23,10 +23,7 @@ ${c.title} \
 <script type="text/javascript" src="${h.staticFile(jsFile)}"></script>
 %endfor
 
-%if g.OPT.allowFeeds and c.userInst.isValid() and c.threads:
-<link rel="alternate" type="application/rss+xml" title="RSS" href="${h.url_for('feed', uid=c.userInst.uid, authid=c.userInst.authid(), watch=c.currentRealm, feedType='rss')}" />
-<link rel="alternate" type="application/atom+xml" title="Atom" href="${h.url_for('feed', uid=c.userInst.uid, authid=c.userInst.authid(), watch=c.currentRealm, feedType='atom')}" />
-%endif
+${h.headCallback(c)}
 
 <%include file="wakaba.redirector.mako" />
 </head>

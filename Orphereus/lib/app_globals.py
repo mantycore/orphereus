@@ -49,7 +49,7 @@ class OptHolder(object):
                                 'allowRegistration', 'allowAnonymous',
                                 'allowLogin', 'allowCrossposting', 'allowCrosspostingSvc',
                                 'allowPureSvcTagline', 'allowTagCreation', 'boardWideProoflabels',
-                                'allowFeeds', 'allowOverview', 'framedMain',
+                                'allowOverview', 'framedMain',
                                 'useFrameLogo', 'permissiveFileSizeConjunction',
                                 'allowAnonymousPosting', 'allowAnonProfile',
                                 'obligatoryFrameCreation', 'newsSiteMode', 'showShortStatistics',

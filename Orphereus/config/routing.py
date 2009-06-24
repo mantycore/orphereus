@@ -92,8 +92,6 @@ def make_map():
     map.connect('thread', '/:post/:tempid', controller = 'Orphie_Main', action = 'GetThread', tempid = 0, requirements = dict(post = '\d+', tempid = '\d+'))
     map.connect('postThread', '/:board', controller = 'Orphie_Main', action = 'PostThread', conditions = dict(method = ['POST']))
 
-    map.connect('feed', '/:watch/feed/auth/:authid/:uid.:feedType', controller = 'Orphie_Public', action = 'rss', requirements = dict(authid = '\d+'))
-
     # Generic filter
     map.connect('boardBase', '/:board/:tempid', controller = 'Orphie_Main', action = 'GetBoard', board = not framedMain and '!' or None, tempid = 0, page = 0, requirements = dict(tempid = '\d+'))
     map.connect('board', '/:board/page/:page', controller = 'Orphie_Main', action = 'GetBoard', tempid = 0, requirements = dict(page = '\d+'))

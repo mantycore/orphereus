@@ -16,7 +16,10 @@ def htmlCompress(inp):
                 input_encoding = 'utf8',
                 output_encoding = 'utf8',
                 )
-    return str(tidy.parseString(str(inp), **options))
+    result = str(tidy.parseString(str(inp), **options))
+    if result:
+        return result
+    return inp
 
 def pluginInit(g = None):
     if g:

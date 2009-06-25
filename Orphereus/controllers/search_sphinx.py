@@ -41,7 +41,7 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
     if postIds:
         cl.SetFilter(postIdPseudo, postIds, not positive)
     cl.SetSortMode(SPH_SORT_ATTR_DESC, sortby)
-    cl.SetLimits((page * postsPerPage), postsPerPage)
+    cl.SetLimits((page * postsPerPage), postsPerPage, (page * postsPerPage) + postsPerPage)
     #cl.SetWeights ([100, 1])
     cl.SetMatchMode(mode)
     res = cl.Query(text, index)

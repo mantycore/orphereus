@@ -13,17 +13,21 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
     ns = g.pluginsDict['search_like'].pnamespace
     minLen = 3
     failInfo = None
-    posts = []
+    postIds = []
     count = 0
+    highlights = {}
+    def highlight(strtorepl, text):
+        return strtorepl.replace(text, u'<span style="background-color:yellow">%s</span>' % text)
     if not text or len(text) < minLen:
         failInfo = _("Query too short (minimal length: %d)") % minLen
     if not failInfo:
-        base = meta.Session.query(ns.Post.id).filter(filteringClause)
+        base = Post.query().filter(filteringClause)
         filter = base.filter(ns.Post.message.like('%%%s%%' % text))
         count = filter.count()
         posts = filter.order_by(ns.Post.date.desc())[(page * postsPerPage):(page + 1) * postsPerPage]
-        posts = map(lambda seq: seq[0], posts)
-    return (posts, count, failInfo)
+        for post in posts:
+            highlights[post.id] = (highlight(post.title, text), highlight(post.message, text))
+    return (posts, count, failInfo, highlights)
 
 def pluginInit(globj = None):
     if globj:

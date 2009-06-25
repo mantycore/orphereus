@@ -422,13 +422,14 @@ class OrphieMainController(OrphieBaseController):
         if not searchRoutine:
             return self.error(_("The plugin selected to search doesn't provide search features"))
 
-        postsIds, count, failInfo = searchRoutine(filteringClause, text, page, pp)
+        posts, count, failInfo, highlights = searchRoutine(filteringClause, text, page, pp)
         if failInfo:
             return self.error(failInfo)
-        posts = Post.filter(Post.id.in_(postsIds)).order_by(Post.date.desc()).all()
         self.paginate(count, page, pp)
 
+        c.highlights = highlights
         c.posts = []
+        #todo: improve this!
         for p in posts:
             pt = []
             pt.append(p)

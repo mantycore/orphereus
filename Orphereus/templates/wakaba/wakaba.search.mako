@@ -65,7 +65,11 @@
                         <img src='${g.OPT.staticPathWeb}images/picDeleted.png' class="thumb">
                     %endif
                 <blockquote class="postbody" id="postBQId${pt[0].id}">
-                        ${pt[0].message}
+                %if pt[0].id in c.highlights:
+                    ${c.highlights[pt[0].id][1]}
+                %else:
+                    ${pt[0].message}
+                %endif
                 </blockquote>
             </td>
         </tr>

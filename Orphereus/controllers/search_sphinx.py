@@ -24,6 +24,7 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
 
         # We should select minimal array of post ids to search trough
         positive = positiveCount <= negativeCount
+        log.critical("%d : %d" % (positiveCount, negativeCount))
         postIds = []
         if positive:
             postIds = base.all()

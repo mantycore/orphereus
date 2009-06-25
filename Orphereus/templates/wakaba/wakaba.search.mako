@@ -31,7 +31,7 @@
                 <a name="i${pt.id}"></a>
                 <label>
                     %if pt.sage:
-                        <img src='${g.OPT.staticPathWeb}images/sage.png'>
+                        <img src='${g.OPT.staticPathWeb}images/sage.png' alt='' />
                     %endif
                     %if pt.title:
                         <span class="replytitle">${pt.title}</span>

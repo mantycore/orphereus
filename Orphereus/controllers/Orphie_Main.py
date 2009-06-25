@@ -429,7 +429,6 @@ class OrphieMainController(OrphieBaseController):
 
         c.highlights = highlights
         c.posts = posts
-        log.critical(c.posts)
         return self.render('search')
 
     def Anonimyze(self, post):

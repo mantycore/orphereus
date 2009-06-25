@@ -24,7 +24,7 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
 
         # We should select minimal array of post ids to search trough
         positive = positiveCount <= negativeCount
-        log.critical("%d : %d" % (positiveCount, negativeCount))
+        #log.critical("%d : %d" % (positiveCount, negativeCount))
         postIds = []
         if positive:
             postIds = base.all()
@@ -56,7 +56,6 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
                 result.append(match['id'])
         if result:
             posts = Post.filter(Post.id.in_(result)).order_by(Post.date.desc()).all()
-            log.critical(len(posts))
 
             # Highlight found entries
             ids = []
@@ -72,7 +71,6 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
                 shift = len(titles)
                 for num, id in enumerate(ids):
                     highlights[id] = (hlarr[num].decode('utf-8'), hlarr[num + shift].decode('utf-8'))
-            log.critical(len(highlights))
     return (posts, count, failInfo, highlights)
 
 def pluginInit(globj = None):

@@ -57,7 +57,7 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
             posts = Post.filter(Post.id.in_(result)).order_by(Post.date.desc()).all()
             log.critical(len(posts))
 
-            # Highlight texts
+            # Highlight found entries
             ids = []
             titles = []
             messages = []

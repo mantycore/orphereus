@@ -12,63 +12,71 @@
 
 <%include file="wakaba.paginator.mako" args="routeName='search', kwargDict={'text' : c.query}"/>
 
+<%def name="threadInfo(thread)">
+    ${_('Thread')}
+    <a href="${h.postUrl(thread.id, thread.id)}">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a>
+    ${_('from')}:
+    %for t in thread.tags:
+      <a href="${h.url_for('boardBase', board=t.tag)}">/${t.tag}/</a>
+    %endfor
+</%def>
+
 %for pt in c.posts:
-<table id="quickReplyNode${pt[0].id}">
+<table id="quickReplyNode${pt.id}">
     <tbody>
         <tr>
             <td class="doubledash">&gt;&gt;</td>
-            <td class="reply" id="reply${pt[0].id}">
+            <td class="reply" id="reply${pt.id}">
               &nbsp;
-                <a name="i${pt[0].id}"></a>
+                <a name="i${pt.id}"></a>
                 <label>
-                    %if pt[0].sage:
+                    %if pt.sage:
                         <img src='${g.OPT.staticPathWeb}images/sage.png'>
                     %endif
-                    %if pt[0].title:
-                        <span class="replytitle">${pt[0].title}</span>
+                    %if pt.title:
+                        <span class="replytitle">${pt.title}</span>
                     %endif
-                    ${pt[0].date}
+                    ${pt.date}
                 </label>
                 <span class="reflink">
-                    <a href="${h.postUrl(pt[1].id, pt[0].id)}">#${g.OPT.secondaryIndex and pt[0].secondaryIndex or pt[0].id}</a>;
-
-          ${_('Thread')}
-          <a href="${h.postUrl(pt[1].id, pt[1].id)}">#${g.OPT.secondaryIndex and pt[1].secondaryIndex or pt[1].id}</a>
-          ${_('from')}:
-          %for t in pt[1].tags:
-              <a href="${h.url_for('boardBase', board=t.tag)}">/${t.tag}/</a>
-          %endfor
+                %if pt.parentPost:
+                    <a href="${h.postUrl(pt.parentPost.id, pt.id)}">#${g.OPT.secondaryIndex and pt.secondaryIndex or pt.id}</a>;
+                    ${threadInfo(pt.parentPost)}
+                %else:
+                    <a href="${h.postUrl(pt.id, pt.id)}">#${g.OPT.secondaryIndex and pt.secondaryIndex or pt.id}</a>;
+                    ${threadInfo(pt)}
+                %endif
         </span>
         &nbsp;
-                %if pt[0].file:
+                %if pt.file:
                     <br /><span class="filesize">${_('File:')}
 
-                    <a href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid())}"
-                    %if pt[0].file.extension.newWindow:
+                    <a href="${g.OPT.filesPathWeb + h.modLink(pt.file.path, c.userInst.secid())}"
+                    %if pt.file.extension.newWindow:
                         target="_blank"
                     %endif
                     >
-                    ${h.modLink(pt[0].file.path, c.userInst.secid(), True)}</a>
-                    (<em>${'%.2f' % (pt[0].file.size / 1024.0)} Kbytes, ${pt[0].file.width}x${pt[0].file.height}</em>)</span>
+                    ${h.modLink(pt.file.path, c.userInst.secid(), True)}</a>
+                    (<em>${'%.2f' % (pt.file.size / 1024.0)} Kbytes, ${pt.file.width}x${pt.file.height}</em>)</span>
                     <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-                    <a href="${g.OPT.filesPathWeb + h.modLink(pt[0].file.path, c.userInst.secid())}"
-                    %if pt[0].file.extension.newWindow:
+                    <a href="${g.OPT.filesPathWeb + h.modLink(pt.file.path, c.userInst.secid())}"
+                    %if pt.file.extension.newWindow:
                         target="_blank"
                     %endif
                     >
 
-                    <%include file="wakaba.thumbnail.mako" args="post=pt[0]" />
+                    <%include file="wakaba.thumbnail.mako" args="post=pt" />
 
                     </a>
-                    %elif pt[0].picid == -1:
+                    %elif pt.picid == -1:
                         <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
                         <img src='${g.OPT.staticPathWeb}images/picDeleted.png' class="thumb">
                     %endif
-                <blockquote class="postbody" id="postBQId${pt[0].id}">
-                %if pt[0].id in c.highlights:
-                    ${c.highlights[pt[0].id][1]}
+                <blockquote class="postbody" id="postBQId${pt.id}">
+                %if pt.id in c.highlights:
+                    ${c.highlights[pt.id][1]}
                 %else:
-                    ${pt[0].message}
+                    ${pt.message}
                 %endif
                 </blockquote>
             </td>

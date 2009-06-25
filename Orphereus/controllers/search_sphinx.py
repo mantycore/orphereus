@@ -11,62 +11,67 @@ import logging
 log = logging.getLogger(__name__)
 
 def searchRoutine(filteringClause, text, page, postsPerPage):
-    base = meta.Session.query(Post.id).filter(filteringClause)
-    negBase = meta.Session.query(Post.id).filter(not_(filteringClause))
-    positiveCount = base.count()
-    negativeCount = negBase.count()
-
-    # We should select minimal array of post ids to search trough
-    positive = positiveCount <= negativeCount
-    postIds = []
-    if positive:
-        postIds = base.all()
-    else:
-        postIds = negBase.all()
-    postIds = map(lambda seq: int(seq[0]), postIds)
-
-    result = []
     count = 0
     failInfo = None
     highlights = {}
+    posts = []
+    if text.strip():
+        result = []
+        base = meta.Session.query(Post.id).filter(filteringClause)
+        negBase = meta.Session.query(Post.id).filter(not_(filteringClause))
+        positiveCount = base.count()
+        negativeCount = negBase.count()
 
-    mode = SPH_MATCH_EXTENDED2
-    host = g.OPT.sphinxHost
-    port = g.OPT.sphinxPort
-    index = g.OPT.sphinxIndexName
-    sortby = g.OPT.sphinxPostDatePseudo
-    postIdPseudo = g.OPT.sphinxPostIdPseudo
-    cl = SphinxClient()
-    cl.SetServer(host, port)
-    if postIds:
-        cl.SetFilter(postIdPseudo, postIds, not positive)
-    cl.SetSortMode(SPH_SORT_ATTR_DESC, sortby)
-    cl.SetLimits((page * postsPerPage), postsPerPage, (page * postsPerPage) + postsPerPage)
-    #cl.SetWeights ([100, 1])
-    cl.SetMatchMode(mode)
-    res = cl.Query(text, index)
+        # We should select minimal array of post ids to search trough
+        positive = positiveCount <= negativeCount
+        postIds = []
+        if positive:
+            postIds = base.all()
+        else:
+            postIds = negBase.all()
+        postIds = map(lambda seq: int(seq[0]), postIds)
 
-    if not res:
-        failInfo = _("Search failed. Sphinx engine returned '%s'") % cl.GetLastError()
-    elif res.has_key('matches'):
-        count = res['total_found']
-        for match in res['matches']:
-            result.append(match['id'])
+        mode = SPH_MATCH_EXTENDED2
+        host = g.OPT.sphinxHost
+        port = g.OPT.sphinxPort
+        index = g.OPT.sphinxIndexName
+        sortby = g.OPT.sphinxPostDatePseudo
+        postIdPseudo = g.OPT.sphinxPostIdPseudo
+        cl = SphinxClient()
+        cl.SetServer(host, port)
+        if postIds:
+            cl.SetFilter(postIdPseudo, postIds, not positive)
+        cl.SetSortMode(SPH_SORT_ATTR_DESC, sortby)
+        cl.SetLimits((page * postsPerPage), postsPerPage, (page * postsPerPage) + postsPerPage)
+        #cl.SetWeights ([100, 1])
+        cl.SetMatchMode(mode)
+        res = cl.Query(text, index)
 
-    posts = Post.filter(Post.id.in_(result)).order_by(Post.date.desc()).all()
+        if not res:
+            failInfo = _("Search failed. Sphinx engine returned '%s'") % cl.GetLastError()
+        elif res.has_key('matches'):
+            count = res['total_found']
+            for match in res['matches']:
+                result.append(match['id'])
+        if result:
+            posts = Post.filter(Post.id.in_(result)).order_by(Post.date.desc()).all()
+            log.critical(len(posts))
 
-    ids = []
-    titles = []
-    messages = []
-    for post in posts:
-        titles.append(post.title)
-        messages.append(post.message)
-        ids.append(post.id)
-    options = {'before_match' : '<span style="background-color:yellow">', 'after_match' : '</span>'}
-    hlarr = cl.BuildExcerpts(titles + messages, index, text, options)
-    shift = len(titles)
-    for num, id in enumerate(ids):
-        highlights[id] = (hlarr[num].decode('utf-8'), hlarr[num + shift].decode('utf-8'))
+            # Highlight texts
+            ids = []
+            titles = []
+            messages = []
+            for post in posts:
+                titles.append(post.title)
+                messages.append(post.message)
+                ids.append(post.id)
+            options = {'before_match' : '<span style="background-color:yellow">', 'after_match' : '</span>'}
+            hlarr = cl.BuildExcerpts(titles + messages, index, text, options)
+            if hlarr:
+                shift = len(titles)
+                for num, id in enumerate(ids):
+                    highlights[id] = (hlarr[num].decode('utf-8'), hlarr[num + shift].decode('utf-8'))
+            log.critical(len(highlights))
     return (posts, count, failInfo, highlights)
 
 def pluginInit(globj = None):

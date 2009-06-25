@@ -428,17 +428,7 @@ class OrphieMainController(OrphieBaseController):
         self.paginate(count, page, pp)
 
         c.highlights = highlights
-        c.posts = []
-        #todo: improve this!
-        for p in posts:
-            pt = []
-            pt.append(p)
-            if not p.parentPost:
-                pt.append(p)
-            else:
-               pt.append(p.parentPost)
-            c.posts.append(pt)
-
+        c.posts = posts
         return self.render('search')
 
     def Anonimyze(self, post):

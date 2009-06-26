@@ -1,0 +1,55 @@
+#!/bin/sh -e
+
+APPPATH="/var/py/index"
+OPTS="--config /var/py/index/sphinx.conf" # --pidfile /var/run/searchd.pid"
+TASKS="anomach anomali"
+
+. /lib/lsb/init-functions
+
+cd $APPPATH
+
+start(){
+log_daemon_msg "Starting search daemon server"
+if sudo -u searchd searchd $OPTS > /dev/null 2>&1; then
+    log_end_msg 0
+else
+    log_end_msg 1
+fi
+}
+
+stop(){
+log_daemon_msg "Stopping search daemon server"
+if killall searchd ; then
+    log_end_msg 0
+else
+    log_end_msg 1
+fi
+}
+
+reindex(){
+log_daemon_msg "Reindexing data"
+sudo -u searchd indexer $OPTS --all $TASKS
+log_end_msg 0
+}
+
+case "$1" in
+  start)
+        start
+      ;;
+  stop)
+        stop
+      ;;
+  restart)
+        stop
+        start
+      ;;
+  index)
+        stop
+        reindex
+        start
+
+      ;;
+  *)
+    echo $"Usage: $0 {start|stop|restart|index}"
+    exit 1
+esac

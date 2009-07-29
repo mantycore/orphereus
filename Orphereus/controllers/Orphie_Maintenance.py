@@ -103,7 +103,7 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'Done'))
 
         mtnLog.append(LogElement('Task', 'Removing IP bans...'))
-        def banssSearch(bans):
+        def bansSearch(bans):
             for ban in bans:
                 bantime = ban.period
                 banDate = ban.date
@@ -111,10 +111,10 @@ class MaintenanceWorker(object):
                     bantime = 10000
                 if banDate and bantime > 0 and banDate < (currentTime - datetime.timedelta(days = bantime)):
                     ban.disable()
-                    unbanMessage = (u"Automatic unban: IP <b>#%s</b> (Reason was %s)") % (h.intToDotted(ban.ip), ban.reason)
+                    unbanMessage = (u"Automatic unban: IP <b>%s</b> (Reason was %s)") % (h.intToDotted(ban.ip), ban.reason)
                     mtnLog.append(LogElement('Info', unbanMessage))
                     toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
-        batchProcess(Ban.query(), usersSearch)
+        batchProcess(Ban.query().filter(Ban.enabled==True), bansSearch)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 

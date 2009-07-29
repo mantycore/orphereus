@@ -1,6 +1,24 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.management.mako" />
 
+%if c.showAttemptForm:
+<div class="postarea">
+    <form id="userEditReasonForm" method="post" action="${h.url_for('hsIpBanAttempt', pid=c.pid)}">
+<table>
+    <tr>
+        <td>${_('Reason:')}</td>
+        <td><input type='text' name='IpViewReason'></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td><input type='submit' name='editUser' value='${_('Show IP info')}'></td>
+    </tr>
+</table>
+    </form>
+</div>
+
+%else:
+
 <div class="postarea">
     <form id="postform" method="post" action="${h.url_for('hsBanEdit')}">
     <input type="hidden" name="id" value="${c.ban.id}" />
@@ -71,3 +89,5 @@
         </table>
     </form>
 </div>
+
+%endif

@@ -43,7 +43,8 @@ t_bans = sa.Table("bans", meta.metadata,
 
 class Ban(object):
     def __init__(self, ip, mask, type, reason, date, period, enabled):
-        self.setData(ip, mask, type, reason, date, period, enabled)
+        self.id = 0
+        self._setData(ip, mask, type, reason, date, period, enabled)
 
     def delete(self):
         meta.Session.delete(self)
@@ -51,17 +52,22 @@ class Ban(object):
         return True
 
     def disable(self):
-        self.enabled = 0
+        self.enabled = False
         meta.Session.commit()
 
     @staticmethod
     def create(ip, mask, type, reason, date, period, enabled = 0):
         ban = Ban(ip, mask, type, reason, date, period, enabled)
+        ban.id = None
         meta.Session.add(ban)
         meta.Session.commit()
         return ban
 
     def setData(self, ip, mask, type, reason, date, period, enabled):
+        self._setData(ip, mask, type, reason, date, period, enabled)
+        meta.Session.commit()
+
+    def _setData(self, ip, mask, type, reason, date, period, enabled):
         self.ip = ip
         self.mask = mask
         self.type = type   # 0 for read-only access, 1 for full ban
@@ -69,7 +75,6 @@ class Ban(object):
         self.date = date
         self.period = period
         self.enabled = enabled
-        meta.Session.commit()
 
     @staticmethod
     def getBans():

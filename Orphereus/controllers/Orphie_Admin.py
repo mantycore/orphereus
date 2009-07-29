@@ -244,12 +244,31 @@ class OrphieAdminController(OrphieBaseController):
         return self.render('manageBans')
 
     def editBan(self, id):
-        #log.debug('ban')
+        
+        def getPostData():
+            try:
+                ip = h.dottedToInt(filterText(request.POST.get('ip', 0)))
+                mask = h.dottedToInt(filterText(request.POST.get('mask', 0)))
+            except:
+                return self.error(_("Please check the format of IP addresses and masks."))
+            type = request.POST.get('type', False) == 'on'
+            enabled = request.POST.get('enabled', False) == 'on'
+            reason = filterText(unicode(request.POST.get('reason', '')))
+            date = request.POST.get('date', 0)
+            period = request.POST.get('period', 0)
+            return ip, mask, type, reason, date, period, enabled
+            
+        
         if not self.userInst.canManageUsers():
             return self.error(_("No way! You aren't holy enough!"))
 
-        c.currentItemId = 'id_hsBans'
         c.boardName = _('Editing ban %s') % id
+        c.currentItemId = 'id_hsBans'
+        
+        if c.ShowAttemptForm:
+            c.boardName = _('New IP ban')
+            return self.render('manageBan')
+        
         id = request.POST.get('id', id)
 
         c.exists = True
@@ -259,40 +278,36 @@ class OrphieAdminController(OrphieBaseController):
             c.exists = False
             c.boardName = _('New IP ban')
             ip = c.ipToBan or 0
-            c.ban = Ban.create(ip, h.dottedToInt('255.255.255.255'), 0, '', datetime.datetime.now(), 30, True)
-            #log.debug('Made obj: %s, id: %s' %(c.ban,c.ban.id))
-            toLog(LOG_EVENT_BAN_ADD, _('Added ban no. %s') % c.ban.id)
+            c.ban = Ban(ip, h.dottedToInt('255.255.255.255'), 0, '', datetime.datetime.now(), 30, True)
         else:
             c.ban = ban
 
-        postedId = request.POST.get('id', -1)
-        if (postedId > -1):
-            if not request.POST.get('delete', False):
-                try:
-                    ip = h.dottedToInt(filterText(request.POST.get('ip', 0)))
-                    mask = h.dottedToInt(filterText(request.POST.get('mask', 0)))
-                except:
-                    return self.error(_("Please check the format of IP addresses and masks."))
-
-                type = request.POST.get('type', False) == 'on'
-                enabled = request.POST.get('enabled', False) == 'on'
-                reason = filterText(request.POST.get('reason', ''))
-                date = request.POST.get('date', 0)
-                period = request.POST.get('period', 0)
-
-                ban = Ban.getBanById(id)
-                if ban:
-                    ban.setData(ip, mask, type, reason, date, period, enabled)
-                toLog(LOG_EVENT_BAN_EDIT, _('Updated ban no. %s, reason: %s') % (ban.id, ban.reason))
-                c.exists = True
-                c.message = _('Ban properties were updated')
-                return self.manageBans()
-            elif ban:
-                banId = ban.id
-                if ban.delete():
-                    toLog(LOG_EVENT_BAN_REMOVE, _('Deleted ban %s') % banId)
-                    c.message = _('Ban record no. %s deleted' % banId)
+        postedId = request.POST.get('id', None)
+        log.debug(postedId)
+        if (postedId):
+            if (int(postedId) > 0):
+                if not request.POST.get('delete', False):
+                    ban = Ban.getBanById(id)
+                    if ban:
+                        ban.setData(*getPostData())
+                    else:
+                        self.error(_("This ban doesn't exist."))
+                    toLog(LOG_EVENT_BAN_EDIT, _("Updated ban no. %s") % ban.id)
+                    c.exists = True
+                    c.message = _('Ban properties were updated')
                     return self.manageBans()
+                elif ban:
+                    banId = ban.id
+                    if ban.delete():
+                        toLog(LOG_EVENT_BAN_REMOVE, _('Deleted ban %s') % banId)
+                        c.message = _('Ban record no. %s deleted' % banId)
+                        return self.manageBans()
+            elif (int(postedId) == 0):
+                c.ban.id = None
+                c.ban.setData(*getPostData())
+                toLog(LOG_EVENT_BAN_ADD, _('Added ban no. %s. Reason: %s') % (c.ban.id, c.ban.reason))
+                c.message =  _('Added ban no. %s') % c.ban.id
+                return redirect_to('hsBans')
         return self.render('manageBan')
 
     def manageExtensions(self):
@@ -638,7 +653,14 @@ class OrphieAdminController(OrphieBaseController):
 
         # TODO: perform reason request
         post = Post.getPost(pid)
+        c.pid = pid
         c.ipToBan = post.ip
+        
+        IpViewReason = request.POST.get('IpViewReason', None)
+        c.showAttemptForm = not(bool(IpViewReason))
+        if bool(IpViewReason):
+            toLog(LOG_EVENT_USER_GETUID, _("Viewed IP for post '%s'. Reason: %s") % (post.id, IpViewReason))
+            
         return self.editBan(-1)
 
     def manageByIp(self, ip, act):

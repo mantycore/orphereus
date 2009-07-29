@@ -214,7 +214,7 @@
         %endfor
         %else:
             <tr>
-                <td colspan="2" style="text-align: center; font-weight: bold;">${_("You wasn't hide any thread")}</td>
+                <td colspan="2" style="text-align: center; font-weight: bold;">${_("No threads were hidden.")}</td>
             </tr>
         %endif
     </tbody>

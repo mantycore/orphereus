@@ -98,3 +98,8 @@ destinations = {0 : N_("Thread"),
                 4 : N_("First page of destination board"),
                 5 : N_("Referrer"),
                 }
+
+CFG_BOOL = 0x01
+CFG_INT = 0x02
+CFG_STRING = 0x04
+CFG_LIST = 0x08

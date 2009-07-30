@@ -4,6 +4,7 @@ from beaker.cache import CacheManager
 
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.base import *
+from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.model import *
 
 import logging
@@ -52,14 +53,15 @@ def statGenerator(controller, container):
 
 def pluginInit(g = None):
     if g:
-        booleanValues = [('statistics',
+        intValues = [('statistics',
                                ('statsCacheTime',
                                )
                               ),
                             ]
 
         if not g.OPT.eggSetupMode:
-            g.OPT.setValues(booleanValues, g.OPT.booleanGetter)
+            g.OPT.registerExtendedValues(intValues, CFG_INT)
+            #g.OPT.setValues(booleanValues, g.OPT.booleanGetter)
 
     config = {'homeTemplate' : "statistics", # hook for base controller constructor
               'homeGenerator' : statGenerator,

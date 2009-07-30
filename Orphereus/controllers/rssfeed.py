@@ -3,6 +3,7 @@ from string import *
 
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.base import *
+from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.model import *
 
 from webhelpers.feedgenerator import Atom1Feed, Rss201rev2Feed
@@ -37,7 +38,9 @@ def pluginInit(globj = None):
                             ]
 
         if not globj.OPT.eggSetupMode:
-            globj.OPT.setValues(booleanValues, globj.OPT.booleanGetter)
+            #globj.OPT.setValues(booleanValues, globj.OPT.booleanGetter)
+            globj.OPT.registerExtendedValues(booleanValues, CFG_BOOL)
+            
 
     config = {'routeinit' : routingInit, # routing initializer
              'deps' : False, # plugin dependencies, for example ('users', 'statistics')

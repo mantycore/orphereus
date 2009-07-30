@@ -26,8 +26,8 @@
         <tr>
             <td><a href="${h.url_for('hsBanEdit', id=e.id)}">${e.id}</a></td>
             <td align="center">${e.enabled and "&#8226;" or ""}</td>
-            <td>${h.intToDotted(e.ip)}</td>
-            <td>${h.intToDotted(e.mask)}</td>
+            <td>${h.intToIp(e.ip)}</td>
+            <td>${h.intToIp(e.mask)}</td>
             <td>${e.type and _("yes") or _("no")}</td>
             <td>${e.reason}</td>
             <td>${e.date}</td>

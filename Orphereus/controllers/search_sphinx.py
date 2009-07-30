@@ -4,6 +4,7 @@ from string import *
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.base import *
 from Orphereus.model import *
+from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.miscUtils import filterText
 from Orphereus.lib.sphinxapi import *
 
@@ -88,8 +89,10 @@ def pluginInit(globj = None):
                             ]
 
         if not globj.OPT.eggSetupMode:
-            globj.OPT.setValues(intValues, globj.OPT.intGetter)
-            globj.OPT.setValues(stringValues, globj.OPT.stringGetter)
+            globj.OPT.registerExtendedValues(intValues, CFG_INT)
+            globj.OPT.registerExtendedValues(stringValues, CFG_STRING)
+            #globj.OPT.setValues(intValues, globj.OPT.intGetter)
+            #globj.OPT.setValues(stringValues, globj.OPT.stringGetter)
 
     config = {'searchRoutine' : searchRoutine,
              'deps' : False,

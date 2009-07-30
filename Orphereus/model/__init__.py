@@ -157,12 +157,13 @@ def init_model(engine):
             log.info('calling ORM initializer %s from: %s' % (str(orminit), plugin.pluginId()))
             orminit(orm, plugin.namespace(), propDict)
     log.info('COMPLETED ORM INITIALIZATION STAGE')
-
+    
 def init_globals(globalObject, setupMode):
     meta.globj = globalObject
     settingsMap = {}
 
     if not setupMode:
+        meta.globj.OPT.initValues(Setting)
         settings = False
         settings = Setting.getAll()
         if settings:

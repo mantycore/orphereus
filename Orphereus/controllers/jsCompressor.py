@@ -6,6 +6,7 @@ from Orphereus.lib.base import *
 from Orphereus.lib.helpers import makeLangValid
 from Orphereus.lib.jsMinify import jsmin
 from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.model import *
 
 import logging
@@ -71,7 +72,8 @@ def pluginInit(g = None):
                             ]
 
         if not g.OPT.eggSetupMode:
-            g.OPT.setValues(booleanValues, g.OPT.booleanGetter)
+            g.OPT.registerExtendedValues(booleanValues, CFG_BOOL)
+            #g.OPT.setValues(booleanValues, g.OPT.booleanGetter)
 
     config = {'name' : N_('Javascript compression tool'),
               'routeinit' : routingInit,

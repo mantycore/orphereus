@@ -28,6 +28,7 @@ import re
 
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.constantValues import engineVersion
+from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 
 import logging
 log = logging.getLogger("CORE")
@@ -120,44 +121,62 @@ class OptHolder(object):
                               ),
 
                             ]
+        
         if not eggSetupMode:
-            self.setValues(self.booleanValues, self.booleanGetter)
-            self.setValues(self.stringValues, self.stringGetter)
-            self.setValues(self.intValues, self.intGetter)
-            self.setValues(self.strListValues, self.strListGetter)
+            # a couple of workarounds for early init stages
+            self.disabledModules = self.strListGetter(config['core.disabledModules'])
+            self.framedMain = self.booleanGetter(config['core.framedMain'])
+            # won't work normally, because ORM init isn't complete here
+            #self.initValues(None)
+        
+            
+    def registerExtendedValues(self, values, type):
+        dest = {CFG_BOOL: self.booleanValues,
+                CFG_INT: self.intValues, 
+                CFG_STRING: self.stringValues,
+                CFG_LIST: self.strListValues,
+                }
+        dest[type].extend(values)
+        
+    def initValues(self, settingObj):
+        self.setter = settingObj
+        self.setValues(self.booleanValues, self.booleanGetter)
+        self.setValues(self.stringValues, self.stringGetter)
+        self.setValues(self.intValues, self.intGetter)
+        self.setValues(self.strListValues, self.strListGetter)
 
-            # Basic IB settings
-            if not os.path.exists(self.uploadPath):
-                self.uploadPath = os.path.join(self.appRoot, 'Orphereus/uploads/')
+        # Basic IB settings
+        if not os.path.exists(self.uploadPath):
+            self.uploadPath = os.path.join(self.appRoot, 'Orphereus/uploads/')
 
-            if not os.path.exists(self.staticPath):
-                self.staticPath = os.path.join(self.appRoot, 'Orphereus/public/')
+        if not os.path.exists(self.staticPath):
+            self.staticPath = os.path.join(self.appRoot, 'Orphereus/public/')
 
-            self.languages.insert(0, 'Default')
-            self.obfuscator = self.obfuscator.replace('$(', '%(')
-            self.allowAnonymousPosting = self.allowAnonymous and self.allowAnonymousPosting
-            self.allowAnonProfile = self.allowAnonymous and self.allowAnonProfile
+        self.languages.insert(0, 'Default')
+        self.obfuscator = self.obfuscator.replace('$(', '%(')
+        self.allowAnonymousPosting = self.allowAnonymous and self.allowAnonymousPosting
+        self.allowAnonProfile = self.allowAnonymous and self.allowAnonProfile
 
-            self.cssFiles = {}
-            self.jsFiles = {}
-            rex = re.compile(r"^(.+)=(.+)$")
-            for elem in self.styles:
-                matcher = rex.match(elem)
-                if not matcher:
-                    raise "Incorrect styles list"
-                else:
-                    self.cssFiles[matcher.group(1)] = matcher.group(2).split('|')
-            for elem in self.javascripts:
-                matcher = rex.match(elem)
-                if not matcher:
-                    raise "Incorrect js list"
-                else:
-                    self.jsFiles[matcher.group(1)] = matcher.group(2).split('|')
-            fullCssList = []
-            for cssList in self.cssFiles.values():
-                fullCssList += cssList
-            self.styles = fullCssList
-            self.defaultLang = config['lang']
+        self.cssFiles = {}
+        self.jsFiles = {}
+        rex = re.compile(r"^(.+)=(.+)$")
+        for elem in self.styles:
+            matcher = rex.match(elem)
+            if not matcher:
+                raise "Incorrect styles list"
+            else:
+                self.cssFiles[matcher.group(1)] = matcher.group(2).split('|')
+        for elem in self.javascripts:
+            matcher = rex.match(elem)
+            if not matcher:
+                raise "Incorrect js list"
+            else:
+                self.jsFiles[matcher.group(1)] = matcher.group(2).split('|')
+        fullCssList = []
+        for cssList in self.cssFiles.values():
+            fullCssList += cssList
+        self.styles = fullCssList
+        self.defaultLang = config['lang']
 
     @staticmethod
     def booleanGetter(value):
@@ -175,9 +194,22 @@ class OptHolder(object):
         for section in source:
             sectionName = section[0]
             for valueName in section[1]:
-                value = getter(config['%s.%s' % (sectionName, valueName)])
+                paramName = '%s.%s' % (sectionName, valueName)
+                rawValue = config[paramName]
+                value = getter(rawValue)
+                if self.setter:
+                    sqlValue = None
+                    sqlValueObj = self.setter.getSetting(paramName)
+                    if sqlValueObj:
+                        sqlValue = sqlValueObj.value
+                    log.debug("Got from db: %s->'%s'" % (paramName, sqlValue))
+                    if sqlValue:
+                        value = getter(sqlValue)
+                    else:
+                        log.debug("Setting param in db: %s->'%s'" % (paramName, rawValue))
+                        self.setter.create(paramName, rawValue)
                 setattr(self, valueName, value)
-                log.debug('%s.%s = %s' % (sectionName, valueName, str(getattr(self, valueName))))
+                log.debug('SET VALUE: %s.%s = %s' % (sectionName, valueName, str(getattr(self, valueName))))
 
 class Globals(object):
     def __init__(self, eggSetupMode = False):
@@ -207,7 +239,7 @@ class Globals(object):
         self.firstRequest = True
         self.version = engineVersion
         self.menuCache = {}
-
+        
     def registerPlugin(self, plugin):
         self.plugins.append(plugin)
         self.pluginsDict[plugin.pluginId()] = plugin

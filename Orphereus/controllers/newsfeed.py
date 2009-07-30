@@ -3,6 +3,7 @@ from string import *
 
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.base import *
 from Orphereus.model import *
 from Orphereus.lib.miscUtils import filterText
@@ -62,9 +63,12 @@ def pluginInit(globj = None):
                             ]
 
         if not globj.OPT.eggSetupMode:
-            globj.OPT.setValues(booleanValues, globj.OPT.booleanGetter)
-            globj.OPT.setValues(intValues, globj.OPT.intGetter)
-            globj.OPT.setValues(stringValues, globj.OPT.stringGetter)
+            globj.OPT.registerExtendedValues(booleanValues, CFG_BOOL)
+            globj.OPT.registerExtendedValues(intValues, CFG_INT)
+            globj.OPT.registerExtendedValues(stringValues, CFG_STRING)
+            #globj.OPT.setValues(booleanValues, globj.OPT.booleanGetter)
+            #globj.OPT.setValues(intValues, globj.OPT.intGetter)
+            #globj.OPT.setValues(stringValues, globj.OPT.stringGetter)
 
     config = {'homeTemplate' : "newsfeed",
               'homeGenerator' : newsGenerator,

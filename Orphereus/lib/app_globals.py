@@ -29,6 +29,7 @@ import re
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.constantValues import engineVersion
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
+from Orphereus.lib.miscUtils import guessType
 
 import logging
 log = logging.getLogger("CORE")
@@ -190,6 +191,16 @@ class OptHolder(object):
     @staticmethod
     def strListGetter(value):
         return value.split(',')
+    
+    def autoSetValue(self, name, rawValue):
+        methods = {CFG_BOOL: self.booleanGetter,
+                   CFG_INT: self.intGetter,
+                   CFG_LIST: self.strListGetter,
+                   CFG_STRING: self.stringGetter,
+                   }
+        value = methods[guessType(rawValue)](rawValue)
+        setattr(self, name, value) 
+        
     def setValues(self, source, getter):
         for section in source:
             sectionName = section[0]
@@ -207,7 +218,7 @@ class OptHolder(object):
                         value = getter(sqlValue)
                     else:
                         log.debug("Setting param in db: %s->'%s'" % (paramName, rawValue))
-                        self.setter.create(paramName, rawValue)
+                        self.setter.create(paramName, unicode(rawValue))
                 setattr(self, valueName, value)
                 log.debug('SET VALUE: %s.%s = %s' % (sectionName, valueName, str(getattr(self, valueName))))
 

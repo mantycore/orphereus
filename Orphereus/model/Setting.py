@@ -57,6 +57,10 @@ class Setting(object):
         return Setting.query().all()
 
     @staticmethod
+    def getSection(name):
+        return Setting.query().filter(Setting.name.like('%s.%%' %name))
+
+    @staticmethod
     def getSetting(name):
         return Setting.query().filter(Setting.name==name).first()
 

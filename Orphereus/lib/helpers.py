@@ -67,7 +67,6 @@ def headCallback(context):
         result += cb(context)
     return result
 
-
 def currentTime():
     import time
     return time.time()

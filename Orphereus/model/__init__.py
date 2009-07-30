@@ -163,7 +163,9 @@ def init_globals(globalObject, setupMode):
     settingsMap = {}
 
     if not setupMode:
+        log.info('LOADING CONFIGURATION DATA')
         meta.globj.OPT.initValues(Setting)
+        log.info('LOAD COMPLETE')
         settings = False
         settings = Setting.getAll()
         if settings:

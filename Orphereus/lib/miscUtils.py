@@ -59,6 +59,16 @@ def isNumber(n):
             return False
     else:
         return False
+    
+def guessType(entry):
+    if entry in ['true', 'false']: 
+        return CFG_BOOL
+    elif isNumber(entry):
+        return CFG_INT
+    elif entry.find(',')>-1:
+        return CFG_LIST
+    else:
+        return CFG_STRING
 
 def currentUID():
     try:

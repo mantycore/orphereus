@@ -356,7 +356,7 @@ class Post(object):
             if pic:
                 self.picid = -1
         else:
-            invisBumpDisabled = not(asbool(meta.globj.settingsMap['invisibleBump'].value))
+            invisBumpDisabled = not(asbool(meta.globj.OPT.invisibleBump))
             parent = self.parentPost
             if parent:
                 parent.replyCount -= 1

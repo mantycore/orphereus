@@ -73,7 +73,7 @@
     %if c.userInst.isAdmin():
         <div><a href="${h.url_for('holySynod')}" target="board">${_('Holy Synod')}</a></div>
     %endif
-    %if g.settingsMap['usersCanViewLogs'].value == 'true':
+    %if g.OPT.usersCanViewLogs:
         <div><a href="${h.url_for('viewLogBase')}" target="board">${_('Logs')}</a></div>
     %endif
 

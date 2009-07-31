@@ -188,20 +188,21 @@ def init_globals(globalObject, setupMode):
 
     meta.globj.settingsMap = settingsMap
     if not setupMode:
-        adminTagsLine = meta.globj.settingsMap['adminOnlyTags'].value
+        adminTagsLine = meta.globj.OPT.adminOnlyTags
         meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)
 
         meta.globj.additionalLinks = []
-        linksstr = meta.globj.settingsMap['additionalLinks'].value
-        links = linksstr.split('|')
+        linksstr = meta.globj.OPT.additionalLinks
+        links = linksstr #.split('|')
         if links:
             for link in links:
-                meta.globj.additionalLinks.append(link.split(','))
+                meta.globj.additionalLinks.append(link.split('|'))
 
-        meta.globj.sectionNames = meta.globj.settingsMap['sectionNames'].value.split('|')
-
-        disabledTagsLine = meta.globj.settingsMap['disabledTags'].value
-        meta.globj.disabledTags = disabledTagsLine.lower().split('|')
+        meta.globj.sectionNames = meta.globj.OPT.sectionNames #.split('|')
+        
+        meta.globj.disabledTags = meta.globj.OPT.disabledTags
+        #disabledTagsLine = meta.globj.OPT.disabledTags
+        #meta.globj.disabledTags = disabledTagsLine.lower().split('|')
 
     """
     gv = config['pylons.g']

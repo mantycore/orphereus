@@ -71,8 +71,12 @@ class OptHolder(object):
                                 'checkUAs', 'spiderTrap',
                                 'useAnalBarriering', 'enableFinalAnonymity', 'hlAnonymizedPosts',
                                ),
-
-                              )
+                              ),
+                              
+                              ('frontend',
+                                ('invisibleBump','usersCanViewLogs',
+                                ) 
+                              ),
                              ]
 
         self.stringValues = [('core',
@@ -88,7 +92,13 @@ class OptHolder(object):
                                 'obfuscator',
                                )
                               ),
-                            ]
+
+                              ('frontend',
+                                ('title',
+                                ) 
+                              ),
+
+]
 
         self.intValues = [('core',
                                ('minPassLength',
@@ -106,6 +116,13 @@ class OptHolder(object):
                                )
                               ),
 
+                              ('frontend',
+                                ('maxTagsCount','maxTagLen','maxLinesInPost',
+                                 'cutSymbols',
+                                ) 
+                              ),
+                              
+
                             ]
 
         self.strListValues = [('core',
@@ -120,6 +137,12 @@ class OptHolder(object):
                                 'badUAs',
                                )
                               ),
+                              
+                              ('frontend',
+                                ('disabledTags','adminOnlyTags','additionalLinks',
+                                 'sectionNames',
+                                ) 
+                              ),
 
                             ]
         
@@ -131,7 +154,7 @@ class OptHolder(object):
             # recovery option
             self.recoveryMode = self.booleanGetter(config['core.recovery'])
             # won't work normally, because ORM init isn't complete here
-            #self.initValues(None)
+            # self.initValues(None)
         
             
     def registerCfgValues(self, values, type):
@@ -225,7 +248,7 @@ class OptHolder(object):
                         log.debug("Setting param in db: %s->'%s'" % (paramName, rawValue))
                         self.setter.create(paramName, unicode(rawValue))
                 setattr(self, valueName, value)
-                log.debug('SET VALUE: %s.%s = %s' % (sectionName, valueName, str(getattr(self, valueName))))
+                log.info('SET VALUE: %s.%s = %s' % (sectionName, valueName, str(getattr(self, valueName))))
 
 class Globals(object):
     def __init__(self, eggSetupMode = False):

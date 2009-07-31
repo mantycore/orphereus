@@ -82,7 +82,7 @@ class RssfeedController(OrphieBaseController):
             thePost = Post.getPost(watch)
             if not thePost:
                 abort(404)
-            title = _(u"%s: thread #%d") % (g.settingsMap['title'].value, watch)
+            title = _(u"%s: thread #%d") % (g.OPT.title, watch)
             thread = Post.buildThreadFilter(user, thePost.id).first()
             if not thread:
                 abort(404)
@@ -91,7 +91,7 @@ class RssfeedController(OrphieBaseController):
             if replies:
                 posts += replies
         else:
-            title = _(u"%s: %s") % (g.settingsMap['title'].value, watch)
+            title = _(u"%s: %s") % (g.OPT.title, watch)
             filter = Post.buildMetaboardFilter(watch, user)[0]
             tpp = user.threadsPerPage
             posts = filter.order_by(Post.bumpDate.desc())[0 : tpp]

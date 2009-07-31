@@ -132,7 +132,7 @@ class Tag(object):
     @staticmethod
     def csStringToExTagIdList(string):
         result = []
-        tags = string.split('|')
+        tags = string #.split('|')
         for tag in tags:
             aTag = Tag.query.options(eagerload('options')).filter(Tag.tag == tag).first()
             if aTag:
@@ -239,7 +239,7 @@ class Tag(object):
     @staticmethod
     def checkForConfilcts(tags):
         disabledTags = meta.globj.disabledTags
-        maxTagLen = int(meta.globj.settingsMap['maxTagLen'].value)
+        maxTagLen = int(meta.globj.OPT.maxTagLen)
         tagsPermOk = True
         problemTags = []
         for tag in tags:

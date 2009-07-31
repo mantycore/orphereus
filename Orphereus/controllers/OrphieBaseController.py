@@ -119,7 +119,7 @@ class OrphieBaseController(BaseController):
             response.set_cookie('Orphereus', str(sessCookie), domain = '.' + g.OPT.baseDomain)
 
     def initEnvironment(self):
-        c.title = g.settingsMap['title'].value
+        c.title = g.OPT.title
         boards = Tag.getBoards()
         c.boardlist = []
         sectionId = -1

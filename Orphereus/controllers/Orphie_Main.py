@@ -138,7 +138,7 @@ class OrphieMainController(OrphieBaseController):
                 c.boardName = _('Related threads')
 
         c.boardOptions = Tag.conjunctedOptionsDescript(tags)
-        c.invisibleBumps = asbool(meta.globj.settingsMap['invisibleBump'].value)
+        c.invisibleBumps = asbool(meta.globj.OPT.invisibleBump)
         c.tagList = ' '.join(tagList)
 
         hiddenThreads = self.userInst.hideThreads
@@ -477,7 +477,7 @@ class OrphieMainController(OrphieBaseController):
         return result
 
     def viewLog(self, page):
-        if g.settingsMap['usersCanViewLogs'].value == 'true':
+        if g.OPT.usersCanViewLogs:
             c.boardName = 'Logs'
             page = int(page)
             count = LogEntry.count(disabledEvents)
@@ -755,7 +755,7 @@ class OrphieMainController(OrphieBaseController):
             if not tags:
                 return errorHandler(_("You should specify at least one board"))
 
-            maxTagsCount = int(g.settingsMap['maxTagsCount'].value)
+            maxTagsCount = int(g.OPT.maxTagsCount)
             if len(tags) > maxTagsCount:
                 return errorHandler(_("Too many tags. Maximum allowed: %s") % (maxTagsCount))
 
@@ -816,7 +816,7 @@ class OrphieMainController(OrphieBaseController):
         if postMessage:
            if len(postMessage) <= 15000:
                parser = WakabaParser(g.OPT, thread and thread.id or - 1)
-               maxLinesInPost = int(g.settingsMap['maxLinesInPost'].value)
+               maxLinesInPost = int(g.OPT.maxLinesInPost)
                cutSymbols = int(g.settingsMap["cutSymbols"].value)
                parsedMessage = parser.parseWakaba(postMessage, self, lines = maxLinesInPost, maxLen = cutSymbols)
                fullMessage = parsedMessage[0]

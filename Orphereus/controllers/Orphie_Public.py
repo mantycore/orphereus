@@ -37,7 +37,7 @@ log = logging.getLogger(__name__)
 class OrphiePublicController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        c.title = g.settingsMap['title'].value
+        c.title = g.OPT.title
         if g.OPT.refControlEnabled:
             ref = request.headers.get('REFERER', False)
             if ref:

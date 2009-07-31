@@ -103,6 +103,21 @@ core.searchPluginId = search_like
 #core.searchPluginId = search_sphinx
 #(see http://www.sphinxsearch.com for information about Sphinx Search Engine)
 
+frontend.invisibleBump = true
+frontend.usersCanViewLogs = false
+
+frontend.maxTagsCount = 5
+frontend.maxTagLen = 6
+frontend.maxLinesInPost  = 15
+frontend.cutSymbols = 5000
+
+frontend.title = Orphereus
+
+frontend.disabledTags = logout,authorize,register,youAreBanned,userProfile,holySynod,frameMenu,!
+frontend.adminOnlyTags = synod,logs
+frontend.additionalLinks = http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma
+frontend.sectionNames = Main
+
 # plugins
 jsCompressor.disableJSRegeneration = false
 statistics.statsCacheTime = 180

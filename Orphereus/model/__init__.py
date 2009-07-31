@@ -160,33 +160,12 @@ def init_model(engine):
     
 def init_globals(globalObject, setupMode):
     meta.globj = globalObject
-    settingsMap = {}
 
     if not setupMode:
         log.info('LOADING CONFIGURATION DATA')
         meta.globj.OPT.initValues(Setting)
         log.info('LOAD COMPLETE')
-        settings = False
-        settings = Setting.getAll()
-        if settings:
-            for s in settings:
-                #log.debug('Option: %s==%s ' % (s.name, s.value))
-                if s.name in settingsDef:
-                    settingsMap[s.name] = s
 
-        for s in settingsDef:
-            if not s in settingsMap:
-                option = Setting.create(s, settingsDef[s])
-                settingsMap[s] = option
-    else:
-        from Orphereus.lib.miscUtils import empty
-        for s in settingsDef:
-            option = empty()
-            option.name = s
-            option.value = settingsDef[s]
-            settingsMap[s] = option
-
-    meta.globj.settingsMap = settingsMap
     if not setupMode:
         adminTagsLine = meta.globj.OPT.adminOnlyTags
         meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)

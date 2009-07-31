@@ -47,16 +47,22 @@ class OptHolder(object):
         self.disabledModules = []
 
         self.booleanValues = [('core',
-                               ('devMode', 'secondaryIndex', 'vitalSigns', 'allowPosting',
+                               ('devMode', 'secondaryIndex', 'allowPosting',
                                 'allowRegistration', 'allowAnonymous',
-                                'allowLogin', 'allowCrossposting', 'allowCrosspostingSvc',
-                                'allowPureSvcTagline', 'allowTagCreation', 'boardWideProoflabels',
-                                'allowOverview', 'framedMain',
-                                'useFrameLogo', 'permissiveFileSizeConjunction',
-                                'allowAnonymousPosting', 'allowAnonProfile',
-                                'obligatoryFrameCreation', 'newsSiteMode', 'showShortStatistics',
-                                'allowAnswersWithoutCaptcha', 'forbidCaptcha'
+                                'allowLogin',  'allowAnonymousPosting', 'allowAnonProfile',
                                )
+                              ),
+
+                              ('frontend',
+                                ('invisibleBump','usersCanViewLogs','vitalSigns', 
+                                 'allowCrossposting', 'allowCrosspostingSvc',
+                                 'allowPureSvcTagline', 'allowTagCreation',
+                                 'allowAnswersWithoutCaptcha',  'forbidCaptcha',
+                                 'useFrameLogo', 'permissiveFileSizeConjunction',
+                                 'boardWideProoflabels', 'allowOverview', 'framedMain',
+                                 'obligatoryFrameCreation', 'showShortStatistics',
+                                 'newsSiteMode',
+                                ) 
                               ),
 
                               ('defaults',
@@ -72,18 +78,13 @@ class OptHolder(object):
                                 'useAnalBarriering', 'enableFinalAnonymity', 'hlAnonymizedPosts',
                                ),
                               ),
-                              
-                              ('frontend',
-                                ('invisibleBump','usersCanViewLogs',
-                                ) 
-                              ),
                              ]
 
         self.stringValues = [('core',
                                ('urlPrefix', 'hashSecret', 'baseDomain',
                                 'staticPathWeb', 'filesPathWeb', 'actuator',
-                                'defaultFrame', 'staticPath', 'uploadPath',
-                                'frameLogo', 'searchPluginId'
+                                'staticPath', 'uploadPath',
+                                'searchPluginId'
                                )
                               ),
 
@@ -94,7 +95,7 @@ class OptHolder(object):
                               ),
 
                               ('frontend',
-                                ('title',
+                                ('title', 'frameLogo', 'defaultFrame', 
                                 ) 
                               ),
 
@@ -127,7 +128,7 @@ class OptHolder(object):
 
         self.strListValues = [('core',
                                ('languages', 'templates', 
-                                'javascripts', 'styles', 'homeModules', 
+                                'javascripts', 'styles', 
                                 # 'disabledModules', 
                                )
                               ),
@@ -140,7 +141,7 @@ class OptHolder(object):
                               
                               ('frontend',
                                 ('disabledTags','adminOnlyTags','additionalLinks',
-                                 'sectionNames',
+                                 'sectionNames', 'homeModules', 
                                 ) 
                               ),
 

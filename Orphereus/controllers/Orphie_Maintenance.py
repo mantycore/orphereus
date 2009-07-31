@@ -409,7 +409,7 @@ class MaintenanceWorker(object):
                    self.currentUserId = post.uidNumber
                    parser = WakabaParser(g.OPT, post.parentPost and post.parentPost.id or - 1)
                    maxLinesInPost = int(g.OPT.maxLinesInPost)
-                   cutSymbols = int(g.settingsMap["cutSymbols"].value)
+                   cutSymbols = g.OPT.cutSymbols
                    parsedMessage = parser.parseWakaba(post.messageRaw, self, lines = maxLinesInPost, maxLen = cutSymbols)
                    fullMessage = parsedMessage[0]
                    #if painterMark:

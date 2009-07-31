@@ -47,7 +47,6 @@ def routingInit(map):
     map.connect('hsViewLogBase', '/holySynod/viewLog', controller = 'Orphie_Admin', action = 'viewLog', page = 0)
     map.connect('hsViewLog', '/holySynod/viewLog/page/:page', controller = 'Orphie_Admin', action = 'viewLog', requirements = dict(page = '\d+'))
     map.connect('hsInvite', '/holySynod/makeInvite', controller = 'Orphie_Admin', action = 'makeInvite')
-    map.connect('hsSettings', '/holySynod/manageSettings', controller = 'Orphie_Admin', action = 'manageSettings')
     map.connect('hsMappings', '/holySynod/manageMappings/:act/:id/:tagid', controller = 'Orphie_Admin', action = 'manageMappings', act = 'show', id = 0, tagid = 0, requirements = dict(id = '\d+', tagid = '\d+'))
     map.connect('hsMergeTags', '/holySynod/mergeTags/:act', controller = 'Orphie_Admin', action = 'mergeTags', act = None)
     map.connect('hsBans', '/holySynod/manageBans', controller = 'Orphie_Admin', action = 'manageBans')
@@ -95,7 +94,6 @@ def menuItems(menuId):
                 MenuItem('id_adminBoard', _("Common settings"), None, 200, False),
                 MenuItem('id_adminUsers', _("Users"), None, 210, False),
                 MenuItem('id_adminPosts', _("Threads and posts"), None, 220, False),
-                MenuItem('id_hsSettings', _("Manage settings"), h.url_for('hsSettings'), 200, 'id_adminBoard'),
                 MenuItem('id_hsExtensions', _("Manage extensions"), h.url_for('hsExtensions'), 240, 'id_adminBoard'),
                 MenuItem('id_hsUsers', _("Manage users"), h.url_for('hsUsers'), 220, 'id_adminUsers'),
                 MenuItem('id_hsBans', _("Manage bans"), h.url_for('hsBans'), 230, 'id_adminUsers'),
@@ -170,31 +168,6 @@ class OrphieAdminController(OrphieBaseController):
         c.admins = User.getAdmins()
         c.currentItemId = 'id_adminDashboard'
         return self.render('managementIndex')
-
-    def manageSettings(self):
-        c.boardName = _('Settings management')
-        c.settingsDescription = settingsDescription
-        c.currentItemId = 'id_hsSettings'
-
-        if request.POST.get('update', False):
-            if not self.userInst.canChangeSettings():
-                return self.error(_("No way! You aren't holy enough!"))
-
-            for s in request.POST:
-                if s in settingsDef:
-                    val = filterText(request.POST[s])
-                    if settingsDescription[s][1] == int and not isNumber(val):
-                        return self.error(_("'%s' isn't correct number, but '%s' must be an integer number.") % (val, s))
-                    if settingsDescription[s][1] == list:
-                        valarr = filter(lambda l: l, re.split('\r+|\n+|\r+\n+', val))
-                        val = '|'.join(valarr)
-                    if g.settingsMap[s].value != val:
-                        toLog(LOG_EVENT_SETTINGS_EDIT, _("Changed %s from '%s' to '%s'") % (s, g.settingsMap[s].value, val))
-                        Setting.getSetting(s).setValue(val)
-                        g.settingsMap[s].value = val
-                    init_globals(config['pylons.app_globals'], False)
-            c.message = _('Settings updated')
-        return self.render('manageSettings')
 
     def viewLog(self, page):
         c.boardName = _('Logs')

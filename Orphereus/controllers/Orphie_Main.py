@@ -817,7 +817,7 @@ class OrphieMainController(OrphieBaseController):
            if len(postMessage) <= 15000:
                parser = WakabaParser(g.OPT, thread and thread.id or - 1)
                maxLinesInPost = int(g.OPT.maxLinesInPost)
-               cutSymbols = int(g.settingsMap["cutSymbols"].value)
+               cutSymbols = g.OPT.cutSymbols
                parsedMessage = parser.parseWakaba(postMessage, self, lines = maxLinesInPost, maxLen = cutSymbols)
                fullMessage = parsedMessage[0]
                postMessageShort = parsedMessage[1]

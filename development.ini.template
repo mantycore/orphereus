@@ -74,44 +74,43 @@ core.templates = wakaba
 core.javascripts = wakaba=jquery.js|ui.js
 core.styles = wakaba=photon_blue|bluemoon|photon|burichan|gurochan|futaba|kusaba
 core.secondaryIndex = false
-core.vitalSigns = true
 core.allowPosting = true
 core.allowAnonymous = false
 core.allowAnonymousPosting = false
 core.allowRegistration = false
 core.allowAnonProfile = false
 core.allowLogin = true
-core.allowCrossposting = true
-core.allowCrosspostingSvc = true
-core.allowPureSvcTagline = true
-core.allowTagCreation = true
-core.allowAnswersWithoutCaptcha = true
-core.forbidCaptcha = false
-core.newsSiteMode = false
-core.permissiveFileSizeConjunction = true
-core.boardWideProoflabels = true
-core.allowOverview = true
-core.framedMain = true
-core.useFrameLogo = true
-core.frameLogo = logo.png
-core.defaultFrame = /!/
-core.obligatoryFrameCreation = false
-core.showShortStatistics = true
-core.homeModules = newsgenerator,statistics
 core.searchPluginId = search_like
 #if you want full-text search, use next line
 #core.searchPluginId = search_sphinx
 #(see http://www.sphinxsearch.com for information about Sphinx Search Engine)
 
+
 frontend.invisibleBump = true
 frontend.usersCanViewLogs = false
-
+frontend.title = Orphereus
+frontend.vitalSigns = true
+frontend.allowCrossposting = true
+frontend.allowCrosspostingSvc = true
+frontend.allowPureSvcTagline = true
+frontend.allowTagCreation = true
+frontend.allowAnswersWithoutCaptcha = false
+frontend.forbidCaptcha = false
+frontend.newsSiteMode = false
+frontend.permissiveFileSizeConjunction = true
+frontend.boardWideProoflabels = true
+frontend.allowOverview = true
+frontend.framedMain = true
+frontend.useFrameLogo = true
+frontend.frameLogo = logo.png
+frontend.defaultFrame = /!/
+frontend.obligatoryFrameCreation = false
+frontend.showShortStatistics = true
+frontend.homeModules = newsgenerator,statistics
 frontend.maxTagsCount = 5
 frontend.maxTagLen = 6
 frontend.maxLinesInPost  = 15
 frontend.cutSymbols = 5000
-
-frontend.title = Orphereus
 
 frontend.disabledTags = logout,authorize,register,youAreBanned,userProfile,holySynod,frameMenu,!
 frontend.adminOnlyTags = synod,logs

@@ -60,7 +60,7 @@ class SetsmgrController(OrphieBaseController):
         if not self.currentUserIsAuthorized():
             return redirect_to('boardBase')
         self.initEnvironment()
-        if not (self.userInst.isAdmin() and self.userInst.canRunMaintenance()) or self.userInst.isBanned():
+        if not (self.userInst.isAdmin() and self.userInst.canChangeRights()) or self.userInst.isBanned():
             c.errorText = _("No way! You aren't holy enough!")
             return redirect_to('boardBase')
         c.userInst = self.userInst
@@ -76,7 +76,6 @@ class SetsmgrController(OrphieBaseController):
                 return self.error(_("No way! You aren't holy enough!"))
             
             currSettings = self.getSettingsDict(Setting.getAll())
-            log.debug(g.OPT) 
             for s in request.POST:
                 if s in currSettings.keys():
                     val = filterText(request.POST[s])
@@ -86,7 +85,6 @@ class SetsmgrController(OrphieBaseController):
                     if guessType(currSettings[s]) == CFG_LIST:
                         valarr = filter(lambda l: l, re.split('\r+|\n+|\r+\n+', val))
                         val = ','.join(valarr)
-                        log.debug(val)
                     if currSettings[s] != val:
                         toLog(LOG_EVENT_SETTINGS_EDIT, _("Changed %s from '%s' to '%s'") % (s, currSettings[s], val))
                         Setting.getSetting(s).setValue(val)
@@ -94,7 +92,6 @@ class SetsmgrController(OrphieBaseController):
                         #setattr(g.OPT, s.split('.')[1], val) 
                     #init_globals(config['pylons.app_globals'], False)
             c.message = _('Settings updated')
-            log.debug(g.OPT)
         
         
         c.guesser = guessType

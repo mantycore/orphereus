@@ -29,7 +29,6 @@ import re
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.constantValues import engineVersion
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
-from Orphereus.lib.miscUtils import guessType
 
 import logging
 log = logging.getLogger("CORE")
@@ -156,7 +155,6 @@ class OptHolder(object):
             self.recoveryMode = self.booleanGetter(config['core.recovery'])
             # won't work normally, because ORM init isn't complete here
             # self.initValues(None)
-        
             
     def registerCfgValues(self, values, type):
         dest = {CFG_BOOL: self.booleanValues,
@@ -166,10 +164,20 @@ class OptHolder(object):
                 }
         dest[type].extend(values)
         
+    def getValueType(self, valName):
+        types = {self.booleanGetter: CFG_BOOL,
+                 self.intGetter: CFG_INT, 
+                 self.stringGetter: CFG_STRING,
+                 self.strListGetter: CFG_LIST,
+                 }
+        return types[self.valueGetters[valName]]
+        
     def initValues(self, settingObj):
+        log.info('LOADING SETTINGS...')
         if self.recoveryMode:
             log.warning('RUNNING IN RECOVERY MODE')
         self.setter = settingObj
+        self.valueGetters = {}
         self.setValues(self.booleanValues, self.booleanGetter)
         self.setValues(self.stringValues, self.stringGetter)
         self.setValues(self.intValues, self.intGetter)
@@ -189,7 +197,7 @@ class OptHolder(object):
 
         self.cssFiles = {}
         self.jsFiles = {}
-        rex = re.compile(r"^(.+)=(.+)$")
+        rex = re.compile(r"^(.+)=(.+)$") 
         for elem in self.styles:
             matcher = rex.match(elem)
             if not matcher:
@@ -222,12 +230,8 @@ class OptHolder(object):
         return value.split(',')
     
     def autoSetValue(self, name, rawValue):
-        methods = {CFG_BOOL: self.booleanGetter,
-                   CFG_INT: self.intGetter,
-                   CFG_LIST: self.strListGetter,
-                   CFG_STRING: self.stringGetter,
-                   }
-        value = methods[guessType(rawValue)](rawValue)
+        getter = self.valueGetters[name]
+        value = getter(rawValue)
         setattr(self, name, value) 
         
     def setValues(self, source, getter):
@@ -249,7 +253,8 @@ class OptHolder(object):
                         log.debug("Setting param in db: %s->'%s'" % (paramName, rawValue))
                         self.setter.create(paramName, unicode(rawValue))
                 setattr(self, valueName, value)
-                log.info('SET VALUE: %s.%s = %s' % (sectionName, valueName, str(getattr(self, valueName))))
+                self.valueGetters[valueName] = getter
+                log.info(u'SET VALUE: %s.%s = %s' % (sectionName, valueName, unicode(getattr(self, valueName))))
 
 class Globals(object):
     def __init__(self, eggSetupMode = False):

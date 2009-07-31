@@ -27,7 +27,7 @@
                 <tr>
                     <td class="postblock">${key}</td>
                     <td>
-                        %if c.guesser(val) == 0x01:
+                        %if g.OPT.getValueType(key) == 0x01:
                         <select name="${sect}.${key}">
                                <option value="true"
                                  %if val == "true":
@@ -44,14 +44,14 @@
                                False
                               </option>
                         </select>
-                        %elif c.guesser(val) == 0x08:
-<textarea style="overflow-x: scroll; overflow-y: scroll;" rows="5" cols="25" name="${sect}.${key}">
+                        %elif g.OPT.getValueType(key) == 0x08:
+<textarea style="overflow-x: scroll; overflow-y: scroll;" rows="5" cols="35" name="${sect}.${key}">
 %for line in val.split(','):
 ${line}
 %endfor
 </textarea>
                         %else:
-                            <input type="text" name="${sect}.${key}" size="30" value="${val}" />
+                            <input type="text" name="${sect}.${key}" size="40" value="${val}" />
                         %endif
                     </td>
                 </tr>

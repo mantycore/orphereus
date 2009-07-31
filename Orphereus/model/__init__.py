@@ -158,30 +158,29 @@ def init_model(engine):
             orminit(orm, plugin.namespace(), propDict)
     log.info('COMPLETED ORM INITIALIZATION STAGE')
     
+def upd_globals():
+    adminTagsLine = meta.globj.OPT.adminOnlyTags
+    meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)
+
+    meta.globj.additionalLinks = []
+    links = meta.globj.OPT.additionalLinks
+    if links:
+        for link in links:
+            meta.globj.additionalLinks.append(link.split('|'))
+
+    meta.globj.sectionNames = meta.globj.OPT.sectionNames 
+    meta.globj.disabledTags = meta.globj.OPT.disabledTags
+    log.info('UPDATING GLOBALS COMPLETED')
+    
 def init_globals(globalObject, setupMode):
     meta.globj = globalObject
 
     if not setupMode:
         log.info('LOADING CONFIGURATION DATA')
         meta.globj.OPT.initValues(Setting)
-        log.info('LOAD COMPLETE')
-
-    if not setupMode:
-        adminTagsLine = meta.globj.OPT.adminOnlyTags
-        meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)
-
-        meta.globj.additionalLinks = []
-        linksstr = meta.globj.OPT.additionalLinks
-        links = linksstr #.split('|')
-        if links:
-            for link in links:
-                meta.globj.additionalLinks.append(link.split('|'))
-
-        meta.globj.sectionNames = meta.globj.OPT.sectionNames #.split('|')
+        log.info('LOAD COMPLETED')
         
-        meta.globj.disabledTags = meta.globj.OPT.disabledTags
-        #disabledTagsLine = meta.globj.OPT.disabledTags
-        #meta.globj.disabledTags = disabledTagsLine.lower().split('|')
+        upd_globals()
 
     """
     gv = config['pylons.g']

@@ -78,23 +78,21 @@ class SetsmgrController(OrphieBaseController):
             currSettings = self.getSettingsDict(Setting.getAll())
             for s in request.POST:
                 if s in currSettings.keys():
+                    shortName = s.split('.')[1]
                     val = filterText(request.POST[s])
-                    if guessType(currSettings[s]) == CFG_INT:
+                    if g.OPT.getValueType(shortName) == CFG_INT:
                         if not isNumber(val):
                             return self.error(_("'%s' isn't correct number, but '%s' must be an integer number.") % (val, s))
-                    if guessType(currSettings[s]) == CFG_LIST:
+                    if g.OPT.getValueType(shortName)  == CFG_LIST:
                         valarr = filter(lambda l: l, re.split('\r+|\n+|\r+\n+', val))
                         val = ','.join(valarr)
                     if currSettings[s] != val:
                         toLog(LOG_EVENT_SETTINGS_EDIT, _("Changed %s from '%s' to '%s'") % (s, currSettings[s], val))
                         Setting.getSetting(s).setValue(val)
-                        g.OPT.autoSetValue(s.split('.')[1], val)
-                        #setattr(g.OPT, s.split('.')[1], val) 
-                    #init_globals(config['pylons.app_globals'], False)
+                        g.OPT.autoSetValue(shortName, val)
+            upd_globals()
             c.message = _('Settings updated')
         
-        
-        c.guesser = guessType
         c.cfg = {}
         for sect in self.getSectionNames():
             c.cfg[sect] = self.cutSectionNames(self.getSettingsDict(Setting.getSection(sect)))

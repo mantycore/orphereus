@@ -185,6 +185,8 @@ class OrphieBaseController(BaseController):
 
         if c.currentURL.endswith('/'):
             c.currentURL = c.currentURL[:-1]
+        
+        c.log = list()
 
         if not self.currentUserIsAuthorized():
             return redirect_to('authorizeToUrl', url = c.currentURL)

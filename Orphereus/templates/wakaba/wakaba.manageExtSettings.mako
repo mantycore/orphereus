@@ -15,10 +15,14 @@
 
 <div class="postarea">
     <form id="postform" method="post" action="${h.url_for('hsCfgManage')}">
-	%for (sect, settings) in c.cfg.iteritems():
-	<h2>${sect}</h2>
         <table>
             <tbody>
+	%for (sect, settings) in c.cfg.iteritems():
+			<tr>
+				<td colspan=2>
+					<p align="center"><span class="theader">${sect}</span></p>
+				</td>
+			</tr>
                 %for (key,val) in settings.iteritems():
                 <tr>
                     <td class="postblock">${key}</td>
@@ -60,11 +64,12 @@ ${line}
                             disabled="disabled"
                           %endif
                         />
+                        <br /><br />
                         </p>
                     </td>
                 </tr>
+    %endfor    
             </tbody>
         </table>
-    %endfor    
     </form>
 </div>

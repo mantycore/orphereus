@@ -67,7 +67,7 @@ class SetsmgrController(OrphieBaseController):
         if not checkAdminIP():
             return redirect_to('boardBase')
 
-        c.boardName = _('Engine settings')
+        c.boardName = _('Engine configuration')
         c.currentItemId = 'id_ExtSettings'
         
         log.debug(g.OPT)

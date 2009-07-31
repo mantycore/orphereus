@@ -109,9 +109,9 @@ class OptHolder(object):
                             ]
 
         self.strListValues = [('core',
-                               ('disabledModules', 'languages',
-                                'templates', 'javascripts', 'styles',
-                                'homeModules',
+                               ('languages', 'templates', 
+                                'javascripts', 'styles', 'homeModules', 
+                                # 'disabledModules', 
                                )
                               ),
 
@@ -126,12 +126,15 @@ class OptHolder(object):
         if not eggSetupMode:
             # a couple of workarounds for early init stages
             self.disabledModules = self.strListGetter(config['core.disabledModules'])
-            self.framedMain = self.booleanGetter(config['core.framedMain'])
+            self.framedMain = True
+            
+            # recovery option
+            self.recoveryMode = self.booleanGetter(config['core.recovery'])
             # won't work normally, because ORM init isn't complete here
             #self.initValues(None)
         
             
-    def registerExtendedValues(self, values, type):
+    def registerCfgValues(self, values, type):
         dest = {CFG_BOOL: self.booleanValues,
                 CFG_INT: self.intValues, 
                 CFG_STRING: self.stringValues,
@@ -140,6 +143,8 @@ class OptHolder(object):
         dest[type].extend(values)
         
     def initValues(self, settingObj):
+        if self.recoveryMode:
+            log.warning('RUNNING IN RECOVERY MODE')
         self.setter = settingObj
         self.setValues(self.booleanValues, self.booleanGetter)
         self.setValues(self.stringValues, self.stringGetter)
@@ -208,7 +213,7 @@ class OptHolder(object):
                 paramName = '%s.%s' % (sectionName, valueName)
                 rawValue = config[paramName]
                 value = getter(rawValue)
-                if self.setter:
+                if self.setter and not(self.recoveryMode):
                     sqlValue = None
                     sqlValueObj = self.setter.getSetting(paramName)
                     if sqlValueObj:

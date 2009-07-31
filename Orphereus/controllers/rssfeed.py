@@ -39,7 +39,7 @@ def pluginInit(globj = None):
 
         if not globj.OPT.eggSetupMode:
             #globj.OPT.setValues(booleanValues, globj.OPT.booleanGetter)
-            globj.OPT.registerExtendedValues(booleanValues, CFG_BOOL)
+            globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
             
 
     config = {'routeinit' : routingInit, # routing initializer

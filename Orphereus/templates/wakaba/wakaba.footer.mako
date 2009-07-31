@@ -1,11 +1,15 @@
 <br/>
 <p class="footer">
 - <a target="_top" href="http://orphereus.anoma.ch/">${g.version}</a> -
+%if g.OPT.recoveryMode:
+<br/><i>recovery mode</i><br/><br/>
+%endif
 </p>
 
 %if g.OPT.devMode and c.sum:
 <br/>	Total time: ${c.sum} <br/><br/>
 %endif
+
 
 %if g.OPT.devMode and c.log:
 <font size="-2">

@@ -51,6 +51,12 @@ sqlalchemy.pool_recycle = 3600
 
 core.disabledModules = example.py,httpinfo.py
 
+# makes engine ignore configuration in database and use this file
+core.recovery = false
+
+# All settings below are copied into the database, these are only default values 
+# for engine init or recovery.  
+
 # Basic IB settings
 core.devMode = false
 # We will hash hashSecret by sha512, so no need to have it long

@@ -63,9 +63,9 @@ def pluginInit(globj = None):
                             ]
 
         if not globj.OPT.eggSetupMode:
-            globj.OPT.registerExtendedValues(booleanValues, CFG_BOOL)
-            globj.OPT.registerExtendedValues(intValues, CFG_INT)
-            globj.OPT.registerExtendedValues(stringValues, CFG_STRING)
+            globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
+            globj.OPT.registerCfgValues(intValues, CFG_INT)
+            globj.OPT.registerCfgValues(stringValues, CFG_STRING)
             #globj.OPT.setValues(booleanValues, globj.OPT.booleanGetter)
             #globj.OPT.setValues(intValues, globj.OPT.intGetter)
             #globj.OPT.setValues(stringValues, globj.OPT.stringGetter)

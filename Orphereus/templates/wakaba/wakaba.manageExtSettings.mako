@@ -1,8 +1,24 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.management.mako" />
 
+<script>
+var sections = [${', '.join(map(lambda str: "'%s'" %str,c.cfg.iterkeys()))}, 'settingsDump'];
+var active = 'lolz';
+function showSect(sect) {
+if (sect != active) {
+	$('#'+active).slideToggle('fast');
+	$('#'+sect).slideToggle('fast');
+	}
+active = sect;
+}
+function resetPrompt() {
+if (confirm('${_("This will delete ALL configuration data drom the database. Continue?")}')) 
+	{ window.location='${h.url_for('hsCfgReset')}'; }
+}
+</script>
+
 %if c.message:
-    <table>
+    <table>	
     <tr id="trmessage">
         <td colspan=2>
             <span class="theader">
@@ -12,20 +28,27 @@
     </tr>
     </table>
 %endif
-<input type="button" 
-onclick="if (prompt('This will delete ALL configuration data drom the database. Continue?\n(Type \'yes\' to agree.)')=='yes') { window.location='${h.url_for('hsCfgReset')}'; }" value="Reset settings" />
+    <table width="100%">
+    	<tbody>
+    		<tr>
+				<td width="150px" valign="top">
+				%for sect in sorted(c.cfg.iterkeys()):
+				<div class="theader"><a style="cursor:pointer; display: block;" onclick="showSect('${sect}');">${sect}</a></div>
+				%endfor
+				<hr />
+				<div class="theader"><a style="cursor:pointer; display: block;" onclick="resetPrompt();">Reset settings</a></div>
+				<div class="theader"><a style="cursor:pointer; display: block;" onclick="showSect('settingsDump');">Dump settings</a></div>
+				</td>    	
+				<td valign="top">
 <div class="postarea">
-    <form id="postform" method="post" action="${h.url_for('hsCfgManage')}">
+	<form id="postform" method="post" action="${h.url_for('hsCfgManage')}">					
 	%for (sect, settings) in c.cfg.iteritems():
-	<div class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('${sect}');">${sect}</a></div>
-	<div id="${sect}" style="display:none">
-        <table>
+	<div id="${sect}" style="display:none" align="center">
+        <table width="70%">
             <tbody>
-			<!---- <tr>
 				<td colspan=2>
-					<p align="center"><span class="theader">${sect}</span></p>
+					<h2>${sect}</h2>
 				</td>
-			</tr> ---->
                 %for (key,val) in settings.iteritems():
                 <tr>
                     <td class="postblock">${key}</td>
@@ -49,9 +72,7 @@ onclick="if (prompt('This will delete ALL configuration data drom the database. 
                         </select>
                         %elif g.OPT.getValueType(key) == 0x08:
 <textarea style="overflow-x: scroll; overflow-y: scroll;" rows="5" cols="35" name="${sect}.${key}">
-%for line in val.split(','):
-${line}
-%endfor
+${'\r\n'.join(val.split(','))}
 </textarea>
                         %else:
                             <input type="text" name="${sect}.${key}" size="40" value="${val}" />
@@ -74,6 +95,17 @@ ${line}
             </tbody>
         </table>
      </div>
-    %endfor    
+    %endfor    				
     </form>
 </div>
+<div id="settingsDump" style="display:none" align="center">
+<textarea style="overflow-x: scroll; overflow-y: scroll;" rows="20" cols="80">
+${'\r\n'.join(sorted(map(lambda (key,val): "%s = %s" %(key,val),c.allSettings.iteritems())))}
+</textarea>
+<br /><i>${_('(pastable into .ini file)')}</i>
+</div>
+				</td>
+    		</tr>
+    	</tbody>
+    </table>
+<script>showSect(sections[0]);</script>

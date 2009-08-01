@@ -36,6 +36,9 @@ class SetsmgrController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
             self.requestForMenu("managementMenu")
+    
+    def __init__(self):
+        self.settings = self.getSettingsDict(Setting.getAll())
             
     def getSettingsDict(self,settings):
         return dict([(setting.name, setting.value) for setting in settings])
@@ -44,7 +47,7 @@ class SetsmgrController(OrphieBaseController):
         return dict([(key.split('.')[1], val) for key, val in sectDict.iteritems()])
         
     def getSectionNames(self):
-        keys = sorted(self.getSettingsDict(Setting.getAll()).keys())
+        keys = sorted(self.settings.keys())
         keys = map(lambda str: str.split('.')[0], keys)
         return list(set(keys))
 
@@ -66,6 +69,7 @@ class SetsmgrController(OrphieBaseController):
         self.initChecks()
         Setting.clearAll()
         init_globals(g, False)
+        toLog(LOG_EVENT_SETTINGS_EDIT, _("Performed global settings reset."))
         c.message = N_('Engine settings were set to default values.')
         return self.render('managementMessage')
     
@@ -75,9 +79,8 @@ class SetsmgrController(OrphieBaseController):
             if not self.userInst.canChangeSettings():
                 return self.error(_("No way! You aren't holy enough!"))
             
-            currSettings = self.getSettingsDict(Setting.getAll())
             for s in request.POST:
-                if s in currSettings.keys():
+                if s in self.settings.keys():
                     shortName = s.split('.')[1]
                     val = filterText(request.POST[s])
                     if g.OPT.getValueType(shortName) == CFG_INT:
@@ -86,14 +89,15 @@ class SetsmgrController(OrphieBaseController):
                     if g.OPT.getValueType(shortName)  == CFG_LIST:
                         valarr = filter(lambda l: l, re.split('\r+|\n+|\r+\n+', val))
                         val = ','.join(valarr)
-                    if currSettings[s] != val:
-                        toLog(LOG_EVENT_SETTINGS_EDIT, _("Changed %s from '%s' to '%s'") % (s, currSettings[s], val))
+                    if self.settings[s] != val:
+                        toLog(LOG_EVENT_SETTINGS_EDIT, _("Changed %s from '%s' to '%s'") % (s, self.settings[s], val))
                         Setting.getSetting(s).setValue(val)
                         g.OPT.autoSetValue(shortName, val)
             upd_globals()
             c.message = _('Settings were updated')
         
         c.cfg = {}
+        c.allSettings = self.settings
         for sect in self.getSectionNames():
             c.cfg[sect] = self.cutSectionNames(self.getSettingsDict(Setting.getSection(sect)))
 

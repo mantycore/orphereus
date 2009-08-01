@@ -36,9 +36,9 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
         mode = SPH_MATCH_EXTENDED2
         host = str(g.OPT.sphinxHost)
         port = g.OPT.sphinxPort
-        index = g.OPT.sphinxIndexName
-        sortby = g.OPT.sphinxPostDatePseudo
-        postIdPseudo = g.OPT.sphinxPostIdPseudo
+        index = str(g.OPT.sphinxIndexName)
+        sortby = str(g.OPT.sphinxPostDatePseudo)
+        postIdPseudo = str(g.OPT.sphinxPostIdPseudo)
         cl = SphinxClient()
         cl.SetServer(host, port)
         if postIds:

@@ -46,12 +46,12 @@ class FakeUser(AbstractUser):
             self.uid = "Anonymous"
             self.filters = ()
 
-            self.__user = empty()
-            self.__user.uidNumber = -1
-            self.__user.filters = ()
+        self.__user = empty()
+        self.__user.uidNumber = -1
+        self.__user.filters = ()
 
-            self.__user.options = empty()
-            UserOptions.initDefaultOptions(self.__user.options, g.OPT)
+        self.__user.options = empty()
+        UserOptions.initDefaultOptions(self.__user.options, g.OPT)
 
     def simpleGetter(self, name):
         return session.get(name, getattr(self.__user.options, name))

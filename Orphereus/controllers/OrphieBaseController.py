@@ -239,8 +239,10 @@ class OrphieBaseController(BaseController):
         if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/') == fpath.replace('\\', '/'):
             if g.OPT.devMode:
                 c.renderStartTime = time.time()
-                c.processStartTime = self.startTime
-                c.log.append("processing: %s" % str(c.renderStartTime - self.startTime))
+                c.processStartTime = 0
+                if self.__dict__.has_key('startTime'):
+                    c.processStartTime = self.startTime
+                    c.log.append("processing: %s" % str(c.renderStartTime - self.startTime))
             output = render('/' + tpath, extra_vars = options)
             if g.globalFilterStack and not options.get('disableFiltering', None):
                 return h.applyFilters(output, True)

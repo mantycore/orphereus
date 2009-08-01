@@ -40,17 +40,17 @@ class FakeUser(AbstractUser):
         self.Anonymous = False
         self.uidNumber = -1
 
+        self.__user = empty()
+        self.__user.uidNumber = -1
+        self.__user.filters = ()
+
+        self.__user.options = empty()
         if g.OPT.allowAnonymous:
             self.__valid = True
             self.Anonymous = True
             self.uid = "Anonymous"
             self.filters = ()
 
-            self.__user = empty()
-            self.__user.uidNumber = -1
-            self.__user.filters = ()
-    
-            self.__user.options = empty()
             UserOptions.initDefaultOptions(self.__user.options, g.OPT)
 
     def simpleGetter(self, name):

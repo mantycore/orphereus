@@ -44,6 +44,10 @@ class Setting(object):
     def setValue(self, value):
         self.value = value
         meta.Session.commit()
+        
+    def delete(self):
+        meta.Session.delete(self)
+        meta.Session.commit()
 
     @staticmethod
     def create(name, value):
@@ -51,6 +55,10 @@ class Setting(object):
         meta.Session.add(setting)
         meta.Session.commit()
         return setting
+
+    @staticmethod
+    def clearAll():
+        map(lambda obj: obj.delete(),Setting.query().all())
 
     @staticmethod
     def getAll():

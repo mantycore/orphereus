@@ -254,7 +254,7 @@ class OptHolder(object):
                         self.setter.create(paramName, unicode(rawValue))
                 setattr(self, valueName, value)
                 self.valueGetters[valueName] = getter
-                log.info(u'SET VALUE: %s.%s = %s' % (sectionName, valueName, unicode(getattr(self, valueName))))
+                log.debug(u'SET VALUE: %s.%s = %s' % (sectionName, valueName, unicode(getattr(self, valueName))))
 
 class Globals(object):
     def __init__(self, eggSetupMode = False):

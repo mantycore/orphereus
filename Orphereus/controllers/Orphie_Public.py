@@ -230,9 +230,7 @@ class OrphiePublicController(OrphieBaseController):
                 session['cid'] = None
                 session.save()
             if not captchaOk:
-                oldLang = h.setLang(self.userInst.cLang)
                 captcha = Captcha.create()
-                h.setLang(oldLang)
                 session['cid'] = captcha.id
                 session.save()
                 c.captcha = captcha

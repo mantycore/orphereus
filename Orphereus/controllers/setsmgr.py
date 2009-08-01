@@ -11,7 +11,6 @@ import logging
 log = logging.getLogger(__name__)
 
 def menuItems(menuId):
-    #          id        link       name                weight   parent
     menu = None
     if menuId == "managementMenu":
         menu = (MenuItem('id_ExtSettings', _("Extended settings"), h.url_for('hsCfgManage'), 601, 'id_adminBoard'),)
@@ -20,6 +19,7 @@ def menuItems(menuId):
 
 def routingInit(map):
     map.connect('hsCfgManage', '/holySynod/configuration/', controller = 'setsmgr', action = 'show')
+    map.connect('hsCfgReset', '/holySynod/configuration/reset/', controller = 'setsmgr', action = 'reset')
 
 def pluginInit(g = None):
     config = {'name' : N_('Engine runtime settings editing tool'),
@@ -38,25 +38,17 @@ class SetsmgrController(OrphieBaseController):
             self.requestForMenu("managementMenu")
             
     def getSettingsDict(self,settings):
-        vals = {}
-        for setting in settings:
-            vals[setting.name] = setting.value
-        return vals 
+        return dict([(setting.name, setting.value) for setting in settings])
     
     def cutSectionNames(self, sectDict):
-        newDict = {}
-        for key, val in sectDict.iteritems():
-            newDict[key.split('.')[1]] = val
-        return newDict
-        #return filter(lambda str: str.split('.')[1], sectDict.iterkeys())
+        return dict([(key.split('.')[1], val) for key, val in sectDict.iteritems()])
         
     def getSectionNames(self):
         keys = sorted(self.getSettingsDict(Setting.getAll()).keys())
-        keys = filter(lambda str: str.find('.')>-1, keys)  # aww, lambdas. fap-fap-fap 
         keys = map(lambda str: str.split('.')[0], keys)
         return list(set(keys))
-    
-    def show(self):
+
+    def initChecks(self):
         if not self.currentUserIsAuthorized():
             return redirect_to('boardBase')
         self.initEnvironment()
@@ -70,7 +62,15 @@ class SetsmgrController(OrphieBaseController):
         c.boardName = _('Engine configuration')
         c.currentItemId = 'id_ExtSettings'
         
-        log.debug(g.OPT)
+    def reset(self):
+        self.initChecks()
+        Setting.clearAll()
+        init_globals(g, False)
+        c.message = N_('Engine settings were set to default values.')
+        return self.render('managementMessage')
+    
+    def show(self):
+        self.initChecks()
         if request.POST.get('update', False):
             if not self.userInst.canChangeSettings():
                 return self.error(_("No way! You aren't holy enough!"))
@@ -91,7 +91,7 @@ class SetsmgrController(OrphieBaseController):
                         Setting.getSetting(s).setValue(val)
                         g.OPT.autoSetValue(shortName, val)
             upd_globals()
-            c.message = _('Settings updated')
+            c.message = _('Settings were updated')
         
         c.cfg = {}
         for sect in self.getSectionNames():

@@ -12,17 +12,20 @@
     </tr>
     </table>
 %endif
-
+<input type="button" 
+onclick="if (prompt('This will delete ALL configuration data drom the database. Continue?\n(Type \'yes\' to agree.)')=='yes') { window.location='${h.url_for('hsCfgReset')}'; }" value="Reset settings" />
 <div class="postarea">
     <form id="postform" method="post" action="${h.url_for('hsCfgManage')}">
+	%for (sect, settings) in c.cfg.iteritems():
+	<div class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('${sect}');">${sect}</a></div>
+	<div id="${sect}" style="display:none">
         <table>
             <tbody>
-	%for (sect, settings) in c.cfg.iteritems():
-			<tr>
+			<!---- <tr>
 				<td colspan=2>
 					<p align="center"><span class="theader">${sect}</span></p>
 				</td>
-			</tr>
+			</tr> ---->
                 %for (key,val) in settings.iteritems():
                 <tr>
                     <td class="postblock">${key}</td>
@@ -68,8 +71,9 @@ ${line}
                         </p>
                     </td>
                 </tr>
-    %endfor    
             </tbody>
         </table>
+     </div>
+    %endfor    
     </form>
 </div>

@@ -36,8 +36,8 @@ if (confirm('${_("This will delete ALL configuration data drom the database. Con
 				<div class="theader"><a style="cursor:pointer; display: block;" onclick="showSect('${sect}');">${sect}</a></div>
 				%endfor
 				<hr />
-				<div class="theader"><a style="cursor:pointer; display: block;" onclick="resetPrompt();">Reset settings</a></div>
-				<div class="theader"><a style="cursor:pointer; display: block;" onclick="showSect('settingsDump');">Dump settings</a></div>
+				<div class="theader"><a style="cursor:pointer; display: block;" onclick="resetPrompt();">${_("Reset settings")}</a></div>
+				<div class="theader"><a style="cursor:pointer; display: block;" onclick="showSect('settingsDump');">${_("Dump settings")}</a></div>
 				</td>    	
 				<td valign="top">
 <div class="postarea">
@@ -49,7 +49,7 @@ if (confirm('${_("This will delete ALL configuration data drom the database. Con
 				<td colspan=2>
 					<h2>${sect}</h2>
 				</td>
-                %for (key,val) in settings.iteritems():
+                %for (key,val) in sorted(settings.iteritems()):
                 <tr>
                     <td class="postblock">${key}</td>
                     <td>

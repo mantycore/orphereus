@@ -44,7 +44,7 @@ log = logging.getLogger(__name__)
 class OrphieBaseController(BaseController):
     def __before__(self):
         if g.OPT.devMode:
-            c.log = []
+            c.log = list()
             c.sum = 0
             self.startTime = time.time()
 
@@ -186,8 +186,6 @@ class OrphieBaseController(BaseController):
         if c.currentURL.endswith('/'):
             c.currentURL = c.currentURL[:-1]
         
-        c.log = list()
-
         if not self.currentUserIsAuthorized():
             return redirect_to('authorizeToUrl', url = c.currentURL)
         if self.userInst.isBanned():
@@ -241,6 +239,7 @@ class OrphieBaseController(BaseController):
         if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/') == fpath.replace('\\', '/'):
             if g.OPT.devMode:
                 c.renderStartTime = time.time()
+                c.processStartTime = self.startTime
                 c.log.append("processing: %s" % str(c.renderStartTime - self.startTime))
             output = render('/' + tpath, extra_vars = options)
             if g.globalFilterStack and not options.get('disableFiltering', None):

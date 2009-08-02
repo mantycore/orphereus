@@ -40,6 +40,10 @@
 %endif
     <hr/>
 %endfor
+<%include file="wakaba.paginator.mako" args="routeName='board', kwargDict={'board' : c.board}" />
+%if c.pages:
+<hr />
+%endif
 
 <table class="userdelete">
     <tbody>
@@ -59,10 +63,6 @@
 </table>
 
 </form>
-<%include file="wakaba.paginator.mako" args="routeName='board', kwargDict={'board' : c.board}" />
-%if c.pages:
-<hr />
-%endif
 
 <form action="${h.url_for('searchBase')}" method="post">
     <input type="text" name="query" size="20" />

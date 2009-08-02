@@ -4,9 +4,10 @@ from string import *
 from Orphereus.lib.pluginInfo import *
 from Orphereus.lib.base import *
 from Orphereus.lib.menuItem import MenuItem
-from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
+from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST, engineVersion
 from Orphereus.model import *
 
+import datetime 
 import logging
 log = logging.getLogger(__name__)
 
@@ -97,6 +98,8 @@ class SetsmgrController(OrphieBaseController):
             c.message = _('Settings were updated')
         
         c.cfg = {}
+        c.ver = engineVersion
+        c.now = datetime.datetime.now()
         c.allSettings = self.settings
         for sect in self.getSectionNames():
             c.cfg[sect] = self.cutSectionNames(self.getSettingsDict(Setting.getSection(sect)))

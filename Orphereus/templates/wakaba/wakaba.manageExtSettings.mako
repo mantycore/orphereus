@@ -2,7 +2,7 @@
 <%inherit file="wakaba.management.mako" />
 
 <script>
-var sections = [${', '.join(map(lambda str: "'%s'" %str,c.cfg.iterkeys()))}, 'settingsDump'];
+var sections = [${', '.join(list(["'%s'" %str for str in c.cfg.iterkeys()]))}, 'settingsDump'];
 var active = 'lolz';
 function showSect(sect) {
 if (sect != active) {
@@ -100,6 +100,9 @@ ${'\r\n'.join(val.split(','))}
 </div>
 <div id="settingsDump" style="display:none" align="center">
 <textarea style="overflow-x: scroll; overflow-y: scroll;" rows="20" cols="80">
+# ${c.ver} configuration, created ${c.now}
+# Plugins: ${', '.join(list([plugin.pluginId() for plugin in g.plugins]))}
+
 ${'\r\n'.join(sorted(map(lambda (key,val): "%s = %s" %(key,val),c.allSettings.iteritems())))}
 </textarea>
 <br /><i>${_('(pastable into .ini file)')}</i>

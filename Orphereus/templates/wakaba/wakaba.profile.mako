@@ -26,12 +26,14 @@
             <td class="postblock">${_('Replies per thread')}</td>
             <td><input name="repliesPerThread" value="${c.userInst.repliesPerThread}" /></td>
         </tr>
+        %if g.OPT.allowOverview:
         <tr>
             <td class="postblock">${_('Home filter exclusions')}
             <div style="font-size: 60%; font-style:italic;">${_('(You can ignore only existing tags)')}</div>
             </td>
             <td><input name="homeExclude" value="${c.homeExclude}" /></td>
         </tr>
+        %endif
         <tr>
             <td class="postblock">${_('Highlight my posts')}</td>
             <td><input type="checkbox" name="hlOwnPosts" ${c.userInst.hlOwnPosts and 'checked="checked"' or ""} /></td>

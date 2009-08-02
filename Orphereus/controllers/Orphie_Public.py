@@ -196,7 +196,10 @@ class OrphiePublicController(OrphieBaseController):
                     c.frameEnabled = True
                     return self.render('loginRedirect')
                 else: # (2.2) create new frame with correct target.
-                    return redirect_to('boardBase', frameTarget = c.currentURL)
+                    if c.currentURL:
+                        return redirect_to('boardBase', frameTarget = c.currentURL)
+                    else:
+                        return redirect_to('boardBase')
 
         c.boardName = _('Login')
         return self.render('login')

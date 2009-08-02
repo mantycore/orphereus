@@ -204,28 +204,28 @@ class User(AbstractUser):
         return self.options.isAdmin
 
     def canDeleteAllPosts(self):
-        return self.options.canDeleteAllPosts
+        return self.options.isAdmin and self.options.canDeleteAllPosts
 
     def canMakeInvite(self):
-        return self.options.canMakeInvite
+        return self.options.isAdmin and self.options.canMakeInvite
 
     def canChangeRights(self):
-        return self.options.canChangeRights
+        return self.options.isAdmin and self.options.canChangeRights
 
     def canChangeSettings(self):
-        return self.options.canChangeSettings
+        return self.options.isAdmin and self.options.canChangeSettings
 
     def canManageBoards(self):
-        return self.options.canManageBoards
+        return self.options.isAdmin and self.options.canManageBoards
 
     def canManageUsers(self):
         return self.options.canManageUsers or self.options.canChangeRights
 
     def canManageExtensions(self):
-        return self.options.canManageExtensions
+        return self.options.isAdmin and self.options.canManageExtensions
 
     def canManageMappings(self):
-        return self.options.canManageMappings
+        return self.options.isAdmin and self.options.canManageMappings
 
     def canRunMaintenance(self):
-        return self.options.canRunMaintenance
+        return self.options.isAdmin and self.options.canRunMaintenance

@@ -4,7 +4,7 @@
 <table border="1"><tbody><tr><td>
 %if c.page > 0:
     <form method="get" action='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page - 1))))}'>
-    <input value="<<" type="submit" /></form>
+    <input value="&lt;&lt;" type="submit" /></form>
     </td><td>
 %endif
 
@@ -50,7 +50,7 @@
 %if c.page < c.pages-1:
     </td><td>
     <form method="get" action='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page + 1))))}'>
-    <input value=">>" type="submit" /></form>
+    <input value="&gt;&gt;" type="submit" /></form>
 %endif
 </td></tr></tbody></table>
 %endif

@@ -63,12 +63,6 @@
     </tr>
 %endif
 
-%if c.boardOptions.enableSpoilers:
-    <tr id="trspoiler">
-        <td class="postblock">${_('Spoiler')}</td>
-        <td><input type="checkbox" name="spoiler" /></td>
-    </tr>
-%endif
     <tr id="trsubject">
         <td class="postblock">${_('Title')}</td>
         <td>
@@ -80,6 +74,18 @@
         <td class="postblock">${_('Text')}</td>
         <td><textarea id="replyText" name="message" cols="60" rows="6"></textarea></td>
     </tr>
+    %if c.boardOptions.images and not c.oekaki:
+        <tr id="trfile">
+            <td class="postblock">${_('File')}</td>
+            <td>
+            	<input type="file" name="file" size="35" />
+				%if c.boardOptions.enableSpoilers:
+            	<span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler" /> ${_('Spoiler')}</div>
+				%endif
+            </td>
+        </tr>
+
+    %endif
     %if c.board:
         <tr id="trtags">
             <td class="postblock">${_('Boards')}</td>
@@ -88,6 +94,7 @@
             </td>
         </tr>
     %endif
+
 
     %if c.captcha and not (not c.board and g.OPT.allowAnswersWithoutCaptcha) and not g.OPT.forbidCaptcha:
         <tr id="trcaptcha">
@@ -104,13 +111,6 @@
             <td>
                 <input type="password" name="remPass" size="35" value="${c.remPass}" />
             </td>
-        </tr>
-    %endif
-
-    %if c.boardOptions.images and not c.oekaki:
-        <tr id="trfile">
-            <td class="postblock">${_('File')}</td>
-            <td><input type="file" name="file" size="35" /></td>
         </tr>
     %endif
 

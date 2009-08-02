@@ -202,21 +202,23 @@ class Post(object):
 
     @staticmethod
     def buildMetaboardFilter(url, userInst):
-        def buildMyPostsFilter():
+        def buildMyPostsFilter(opOnly = False):
             list = []
             posts = Post.filterByUid(userInst.uidNumber).all()
-
+            
             for p in posts:
                 if not p.parentid and not p.id in list:
                     list.append(p.id)
-                elif p.parentid and not p.parentid in list:
+                elif p.parentid and not (p.parentid in list) and not opOnly:
                     list.append(p.parentid)
             return Post.id.in_(list)
 
         def buildArgument(arg):
             if not isinstance(arg, sa.sql.expression.ClauseElement):
                 if arg == '@':
-                    return (buildMyPostsFilter(), [])
+                    return (buildMyPostsFilter(False), [])
+                elif arg == "*":
+                    return (buildMyPostsFilter(True), [])
                 elif arg == '~':
                     disableExclusions = Post.tags.any(Tag.id.in_(userInst.homeExclude))
                     disableHidden = Post.tags.any(Tag.options.has(not_(TagOptions.showInOverview)))

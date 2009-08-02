@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
+%if g.OPT.useTopPaginator:
 <%include file="wakaba.paginator.mako" args="routeName='board', kwargDict={'board' : c.board}" />
 %if c.pages:
 <hr/>
+%endif
 %endif
 
 %if c.currentUserCanPost:

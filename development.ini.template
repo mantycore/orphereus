@@ -87,6 +87,7 @@ core.searchPluginId = search_like
 
 
 frontend.invisibleBump = true
+frontend.useTopPaginator = false
 frontend.usersCanViewLogs = false
 frontend.title = Orphereus
 frontend.vitalSigns = true

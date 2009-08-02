@@ -3,7 +3,9 @@
 %if c.pages:
 <table border="1"><tbody><tr><td>
 %if c.page > 0:
-    [<a href='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page - 1))))}'>&lt;&lt;</a>]
+    <form method="get" action='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page - 1))))}'>
+    <input value="<<" type="submit" /></form>
+    </td><td>
 %endif
 
 %if not c.showPagesPartial:
@@ -46,7 +48,9 @@
     %endfor
 %endif
 %if c.page < c.pages-1:
-    [<a href='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page + 1))))}'>&gt;&gt;</a>]
+    </td><td>
+    <form method="get" action='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page + 1))))}'>
+    <input value=">>" type="submit" /></form>
 %endif
 </td></tr></tbody></table>
 %endif

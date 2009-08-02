@@ -91,8 +91,6 @@ def pluginInit(globj = None):
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(intValues, CFG_INT)
             globj.OPT.registerCfgValues(stringValues, CFG_STRING)
-            #globj.OPT.setValues(intValues, globj.OPT.intGetter)
-            #globj.OPT.setValues(stringValues, globj.OPT.stringGetter)
 
     config = {'searchRoutine' : searchRoutine,
              'deps' : False,

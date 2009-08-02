@@ -38,7 +38,6 @@ def pluginInit(globj = None):
                             ]
 
         if not globj.OPT.eggSetupMode:
-            #globj.OPT.setValues(booleanValues, globj.OPT.booleanGetter)
             globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
             
 

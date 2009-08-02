@@ -83,7 +83,9 @@
         %if g.OPT.allowLogin:
             <div><a href="${h.url_for('authorizeToUrl', url='!')}" target="board">${_('Login')}</a></div>
         %endif
-        <div><a href="${h.url_for('logout')}" target="_top">${_('Kill session')}</a></div>
+        %if g.OPT.allowAnonProfile:
+	        <div><a href="${h.url_for('logout')}" target="_top">${_('Kill session')}</a></div>
+        %endif
     %if g.OPT.allowRegistration:
     <div><a href="${h.url_for('register', invite='register')}" target="board" onclick="parent.top.list.location.reload(true);">${_('Register')}</a></div>
     %endif

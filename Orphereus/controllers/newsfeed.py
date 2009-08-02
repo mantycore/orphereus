@@ -66,9 +66,6 @@ def pluginInit(globj = None):
             globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
             globj.OPT.registerCfgValues(intValues, CFG_INT)
             globj.OPT.registerCfgValues(stringValues, CFG_STRING)
-            #globj.OPT.setValues(booleanValues, globj.OPT.booleanGetter)
-            #globj.OPT.setValues(intValues, globj.OPT.intGetter)
-            #globj.OPT.setValues(stringValues, globj.OPT.stringGetter)
 
     config = {'homeTemplate' : "newsfeed",
               'homeGenerator' : newsGenerator,

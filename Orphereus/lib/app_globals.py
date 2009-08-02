@@ -246,8 +246,7 @@ class OptHolder(object):
                     sqlValueObj = self.setter.getSetting(paramName)
                     if sqlValueObj:
                         sqlValue = sqlValueObj.value
-                    log.debug("Got from db: %s->'%s'" % (paramName, sqlValue))
-                    if sqlValue:
+                        log.debug("Got from db: %s->'%s'" % (paramName, sqlValue))
                         value = getter(sqlValue)
                     else:
                         log.debug("Setting param in db: %s->'%s'" % (paramName, rawValue))

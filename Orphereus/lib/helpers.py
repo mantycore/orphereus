@@ -135,8 +135,9 @@ def ipToInt(ipStr):
         val = -(sys.maxint+1)*2 + val
     return val
 
-def intToIp(n):
-    return socket.inet_ntoa(struct.pack('!L', n))
+def intToIp(ipint):
+    ipi = int(ipint)
+    return str((ipi >> 24) & 0xff)+'.'+str((ipi>>16) & 0xff)+'.'+str((ipi>>8) & 0xff)+'.'+str(ipi & 0xff) 
 
 def setLang(lang):
     oldLang = get_lang()

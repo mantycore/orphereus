@@ -200,6 +200,10 @@ class User(AbstractUser):
     def getAdmins():
         return User.query.options(eagerload('options')).filter(User.options.has(UserOptions.isAdmin == True)).all()
 
+    @staticmethod
+    def getBanned():
+        return User.query.options(eagerload('options')).filter(User.options.has(UserOptions.bantime > 0)).all()
+
     def isAdmin(self):
         return self.options.isAdmin
 

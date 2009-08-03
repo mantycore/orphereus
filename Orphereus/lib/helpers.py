@@ -32,7 +32,7 @@ import miscUtils as utils
 from routes.util import url_for
 from pylons import request
 
-import socket, struct
+import socket, struct, sys
 
 import logging
 log = logging.getLogger(__name__)
@@ -129,19 +129,14 @@ def staticFile(fileName):
         gv.caches[localFileName] = version
     return u"%s%s?version=%s" % (spw, relFileName, str(version))
 
-def dottedToInt(ipStr):
-    return struct.unpack('!L', socket.inet_aton(ipStr))[0]
+def ipToInt(ipStr):
+    val = struct.unpack('!L', socket.inet_aton(ipStr))[0]
+    if val>sys.maxint:
+        val = -(sys.maxint+1)*2 + val
+    return val
 
-def intToDotted(n):
+def intToIp(n):
     return socket.inet_ntoa(struct.pack('!L', n))
-
-def ipToInt(ipstr):
-    ip = map(lambda x: int(x), ipstr.split('.'))
-    return int(ip[0] << 24) + (ip[1] << 16) + (ip[2] << 8) + ip[3]
-
-def intToIp(ipint):
-    ipi = int(ipint)
-    return str((ipi >> 24) & 0xff)+'.'+str((ipi>>16) & 0xff)+'.'+str((ipi>>8) & 0xff)+'.'+str(ipi & 0xff)
 
 def setLang(lang):
     oldLang = get_lang()

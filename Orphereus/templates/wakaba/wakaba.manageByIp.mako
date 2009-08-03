@@ -4,7 +4,7 @@
 <table class="hlTable">
 <tr>
 <td>${_("IP from which this post was created")}</td>
-<td>${h.intToDotted(int(c.ip))}</td>
+<td>${h.intToIp(int(c.ip))}</td>
 <td><a href="${h.url_for('hsIpBanAttempt', pid=c.firstPost.id)}">${_("Ban")}</a></td>
 </tr>
 <tr>

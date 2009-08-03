@@ -64,7 +64,7 @@ class OrphieBaseController(BaseController):
 
         ################# TODO: rewrite. Dont't like this.
         ipStr = getUserIp()
-        ip = h.dottedToInt(ipStr)
+        ip = h.ipToInt(ipStr)
         banInfo = Ban.getBanByIp(ip)
         currentURL = request.path_info.decode('utf-8', 'ignore')
 

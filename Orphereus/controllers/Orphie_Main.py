@@ -653,7 +653,7 @@ class OrphieMainController(OrphieBaseController):
             errorHandler = ajaxError
 
         ipStr = getUserIp()
-        ip = h.dottedToInt(ipStr)
+        ip = h.ipToInt(ipStr)
         banInfo = Ban.getBanByIp(ip)
 
         c.ban = banInfo

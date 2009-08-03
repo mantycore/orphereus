@@ -39,6 +39,7 @@ from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.userBan import UserBan
 
 log = logging.getLogger(__name__)
 
@@ -212,16 +213,16 @@ class OrphieAdminController(OrphieBaseController):
         c.currentItemId = 'id_hsBans'
 
         c.bans = Ban.getBans()
-        #c.showCount = request.POST.get('showCount', False)
-        #log.debug('rendering list, msg=%s' %c.message)
+        #c.userBans = map(lambda u: UserBan(u.uidNumber), User.getBanned())
+        c.userBans = list([UserBan(u.uidNumber) for u in User.getBanned()])
         return self.render('manageBans')
 
     def editBan(self, id):
         
         def getPostData():
             try:
-                ip = h.dottedToInt(filterText(request.POST.get('ip', 0)))
-                mask = h.dottedToInt(filterText(request.POST.get('mask', 0)))
+                ip = h.ipToInt(filterText(request.POST.get('ip', 0)))
+                mask = h.ipToInt(filterText(request.POST.get('mask', 0)))
             except:
                 return self.error(_("Please check the format of IP addresses and masks."))
             type = request.POST.get('type', False) == 'on'
@@ -251,7 +252,7 @@ class OrphieAdminController(OrphieBaseController):
             c.exists = False
             c.boardName = _('New IP ban')
             ip = c.ipToBan or 0
-            c.ban = Ban(ip, h.dottedToInt('255.255.255.255'), 0, '', datetime.datetime.now(), 30, True)
+            c.ban = Ban(ip, h.ipToInt('255.255.255.255'), 0, '', datetime.datetime.now(), 30, True)
         else:
             c.ban = ban
 

@@ -111,7 +111,7 @@ class MaintenanceWorker(object):
                     bantime = 10000
                 if banDate and bantime > 0 and banDate < (currentTime - datetime.timedelta(days = bantime)):
                     ban.disable()
-                    unbanMessage = (u"Automatic unban: IP <b>%s</b> (Reason was %s)") % (h.intToDotted(ban.ip), ban.reason)
+                    unbanMessage = (u"Automatic unban: IP <b>%s</b> (Reason was %s)") % (h.intToIp(ban.ip), ban.reason)
                     mtnLog.append(LogElement('Info', unbanMessage))
                     toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
         batchProcess(Ban.query().filter(Ban.enabled==True), bansSearch)

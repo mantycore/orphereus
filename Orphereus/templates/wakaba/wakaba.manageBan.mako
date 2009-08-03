@@ -42,13 +42,13 @@
                 <tr>
                     <td class="postblock">${_('IP')}</td>
                     <td>
-                        <input type="text" name="ip" size="35" value="${h.intToDotted(int(c.ban.ip))}" />
+                        <input type="text" name="ip" size="35" value="${h.intToIp(int(c.ban.ip))}" />
                     </td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Mask')}</td>
                     <td>
-                        <input type="text" name="mask" size="35" value="${h.intToDotted(int(c.ban.mask))}" />
+                        <input type="text" name="mask" size="35" value="${h.intToIp(int(c.ban.mask))}" />
                     </td>
                 </tr>
                 <tr>

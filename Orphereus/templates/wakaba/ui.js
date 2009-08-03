@@ -1,4 +1,17 @@
 # -*- coding: utf-8 -*-
+//copy-pasted from 0chan. 
+function menu_show(id) {
+	if(menu_current != '')
+	{
+		document.getElementById(menu_current).style.display = 'none';
+	}
+	if(id != '' && document.getElementById(id))
+	{
+		document.getElementById(id).style.display = 'block';
+		menu_current = id;
+	}
+}
+
 function toggle_div(id) {
     $('#'+id).slideToggle('fast');
 }

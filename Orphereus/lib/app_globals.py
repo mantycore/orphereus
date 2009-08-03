@@ -60,7 +60,7 @@ class OptHolder(object):
                                  'useFrameLogo', 'permissiveFileSizeConjunction',
                                  'boardWideProoflabels', 'allowOverview', 'framedMain',
                                  'obligatoryFrameCreation', 'showShortStatistics',
-                                 'newsSiteMode','useTopPaginator',
+                                 'newsSiteMode','useTopPaginator','useZMenu',
                                 ) 
                               ),
 

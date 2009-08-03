@@ -32,7 +32,11 @@ ${h.headCallback(c)}
 <%include file="wakaba.jsTest.mako" />
 
 %if not c.disableMenu:
-<%include file="wakaba.menu.mako" />
+	%if g.OPT.useZMenu:
+		<%include file="wakaba.z-menu.mako" />
+	%else:
+		<%include file="wakaba.menu.mako" />
+	%endif
 %endif
 
 %if not c.disableLogo:

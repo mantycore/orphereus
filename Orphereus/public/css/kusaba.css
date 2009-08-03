@@ -1,4 +1,4 @@
-﻿body { margin: 0; padding: 8px; margin-bottom: auto; }
+body { margin: 0; padding: 8px; margin-bottom: auto; }
 blockquote blockquote { margin-left: 0em }
 form {
 margin-bottom: 0px }
@@ -17,6 +17,7 @@ margin-bottom: 0em }
 html, body {
     background-color: #EEFFEE;
     color: #000000;
+    
 }
 a {
  background:inherit;

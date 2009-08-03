@@ -160,3 +160,7 @@ def makeLangValid(lang):
             return  lang
         else:
             return ''
+
+def sectionName(str):
+    #TODO: find a better solution
+    return str.replace(' ', '')

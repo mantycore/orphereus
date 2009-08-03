@@ -13,7 +13,11 @@
     </head>
     <body>
         %if not c.serviceOut:
-            <%include file="wakaba.menu.mako" />
+		%if g.OPT.useZMenu:
+			<%include file="wakaba.z-menu.mako" />
+		%else:
+			<%include file="wakaba.menu.mako" />
+		%endif
             <%include file="wakaba.logo.mako" />
             <hr />
             <table cellpadding="5" width="100%">

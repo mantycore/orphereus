@@ -60,12 +60,11 @@ id="reply${post.id}">
 
         (<em>${'%.2f' % (post.file.size / 1024.0)} \
         %if post.file.width and post.file.height:
-            ${_('Kbytes')}, ${post.file.width}x${post.file.height}</em>)
+            ${_('Kbytes')}, ${post.file.width}x${post.file.height}</em>)</span>
         %else:
-            ${_('Kbytes')}</em>)
+            ${_('Kbytes')}</em>)</span>
         %endif
 
-        </span>
         <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
         <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}" \
         %if post.file.extension.newWindow:

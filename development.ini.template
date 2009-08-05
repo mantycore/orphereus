@@ -137,6 +137,7 @@ antispam.threadLimit = 3
 antispam.banTimeDays = 5
 antispam.enableAutoBan = false
 antispam.autoBanAnonTotally = false
+htmlCompressor.disableCompressionList = wakaba/wakaba.spainter.mako
 
 # Board defaults
 defaults.defThumbSize = 200

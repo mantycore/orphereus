@@ -205,7 +205,7 @@ class OrphieBaseController(BaseController):
 
     def render(self, page, tmplName = None, **options):
         tname = 'std'
-        tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
+        c.template = tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
         c.actuator = "actuators/%s/" % (g.OPT.actuator)
         c.actuatorTest = c.actuator
 
@@ -214,7 +214,7 @@ class OrphieBaseController(BaseController):
                 tname = tmplName
                 if not tname:
                     tname = self.userInst.template
-                tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
+                c.template = tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
                 c.actuatorTest = "%s/actuators/%s/" % (tname, g.OPT.actuator)
         except: #userInst not defined or user banned
             pass

@@ -1,4 +1,4 @@
-﻿body { margin: 0; padding: 8px; margin-bottom: auto; }
+body { margin: 0; padding: 8px; margin-bottom: auto; }
 blockquote blockquote { margin-left: 0em }
 form {
 margin-bottom: 0px }
@@ -47,6 +47,14 @@ div.delete {
         color:#FFFFFF;
         width:100%;
 }
+.theader a {
+        color:#FFFFFF;
+        font-weight: bold;
+}
+
+.theader a:hover {
+}
+
 .postarea {
 }
 .rules {
@@ -140,6 +148,13 @@ div.delete {
     padding-left: 2px;
 }
 
+input[class="paginator"] {
+    background-color: #FFFFEE;
+    border-top: 1px solid #BBBBBB;
+    border-bottom: 1px solid #BBBBBB;
+    border-left: 1px solid #BBBBBB;
+    border-right: 1px solid #BBBBBB;
+}
 
 blockquote {
   margin: .5em .5em .5em 1em;

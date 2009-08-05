@@ -1,4 +1,4 @@
-﻿body { margin: 0; padding: 8px; margin-bottom: auto; }
+body { margin: 0; padding: 8px; margin-bottom: auto; }
 blockquote blockquote { margin-left: 0em }
 form {
 margin-bottom: 0px }
@@ -181,6 +181,13 @@ div.delete {
     padding-left: 2px;
 }
 
+input[class="paginator"] {
+    background-color: #EEF2FF;
+    border-top: 1px solid #49525D;
+    border-bottom: 1px solid #49525D;
+    border-left: 1px solid #49525D;
+    border-right: 1px solid #49525D;
+}
 
 blockquote {
   margin: .5em .5em .5em 1em;

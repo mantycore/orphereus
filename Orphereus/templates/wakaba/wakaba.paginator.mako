@@ -3,10 +3,9 @@
 %if c.pages:
 <table border="1"><tbody><tr><td>
 %if c.page > 0:
-    <input type="button" value="&lt;&lt;" onclick="window.location='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page - 1))))}'" />
+    <input type="button" class="paginator" value="&lt;&lt;" onclick="window.location='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page - 1))))}'" />
     <!-- <form method="get" action='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page - 1))))}'>
     <input value="&lt;&lt;" type="submit" /></form> -->
-    </td><td>
 %endif
 
 %if not c.showPagesPartial:
@@ -49,8 +48,7 @@
     %endfor
 %endif
 %if c.page < c.pages-1:
-    </td><td>
-    <input type="button" value="&gt;&gt;" onclick="window.location='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page + 1))))}'" />
+    <input type="button" class="paginator" value="&gt;&gt;" onclick="window.location='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page + 1))))}'" />
     <!-- <form method="get" action='${h.url_for(routeName, **(dict(kwargDict, **dict(page=c.page + 1))))}'>
     <input value="&gt;&gt;" type="submit" /></form> -->
     %endif

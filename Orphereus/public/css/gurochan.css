@@ -1,4 +1,4 @@
-﻿body { margin: 0; padding: 8px; margin-bottom: auto; }
+body { margin: 0; padding: 8px; margin-bottom: auto; }
 blockquote blockquote { margin-left: 0em }
 form {
 margin-bottom: 0px }
@@ -59,6 +59,8 @@ div.delete {
 }
 
 .theader, .passvalid {
+  text-align: center;
+  border: 1px solid #CA927B;
 }
 .postarea {
   background:inherit;
@@ -154,6 +156,11 @@ div.delete {
     border-left: dashed 2px #AAAAAA;
     padding-left: 2px;
 }
+
+input[class="paginator"] {
+    background-color: #EDDAD2;
+}
+
 blockquote {
   margin: .5em .5em .5em 1em;
 }

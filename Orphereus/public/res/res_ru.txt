@@ -1,0 +1,119 @@
+#Please make a language resource by UTF-8 format.
+
+window_0=Brushes
+window_1=Retouch
+window_2=Size&Palette
+window_3=Texture
+window_4=Color&Mask
+window_5=Tools
+window_6=Layer
+window_7=Options
+window_8=Pen Keep
+
+penm_0=Normal
+penm_1=WaterColor
+penm_2=Air Brush
+penm_3=EPen
+
+mask_0=Mask
+mask_1=ON
+mask_2=Reverse
+
+option_0=Float Canvas
+option_1=Turn Window
+option_author=Открыть сайт Shi-chan
+
+t000=Pencil
+t001=Water
+t002=AirBrush
+t003=Pen
+t004=EPen
+t005=Mosaic
+
+t010=Dodge
+t011=Burn
+t012=Soft
+t013=Text
+t014=Combine
+
+t020=Copy
+t021=Flip X
+t022=Flip Y
+t023=Rotate
+
+t030=Erase
+t031=ESmooth
+t032=EraseRect
+t033=EraseAll
+
+t040=Color
+t041=Texture
+t042=Font
+t043=Keep
+
+t050=Freehand
+t051=Curve
+t052=Line
+t053=Bezier
+t054=Solid Rect
+t055=Rect
+t056=Solid Oval
+t057=Oval
+t058=Fill
+
+t060=Normal
+t061=Mask
+t062=Reverse Mask
+
+Layer=Layer
+Combine=Merge
+Shift=Shift
+
+Font=Шрифт
+Size=Размер
+WSpace=Интервал
+Italic=Курсив
+Bold=Жирный
+Apply=Применить
+VText=Вертикально
+
+AddLayer=Добавить слой
+DelLayer=Удалить слой
+DelLayerQ=Удалить? Отмена недоступна после слияния слоёв.
+CombineV=Слить видимые слои
+CombineVQ=Слить видимые слои?
+PropertyLayer=Свойства
+
+Normal=Normal
+Multiply=Multiply
+Reverse=Reverse
+
+MenuLayer=Меню
+IsPreview=Исп. превью
+
+kakunin_0=Открыть сайт Shi-chan в новом окне?
+
+kakunin_1=Очистить полотно?
+
+yes=Да
+no=Нет
+
+sUpload=Загрузить
+sF=В окне
+sRedo=Повтор
+sUndo=Отмена
+sFill=Заливка
+
+IsWindowView=Переключиться в оконный режим?
+IsIndependent=Открыть в отдельном окне?
+IsPageView=Вернуть редактор в страницу?
+
+Restore=Восстановить несохранённое изображение?
+IsSave=Готово? Нажмите Да, чтобы загрузить изображение.
+TryAgain=Нажмите "Загрузить" ещё раз.
+
+Send0=    Отправка изображения :    
+EncJPEG=Сжатие JPEG...
+EncPNG=Сжатие PNG...
+CompJPEG=Сжатие JPEG...
+CompPNG=Сжатие PNG...

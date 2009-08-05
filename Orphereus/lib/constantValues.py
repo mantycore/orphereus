@@ -25,35 +25,6 @@ from pylons.i18n import _, ungettext, N_
 decimalVersion = "1.1.4"
 engineVersion = "Orphereus %s" % decimalVersion
 
-#this are the default values, the real ones are stored in the database
-settingsDef = {
-    "title"         : u'Orphereus',
-    "invisibleBump" : u'true',
-    "maxTagsCount"  : u'5',
-    "maxTagLen"     : u'6',
-    "disabledTags"  : u'logout|authorize|register|youAreBanned|userProfile|holySynod|frameMenu|!',
-    "adminOnlyTags" : u'synod|logs',
-    "maxLinesInPost": u'15',
-    "cutSymbols"    : u'5000',
-    "usersCanViewLogs"  : u'false',
-    "additionalLinks" : u'http://orphereus.anoma.ch,Orphereus|http://anoma.ch,Anoma',
-    "sectionNames" : u'Main',
-}
-
-settingsDescription = {
-    "title"         : (N_("Board title"), str),
-    "invisibleBump" : (N_("Invisible bumps"), bool),
-    "maxTagsCount"  : (N_("Max tags per thread"), int),
-    "maxTagLen"     : (N_("Max tag length"), int),
-    "disabledTags"  : (N_("Disallowed tag names"), list),
-    "adminOnlyTags" : (N_("Admin-only tags"), list),
-    "maxLinesInPost": (N_("Cut post after X lines"), int),
-    "cutSymbols"    : (N_("Cut post after Y symbols"), int),
-    "usersCanViewLogs"  : (N_("Logs available to users"), bool),
-    "additionalLinks" : (N_("Additional links"), list),
-    "sectionNames" : (N_("Menu section names"), list),
-}
-
 id3FieldsNames = {
 "album" : N_("Album"),
 "title" : N_("Title"),

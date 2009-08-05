@@ -257,7 +257,6 @@ class OrphieAdminController(OrphieBaseController):
             c.ban = ban
 
         postedId = request.POST.get('id', None)
-        log.debug(postedId)
         if (postedId):
             if (int(postedId) > 0):
                 if not request.POST.get('delete', False):

@@ -131,6 +131,12 @@ sphinx.sphinxPort = 3312
 sphinx.sphinxIndexName = anomach
 sphinx.sphinxPostDatePseudo = date
 sphinx.sphinxPostIdPseudo = postId
+antispam.checkIntervalSeconds = 60
+antispam.postLimit = 6
+antispam.threadLimit = 3
+antispam.banTimeDays = 5
+antispam.enableAutoBan = false
+antispam.autoBanAnonTotally = false
 
 # Board defaults
 defaults.defThumbSize = 200

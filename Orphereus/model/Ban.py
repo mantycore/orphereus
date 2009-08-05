@@ -78,7 +78,7 @@ class Ban(object):
 
     @staticmethod
     def getBans():
-        return Ban.query.order_by(Ban.enabled.desc())
+        return Ban.query.order_by(Ban.enabled.desc()).all()
 
     @staticmethod
     def getBanById(banId):

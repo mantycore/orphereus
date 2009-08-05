@@ -652,8 +652,7 @@ class OrphieMainController(OrphieBaseController):
         if ajaxRequest:
             errorHandler = ajaxError
 
-        ipStr = getUserIp()
-        ip = h.ipToInt(ipStr)
+        ip = h.ipToInt(getUserIp())
         banInfo = Ban.getBanByIp(ip)
 
         c.ban = banInfo
@@ -909,7 +908,7 @@ class OrphieMainController(OrphieBaseController):
 
         postParams.ip = None
         if self.userInst.Anonymous or g.OPT.saveAnyIP:
-            postParams.ip = ipToInt(getUserIp())
+            postParams.ip = h.ipToInt(getUserIp())
 
         post = Post.create(postParams)
 

@@ -62,23 +62,18 @@ class OrphieBaseController(BaseController):
         self.requestedMenus = []
         self.builtMenus = {}
 
-        ################# TODO: rewrite. Dont't like this.
-        ipStr = getUserIp()
-        ip = h.ipToInt(ipStr)
+        # IP ban checks
+        ip = h.ipToInt(getUserIp())
         banInfo = Ban.getBanByIp(ip)
         currentURL = request.path_info.decode('utf-8', 'ignore')
 
         if currentURL.endswith('/'):
             currentURL = c.currentURL[:-1]
-
-        #log.debug('ipstr: %s, ip: %s, ban: %s, url: %s' %(ipStr,ip,banInfo,currentURL))
-
+        
         if banInfo and banInfo.enabled:
             c.ban = banInfo
             if (currentURL != '/ipBanned') and banInfo.type:
                 redirect_to('ipBanned')
-
-        ###############
 
         if g.OPT.checkUAs and self.userInst.isValid() and not self.userInst.Anonymous:
             for ua in g.OPT.badUAs:

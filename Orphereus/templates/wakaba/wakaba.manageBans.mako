@@ -9,6 +9,7 @@
 <a href="${h.url_for('hsBanEdit')}">${_('Add new ban')}</a>
 
 <h2>IP bans</h2>
+%if (c.bans):
 <table class="hlTable">
     <thead>
         <tr>
@@ -37,7 +38,11 @@
     %endfor
     </tbody>
 </table>
+%else:
+<i>${_('No IP ban records.')}</i>
+%endif
 <h2>User bans</h2>
+%if c.userBans:
 <table class="hlTable">
     <thead>
         <tr>
@@ -58,3 +63,6 @@
     %endfor
     </tbody>
 </table>
+%else:
+<i>${_('No users were banned.')}</i>
+%endif

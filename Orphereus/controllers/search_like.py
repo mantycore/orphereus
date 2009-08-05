@@ -15,6 +15,7 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
     failInfo = None
     postIds = []
     count = 0
+    posts = []
     highlights = {}
     def highlight(strtorepl, text):
         return strtorepl.replace(text, u'<span style="background-color:yellow">%s</span>' % text)

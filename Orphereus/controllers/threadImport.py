@@ -36,11 +36,12 @@ def pluginInit(g = None):
 from OrphieBaseController import *
 
 class ThreadimportController(OrphieBaseController):
+    postMappings = {}
     def __before__(self):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
             self.requestForMenu("managementMenu")
-
+            
     def initChecks(self):
         if not self.currentUserIsAuthorized():
             return redirect_to('boardBase')
@@ -51,11 +52,29 @@ class ThreadimportController(OrphieBaseController):
         c.userInst = self.userInst
         if not checkAdminIP():
             return redirect_to('boardBase')
+        
+    def fixReferences(self, text):
+        def replacer(match):
+            postId = match.groups()[0]
+            if self.postMappings.has_key(postId):
+                localPostId = self.postMappings[postId]
+                localPost = OrphiePost.getPost(localPostId)
+                localPostLink = h.url_for('thread', **h.postKwargs(localPost.parentid, localPost.id))
+                log.debug(localPostLink)
+                if self.saveIds:
+                    urlArgs = (localPostLink,localPostId,postId)
+                else:
+                    urlArgs = (localPostLink,localPostId,localPostId)
+                return '<a href="%s" onclick="highlight(%s)">&gt;&gt;%s</a>' %urlArgs
+        
+        refRe = re.compile('<a href=[^>]+>&gt\;&gt\;(\d+)</a>')
+        return refRe.sub(replacer, text)
     
     def postToPInfo(self, post, tagstr, parent = None):
         pInfo = empty()
-        pInfo.message = post.text
-        pInfo.title = post.topic
+        pInfo.message = self.fixReferences(unicode(post.text))
+        pInfo.title = unicode(post.topic)
+        pInfo.savedId = post.id
         if self.saveDates:
             pInfo.date = post.date
         if self.saveIds:
@@ -78,35 +97,52 @@ class ThreadimportController(OrphieBaseController):
             errorMessage = fileDescriptors[3]
             if errorMessage:
                 log.error(errorMessage)
+                return None
         pInfo.picInfo = picInfo
         pInfo.existentPic = existentPic  
         return pInfo
     
     def savePost(self, pInfo):
-        return OrphiePost.create(pInfo)
+        newPost = OrphiePost.create(pInfo)
+        self.postMappings[pInfo.savedId] = newPost.id
+        return newPost
     
     def importProcess(self, file):
         tags = filterText(request.POST.get('tagline', None))
         self.saveDates = bool(request.POST.get('useDate', False))
         self.saveIds = bool(request.POST.get('useIds', False))
-        log.debug('%s %s' %(self.saveDates,self.saveIds))
-        
-        self.reader = ThreadReader.createFromPostData(file)
+        self.target = int(request.POST.get('target', 0))
+        if ((not tags) and (not self.target)):
+            c.message = N_('Specify thread or tagline.')
+            return
+        try:
+            self.reader = ThreadReader.createFromPostData(file)
+        except:
+            c.message = N_('This file is not a thread archive.')
+            return
         self.reader.fsClass = FieldStorageLike
-        opPostInfo = self.postToPInfo(self.reader.thread.posts[0], tags)
-        opPost = self.savePost(opPostInfo)
-        for post in self.reader.thread.posts[1:]:
+        startIndex = 1
+        if self.target:
+            startIndex = 0
+            opPost = OrphiePost.getPost(self.target)
+        else:
+            opPostInfo = self.postToPInfo(self.reader.thread.posts[0], tags)
+            opPost = self.savePost(opPostInfo)
+        for post in self.reader.thread.posts[startIndex:]:
             self.savePost(self.postToPInfo(post, None, opPost))
-        return True
+        return opPost
         
     def importThread(self):
         self.initChecks()
         c.boardName = _('Thread import')
         c.currentItemId = 'id_ImportThread'
         file = request.POST.get('file', None)
-        if (file!=None):
-            if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
-                if self.importProcess(file):
-                    c.message = N_('Thread imported successfully.')
+        if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
+            resPost = self.importProcess(file)
+            if resPost:
+                c.message = N_('Posts were imported successfully into <a href="%s" target="_blank">this thread<a>.' 
+                               %(h.url_for('thread', post=resPost.id)))
+        else:
+            c.message = N_('Please, select a file.')
 
         return self.render('importThread')

@@ -17,17 +17,17 @@
                 <tr>
                     <td class="postblock">${_('Thread archive')}</td>
                     <td>
-						<input type="file" name="file" />
+						<input type="file" name="file" size="25" />
                     </td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('Preserve post IDs')}</td>
+                    <td class="postblock">${_('Restore post IDs')}</td>
                     <td>
                     	<input type="checkbox" name="useIds" checked="checked" />
                     </td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('Preserve dates')}</td>
+                    <td class="postblock">${_('Restore dates')}</td>
                     <td>
                     	<input type="checkbox" name="useDate" checked="checked" />
                     </td>
@@ -36,6 +36,18 @@
                     <td class="postblock">${_('Tagline')}</td>
                     <td>
                         <input type="text" name="tagline" size="35"/>
+                    </td>
+                </tr>
+                <tr>
+                	<td />
+                	<td>
+		            	<b>${_('OR')}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Target thread')}</td>
+                    <td>
+                        <input type="text" name="target" size="8" value="0"/>
                     </td>
                 </tr>
                 <tr>

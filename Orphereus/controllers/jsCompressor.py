@@ -54,14 +54,13 @@ def menuItems(menuId):
     #          id        link       name                weight   parent
     menu = None
     if menuId == "managementMenu":
-        menu = (MenuItem('id_PluginItems', N_("Plug-in actions"), '', 500, False),
-                MenuItem('id_RebuildJs', N_("Rebuild JavaScript"), h.url_for('hsRebuildJs'), 30, 'id_PluginItems'),
+        menu = (MenuItem('id_RebuildJs', N_("Rebuild JavaScript"), h.url_for('hsRebuildJs'), 310, 'id_hsMaintenance'),
                 )
 
     return menu
 
 def routingInit(map):
-    map.connect('hsRebuildJs', '/holySynod/service/rebuildJs', controller = 'jsCompressor', action = 'rebuild')
+    map.connect('hsRebuildJs', '/holySynod/rebuildJs', controller = 'jsCompressor', action = 'rebuild')
 
 def pluginInit(g = None):
     if g:

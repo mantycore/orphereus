@@ -111,28 +111,28 @@ function popup_posts(options){
     e.html(e.attr('old_html'))
   }
   var hover_it = function(ev){
-    var m = $(this).html().match(/\d+$/)
+    var m = $(this).attr('href').match(/\/(\d+)\#i(\d+)$/)
     if (!m) return false;
     popup_posts.ev = ev
     popup_posts.ui = $(this)
-    var content = $("#quickReplyNode"+m[0])
+    var content = $("#quickReplyNode"+m[2])
     if (content.size()){
       if (content[0].tagName == 'BLOCKQUOTE')
         show_it(content.parent().html().split(/<table|<TABLE/)[0])
       else
         show_it(content.html())
-    }else if(popup_posts.cache[m[0]] == 404){
+    }else if(popup_posts.cache[m[2]] == 404){
       $(this).html("${_('Post not found')}");
-    }else if (popup_posts.cache[m[0]]){
-      show_it(popup_posts.cache[m[0]]);
+    }else if (popup_posts.cache[m[2]]){
+      show_it(popup_posts.cache[m[2]]);
     }else if(options.ajax){
         var e = $(this)
         load_on(e)
-        $.ajax({type: 'get', url: "${g.OPT.urlPrefix}ajax/getRenderedPost/"+m[0], success: function(html){
+        $.ajax({type: 'get', url: "${g.OPT.urlPrefix}ajax/getRenderedPost/"+m[2], success: function(html){
           load_off(e)
           html = html.replace(/<\/?table[^>]*>/,'')
           show_it(html);
-          popup_posts.cache[m[0]] = html;
+          popup_posts.cache[m[2]] = html;
         }, error: function(a,b) {popup_posts.cache[m[0]] = 404; e.html("${_('Post not found')}") } });
     }
   }

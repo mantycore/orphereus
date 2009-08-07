@@ -29,11 +29,6 @@ class ThreadReader():
     def unpack(self):
         if not(self.tempDir in self.archive):
             shutil.copy(self.archive, self.tempDir)
-        #try:
-        #    os.chroot(self.tempDir)
-        #    os.chdir('/')
-        #except:
-        #    os.chdir(self.tempDir)
         os.chdir(self.tempDir)
         arc = tarfile.open(self.arcName, 'r')
         arc.extractall('./data/')

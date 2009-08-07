@@ -35,7 +35,7 @@
                 <tr>
                     <td class="postblock">${_('Tagline')}</td>
                     <td>
-                        <input type="text" name="tagline" size="35"/>
+                        <input type="text" name="tagline" size="35" value="import"/>
                     </td>
                 </tr>
                 <tr>

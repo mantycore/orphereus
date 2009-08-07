@@ -156,10 +156,10 @@ div.delete {
 
 input[class="paginator"] {
     background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #49525D;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #49525D;
+    border-top: 1px solid #AAAAAA;
+    border-bottom: 1px solid #AAAAAA;
+    border-left: 1px solid #AAAAAA;
+    border-right: 1px solid #AAAAAA;
 }
 
 blockquote {

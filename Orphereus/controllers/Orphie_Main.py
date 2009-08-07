@@ -41,6 +41,7 @@ from wakabaparse import WakabaParser
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from Orphereus.lib.fileHolder import AngryFileHolder
+from Orphereus.lib.processFile import processFile
 from OrphieBaseController import OrphieBaseController
 from mutagen.easyid3 import EasyID3
 from urllib import quote_plus, unquote
@@ -542,86 +543,6 @@ class OrphieMainController(OrphieBaseController):
         c.pchPath = h.modLink(post.file.animpath, c.userInst.secid())
         return self.render('shiAnimation')
 
-    def processFile(self, file, thumbSize = 250, baseEncoded = False):
-        if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
-           name = str(long(time.time() * 10 ** 7))
-           ext = file.filename.rsplit('.', 1)[:0:-1]
-
-           #ret: [FileHolder, PicInfo, Picture, Error]
-
-           # We should check whether we got this file already or not
-           # If we dont have it, we add it
-           if ext:
-              ext = ext[0].lstrip(os.sep).lower()
-           else:    # Panic, no extention found
-              ext = ''
-              return [False, False, False, _("Can't post files without extension")]
-
-           # Make sure its something we want to have
-           extParams = Extension.getExtension(ext)
-           if not extParams or not extParams.enabled:
-              return [False, False, False, _(u'Extension "%s" is disallowed') % ext]
-
-           relativeFilePath = h.expandName('%s.%s' % (name, ext))
-           localFilePath = os.path.join(g.OPT.uploadPath, relativeFilePath)
-           targetDir = os.path.dirname(localFilePath)
-           #log.debug(localFilePath)
-           #log.debug(targetDir)
-           if not os.path.exists(targetDir):
-               os.makedirs(targetDir)
-
-           localFile = open(localFilePath, 'w+b')
-           if not baseEncoded:
-               shutil.copyfileobj(file.file, localFile)
-           else:
-               base64.decode(file.file, localFile)
-           localFile.seek(0)
-           md5 = hashlib.md5(localFile.read()).hexdigest()
-           file.file.close()
-           localFile.close()
-           fileSize = os.stat(localFilePath)[6]
-
-           picInfo = empty()
-           picInfo.localFilePath = localFilePath
-           picInfo.relativeFilePath = relativeFilePath
-           picInfo.fileSize = fileSize
-           picInfo.md5 = md5
-           picInfo.sizes = []
-           picInfo.extId = extParams.id
-
-           pic = Picture.getByMd5(md5)
-           if pic:
-               os.unlink(localFilePath)
-               picInfo.sizes = [pic.width, pic.height, pic.thwidth, pic.thheight]
-               picInfo.thumbFilePath = pic.thumpath
-               picInfo.relativeFilePath = pic.path
-               picInfo.localFilePath = os.path.join(g.OPT.uploadPath, picInfo.relativeFilePath)
-               return [False, picInfo, pic, False]
-
-           thumbFilePath = False
-           localThumbPath = False
-           try:
-               #log.debug('Testing: %s' %extParams.type)
-               if not extParams.type in ('image', 'image-jpg'):
-                 # log.debug('Not an image')
-                 thumbFilePath = extParams.path
-                 picInfo.sizes = [None, None, extParams.thwidth, extParams.thheight]
-               elif extParams.type == 'image':
-                   thumbFilePath = h.expandName('%ss.%s' % (name, ext))
-               else:
-                  thumbFilePath = h.expandName('%ss.jpg' % (name))
-               localThumbPath = os.path.join(g.OPT.uploadPath, thumbFilePath)
-               picInfo.thumbFilePath = thumbFilePath
-               if not picInfo.sizes:
-                   picInfo.sizes = Picture.makeThumbnail(localFilePath, localThumbPath, (thumbSize, thumbSize))
-           except:
-                os.unlink(localFilePath)
-                return [False, False, False, _(u"Broken picture. Maybe it is interlaced PNG?")]
-
-           return [AngryFileHolder((localFilePath, localThumbPath)), picInfo, False, False]
-        else:
-           return False
-
     def PostReply(self, post):
         return self.processPost(postid = post)
 
@@ -754,7 +675,7 @@ class OrphieMainController(OrphieBaseController):
             if not tags:
                 return errorHandler(_("You should specify at least one board"))
 
-            maxTagsCount = int(g.OPT.maxTagsCount)
+            maxTagsCount = g.OPT.maxTagsCount
             if len(tags) > maxTagsCount:
                 return errorHandler(_("Too many tags. Maximum allowed: %s") % (maxTagsCount))
 
@@ -829,8 +750,9 @@ class OrphieMainController(OrphieBaseController):
                postMessage = fullMessage
            else:
                return errorHandler(_('Message is too long'))
-
-        fileDescriptors = self.processFile(file, options.thumbSize, baseEncoded = baseEncoded)
+        
+        fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
+        log.debug(fileDescriptors)
         fileHolder = False
         existentPic = False
         picInfo = False

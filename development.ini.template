@@ -91,6 +91,7 @@ frontend.useZMenu = false
 frontend.useTopPaginator = false
 frontend.usersCanViewLogs = false
 frontend.title = Orphereus
+frontend.favicon = favicon.ico
 frontend.vitalSigns = true
 frontend.allowCrossposting = true
 frontend.allowCrosspostingSvc = true

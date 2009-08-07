@@ -70,6 +70,14 @@ class Post(object):
     @staticmethod
     def create(postParams):
         post = Post()
+        try:        # no better ideas.
+            post.secondaryIndex = postParams.secondaryIndex
+        except:
+            pass 
+        try:
+            post.date = postParams.date 
+        except:
+            pass 
         post.message = postParams.message
         post.messageShort = postParams.messageShort
         post.messageRaw = postParams.messageRaw

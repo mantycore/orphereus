@@ -15,8 +15,8 @@ ${c.title} \
 
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="robots" content="noarchive" />
-<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="shortcut icon" type="image/x-icon" href="/${g.OPT.favicon}" />
+<link rel="icon" type="image/x-icon" href="/${g.OPT.favicon}" />
 <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style + ".css")}" title="${c.userInst.style}" />
 
 %for jsFile in c.jsFiles:

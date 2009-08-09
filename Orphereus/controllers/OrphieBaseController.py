@@ -202,6 +202,9 @@ class OrphieBaseController(BaseController):
                 if (not test or (test and test(item.id, self))):
                     target.append((item, level))
                     self.buildMenu(item.id, level + 1, source, target)
+    
+    def fastRender(self, tpath, **options):
+        return render('/' + tpath, extra_vars = options)
 
     def render(self, page, tmplName = None, **options):
         tname = 'std'
@@ -238,6 +241,7 @@ class OrphieBaseController(BaseController):
                 if self.__dict__.has_key('startTime'):
                     c.processStartTime = self.startTime
                     c.log.append("processing: %s" % str(c.renderStartTime - self.startTime))
+            options['controller'] = self
             output = render('/' + tpath, extra_vars = options)
             if g.globalFilterStack and not options.get('disableFiltering', None):
                 return h.applyFilters(output, True)

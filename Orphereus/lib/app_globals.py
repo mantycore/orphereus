@@ -49,6 +49,7 @@ class OptHolder(object):
                                ('devMode', 'secondaryIndex', 'allowPosting',
                                 'allowRegistration', 'allowAnonymous',
                                 'allowLogin',  'allowAnonymousPosting', 'allowAnonProfile',
+                                'memcachedPosts',
                                )
                               ),
 

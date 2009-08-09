@@ -25,19 +25,41 @@ Consists of functions to typically be used within templates, but also
 available to Controllers. This module is available to both as 'h'.
 """
 from webhelpers import *
-from pylons import config
-import datetime
-import os
+from pylons import config, request
+from pylons.i18n import get_lang, set_lang
 import miscUtils as utils
 from routes.util import url_for
-from pylons import request
 
+import datetime
+import os
 import socket, struct, sys
 
 import logging
 log = logging.getLogger(__name__)
 
-from pylons.i18n import get_lang, set_lang
+try:
+    import memcache
+    mc = memcache.Client(['127.0.0.1:11211'], debug=0)
+except:
+    log.warning('memcached interface not found, install memcache or cmemcache (recommended)')
+
+def doFastRender(post, thread, controller):
+    return controller.fastRender('wakaba/wakaba.postReply.mako', disableFiltering=True, thread=thread, post=post)
+
+def repliesProxy(thread, controller):
+    if mc:
+        postsDict = dict([(post.id,post) for post in thread.Replies])
+        postsRender = mc.get_multi(postsDict.iterkeys())
+        absentPosts = list(set(postsDict.iterkeys()) - set(postsRender.keys()))
+        log.debug('NOT found: %s' % absentPosts)
+        if absentPosts:
+            absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
+            mc.set_multi(absentPostsRender)
+            for (post, render) in absentPostsRender.iteritems():
+                postsRender[post] = render
+        return ''.join(postsRender.itervalues())
+    else:
+        return u'<b>memcached interface is not installed</b><br />'
 
 threadPanelCallbacks = []
 def threadPanelCallback(thread, userInst):

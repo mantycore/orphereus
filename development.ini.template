@@ -81,6 +81,7 @@ core.allowRegistration = false
 core.allowAnonProfile = false
 core.allowLogin = true
 core.searchPluginId = search_like
+core.memcachedPosts = true
 #if you want full-text search, use next line
 #core.searchPluginId = search_sphinx
 #(see http://www.sphinxsearch.com for information about Sphinx Search Engine)

@@ -221,7 +221,7 @@ class ConsoleImport(command.Command):
         if self.options.thread:
             thread = int(self.options.thread)
         if self.options.tags:
-            tags = u(self.options.tags)
+            tags = unicode(self.options.tags)
 
         importer = ImportWorker()
         print "Processing archive..."

@@ -229,7 +229,7 @@ YForm.prototype = {
         link = $(link)
         var m = link.attr("href").match(/\/(\d+)\D+(\d+)$/)
         if(!m){ //thread
-          m = ["", this.thread_for_link(link), link.html().match(/\d+/)[0]]
+          m = ["", this.thread_for_link(link), link.attr('href').match(/E(\d+)/)[1]]
         };
         this.form.parent().insertAfter($("#quickReplyNode" + m[2]))
         this.set_fields(m[1])

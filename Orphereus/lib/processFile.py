@@ -28,6 +28,7 @@ from Orphereus.model import *
 
 import cgi
 import shutil
+import base64, hashlib
 import logging
 log = logging.getLogger(__name__)
 

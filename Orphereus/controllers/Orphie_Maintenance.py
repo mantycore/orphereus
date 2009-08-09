@@ -498,8 +498,9 @@ class MaintenanceCommand(command.Command):
             relative_to = "."
         print 'Loading config "%s" at path "%s"...' % (filename, relative_to)
         conf = appconfig('config:' + filename, relative_to = relative_to)
-        load_environment(conf.global_conf, conf.local_conf, True)
-
+        load_environment(conf.global_conf, conf.local_conf, False)
+        g._push_object(meta.globj) #zomg teh h4x
+        
     def command(self):
         devIni = self.args[0]
         self.setup_config(self.options.config, self.options.path)

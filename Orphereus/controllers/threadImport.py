@@ -28,31 +28,16 @@ def pluginInit(g = None):
         
     config = {'name' : N_('Thread import tool'),
               'routeinit' : routingInit,
-              'menuitems' : menuItems
+              'menuitems' : menuItems,
+              'entryPoints' : [('import', "ConsoleImport"),],
              }
 
     return PluginInfo('threadimport', config)
 
 from OrphieBaseController import *
 
-class ThreadimportController(OrphieBaseController):
+class ImportWorker():
     postMappings = {}
-    def __before__(self):
-        OrphieBaseController.__before__(self)
-        if ('adminpanel' in g.pluginsDict.keys()):
-            self.requestForMenu("managementMenu")
-            
-    def initChecks(self):
-        if not self.currentUserIsAuthorized():
-            return redirect_to('boardBase')
-        self.initEnvironment()
-        if not (self.userInst.isAdmin() and self.userInst.canManageBoards() or self.userInst.isBanned()):
-            c.errorText = _("No way! You aren't holy enough!")
-            return redirect_to('boardBase')
-        c.userInst = self.userInst
-        if not checkAdminIP():
-            return redirect_to('boardBase')
-        
     def fixReferences(self, text):
         def replacer(match):
             postId = match.groups()[0]
@@ -66,7 +51,6 @@ class ThreadimportController(OrphieBaseController):
                 else:
                     urlArgs = (localPostLink,localPostId,localPostId)
                 return '<a href="%s" onclick="highlight(%s)">&gt;&gt;%s</a>' %urlArgs
-        
         refRe = re.compile('<a href=[^>]+>&gt\;&gt\;(\d+)</a>')
         return refRe.sub(replacer, text)
     
@@ -107,30 +91,58 @@ class ThreadimportController(OrphieBaseController):
         self.postMappings[pInfo.savedId] = newPost.id
         return newPost
     
-    def importProcess(self, file):
-        tags = filterText(request.POST.get('tagline', None))
-        self.saveDates = bool(request.POST.get('useDate', False))
-        self.saveIds = bool(request.POST.get('useIds', False))
-        self.target = int(request.POST.get('target', 0))
-        if ((not tags) and (not self.target)):
-            c.message = N_('Specify thread or tagline.')
-            return
-        try:
-            self.reader = ThreadReader.createFromPostData(file)
-        except:
-            c.message = N_('This file is not a thread archive.')
-            return
+    def importProcess(self):
         self.reader.fsClass = FieldStorageLike
         startIndex = 1
         if self.target:
             startIndex = 0
             opPost = OrphiePost.getPost(self.target)
         else:
-            opPostInfo = self.postToPInfo(self.reader.thread.posts[0], tags)
+            opPostInfo = self.postToPInfo(self.reader.thread.posts[0], self.tags)
             opPost = self.savePost(opPostInfo)
         for post in self.reader.thread.posts[startIndex:]:
             self.savePost(self.postToPInfo(post, None, opPost))
         return opPost
+
+    def webImport(self, file):
+        self.tags = filterText(request.POST.get('tagline', None))
+        self.saveDates = bool(request.POST.get('useDate', False))
+        self.saveIds = bool(request.POST.get('useIds', False))
+        self.target = int(request.POST.get('target', 0))
+        if ((not self.tags) and (not self.target)):
+            c.message = N_('Specify thread or tagline.')
+            return
+        try:
+            self.reader = ThreadReader.createFromPostData(file)
+        except: 
+            c.message = N_('This file is not a thread archive.')
+            return
+        return self.importProcess()
+    
+    def fileImport(self, filename, saveDates, saveIds, tagline, target):
+        self.tags = tagline
+        self.saveDates = saveDates
+        self.saveIds = saveIds
+        self.target = target
+        self.reader = ThreadReader(filename)
+        return self.importProcess()
+
+class ThreadimportController(OrphieBaseController):
+    def __before__(self):
+        OrphieBaseController.__before__(self)
+        if ('adminpanel' in g.pluginsDict.keys()):
+            self.requestForMenu("managementMenu")
+            
+    def initChecks(self):
+        if not self.currentUserIsAuthorized():
+            return redirect_to('boardBase')
+        self.initEnvironment()
+        if not (self.userInst.isAdmin() and self.userInst.canManageBoards() or self.userInst.isBanned()):
+            c.errorText = _("No way! You aren't holy enough!")
+            return redirect_to('boardBase')
+        c.userInst = self.userInst
+        if not checkAdminIP():
+            return redirect_to('boardBase')
         
     def importThread(self):
         self.initChecks()
@@ -138,7 +150,8 @@ class ThreadimportController(OrphieBaseController):
         c.currentItemId = 'id_ImportThread'
         file = request.POST.get('file', None)
         if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
-            resPost = self.importProcess(file)
+            importer = ImportWorker()
+            resPost = importer.webImport(file)
             if resPost:
                 c.message = N_('Posts were imported successfully into <a href="%s" target="_blank">this thread<a>.' 
                                %(h.url_for('thread', post=resPost.id)))
@@ -146,3 +159,75 @@ class ThreadimportController(OrphieBaseController):
             c.message = N_('Please, select a file.')
 
         return self.render('importThread')
+    
+from paste.script import command
+from Orphereus.config.environment import load_environment
+from paste.deploy import appconfig
+
+class ConsoleImport(command.Command):
+    #max_args = 1
+    min_args = 1
+
+    usage = "thread.tar.gz"
+    summary = "--config parameter is obligatory"
+    group_name = "Thread Import"
+
+    parser = command.Command.standard_parser(verbose = True)
+    parser.add_option('--arc',
+                      action = 'store',
+                      dest = 'archFile',
+                      help = "thread file")
+    parser.add_option('--tags',
+                      action = 'store',
+                      dest = 'tags',
+                      help = "target tagline, default='import'")
+    parser.add_option('--thread',
+                      action = 'store',
+                      dest = 'thread',
+                      help = "target thread")
+    parser.add_option('--noids',
+                      action = 'store_true',
+                      dest = 'noIds',
+                      help = 'don\'t restore original post IDs')
+    parser.add_option('--nodates',
+                      action = 'store_true',
+                      dest = 'noDates',
+                      help = 'don\'t restore original post timestamps')
+    
+    parser.add_option('--config',
+                      action = 'store',
+                      dest = 'config',
+                      help = 'config name (e.g. "development.ini")')
+    parser.add_option('--path',
+                      action = 'store',
+                      dest = 'path',
+                      help = 'working dir (e.g. ".")')
+    
+    @staticmethod
+    def setup_config(filename, relative_to):
+        if not relative_to or not os.path.exists(relative_to):
+            relative_to = "."
+        print 'Loading config "%s" at path "%s"...' % (filename, relative_to)
+        conf = appconfig('config:' + filename, relative_to = relative_to)
+        load_environment(conf.global_conf, conf.local_conf, False)
+        g._push_object(meta.globj) #zomg teh h4x
+
+    def command(self):
+        self.setup_config(self.options.config, self.options.path)
+        
+        name = self.args[0]
+        tags = u'import'
+        thread = 0
+        if self.options.thread:
+            thread = int(self.options.thread)
+        if self.options.tags:
+            tags = u(self.options.tags)
+
+        importer = ImportWorker()
+        print "Processing archive..."
+        try:
+            opPost = importer.fileImport(name, not(self.options.noDates),
+                                         not(self.options.noIds), tags, thread)
+            print "Imported into thread #%s" %opPost.id
+        except:
+            print "An error occured while trying to import thread."

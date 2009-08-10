@@ -49,10 +49,14 @@ class OptHolder(object):
                                ('devMode', 'secondaryIndex', 'allowPosting',
                                 'allowRegistration', 'allowAnonymous',
                                 'allowLogin',  'allowAnonymousPosting', 'allowAnonProfile',
-                                'memcachedPosts',
                                )
                               ),
 
+                              ('memcache',
+                               ('memcachedPosts', 
+                               )
+                              ),
+                              
                               ('frontend',
                                 ('invisibleBump','usersCanViewLogs','vitalSigns', 
                                  'allowCrossposting', 'allowCrosspostingSvc',
@@ -87,7 +91,7 @@ class OptHolder(object):
                                 'searchPluginId'
                                )
                               ),
-
+                              
                               ('security',
                                ('alertServer', 'alertSender', 'alertPassword',
                                 'obfuscator',
@@ -130,6 +134,11 @@ class OptHolder(object):
                                ('languages', 'templates', 
                                 'javascripts', 'styles', 
                                 # 'disabledModules', 
+                               )
+                              ),
+
+                              ('memcache',
+                               ('memcachedServers', 
                                )
                               ),
 

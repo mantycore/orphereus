@@ -170,6 +170,10 @@ def upd_globals():
 
     meta.globj.sectionNames = meta.globj.OPT.sectionNames 
     meta.globj.disabledTags = meta.globj.OPT.disabledTags
+    if h.mc:
+        del h.mc
+    h.mc = h.memcache.Client(meta.globj.OPT.memcachedServers, debug=0)
+
     log.info('UPDATING GLOBALS COMPLETED')
     
 def init_globals(globalObject, setupMode):

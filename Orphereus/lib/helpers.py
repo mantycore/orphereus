@@ -39,7 +39,7 @@ log = logging.getLogger(__name__)
 
 try:
     import memcache
-    mc = memcache.Client(['127.0.0.1:11211'], debug=0)
+    mc = None
 except:
     log.warning('memcached interface not found, install memcache or cmemcache (recommended)')
 
@@ -55,11 +55,12 @@ def repliesProxy(thread, controller):
         if absentPosts:
             absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
             mc.set_multi(absentPostsRender)
-            for (post, render) in absentPostsRender.iteritems():
-                postsRender[post] = render
-        return ''.join(postsRender.itervalues())
+            postsRender.update(absentPostsRender)
+        sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.iterkeys())])
+        return ''.join(sortedPostsRender)
     else:
-        return u'<b>memcached interface is not installed</b><br />'
+        return u'<b>memcached interface is not installed</b><br />\
+                 either install it, or set core.memcachedPosts -&gt; false'
 
 threadPanelCallbacks = []
 def threadPanelCallback(thread, userInst):

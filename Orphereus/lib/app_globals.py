@@ -91,6 +91,11 @@ class OptHolder(object):
                                 'searchPluginId'
                                )
                               ),
+
+                              ('memcache',
+                               ('cachePrefix', 
+                               )
+                              ),
                               
                               ('security',
                                ('alertServer', 'alertSender', 'alertPassword',

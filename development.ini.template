@@ -83,6 +83,9 @@ core.allowLogin = true
 core.searchPluginId = search_like
 memcache.memcachedPosts = false
 memcache.memcachedServers = 127.0.0.1:11211
+# this prefix is intended to eliminate data collisions in cache 
+# when using single memcached for several Orphereus instances  
+memcache.cachePrefix = ach
 #if you want full-text search, use next line
 #core.searchPluginId = search_sphinx
 #(see http://www.sphinxsearch.com for information about Sphinx Search Engine)

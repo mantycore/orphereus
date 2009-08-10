@@ -48,13 +48,14 @@ def doFastRender(post, thread, controller):
 
 def repliesProxy(thread, controller):
     if mc:
-        postsDict = dict([(post.id,post) for post in thread.Replies])
-        postsRender = mc.get_multi(postsDict.iterkeys())
+        g = config['pylons.app_globals']
+        postsDict = dict([(post.id, post) for post in thread.Replies])
+        postsRender = mc.get_multi(postsDict.iterkeys(), key_prefix = g.OPT.cachePrefix)
         absentPosts = list(set(postsDict.iterkeys()) - set(postsRender.keys()))
         log.debug('NOT found: %s' % absentPosts)
         if absentPosts:
             absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
-            mc.set_multi(absentPostsRender)
+            mc.set_multi(absentPostsRender, key_prefix = g.OPT.cachePrefix)
             postsRender.update(absentPostsRender)
         sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.iterkeys())])
         return ''.join(sortedPostsRender)

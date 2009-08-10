@@ -41,8 +41,10 @@ try:
     try:
         import cmemcache as memcache
         log.info('Using cmemcache')
+        usingCMC = True
     except:
         import memcache
+        usingCMC = False
         log.info('Using memcache, cmemcache not found. Consider installing')
     mc = None
 except:
@@ -55,12 +57,21 @@ def repliesProxy(thread, controller):
     if mc:
         g = config['pylons.app_globals']
         postsDict = dict([(post.id, post) for post in thread.Replies])
-        postsRender = mc.get_multi(postsDict.iterkeys(), key_prefix = g.OPT.cachePrefix)
+        if usingCMC:
+            key_prefix = g.OPT.cachePrefix
+            postsDictKeyFix = list(['%s%s' %(key_prefix,key) for key in postsDict.iterkeys()]) 
+            postsRender = mc.get_multi(postsDictKeyFix)
+        else:
+            postsRender = mc.get_multi(postsDict.iterkeys(), key_prefix = g.OPT.cachePrefix)
         absentPosts = list(set(postsDict.iterkeys()) - set(postsRender.keys()))
         log.debug('NOT found: %s' % absentPosts)
         if absentPosts:
-            absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
-            mc.set_multi(absentPostsRender, key_prefix = g.OPT.cachePrefix)
+            if usingCMC:
+                absentPostsRender = dict([('%s%s' %(key_prefix,post), doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
+                mc.set_multi(absentPostsRender)
+            else:
+                absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
+                mc.set_multi(absentPostsRender, key_prefix = g.OPT.cachePrefix)
             postsRender.update(absentPostsRender)
         sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.iterkeys())])
         return ''.join(sortedPostsRender)

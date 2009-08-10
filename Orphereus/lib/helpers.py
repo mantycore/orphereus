@@ -40,8 +40,10 @@ log = logging.getLogger(__name__)
 try:
     try:
         import cmemcache as memcache
+        log.info('Using cmemcache')
     except:
         import memcache
+        log.info('Using memcache, cmemcache not found. Consider installing')
     mc = None
 except:
     log.warning('memcached interface not found, install memcache or cmemcache (recommended)')

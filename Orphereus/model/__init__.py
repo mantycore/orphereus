@@ -170,6 +170,7 @@ def upd_globals():
 
     meta.globj.sectionNames = meta.globj.OPT.sectionNames 
     meta.globj.disabledTags = meta.globj.OPT.disabledTags
+    meta.globj.OPT.memcachedServers = list([str(server) for server in meta.globj.OPT.memcachedServers])
     meta.globj.OPT.cachePrefix = str(meta.globj.OPT.cachePrefix) 
     if h.mc:
         del h.mc

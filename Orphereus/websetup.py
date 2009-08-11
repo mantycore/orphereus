@@ -42,6 +42,7 @@ def setup_config(command, filename, section, vars):
     log.info("Creating tables")
     meta.metadata.create_all(bind = meta.engine)
     log.info("Successfully setup")
+    init_globals(meta.globj, False)
 
     try:
         uc = meta.Session.query(User).count()

@@ -111,8 +111,8 @@ function popup_posts(options){
     e.html(e.attr('old_html'))
   }
   var hover_it = function(ev){
-    var m = $(this).attr('href').match(/\/(\d+)\#i(\d+)$/)
-    if (!m) return false;
+    var m = $(this).attr('href').match(/\/(\d+)\#i(\d+)$/);
+    if (!((m) && ($(this).html().match(/\d+$/)))) return false;
     popup_posts.ev = ev
     popup_posts.ui = $(this)
     var content = $("#quickReplyNode"+m[2])

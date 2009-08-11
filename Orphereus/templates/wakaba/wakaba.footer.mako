@@ -16,7 +16,11 @@
 %for l in c.log:
 ${l}<br/><br/>
 %endfor
-${"rendering: %s" % str(h.currentTime() - c.renderStartTime)}<br />
+${"rendering: %s" % str(h.currentTime() - c.renderStartTime)} 
+%if g.OPT.memcachedPosts: 
+	memcached 
+%endif 
+<br />
 ${"total: %s" % str(h.currentTime() - c.processStartTime)} (${"render %s%% time" % str((h.currentTime() - c.renderStartTime)*100/(h.currentTime() - c.processStartTime))})
 <span style="display: none"><a href="${h.url_for('botTrap2')}">.<a></span>
 </font>

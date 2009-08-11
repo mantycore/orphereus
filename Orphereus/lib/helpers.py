@@ -25,7 +25,8 @@ Consists of functions to typically be used within templates, but also
 available to Controllers. This module is available to both as 'h'.
 """
 from webhelpers import *
-from pylons import config, request
+from cache import MCache
+from pylons import config, request, c
 from pylons.i18n import get_lang, set_lang
 import miscUtils as utils
 from routes.util import url_for
@@ -37,47 +38,25 @@ import socket, struct, sys
 import logging
 log = logging.getLogger(__name__)
 
-memcache = mc = None
-try:
-    #try:
-    #    import cmemcache as memcache
-    #    log.info('Using cmemcache')
-    #    usingCMC = True
-    #except:
-        import memcache
-        usingCMC = False
-        log.info('Using memcache, cmemcache not found. Consider installing')
-except:
-    log.warning('memcached interface not found, install memcache or cmemcache (recommended)')
-
+mc = None
 def doFastRender(post, thread, controller):
     return controller.fastRender('wakaba/wakaba.postReply.mako', disableFiltering=True, thread=thread, post=post)
 
 def repliesProxy(thread, controller):
-    if mc:
-        g = config['pylons.app_globals']
-        postsDict = dict([(post.id, post) for post in thread.Replies])
-        if usingCMC:
-            key_prefix = g.OPT.cachePrefix
-            postsDictKeyFix = list(['%s%s' %(key_prefix,key) for key in postsDict.iterkeys()]) 
-            postsRender = mc.get_multi(postsDictKeyFix)
-        else:
-            postsRender = mc.get_multi(postsDict.iterkeys(), key_prefix = g.OPT.cachePrefix)
-        absentPosts = list(set(postsDict.iterkeys()) - set(postsRender.keys()))
-        log.debug('NOT found: %s' % absentPosts)
-        if absentPosts:
-            if usingCMC:
-                absentPostsRender = dict([('%s%s' %(key_prefix,post), doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
-                mc.set_multi(absentPostsRender)
-            else:
-                absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
-                mc.set_multi(absentPostsRender, key_prefix = g.OPT.cachePrefix)
-            postsRender.update(absentPostsRender)
-        sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.iterkeys())])
-        return ''.join(sortedPostsRender)
-    else:
-        return u'<b>memcached interface is not installed</b><br />\
-                 either install it, or set core.memcachedPosts -&gt; false'
+    g = config['pylons.app_globals']
+    user = controller.userInst
+    keyPrefix = str('%s%s%s' %(g.OPT.cachePrefix, user.lang, int(user.hideLongComments or (c.count==1))))
+    log.debug(keyPrefix)
+    postsDict = dict([(post.id, post) for post in thread.Replies])
+    postsRender = mc.get_multi(postsDict.iterkeys(), key_prefix = keyPrefix)
+    absentPosts = list(set(postsDict.iterkeys()) - set(postsRender.keys()))
+    log.debug('NOT found: %s' % absentPosts)
+    if absentPosts:
+        absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
+        mc.set_multi(absentPostsRender, key_prefix = keyPrefix)
+        postsRender.update(absentPostsRender)
+    sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.iterkeys())])
+    return ''.join(sortedPostsRender)
 
 threadPanelCallbacks = []
 def threadPanelCallback(thread, userInst):

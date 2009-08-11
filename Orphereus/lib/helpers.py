@@ -37,6 +37,7 @@ import socket, struct, sys
 import logging
 log = logging.getLogger(__name__)
 
+memcache = mc = None
 try:
     #try:
     #    import cmemcache as memcache
@@ -46,7 +47,6 @@ try:
         import memcache
         usingCMC = False
         log.info('Using memcache, cmemcache not found. Consider installing')
-        mc = None
 except:
     log.warning('memcached interface not found, install memcache or cmemcache (recommended)')
 

@@ -128,6 +128,16 @@ def modLink(filePath, secid, hidePrefixes = False):
 
     return filePath
 
+def sectionList(section):
+    boards = ['<a href="%s" title="%s"><b>%s</b></a>' 
+                    %(url_for('boardBase', board=board.tag), board.comment, board.tag) 
+                for board in section[0]]
+    return ' / '.join(boards)
+
+def boardMenu(sections):
+    boardsRender = [sectionList(section) for section in sections]
+    return '[ %s ]' %(' // '.join(boardsRender))
+
 def templateExists(relName):
     #log.debug(config['pylons.g'].OPT.templPath)
     #log.debug(relName)

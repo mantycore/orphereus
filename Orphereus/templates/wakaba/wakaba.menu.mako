@@ -13,6 +13,9 @@
 %if g.OPT.spiderTrap:
 <span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap2')}">.</a></span>
 %endif
+%if g.OPT.dvachStyleMenu:
+	${h.boardMenu(c.boardlist)}
+%else:
     %for section in c.boardlist:
         %if section[1]:
             <!-- ${section[1]} -->
@@ -25,6 +28,7 @@
         %endfor
         ]
     %endfor
+%endif
 %endif
 
 %if not c.userInst.Anonymous:

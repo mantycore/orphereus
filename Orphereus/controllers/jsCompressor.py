@@ -104,5 +104,6 @@ class JscompressorController(OrphieBaseController):
 
         c.boardName = _('Rebuild JavaScrtipt')
         c.message = _("Rebuild completed")
+        c.returnUrl = h.url_for('holySynod')
         c.currentItemId = 'id_RebuildJs'
         return self.render('managementMessage')

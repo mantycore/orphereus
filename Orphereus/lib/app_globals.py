@@ -195,7 +195,10 @@ class OptHolder(object):
                  self.stringGetter: CFG_STRING,
                  self.strListGetter: CFG_LIST,
                  }
-        return types[self.valueGetters[valName]]
+        try:
+            return types[self.valueGetters[valName]]
+        except:
+            return None
         
     def initValues(self, settingObj):
         log.info('LOADING SETTINGS...')

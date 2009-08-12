@@ -37,6 +37,7 @@ if (confirm('${_("This will delete ALL configuration data drom the database. Con
 				%endfor
 				<hr />
 				<div class="theader"><a style="cursor:pointer; display: block;" onclick="resetPrompt();">${_("Reset settings")}</a></div>
+				<div class="theader"><a style="cursor:pointer; display: block;" href="${h.url_for('hsCfgClearOrphaned')}">${_("Delete orphaned")}</a></div>
 				<div class="theader"><a style="cursor:pointer; display: block;" onclick="showSect('settingsDump');">${_("Dump settings")}</a></div>
 				</td>    	
 				<td valign="top">
@@ -74,6 +75,9 @@ if (confirm('${_("This will delete ALL configuration data drom the database. Con
 <textarea style="overflow-x: scroll; overflow-y: scroll;" rows="5" cols="35" name="${sect}.${key}">
 ${'\r\n'.join(val.split(','))}
 </textarea>
+                        %elif g.OPT.getValueType(key)==None:
+                            <input type="text" name="${sect}.${key}" size="40" value="${val}" readonly="readonly"/>
+                            <i>${_('orphaned')}</i>
                         %else:
                             <input type="text" name="${sect}.${key}" size="40" value="${val}" />
                         %endif

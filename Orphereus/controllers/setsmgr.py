@@ -21,6 +21,7 @@ def menuItems(menuId):
 def routingInit(map):
     map.connect('hsCfgManage', '/holySynod/configuration/', controller = 'setsmgr', action = 'show')
     map.connect('hsCfgReset', '/holySynod/configuration/reset/', controller = 'setsmgr', action = 'reset')
+    map.connect('hsCfgClearOrphaned', '/holySynod/configuration/cleanOrphaned/', controller = 'setsmgr', action = 'deleteOrphaned')
 
 def pluginInit(g = None):
     config = {'name' : N_('Engine runtime settings editing tool'),
@@ -72,6 +73,16 @@ class SetsmgrController(OrphieBaseController):
         init_globals(g, False)
         toLog(LOG_EVENT_SETTINGS_EDIT, _("Performed global settings reset."))
         c.message = N_('Engine settings were set to default values.')
+        c.returnUrl = h.url_for('hsCfgManage')
+        return self.render('managementMessage')
+    
+    def deleteOrphaned(self):
+        self.initChecks()
+        settingsNamesDict = dict((s.split('.')[1],s) for s in self.settings.keys())
+        orphanedSettings = filter(lambda key: g.OPT.getValueType(key)==None, settingsNamesDict.keys())
+        map(lambda s: Setting.getSetting(settingsNamesDict[s]).delete(), orphanedSettings)
+        c.message = N_('Deleted %s orphaned settings.' %len(orphanedSettings))
+        c.returnUrl = h.url_for('hsCfgManage')
         return self.render('managementMessage')
     
     def show(self):
@@ -84,10 +95,13 @@ class SetsmgrController(OrphieBaseController):
                 if s in self.settings.keys():
                     shortName = s.split('.')[1]
                     val = filterText(request.POST[s])
-                    if g.OPT.getValueType(shortName) == CFG_INT:
+                    valType = g.OPT.getValueType(shortName)
+                    if not(valType):
+                        continue
+                    if valType == CFG_INT:
                         if not isNumber(val):
                             return self.error(_("'%s' isn't correct number, but '%s' must be an integer number.") % (val, s))
-                    if g.OPT.getValueType(shortName)  == CFG_LIST:
+                    elif valType == CFG_LIST:
                         valarr = filter(lambda l: l, re.split('\r+|\n+|\r+\n+', val))
                         val = ','.join(valarr)
                     if self.settings[s] != val:

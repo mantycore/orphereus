@@ -26,7 +26,7 @@ available to Controllers. This module is available to both as 'h'.
 """
 from webhelpers import *
 from cache import MCache
-from pylons import config, request, c
+from pylons import config, request, c, g
 from pylons.i18n import get_lang, set_lang
 import miscUtils as utils
 from routes.util import url_for
@@ -43,14 +43,13 @@ def doFastRender(post, thread, controller):
     return controller.fastRender('wakaba/wakaba.postReply.mako', disableFiltering=True, thread=thread, post=post)
 
 def repliesProxy(thread, controller):
-    g = config['pylons.app_globals']
     user = controller.userInst
     keyPrefix = str('%s%s%s' %(g.OPT.cachePrefix, get_lang()[0], int(user.hideLongComments or (c.count==1))))
-    log.debug(keyPrefix)
+    #log.debug(keyPrefix)
     postsDict = dict([(post.id, post) for post in thread.Replies])
     postsRender = mc.get_multi(postsDict.iterkeys(), key_prefix = keyPrefix)
     absentPosts = list(set(postsDict.iterkeys()) - set(postsRender.keys()))
-    log.debug('NOT found: %s' % absentPosts)
+    #log.debug('NOT found: %s' % absentPosts)
     if absentPosts:
         absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
         mc.set_multi(absentPostsRender, key_prefix = keyPrefix)
@@ -128,16 +127,41 @@ def modLink(filePath, secid, hidePrefixes = False):
 
     return filePath
 
-def sectionList(section):
-    boards = ['<a href="%s" title="%s"><b>%s</b></a>' 
-                    %(url_for('boardBase', board=board.tag), board.comment, board.tag) 
-                for board in section[0]]
-    return ' / '.join(boards)
+def renderSection(section):
+    linkTemplate = (g.OPT.dvachStyleMenu and r'<a href="%s" title="%s"><b>%s</b></a>') \
+                        or r'<a href="%s" title="%s"><b>/%s/</b></a>'
+    joiner = (g.OPT.dvachStyleMenu and ' / ') or ' '
+    items = [linkTemplate %(link, title, name)
+                    for (name, link, title) in section]
+    return joiner.join(items)
 
-def boardMenu(sections):
-    boardsRender = [sectionList(section) for section in sections]
-    return '[ %s ]' %(' // '.join(boardsRender))
+def boardsSection(boardSection):
+    uSection = [(board.tag, url_for('boardBase', board=board.tag), board.comment,) 
+                    for board in boardSection[0]]
+    return renderSection(uSection)
 
+def boardMenu(sections, sectionIsTags = True):
+    if sectionIsTags:
+        boardsRender = [boardsSection(section) for section in sections]
+    else:
+        boardsRender = [renderSection(section) for section in sections]
+    joiner = (g.OPT.dvachStyleMenu and ' // ') or ' ] [ '
+    return '[ %s ]' %(joiner.join(boardsRender))
+
+def itemsToSection(items):
+    """
+    #returns section-like list.
+    #items: list of tuples: (name, url, testCase, hint)
+    #each item is shown, if it's testCase is True. Rendered to 
+    #    <a hred="%(url)" title="%(hint)>
+    """
+    section = []
+    for item in items:
+        name, url, testCase, hint = item
+        if testCase:
+            section.append((url, hint, name,))
+    return section
+        
 def templateExists(relName):
     #log.debug(config['pylons.g'].OPT.templPath)
     #log.debug(relName)

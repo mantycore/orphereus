@@ -84,13 +84,6 @@ class User(AbstractUser):
                     UserOptions.initDefaultOptions(ret.options, meta.globj.OPT)
                     meta.Session.commit()
 
-                if not ret.options.hideThreads:
-                    ret.options.hideThreads = pickle.dumps([])
-                    meta.Session.commit()
-                if not ret.options.homeExclude:
-                    ret.options.homeExclude = pickle.dumps([])
-                    meta.Session.commit()
-
             ret.Anonymous = False
         return ret
 

@@ -65,13 +65,13 @@ class OrphieBaseController(BaseController):
         # IP ban checks
         ip = h.ipToInt(getUserIp())
         banInfo = Ban.getBanByIp(ip)
-        currentURL = request.path_info.decode('utf-8', 'ignore')
-
-        if currentURL.endswith('/'):
-            currentURL = c.currentURL[:-1]
         
         if banInfo and banInfo.enabled:
             c.ban = banInfo
+            currentURL = request.path_info.decode('utf-8', 'ignore')
+            if currentURL.endswith('/'):
+                currentURL = c.currentURL[:-1]
+            #FIXME: mind the prefix
             if (currentURL != '/ipBanned') and banInfo.type:
                 redirect_to('ipBanned')
 

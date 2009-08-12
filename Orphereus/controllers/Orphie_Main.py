@@ -135,8 +135,10 @@ class OrphieMainController(OrphieBaseController):
             c.tagLine = c.boardName
             if board == '~':
                 c.boardName = _('Overview')
-            if board == '@':
+            elif board == '@':
                 c.boardName = _('Related threads')
+            elif board == '*':
+                c.boardName = _('My threads')
 
         c.boardOptions = Tag.conjunctedOptionsDescript(tags)
         c.invisibleBumps = asbool(meta.globj.OPT.invisibleBump)

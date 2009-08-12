@@ -1,34 +1,19 @@
 <div class="adminbar">
-    [ \
-    %if g.OPT.allowOverview:
-    <a href="${h.url_for('boardBase', board='~')}" title="${_('Overview')}">~</a> /
-    %endif
-    %if not c.userInst.Anonymous:
-    <a href="${h.url_for('boardBase', board='@')}" title="${_('Related threads')}">@</a> /
-    %endif
-    <a href="${h.url_for('boardBase', board='!')}" title="${_('Home')}">!</a> 
-    ]
+${h.boardMenu([h.itemsToSection(
+	[
+		(_('Overview'), '~', g.OPT.allowOverview, h.url_for('boardBase', board='~')),
+		(_('Related threads'), '@', not c.userInst.Anonymous, h.url_for('boardBase', board='@')),
+		(_('My threads'), '*', not c.userInst.Anonymous, h.url_for('boardBase', board='*')),
+		(_('Home'), '!', True, h.url_for('boardBase', board='!')),
+	]
+  )], False
+)}
 
 %if c.boardlist:
 %if g.OPT.spiderTrap:
 <span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap2')}">.</a></span>
 %endif
-%if g.OPT.dvachStyleMenu:
 	${h.boardMenu(c.boardlist)}
-%else:
-    %for section in c.boardlist:
-        %if section[1]:
-            <!-- ${section[1]} -->
-        %else:
-            <!-- ${_('Unnamed section')} -->
-        %endif
-        [ \
-        %for board in section[0]:
-            <a href="${h.url_for('boardBase', board=board.tag)}" title="${board.comment}"><b>/${board.tag}/</b></a> \
-        %endfor
-        ]
-    %endfor
-%endif
 %endif
 
 %if not c.userInst.Anonymous:

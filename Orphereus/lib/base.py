@@ -37,6 +37,7 @@ import Orphereus.model as model
 
 from Orphereus.model import meta
 import time
+from hotshot import Profile
 
 import logging
 log = logging.getLogger(__name__)
@@ -48,7 +49,13 @@ class BaseController(WSGIController):
         # the request is routed to. This routing information is
         # available in environ['pylons.routes_dict']
         try:
-            return WSGIController.__call__(self, environ, start_response)
+            if g.OPT.requestProfiling:
+                pf = Profile(g.OPT.profileDumpFile)
+                response = pf.runcall(WSGIController.__call__, self, environ, start_response)
+                pf.close()
+                return response
+            else:
+                return WSGIController.__call__(self, environ, start_response)
         finally:
             meta.Session.remove()
 

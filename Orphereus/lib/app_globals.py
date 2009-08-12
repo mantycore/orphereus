@@ -46,11 +46,16 @@ class OptHolder(object):
         self.disabledModules = []
 
         self.booleanValues = [('core',
-                               ('devMode', 'secondaryIndex', 'allowPosting',
+                               ('secondaryIndex', 'allowPosting',
                                 'allowRegistration', 'allowAnonymous',
                                 'allowLogin',  'allowAnonymousPosting', 'allowAnonProfile',
                                )
                               ),
+                              
+                              ('debug',
+                               ('devMode','requestProfiling', 
+                               )
+                              ), 
 
                               ('memcache',
                                ('memcachedPosts', 
@@ -91,6 +96,11 @@ class OptHolder(object):
                                 'searchPluginId'
                                )
                               ),
+
+                              ('debug',
+                               ('profileDumpFile', 
+                               )
+                              ), 
 
                               ('memcache',
                                ('cachePrefix', 

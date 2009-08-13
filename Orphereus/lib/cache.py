@@ -23,6 +23,11 @@
 Implements MCache class and it's fake copy, if memcache is unavailable. 
 """
 try:
+    import cPickle as pickle
+except:
+    import pickle
+    
+try:
     from memcache import Client
 except:
     Client = None
@@ -30,6 +35,15 @@ except:
 if Client:
     class MCache(Client):
         valid = True
+        uniqeKey = ''
+        def setList(self, key, listVal):
+            return self.set(self.uniqeKey+key, pickle.dumps(listVal))
+            
+        def getList(self, key):
+            value = self.get(self.uniqeKey+key)
+            if value:
+                return pickle.loads(value)
+            return None
             
 else:
     class MCache():

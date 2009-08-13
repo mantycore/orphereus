@@ -25,7 +25,10 @@ from sqlalchemy import orm
 from Orphereus.model import meta
 import datetime
 import re
-import pickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 import logging
 log = logging.getLogger(__name__)

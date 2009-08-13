@@ -36,7 +36,10 @@ import Orphereus.lib.helpers as h
 import datetime
 import hashlib
 import re
-import pickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 from pylons.i18n import _, ungettext, N_
 
 import logging

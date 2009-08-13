@@ -311,6 +311,7 @@ class Globals(object):
         self.firstRequest = True
         self.version = engineVersion
         self.menuCache = {}
+        self.mc = None
         
     def registerPlugin(self, plugin):
         self.plugins.append(plugin)

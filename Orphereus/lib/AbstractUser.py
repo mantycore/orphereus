@@ -1,4 +1,7 @@
-import pickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 from Orphereus.lib.constantValues import *
 import Orphereus.lib.helpers as h

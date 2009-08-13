@@ -115,7 +115,12 @@ class OrphieBaseController(BaseController):
 
     def initEnvironment(self):
         c.title = g.OPT.title
-        boards = Tag.getBoards()
+        boards = g.mc.getList('boards')
+        if not(boards):
+            log.debug('no cached boardlist, loading...')
+            boards = Tag.getBoards()
+            map(lambda lol: lol.options, boards) # hack for lazy evaluation
+            g.mc.setList('boards', boards)
         c.boardlist = []
         sectionId = -1
         section = []

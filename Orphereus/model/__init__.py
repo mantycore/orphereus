@@ -2,6 +2,7 @@ import sqlalchemy as sa
 from sqlalchemy import orm
 from Orphereus.model import meta
 from Orphereus.lib.constantValues import *
+from Orphereus.lib.cache import MCache
 from pylons import config
 
 from FCCaptcha import *
@@ -172,9 +173,10 @@ def upd_globals():
     meta.globj.disabledTags = meta.globj.OPT.disabledTags
     meta.globj.OPT.memcachedServers = list([str(server) for server in meta.globj.OPT.memcachedServers])
     meta.globj.OPT.cachePrefix = str(meta.globj.OPT.cachePrefix) 
-    if h.mc:
-        del h.mc
-    h.mc = h.MCache(meta.globj.OPT.memcachedServers, debug=0)
+    if meta.globj.mc:
+        del meta.globj.mc
+    meta.globj.mc = MCache(meta.globj.OPT.memcachedServers, debug=0)
+    meta.globj.mc.uniqeKey = meta.globj.OPT.cachePrefix
 
     log.info('UPDATING GLOBALS COMPLETED')
     

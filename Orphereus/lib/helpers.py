@@ -25,7 +25,6 @@ Consists of functions to typically be used within templates, but also
 available to Controllers. This module is available to both as 'h'.
 """
 from webhelpers import *
-from cache import MCache
 from pylons import config, request, c, g
 from pylons.i18n import get_lang, set_lang
 import miscUtils as utils
@@ -38,7 +37,6 @@ import socket, struct, sys
 import logging
 log = logging.getLogger(__name__)
 
-mc = None
 def doFastRender(post, thread, controller):
     return controller.fastRender('wakaba/wakaba.postReply.mako', disableFiltering=True, thread=thread, post=post)
 
@@ -47,12 +45,12 @@ def repliesProxy(thread, controller):
     keyPrefix = str('%s%s%s' %(g.OPT.cachePrefix, get_lang()[0], int(user.hideLongComments or (c.count==1))))
     #log.debug(keyPrefix)
     postsDict = dict([(post.id, post) for post in thread.Replies])
-    postsRender = mc.get_multi(postsDict.iterkeys(), key_prefix = keyPrefix)
+    postsRender = g.mc.get_multi(postsDict.iterkeys(), key_prefix = keyPrefix)
     absentPosts = list(set(postsDict.iterkeys()) - set(postsRender.keys()))
     #log.debug('NOT found: %s' % absentPosts)
     if absentPosts:
         absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
-        mc.set_multi(absentPostsRender, key_prefix = keyPrefix)
+        g.mc.set_multi(absentPostsRender, key_prefix = keyPrefix)
         postsRender.update(absentPostsRender)
     sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.iterkeys())])
     return ''.join(sortedPostsRender)
@@ -197,7 +195,6 @@ def setLang(lang):
     if (lang and (len(lang) == 2)):
         set_lang(lang)
     else:
-        g = config['pylons.app_globals']
         langToSet = g.OPT.defaultLang
         for lang in request.languages:
             lang = lang[0:2]

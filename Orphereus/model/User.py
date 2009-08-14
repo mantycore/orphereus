@@ -198,6 +198,9 @@ class User(AbstractUser):
     def bantime(self):
         return self.options.bantime
 
+    def banexpire(self):
+        return self.options.banDate + datetime.timedelta(days = self.options.bantime)
+
     def banreason(self):
         return self.options.banreason
 

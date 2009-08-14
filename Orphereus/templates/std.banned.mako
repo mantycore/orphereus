@@ -2,7 +2,10 @@
 <%inherit file="std.main.mako" />
 
 <div class="errorMessage">
-<table width="100%">
+<h1>${_('You are banned!')}</h1>
+</div>
+<br /><div align="center">
+<table width="90%">
 <tr>
 <td width="425">
 <object width="425" height="344">
@@ -12,21 +15,19 @@
 </object>
 </td>
 <td>
-<h1>${_('You are banned!')}</h1>
-${_('You are banned for %s days for following reason:<br/>%s') % (c.userInst.bantime(),c.userInst.banreason())}
+<div align="center">
+${_('You are banned for %s days for the following reason:<br/><b>%s</b>') % (c.userInst.bantime(),c.userInst.banreason())}
+<br /><br />${_('This ban expires on %s' %(c.userInst.banexpire()))} 
 <br/><br/>
 ${_('Your UID Number: %d') % (c.userInst.uidNumber)}
 <br/>
-Your UID:<br/>
-<input type="text" value="${_('%s') % (c.userInst.uid)}" />
-<br/>
-
+<input type="text" value="${c.userInst.uid}" readonly="readonly" />
+<br/><br/>
 <form action="${h.url_for('logout')}">
 <p><input type="submit" value="${_('Logout')}" /></p>
 </form>
+</div>
 
 </td>
 </table>
 </div>
-
-

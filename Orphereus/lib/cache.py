@@ -43,6 +43,9 @@ if Client:
             del kwargs['key'], kwargs['meta']
             Client.__init__(self, *args, **kwargs)
             
+        def delete(self, key, **kwargs):
+            return Client.delete(self, self.uniqeKey+str(key), **kwargs)
+        
         def set(self, key, val, **kwargs):
             #log.debug('writing cache entry %s with exp time=%s' %(key,kwargs.get('time', 0)))
             return Client.set(self, self.uniqeKey+str(key), val, **kwargs)
@@ -78,21 +81,8 @@ if Client:
 else:
     class MCache():
         valid = False
-        def __init__(self, *args, **kwargs):
-            pass
-        def set(self, *args, **kwargs):
-            pass
-        def get(self, *args, **kwargs):
-            return None
-        def set_multi(self, *args, **kwargs):
-            pass
-        def get_multi(self, *args, **kwargs):
-            return {}
-        def set_sqla(self, key, obj, **kwargs):
-            pass
-        def get_sqla(self, key):
-            return None
-        
+        __init__ = set = get = delete = set_multi = set_sqla = get_sqla = lambda *args, **kwargs: None
+        get_multi = lambda *args, **kwargs: {}
         
 
 class CacheDict(dict):

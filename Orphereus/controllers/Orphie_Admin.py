@@ -716,16 +716,10 @@ class OrphieAdminController(OrphieBaseController):
                     if getattr(user.options, name) != right:
                         setattr(user.options, name, right)
                         toLog(LOG_EVENT_USER_ACCESS, _('Changed right "%s" for user #%s to %s') % (name, user.uidNumber, right))
-
-                setRight("canDeleteAllPosts")
-                setRight("canMakeInvite")
-                setRight("canChangeRights")
-                setRight("canChangeSettings")
-                setRight("canManageBoards")
-                setRight("canManageUsers")
-                setRight("canManageExtensions")
-                setRight("canManageMappings")
-                setRight("canRunMaintenance")
+                
+                map(setRight, ["canDeleteAllPosts", "canMakeInvite", "canChangeRights", "canChangeSettings",
+                                 "canManageBoards", "canManageUsers", "canManageExtensions", "canManageMappings",
+                                 "canRunMaintenance"])
                 c.message = _('User access was changed')
             elif request.POST.get('ban', False):
                 if user.options.bantime > 0:
@@ -804,6 +798,8 @@ class OrphieAdminController(OrphieBaseController):
                         c.message = _('You should specify deletion reason')
                 else:
                     c.message = _("You haven't rights to delete user")
+            if g.OPT.memcachedUsers:
+                g.mc.set_sqla('u%s' %user.uidNumber, user)
             return self.render('manageUser')
         else:
             return self.error(_('No such user exists.'))

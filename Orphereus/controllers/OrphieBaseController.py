@@ -75,7 +75,7 @@ class OrphieBaseController(BaseController):
             #FIXME: mind the prefix
             if (currentURL != '/ipBanned') and c.ban.type:
                 redirect_to('ipBanned')
-        elif not(c.ban.enabled):
+        else:
             c.ban = None
 
         if g.OPT.checkUAs and self.userInst.isValid() and not self.userInst.Anonymous:

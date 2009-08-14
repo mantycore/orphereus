@@ -76,16 +76,9 @@ class User(AbstractUser):
         meta.Session.commit()
         return user
 
-    # user ID
     @staticmethod
-    def getUser(uidNumber):
-        retSerial = meta.globj.mc.get('u%s' %uidNumber)
-        if retSerial:
-            ret = loads(retSerial, meta.metadata, meta.Session)
-            return ret
-
+    def _getUser(uidNumber): 
         ret = User.query.options(eagerload('options')).filter(User.uidNumber == uidNumber).first()
-
         if ret:
             if meta.globj: #TODO: legacy code
                 if ret and not ret.options:
@@ -94,9 +87,18 @@ class User(AbstractUser):
                     meta.Session.commit()
 
             ret.Anonymous = False
-        retSerial = dumps(ret)
-        meta.globj.mc.set('u%s' %uidNumber, retSerial) 
         return ret
+
+    @staticmethod
+    def getUser(uidNumber):
+        if meta.globj.OPT.memcachedUsers:
+            ret = meta.globj.mc.get_sqla('u%s' %uidNumber)
+            if not(ret):
+                ret = User._getUser(uidNumber)
+                meta.globj.mc.set_sqla('u%s' %uidNumber, ret) 
+            return ret
+        else:
+            return User._getUser(uidNumber)
 
     @staticmethod
     def getByUid(uid):

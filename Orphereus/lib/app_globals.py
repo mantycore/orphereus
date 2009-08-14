@@ -59,7 +59,7 @@ class OptHolder(object):
                               ), 
 
                               ('memcache',
-                               ('memcachedPosts','memcachedBans', 
+                               ('memcachedPosts','memcachedBans','memcachedUsers', 
                                )
                               ),
                               

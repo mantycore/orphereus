@@ -109,7 +109,7 @@ ${'\r\n'.join(val.split(','))}
 
 ${'\r\n'.join(sorted(map(lambda (key,val): "%s = %s" %(key,val),c.allSettings.iteritems())))}
 </textarea>
-<br /><i>${_('(pastable into .ini file)')}</i>
+<br /><i>${_('(can be pasted into .ini file)')}</i>
 </div>
 				</td>
     		</tr>

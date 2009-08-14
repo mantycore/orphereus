@@ -31,9 +31,9 @@ import string
 import random
 import Image, ImageDraw, ImageFilter, ImageFont
 try:
-    from cStringIO import StringIO
+    import cStringIO as StringIO
 except ImportError:
-    from StringIO import StringIO
+    import StringIO
 from Captcha.Visual import Text, Backgrounds, Distortions, ImageCaptcha
 
 class CaptchaGenerator(ImageCaptcha):

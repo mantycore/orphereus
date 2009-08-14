@@ -87,11 +87,8 @@ class OrphieMainController(OrphieBaseController):
 
         c.board = board
 
-        #TODO: move into GLOBAL object???
-        extensions = Extension.getList(True)
-        extList = []
-        for ext in extensions:
-            extList.append(ext.ext)
+        extensions = g.caches.setdefaultEx('extensions', Extension.getList, True)
+        extList = (ext.ext for ext in extensions)
         c.extLine = ', '.join(extList)
 
         count = threadFilter.count()

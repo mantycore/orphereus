@@ -22,6 +22,8 @@
 """
 Implements MCache class and it's fake copy, if memcache is unavailable. 
 """
+from sqlalchemy.ext.serializer import loads, dumps
+
 try:
     from memcache import Client
 except:
@@ -34,17 +36,45 @@ if Client:
     class MCache(Client):
         valid = True
         uniqeKey = ''
+        meta = None
         def __init__(self, *args, **kwargs):
             self.uniqeKey = kwargs.get('key', '')
-            del kwargs['key']
+            self.meta = kwargs.get('meta', '')
+            del kwargs['key'], kwargs['meta']
             Client.__init__(self, *args, **kwargs)
             
         def set(self, key, val, **kwargs):
+            #log.debug('writing cache entry %s with exp time=%s' %(key,kwargs.get('time', 0)))
             return Client.set(self, self.uniqeKey+str(key), val, **kwargs)
+
         def get(self, key):
-            #print ">%s" %(self.uniqeKey+str(key))
             return Client.get(self, self.uniqeKey+str(key))
-            
+
+        def set_sqla(self, key, obj, **kwargs):
+            #log.debug('writing sql cache %s' %key)
+            return self.set(key, dumps(obj), **kwargs)
+
+        def get_sqla(self, key):
+            #log.debug('getting sql cache %s' %key)
+            serial = self.get(key)
+            if serial:
+                return loads(serial, self.meta.metadata, self.meta.Session)
+            return None
+        
+        def setdefaultEx(self, key, function, *args, **kwargs): 
+            res = self.get(key)
+            if not(res):
+                res = function(*args)
+                self.set(key, res, **kwargs)
+            return res
+
+        #def setdefault_sqlEx(self, key, query, **kwargs): 
+        #    res = self.get_sqla(key)
+        #    if not(res):
+        #        res = query
+        #        self.set(key, res, **kwargs)
+        #    return res
+
 else:
     class MCache():
         valid = False
@@ -58,6 +88,12 @@ else:
             pass
         def get_multi(self, *args, **kwargs):
             return {}
+        def set_sqla(self, key, obj, **kwargs):
+            pass
+        def get_sqla(self, key):
+            return None
+        
+        
 
 class CacheDict(dict):
     def setdefaultEx(self, key, function, *args):

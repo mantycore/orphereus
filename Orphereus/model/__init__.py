@@ -80,8 +80,8 @@ def init_model(engine):
     UserOptionsProps = {}
     UserFiltersProps = {}
     UserProps = {
-            'options' : orm.relation(UserOptions, uselist = False, backref = 'user', cascade = "all, delete, delete-orphan"),
-            'filters' : orm.relation(UserFilters, backref = 'user', cascade = "all, delete, delete-orphan")
+            'options' : orm.relation(UserOptions, uselist = False, backref = 'user', cascade = "all, delete, delete-orphan", lazy=False),
+            'filters' : orm.relation(UserFilters, backref = 'user', cascade = "all, delete, delete-orphan", lazy=False)
                 }
 
     ExtensionProps = {}

@@ -22,6 +22,7 @@
 import sqlalchemy as sa
 from sqlalchemy import orm
 from sqlalchemy.orm import eagerload
+from sqlalchemy.ext.serializer import loads, dumps
 
 from Orphereus.model import meta
 from Orphereus.model.UserOptions import UserOptions
@@ -78,6 +79,11 @@ class User(AbstractUser):
     # user ID
     @staticmethod
     def getUser(uidNumber):
+        retSerial = meta.globj.mc.get('u%s' %uidNumber)
+        if retSerial:
+            ret = loads(retSerial, meta.metadata, meta.Session)
+            return ret
+
         ret = User.query.options(eagerload('options')).filter(User.uidNumber == uidNumber).first()
 
         if ret:
@@ -88,6 +94,8 @@ class User(AbstractUser):
                     meta.Session.commit()
 
             ret.Anonymous = False
+        retSerial = dumps(ret)
+        meta.globj.mc.set('u%s' %uidNumber, retSerial) 
         return ret
 
     @staticmethod

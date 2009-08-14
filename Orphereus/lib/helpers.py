@@ -129,7 +129,7 @@ def modLink(filePath, secid, hidePrefixes = False):
 def renderSection(section):
     linkTemplate = (g.OPT.dvachStyleMenu and r'<a href="%s" title="%s"><b>%s</b></a>') \
                         or r'<a href="%s" title="%s"><b>/%s/</b></a>'
-    joiner = (g.OPT.dvachStyleMenu and ' / ') or ' '
+    joiner = (g.OPT.dvachStyleMenu and '/') or ''
     items = [linkTemplate %(link, title, name)
                     for (name, link, title) in section]
     return joiner.join(items)
@@ -144,8 +144,8 @@ def boardMenu(sections, sectionIsTags = True):
         boardsRender = [boardsSection(section) for section in sections]
     else:
         boardsRender = [renderSection(section) for section in sections]
-    joiner = (g.OPT.dvachStyleMenu and ' // ') or ' ] [ '
-    return '[ %s ]' %(joiner.join(boardsRender))
+    joiner = (g.OPT.dvachStyleMenu and '//') or '] ['
+    return '[%s]' %(joiner.join(boardsRender))
 
 def itemsToSection(items):
     """

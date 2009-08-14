@@ -348,6 +348,7 @@ class OrphieAdminController(OrphieBaseController):
                     c.exists = False
                 else:
                     c.message = _("Can't delete extension. Uploaded files with this extension exists.")
+        del g.caches['extensions']
         return self.render('manageExtension')
 
     def pinThread(self, act, id):
@@ -589,6 +590,7 @@ class OrphieAdminController(OrphieBaseController):
                     c.message = _("Board %s already exists!") % newtag
             else:
                 c.message = _("Board name should be non-empty and should contain only valid symbols")
+        del g.caches['boardlist']
         return self.render('manageBoard')
 
     def manageUsers(self):

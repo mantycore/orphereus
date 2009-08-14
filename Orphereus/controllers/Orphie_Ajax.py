@@ -106,6 +106,8 @@ class OrphieAjaxController(OrphieBaseController):
             if not post in hideThreads:
                 hideThreads.append(post)
                 self.userInst.hideThreads = hideThreads
+                if g.OPT.memcachedUsers:
+                    g.mc.set_sqla('u%s' %self.userInst.uidNumber, self.userInst)
                 meta.Session.commit()
         if redirect:
             return self.realmRedirect(redirect, realm, page)
@@ -121,6 +123,8 @@ class OrphieAjaxController(OrphieBaseController):
             if post in hideThreads:
                 hideThreads.remove(post)
                 self.userInst.hideThreads = hideThreads
+                if g.OPT.memcachedUsers:
+                    g.mc.set_sqla('u%s' %self.userInst.uidNumber, self.userInst)
                 meta.Session.commit()
         if redirect:
             return self.realmRedirect(redirect, realm, page)

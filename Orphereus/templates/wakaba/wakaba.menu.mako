@@ -1,4 +1,5 @@
 <div class="adminbar">
+<span class="boardlist">
 ${h.boardMenu([h.itemsToSection(
 	[
 		(_('Overview'), '~', g.OPT.allowOverview, h.url_for('boardBase', board='~')),
@@ -15,7 +16,7 @@ ${h.boardMenu([h.itemsToSection(
 %endif
 	${h.boardMenu(c.boardlist)}
 %endif
-
+</span>
 %if not c.userInst.Anonymous:
     [<a href="${h.url_for('userProfile')}">${_('Profile')}</a>]
 %elif g.OPT.allowAnonProfile:

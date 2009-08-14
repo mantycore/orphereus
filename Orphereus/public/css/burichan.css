@@ -41,6 +41,10 @@ a:hover {
 }
 div.delete {
 }
+.boardlist a {
+    padding: 0px 3px 0px 3px; 
+    /*background-color: #E9E9E9*/
+}
 .adminbar {
         text-align:right;
         background:inherit;

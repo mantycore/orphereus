@@ -30,13 +30,14 @@ body {
 
 a {
     color:#AFB9C5;
-    
-
 }
 /*a:visited {
     color:#9DA6B0;
 }*/
-
+.boardlist a {
+    padding: 0px 3px 0px 3px; 
+    /*background-color: #E9E9E9*/
+}
 a:hover {
     color:#EEEEEE;
 }

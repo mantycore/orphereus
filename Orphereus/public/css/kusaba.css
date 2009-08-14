@@ -38,6 +38,10 @@ a:visited {
         text-decoration:underline;
         font-family:sans-serif;
 }
+.boardlist a {
+    padding: 0px 3px 0px 3px; 
+    /*background-color: #E9E9E9*/
+}
 div.delete {
 }
 .adminbar {

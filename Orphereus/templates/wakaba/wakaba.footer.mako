@@ -22,6 +22,7 @@ ${"rendering: %s" % str(h.currentTime() - c.renderStartTime)}
 %endif 
 <br />
 ${"total: %s" % str(h.currentTime() - c.processStartTime)} (${"render %s%% time" % str((h.currentTime() - c.renderStartTime)*100/(h.currentTime() - c.processStartTime))})
+<br />request profiling: ${g.OPT.requestProfiling}
 <span style="display: none"><a href="${h.url_for('botTrap2')}">.<a></span>
 </font>
 %endif

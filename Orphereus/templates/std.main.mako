@@ -8,8 +8,8 @@
 <meta name="robots" content="noarchive" />
 
 <link rel="stylesheet" type="text/css" href="${h.staticFile("std_gray.css")}" title="Anoma std::" />
-<link rel="shortcut icon" type="image/x-icon" href="/${g.OPT.favicon}" />
-<link rel="icon" type="image/x-icon" href="/${g.OPT.favicon}" />
+<link rel="shortcut icon" type="image/x-icon" href="${g.OPT.staticPathWeb+g.OPT.favicon}" />
+<link rel="icon" type="image/x-icon" href="${g.OPT.staticPathWeb+g.OPT.favicon}" />
 
 <script type="text/javascript" src="${h.staticFile("jquery.js")}" ></script>
 </head>

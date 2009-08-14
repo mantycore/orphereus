@@ -27,6 +27,7 @@ import os
 import re
 
 from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.cache import *
 from Orphereus.lib.constantValues import engineVersion
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 
@@ -58,7 +59,7 @@ class OptHolder(object):
                               ), 
 
                               ('memcache',
-                               ('memcachedPosts', 
+                               ('memcachedPosts','memcachedBans', 
                                )
                               ),
                               
@@ -125,6 +126,11 @@ class OptHolder(object):
                                )
                               ),
 
+                              ('memcache',
+                               ('banCacheSeconds', 
+                               )
+                              ),
+                              
                               ('defaults',
                                ('defThumbSize', 'defMinPicSize', 'defMaxFileSize', 'defBumplimit',
 
@@ -178,8 +184,6 @@ class OptHolder(object):
             
             # recovery option
             self.recoveryMode = self.booleanGetter(config['core.recovery'])
-            # won't work normally, because ORM init isn't complete here
-            # self.initValues(None)
             
     def registerCfgValues(self, values, type):
         dest = {CFG_BOOL: self.booleanValues,
@@ -296,7 +300,7 @@ class Globals(object):
             log.info("EGG Setup mode")
 
         self.OPT = OptHolder(appName, eggSetupMode)
-        self.caches = {}
+        self.caches = CacheDict()
         self.uniqueVals = ()
         log.info("---------- Core settings:")
         log.info("appRoot   == %s" % self.OPT.appRoot)

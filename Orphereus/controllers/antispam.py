@@ -43,7 +43,7 @@ def restrictor(controller, request, **kwargs):
     user = controller.userInst
     timeBnd = datetime.datetime.now() - datetime.timedelta(seconds = g.OPT.checkIntervalSeconds)
     if user.Anonymous:
-        filterCond = and_(Post.date > timeBnd, Post.ip == h.ipToInt(getUserIp()))
+        filterCond = and_(Post.date > timeBnd, Post.ip == controller.userIp)
     else:
         filterCond = and_(Post.date > timeBnd, Post.uidNumber == user.options.uidNumber)
     lastPosts = Post.filter(filterCond).all()

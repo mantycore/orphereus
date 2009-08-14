@@ -85,5 +85,16 @@ class Ban(object):
         return Ban.query.filter(banId == Ban.id).first()
 
     @staticmethod
-    def getBanByIp(userIp):
+    def _getBanByIp(userIp):
         return Ban.query.filter(Ban.mask.op('&')(userIp) == Ban.ip.op('&')(Ban.mask)).first() #OMGWTF
+
+    @staticmethod
+    def getBanByIp(userIp):
+        if meta.globj.OPT.memcachedBans:
+            banInfo = meta.globj.mc.get('ban%s' %userIp)
+            if not(banInfo):
+                banInfo = Ban._getBanByIp(userIp)
+                meta.globj.mc.set('ban%s' %userIp, banInfo, time=meta.globj.OPT.banCacheSeconds)
+            return banInfo
+        else:
+            return Ban._getBanByIp(userIp)

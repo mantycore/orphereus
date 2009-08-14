@@ -10,7 +10,7 @@
 %endfor
     </head>
     <body>
-        <%include file="wakaba.menu.mako" />
+        ${c.menuRender}
         <%include file="wakaba.logo.mako" />
         <hr />
         <table cellpadding=5 width="100%">
@@ -25,7 +25,7 @@
                 </tr>
             </tbody>
         </table>
-        <%include file="wakaba.menu.mako" />
+        ${c.menuRender}
         <%include file="wakaba.footer.mako" />
     </body>
 </html>

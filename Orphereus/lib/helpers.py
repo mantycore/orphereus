@@ -44,15 +44,16 @@ def repliesProxy(thread, controller):
     user = controller.userInst
     keyPrefix = str('%s%s%s' %(g.OPT.cachePrefix, get_lang()[0], int(not(user.hideLongComments) or (c.count==1))))
     #log.debug(keyPrefix)
+    #log.debug(c.count)
     postsDict = dict([(post.id, post) for post in thread.Replies])
-    postsRender = g.mc.get_multi(postsDict.iterkeys(), key_prefix = keyPrefix)
-    absentPosts = list(set(postsDict.iterkeys()) - set(postsRender.keys()))
+    postsRender = g.mc.get_multi(postsDict.keys(), key_prefix = keyPrefix)
+    absentPosts = list(set(postsDict.keys()) - set(postsRender.keys()))
     #log.debug('NOT found: %s' % absentPosts)
     if absentPosts:
         absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
         g.mc.set_multi(absentPostsRender, key_prefix = keyPrefix)
         postsRender.update(absentPostsRender)
-    sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.iterkeys())])
+    sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.keys())])
     return ''.join(sortedPostsRender)
 
 threadPanelCallbacks = []
@@ -168,16 +169,15 @@ def templateExists(relName):
     return os.path.exists(os.path.join(config['pylons.app_globals'].OPT.templPath, relName))
 
 def staticFile(fileName):
-    gv = config['pylons.app_globals']
-    spw = gv.OPT.staticPathWeb
-    spl = gv.OPT.staticPath
+    spw = g.OPT.staticPathWeb
+    spl = g.OPT.staticPath
     ext = fileName.split('.')[-1]
     relFileName = "%s/%s" % (ext, fileName)
     localFileName = os.path.join(spl, relFileName)
-    version = gv.caches.get(localFileName, False)
+    version = g.caches.get(localFileName, False)
     if not version:
         version = os.path.getmtime(localFileName)
-        gv.caches[localFileName] = version
+        g.caches[localFileName] = version
     return u"%s%s?version=%s" % (spw, relFileName, str(version))
 
 def ipToInt(ipStr):

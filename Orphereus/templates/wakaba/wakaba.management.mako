@@ -16,7 +16,7 @@
 		%if g.OPT.useZMenu:
 			<%include file="wakaba.z-menu.mako" />
 		%else:
-			<%include file="wakaba.menu.mako" />
+            ${c.menuRender}
 		%endif
             <%include file="wakaba.logo.mako" />
             <hr />
@@ -34,7 +34,7 @@
                     </tr>
                 </tbody>
             </table>
-            <%include file="wakaba.menu.mako" />
+            ${c.menuRender}
             <%include file="wakaba.footer.mako" />
         %endif
     </body>

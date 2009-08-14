@@ -36,6 +36,7 @@ import hashlib
 import string
 import re
 from Orphereus.lib.miscUtils import *
+from Orphereus.lib.cachedutils import *
 from Orphereus.lib.FakeUser import FakeUser
 from Orphereus.lib.constantValues import *
 
@@ -56,24 +57,26 @@ class OrphieBaseController(BaseController):
             self.userInst = FakeUser()
 
         c.userInst = self.userInst
+        c.uidNumber = self.userInst.uidNumber
         if self.userInst.isValid():
             c.jsFiles = g.OPT.jsFiles[self.userInst.template]
-        c.uidNumber = self.userInst.uidNumber
         self.requestedMenus = []
         self.builtMenus = {}
 
         # IP ban checks
-        ip = h.ipToInt(getUserIp())
-        banInfo = Ban.getBanByIp(ip)
+        self.userIp = h.ipToInt(getUserIp())
+        c.userIp = self.userIp
+        c.ban = Ban.getBanByIp(self.userIp) 
         
-        if banInfo and banInfo.enabled:
-            c.ban = banInfo
+        if c.ban and c.ban.enabled:
             currentURL = request.path_info.decode('utf-8', 'ignore')
             if currentURL.endswith('/'):
                 currentURL = c.currentURL[:-1]
             #FIXME: mind the prefix
-            if (currentURL != '/ipBanned') and banInfo.type:
+            if (currentURL != '/ipBanned') and c.ban.type:
                 redirect_to('ipBanned')
+        elif not(c.ban.enabled):
+            c.ban = None
 
         if g.OPT.checkUAs and self.userInst.isValid() and not self.userInst.Anonymous:
             for ua in g.OPT.badUAs:
@@ -115,58 +118,24 @@ class OrphieBaseController(BaseController):
 
     def initEnvironment(self):
         c.title = g.OPT.title
-        boards = g.mc.getList('boards')
-        if not(boards):
-            log.debug('no cached boardlist, loading...')
-            boards = Tag.getBoards()
-            map(lambda lol: lol.options, boards) # hack for lazy evaluation
-            g.mc.setList('boards', boards)
-        c.boardlist = []
-        sectionId = -1
-        section = []
-
-        def sectionName(id):
-            sName = ''
-            if sectionId < len(g.sectionNames):
-                sName = g.sectionNames[id]
-            return sName
-        for b in boards:
-            if sectionId == -1:
-                sectionId = b.options.sectionId
-                section = []
-            if sectionId != b.options.sectionId:
-                c.boardlist.append((section, sectionName(sectionId)))
-                sectionId = b.options.sectionId
-                section = []
-            bc = empty()
-            bc.tag = b.tag
-            bc.comment = b.options.comment
-            section.append(bc) #b.tag)
-        if section:
-            c.boardlist.append((section, sectionName(sectionId)))
-
-        c.sectionNames = []
-        for i in range(0, len(c.boardlist)):
-            if i < len(g.sectionNames):
-                c.sectionNames.append(g.sectionNames[i])
-            else:
-                c.sectionNames.append(None)
-
-        #log.debug(request.cookies.get('Orphereus',''))
-        #log.debug(request.cookies)
-
-        self.setCookie()
-
+        c.boardlist = g.caches.setdefaultEx('boardlist', chBoardList)
+        #c.sectionNames = g.caches.setdefaultEx('sectionNames', chSectionNames, c.boardlist)
+        c.menuRender = self.fastRender('wakaba/wakaba.menu.mako')
         c.menuLinks = g.additionalLinks
         c.sectionNames = g.sectionNames
+
+        self.setCookie()
 
         if self.userInst.Anonymous:
             anonCaptId = session.get('anonCaptId', False)
             if not anonCaptId or not Captcha.exists(anonCaptId):
                 #log.debug('recreate')
-                oldLang = h.setLang(self.userInst.cLang)
-                captcha = Captcha.create()
-                h.setLang(oldLang)
+                if self.userInst.cLang:
+                    oldLang = h.setLang(self.userInst.cLang)
+                    captcha = Captcha.create()
+                    h.setLang(oldLang)
+                else:
+                    captcha = Captcha.create()
                 session['anonCaptId'] = captcha.id
                 session.save()
                 c.captcha = captcha

@@ -175,8 +175,7 @@ def upd_globals():
     meta.globj.OPT.cachePrefix = str(meta.globj.OPT.cachePrefix) 
     if meta.globj.mc:
         del meta.globj.mc
-    meta.globj.mc = MCache(meta.globj.OPT.memcachedServers, debug=0)
-    meta.globj.mc.uniqeKey = meta.globj.OPT.cachePrefix
+    meta.globj.mc = MCache(meta.globj.OPT.memcachedServers, debug=0, key=meta.globj.OPT.cachePrefix)
 
     log.info('UPDATING GLOBALS COMPLETED')
     

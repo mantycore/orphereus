@@ -19,50 +19,54 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-"""
-Implements MCache class and it's fake copy, if memcache is unavailable. 
-"""
-try:
-    from memcache import Client
-except:
-    Client = None
+from pylons import config, request, c, g
+from pylons.i18n import get_lang, set_lang
+import miscUtils as utils
 
 import logging
 log = logging.getLogger(__name__)
 
-if Client:
-    class MCache(Client):
-        valid = True
-        uniqeKey = ''
-        def __init__(self, *args, **kwargs):
-            self.uniqeKey = kwargs.get('key', '')
-            del kwargs['key']
-            Client.__init__(self, *args, **kwargs)
-            
-        def set(self, key, val, **kwargs):
-            return Client.set(self, self.uniqeKey+str(key), val, **kwargs)
-        def get(self, key):
-            #print ">%s" %(self.uniqeKey+str(key))
-            return Client.get(self, self.uniqeKey+str(key))
-            
-else:
-    class MCache():
-        valid = False
-        def __init__(self, *args, **kwargs):
-            pass
-        def set(self, *args, **kwargs):
-            pass
-        def get(self, *args, **kwargs):
-            return None
-        def set_multi(self, *args, **kwargs):
-            pass
-        def get_multi(self, *args, **kwargs):
-            return {}
+from Orphereus.model import *
 
-class CacheDict(dict):
-    def setdefaultEx(self, key, function, *args):
-        try:
-            return self[key]
-        except:
-            log.debug("Key '%s' not found in cache, calling %s to fill in" %(key, function))
-            return self.setdefault(key, function(*args))
+def chGetBoards():
+    boards = Tag.getBoards()
+    #map(lambda lol: lol.options, boards) # hack for lazy evaluation
+    return boards
+
+def chBoardList():
+    boardlist = []
+    sectionId = -1
+    section = []
+    boards = chGetBoards()
+    
+    def sectionName(id):
+        sName = ''
+        if sectionId < len(g.sectionNames):
+            sName = g.sectionNames[id]
+        return sName
+    
+    for b in boards:
+        if sectionId == -1:
+            sectionId = b.options.sectionId
+            section = []
+        if sectionId != b.options.sectionId:
+            boardlist.append((section, sectionName(sectionId)))
+            sectionId = b.options.sectionId
+            section = []
+        bc = empty()
+        bc.tag = b.tag
+        bc.comment = b.options.comment
+        section.append(bc) #b.tag)
+    if section:
+        boardlist.append((section, sectionName(sectionId)))
+    return boardlist
+
+def chSectionNames(boardlist):
+    sectionNames = []
+    for i in range(0, len(boardlist)):
+        if i < len(g.sectionNames):
+            sectionNames.append(g.sectionNames[i])
+        else:
+            sectionNames.append(None)
+    return sectionNames
+     

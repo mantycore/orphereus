@@ -82,6 +82,8 @@ core.allowLogin = true
 core.searchPluginId = search_like
 memcache.memcachedPosts = false
 memcache.memcachedServers = 127.0.0.1:11211
+memcache.memcachedBans = false
+memcache.banCacheSeconds = 60
 # this prefix is intended to eliminate data collisions in cache 
 # when using single memcached for several Orphereus instances  
 memcache.cachePrefix = ach

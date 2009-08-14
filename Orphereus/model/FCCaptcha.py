@@ -30,7 +30,10 @@ import datetime
 import string
 import random
 import Image, ImageDraw, ImageFilter, ImageFont
-import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 from Captcha.Visual import Text, Backgrounds, Distortions, ImageCaptcha
 
 class CaptchaGenerator(ImageCaptcha):

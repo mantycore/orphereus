@@ -6,4 +6,6 @@
 <br />
 %if c.returnUrl:
 <a href="${c.returnUrl}">${_('Back')}</span>
+%else:
+<a href="javascript:history.back();">${_('Back')}</span>
 %endif 

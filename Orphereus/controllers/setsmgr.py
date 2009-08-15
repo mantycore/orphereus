@@ -15,8 +15,12 @@ def menuItems(menuId):
     menu = None
     if menuId == "managementMenu":
         menu = (MenuItem('id_ExtSettings', _("Extended settings"), h.url_for('hsCfgManage'), 601, 'id_adminBoard'),)
-
     return menu
+
+def menuTest(id, baseController):
+    user = baseController.userInst
+    if id == 'id_ExtSettings':
+        return user.canChangeSettings()
 
 def routingInit(map):
     map.connect('hsCfgManage', '/holySynod/configuration/', controller = 'setsmgr', action = 'show')
@@ -26,9 +30,9 @@ def routingInit(map):
 def pluginInit(g = None):
     config = {'name' : N_('Engine runtime settings editing tool'),
               'routeinit' : routingInit,
-              'menuitems' : menuItems
+              'menuitems' : menuItems,
+              'menutest' : menuTest 
              }
-
     return PluginInfo('setsmgr', config)
 
 from OrphieBaseController import *
@@ -57,8 +61,7 @@ class SetsmgrController(OrphieBaseController):
         if not self.currentUserIsAuthorized():
             return redirect_to('boardBase')
         self.initEnvironment()
-        if not (self.userInst.isAdmin() and self.userInst.canChangeRights()) or self.userInst.isBanned():
-            c.errorText = _("No way! You aren't holy enough!")
+        if not (self.userInst.isAdmin() and self.userInst.canChangeSettings()) or self.userInst.isBanned():
             return redirect_to('boardBase')
         c.userInst = self.userInst
         if not checkAdminIP():

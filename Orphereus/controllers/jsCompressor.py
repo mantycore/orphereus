@@ -56,8 +56,12 @@ def menuItems(menuId):
     if menuId == "managementMenu":
         menu = (MenuItem('id_RebuildJs', N_("Rebuild JavaScript"), h.url_for('hsRebuildJs'), 310, 'id_hsMaintenance'),
                 )
-
     return menu
+
+def menuTest(id, baseController):
+    user = baseController.userInst
+    if id == 'id_RebuildJs':
+        return user.canRunMaintenance()
 
 def routingInit(map):
     map.connect('hsRebuildJs', '/holySynod/rebuildJs', controller = 'jsCompressor', action = 'rebuild')
@@ -76,7 +80,8 @@ def pluginInit(g = None):
     config = {'name' : N_('Javascript compression tool'),
               'routeinit' : routingInit,
               'basehook' : requestHook,
-              'menuitems' : menuItems
+              'menuitems' : menuItems,
+              'menutest' : menuTest
              }
 
     return PluginInfo('jsCompressor', config)
@@ -94,7 +99,6 @@ class JscompressorController(OrphieBaseController):
             return redirect_to('boardBase')
         self.initEnvironment()
         if not (self.userInst.isAdmin() and self.userInst.canRunMaintenance()) or self.userInst.isBanned():
-            c.errorText = _("No way! You aren't holy enough!")
             return redirect_to('boardBase')
         c.userInst = self.userInst
         if not checkAdminIP():

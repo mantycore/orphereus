@@ -16,8 +16,12 @@ def menuItems(menuId):
     menu = None
     if menuId == "managementMenu":
         menu = (MenuItem('id_ImportThread', _("Import thread"), h.url_for('hsImportThread'), 601, 'id_adminPosts'),)
-
     return menu
+
+def menuTest(id, baseController):
+    user = baseController.userInst
+    if id == 'id_ImportThread':
+        return user.canManageBoards()
 
 def routingInit(map):
     map.connect('hsImportThread', '/holySynod/import', controller = 'threadImport', action = 'importThread')
@@ -29,6 +33,7 @@ def pluginInit(g = None):
     config = {'name' : N_('Thread import tool'),
               'routeinit' : routingInit,
               'menuitems' : menuItems,
+              'menutest' : menuTest, 
               'entryPoints' : [('import', "ConsoleImport"),],
              }
 
@@ -138,7 +143,6 @@ class ThreadimportController(OrphieBaseController):
             return redirect_to('boardBase')
         self.initEnvironment()
         if not (self.userInst.isAdmin() and self.userInst.canManageBoards() or self.userInst.isBanned()):
-            c.errorText = _("No way! You aren't holy enough!")
             return redirect_to('boardBase')
         c.userInst = self.userInst
         if not checkAdminIP():

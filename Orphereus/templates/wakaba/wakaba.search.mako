@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
-<b>${_('Found')}:</b> ${c.count}
+<ul style="padding-left: 16px;">
+<li><b>${_('Found')}:</b> ${c.count}</li>
+%if c.warnings:
+%for w in c.warnings:
+<li><i>${w}</i></li>
+%endfor
+%endif
+</ul>
 
-<br/>
 <form action="${h.url_for('searchBase')}" method="post">
     <input type="text" name="query" size="20" value="${c.query}"/>
     <input value="${_('Search again')}" type="submit" />
@@ -22,6 +28,7 @@
 </%def>
 
 %for pt in c.posts:
+%if h.postEnabledToShow(pt, c.userInst):
 <table id="quickReplyNode${pt.id}">
     <tbody>
         <tr>
@@ -83,7 +90,19 @@
         </tr>
     </tbody>
 </table>
-
+%else:
+<table>
+    <tbody>
+        <tr>
+        <td class="reply">
+          <blockquote class="postbody" id="postBQId${pt.id}">
+          ${_("Can't show this post due security settings")}
+          </blockquote>
+        </td>
+        </tr>
+    </tbody>
+</table>
+%endif
 %endfor
 
 <br/>

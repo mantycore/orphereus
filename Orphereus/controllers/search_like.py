@@ -17,6 +17,7 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
     count = 0
     posts = []
     highlights = {}
+    warnings = []
     def highlight(strtorepl, text):
         return strtorepl.replace(text, u'<span style="background-color:yellow">%s</span>' % text)
     if not text or len(text) < minLen:
@@ -28,7 +29,7 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
         posts = filter.order_by(ns.Post.date.desc())[(page * postsPerPage):(page + 1) * postsPerPage]
         for post in posts:
             highlights[post.id] = (highlight(post.title, text), highlight(post.message, text))
-    return (posts, count, failInfo, highlights)
+    return (posts, count, failInfo, highlights, warnings)
 
 def pluginInit(globj = None):
     if globj:

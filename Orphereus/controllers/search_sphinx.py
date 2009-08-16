@@ -1,5 +1,6 @@
 from pylons.i18n import N_
 from string import *
+import time
 
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.base import *
@@ -16,22 +17,34 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
     failInfo = None
     highlights = {}
     posts = []
+    warnings = []
+
+    maxCount = 1000
+    maxCountForRestrictions = 500
+
     if text.strip():
         result = []
+
+        postIds = []
+        timestart = time.time()
         base = meta.Session.query(Post.id).filter(filteringClause)
         negBase = meta.Session.query(Post.id).filter(not_(filteringClause))
         positiveCount = base.count()
         negativeCount = negBase.count()
-
-        # We should select minimal array of post ids to search trough
-        positive = positiveCount <= negativeCount
-        #log.critical("%d : %d" % (positiveCount, negativeCount))
-        postIds = []
-        if positive:
-            postIds = base.all()
+        if positiveCount < maxCountForRestrictions or negativeCount < maxCountForRestrictions:
+            # We should select minimal array of post ids to search trough
+            positive = positiveCount <= negativeCount
+            #log.critical("%d : %d" % (positiveCount, negativeCount))
+            if positive:
+                postIds = base.all()
+            else:
+                postIds = negBase.all()
+            postIds = map(lambda seq: int(seq[0]), postIds)
         else:
-            postIds = negBase.all()
-        postIds = map(lambda seq: int(seq[0]), postIds)
+            warnings.append(_("Search restrictions was ignored due large allowed range"))
+
+        c.log.append("Search: restriction computing time: %s" % (time.time() - timestart))
+        timestart = time.time()
 
         mode = SPH_MATCH_EXTENDED2
         host = str(g.OPT.sphinxHost)
@@ -49,10 +62,16 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
         cl.SetMatchMode(mode)
         res = cl.Query(text, index)
 
+        c.log.append("Search: index searching time: %s" % (time.time() - timestart))
+        timestart = time.time()
+
         if not res:
             failInfo = _("Search failed. Sphinx engine returned '%s'") % cl.GetLastError()
         elif res.has_key('matches'):
             count = res['total_found']
+            if count > maxCount:
+                warnings.append(_("%d posts was found during search, %d was ignored due engine restrictions") % (count, count - maxCount))
+                count = maxCount
             for match in res['matches']:
                 result.append(match['id'])
         if result:
@@ -72,7 +91,8 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
                 shift = len(titles)
                 for num, id in enumerate(ids):
                     highlights[id] = (hlarr[num].decode('utf-8'), hlarr[num + shift].decode('utf-8'))
-    return (posts, count, failInfo, highlights)
+        c.log.append("Search: posts resolving time: %s" % (time.time() - timestart))
+    return (posts, count, failInfo, highlights, warnings)
 
 def pluginInit(globj = None):
     if globj:

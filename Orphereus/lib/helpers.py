@@ -38,7 +38,7 @@ import logging
 log = logging.getLogger(__name__)
 
 def doFastRender(post, thread, controller):
-    return controller.fastRender('wakaba/wakaba.postReply.mako', disableFiltering=True, thread=thread, post=post)
+    return controller.fastRender('wakaba/wakaba.postReply.mako', disableFiltering = True, thread = thread, post = post)
 
 def repliesProxy(thread, controller):
     user = controller.userInst
@@ -130,12 +130,12 @@ def renderSection(section):
     linkTemplate = (g.OPT.dvachStyleMenu and r'<a href="%s" title="%s"><b>%s</b></a>') \
                         or r'<a href="%s" title="%s"><b>/%s/</b></a>'
     joiner = (g.OPT.dvachStyleMenu and '/') or ''
-    items = [linkTemplate %(link, title, name)
+    items = [linkTemplate % (link, title, name)
                     for (name, link, title) in section]
     return joiner.join(items)
 
 def boardsSection(boardSection):
-    uSection = [(board.tag, url_for('boardBase', board=board.tag), board.comment,) 
+    uSection = [(board.tag, url_for('boardBase', board = board.tag), board.comment,)
                     for board in boardSection[0]]
     return renderSection(uSection)
 
@@ -145,13 +145,13 @@ def boardMenu(sections, sectionIsTags = True):
     else:
         boardsRender = [renderSection(section) for section in sections]
     joiner = (g.OPT.dvachStyleMenu and '//') or '] ['
-    return '[%s]' %(joiner.join(boardsRender))
+    return '[%s]' % (joiner.join(boardsRender))
 
 def itemsToSection(items):
     """
     #returns section-like list.
     #items: list of tuples: (name, url, testCase, hint)
-    #each item is shown, if it's testCase is True. Rendered to 
+    #each item is shown, if it's testCase is True. Rendered to
     #    <a hred="%(url)" title="%(hint)>
     """
     section = []
@@ -160,7 +160,7 @@ def itemsToSection(items):
         if testCase:
             section.append((url, hint, name,))
     return section
-        
+
 def templateExists(relName):
     #log.debug(config['pylons.g'].OPT.templPath)
     #log.debug(relName)
@@ -182,13 +182,13 @@ def staticFile(fileName):
 
 def ipToInt(ipStr):
     val = struct.unpack('!L', socket.inet_aton(ipStr))[0]
-    if val>sys.maxint:
-        val = -(sys.maxint+1)*2 + val
+    if val > sys.maxint:
+        val = -(sys.maxint + 1) * 2 + val
     return val
 
 def intToIp(ipint):
     ipi = int(ipint)
-    return str((ipi >> 24) & 0xff)+'.'+str((ipi>>16) & 0xff)+'.'+str((ipi>>8) & 0xff)+'.'+str(ipi & 0xff) 
+    return str((ipi >> 24) & 0xff) + '.' + str((ipi >> 16) & 0xff) + '.' + str((ipi >> 8) & 0xff) + '.' + str(ipi & 0xff)
 
 def setLang(lang):
     oldLang = get_lang()
@@ -214,3 +214,16 @@ def makeLangValid(lang):
 def sectionName(str):
     #TODO: find a better solution
     return str.replace(' ', '')
+
+def postEnabledToShow(post, user):
+    if user.isAdmin():
+        return True
+
+    if post.parentPost:
+        post = post.parentPost
+
+    for tag in post.tags:
+        if tag.id in g.forbiddenTags:
+            return False
+
+    return True

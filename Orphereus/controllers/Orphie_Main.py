@@ -358,7 +358,7 @@ class OrphieMainController(OrphieBaseController):
             t.tagLine = ', '.join(tl)
         c.userInst = self.userInst
         if c.profileChanged and g.OPT.memcachedUsers:
-            g.mc.set_sqla('u%s' %self.userInst.uidNumber, self.userInst)
+            g.mc.set_sqla('u%s' % self.userInst.uidNumber, self.userInst)
         return self.render('profile')
 
     def DeletePost(self, board):
@@ -424,11 +424,12 @@ class OrphieMainController(OrphieBaseController):
         if not searchRoutine:
             return self.error(_("The plugin selected to search doesn't provide search features"))
 
-        posts, count, failInfo, highlights = searchRoutine(filteringClause, text, page, pp)
+        posts, count, failInfo, highlights, warnings = searchRoutine(filteringClause, text, page, pp)
         if failInfo:
             return self.error(failInfo)
         self.paginate(count, page, pp)
 
+        c.warnings = warnings
         c.highlights = highlights
         c.posts = posts
         return self.render('search')
@@ -747,7 +748,7 @@ class OrphieMainController(OrphieBaseController):
                postMessage = fullMessage
            else:
                return errorHandler(_('Message is too long'))
-        
+
         fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
         log.debug(fileDescriptors)
         fileHolder = False

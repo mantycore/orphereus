@@ -47,18 +47,23 @@ if Client:
             return Client.delete(self, self.uniqeKey+str(key), **kwargs)
         
         def set(self, key, val, **kwargs):
-            #log.debug('writing cache entry %s with exp time=%s' %(key,kwargs.get('time', 0)))
             return Client.set(self, self.uniqeKey+str(key), val, **kwargs)
 
         def get(self, key):
             return Client.get(self, self.uniqeKey+str(key))
+        
+        def get_multi(self, keys, **kw):
+            kw['key_prefix'] = "%s%s" %(self.uniqeKey, kw.get('key_prefix', ''))
+            return Client.get_multi(self, keys, **kw)
+        
+        def set_multi(self, mapping, **kw):
+            kw['key_prefix'] = "%s%s" %(self.uniqeKey, kw.get('key_prefix', ''))
+            return Client.set_multi(self, mapping, **kw)
 
         def set_sqla(self, key, obj, **kwargs):
-            #log.debug('writing sql cache %s' %key)
             return self.set(key, dumps(obj), **kwargs)
 
         def get_sqla(self, key):
-            #log.debug('getting sql cache %s' %key)
             serial = self.get(key)
             if serial:
                 return loads(serial, self.meta.metadata, self.meta.Session)

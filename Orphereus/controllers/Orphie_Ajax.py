@@ -158,6 +158,7 @@ class OrphieAjaxController(OrphieBaseController):
         abort(404)
 
     def getRenderedReplies(self, thread):
+        c.board = 'Fake'
         postInst = Post.getPost(thread)
         if postInst and not postInst.parentPost:
             if not self.userInst.isAdmin():

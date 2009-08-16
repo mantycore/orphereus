@@ -42,9 +42,9 @@ def doFastRender(post, thread, controller):
 
 def repliesProxy(thread, controller):
     user = controller.userInst
-    keyPrefix = str('%s%s%s' %(g.OPT.cachePrefix, get_lang()[0], int(not(user.hideLongComments) or (c.count==1))))
+    keyPrefix = str('%s%s%s' %(int(bool(c.board)), get_lang()[0], int(not(user.hideLongComments) or (c.count==1))))
     #log.debug(keyPrefix)
-    #log.debug(c.count)
+    #log.debug(c.board)
     postsDict = dict([(post.id, post) for post in thread.Replies])
     postsRender = g.mc.get_multi(postsDict.keys(), key_prefix = keyPrefix)
     absentPosts = list(set(postsDict.keys()) - set(postsRender.keys()))

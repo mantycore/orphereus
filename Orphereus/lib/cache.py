@@ -34,6 +34,8 @@ log = logging.getLogger(__name__)
 
 if Client:
     class MCache(Client):
+        '''Extended memcache.Client, with automatic key prefixing and SQLA \
+        objects storing capabilities'''
         valid = True
         uniqeKey = ''
         meta = None
@@ -59,39 +61,50 @@ if Client:
         def set_multi(self, mapping, **kw):
             kw['key_prefix'] = "%s%s" %(self.uniqeKey, kw.get('key_prefix', ''))
             return Client.set_multi(self, mapping, **kw)
-
+        
         def set_sqla(self, key, obj, **kwargs):
+            '''Saves SQLAlchemy object in a session-restorable form''' 
             return self.set(key, dumps(obj), **kwargs)
 
         def get_sqla(self, key):
+            '''Reads SQLAlchemy object and restores session metadata'''
             serial = self.get(key)
             if serial:
                 return loads(serial, self.meta.metadata, self.meta.Session)
             return None
         
         def setdefaultEx(self, key, function, *args, **kwargs): 
+            '''extended dict-like setdefault, returns stored key value, if it exists.\
+            Otherwise, executes function(), saves and returns the result'''
             res = self.get(key)
             if not(res):
                 res = function(*args)
                 self.set(key, res, **kwargs)
             return res
 
-        #def setdefault_sqlEx(self, key, query, **kwargs): 
-        #    res = self.get_sqla(key)
-        #    if not(res):
-        #        res = query
-        #        self.set(key, res, **kwargs)
-        #    return res
+        def setdefault_sqlaEx(self, key, function, *args, **kwargs):
+            '''setdefaultEx modification for functions, returning Alchemy objects'''
+            res = self.get_sqla(key)
+            if not(res):
+                res = function(*args)
+                self.set_sqla(key, res, **kwargs)
+            return res
 
 else:
     class MCache():
+        '''Fake class with dummy realisation of all methods.
+        It is used when memcache package is unavaliable.''' 
         valid = False
-        __init__ = set = get = delete = set_multi = set_sqla = get_sqla = lambda *args, **kwargs: None
+        __init__ = set = get = delete = set_multi = set_sqla = get_sqla =\
+             lambda *args, **kwargs: None
         get_multi = lambda *args, **kwargs: {}
+        setdefaultEx = setdefault_sqlaEx =\
+             lambda key, function, *args, **kwargs: function(*args)
         
-
 class CacheDict(dict):
     def setdefaultEx(self, key, function, *args):
+        '''extended setdefault, returns stored value, if it exists.\
+        Otherwise, executes function(), saves and returns the result'''
         try:
             return self[key]
         except:

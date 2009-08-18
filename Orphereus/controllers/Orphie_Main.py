@@ -358,8 +358,6 @@ class OrphieMainController(OrphieBaseController):
                 tl.append(tag.tag)
             t.tagLine = ', '.join(tl)
         c.userInst = self.userInst
-        if c.profileChanged and g.OPT.memcachedUsers:
-            g.mc.delete('u%s' %self.userInst.uidNumber)
         return self.render('profile')
 
     def DeletePost(self, board):

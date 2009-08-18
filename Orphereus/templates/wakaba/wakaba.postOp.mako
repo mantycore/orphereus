@@ -34,6 +34,9 @@
 %endif
 <a name="i${thread.id}"></a>
 &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Delete"/></a>
+%if thread.pinned:
+<img src="${g.OPT.staticPathWeb}images/pin.png" border="0" alt="!" title="Pinned"/>
+%endif
 <span style="display:none" class="delete">
 %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
     <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />

@@ -44,8 +44,8 @@ log = logging.getLogger(__name__)
 
 class OrphieBaseController(BaseController):
     def __before__(self):
+        c.log = []
         if g.OPT.devMode:
-            c.log = list()
             c.sum = 0
             self.startTime = time.time()
 

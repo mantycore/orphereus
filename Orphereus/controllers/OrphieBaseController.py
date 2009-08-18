@@ -95,6 +95,10 @@ class OrphieBaseController(BaseController):
 
         if g.firstRequest:
             g.firstRequest = False
+            
+    def forceNoncachedUser(self):
+        if g.OPT.memcachedUsers and not(self.userInst.Anonymous):
+            self.userInst = c.userInst = User.getUser(self.userInst.uidNumber, False)
 
     def setLang(self, captcha = False):
         lang = ""

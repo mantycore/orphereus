@@ -289,7 +289,8 @@ class OrphieMainController(OrphieBaseController):
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             return self.error(_("Profile is not avaiable to Anonymous users."))
-
+        
+        self.forceNoncachedUser()
         c.additionalProfileLinks = []
         linkGenerators = g.extractFromConfigs('additionalProfileLinks')[0]
         for links in linkGenerators:
@@ -358,7 +359,7 @@ class OrphieMainController(OrphieBaseController):
             t.tagLine = ', '.join(tl)
         c.userInst = self.userInst
         if c.profileChanged and g.OPT.memcachedUsers:
-            g.mc.set_sqla('u%s' % self.userInst.uidNumber, self.userInst)
+            g.mc.delete('u%s' %self.userInst.uidNumber)
         return self.render('profile')
 
     def DeletePost(self, board):

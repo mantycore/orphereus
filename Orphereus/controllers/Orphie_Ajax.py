@@ -100,6 +100,7 @@ class OrphieAjaxController(OrphieBaseController):
     def hideThread(self, post, redirect, realm, page):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             abort(403)
+        self.forceNoncachedUser()
         postInst = Post.getPost(post)
         if postInst and not postInst.parentPost:
             hideThreads = self.userInst.hideThreads
@@ -107,7 +108,7 @@ class OrphieAjaxController(OrphieBaseController):
                 hideThreads.append(post)
                 self.userInst.hideThreads = hideThreads
                 if g.OPT.memcachedUsers:
-                    g.mc.set_sqla('u%s' %self.userInst.uidNumber, self.userInst)
+                    g.mc.delete('u%s' %self.userInst.uidNumber)
                 meta.Session.commit()
         if redirect:
             return self.realmRedirect(redirect, realm, page)
@@ -117,6 +118,7 @@ class OrphieAjaxController(OrphieBaseController):
     def showThread(self, post, redirect, realm, page):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             abort(403)
+        self.forceNoncachedUser()
         postInst = Post.getPost(post)
         if postInst and not postInst.parentPost:
             hideThreads = self.userInst.hideThreads
@@ -124,7 +126,7 @@ class OrphieAjaxController(OrphieBaseController):
                 hideThreads.remove(post)
                 self.userInst.hideThreads = hideThreads
                 if g.OPT.memcachedUsers:
-                    g.mc.set_sqla('u%s' %self.userInst.uidNumber, self.userInst)
+                    g.mc.delete('u%s' %self.userInst.uidNumber)
                 meta.Session.commit()
         if redirect:
             return self.realmRedirect(redirect, realm, page)

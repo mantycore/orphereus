@@ -687,11 +687,11 @@ class OrphieAdminController(OrphieBaseController):
             toLog(LOG_EVENT_USER_GETUID, _("Viewed UID for user '%s' from post '%s'. Reason: %s") % (post.uidNumber, post.id, reason))
             if post.uidNumber == -1:
                 if not post.ip:
-                    return self.error(_("This post created by non-registered user whose IP was not saved"))
+                    return self.error(_("This post is created by a non-registered user whose IP wasn't saved"))
                 else:
                     return redirect_to('hsManageByIp', ip = post.ip)
             elif not post.uidNumber:
-                return self.error(_("This post was anonymized"))
+                return self.error(_("This post is anonymized"))
             return redirect_to('hsUserEdit', uid = post.uidNumber)
         else:
             return self.error(_("Post not found"))
@@ -701,8 +701,8 @@ class OrphieAdminController(OrphieBaseController):
             return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsUsers'
-        c.boardName = 'Edit user %s' % uid
-        user = User.getUser(uid) #meta.Session.query(User).options(eagerload('options')).get(uid)
+        c.boardName = 'Editing user %s' % uid
+        user = User.getUser(uid, False)
         if user:
             c.user = user
             c.userInst = self.userInst
@@ -800,8 +800,8 @@ class OrphieAdminController(OrphieBaseController):
                         c.message = _('You should specify deletion reason')
                 else:
                     c.message = _("You haven't rights to delete user")
-            if g.OPT.memcachedUsers:
-                g.mc.set_sqla('u%s' %user.uidNumber, user)
+            if g.OPT.memcachedUsers and request.POST:
+                g.mc.delete('u%s' %user.uidNumber)
             return self.render('manageUser')
         else:
             return self.error(_('No such user exists.'))

@@ -91,10 +91,9 @@ class Ban(object):
     @staticmethod
     def getBanByIp(userIp):
         if meta.globj.OPT.memcachedBans:
-            (banInfo, isCached) = meta.globj.mc.get('ban%s' %userIp) or (None, None) 
+            (banInfo, isCached) = meta.globj.mc.get('ban%s' %userIp) or (None, False) 
             if not(isCached):
                 banInfo = Ban._getBanByIp(userIp)
                 meta.globj.mc.set('ban%s' %userIp, (banInfo, True,), time=meta.globj.OPT.banCacheSeconds)
             return banInfo
-        else:
-            return Ban._getBanByIp(userIp)
+        return Ban._getBanByIp(userIp)

@@ -90,8 +90,8 @@ class User(AbstractUser):
         return ret
 
     @staticmethod
-    def getUser(uidNumber):
-        if meta.globj.OPT.memcachedUsers:
+    def getUser(uidNumber, allowMemcached = True):
+        if meta.globj.OPT.memcachedUsers and allowMemcached:
             return meta.globj.mc.setdefault_sqlaEx('u%s' %uidNumber, User._getUser, uidNumber)
         return User._getUser(uidNumber)
 

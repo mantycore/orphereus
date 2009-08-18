@@ -38,17 +38,17 @@ import logging
 log = logging.getLogger(__name__)
 
 def doFastRender(post, thread, controller):
-    return controller.fastRender('wakaba/wakaba.postReply.mako', disableFiltering = True, thread = thread, post = post)
+    return controller.fastRender('postReply', disableFiltering = True, thread = thread, post = post)
 
 def repliesProxy(thread, controller):
     user = controller.userInst
-    keyPrefix = str('%s%s%s' %(int(bool(c.board)), get_lang()[0], int(not(user.hideLongComments) or (c.count==1))))
-    #log.debug(keyPrefix)
-    #log.debug(c.board)
+    # flags = (isBoardView, showLongMessages)
+    intFlags = (int(bool(c.board)) << 1) + int(not(user.hideLongComments) or (c.count == 1))
+    tmplPrefix = (len(g.OPT.templates) > 1 and user.template) or ''
+    keyPrefix = str('%s%d%s' %(tmplPrefix, intFlags, get_lang()[0]))
     postsDict = dict([(post.id, post) for post in thread.Replies])
     postsRender = g.mc.get_multi(postsDict.keys(), key_prefix = keyPrefix)
     absentPosts = list(set(postsDict.keys()) - set(postsRender.keys()))
-    #log.debug('NOT found: %s' % absentPosts)
     if absentPosts:
         absentPostsRender = dict([(post, doFastRender(postsDict[post], thread, controller)) for post in absentPosts])
         g.mc.set_multi(absentPostsRender, key_prefix = keyPrefix)

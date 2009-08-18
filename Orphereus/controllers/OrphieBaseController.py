@@ -125,7 +125,7 @@ class OrphieBaseController(BaseController):
         c.title = g.OPT.title
         c.boardlist = g.caches.setdefaultEx('boardlist', chBoardList)
         #c.sectionNames = g.caches.setdefaultEx('sectionNames', chSectionNames, c.boardlist)
-        c.menuRender = self.fastRender('wakaba/wakaba.menu.mako')
+        c.menuRender = self.fastRender('menu')
         c.menuLinks = g.additionalLinks
         c.sectionNames = g.sectionNames
 
@@ -182,24 +182,26 @@ class OrphieBaseController(BaseController):
                     target.append((item, level))
                     self.buildMenu(item.id, level + 1, source, target)
     
-    def fastRender(self, tpath, **options):
+    def fastRender(self, tname, **options):
+        return self._fastRender(self.fastTemplatePath(tname), **options)
+
+    def _fastRender(self, tpath, **options):
         return render('/' + tpath, extra_vars = options)
+    
+    def fastTemplatePath(self, page):
+        tpath = "std.banned.mako"
+        if not self.userInst.isBanned():
+            tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : self.userInst.template, 'page' : page}
+        return tpath
 
     def render(self, page, tmplName = None, **options):
-        tname = 'std'
-        c.template = tpath = "%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
-        c.actuator = "actuators/%s/" % (g.OPT.actuator)
-        c.actuatorTest = c.actuator
+        c.template = tpath = "std.%s.mako" % page
+        c.actuatorTest = c.actuator = "actuators/%s/" % (g.OPT.actuator)
 
-        try:
-            if not tmplName == 'std' and self.userInst and not self.userInst.isBanned():
-                tname = tmplName
-                if not tname:
-                    tname = self.userInst.template
-                c.template = tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
-                c.actuatorTest = "%s/actuators/%s/" % (tname, g.OPT.actuator)
-        except: #userInst not defined or user banned
-            pass
+        if tmplName != 'std' and not self.userInst.isBanned():
+            tname = tmplName or self.userInst.template
+            c.template = tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
+            c.actuatorTest = "%s/actuators/%s/" % (tname, g.OPT.actuator)
 
         fpath = os.path.join(g.OPT.templPath, tpath)
         #log.debug ("Tpath:  %s ; Fpath: %s" %(tpath,fpath))

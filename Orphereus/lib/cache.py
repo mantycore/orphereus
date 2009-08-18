@@ -92,7 +92,7 @@ if Client:
 
 else:
     class MCache():
-        '''Fake class with dummy realisation of all methods.
+        '''Fake class with stub implementation of all methods.
         It is used when memcache package is unavaliable.''' 
         valid = False
         __init__ = set = get = delete = set_multi = set_sqla = get_sqla =\

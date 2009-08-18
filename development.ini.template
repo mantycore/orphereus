@@ -22,6 +22,7 @@
 [DEFAULT]
 debug = false
 
+# settings for automatic mailing of internal engine errors  
 email_to = admin@gmail.com
 smtp_server = smtp.gmail.com
 error_email_from = robot@domain.ch
@@ -36,42 +37,58 @@ host = 127.0.0.1
 port = 5000
 
 [app:main]
+# do not change
 set debug = false
 use = egg:Orphereus
-lang = en
 full_stack = true
-set debug = false
+
+# default board and JS language 
+lang = en
 
 cache_dir = %(here)s/data
 beaker.session.key = Orphereus
 beaker.session.secret = somesecret
+# database connection settings
 sqlalchemy.url = mysql://user:passwd@127.0.0.1/database?use_unicode=0&charset=utf8
 sqlalchemy.pool_recycle = 3600
-#sqlalchemy.encoding=utf-8
 
+# this is not configurable in runtime
 core.disabledModules = example.py,httpinfo.py
 
 # makes engine ignore configuration in database and use this file
 core.recovery = false
 
-# All settings below are copied into the database, these are only default values 
-# for engine init or recovery.  
+################################################################################
+# All settings below are copied into the database, these are only default      #   
+# values for engine init or recovery.                                          #
+################################################################################
 
-# Basic IB settings
+#####################
+# Basic IB settings #
+#####################
 # We will hash hashSecret by sha512, so no need to have it long
+# DO NOT CHANGE THIS WHEN THERE ARE USER ACCOUNTS IN THE DATABASE
 core.hashSecret = smallSecret
-core.baseDomain= anoma.ch
+core.baseDomain = anoma.ch
 core.urlPrefix = /
+# this prevents users from using unsecure passwords
 core.minPassLength = 12
+# file system path for user uploads folder, must be writeable 
 core.uploadPath = /var/www/OrphieUploads/
+# set this to folder (sym)linked to "Orphereus/public/" 
 core.staticPath = /var/www/OrhpieStatic/
 core.staticPathWeb = http://wut.anoma.ch/
+# prefix for uploads filenames
 core.filesPathWeb = http://wut.anoma.ch/img1/
+# defines the template customization set 
 core.actuator = anomach
+# allowed user languages
 core.languages = en,ru
 core.templates = wakaba
 core.javascripts = wakaba=jquery.js|ui.js
+# the first style in this list is the default one for Anonymous and new users
 core.styles = wakaba=photon_blue|bluemoon|photon|burichan|gurochan|futaba|kusaba
+# set this to true. if you plan to import threads with original post numbers
 core.secondaryIndex = false
 core.allowPosting = true
 core.allowAnonymous = false
@@ -80,23 +97,34 @@ core.allowRegistration = false
 core.allowAnonProfile = false
 core.allowLogin = true
 core.searchPluginId = search_like
+# if you want full-text search, use the next line
+# (see http://www.sphinxsearch.com for information about Sphinx Search Engine)
+#core.searchPluginId = search_sphinx
+
+# in order to speed-up many operations, there is support for memcached
 memcache.memcachedServers = 127.0.0.1:11211
+# allows to cache rendered posts for non-admin users, 1-3+ kb/post
 memcache.memcachedPosts = false
+# allows to cache IP ban check result, 10-40 b/IP
 memcache.memcachedBans = false
-memcache.memcachedUsers = false
 memcache.banCacheSeconds = 300
+# allows to cache user objects, so they are not read slooowly from the database. 3Kb/user
+memcache.memcachedUsers = false
 # this prefix is intended to eliminate data collisions in cache 
 # when using single memcached for several Orphereus instances  
 memcache.cachePrefix = ach
-#if you want full-text search, use next line
-#core.searchPluginId = search_sphinx
-#(see http://www.sphinxsearch.com for information about Sphinx Search Engine)
 
+# debug-only features
+# show render and processing times 
 debug.devMode = false
+# use hotshot for profiling every request and saving 
+# the result to profileDumpFile. SLOW.
 debug.requestProfiling = false
-debug.profileDumpFile = /tmp/orphie.perf                         
+debug.profileDumpFile = /tmp/orphie.perf
 
+# defines thread behaviour on bump-bump delete
 frontend.invisibleBump = true
+# 0chan-styled top menu
 frontend.useZMenu = false
 frontend.useTopPaginator = false
 frontend.usersCanViewLogs = false
@@ -109,6 +137,7 @@ frontend.allowPureSvcTagline = true
 frontend.allowTagCreation = true
 frontend.allowAnswersWithoutCaptcha = false
 frontend.forbidCaptcha = false
+# if true, sets thread sorting mode to their creation time, not bump-date
 frontend.newsSiteMode = false
 frontend.permissiveFileSizeConjunction = true
 frontend.boardWideProoflabels = true
@@ -131,7 +160,10 @@ frontend.adminOnlyTags = synod,logs
 frontend.additionalLinks = http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma
 frontend.sectionNames = Main
 
-# plugins
+###########
+# Plugins #
+###########
+# if true, engine doesn't recreate compress JS files on every startup
 jsCompressor.disableJSRegeneration = false
 statistics.statsCacheTime = 180
 newsgenerator.newsToShow = 4
@@ -149,9 +181,11 @@ antispam.threadLimit = 3
 antispam.banTimeDays = 5
 antispam.enableAutoBan = false
 antispam.autoBanAnonTotally = false
-htmlCompressor.disableCompressionList = wakaba/wakaba.spainter.mako
+htmlCompressor.disableCompressionList = wakaba/wakaba.spainter.mako,wakaba/wakaba.shiAnimation.mako
 
-# Board defaults
+##################
+# Board defaults #
+##################
 defaults.defThumbSize = 200
 defaults.defMinPicSize = 50
 defaults.defMaxFileSize = 2621440
@@ -165,27 +199,40 @@ defaults.defShowInOverview = true
 # 0 for unlimited
 defaults.defBumplimit = 0
 
-# Security settings
-#use this option only with httpd configured as proxy
+#####################
+# Security settings #
+#####################
+# use this option only with httpd configured as proxy
 security.useXRealIP = false
+# if true, saves IP for every post
+# if false, saves only for Anonymous users
 security.saveAnyIP = false
+# configuration related to security violation alerts
 security.alertEmail = user1@sms.provider.ru,user2@sms.provider.ru
 security.alertServer = smtp.gmail.com
 security.alertPort = 587
-security.alertSender= alert@anoma.ch
-security.alertPassword= blablabla
+security.alertSender = alert@anoma.ch
+security.alertPassword = blablabla
+# enables HTTP referer check 
 security.refControlEnabled = true
 security.refControlList = anoma.ch,anoma.li,localhost,127.0.0.1
+# redirections
 security.fakeLinks = http://www.youtube.com/watch?v=oHg5SJYRHA0,http://meatspin.com/,http://youtube.com/watch?v=Uqot33mczsw,http://youtube.com/watch?v=dZBU6WzBrX8
-security.badUAs = Wget,Offline Explorer,Web Downloader,WebCopier,WebZIP,Teleport Pro
-security.obfuscator=http://anonym.to/?$(url)s
+# enables useragent check and denies automatic downloaders 
 security.checkUAs = true
+security.badUAs = Wget,Offline Explorer,Web Downloader,WebCopier,WebZIP,Teleport Pro
+# used for URL substitution 
+security.obfuscator=http://anonym.to/?$(url)s
 security.spiderTrap = true
+# allows admin users to login only from 127.0.0.1 (or via SSH tunneling). Useful.
 security.useAnalBarriering = true
+# FA-related features
 security.enableFinalAnonymity = true
 security.finalAHoursDelay = 24
 security.hlAnonymizedPosts = true
 
+################################################################################
+# do not change anything below
 [loggers]
 keys = root, Orphereus
 

@@ -446,10 +446,10 @@ class OrphieMainController(OrphieBaseController):
 
     def processAnomymize(self, postid, batch):
         if not g.OPT.enableFinalAnonymity:
-            return _("Final Anonymity is disabled")
+            return [_("Final Anonymity is disabled")]
 
         if self.userInst.Anonymous:
-            return _("Final Anonymity available only for registered users")
+            return [_("Final Anonymity available only for registered users")]
 
         result = []
         post = Post.getPost(postid)

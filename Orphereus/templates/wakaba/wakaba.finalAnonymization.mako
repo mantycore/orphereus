@@ -12,7 +12,7 @@
     <ol>
     <li>${_("delete this post")}</li>
     <li>${_('view this post in <a href="%s">/@/</a>') % h.url_for('boardBase', board='@')} </li>
-    <li>${_("use ID of this posts in prooflabels")}</li>
+    <li>${_("use ID of this post in prooflabels")}</li>
     </ol>
     <h3>${_("Do you want to continue?")}</h3>
 

@@ -125,8 +125,8 @@ class OrphieBaseController(BaseController):
         c.title = g.OPT.title
         c.boardlist = g.caches.setdefaultEx('boardlist', chBoardList)
         #c.sectionNames = g.caches.setdefaultEx('sectionNames', chSectionNames, c.boardlist)
-        c.menuRender = self.fastRender('menu')
         c.menuLinks = g.additionalLinks
+        c.menuRender = self.fastRender('menu')
         c.sectionNames = g.sectionNames
 
         self.setCookie()

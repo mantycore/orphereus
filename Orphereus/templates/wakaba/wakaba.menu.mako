@@ -30,7 +30,7 @@ ${h.boardMenu([h.itemsToSection(
 %endif
 %if c.menuLinks:
     %for link in c.menuLinks:
-        % if isinstance(link, list) and len(link) == 2:
+        %if isinstance(link, list) and len(link) == 2:
         [<a href="${link[0]}">${link[1]}</a>]
         %endif
     %endfor

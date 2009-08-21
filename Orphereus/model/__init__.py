@@ -162,16 +162,10 @@ def init_model(engine):
 def upd_globals():
     adminTagsLine = meta.globj.OPT.adminOnlyTags
     meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)
-
-    meta.globj.additionalLinks = []
-    links = meta.globj.OPT.additionalLinks
-    if links:
-        for link in links:
-            meta.globj.additionalLinks.append(link.split('|'))
-
+    meta.globj.additionalLinks = [link.split('|') for link in meta.globj.OPT.additionalLinks]
     meta.globj.sectionNames = meta.globj.OPT.sectionNames 
     meta.globj.disabledTags = meta.globj.OPT.disabledTags
-    meta.globj.OPT.memcachedServers = list([str(server) for server in meta.globj.OPT.memcachedServers])
+    meta.globj.OPT.memcachedServers = [str(server) for server in meta.globj.OPT.memcachedServers]
     meta.globj.OPT.cachePrefix = str(meta.globj.OPT.cachePrefix)
     if meta.globj.mc:
         meta.globj.mc.disconnect_all() 
@@ -189,7 +183,7 @@ def init_globals(globalObject, setupMode):
         log.info('LOADING CONFIGURATION DATA')
         meta.globj.OPT.initValues(Setting)
         log.info('LOAD COMPLETED')
-        
+
         upd_globals()
 
     """
@@ -201,10 +195,3 @@ def init_globals(globalObject, setupMode):
 
     log.debug(gv.tagCache)
     """
-
-# Code below is incorrect because key filed doesn't exists
-# Note: TagMapping deletion is correct
-#class TagMapping(object):
-#    pass
-#orm.mapper(TagMapping, t_tagsToPostsMap)
-

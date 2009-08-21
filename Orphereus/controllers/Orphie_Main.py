@@ -177,10 +177,10 @@ class OrphieMainController(OrphieBaseController):
     def GetBoard(self, board, tempid, page = 0):
         if board == None:
             if (g.OPT.framedMain and self.userInst and self.userInst.useFrame):
-                c.frameTarget = request.params.get('frameTarget', g.OPT.defaultFrame) or g.OPT.defaultFrame
+                c.frameTarget = request.params.get('frameTarget', h.url_for('boardBase', board=g.OPT.defaultBoard)) or h.url_for('boardBase', board=g.OPT.defaultBoard)
                 return self.render('frameMain')
             else:
-                board = '!'
+                board = g.OPT.defaultBoard
 
         if board == '!':
             if g.OPT.devMode:

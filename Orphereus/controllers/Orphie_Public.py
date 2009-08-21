@@ -257,7 +257,7 @@ class OrphiePublicController(OrphieBaseController):
                 del session['iid']
                 session.save()
                 self.login(user)
-                redirect_to('boardBase', board = '/!/')
+                redirect_to('boardBase', board = '!')
         c.boardName = _('Register')
         return self.render('register')
 

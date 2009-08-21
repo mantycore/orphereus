@@ -60,7 +60,7 @@ core.recovery = false
 
 ################################################################################
 # All settings below are copied into the database, these are only default      #   
-# values for engine init or recovery.                                          #
+# values for engine first-time init or recovery.                               #
 ################################################################################
 
 #####################
@@ -110,7 +110,7 @@ memcache.memcachedBans = false
 memcache.banCacheSeconds = 300
 # allows to cache user objects, so they are not read slooowly from the database. 3Kb/user
 memcache.memcachedUsers = false
-# this prefix is intended to eliminate data collisions in cache 
+# this prefix is for eliminatng data collisions in cache 
 # when using single memcached for several Orphereus instances  
 memcache.cachePrefix = ach
 
@@ -145,7 +145,7 @@ frontend.allowOverview = true
 frontend.framedMain = true
 frontend.useFrameLogo = true
 frontend.frameLogo = logo.png
-frontend.defaultFrame = /!/
+frontend.defaultBoard = !
 frontend.obligatoryFrameCreation = false
 frontend.showShortStatistics = true
 frontend.homeModules = newsgenerator,statistics

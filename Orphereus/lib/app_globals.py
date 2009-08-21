@@ -115,7 +115,7 @@ class OptHolder(object):
                               ),
 
                               ('frontend',
-                                ('title', 'frameLogo', 'defaultFrame', 'favicon',
+                                ('title', 'frameLogo', 'defaultBoard', 'favicon',
                                 ) 
                               ),
 

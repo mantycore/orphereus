@@ -89,7 +89,7 @@ def make_map():
     map.connect('postThread', '/:board', controller = 'Orphie_Main', action = 'PostThread', conditions = dict(method = ['POST']))
 
     # Generic filter
-    map.connect('boardBase', '/:board/:tempid', controller = 'Orphie_Main', action = 'GetBoard', board = not framedMain and '~' or None, tempid = 0, page = 0, requirements = dict(tempid = '\d+'))
+    map.connect('boardBase', '/:board/:tempid', controller = 'Orphie_Main', action = 'GetBoard', board = not framedMain and defaultBoard or None, tempid = 0, page = 0, requirements = dict(tempid = '\d+'))
     map.connect('board', '/:board/page/:page', controller = 'Orphie_Main', action = 'GetBoard', tempid = 0, requirements = dict(page = '\d+'))
 
     # traps for bots

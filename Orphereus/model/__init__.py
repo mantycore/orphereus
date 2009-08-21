@@ -172,12 +172,14 @@ def upd_globals():
     meta.globj.sectionNames = meta.globj.OPT.sectionNames 
     meta.globj.disabledTags = meta.globj.OPT.disabledTags
     meta.globj.OPT.memcachedServers = list([str(server) for server in meta.globj.OPT.memcachedServers])
-    meta.globj.OPT.cachePrefix = str(meta.globj.OPT.cachePrefix) 
+    meta.globj.OPT.cachePrefix = str(meta.globj.OPT.cachePrefix)
     if meta.globj.mc:
-        del meta.globj.mc
-    meta.globj.mc = MCache(meta.globj.OPT.memcachedServers, debug = 0, 
-                                                            key = meta.globj.OPT.cachePrefix,
-                                                            meta = meta)
+        meta.globj.mc.disconnect_all() 
+        meta.globj.mc.set_servers(meta.globj.OPT.memcachedServers)
+    else:
+        meta.globj.mc = MCache(meta.globj.OPT.memcachedServers, debug = 0, 
+                                        key = meta.globj.OPT.cachePrefix,
+                                        meta = meta)
     log.info('UPDATING GLOBALS COMPLETED')
     
 def init_globals(globalObject, setupMode):

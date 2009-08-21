@@ -81,7 +81,7 @@ core.staticPathWeb = http://wut.anoma.ch/
 # prefix for uploads filenames
 core.filesPathWeb = http://wut.anoma.ch/img1/
 # defines the template customization set 
-core.actuator = anomach
+core.actuator = default
 # allowed user languages
 core.languages = en,ru
 core.templates = wakaba

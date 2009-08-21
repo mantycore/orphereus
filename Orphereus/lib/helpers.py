@@ -154,19 +154,14 @@ def itemsToSection(items):
     #each item is shown, if it's testCase is True. Rendered to
     #    <a hred="%(url)" title="%(hint)>
     """
-    section = []
-    for item in items:
-        name, url, testCase, hint = item
-        if testCase:
-            section.append((url, hint, name,))
-    return section
+    return [(url, hint, name,) for (name, url, testCase, hint) in items if testCase]
 
 def templateExists(relName):
     #log.debug(config['pylons.g'].OPT.templPath)
     #log.debug(relName)
-    #log.debug(os.path.join(config['pylons.g'].OPT.templPath, relName))
-    #log.debug(os.path.exists(os.path.join(config['pylons.g'].OPT.templPath, relName)))
-    return os.path.exists(os.path.join(config['pylons.app_globals'].OPT.templPath, relName))
+    log.debug(os.path.join(g.OPT.templPath, relName))
+    log.debug(os.path.exists(os.path.join(g.OPT.templPath, relName)))
+    return os.path.exists(os.path.join(g.OPT.templPath, relName))
 
 def staticFile(fileName):
     spw = g.OPT.staticPathWeb

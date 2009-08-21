@@ -1,16 +1,9 @@
 # -*- coding: utf-8 -*-
 <%inherit file="wakaba.main.mako" />
 
-<!-- ${_("rules")} -->
+<!-- ${_("Rules")} -->
 
-<h2>Правила Аномы:</h2>
-<div style="font-size: 110%">
-<ol>
-<li>Не постить ЦП (CP, Child Porn, детская порнография).</li>
-<li>Не пытаться вайпать/спамить.</li>
-<li>Не сливать никакой информации наружу.</li>
-<li>Не использовать несколько аккаунтов.</li>
-</ol>
-</div>
-
+%if h.templateExists(c.actuatorTest+'wakaba.rulesCont.mako'):
+    <%include file="${c.actuator+'wakaba.rulesCont.mako'}" />
+%endif
 <hr />

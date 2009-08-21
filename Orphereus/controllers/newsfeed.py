@@ -23,10 +23,12 @@ def newsGenerator(controller, container):
 
 def restrictor(controller, request, **kwargs):
     tags = kwargs.get('tags', None)
-    if tags and g.OPT.onlyAdminsCanPostNews and (not controller.userInst.isAdmin()):
-        for tag in tags:
-            if tag.tag == g.OPT.newsTag:
-                return _("Posting into board /%s/ is prohibited" % g.OPT.newsTag)
+    thread = kwargs.get('thread', None)
+    if thread and not(g.OPT.usersCanCommentNews) and (not controller.userInst.isAdmin()):
+        return _("News commenting is not allowed.")
+    if tags and g.OPT.onlyAdminsCanPostNews and (not controller.userInst.isAdmin()) and not(thread and g.OPT.usersCanCommentNews):
+        if g.OPT.newsTag in (tag.tag for tag in tags):
+            return _("Posting into board /%s/ is prohibited." % g.OPT.newsTag)
     return None
 
 def deployHook(ns):
@@ -47,7 +49,7 @@ def deployHook(ns):
 def pluginInit(globj = None):
     if globj:
         booleanValues = [('newsgenerator',
-                               ('onlyAdminsCanPostNews',
+                               ('onlyAdminsCanPostNews','usersCanCommentNews',
                                )
                               ),
                             ]

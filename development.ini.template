@@ -169,6 +169,7 @@ statistics.statsCacheTime = 180
 newsgenerator.newsToShow = 4
 newsgenerator.newsTag = news
 newsgenerator.onlyAdminsCanPostNews = true
+newsgenerator.usersCanCommentNews = true
 rssfeed.allowFeeds = true
 sphinx.sphinxHost = 127.0.0.1
 sphinx.sphinxPort = 3312

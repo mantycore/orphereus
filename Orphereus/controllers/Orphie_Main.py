@@ -749,7 +749,7 @@ class OrphieMainController(OrphieBaseController):
                return errorHandler(_('Message is too long'))
 
         fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
-        log.debug(fileDescriptors)
+        #log.debug(fileDescriptors)
         fileHolder = False
         existentPic = False
         picInfo = False

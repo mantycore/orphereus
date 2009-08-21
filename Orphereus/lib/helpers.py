@@ -159,8 +159,8 @@ def itemsToSection(items):
 def templateExists(relName):
     #log.debug(config['pylons.g'].OPT.templPath)
     #log.debug(relName)
-    log.debug(os.path.join(g.OPT.templPath, relName))
-    log.debug(os.path.exists(os.path.join(g.OPT.templPath, relName)))
+    #log.debug(os.path.join(g.OPT.templPath, relName))
+    #log.debug(os.path.exists(os.path.join(g.OPT.templPath, relName)))
     return os.path.exists(os.path.join(g.OPT.templPath, relName))
 
 def staticFile(fileName):

@@ -12,7 +12,7 @@ ${h.boardMenu([h.itemsToSection(
 
 %if c.boardlist:
 %if g.OPT.spiderTrap:
-<span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap2')}">.</a></span>
+<span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap2', confirm=c.userInst.secid())}">.</a></span>
 %endif
 	${h.boardMenu(c.boardlist)}
 %endif

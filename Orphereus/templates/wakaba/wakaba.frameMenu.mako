@@ -14,6 +14,7 @@
             %endif
             %if not c.userInst.Anonymous:
             <div><a href="${h.url_for('boardBase', board='@')}" title="/@/" target="board">${_('Related threads')}</a></div>
+            <div><a href="${h.url_for('boardBase', board='*')}" title="/*/" target="board">${_('My threads')}</a></div>
             %endif
             <div><a href="${h.url_for('boardBase', board='!')}" title="/!/" target="board">${_('Statistics')}</a></div>
         </td>

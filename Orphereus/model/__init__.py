@@ -40,12 +40,12 @@ def init_model(engine):
     def logAndChange(var, newType):
         log.info("Using %s instead of %s" % (str(newType), str(var)))
         return newType
-    if (isinstance(engine.dialect, sa.databases.mysql.MySQLDialect)):
+    if ('mysql' in sa.databases.__dict__ and isinstance(engine.dialect, sa.databases.mysql.MySQLDialect)):
         log.info("Currently using MySQL dialect, adjusting types...")
         meta.FloatType = logAndChange(meta.FloatType, sa.databases.mysql.MSDouble)
         meta.BlobType = logAndChange(meta.BlobType, sa.databases.mysql.MSLongBlob)
         meta.UIntType = logAndChange(meta.UIntType, sa.databases.mysql.MSInteger(unsigned = True))
-    elif (isinstance(engine.dialect, sa.databases.postgres.PGDialect)):
+    elif ('postgres' in sa.databases.__dict__ and isinstance(engine.dialect, sa.databases.postgres.PGDialect)):
         log.info("Currently using PostgreSQL dialect, adjusting types...")
         meta.FloatType = logAndChange(meta.FloatType, sa.databases.postgres.PGFloat)
         meta.BlobType = logAndChange(meta.BlobType, sa.databases.postgres.PGBinary)

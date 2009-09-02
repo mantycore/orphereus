@@ -1427,7 +1427,7 @@ msgstr "Спецстранинцы"
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:19
 #: Orphereus/templates/wakaba/wakaba.z-menu.mako:28
 msgid "Statistics"
-msgstr "Статистика"
+msgstr "Главная"
 
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:37
 #: Orphereus/templates/wakaba/wakaba.z-menu.mako:10
@@ -2639,7 +2639,7 @@ msgstr "Тэги треда #%d"
 #: Orphereus/templates/wakaba/wakaba.userTagsForPost.mako:22
 #, python-format
 msgid "Add user tag to thread %d"
-msgstr "Тэг добавлен к посту %d"
+msgstr "Добавление тэгов к треду %d"
 
 #: Orphereus/templates/wakaba/wakaba.userTagsForPost.mako:34
 msgid "Available tags"

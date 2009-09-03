@@ -38,8 +38,9 @@ from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 from Orphereus.lib.BasePlugin import BasePlugin
-from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 
 from wakabaparse import WakabaParser, fixHtml
 
@@ -537,27 +538,11 @@ class MaintenanceCommand(command.Command):
             print "No work to do"
         return log
 
-def menuTest(id, baseController):
-    user = baseController.userInst
-    if id == 'id_hsMaintenance':
-        return user.canRunMaintenance()
-    return True
-
-def menuItems(menuId):
-    #          id        link       name                weight   parent
-    menu = None
-    if menuId == "managementMenu":
-        menu = (MenuItem('id_hsMaintenance', _("Maintenance"), h.url_for('hsMaintenance'), 300, False),
-                )
-    return menu
-
-class MaintenancePlugin(BasePlugin, AbstractPostingHook):
+class MaintenancePlugin(BasePlugin, AbstractPostingHook, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Maintenance'),
                  'entryPoints' : [('maintenance', "MaintenanceCommand"),
                                  ],
-                 'menutest' : menuTest,
-                 'menuitems' : menuItems,
                  }
         BasePlugin.__init__(self, 'maintenance', config)
 
@@ -571,6 +556,21 @@ class MaintenancePlugin(BasePlugin, AbstractPostingHook):
         if thread and thread.id == 0:
             return _("Posting into service thread #0 is prohibited")
         return None
+
+    # Implementing AbstractMenuProvider
+    def MenuItemIsVisible(self, id, baseController):
+        user = baseController.userInst
+        if id == 'id_hsMaintenance':
+            return user.canRunMaintenance()
+        return True
+
+    def menuItems(self, menuId):
+        #          id        link       name                weight   parent
+        menu = None
+        if menuId == "managementMenu":
+            menu = (MenuItem('id_hsMaintenance', _("Maintenance"), h.url_for('hsMaintenance'), 300, False),
+                    )
+        return menu
 
 def pluginInit(globj = None):
     if globj:

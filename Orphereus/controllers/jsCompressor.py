@@ -4,19 +4,18 @@ from string import *
 from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.base import *
 from Orphereus.lib.helpers import makeLangValid
-from Orphereus.lib.3dparty.jsMinify import jsmin
-from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.thirdParty.jsMinify import jsmin
+from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 from Orphereus.model import *
 
 import logging
 log = logging.getLogger(__name__)
 
-class JSCompressorPlugin(BasePlugin):
+class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Javascript compression tool'),
-                  'menuitems' : menuItems,
-                  'menutest' : menuTest
                  }
         BasePlugin.__init__(self, 'jsCompressor', config)
 
@@ -63,19 +62,18 @@ class JSCompressorPlugin(BasePlugin):
                 newLen = len(newJS)
                 log.info("Done. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))
 
+    def menuItems(self, menuId):
+        #          id        link       name                weight   parent
+        menu = None
+        if menuId == "managementMenu":
+            menu = (MenuItem('id_RebuildJs', N_("Rebuild JavaScript"), h.url_for('hsRebuildJs'), 310, 'id_hsMaintenance'),
+                    )
+        return menu
 
-def menuItems(menuId):
-    #          id        link       name                weight   parent
-    menu = None
-    if menuId == "managementMenu":
-        menu = (MenuItem('id_RebuildJs', N_("Rebuild JavaScript"), h.url_for('hsRebuildJs'), 310, 'id_hsMaintenance'),
-                )
-    return menu
-
-def menuTest(id, baseController):
-    user = baseController.userInst
-    if id == 'id_RebuildJs':
-        return user.canRunMaintenance()
+    def MenuItemIsVisible(self, id, baseController):
+        user = baseController.userInst
+        if id == 'id_RebuildJs':
+            return user.canRunMaintenance()
 
 def pluginInit(g = None):
     if g:

@@ -181,8 +181,8 @@ class OrphieBaseController(BaseController):
     def buildMenu(self, id, level, source, target):
         if source and id in source:
             for item in source[id]:
-                test = item.plugin.menuTest()
-                if (not test or (test and test(item.id, self))):
+                #test = item.plugin.menuTest()
+                if  item.plugin.MenuItemIsVisible(item.id, self): # (not test or (test and test(item.id, self))):
                     target.append((item, level))
                     self.buildMenu(item.id, level + 1, source, target)
 
@@ -215,7 +215,7 @@ class OrphieBaseController(BaseController):
 
         for menuName in self.requestedMenus:
             menu = []
-            self.buildMenu(False, 0, g.getMenuItems(menuName), menu)
+            self.buildMenu(False, 0, g.getmenuItems(menuName), menu)
             if menu:
                 self.builtMenus[menuName] = menu
         c.builtMenus = self.builtMenus

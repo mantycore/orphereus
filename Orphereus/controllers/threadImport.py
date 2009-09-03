@@ -3,31 +3,19 @@ from pylons.i18n import N_
 from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.constantValues import CFG_LIST
 from Orphereus.lib.base import *
-from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.processFile import processFile
 
 from Orphereus.lib.ibparser.chans.Post import *
 from Orphereus.lib.ibparser.chans.Thread import *
 from Orphereus.lib.ibparser.reader import ThreadReader
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 from Orphereus.model.Post import Post as OrphiePost
 from Orphereus.model.Tag import Tag
 
-def menuItems(menuId):
-    menu = None
-    if menuId == "managementMenu":
-        menu = (MenuItem('id_ImportThread', _("Import thread"), h.url_for('hsImportThread'), 601, 'id_adminPosts'),)
-    return menu
-
-def menuTest(id, baseController):
-    user = baseController.userInst
-    if id == 'id_ImportThread':
-        return user.canManageBoards()
-
-class ThreadImportPlugin(BasePlugin):
+class ThreadImportPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Thread import tool'),
-                  'menuitems' : menuItems,
-                  'menutest' : menuTest,
                   'entryPoints' : [('import', "ConsoleImport"), ],
                  }
         BasePlugin.__init__(self, 'threadimport', config)
@@ -35,6 +23,18 @@ class ThreadImportPlugin(BasePlugin):
     # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('hsImportThread', '/holySynod/import', controller = 'threadImport', action = 'importThread')
+
+    # Implementing AbstractMenuProvider
+    def menuItems(self, menuId):
+        menu = None
+        if menuId == "managementMenu":
+            menu = (MenuItem('id_ImportThread', _("Import thread"), h.url_for('hsImportThread'), 601, 'id_adminPosts'),)
+        return menu
+
+    def menuTest(self, id, baseController):
+        user = baseController.userInst
+        if id == 'id_ImportThread':
+            return user.canManageBoards()
 
 def pluginInit(g = None):
     return ThreadImportPlugin()

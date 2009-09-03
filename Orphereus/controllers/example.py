@@ -2,7 +2,7 @@ from pylons.i18n import N_
 from string import *
 
 from Orphereus.lib.BasePlugin import BasePlugin
-from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.base import *
 from Orphereus.model import *
 
@@ -136,7 +136,7 @@ def pluginInit(globj = None):
              'entryPoints' : [('mycommand', "CommandClass"),
                               ('mycommand2', "CommandClass2"), ],
              'menutest' : False, # returns True if menu item should be visible. If False, all items will be visible
-             'menuitems' : menuItems, # menu items
+             'menuItems' : menuItems, # menu items
              }
 
     return BasePlugin('example', config)

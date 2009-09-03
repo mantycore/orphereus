@@ -31,6 +31,7 @@ from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.cache import *
 from Orphereus.lib.constantValues import engineVersion
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 
 import logging
 log = logging.getLogger("CORE")
@@ -428,7 +429,7 @@ class Globals(object):
 
         log.info('COMPLETED PLUGINS CONNECTION STAGE')
 
-    def getMenuItems(self, menuId):
+    def getmenuItems(self, menuId):
         def itemsscmp(a, b):
             return cmp(a.weight, b.weight)
         id = menuId + get_lang()[0]
@@ -436,8 +437,11 @@ class Globals(object):
         if not mitems:
             parentedItems = {}
             uniqueIds = []
-            for plugin in self.plugins:
-                items = plugin.menuItems(menuId)
+            menuProviders = self.implementationsOf(AbstractMenuProvider)
+            for plugin in menuProviders:
+                log.error(plugin.pluginId())
+                items = plugin.menuItemsFor(menuId)
+                log.error(items)
                 if items:
                     for item in items:
                         id = item.id

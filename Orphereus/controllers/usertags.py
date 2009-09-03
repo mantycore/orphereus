@@ -2,7 +2,7 @@ from pylons.i18n import N_
 from string import *
 
 from Orphereus.lib.BasePlugin import BasePlugin
-from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.base import *
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
@@ -84,13 +84,6 @@ def tagHandler(tag, userInst):
 class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension):
     def __init__(self):
         config = {'name' : N_('Personal tags module'),
-                 #'orminit' : ormInit, # ORM initializer
-                 #'ormPropChanger' : ormPropChanger,
-
-                 #'additionalProfileLinks' : profileLinks,
-                 #'tagCreationHandler' : tagCreationHandler,
-                 #'tagCheckHandler' : tagCheckHandler,
-                 #'afterPostCallback' : afterPostCallback,
                  }
         BasePlugin.__init__(self, 'usertags', config)
 

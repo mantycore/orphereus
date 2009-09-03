@@ -1,4 +1,4 @@
-from pylons.i18n import get_lang
+
 
 class BasePlugin():
     def __init__(self, pluginId, pluginConfig = False):
@@ -21,10 +21,6 @@ class BasePlugin():
             self.__pfilters = pluginConfig.get('filters', False)
             self.__pGlobalFilters = pluginConfig.get('globfilters', False)
 
-            self.__pmenuInit = pluginConfig.get('menuitems', False)
-            self.__pmenuTest = pluginConfig.get('menutest', False)
-            self.__pmenuItems = {}
-
     def pluginId(self):
         return self.__pId
 
@@ -38,35 +34,20 @@ class BasePlugin():
         return self.pnamespace
 
     #TODO: temporary ?
-    def deps(self):
-        return self.__pdeps
-
     def pluginName(self):
         return self.__pName
+
+    def deps(self):
+        return self.__pdeps
 
     def entryPoints(self):
         return self.__pEntryPoints
 
-    # HOOKS BEGIN
     def filters(self):
         return self.__pfilters
 
     def globalFilters(self):
         return self.__pGlobalFilters
-    # HOOKS END
-
-    def menuItems(self, menuId):
-        ret = None
-        if self.__pmenuInit:
-            id = menuId + get_lang()[0]
-            ret = self.__pmenuItems.get(id, False)
-            if not ret:
-                ret = self.__pmenuInit(menuId)
-                self.__pmenuItems[id] = ret
-        return ret
-
-    def menuTest(self):
-        return self.__pmenuTest
 
     # new methods
     def initRoutes(self, map):

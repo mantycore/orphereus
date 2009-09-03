@@ -38,59 +38,15 @@ from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 from Orphereus.lib.BasePlugin import BasePlugin
-from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.userBan import UserBan
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 
 log = logging.getLogger(__name__)
 
-def menuTest(id, baseController):
-    user = baseController.userInst
-    if id == 'id_hsSettings':
-        return user.canChangeSettings()
-    if id == 'id_hsBoards':
-        return user.canManageBoards()
-    if id == 'id_hsUsers':
-        return user.canManageUsers()
-    if id == 'id_hsBans':
-        return user.canManageUsers()
-    if id == 'id_hsExtensions':
-        return user.canManageExtensions()
-    if id == 'id_hsMappings':
-        return user.canManageMappings()
-    if id == 'id_hsMergeTags':
-        return user.canManageMappings()
-    if id == 'id_hsInvite':
-        return user.canMakeInvite()
-    if id == 'id_hsViewLogBase':
-        return True
-    return True
-
-
-def menuItems(menuId):
-    #          id        link       name                weight   parent
-    menu = None
-    if menuId == "managementMenu":
-        menu = (MenuItem('id_adminDashboard', _("Dashboard"), h.url_for('holySynod'), 200, False),
-                MenuItem('id_adminBoard', _("Common settings"), None, 200, False),
-                MenuItem('id_adminUsers', _("Users"), None, 210, False),
-                MenuItem('id_adminPosts', _("Threads and posts"), None, 220, False),
-                MenuItem('id_hsExtensions', _("Manage extensions"), h.url_for('hsExtensions'), 240, 'id_adminBoard'),
-                MenuItem('id_hsUsers', _("Manage users"), h.url_for('hsUsers'), 220, 'id_adminUsers'),
-                MenuItem('id_hsBans', _("Manage bans"), h.url_for('hsBans'), 230, 'id_adminUsers'),
-                MenuItem('id_hsInvite', _("Generate invite"), h.url_for('hsInvite'), 270, 'id_adminUsers'),
-                MenuItem('id_hsBoards', _("Manage boards"), h.url_for('hsBoards'), 210, 'id_adminPosts'),
-                MenuItem('id_hsMappings', _("Manage mappings"), h.url_for('hsMappings'), 250, 'id_adminPosts'),
-                MenuItem('id_hsMergeTags', _("Merge tags"), h.url_for('hsMergeTags'), 270, 'id_adminPosts'),
-                MenuItem('id_hsViewLogBase', _("View logs"), h.url_for('hsViewLogBase'), 260, False),
-                )
-
-    return menu
-
-class AdminPanelPlugin(BasePlugin):
+class AdminPanelPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Administration panel'),
-                 'menutest' : menuTest, # returns True if menu item should be visible. If False, all items will be visible
-                 'menuitems' : menuItems, # menu items
                  }
         BasePlugin.__init__(self, 'adminpanel', config)
 
@@ -115,6 +71,47 @@ class AdminPanelPlugin(BasePlugin):
         map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller = 'Orphie_Admin', action = 'editUser', requirements = dict(uid = '\d+'))
         map.connect('hsPin', '/holySynod/pinThread/:act/:id', controller = 'Orphie_Admin', action = 'pinThread', requirements = dict(id = '\d+'))
         map.connect('hsManageByIp', '/holySynod/manageByIp/:ip/:act', controller = 'Orphie_Admin', action = 'manageByIp', act = 'show', requirements = dict(ip = '\d+'))
+
+    def MenuItemIsVisible(self, id, baseController):
+        user = baseController.userInst
+        if id == 'id_hsSettings':
+            return user.canChangeSettings()
+        if id == 'id_hsBoards':
+            return user.canManageBoards()
+        if id == 'id_hsUsers':
+            return user.canManageUsers()
+        if id == 'id_hsBans':
+            return user.canManageUsers()
+        if id == 'id_hsExtensions':
+            return user.canManageExtensions()
+        if id == 'id_hsMappings':
+            return user.canManageMappings()
+        if id == 'id_hsMergeTags':
+            return user.canManageMappings()
+        if id == 'id_hsInvite':
+            return user.canMakeInvite()
+        if id == 'id_hsViewLogBase':
+            return True
+        return True
+
+    def menuItems(self, menuId):
+        #          id        link       name                weight   parent
+        menu = None
+        if menuId == "managementMenu":
+            menu = (MenuItem('id_adminDashboard', _("Dashboard"), h.url_for('holySynod'), 200, False),
+                    MenuItem('id_adminBoard', _("Common settings"), None, 200, False),
+                    MenuItem('id_adminUsers', _("Users"), None, 210, False),
+                    MenuItem('id_adminPosts', _("Threads and posts"), None, 220, False),
+                    MenuItem('id_hsExtensions', _("Manage extensions"), h.url_for('hsExtensions'), 240, 'id_adminBoard'),
+                    MenuItem('id_hsUsers', _("Manage users"), h.url_for('hsUsers'), 220, 'id_adminUsers'),
+                    MenuItem('id_hsBans', _("Manage bans"), h.url_for('hsBans'), 230, 'id_adminUsers'),
+                    MenuItem('id_hsInvite', _("Generate invite"), h.url_for('hsInvite'), 270, 'id_adminUsers'),
+                    MenuItem('id_hsBoards', _("Manage boards"), h.url_for('hsBoards'), 210, 'id_adminPosts'),
+                    MenuItem('id_hsMappings', _("Manage mappings"), h.url_for('hsMappings'), 250, 'id_adminPosts'),
+                    MenuItem('id_hsMergeTags', _("Merge tags"), h.url_for('hsMergeTags'), 270, 'id_adminPosts'),
+                    MenuItem('id_hsViewLogBase', _("View logs"), h.url_for('hsViewLogBase'), 260, False),
+                    )
+        return menu
 
 def postPanelCallback(thread, post, userInst):
     from webhelpers.html.tags import link_to

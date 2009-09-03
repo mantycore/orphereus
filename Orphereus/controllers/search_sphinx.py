@@ -7,7 +7,7 @@ from Orphereus.lib.base import *
 from Orphereus.model import *
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.miscUtils import filterText
-from Orphereus.lib.3dparty.sphinxapi import *
+from Orphereus.lib.thirdParty.sphinxapi import *
 from Orphereus.lib.interfaces.AbstractSearchModule import AbstractSearchModule
 
 import logging

@@ -3,32 +3,31 @@ from string import *
 
 from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.base import *
-from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST, engineVersion
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 from Orphereus.model import *
 
 import datetime
 import logging
 log = logging.getLogger(__name__)
 
-def menuItems(menuId):
-    menu = None
-    if menuId == "managementMenu":
-        menu = (MenuItem('id_ExtSettings', _("Extended settings"), h.url_for('hsCfgManage'), 601, 'id_adminBoard'),)
-    return menu
-
-def menuTest(id, baseController):
-    user = baseController.userInst
-    if id == 'id_ExtSettings':
-        return user.canChangeSettings()
-
-class SettingsManagerPlugin(BasePlugin):
+class SettingsManagerPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Engine runtime settings editing tool'),
-                  'menuitems' : menuItems,
-                  'menutest' : menuTest
                  }
         BasePlugin.__init__(self, 'setsmgr', config)
+
+    def menuItems(self, menuId):
+        menu = None
+        if menuId == "managementMenu":
+            menu = (MenuItem('id_ExtSettings', _("Extended settings"), h.url_for('hsCfgManage'), 601, 'id_adminBoard'),)
+        return menu
+
+    def MenuItemIsVisible(self, id, baseController):
+        user = baseController.userInst
+        if id == 'id_ExtSettings':
+            return user.canChangeSettings()
 
     # Implementing BasePlugin
     def initRoutes(self, map):

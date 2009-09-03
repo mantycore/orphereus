@@ -26,48 +26,56 @@ from Orphereus.lib.pluginInfo import *
 from Orphereus.lib.base import *
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.miscUtils import getUserIp
+from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 from Orphereus.model import *
 
 import logging
 log = logging.getLogger(__name__)
 
-def banUser(user):
-    if user.Anonymous:
-        Ban.create(h.ipToInt(getUserIp()),h.ipToInt('255.255.255.255'),int(g.OPT.autoBanAnonTotally),  
-                       _("[AUTOMATIC BAN] Exceeded posting speed limits"),
-                       datetime.datetime.now(), g.OPT.banTimeDays, True)
-    else:
-        user.ban(g.OPT.banTimeDays, _("[AUTOMATIC BAN] Exceeded posting speed limits"))
-    
-def restrictor(controller, request, **kwargs):
-    user = controller.userInst
-    timeBnd = datetime.datetime.now() - datetime.timedelta(seconds = g.OPT.checkIntervalSeconds)
-    if user.Anonymous:
-        filterCond = and_(Post.date > timeBnd, Post.ip == controller.userIp)
-    else:
-        filterCond = and_(Post.date > timeBnd, Post.uidNumber == user.options.uidNumber)
-    lastPosts = Post.filter(filterCond).all()
-    lastThreads = filter(lambda post: (post.parentid == None), lastPosts)
-   # log.info('Last posts: %s; threads: %s. Limits: %s/%s' %(len(lastPosts), len(lastThreads), g.OPT.postLimit, g.OPT.threadLimit))
-    
-    if (len(lastPosts) == g.OPT.postLimit or len(lastThreads) == g.OPT.threadLimit):
-        if g.OPT.enableAutoBan:
-            banUser(user)
-            return _("[AUTOMATIC BAN] Exceeded posting speed limits")
+class AntispamPlugin(PluginInfo, AbstractPostingHook):
+    def __init__(self):
+        config = {'name' : N_('Wipe filter with auto-ban features'),
+              #'postingRestrictor' : restrictor,
+             }
+        PluginInfo.__init__(self, 'antispam', config)
+
+    def beforePostCallback(self, controller, request, **kwargs):
+        user = controller.userInst
+        timeBnd = datetime.datetime.now() - datetime.timedelta(seconds = g.OPT.checkIntervalSeconds)
+        if user.Anonymous:
+            filterCond = and_(Post.date > timeBnd, Post.ip == controller.userIp)
         else:
-            return _("You are posting too fast.")
-    
-    return None
+            filterCond = and_(Post.date > timeBnd, Post.uidNumber == user.options.uidNumber)
+        lastPosts = Post.filter(filterCond).all()
+        lastThreads = filter(lambda post: (post.parentid == None), lastPosts)
+       # log.info('Last posts: %s; threads: %s. Limits: %s/%s' %(len(lastPosts), len(lastThreads), g.OPT.postLimit, g.OPT.threadLimit))
+
+        if (len(lastPosts) == g.OPT.postLimit or len(lastThreads) == g.OPT.threadLimit):
+            if g.OPT.enableAutoBan:
+                self.banUser(user)
+                return _("[AUTOMATIC BAN] Exceeded posting speed limits")
+            else:
+                return _("You are posting too fast.")
+
+        return None
+
+    def banUser(self, user):
+        if user.Anonymous:
+            Ban.create(h.ipToInt(getUserIp()), h.ipToInt('255.255.255.255'), int(g.OPT.autoBanAnonTotally),
+                           _("[AUTOMATIC BAN] Exceeded posting speed limits"),
+                           datetime.datetime.now(), g.OPT.banTimeDays, True)
+        else:
+            user.ban(g.OPT.banTimeDays, _("[AUTOMATIC BAN] Exceeded posting speed limits"))
 
 def pluginInit(globj = None):
     if globj:
         intValues = [('antispam',
-                               ('checkIntervalSeconds','postLimit','threadLimit','banTimeDays',
+                               ('checkIntervalSeconds', 'postLimit', 'threadLimit', 'banTimeDays',
                                )
                               ),
                             ]
         boolValues = [('antispam',
-                               ('enableAutoBan','autoBanAnonTotally',
+                               ('enableAutoBan', 'autoBanAnonTotally',
                                )
                               ),
                             ]
@@ -75,9 +83,5 @@ def pluginInit(globj = None):
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(intValues, CFG_INT)
             globj.OPT.registerCfgValues(boolValues, CFG_BOOL)
-    
-    config = {'name' : N_('Wipe filter with auto-ban features'),
-              'postingRestrictor' : restrictor,
-             }
 
-    return PluginInfo('antispam', config)    
+    return AntispamPlugin()

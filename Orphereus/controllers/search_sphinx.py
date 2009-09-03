@@ -8,91 +8,99 @@ from Orphereus.model import *
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.miscUtils import filterText
 from Orphereus.lib.sphinxapi import *
+from Orphereus.lib.interfaces.AbstractSearchModule import AbstractSearchModule
 
 import logging
 log = logging.getLogger(__name__)
 
-def searchRoutine(filteringClause, text, page, postsPerPage):
-    count = 0
-    failInfo = None
-    highlights = {}
-    posts = []
-    warnings = []
+class SphinxSearchPlugin(PluginInfo, AbstractSearchModule):
+    def __init__(self):
+        config = {'name' : N_('Search with Sphinx full-text search engine'),
+                 }
+        PluginInfo.__init__(self, 'search_sphinx', config)
 
-    maxCount = 1000
-    maxCountForRestrictions = 500
+    # Implementing AbstractSearchModule
+    def search(self, filteringClause, text, page, postsPerPage):
+        count = 0
+        failInfo = None
+        highlights = {}
+        posts = []
+        warnings = []
 
-    if text.strip():
-        result = []
+        maxCount = 1000
+        maxCountForRestrictions = 500
 
-        postIds = []
-        timestart = time.time()
-        base = meta.Session.query(Post.id).filter(filteringClause)
-        negBase = meta.Session.query(Post.id).filter(not_(filteringClause))
-        positiveCount = base.count()
-        negativeCount = negBase.count()
-        if positiveCount < maxCountForRestrictions or negativeCount < maxCountForRestrictions:
-            # We should select minimal array of post ids to search trough
-            positive = positiveCount <= negativeCount
-            #log.critical("%d : %d" % (positiveCount, negativeCount))
-            if positive:
-                postIds = base.all()
+        if text.strip():
+            result = []
+
+            postIds = []
+            timestart = time.time()
+            base = meta.Session.query(Post.id).filter(filteringClause)
+            negBase = meta.Session.query(Post.id).filter(not_(filteringClause))
+            positiveCount = base.count()
+            negativeCount = negBase.count()
+            if positiveCount < maxCountForRestrictions or negativeCount < maxCountForRestrictions:
+                # We should select minimal array of post ids to search trough
+                positive = positiveCount <= negativeCount
+                #log.critical("%d : %d" % (positiveCount, negativeCount))
+                if positive:
+                    postIds = base.all()
+                else:
+                    postIds = negBase.all()
+                postIds = map(lambda seq: int(seq[0]), postIds)
             else:
-                postIds = negBase.all()
-            postIds = map(lambda seq: int(seq[0]), postIds)
-        else:
-            warnings.append(_("Search restrictions was ignored due large allowed range"))
+                warnings.append(_("Search restrictions was ignored due large allowed range"))
 
-        c.log.append("Search: restriction computing time: %s" % (time.time() - timestart))
-        timestart = time.time()
+            c.log.append("Search: restriction computing time: %s" % (time.time() - timestart))
+            timestart = time.time()
 
-        mode = SPH_MATCH_EXTENDED2
-        host = str(g.OPT.sphinxHost)
-        port = g.OPT.sphinxPort
-        index = str(g.OPT.sphinxIndexName)
-        sortby = str(g.OPT.sphinxPostDatePseudo)
-        postIdPseudo = str(g.OPT.sphinxPostIdPseudo)
-        cl = SphinxClient()
-        cl.SetServer(host, port)
-        if postIds:
-            cl.SetFilter(postIdPseudo, postIds, not positive)
-        cl.SetSortMode(SPH_SORT_ATTR_DESC, sortby)
-        cl.SetLimits((page * postsPerPage), postsPerPage, (page * postsPerPage) + postsPerPage)
-        #cl.SetWeights ([100, 1])
-        cl.SetMatchMode(mode)
-        res = cl.Query(text, index)
+            mode = SPH_MATCH_EXTENDED2
+            host = str(g.OPT.sphinxHost)
+            port = g.OPT.sphinxPort
+            index = str(g.OPT.sphinxIndexName)
+            sortby = str(g.OPT.sphinxPostDatePseudo)
+            postIdPseudo = str(g.OPT.sphinxPostIdPseudo)
+            cl = SphinxClient()
+            cl.SetServer(host, port)
+            if postIds:
+                cl.SetFilter(postIdPseudo, postIds, not positive)
+            cl.SetSortMode(SPH_SORT_ATTR_DESC, sortby)
+            cl.SetLimits((page * postsPerPage), postsPerPage, (page * postsPerPage) + postsPerPage)
+            #cl.SetWeights ([100, 1])
+            cl.SetMatchMode(mode)
+            res = cl.Query(text, index)
 
-        c.log.append("Search: index searching time: %s" % (time.time() - timestart))
-        timestart = time.time()
+            c.log.append("Search: index searching time: %s" % (time.time() - timestart))
+            timestart = time.time()
 
-        if not res:
-            failInfo = _("Search failed. Sphinx engine returned '%s'") % cl.GetLastError()
-        elif res.has_key('matches'):
-            count = res['total_found']
-            if count > maxCount:
-                warnings.append(_("%d posts was found during search, %d was ignored due engine restrictions") % (count, count - maxCount))
-                count = maxCount
-            for match in res['matches']:
-                result.append(match['id'])
-        if result:
-            posts = Post.filter(Post.id.in_(result)).order_by(Post.date.desc()).all()
+            if not res:
+                failInfo = _("Search failed. Sphinx engine returned '%s'") % cl.GetLastError()
+            elif res.has_key('matches'):
+                count = res['total_found']
+                if count > maxCount:
+                    warnings.append(_("%d posts was found during search, %d was ignored due engine restrictions") % (count, count - maxCount))
+                    count = maxCount
+                for match in res['matches']:
+                    result.append(match['id'])
+            if result:
+                posts = Post.filter(Post.id.in_(result)).order_by(Post.date.desc()).all()
 
-            # Highlight found entries
-            ids = []
-            titles = []
-            messages = []
-            for post in posts:
-                titles.append(post.title)
-                messages.append(post.message)
-                ids.append(post.id)
-            options = {'before_match' : '<span style="background-color:yellow">', 'after_match' : '</span>'}
-            hlarr = cl.BuildExcerpts(titles + messages, index, text, options)
-            if hlarr:
-                shift = len(titles)
-                for num, id in enumerate(ids):
-                    highlights[id] = (hlarr[num].decode('utf-8'), hlarr[num + shift].decode('utf-8'))
-        c.log.append("Search: posts resolving time: %s" % (time.time() - timestart))
-    return (posts, count, failInfo, highlights, warnings)
+                # Highlight found entries
+                ids = []
+                titles = []
+                messages = []
+                for post in posts:
+                    titles.append(post.title)
+                    messages.append(post.message)
+                    ids.append(post.id)
+                options = {'before_match' : '<span style="background-color:yellow">', 'after_match' : '</span>'}
+                hlarr = cl.BuildExcerpts(titles + messages, index, text, options)
+                if hlarr:
+                    shift = len(titles)
+                    for num, id in enumerate(ids):
+                        highlights[id] = (hlarr[num].decode('utf-8'), hlarr[num + shift].decode('utf-8'))
+            c.log.append("Search: posts resolving time: %s" % (time.time() - timestart))
+        return (posts, count, failInfo, highlights, warnings)
 
 def pluginInit(globj = None):
     if globj:
@@ -112,9 +120,4 @@ def pluginInit(globj = None):
             globj.OPT.registerCfgValues(intValues, CFG_INT)
             globj.OPT.registerCfgValues(stringValues, CFG_STRING)
 
-    config = {'searchRoutine' : searchRoutine,
-             'deps' : False,
-             'name' : N_('Search with Sphinx full-text search engine'),
-             }
-
-    return PluginInfo('search_sphinx', config)
+    return SphinxSearchPlugin()

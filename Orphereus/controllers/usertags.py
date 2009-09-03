@@ -6,6 +6,7 @@ from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.base import *
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
+from Orphereus.lib.interfaces.AbstractProfileExtension import AbstractProfileExtension
 from Orphereus.model import *
 
 import logging
@@ -46,36 +47,6 @@ class UserTag(object):
                 )
             return UserTag.userTagsToPostsMappingTable
     """
-"""
-def ormInit(orm, namespace, propDict):
-    t_usertags = sa.Table("usertag", meta.metadata,
-        sa.Column("id"       , sa.types.Integer, primary_key = True),
-        sa.Column('userId'  , sa.types.Integer, sa.ForeignKey('user.uidNumber')),
-        sa.Column("tag"      , sa.types.UnicodeText, nullable = False),
-        sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
-        )
-
-    t_userTagsToPostsMappingTable = sa.Table("usertagsToPostsMap", meta.metadata,
-        sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id')),
-        sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('usertag.id')),
-        )
-
-    #orm.mapper
-    meta.Session.mapper(namespace.UserTag, t_usertags, properties = {
-        'user' : orm.relation(User),
-        'posts' : orm.relation(Post, secondary = t_userTagsToPostsMappingTable),
-        })
-"""
-"""
-def routingInit(map):
-    map.connect('userTagsMapper', '/postTags/:post/:act/:tagid', controller = 'usertags', action = 'postTags', act = 'show', tagid = 0, requirements = dict(post = '\d+', tagid = '\d+'))
-    map.connect('userTagsManager', '/userProfile/manageUserTags/:act/:tagid', controller = 'usertags', action = 'postTagsManage', act = 'show', tagid = 0, requirements = dict(tagid = '\d+'))
-"""
-
-"""
-def requestHook(baseController):
-    pass
-"""
 
 def threadPanelCallback(thread, userInst):
     from webhelpers.html.tags import link_to
@@ -110,15 +81,7 @@ def tagHandler(tag, userInst):
         return None, newName
     return None, None
 
-def profileLinks(userInst):
-    links = []
-    if not userInst.Anonymous:
-        links = (('userTagsManager', {}, _('User tags')),)
-        return links
-
-
-
-class UserTagsPlugin(PluginInfo, AbstractPostingHook):
+class UserTagsPlugin(PluginInfo, AbstractPostingHook, AbstractProfileExtension):
     def __init__(self):
         config = {'name' : N_('Personal tags module'),
 
@@ -127,7 +90,7 @@ class UserTagsPlugin(PluginInfo, AbstractPostingHook):
                  #'orminit' : ormInit, # ORM initializer
                  #'ormPropChanger' : ormPropChanger,
 
-                 'additionalProfileLinks' : profileLinks,
+                 #'additionalProfileLinks' : profileLinks,
                  #'tagCreationHandler' : tagCreationHandler,
                  #'tagCheckHandler' : tagCheckHandler,
                  #'afterPostCallback' : afterPostCallback,
@@ -139,7 +102,8 @@ class UserTagsPlugin(PluginInfo, AbstractPostingHook):
         map.connect('userTagsMapper', '/postTags/:post/:act/:tagid', controller = 'usertags', action = 'postTags', act = 'show', tagid = 0, requirements = dict(post = '\d+', tagid = '\d+'))
         map.connect('userTagsManager', '/userProfile/manageUserTags/:act/:tagid', controller = 'usertags', action = 'postTagsManage', act = 'show', tagid = 0, requirements = dict(tagid = '\d+'))
 
-    def initORM(self, orm, namespace, propDict):
+    def initORM(self, orm, propDict):
+        namespace = self.namespace()
         t_usertags = sa.Table("usertag", meta.metadata,
             sa.Column("id"       , sa.types.Integer, primary_key = True),
             sa.Column('userId'  , sa.types.Integer, sa.ForeignKey('user.uidNumber')),
@@ -158,13 +122,13 @@ class UserTagsPlugin(PluginInfo, AbstractPostingHook):
             'posts' : orm.relation(Post, secondary = t_userTagsToPostsMappingTable),
             })
     """
-        def extendORMProperties(self, orm, propDict, namespace):
-            pass
-            #propDict['Post']['userTags'] = orm.relation(namespace.UserTag, secondary = namespace.UserTag.getMappingTable())
+        def extendORMProperties(self, orm, propDict):
+            namespace = self.namespace()
+            propDict['Post']['userTags'] = orm.relation(namespace.UserTag, secondary = namespace.UserTag.getMappingTable())
     """
     # Implementing AbstractPostingHook
     def tagCheckHandler(self, tagName, userInst):
-        ns = g.pluginsDict['usertags'].pnamespace
+        ns = self.namespace() #g.pluginsDict['usertags'].pnamespace
         name = tagName
         if name.startswith('$'):
             name = tagName[1:]
@@ -177,7 +141,7 @@ class UserTagsPlugin(PluginInfo, AbstractPostingHook):
         afterPostCallbackParams = []
         newTagString = tagstring
         from Orphereus.controllers.Orphie_Main import OrphieMainController
-        ns = g.pluginsDict['usertags'].pnamespace
+        ns = self.namespace() #g.pluginsDict['usertags'].pnamespace
         tags, dummy, nonexistent = Tag.stringToTagLists(tagstring, False)
         for usertag in nonexistent:
             if usertag.startswith('$'):
@@ -202,6 +166,12 @@ class UserTagsPlugin(PluginInfo, AbstractPostingHook):
             for tag in params:
                 tag.addToThread(post)
 
+    # Implementing AbstractProfileExtension
+    def additionalProfileLinks(self, userInst):
+        links = []
+        if not userInst.Anonymous:
+            links = (('userTagsManager', {}, _('User tags')),)
+            return links
 
 def pluginInit(globj = None):
     if globj:

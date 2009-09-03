@@ -104,8 +104,10 @@ def setup_config(command, filename, section, vars):
     gvars = config['pylons.app_globals']
     log.debug('Calling deploy routines, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
-        dh = plugin.deployHook()
-        if dh:
-            log.debug('calling deploy routine %s from: %s' % (str(dh), plugin.pluginId()))
-            dh(plugin.namespace())
+        plugin.deployCallback()
+
+        #dh = plugin.deployHook()
+        #if dh:
+        #    log.debug('calling deploy routine %s from: %s' % (str(dh), plugin.pluginId()))
+        #    dh(plugin.namespace())
     log.debug('DEPLOYMENT COMPLETED')

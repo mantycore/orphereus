@@ -142,7 +142,7 @@ def init_model(engine):
     gvars = config['pylons.app_globals']
     log.info('Extending ORM properties, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
-        plugin.extendORMProperties(orm, propDict, plugin.namespace())
+        plugin.extendORMProperties(orm, propDict)
 
         pconfig = plugin.config
         ormPropChanger = pconfig.get('ormPropChanger', None)
@@ -176,13 +176,15 @@ def init_model(engine):
     gvars = config['pylons.app_globals']
     log.info('Initialzing ORM, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
-        plugin.initORM(orm, plugin.namespace(), propDict)
+        plugin.initORM(orm, propDict)
 
+        """
         orminit = plugin.ormInit()
         if orminit:
             log.error('config{} is deprecated')
             log.info('calling ORM initializer %s from: %s' % (str(orminit), plugin.pluginId()))
             orminit(orm, plugin.namespace(), propDict)
+        """
     log.info('COMPLETED ORM INITIALIZATION STAGE')
 
 def upd_globals():

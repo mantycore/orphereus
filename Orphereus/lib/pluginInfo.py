@@ -17,10 +17,10 @@ class PluginInfo():
             self.__pfilters = pluginConfig.get('filters', False)
             self.__pGlobalFilters = pluginConfig.get('globfilters', False)
             self.__prequestHook = pluginConfig.get('basehook', False)
-            self.__pormInit = pluginConfig.get('orminit', False)
+            #self.__pormInit = pluginConfig.get('orminit', False)
             self.__pdeps = pluginConfig.get('deps', False)
             self.__pName = pluginConfig.get('name', False)
-            self.__pDeployHook = pluginConfig.get('deployHook', False)
+            #self.__pDeployHook = pluginConfig.get('deployHook', False)
             self.__pEntryPoints = pluginConfig.get('entryPoints', False)
 
             self.__pmenuInit = pluginConfig.get('menuitems', False)
@@ -49,14 +49,14 @@ class PluginInfo():
     def routingInit(self):
         return self.__proutingInit
 
-    def ormInit(self):
-        return self.__pormInit
+    #def ormInit(self):
+    #    return self.__pormInit
 
     def requestHook(self):
         return self.__prequestHook
 
-    def deployHook(self):
-        return self.__pDeployHook
+    #def deployHook(self):
+    #    return self.__pDeployHook
     # HOOKS END
 
     def menuItems(self, menuId):
@@ -85,11 +85,14 @@ class PluginInfo():
     def initRoutes(self, map):
         pass
 
-    def initORM(self, orm, namespace, propDict):
+    def initORM(self, orm, propDict):
+        pass
+
+    def deployCallback(self):
         pass
 
     def beforeRequestCallback(self, baseController):
         pass
 
-    def extendORMProperties(self, orm, propDict, namespace):
+    def extendORMProperties(self, orm, propDict):
         pass

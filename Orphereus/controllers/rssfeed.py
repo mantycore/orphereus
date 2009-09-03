@@ -25,8 +25,16 @@ def headCallback(context):
         result += auto_discovery_link(atomLink, feed_type = 'atom') + '\n'
     return result
 
-def routingInit(map):
-    map.connect('feed', '/:watch/feed/auth/:authid/:uid.:feedType', controller = 'rssfeed', action = 'rss', requirements = dict(authid = '\d+'))
+class RssFeedPlugin(PluginInfo):
+    def __init__(self):
+        config = {'name' : N_('RSS/Atom feeds'),
+                 }
+
+        PluginInfo.__init__(self, 'rssfeed', config)
+
+    # Implementing PluginInfo
+    def initRoutes(self, map):
+        map.connect('feed', '/:watch/feed/auth/:authid/:uid.:feedType', controller = 'rssfeed', action = 'rss', requirements = dict(authid = '\d+'))
 
 def pluginInit(globj = None):
     if globj:
@@ -39,14 +47,9 @@ def pluginInit(globj = None):
 
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
-            
 
-    config = {'routeinit' : routingInit, # routing initializer
-             'deps' : False, # plugin dependencies, for example ('users', 'statistics')
-             'name' : N_('RSS/Atom feeds'),
-             }
 
-    return PluginInfo('rssfeed', config)
+    return RssFeedPlugin()
 
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import *

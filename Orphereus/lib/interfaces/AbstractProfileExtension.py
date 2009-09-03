@@ -20,15 +20,6 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-class AbstractPostingHook(object):
-    def tagCheckHandler(self, tagName, userInst):
+class AbstractProfileExtension(object):
+    def additionalProfileLinks(self, userInst):
         pass
-
-    def tagCreationHandler(self, tagstring, userInst, textFilter):
-        return (tagstring, None)
-
-    def afterPostCallback(self, post, userInst, params):
-        pass
-
-    def beforePostCallback(self, controller, request, **kwargs):
-        return None

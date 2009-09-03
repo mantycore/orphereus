@@ -43,6 +43,9 @@ from Orphereus.lib.constantValues import *
 from Orphereus.lib.fileHolder import AngryFileHolder
 from Orphereus.lib.processFile import processFile
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
+from Orphereus.lib.interfaces.AbstractProfileExtension import AbstractProfileExtension
+from Orphereus.lib.interfaces.AbstractSearchModule import AbstractSearchModule
+from Orphereus.lib.interfaces.AbstractHomeExtension import AbstractHomeExtension
 from OrphieBaseController import OrphieBaseController
 from mutagen.easyid3 import EasyID3
 from urllib import quote_plus, unquote
@@ -188,6 +191,14 @@ class OrphieMainController(OrphieBaseController):
                 ct = time.time()
             c.boardName = _('Home')
             c.hometemplates = []
+            homeModules = g.implementationsOf(AbstractHomeExtension)
+            enabledModules = g.OPT.homeModules
+            for homeModule in homeModules:
+                if homeModule.pluginId() in enabledModules:
+                    c.hometemplates.append(homeModule.templateName)
+                    homeModule.prepareData(self, c)
+
+            """
             homeModules = {}
             for plugin in g.plugins:
                 config = plugin.config
@@ -202,6 +213,7 @@ class OrphieMainController(OrphieBaseController):
                     template = homeModules[module][1]
                     c.hometemplates.append(template)
                     generator(self, c)
+            """
 
             if g.OPT.devMode:
                 c.log.append("home: " + str(time.time() - ct))
@@ -293,9 +305,9 @@ class OrphieMainController(OrphieBaseController):
 
         self.forceNoncachedUser()
         c.additionalProfileLinks = []
-        linkGenerators = g.extractFromConfigs('additionalProfileLinks')[0]
-        for links in linkGenerators:
-            linkslist = links(self.userInst)
+        linkGenerators = g.implementationsOf(AbstractProfileExtension) #g.extractFromConfigs('additionalProfileLinks')[0]
+        for generator in linkGenerators:
+            linkslist = generator.additionalProfileLinks(self.userInst)
             if linkslist:
                 c.additionalProfileLinks += linkslist
 
@@ -417,14 +429,20 @@ class OrphieMainController(OrphieBaseController):
 
         filteringClause = or_(tagfilter, Post.parentPost.has(tagfilter))
 
-        searchPlugin = g.pluginsDict.get(g.OPT.searchPluginId, None)
+        searchModules = g.implementationsOf(AbstractSearchModule)
+        searchPlugin = None
+        for sm in searchModules:
+            if sm.pluginId() == g.OPT.searchPluginId:
+                searchPlugin = sm
+
         if not searchPlugin:
             return self.error(_("Search plugin isn't configured"))
-        searchRoutine = searchPlugin.config.get('searchRoutine', None)
-        if not searchRoutine:
-            return self.error(_("The plugin selected to search doesn't provide search features"))
 
-        posts, count, failInfo, highlights, warnings = searchRoutine(filteringClause, text, page, pp)
+        #searchRoutine = searchPlugin.config.get('searchRoutine', None)
+        #if not searchRoutine:
+        #    return self.error(_("The plugin selected to search doesn't provide search features"))
+
+        posts, count, failInfo, highlights, warnings = searchPlugin.search(filteringClause, text, page, pp)
         if failInfo:
             return self.error(failInfo)
         self.paginate(count, page, pp)

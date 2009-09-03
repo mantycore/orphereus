@@ -10,3 +10,4 @@ class MenuItem(object):
     def __repr__(self):
         return "<%s/%d (%s)::'%s' (%s)>" % (self.id, self.weight, self.route, self.text, str(self.plugin and self.plugin.pluginId()))
     
+#

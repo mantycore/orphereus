@@ -24,7 +24,7 @@ import random
 from Orphereus.lib.base import *
 from Orphereus.lib.miscUtils import *
 from Orphereus.model import UserOptions
-from Orphereus.lib.AbstractUser import AbstractUser
+from Orphereus.lib.interfaces.AbstractUser import AbstractUser
 
 #it's not really needed to implement all User interface.
 

@@ -28,6 +28,7 @@ from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 
 log = logging.getLogger(__name__)
 
@@ -72,10 +73,11 @@ class OrphieAjaxController(OrphieBaseController):
         tags = request.POST.get('tags', '')
         freeNames = Tag.stringToTagLists(tags, False)[2]
         if freeNames:
-            handlers = g.extractFromConfigs('tagCheckHandler')[0]
+            postingHooks = g.implementationsOf(AbstractPostingHook)
+            #handlers = g.extractFromConfigs('tagCheckHandler')[0]
             for tagname in freeNames:
-                for tagCheckHandler in handlers:
-                    tag = tagCheckHandler(tagname, self.userInst)
+                for hook in postingHooks:
+                    tag = hook.tagCheckHandler(tagname, self.userInst)
                     if tag:
                         freeNames.remove(tagname)
             c.tags = freeNames

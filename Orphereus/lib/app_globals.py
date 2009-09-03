@@ -49,30 +49,30 @@ class OptHolder(object):
         self.booleanValues = [('core',
                                ('secondaryIndex', 'allowPosting',
                                 'allowRegistration', 'allowAnonymous',
-                                'allowLogin',  'allowAnonymousPosting', 'allowAnonProfile',
+                                'allowLogin', 'allowAnonymousPosting', 'allowAnonProfile',
                                )
                               ),
-                              
+
                               ('debug',
-                               ('devMode','requestProfiling', 
+                               ('devMode', 'requestProfiling',
                                )
-                              ), 
+                              ),
 
                               ('memcache',
-                               ('memcachedPosts','memcachedBans','memcachedUsers', 
+                               ('memcachedPosts', 'memcachedBans', 'memcachedUsers',
                                )
                               ),
-                              
+
                               ('frontend',
-                                ('invisibleBump','usersCanViewLogs','vitalSigns', 
+                                ('invisibleBump', 'usersCanViewLogs', 'vitalSigns',
                                  'allowCrossposting', 'allowCrosspostingSvc',
                                  'allowPureSvcTagline', 'allowTagCreation',
-                                 'allowAnswersWithoutCaptcha',  'forbidCaptcha',
+                                 'allowAnswersWithoutCaptcha', 'forbidCaptcha',
                                  'useFrameLogo', 'permissiveFileSizeConjunction',
                                  'boardWideProoflabels', 'allowOverview', 'framedMain',
                                  'obligatoryFrameCreation', 'showShortStatistics',
-                                 'newsSiteMode','useTopPaginator','useZMenu','dvachStyleMenu'
-                                ) 
+                                 'newsSiteMode', 'useTopPaginator', 'useZMenu', 'dvachStyleMenu'
+                                )
                               ),
 
                               ('defaults',
@@ -99,15 +99,15 @@ class OptHolder(object):
                               ),
 
                               ('debug',
-                               ('profileDumpFile', 
-                               )
-                              ), 
-
-                              ('memcache',
-                               ('cachePrefix', 
+                               ('profileDumpFile',
                                )
                               ),
-                              
+
+                              ('memcache',
+                               ('cachePrefix',
+                               )
+                              ),
+
                               ('security',
                                ('alertServer', 'alertSender', 'alertPassword',
                                 'obfuscator',
@@ -116,7 +116,7 @@ class OptHolder(object):
 
                               ('frontend',
                                 ('title', 'frameLogo', 'defaultBoard', 'favicon',
-                                ) 
+                                )
                               ),
 
 ]
@@ -127,10 +127,10 @@ class OptHolder(object):
                               ),
 
                               ('memcache',
-                               ('banCacheSeconds', 
+                               ('banCacheSeconds',
                                )
                               ),
-                              
+
                               ('defaults',
                                ('defThumbSize', 'defMinPicSize', 'defMaxFileSize', 'defBumplimit',
 
@@ -143,23 +143,23 @@ class OptHolder(object):
                               ),
 
                               ('frontend',
-                                ('maxTagsCount','maxTagLen','maxLinesInPost',
+                                ('maxTagsCount', 'maxTagLen', 'maxLinesInPost',
                                  'cutSymbols',
-                                ) 
+                                )
                               ),
-                              
+
 
                             ]
 
         self.strListValues = [('core',
-                               ('languages', 'templates', 
-                                'javascripts', 'styles', 
-                                # 'disabledModules', 
+                               ('languages', 'templates',
+                                'javascripts', 'styles',
+                                # 'disabledModules',
                                )
                               ),
 
                               ('memcache',
-                               ('memcachedServers', 
+                               ('memcachedServers',
                                )
                               ),
 
@@ -168,34 +168,34 @@ class OptHolder(object):
                                 'badUAs',
                                )
                               ),
-                              
+
                               ('frontend',
-                                ('disabledTags','adminOnlyTags','additionalLinks',
-                                 'sectionNames', 'homeModules', 
-                                ) 
+                                ('disabledTags', 'adminOnlyTags', 'additionalLinks',
+                                 'sectionNames', 'homeModules',
+                                )
                               ),
 
                             ]
-        
+
         if not eggSetupMode:
             # a couple of workarounds for early init stages
             self.disabledModules = self.strListGetter(config['core.disabledModules'])
             self.framedMain = True
-            
+
             # recovery option
             self.recoveryMode = self.booleanGetter(config['core.recovery'])
-            
+
     def registerCfgValues(self, values, type):
         dest = {CFG_BOOL: self.booleanValues,
-                CFG_INT: self.intValues, 
+                CFG_INT: self.intValues,
                 CFG_STRING: self.stringValues,
                 CFG_LIST: self.strListValues,
                 }
         dest[type].extend(values)
-        
+
     def getValueType(self, valName):
         types = {self.booleanGetter: CFG_BOOL,
-                 self.intGetter: CFG_INT, 
+                 self.intGetter: CFG_INT,
                  self.stringGetter: CFG_STRING,
                  self.strListGetter: CFG_LIST,
                  }
@@ -203,7 +203,7 @@ class OptHolder(object):
             return types[self.valueGetters[valName]]
         except:
             return None
-        
+
     def initValues(self, settingObj):
         log.info('LOADING SETTINGS...')
         if self.recoveryMode:
@@ -229,7 +229,7 @@ class OptHolder(object):
 
         self.cssFiles = {}
         self.jsFiles = {}
-        rex = re.compile(r"^(.+)=(.+)$") 
+        rex = re.compile(r"^(.+)=(.+)$")
         for elem in self.styles:
             matcher = rex.match(elem)
             if not matcher:
@@ -260,12 +260,12 @@ class OptHolder(object):
     @staticmethod
     def strListGetter(value):
         return value.split(',')
-    
+
     def autoSetValue(self, name, rawValue):
         getter = self.valueGetters[name]
         value = getter(rawValue)
-        setattr(self, name, value) 
-        
+        setattr(self, name, value)
+
     def setValues(self, source, getter):
         for section in source:
             sectionName = section[0]
@@ -316,7 +316,7 @@ class Globals(object):
         self.version = engineVersion
         self.menuCache = {}
         self.mc = None
-        
+
     def registerPlugin(self, plugin):
         self.plugins.append(plugin)
         self.pluginsDict[plugin.pluginId()] = plugin
@@ -344,8 +344,8 @@ class Globals(object):
                     mod = None
                 if mod and ("pluginInit" in dir(mod)):
                     plinf = mod.pluginInit(not eggSetupMode and self or None)
-                    tmpInfo = PluginInfo('', {})
-                    if plinf and type(plinf) == type(tmpInfo):
+                    #tmpInfo = PluginInfo('', {})
+                    if (issubclass(type(plinf), PluginInfo) or isinstance(plinf, PluginInfo)): #type(plinf) == type(tmpInfo):
                         plid = plinf.pluginId()
                         log.info("Importing plugin: %s; file= %s" % (plid, file))
 
@@ -459,6 +459,7 @@ class Globals(object):
 
     def extractFromConfigs(self, elementName):
         #TODO: cache results?
+        log.error('extractFromConfigs() is deprecated, use Interfaces instead')
         result = []
         plugins = []
         for plugin in self.plugins:
@@ -468,3 +469,11 @@ class Globals(object):
                 result.append(element)
                 plugins.append(plugin)
         return (result, plugins)
+
+    def implementationsOf(self, InterfaceClass):
+        #TODO: cache results?
+        plugins = []
+        for plugin in self.plugins:
+            if (issubclass(type(plugin), InterfaceClass)):
+                plugins.append(plugin)
+        return plugins

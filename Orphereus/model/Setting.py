@@ -58,17 +58,17 @@ class Setting(object):
 
     @staticmethod
     def clearAll():
-        map(lambda obj: obj.delete(),Setting.query().all())
+        map(lambda obj: obj.delete(),Setting.query.all())
 
     @staticmethod
     def getAll():
-        return Setting.query().all()
+        return Setting.query.all()
 
     @staticmethod
     def getSection(name):
-        return Setting.query().filter(Setting.name.like('%s.%%' %name))
+        return Setting.query.filter(Setting.name.like('%s.%%' %name))
 
     @staticmethod
     def getSetting(name):
-        return Setting.query().filter(Setting.name==name).first()
+        return Setting.query.filter(Setting.name==name).first()
 

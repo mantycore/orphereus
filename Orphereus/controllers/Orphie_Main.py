@@ -42,6 +42,7 @@ from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from Orphereus.lib.fileHolder import AngryFileHolder
 from Orphereus.lib.processFile import processFile
+from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 from OrphieBaseController import OrphieBaseController
 from mutagen.easyid3 import EasyID3
 from urllib import quote_plus, unquote
@@ -177,7 +178,7 @@ class OrphieMainController(OrphieBaseController):
     def GetBoard(self, board, tempid, page = 0):
         if board == None:
             if (g.OPT.framedMain and self.userInst and self.userInst.useFrame):
-                c.frameTarget = request.params.get('frameTarget', h.url_for('boardBase', board=g.OPT.defaultBoard)) or h.url_for('boardBase', board=g.OPT.defaultBoard)
+                c.frameTarget = request.params.get('frameTarget', h.url_for('boardBase', board = g.OPT.defaultBoard)) or h.url_for('boardBase', board = g.OPT.defaultBoard)
                 return self.render('frameMain')
             else:
                 board = g.OPT.defaultBoard
@@ -289,7 +290,7 @@ class OrphieMainController(OrphieBaseController):
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             return self.error(_("Profile is not avaiable to Anonymous users."))
-        
+
         self.forceNoncachedUser()
         c.additionalProfileLinks = []
         linkGenerators = g.extractFromConfigs('additionalProfileLinks')[0]
@@ -570,6 +571,8 @@ class OrphieMainController(OrphieBaseController):
         def usualError(message):
             return self.error(message)
 
+        postingHooks = g.implementationsOf(AbstractPostingHook)
+
         errorHandler = usualError
         if ajaxRequest:
             errorHandler = ajaxError
@@ -657,11 +660,18 @@ class OrphieMainController(OrphieBaseController):
                 thread = thePost
             tags = thread.tags
         else:
-            handlers, plugins = g.extractFromConfigs('tagCreationHandler')
-            #log.debug(handlers)
-            #log.debug(plugins)
-            for num, handler in enumerate(handlers):
-                tagstr, afterPostCallbackParams[plugins[num].pluginId()] = handler(tagstr, self.userInst, textFilter)
+            """
+                handlers, plugins = g.extractFromConfigs('tagCreationHandler')
+                #log.debug(handlers)
+                #log.debug(plugins)
+                for num, handler in enumerate(handlers):
+                    tagstr, afterPostCallbackParams[plugins[num].pluginId()] = handler(tagstr, self.userInst, textFilter)
+            """
+            for hook in postingHooks:
+                log.error(hook.pluginId())
+                tagstr, afterPostCallbackParams[hook.pluginId()] = hook.tagCreationHandler(tagstr, self.userInst, textFilter)
+            log.debug(tagstr)
+            log.debug(afterPostCallbackParams)
 
             tags, createdTags, dummy = Tag.stringToTagLists(tagstr, g.OPT.allowTagCreation)
             for tag in createdTags:
@@ -834,9 +844,13 @@ class OrphieMainController(OrphieBaseController):
         if fileHolder:
             fileHolder.disableDeletion()
 
-        callbacks, plugins = g.extractFromConfigs('afterPostCallback')
-        for num, cb in enumerate(callbacks):
-            cb(post, self.userInst, afterPostCallbackParams.get(plugins[num].pluginId(), None))
+        """
+            callbacks, plugins = g.extractFromConfigs('afterPostCallback')
+            for num, cb in enumerate(callbacks):
+                cb(post, self.userInst, afterPostCallbackParams.get(plugins[num].pluginId(), None))
+        """
+        for hook in postingHooks:
+            hook.afterPostCallback(post, self.userInst, afterPostCallbackParams.get(hook.pluginId(), None))
 
         response.set_cookie('orphie-postingCompleted', 'yes')
 

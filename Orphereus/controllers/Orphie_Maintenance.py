@@ -114,7 +114,7 @@ class MaintenanceWorker(object):
                     unbanMessage = (u"Automatic unban: IP <b>%s</b> (Reason was %s)") % (h.intToIp(ban.ip), ban.reason)
                     mtnLog.append(LogElement('Info', unbanMessage))
                     toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
-        batchProcess(Ban.query().filter(Ban.enabled==True), bansSearch)
+        batchProcess(Ban.query.filter(Ban.enabled==True), bansSearch)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -157,7 +157,7 @@ class MaintenanceWorker(object):
                 if tracker.lastAttempt < currentTime - datetime.timedelta(days = 1):
                     mtnLog.append(LogElement('Info', "Deleted ip tracker for <b>%s</b> with <b>%d</b> attempts" % (tracker.ip, tracker.attempts)))
                     if tracker.cid:
-                        captcha = Captcha.query().filter(Captcha.id == tracker.cid).first()
+                        captcha = Captcha.query.filter(Captcha.id == tracker.cid).first()
                         if captcha:
                             meta.Session.delete(captcha)
                             mtnLog.append(LogElement('Info', "Deleted captcha <b>#%d</b>" % (captcha.id)))
@@ -182,7 +182,7 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'User options...'))
         def userOptsSearch(userOpts):
             for opt in userOpts:
-                user = User.query().filter(User.uidNumber == opt.uidNumber).first()
+                user = User.query.filter(User.uidNumber == opt.uidNumber).first()
                 if not user:
                     msg = u'Orphaned userOptions %d for %s, removing' % (opt.optid, str(opt.uidNumber))
                     mtnLog.append(LogElement('Warning', msg))
@@ -193,7 +193,7 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'User filters...'))
         def userFiltersSearch(userFl):
             for fl in userFl:
-                user = User.query().filter(User.uidNumber == fl.uidNumber).first()
+                user = User.query.filter(User.uidNumber == fl.uidNumber).first()
                 if not user:
                     msg = u'Orphaned userFilters %d for %s, removing' % (fl.id, str(fl.uidNumber))
                     mtnLog.append(LogElement('Warning', msg))
@@ -204,7 +204,7 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'Tag options...'))
         def tagOptsSearch(tagOpts):
             for opt in tagOpts:
-                tag = Tag.query().filter(Tag.id == opt.tagId).first()
+                tag = Tag.query.filter(Tag.id == opt.tagId).first()
                 if not tag:
                     msg = u'Orphaned tagOptions %d for %s, removing' % (opt.id, str(opt.tagId))
                     mtnLog.append(LogElement('Warning', msg))
@@ -215,7 +215,7 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'Pictures...'))
         def picturesSearch(pictures):
             for pic in pictures:
-                post = Post.query().filter(Post.picid == pic.id).first()
+                post = Post.query.filter(Post.picid == pic.id).first()
                 if not post:
                     msg = u'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
                     mtnLog.append(LogElement('Warning', msg))
@@ -250,7 +250,7 @@ class MaintenanceWorker(object):
                 isThumb = (name[-1] == 's')
 
                 if isThumb:
-                    thumbIds = Picture.query().filter(Picture.thumpath.like('%%%s' % fullname)).all()
+                    thumbIds = Picture.query.filter(Picture.thumpath.like('%%%s' % fullname)).all()
                     if not thumbIds:
                         msg = u'Orphaned thumbnail %s moved into junk directory' % fn
                         mtnLog.append(LogElement('Info', msg))
@@ -258,7 +258,7 @@ class MaintenanceWorker(object):
                         shutil.move(fn, junkPath)
                         ccJunkThumbnails += 1
                 else:
-                    picIds = Picture.query().filter(Picture.path.like('%%%s' % fullname)).all()
+                    picIds = Picture.query.filter(Picture.path.like('%%%s' % fullname)).all()
                     if not picIds:
                         msg = u'Orphaned picture %s moved into junk directory' % fn
                         mtnLog.append(LogElement('Info', msg))
@@ -424,7 +424,7 @@ class MaintenanceWorker(object):
                     if post.messageShort:
                         mtnLog.append(LogElement('Info', "Fixed short message for post %d" % post.id))
                         post.messageShort = fixHtml(post.messageShort)
-        batchProcess(Post.query().order_by(Post.id.asc()), reparseRoutine)
+        batchProcess(Post.query.order_by(Post.id.asc()), reparseRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -463,7 +463,7 @@ class MaintenanceWorker(object):
                     if treelike:
                         mtnLog.append(LogElement('Info', 'Post #%d was tree-like reply to reply and moved into thread #0' % post.id))
 
-        batchProcess(Post.query().order_by(Post.id.asc()), searchRoutine)
+        batchProcess(Post.query.order_by(Post.id.asc()), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 

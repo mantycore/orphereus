@@ -66,8 +66,8 @@ class OrphieBaseController(BaseController):
         # IP ban checks
         self.userIp = h.ipToInt(getUserIp())
         c.userIp = self.userIp
-        c.ban = Ban.getBanByIp(self.userIp) 
-        
+        c.ban = Ban.getBanByIp(self.userIp)
+
         if c.ban and c.ban.enabled:
             currentURL = request.path_info.decode('utf-8', 'ignore')
             if currentURL.endswith('/'):
@@ -89,13 +89,16 @@ class OrphieBaseController(BaseController):
         self.setLang()
 
         for plugin in g.plugins:
+            plugin.beforeRequestCallback(self)
+
             hook = plugin.requestHook()
             if hook:
+                log.error('config{} is deprecated')
                 hook(self)
 
         if g.firstRequest:
             g.firstRequest = False
-            
+
     def forceNoncachedUser(self):
         if g.OPT.memcachedUsers and not(self.userInst.Anonymous):
             g.mc.delete('u%s' % self.userInst.uidNumber)
@@ -159,7 +162,7 @@ class OrphieBaseController(BaseController):
 
         if c.currentURL.endswith('/'):
             c.currentURL = c.currentURL[:-1]
-        
+
         if not self.currentUserIsAuthorized():
             return redirect_to('authorizeToUrl', url = c.currentURL)
         if self.userInst.isBanned():
@@ -181,13 +184,13 @@ class OrphieBaseController(BaseController):
                 if (not test or (test and test(item.id, self))):
                     target.append((item, level))
                     self.buildMenu(item.id, level + 1, source, target)
-    
+
     def fastRender(self, tname, **options):
         return self._fastRender(self.fastTemplatePath(tname), **options)
 
     def _fastRender(self, tpath, **options):
         return render('/' + tpath, extra_vars = options)
-    
+
     def fastTemplatePath(self, page):
         tpath = "std.banned.mako"
         if not self.userInst.isBanned():

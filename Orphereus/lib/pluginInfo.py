@@ -12,6 +12,7 @@ class PluginInfo():
         # plugin config
         if pluginConfig:
             self.config = pluginConfig
+
             self.__proutingInit = pluginConfig.get('routeinit', False)
             self.__pfilters = pluginConfig.get('filters', False)
             self.__pGlobalFilters = pluginConfig.get('globfilters', False)
@@ -79,3 +80,16 @@ class PluginInfo():
 
     def entryPoints(self):
         return self.__pEntryPoints
+
+    # new methods
+    def initRoutes(self, map):
+        pass
+
+    def initORM(self, orm, namespace, propDict):
+        pass
+
+    def beforeRequestCallback(self, baseController):
+        pass
+
+    def extendORMProperties(self, orm, propDict, namespace):
+        pass

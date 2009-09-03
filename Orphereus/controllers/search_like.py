@@ -23,7 +23,7 @@ def searchRoutine(filteringClause, text, page, postsPerPage):
     if not text or len(text) < minLen:
         failInfo = _("Query too short (minimal length: %d)") % minLen
     if not failInfo:
-        base = Post.query().filter(filteringClause)
+        base = Post.query.filter(filteringClause)
         filter = base.filter(ns.Post.message.like('%%%s%%' % text))
         count = filter.count()
         posts = filter.order_by(ns.Post.date.desc())[(page * postsPerPage):(page + 1) * postsPerPage]

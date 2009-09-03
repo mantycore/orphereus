@@ -30,7 +30,7 @@ from Orphereus.model.LogEntry import LogEntry
 from Orphereus.model.UserFilters import UserFilters
 from Orphereus.lib.miscUtils import isNumber, toLog, filterText
 from Orphereus.lib.constantValues import *
-from Orphereus.lib.AbstractUser import AbstractUser
+from Orphereus.lib.interfaces.AbstractUser import AbstractUser
 
 import Orphereus.lib.helpers as h
 

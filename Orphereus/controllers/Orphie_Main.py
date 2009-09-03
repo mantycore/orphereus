@@ -670,8 +670,6 @@ class OrphieMainController(OrphieBaseController):
             for hook in postingHooks:
                 log.error(hook.pluginId())
                 tagstr, afterPostCallbackParams[hook.pluginId()] = hook.tagCreationHandler(tagstr, self.userInst, textFilter)
-            log.debug(tagstr)
-            log.debug(afterPostCallbackParams)
 
             tags, createdTags, dummy = Tag.stringToTagLists(tagstr, g.OPT.allowTagCreation)
             for tag in createdTags:
@@ -713,6 +711,12 @@ class OrphieMainController(OrphieBaseController):
             if not permCheckRes[0]:
                 return errorHandler(_("Tags restrictions violations:<br/> %s") % ('<br/>'.join(permCheckRes[1])))
 
+        for hook in postingHooks:
+            prohibition = hook.beforePostCallback(self, request, thread = thread, tags = tags)
+            if prohibition:
+                return errorHandler(prohibition)
+
+        # code below is deprecated
         restrictors = g.extractFromConfigs('postingRestrictor')[0]
         for postingRestrictor in restrictors:
             prohibition = postingRestrictor(self, request, thread = thread, tags = tags)

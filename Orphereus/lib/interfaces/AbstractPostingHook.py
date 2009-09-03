@@ -8,3 +8,6 @@ class AbstractPostingHook(object):
 
     def afterPostCallback(self, post, userInst, params):
         pass
+
+    def beforePostCallback(self, controller, request, **kwargs):
+        return None

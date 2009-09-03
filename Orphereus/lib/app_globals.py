@@ -459,7 +459,7 @@ class Globals(object):
 
     def extractFromConfigs(self, elementName):
         #TODO: cache results?
-        log.error('extractFromConfigs() is deprecated, use Interfaces instead')
+        log.error('extractFromConfigs() is deprecated, use interfaces and implementationsOf() instead')
         result = []
         plugins = []
         for plugin in self.plugins:

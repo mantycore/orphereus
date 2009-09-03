@@ -51,11 +51,11 @@ def make_map():
     for plugin in gvars.plugins:
         plugin.initRoutes(map)
 
-        rinit = plugin.routingInit()
-        if rinit:
-            log.error('config{} is deprecated')
-            log.info('calling routing initializer %s from: %s' % (str(rinit), plugin.pluginId()))
-            rinit(map)
+        #rinit = plugin.routingInit()
+        #if rinit:
+        #    log.error('config{} is deprecated')
+        #    log.info('calling routing initializer %s from: %s' % (str(rinit), plugin.pluginId()))
+        #    rinit(map)
     log.info('COMPLETED ROUTING INITIALIZATION STAGE')
 
     map.connect('makeFwdTo', '/makeFwdTo', controller = 'Orphie_Main', action = 'makeFwdTo')

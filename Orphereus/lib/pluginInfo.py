@@ -7,23 +7,25 @@ class PluginInfo():
         self.pnamespaceName = ''
         self.pnamespace = False
 
-        self.__pId = pluginId # plugin id
+        self.__pId = pluginId
 
         # plugin config
         if pluginConfig:
             self.config = pluginConfig
 
-            self.__proutingInit = pluginConfig.get('routeinit', False)
+            self.__pName = pluginConfig.get('name', False)
+            self.__pdeps = pluginConfig.get('deps', False)
+
+            self.__pEntryPoints = pluginConfig.get('entryPoints', False)
+
             self.__pfilters = pluginConfig.get('filters', False)
             self.__pGlobalFilters = pluginConfig.get('globfilters', False)
-            self.__pdeps = pluginConfig.get('deps', False)
-            self.__pName = pluginConfig.get('name', False)
-            self.__pEntryPoints = pluginConfig.get('entryPoints', False)
 
             self.__pmenuInit = pluginConfig.get('menuitems', False)
             self.__pmenuTest = pluginConfig.get('menutest', False)
             self.__pmenuItems = {}
 
+            #self.__proutingInit = pluginConfig.get('routeinit', False)
             #self.__prequestHook = pluginConfig.get('basehook', False)
             #self.__pormInit = pluginConfig.get('orminit', False)
             #self.__pDeployHook = pluginConfig.get('deployHook', False)
@@ -54,9 +56,8 @@ class PluginInfo():
     def globalFilters(self):
         return self.__pGlobalFilters
 
-    def routingInit(self):
-        return self.__proutingInit
-
+    #def routingInit(self):
+    #    return self.__proutingInit
     #def requestHook(self):
     #    return self.__prequestHook
     #def ormInit(self):
@@ -88,11 +89,12 @@ class PluginInfo():
     def initORM(self, orm, propDict):
         pass
 
+    def extendORMProperties(self, orm, propDict):
+        pass
+
     def deployCallback(self):
         pass
 
     def beforeRequestCallback(self, baseController):
         pass
 
-    def extendORMProperties(self, orm, propDict):
-        pass

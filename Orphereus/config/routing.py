@@ -69,7 +69,7 @@ def make_map():
     map.connect('banned', '/youAreBanned', controller = 'Orphie_Public', action = 'banned')
     map.connect('ipBanned', '/ipBanned', controller = 'Orphie_Public', action = 'ipBanned')
 
-    map.connect('static', '/static/:page', controller = 'Orphie_Main', action = 'showStatic', page = 'Rules')
+    map.connect('static', '/static/:page', controller = 'Orphie_Main', action = 'showStatic', page = 'rules')
     map.connect('searchBase', '/search/:text', controller = 'Orphie_Main', action = 'search', text = '', page = 0, requirements = dict(page = '\d+'))
     map.connect('search', '/search/:text/page/:page', controller = 'Orphie_Main', action = 'search', requirements = dict(page = '\d+'))
     map.connect('frameMenu', '/frameMenu', controller = 'Orphie_Main', action = 'frameMenu')

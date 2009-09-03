@@ -14,6 +14,7 @@
             %endif
             %if not c.userInst.Anonymous:
             <div><a href="${h.url_for('boardBase', board='@')}" title="/@/" target="board">${_('Related threads')}</a></div>
+            <div><a href="${h.url_for('boardBase', board='*')}" title="/*/" target="board">${_('My threads')}</a></div>
             %endif
             <div><a href="${h.url_for('boardBase', board='!')}" title="/!/" target="board">${_('Statistics')}</a></div>
         </td>
@@ -23,7 +24,7 @@
 
 %if c.boardlist:
 %if g.OPT.spiderTrap:
-<span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap2')}">.</a></span>
+<span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap2', confirm=c.userInst.secid())}">.</a></span>
 %endif
 %for section in c.boardlist:
     <table class="category" width="100%" border="0" cellspacing="0" cellpadding="0">

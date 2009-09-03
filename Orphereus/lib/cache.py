@@ -95,7 +95,7 @@ else:
         '''Fake class with stub implementation of all methods.
         It is used when memcache package is unavaliable.''' 
         valid = False
-        __init__ = set = get = delete = set_multi = set_sqla = get_sqla =\
+        __init__ = set = get = delete = set_multi = set_sqla = get_sqla = disconnect_all = set_servers =\
              lambda *args, **kwargs: None
         get_multi = lambda *args, **kwargs: {}
         setdefaultEx = setdefault_sqlaEx =\

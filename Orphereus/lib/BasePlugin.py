@@ -16,8 +16,6 @@ class BasePlugin():
             self.__pName = pluginConfig.get('name', False)
             self.__pdeps = pluginConfig.get('deps', False)
 
-            self.__pEntryPoints = pluginConfig.get('entryPoints', False)
-
             self.__pfilters = pluginConfig.get('filters', False)
             self.__pGlobalFilters = pluginConfig.get('globfilters', False)
 
@@ -40,9 +38,6 @@ class BasePlugin():
     def deps(self):
         return self.__pdeps
 
-    def entryPoints(self):
-        return self.__pEntryPoints
-
     def filters(self):
         return self.__pfilters
 
@@ -50,6 +45,9 @@ class BasePlugin():
         return self.__pGlobalFilters
 
     # new methods
+    def entryPointsList(self):
+        return []
+
     def initRoutes(self, map):
         pass
 

@@ -429,7 +429,7 @@ class Globals(object):
 
         log.info('COMPLETED PLUGINS CONNECTION STAGE')
 
-    def getmenuItems(self, menuId):
+    def getMenuItems(self, menuId):
         def itemsscmp(a, b):
             return cmp(a.weight, b.weight)
         id = menuId + get_lang()[0]
@@ -439,7 +439,6 @@ class Globals(object):
             uniqueIds = []
             menuProviders = self.implementationsOf(AbstractMenuProvider)
             for plugin in menuProviders:
-                log.error(plugin.pluginId())
                 items = plugin.menuItemsFor(menuId)
                 log.error(items)
                 if items:

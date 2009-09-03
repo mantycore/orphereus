@@ -215,7 +215,7 @@ class OrphieBaseController(BaseController):
 
         for menuName in self.requestedMenus:
             menu = []
-            self.buildMenu(False, 0, g.getmenuItems(menuName), menu)
+            self.buildMenu(False, 0, g.getMenuItems(menuName), menu)
             if menu:
                 self.builtMenus[menuName] = menu
         c.builtMenus = self.builtMenus

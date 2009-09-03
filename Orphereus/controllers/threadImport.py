@@ -16,13 +16,15 @@ from Orphereus.model.Tag import Tag
 class ThreadImportPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Thread import tool'),
-                  'entryPoints' : [('import', "ConsoleImport"), ],
                  }
         BasePlugin.__init__(self, 'threadimport', config)
 
     # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('hsImportThread', '/holySynod/import', controller = 'threadImport', action = 'importThread')
+
+    def entryPointsList(self):
+        return [('import', "ConsoleImport"), ]
 
     # Implementing AbstractMenuProvider
     def menuItems(self, menuId):

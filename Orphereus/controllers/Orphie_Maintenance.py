@@ -541,8 +541,6 @@ class MaintenanceCommand(command.Command):
 class MaintenancePlugin(BasePlugin, AbstractPostingHook, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Maintenance'),
-                 'entryPoints' : [('maintenance', "MaintenanceCommand"),
-                                 ],
                  }
         BasePlugin.__init__(self, 'maintenance', config)
 
@@ -556,6 +554,9 @@ class MaintenancePlugin(BasePlugin, AbstractPostingHook, AbstractMenuProvider):
         if thread and thread.id == 0:
             return _("Posting into service thread #0 is prohibited")
         return None
+
+    def entryPointsList(self):
+        return [('maintenance', "MaintenanceCommand"), ]
 
     # Implementing AbstractMenuProvider
     def MenuItemIsVisible(self, id, baseController):

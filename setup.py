@@ -34,11 +34,9 @@ print ""
 
 eplist = ""
 for plugin in globj.plugins:
-    if plugin.entryPoints():
-        for ep in plugin.entryPoints():
-            eplist += "%s = %s:%s\n" % (ep[0], plugin.namespaceName(), ep[1])
+    for ep in plugin.entryPointsList():
+        eplist += "%s = %s:%s\n" % (ep[0], plugin.namespaceName(), ep[1])
 
-#    mycommand = Orphereus.commands.updateArchive:UpdateArchive
 entry_points = """
     [paste.app_factory]
     main = Orphereus.config.middleware:make_app
@@ -60,7 +58,7 @@ setup(
     description = 'Powerful imageboard engine',
     author = 'Anoma Chan',
     license = 'GPL 2',
-    author_email='anoma.team@gmail.com',
+    author_email = 'anoma.team@gmail.com',
     url = 'http://orphereus.anoma.ch',
     install_requires = ["Pylons>=0.9.7", "sqlalchemy>=0.5.1",
                       "mutagen>=1.15", "pil>=1.1.6",
@@ -75,6 +73,6 @@ setup(
             ('templates/**.mako', 'mako', None),
             ('templates/**.js', 'mako', None),
             ('public/**', 'ignore', None)]},
-    
+
     entry_points = entry_points,
 )

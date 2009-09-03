@@ -284,7 +284,7 @@ class OrphiePublicController(OrphieBaseController):
 
     def oekakiSave(self, environ, start_response, url, tempid):
         start_response('200 OK', [('Content-Type', 'text/plain'), ('Content-Length', '2')])
-        oekaki = Oekaki.get(tempid) #meta.Session.query(Oekaki).filter(Oekaki.tempid==tempid).first()
+        oekaki = Oekaki.get(tempid)
         cl = int(request.environ['CONTENT_LENGTH'])
 
         if oekaki and cl:

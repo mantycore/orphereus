@@ -84,9 +84,6 @@ def tagHandler(tag, userInst):
 class UserTagsPlugin(PluginInfo, AbstractPostingHook, AbstractProfileExtension):
     def __init__(self):
         config = {'name' : N_('Personal tags module'),
-
-                 #'basehook' : requestHook, # hook for base controller constructor
-                 #'routeinit' : routingInit, # routing initializer
                  #'orminit' : ormInit, # ORM initializer
                  #'ormPropChanger' : ormPropChanger,
 

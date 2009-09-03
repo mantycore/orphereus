@@ -39,6 +39,7 @@ from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 from Orphereus.lib.pluginInfo import PluginInfo
 from Orphereus.lib.menuItem import MenuItem
+from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 
 from wakabaparse import WakabaParser, fixHtml
 
@@ -99,7 +100,7 @@ class MaintenanceWorker(object):
                     toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
                     user.options.bantime = 0
                     user.options.banreason = u''
-        batchProcess(User.query(), usersSearch)
+        batchProcess(User.query, usersSearch)
         mtnLog.append(LogElement('Task', 'Done'))
 
         mtnLog.append(LogElement('Task', 'Removing IP bans...'))
@@ -114,7 +115,7 @@ class MaintenanceWorker(object):
                     unbanMessage = (u"Automatic unban: IP <b>%s</b> (Reason was %s)") % (h.intToIp(ban.ip), ban.reason)
                     mtnLog.append(LogElement('Info', unbanMessage))
                     toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
-        batchProcess(Ban.query.filter(Ban.enabled==True), bansSearch)
+        batchProcess(Ban.query.filter(Ban.enabled == True), bansSearch)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -128,7 +129,7 @@ class MaintenanceWorker(object):
                 if oekaki.timeStamp < currentTime - datetime.timedelta(days = 1):
                     mtnLog.append(LogElement('Info', "Deleted oekaki with <b>#%d</b>" % (oekaki.id)))
                     meta.Session.delete(oekaki)
-        batchProcess(Oekaki.query(), searchRoutine)
+        batchProcess(Oekaki.query, searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -144,7 +145,7 @@ class MaintenanceWorker(object):
                     toLog(LOG_EVENT_MTN_DELINVITE, msg1)
                     mtnLog.append(LogElement('Info', msg1 + msg2))
                     meta.Session.delete(invite)
-        batchProcess(Invite.query(), searchRoutine)
+        batchProcess(Invite.query, searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -162,14 +163,14 @@ class MaintenanceWorker(object):
                             meta.Session.delete(captcha)
                             mtnLog.append(LogElement('Info', "Deleted captcha <b>#%d</b>" % (captcha.id)))
                     meta.Session.delete(tracker)
-        batchProcess(LoginTracker.query(), searchRoutine)
+        batchProcess(LoginTracker.query, searchRoutine)
 
         def captchaSearch(captchas):
             for ct in captchas:
                 if ct.timestamp < currentTime - datetime.timedelta(days = 1):
                     mtnLog.append(LogElement('Info', "Deleted old captcha <b>#%d</b>" % (ct.id)))
                     meta.Session.delete(ct)
-        batchProcess(Captcha.query(), captchaSearch)
+        batchProcess(Captcha.query, captchaSearch)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -188,7 +189,7 @@ class MaintenanceWorker(object):
                     mtnLog.append(LogElement('Warning', msg))
                     toLog(LOG_EVENT_INTEGR, msg)
                     meta.Session.delete(opt)
-        batchProcess(UserOptions.query(), userOptsSearch)
+        batchProcess(UserOptions.query, userOptsSearch)
 
         mtnLog.append(LogElement('Task', 'User filters...'))
         def userFiltersSearch(userFl):
@@ -199,7 +200,7 @@ class MaintenanceWorker(object):
                     mtnLog.append(LogElement('Warning', msg))
                     toLog(LOG_EVENT_INTEGR, msg)
                     meta.Session.delete(fl)
-        batchProcess(UserFilters.query(), userFiltersSearch)
+        batchProcess(UserFilters.query, userFiltersSearch)
 
         mtnLog.append(LogElement('Task', 'Tag options...'))
         def tagOptsSearch(tagOpts):
@@ -210,7 +211,7 @@ class MaintenanceWorker(object):
                     mtnLog.append(LogElement('Warning', msg))
                     toLog(LOG_EVENT_INTEGR, msg)
                     meta.Session.delete(opt)
-        batchProcess(TagOptions.query(), tagOptsSearch)
+        batchProcess(TagOptions.query, tagOptsSearch)
 
         mtnLog.append(LogElement('Task', 'Pictures...'))
         def picturesSearch(pictures):
@@ -221,7 +222,7 @@ class MaintenanceWorker(object):
                     mtnLog.append(LogElement('Warning', msg))
                     toLog(LOG_EVENT_INTEGR, msg)
                     meta.Session.delete(pic)
-        batchProcess(Picture.query(), picturesSearch)
+        batchProcess(Picture.query, picturesSearch)
 
         meta.Session.commit()
         mtnLog.append(LogElement('Task', 'Orpaned database entries check completed'))
@@ -360,7 +361,7 @@ class MaintenanceWorker(object):
                     toLog(LOG_EVENT_INTEGR_RC, msg)
                     tag.replyCount = replyCount
 
-        batchProcess(Tag.query(), searchRoutine)
+        batchProcess(Tag.query, searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -376,7 +377,7 @@ class MaintenanceWorker(object):
                         mtnLog.append(LogElement('Info', "%d autobanned" % user.uidNumber))
                 else:
                     mtnLog.append(LogElement('Warning', "User %d haven't options object" % user.uidNumber))
-        batchProcess(User.query(), searchRoutine)
+        batchProcess(User.query, searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -390,7 +391,7 @@ class MaintenanceWorker(object):
                     if threadCount == 0 and not (tag.options and tag.options.service):
                         mtnLog.append(LogElement('Info', "Removed tag %s" % tag.tag))
                         meta.Session.delete(tag)
-        batchProcess(Tag.query(), searchRoutine)
+        batchProcess(Tag.query, searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -500,7 +501,7 @@ class MaintenanceCommand(command.Command):
         conf = appconfig('config:' + filename, relative_to = relative_to)
         load_environment(conf.global_conf, conf.local_conf, False)
         g._push_object(meta.globj) #zomg teh h4x
-        
+
     def command(self):
         devIni = self.args[0]
         self.setup_config(self.options.config, self.options.path)
@@ -525,7 +526,7 @@ class MaintenanceCommand(command.Command):
                     try:
                         log += getattr(worker, action)()
                     except Exception, e:
-                        errorMsg = "Exception occured in %s: %s" % (action, str(e))
+                        errorMsg = u"Exception occured in %s: %s" % (action, str(e))
                         if printMessages:
                             print errorMsg
                         toLog(LOG_EVENT_MTN_ERROR, errorMsg)
@@ -535,10 +536,6 @@ class MaintenanceCommand(command.Command):
         elif printMessages:
             print "No work to do"
         return log
-
-def routingInit(map):
-    #map.connect('hsMaintenance', '/holySynod/service/:actid/:secid', controller = 'Orphie_Maintenance', actid = '', secid = '', action = 'mtnAction')
-    map.connect('hsMaintenance', '/holySynod/service/:actid', controller = 'Orphie_Maintenance', actid = '', action = 'mtnAction')
 
 def menuTest(id, baseController):
     user = baseController.userInst
@@ -554,26 +551,32 @@ def menuItems(menuId):
                 )
     return menu
 
-def restrictor(controller, request, **kwargs):
-    thread = kwargs.get("thread", None)
-    if thread and thread.id == 0:
-        return _("Posting into service thread #0 is prohibited")
-    return None
+class MaintenancePlugin(PluginInfo, AbstractPostingHook):
+    def __init__(self):
+        config = {'name' : N_('Maintenance'),
+                 'entryPoints' : [('maintenance', "MaintenanceCommand"),
+                                 ],
+                 'menutest' : menuTest,
+                 'menuitems' : menuItems,
+                 }
+        PluginInfo.__init__(self, 'maintenance', config)
+
+    # Implementing PluginInfo
+    def initRoutes(self, map):
+        map.connect('hsMaintenance', '/holySynod/service/:actid', controller = 'Orphie_Maintenance', actid = '', action = 'mtnAction')
+        #map.connect('hsMaintenance', '/holySynod/service/:actid/:secid', controller = 'Orphie_Maintenance', actid = '', secid = '', action = 'mtnAction')
+
+    def beforePostCallback(self, controller, request, **kwargs):
+        thread = kwargs.get("thread", None)
+        if thread and thread.id == 0:
+            return _("Posting into service thread #0 is prohibited")
+        return None
 
 def pluginInit(globj = None):
     if globj:
         pass
 
-    config = {'name' : N_('Maintenance'),
-             'entryPoints' : [('maintenance', "MaintenanceCommand"),
-                             ],
-             'routeinit' : routingInit,
-             'menutest' : menuTest,
-             'menuitems' : menuItems,
-             'postingRestrictor' : restrictor,
-             }
-
-    return PluginInfo('maintenance', config)
+    return MaintenancePlugin()
 
 class OrphieMaintenanceController(OrphieBaseController):
     def __before__(self):

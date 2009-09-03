@@ -686,7 +686,6 @@ class OrphieMainController(OrphieBaseController):
                     tagstr, afterPostCallbackParams[plugins[num].pluginId()] = handler(tagstr, self.userInst, textFilter)
             """
             for hook in postingHooks:
-                log.error(hook.pluginId())
                 tagstr, afterPostCallbackParams[hook.pluginId()] = hook.tagCreationHandler(tagstr, self.userInst, textFilter)
 
             tags, createdTags, dummy = Tag.stringToTagLists(tagstr, g.OPT.allowTagCreation)

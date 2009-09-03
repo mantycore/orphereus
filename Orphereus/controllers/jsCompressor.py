@@ -12,43 +12,57 @@ from Orphereus.model import *
 import logging
 log = logging.getLogger(__name__)
 
-def generateFiles():
-    for template in g.OPT.templates:
-        for lang in g.OPT.languages:
-            lid = makeLangValid(lang)
-            if not lid:
-                lid = g.OPT.defaultLang
-            set_lang(lid)
-            path = "%s_%s.js" % (template, lang)
-            log.info("Generating '%s' as '%s'..." % (path, lid))
-            newJS = ""
-            for js in g.OPT.jsFiles.get(template, []):
-                newJS += render('/%s/%s' % (template, js)) + "\n"
-            uncompressedLen = len(newJS)
-            newJS = jsmin(newJS)
-            basePath = os.path.join(g.OPT.staticPath, "js")
-            path = os.path.join(basePath, path)
-            f = open(path, 'w')
-            f.write(newJS.encode('utf-8'))
-            f.close()
-            newLen = len(newJS)
-            log.info("Done. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))
+class JSCompressorPlugin(PluginInfo):
+    def __init__(self):
+        config = {'name' : N_('Javascript compression tool'),
+                  'menuitems' : menuItems,
+                  'menutest' : menuTest
+                 }
+        PluginInfo.__init__(self, 'jsCompressor', config)
 
-def requestHook(baseController):
-    if g.firstRequest and not g.OPT.disableJSRegeneration:
-        oldLang = get_lang()
-        log.info('Generating js files...')
-        generateFiles()
-        set_lang(oldLang)
+    # Implementing PluginInfo
+    def initRoutes(self, map):
+        map.connect('hsRebuildJs', '/holySynod/rebuildJs', controller = 'jsCompressor', action = 'rebuild')
 
-    if baseController.userInst.isValid():
-        lang = baseController.userInst.lang
-        template = baseController.userInst.template
-        if not lang:
-            lang = g.OPT.languages[0]
-        if not template:
-            template = g.OPT.templates[0]
-        c.jsFiles = ["%s_%s.js" % (template, lang)]
+    def beforeRequestCallback(self, baseController):
+        if g.firstRequest and not g.OPT.disableJSRegeneration:
+            oldLang = get_lang()
+            log.info('Generating js files...')
+            self.generateFiles()
+            set_lang(oldLang)
+
+        if baseController.userInst.isValid():
+            lang = baseController.userInst.lang
+            template = baseController.userInst.template
+            if not lang:
+                lang = g.OPT.languages[0]
+            if not template:
+                template = g.OPT.templates[0]
+            c.jsFiles = ["%s_%s.js" % (template, lang)]
+
+    @staticmethod
+    def generateFiles():
+        for template in g.OPT.templates:
+            for lang in g.OPT.languages:
+                lid = makeLangValid(lang)
+                if not lid:
+                    lid = g.OPT.defaultLang
+                set_lang(lid)
+                path = "%s_%s.js" % (template, lang)
+                log.info("Generating '%s' as '%s'..." % (path, lid))
+                newJS = ""
+                for js in g.OPT.jsFiles.get(template, []):
+                    newJS += render('/%s/%s' % (template, js)) + "\n"
+                uncompressedLen = len(newJS)
+                newJS = jsmin(newJS)
+                basePath = os.path.join(g.OPT.staticPath, "js")
+                path = os.path.join(basePath, path)
+                f = open(path, 'w')
+                f.write(newJS.encode('utf-8'))
+                f.close()
+                newLen = len(newJS)
+                log.info("Done. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))
+
 
 def menuItems(menuId):
     #          id        link       name                weight   parent
@@ -63,9 +77,6 @@ def menuTest(id, baseController):
     if id == 'id_RebuildJs':
         return user.canRunMaintenance()
 
-def routingInit(map):
-    map.connect('hsRebuildJs', '/holySynod/rebuildJs', controller = 'jsCompressor', action = 'rebuild')
-
 def pluginInit(g = None):
     if g:
         booleanValues = [('jsCompressor',
@@ -77,14 +88,7 @@ def pluginInit(g = None):
         if not g.OPT.eggSetupMode:
             g.OPT.registerCfgValues(booleanValues, CFG_BOOL)
 
-    config = {'name' : N_('Javascript compression tool'),
-              'routeinit' : routingInit,
-              'basehook' : requestHook,
-              'menuitems' : menuItems,
-              'menutest' : menuTest
-             }
-
-    return PluginInfo('jsCompressor', config)
+    return JSCompressorPlugin()
 
 from OrphieBaseController import *
 
@@ -104,7 +108,7 @@ class JscompressorController(OrphieBaseController):
         if not checkAdminIP():
             return redirect_to('boardBase')
 
-        generateFiles()
+        JSCompressorPlugin.generateFiles()
 
         c.boardName = _('Rebuild JavaScrtipt')
         c.message = _("Rebuild completed")

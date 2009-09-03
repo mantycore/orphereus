@@ -7,7 +7,7 @@ from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST, engineVersion
 from Orphereus.model import *
 
-import datetime 
+import datetime
 import logging
 log = logging.getLogger(__name__)
 
@@ -22,18 +22,22 @@ def menuTest(id, baseController):
     if id == 'id_ExtSettings':
         return user.canChangeSettings()
 
-def routingInit(map):
-    map.connect('hsCfgManage', '/holySynod/configuration/', controller = 'setsmgr', action = 'show')
-    map.connect('hsCfgReset', '/holySynod/configuration/reset/', controller = 'setsmgr', action = 'reset')
-    map.connect('hsCfgClearOrphaned', '/holySynod/configuration/cleanOrphaned/', controller = 'setsmgr', action = 'deleteOrphaned')
+class SettingsManagerPlugin(PluginInfo):
+    def __init__(self):
+        config = {'name' : N_('Engine runtime settings editing tool'),
+                  'menuitems' : menuItems,
+                  'menutest' : menuTest
+                 }
+        PluginInfo.__init__(self, 'setsmgr', config)
+
+    # Implementing PluginInfo
+    def initRoutes(self, map):
+        map.connect('hsCfgManage', '/holySynod/configuration/', controller = 'setsmgr', action = 'show')
+        map.connect('hsCfgReset', '/holySynod/configuration/reset/', controller = 'setsmgr', action = 'reset')
+        map.connect('hsCfgClearOrphaned', '/holySynod/configuration/cleanOrphaned/', controller = 'setsmgr', action = 'deleteOrphaned')
 
 def pluginInit(g = None):
-    config = {'name' : N_('Engine runtime settings editing tool'),
-              'routeinit' : routingInit,
-              'menuitems' : menuItems,
-              'menutest' : menuTest 
-             }
-    return PluginInfo('setsmgr', config)
+    return SettingsManagerPlugin()
 
 from OrphieBaseController import *
 
@@ -42,16 +46,16 @@ class SetsmgrController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
             self.requestForMenu("managementMenu")
-    
+
     def __init__(self):
         self.settings = self.getSettingsDict(Setting.getAll())
-            
-    def getSettingsDict(self,settings):
+
+    def getSettingsDict(self, settings):
         return dict([(setting.name, setting.value) for setting in settings])
-    
+
     def cutSectionNames(self, sectDict):
         return dict([(key.split('.')[1], val) for key, val in sectDict.iteritems()])
-        
+
     def getSectionNames(self):
         keys = sorted(self.settings.keys())
         keys = map(lambda str: str.split('.')[0], keys)
@@ -69,7 +73,7 @@ class SetsmgrController(OrphieBaseController):
 
         c.boardName = _('Engine configuration')
         c.currentItemId = 'id_ExtSettings'
-        
+
     def reset(self):
         self.initChecks()
         Setting.clearAll()
@@ -78,22 +82,22 @@ class SetsmgrController(OrphieBaseController):
         c.message = N_('Engine settings were set to default values.')
         c.returnUrl = h.url_for('hsCfgManage')
         return self.render('managementMessage')
-    
+
     def deleteOrphaned(self):
         self.initChecks()
-        settingsNamesDict = dict((s.split('.')[1],s) for s in self.settings.keys())
-        orphanedSettings = filter(lambda key: g.OPT.getValueType(key)==None, settingsNamesDict.keys())
+        settingsNamesDict = dict((s.split('.')[1], s) for s in self.settings.keys())
+        orphanedSettings = filter(lambda key: g.OPT.getValueType(key) == None, settingsNamesDict.keys())
         map(lambda s: Setting.getSetting(settingsNamesDict[s]).delete(), orphanedSettings)
-        c.message = N_('Deleted %s orphaned settings.' %len(orphanedSettings))
+        c.message = N_('Deleted %s orphaned settings.' % len(orphanedSettings))
         c.returnUrl = h.url_for('hsCfgManage')
         return self.render('managementMessage')
-    
+
     def show(self):
         self.initChecks()
         if request.POST.get('update', False):
             if not self.userInst.canChangeSettings():
                 return self.error(_("No way! You aren't holy enough!"))
-            
+
             for s in request.POST:
                 if s in self.settings.keys():
                     shortName = s.split('.')[1]
@@ -113,7 +117,7 @@ class SetsmgrController(OrphieBaseController):
                         g.OPT.autoSetValue(shortName, val)
             upd_globals()
             c.message = _('Settings were updated')
-        
+
         c.cfg = {}
         c.ver = engineVersion
         c.now = datetime.datetime.now()

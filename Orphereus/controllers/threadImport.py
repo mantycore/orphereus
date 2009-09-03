@@ -23,21 +23,21 @@ def menuTest(id, baseController):
     if id == 'id_ImportThread':
         return user.canManageBoards()
 
-def routingInit(map):
-    map.connect('hsImportThread', '/holySynod/import', controller = 'threadImport', action = 'importThread')
+class ThreadImportPlugin(PluginInfo):
+    def __init__(self):
+        config = {'name' : N_('Thread import tool'),
+                  'menuitems' : menuItems,
+                  'menutest' : menuTest,
+                  'entryPoints' : [('import', "ConsoleImport"), ],
+                 }
+        PluginInfo.__init__(self, 'threadimport', config)
+
+    # Implementing PluginInfo
+    def initRoutes(self, map):
+        map.connect('hsImportThread', '/holySynod/import', controller = 'threadImport', action = 'importThread')
 
 def pluginInit(g = None):
-    if g:
-        pass
-        
-    config = {'name' : N_('Thread import tool'),
-              'routeinit' : routingInit,
-              'menuitems' : menuItems,
-              'menutest' : menuTest, 
-              'entryPoints' : [('import', "ConsoleImport"),],
-             }
-
-    return PluginInfo('threadimport', config)
+    return ThreadImportPlugin()
 
 from OrphieBaseController import *
 
@@ -52,13 +52,13 @@ class ImportWorker():
                 localPostLink = h.url_for('thread', **h.postKwargs(localPost.parentid, localPost.id))
                 log.debug(localPostLink)
                 if self.saveIds:
-                    urlArgs = (localPostLink,localPostId,postId)
+                    urlArgs = (localPostLink, localPostId, postId)
                 else:
-                    urlArgs = (localPostLink,localPostId,localPostId)
-                return '<a href="%s" onclick="highlight(%s)">&gt;&gt;%s</a>' %urlArgs
+                    urlArgs = (localPostLink, localPostId, localPostId)
+                return '<a href="%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % urlArgs
         refRe = re.compile('<a href=[^>]+>&gt\;&gt\;(\d+)</a>')
         return refRe.sub(replacer, text)
-    
+
     def postToPInfo(self, post, tagstr, parent = None):
         pInfo = empty()
         pInfo.message = self.fixReferences(unicode(post.text))
@@ -68,7 +68,7 @@ class ImportWorker():
             pInfo.date = post.date
         if self.saveIds:
             pInfo.secondaryIndex = post.id
-        pInfo.postSage = (post.link=='mailto:sage')
+        pInfo.postSage = (post.link == 'mailto:sage')
         pInfo.messageShort = pInfo.messageRaw = pInfo.messageInfo = pInfo.removemd5 = u''
         pInfo.ip = pInfo.uidNumber = 0
         pInfo.spoiler = False
@@ -88,14 +88,14 @@ class ImportWorker():
                 log.error(errorMessage)
                 return None
         pInfo.picInfo = picInfo
-        pInfo.existentPic = existentPic  
+        pInfo.existentPic = existentPic
         return pInfo
-    
+
     def savePost(self, pInfo):
         newPost = OrphiePost.create(pInfo)
         self.postMappings[pInfo.savedId] = newPost.id
         return newPost
-    
+
     def importProcess(self):
         self.reader.fsClass = FieldStorageLike
         startIndex = 1
@@ -119,11 +119,11 @@ class ImportWorker():
             return
         try:
             self.reader = ThreadReader.createFromPostData(file)
-        except: 
+        except:
             c.message = N_('This file is not a thread archive.')
             return
         return self.importProcess()
-    
+
     def fileImport(self, filename, saveDates, saveIds, tagline, target):
         self.tags = tagline
         self.saveDates = saveDates
@@ -137,7 +137,7 @@ class ThreadimportController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
             self.requestForMenu("managementMenu")
-            
+
     def initChecks(self):
         if not self.currentUserIsAuthorized():
             return redirect_to('boardBase')
@@ -147,7 +147,7 @@ class ThreadimportController(OrphieBaseController):
         c.userInst = self.userInst
         if not checkAdminIP():
             return redirect_to('boardBase')
-        
+
     def importThread(self):
         self.initChecks()
         c.boardName = _('Thread import')
@@ -157,13 +157,13 @@ class ThreadimportController(OrphieBaseController):
             importer = ImportWorker()
             resPost = importer.webImport(file)
             if resPost:
-                c.message = N_('Posts were imported successfully into <a href="%s" target="_blank">this thread<a>.' 
-                               %(h.url_for('thread', post=resPost.id)))
+                c.message = N_('Posts were imported successfully into <a href="%s" target="_blank">this thread<a>.'
+                               % (h.url_for('thread', post = resPost.id)))
         else:
             c.message = N_('Please, select a file.')
 
         return self.render('importThread')
-    
+
 from paste.script import command
 from Orphereus.config.environment import load_environment
 from paste.deploy import appconfig
@@ -197,7 +197,7 @@ class ConsoleImport(command.Command):
                       action = 'store_true',
                       dest = 'noDates',
                       help = 'don\'t restore original post timestamps')
-    
+
     parser.add_option('--config',
                       action = 'store',
                       dest = 'config',
@@ -206,7 +206,7 @@ class ConsoleImport(command.Command):
                       action = 'store',
                       dest = 'path',
                       help = 'working dir (e.g. ".")')
-    
+
     @staticmethod
     def setup_config(filename, relative_to):
         if not relative_to or not os.path.exists(relative_to):
@@ -218,7 +218,7 @@ class ConsoleImport(command.Command):
 
     def command(self):
         self.setup_config(self.options.config, self.options.path)
-        
+
         name = self.args[0]
         tags = u'import'
         thread = 0
@@ -232,6 +232,6 @@ class ConsoleImport(command.Command):
         try:
             opPost = importer.fileImport(name, not(self.options.noDates),
                                          not(self.options.noIds), tags, thread)
-            print "Imported into thread #%s" %opPost.id
+            print "Imported into thread #%s" % opPost.id
         except:
             print "An error occured while trying to import thread."

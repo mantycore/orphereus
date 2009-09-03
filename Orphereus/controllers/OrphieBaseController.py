@@ -90,11 +90,12 @@ class OrphieBaseController(BaseController):
 
         for plugin in g.plugins:
             plugin.beforeRequestCallback(self)
-
+        """
             hook = plugin.requestHook()
             if hook:
                 log.error('config{} is deprecated')
                 hook(self)
+        """
 
         if g.firstRequest:
             g.firstRequest = False

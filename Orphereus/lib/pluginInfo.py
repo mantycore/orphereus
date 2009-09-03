@@ -16,16 +16,17 @@ class PluginInfo():
             self.__proutingInit = pluginConfig.get('routeinit', False)
             self.__pfilters = pluginConfig.get('filters', False)
             self.__pGlobalFilters = pluginConfig.get('globfilters', False)
-            self.__prequestHook = pluginConfig.get('basehook', False)
-            #self.__pormInit = pluginConfig.get('orminit', False)
             self.__pdeps = pluginConfig.get('deps', False)
             self.__pName = pluginConfig.get('name', False)
-            #self.__pDeployHook = pluginConfig.get('deployHook', False)
             self.__pEntryPoints = pluginConfig.get('entryPoints', False)
 
             self.__pmenuInit = pluginConfig.get('menuitems', False)
             self.__pmenuTest = pluginConfig.get('menutest', False)
-            self.__pmenuItems = {} #pluginConfig.get('menu', False)
+            self.__pmenuItems = {}
+
+            #self.__prequestHook = pluginConfig.get('basehook', False)
+            #self.__pormInit = pluginConfig.get('orminit', False)
+            #self.__pDeployHook = pluginConfig.get('deployHook', False)
 
     def pluginId(self):
         return self.__pId
@@ -39,6 +40,13 @@ class PluginInfo():
     def namespace(self):
         return self.pnamespace
 
+    #TODO: temporary ?
+    def deps(self):
+        return self.__pdeps
+
+    def pluginName(self):
+        return self.__pName
+
     # HOOKS BEGIN
     def filters(self):
         return self.__pfilters
@@ -49,12 +57,10 @@ class PluginInfo():
     def routingInit(self):
         return self.__proutingInit
 
+    #def requestHook(self):
+    #    return self.__prequestHook
     #def ormInit(self):
     #    return self.__pormInit
-
-    def requestHook(self):
-        return self.__prequestHook
-
     #def deployHook(self):
     #    return self.__pDeployHook
     # HOOKS END
@@ -71,12 +77,6 @@ class PluginInfo():
 
     def menuTest(self):
         return self.__pmenuTest
-
-    def deps(self):
-        return self.__pdeps
-
-    def pluginName(self):
-        return self.__pName
 
     def entryPoints(self):
         return self.__pEntryPoints

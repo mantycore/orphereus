@@ -43,27 +43,6 @@ from Orphereus.lib.userBan import UserBan
 
 log = logging.getLogger(__name__)
 
-def routingInit(map):
-    map.connect('holySynod', '/holySynod', controller = 'Orphie_Admin', action = 'index')
-    map.connect('hsViewLogBase', '/holySynod/viewLog', controller = 'Orphie_Admin', action = 'viewLog', page = 0)
-    map.connect('hsViewLog', '/holySynod/viewLog/page/:page', controller = 'Orphie_Admin', action = 'viewLog', requirements = dict(page = '\d+'))
-    map.connect('hsInvite', '/holySynod/makeInvite', controller = 'Orphie_Admin', action = 'makeInvite')
-    map.connect('hsMappings', '/holySynod/manageMappings/:act/:id/:tagid', controller = 'Orphie_Admin', action = 'manageMappings', act = 'show', id = 0, tagid = 0, requirements = dict(id = '\d+', tagid = '\d+'))
-    map.connect('hsMergeTags', '/holySynod/mergeTags/:act', controller = 'Orphie_Admin', action = 'mergeTags', act = None)
-    map.connect('hsBans', '/holySynod/manageBans', controller = 'Orphie_Admin', action = 'manageBans')
-    map.connect('hsBanEdit', '/holySynod/manageBans/edit/:id', controller = 'Orphie_Admin', id = 0, action = 'editBan')
-    map.connect('hsExtensions', '/holySynod/manageExtensions', controller = 'Orphie_Admin', action = 'manageExtensions')
-    map.connect('hsExtensionEdit', '/holySynod/manageExtensions/edit/:name', controller = 'Orphie_Admin', name = '', action = 'editExtension')
-    map.connect('hsBoards', '/holySynod/manageBoards', controller = 'Orphie_Admin', action = 'manageBoards')
-    map.connect('hsBoardEdit', '/holySynod/manageBoards/edit/:tag', controller = 'Orphie_Admin', tag = '', action = 'editBoard')
-    map.connect('hsUsers', '/holySynod/manageUsers', controller = 'Orphie_Admin', action = 'manageUsers')
-    map.connect('hsUserEditAttempt', '/holySynod/manageUsers/editAttempt/:pid', controller = 'Orphie_Admin', action = 'editUserAttempt', requirements = dict(pid = '\d+'))
-    map.connect('hsIpBanAttempt', '/holySynod/manageUsers/banAttempt/:pid', controller = 'Orphie_Admin', action = 'ipBanAttempt', requirements = dict(pid = '\d+'))
-    map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/:pid', controller = 'Orphie_Admin', action = 'editUserByPost', requirements = dict(pid = '\d+'))
-    map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller = 'Orphie_Admin', action = 'editUser', requirements = dict(uid = '\d+'))
-    map.connect('hsPin', '/holySynod/pinThread/:act/:id', controller = 'Orphie_Admin', action = 'pinThread', requirements = dict(id = '\d+'))
-    map.connect('hsManageByIp', '/holySynod/manageByIp/:ip/:act', controller = 'Orphie_Admin', action = 'manageByIp', act = 'show', requirements = dict(ip = '\d+'))
-
 def menuTest(id, baseController):
     user = baseController.userInst
     if id == 'id_hsSettings':
@@ -107,6 +86,36 @@ def menuItems(menuId):
 
     return menu
 
+class AdminPanelPlugin(PluginInfo):
+    def __init__(self):
+        config = {'name' : N_('Administration panel'),
+                 'menutest' : menuTest, # returns True if menu item should be visible. If False, all items will be visible
+                 'menuitems' : menuItems, # menu items
+                 }
+        PluginInfo.__init__(self, 'adminpanel', config)
+
+    # Implementing PluginInfo
+    def initRoutes(self, map):
+        map.connect('holySynod', '/holySynod', controller = 'Orphie_Admin', action = 'index')
+        map.connect('hsViewLogBase', '/holySynod/viewLog', controller = 'Orphie_Admin', action = 'viewLog', page = 0)
+        map.connect('hsViewLog', '/holySynod/viewLog/page/:page', controller = 'Orphie_Admin', action = 'viewLog', requirements = dict(page = '\d+'))
+        map.connect('hsInvite', '/holySynod/makeInvite', controller = 'Orphie_Admin', action = 'makeInvite')
+        map.connect('hsMappings', '/holySynod/manageMappings/:act/:id/:tagid', controller = 'Orphie_Admin', action = 'manageMappings', act = 'show', id = 0, tagid = 0, requirements = dict(id = '\d+', tagid = '\d+'))
+        map.connect('hsMergeTags', '/holySynod/mergeTags/:act', controller = 'Orphie_Admin', action = 'mergeTags', act = None)
+        map.connect('hsBans', '/holySynod/manageBans', controller = 'Orphie_Admin', action = 'manageBans')
+        map.connect('hsBanEdit', '/holySynod/manageBans/edit/:id', controller = 'Orphie_Admin', id = 0, action = 'editBan')
+        map.connect('hsExtensions', '/holySynod/manageExtensions', controller = 'Orphie_Admin', action = 'manageExtensions')
+        map.connect('hsExtensionEdit', '/holySynod/manageExtensions/edit/:name', controller = 'Orphie_Admin', name = '', action = 'editExtension')
+        map.connect('hsBoards', '/holySynod/manageBoards', controller = 'Orphie_Admin', action = 'manageBoards')
+        map.connect('hsBoardEdit', '/holySynod/manageBoards/edit/:tag', controller = 'Orphie_Admin', tag = '', action = 'editBoard')
+        map.connect('hsUsers', '/holySynod/manageUsers', controller = 'Orphie_Admin', action = 'manageUsers')
+        map.connect('hsUserEditAttempt', '/holySynod/manageUsers/editAttempt/:pid', controller = 'Orphie_Admin', action = 'editUserAttempt', requirements = dict(pid = '\d+'))
+        map.connect('hsIpBanAttempt', '/holySynod/manageUsers/banAttempt/:pid', controller = 'Orphie_Admin', action = 'ipBanAttempt', requirements = dict(pid = '\d+'))
+        map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/:pid', controller = 'Orphie_Admin', action = 'editUserByPost', requirements = dict(pid = '\d+'))
+        map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller = 'Orphie_Admin', action = 'editUser', requirements = dict(uid = '\d+'))
+        map.connect('hsPin', '/holySynod/pinThread/:act/:id', controller = 'Orphie_Admin', action = 'pinThread', requirements = dict(id = '\d+'))
+        map.connect('hsManageByIp', '/holySynod/manageByIp/:ip/:act', controller = 'Orphie_Admin', action = 'manageByIp', act = 'show', requirements = dict(ip = '\d+'))
+
 def postPanelCallback(thread, post, userInst):
     from webhelpers.html.tags import link_to
     result = ''
@@ -142,13 +151,7 @@ def pluginInit(globj = None):
         h.threadPanelCallbacks.append(threadPanelCallback)
         h.postPanelCallbacks.append(postPanelCallback)
 
-    config = {'name' : N_('Administration panel'),
-             'menutest' : menuTest, # returns True if menu item should be visible. If False, all items will be visible
-             'menuitems' : menuItems, # menu items
-             'routeinit' : routingInit,
-             }
-
-    return PluginInfo('adminpanel', config)
+    return AdminPanelPlugin()
 
 class OrphieAdminController(OrphieBaseController):
     def __before__(self):
@@ -218,7 +221,7 @@ class OrphieAdminController(OrphieBaseController):
         return self.render('manageBans')
 
     def editBan(self, id):
-        
+
         def getPostData():
             try:
                 ip = h.ipToInt(filterText(request.POST.get('ip', 0)))
@@ -231,18 +234,18 @@ class OrphieAdminController(OrphieBaseController):
             date = request.POST.get('date', 0)
             period = request.POST.get('period', 0)
             return ip, mask, type, reason, date, period, enabled
-            
-        
+
+
         if not self.userInst.canManageUsers():
             return self.error(_("No way! You aren't holy enough!"))
 
         c.boardName = _('Editing ban %s') % id
         c.currentItemId = 'id_hsBans'
-        
+
         if c.ShowAttemptForm:
             c.boardName = _('New IP ban')
             return self.render('manageBan')
-        
+
         id = request.POST.get('id', id)
 
         c.exists = True
@@ -279,7 +282,7 @@ class OrphieAdminController(OrphieBaseController):
                 c.ban.id = None
                 c.ban.setData(*getPostData())
                 toLog(LOG_EVENT_BAN_ADD, _('Added ban no. %s. Reason: %s') % (c.ban.id, c.ban.reason))
-                c.message =  _('Added ban no. %s') % c.ban.id
+                c.message = _('Added ban no. %s') % c.ban.id
                 return redirect_to('hsBans')
         return self.render('manageBan')
 
@@ -630,12 +633,12 @@ class OrphieAdminController(OrphieBaseController):
         post = Post.getPost(pid)
         c.pid = pid
         c.ipToBan = post.ip
-        
+
         IpViewReason = request.POST.get('IpViewReason', None)
         c.showAttemptForm = not(bool(IpViewReason))
         if bool(IpViewReason):
             toLog(LOG_EVENT_USER_GETUID, _("Viewed IP for post '%s'. Reason: %s") % (post.id, IpViewReason))
-            
+
         return self.editBan(-1)
 
     def manageByIp(self, ip, act):
@@ -718,7 +721,7 @@ class OrphieAdminController(OrphieBaseController):
                     if getattr(user.options, name) != right:
                         setattr(user.options, name, right)
                         toLog(LOG_EVENT_USER_ACCESS, _('Changed right "%s" for user #%s to %s') % (name, user.uidNumber, right))
-                
+
                 map(setRight, ["canDeleteAllPosts", "canMakeInvite", "canChangeRights", "canChangeSettings",
                                  "canManageBoards", "canManageUsers", "canManageExtensions", "canManageMappings",
                                  "canRunMaintenance"])
@@ -801,7 +804,7 @@ class OrphieAdminController(OrphieBaseController):
                 else:
                     c.message = _("You haven't rights to delete user")
             if g.OPT.memcachedUsers and request.POST:
-                g.mc.delete('u%s' %user.uidNumber)
+                g.mc.delete('u%s' % user.uidNumber)
             return self.render('manageUser')
         else:
             return self.error(_('No such user exists.'))

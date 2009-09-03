@@ -41,7 +41,7 @@ class HomeNewsFeedPlugin(PluginInfo, AbstractHomeExtension, AbstractPostingHook)
                 return _("Posting into board /%s/ is prohibited." % g.OPT.newsTag)
         return None
 
-    def deployCallback(self, ns):
+    def deployCallback(self):
         tagname = config['newsgenerator.newsTag']
         newsTag = None
         try:

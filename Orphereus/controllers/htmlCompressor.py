@@ -10,32 +10,39 @@ import tidy
 import logging
 log = logging.getLogger(__name__)
 
-def htmlCompress(inp):
-    if c.template in g.OPT.disableCompressionList:
+class HTMLCompressorPlugin(BasePlugin):
+    def __init__(self):
+        config = {'name' : N_('Output revalidation and compression tool'),
+                 }
+        BasePlugin.__init__(self, 'htmlCompressor', config)
+
+    # Implementing BasePlugin
+    def globalFiltersList(self):
+        return (self.htmlCompress,)
+
+    # own
+    def htmlCompress(self, inp):
+        if c.template in g.OPT.disableCompressionList:
+            return inp
+        options = dict(output_xhtml = 1,
+                    add_xml_decl = 0,
+                    indent = 0,
+                    tidy_mark = 0,
+                    input_encoding = 'utf8',
+                    output_encoding = 'utf8',
+                    )
+        result = str(tidy.parseString(str(inp), **options))
+        if result:
+            return result
         return inp
-    options = dict(output_xhtml = 1,
-                add_xml_decl = 0,
-                indent = 0,
-                tidy_mark = 0,
-                input_encoding = 'utf8',
-                output_encoding = 'utf8',
-                )
-    result = str(tidy.parseString(str(inp), **options))
-    if result:
-        return result
-    return inp
 
 def pluginInit(g = None):
     if g:
-        listValues = [('htmlCompressor', ('disableCompressionList',)),]
+        listValues = [('htmlCompressor', ('disableCompressionList',)), ]
 
         if not g.OPT.eggSetupMode:
             g.OPT.registerCfgValues(listValues, CFG_LIST)
-            
-    config = {'name' : N_('Output revalidation and compression tool'),
-              'globfilters' : (htmlCompress,),
-             }
 
-    return BasePlugin('htmlCompressor', config)
+    return HTMLCompressorPlugin()
 
 

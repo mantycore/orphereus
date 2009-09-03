@@ -416,12 +416,12 @@ class Globals(object):
         # creating filters stack
         log.info("Populating filter's stack...")
         for plugin in self.plugins:
-            filters = plugin.filters()
+            filters = plugin.filtersList()
             if filters:
                 for filter in filters:
                     self.filterStack.append(filter)
                     log.info('Added text filter %s from %s' % (str(filter), plugin.pluginId()))
-            filters = plugin.globalFilters()
+            filters = plugin.globalFiltersList()
             if filters:
                 for filter in filters:
                     self.globalFilterStack.append(filter)

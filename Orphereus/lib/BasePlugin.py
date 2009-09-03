@@ -16,9 +16,6 @@ class BasePlugin():
             self.__pName = pluginConfig.get('name', False)
             self.__pdeps = pluginConfig.get('deps', False)
 
-            self.__pfilters = pluginConfig.get('filters', False)
-            self.__pGlobalFilters = pluginConfig.get('globfilters', False)
-
     def pluginId(self):
         return self.__pId
 
@@ -37,12 +34,6 @@ class BasePlugin():
 
     def deps(self):
         return self.__pdeps
-
-    def filters(self):
-        return self.__pfilters
-
-    def globalFilters(self):
-        return self.__pGlobalFilters
 
     # new methods
     def entryPointsList(self):
@@ -63,3 +54,10 @@ class BasePlugin():
     def beforeRequestCallback(self, baseController):
         pass
 
+    # global text filter
+    def globalFiltersList(self):
+        return []
+
+    # text filtering helper
+    def filtersList(self):
+        return []

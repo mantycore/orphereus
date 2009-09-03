@@ -235,5 +235,5 @@ class ConsoleImport(command.Command):
             opPost = importer.fileImport(name, not(self.options.noDates),
                                          not(self.options.noIds), tags, thread)
             print "Imported into thread #%s" % opPost.id
-        except:
-            print "An error occured while trying to import thread."
+        except Exception, e:
+            print "An error occured while trying to import thread: %s" % str(e)

@@ -1,3 +1,7 @@
+# This plugin is actually broken.
+# It's incompartible with new API.
+# Should we remove it?
+
 from pylons.i18n import N_
 from string import *
 

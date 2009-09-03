@@ -27,7 +27,7 @@ import sys
 import os
 import re
 
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.cache import *
 from Orphereus.lib.constantValues import engineVersion
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
@@ -345,8 +345,8 @@ class Globals(object):
                     mod = None
                 if mod and ("pluginInit" in dir(mod)):
                     plinf = mod.pluginInit(not eggSetupMode and self or None)
-                    #tmpInfo = PluginInfo('', {})
-                    if (issubclass(type(plinf), PluginInfo) or isinstance(plinf, PluginInfo)): #type(plinf) == type(tmpInfo):
+                    #tmpInfo = BasePlugin('', {})
+                    if (issubclass(type(plinf), BasePlugin) or isinstance(plinf, BasePlugin)): #type(plinf) == type(tmpInfo):
                         plid = plinf.pluginId()
                         log.info("Importing plugin: %s; file= %s" % (plid, file))
 

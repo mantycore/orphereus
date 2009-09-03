@@ -1,7 +1,7 @@
 from pylons.i18n import N_
 from string import *
 
-from Orphereus.lib.pluginInfo import *
+from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.constantValues import CFG_LIST
 from Orphereus.lib.base import *
 
@@ -36,6 +36,6 @@ def pluginInit(g = None):
               'globfilters' : (htmlCompress,),
              }
 
-    return PluginInfo('htmlCompressor', config)
+    return BasePlugin('htmlCompressor', config)
 
 

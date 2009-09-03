@@ -1,6 +1,6 @@
 from pylons.i18n import get_lang
 
-class PluginInfo():
+class BasePlugin():
     def __init__(self, pluginId, pluginConfig = False):
         # internal variables, init in app_globals.py
         self.pfileName = ''
@@ -25,11 +25,6 @@ class PluginInfo():
             self.__pmenuTest = pluginConfig.get('menutest', False)
             self.__pmenuItems = {}
 
-            #self.__proutingInit = pluginConfig.get('routeinit', False)
-            #self.__prequestHook = pluginConfig.get('basehook', False)
-            #self.__pormInit = pluginConfig.get('orminit', False)
-            #self.__pDeployHook = pluginConfig.get('deployHook', False)
-
     def pluginId(self):
         return self.__pId
 
@@ -49,21 +44,15 @@ class PluginInfo():
     def pluginName(self):
         return self.__pName
 
+    def entryPoints(self):
+        return self.__pEntryPoints
+
     # HOOKS BEGIN
     def filters(self):
         return self.__pfilters
 
     def globalFilters(self):
         return self.__pGlobalFilters
-
-    #def routingInit(self):
-    #    return self.__proutingInit
-    #def requestHook(self):
-    #    return self.__prequestHook
-    #def ormInit(self):
-    #    return self.__pormInit
-    #def deployHook(self):
-    #    return self.__pDeployHook
     # HOOKS END
 
     def menuItems(self, menuId):
@@ -78,9 +67,6 @@ class PluginInfo():
 
     def menuTest(self):
         return self.__pmenuTest
-
-    def entryPoints(self):
-        return self.__pEntryPoints
 
     # new methods
     def initRoutes(self, map):

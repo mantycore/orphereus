@@ -1,7 +1,7 @@
 from pylons.i18n import N_
 from string import *
 
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.base import *
@@ -13,12 +13,12 @@ from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 import logging
 log = logging.getLogger(__name__)
 
-class HomeNewsFeedPlugin(PluginInfo, AbstractHomeExtension, AbstractPostingHook):
+class HomeNewsFeedPlugin(BasePlugin, AbstractHomeExtension, AbstractPostingHook):
     def __init__(self):
         config = {'name' : N_('News feed for main page'),
                  }
 
-        PluginInfo.__init__(self, 'newsgenerator', config)
+        BasePlugin.__init__(self, 'newsgenerator', config)
         AbstractHomeExtension.__init__(self, 'newsfeed')
 
     def prepareData(self, controller, container):

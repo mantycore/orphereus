@@ -1,21 +1,21 @@
 from pylons.i18n import N_
 from string import *
 
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.base import *
 from Orphereus.model import *
 
 import logging
 log = logging.getLogger(__name__)
 
-class HTTPInfoPlugin(PluginInfo):
+class HTTPInfoPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('HTTP headers dumper'),
                  }
 
-        PluginInfo.__init__(self, 'httpinfo', config)
+        BasePlugin.__init__(self, 'httpinfo', config)
 
-    # Implementing PluginInfo
+    # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('/uaInfo', controller = 'httpinfo', action = 'uaInfo')
 

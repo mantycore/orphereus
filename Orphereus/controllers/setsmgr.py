@@ -1,7 +1,7 @@
 from pylons.i18n import N_
 from string import *
 
-from Orphereus.lib.pluginInfo import *
+from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.base import *
 from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST, engineVersion
@@ -22,15 +22,15 @@ def menuTest(id, baseController):
     if id == 'id_ExtSettings':
         return user.canChangeSettings()
 
-class SettingsManagerPlugin(PluginInfo):
+class SettingsManagerPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('Engine runtime settings editing tool'),
                   'menuitems' : menuItems,
                   'menutest' : menuTest
                  }
-        PluginInfo.__init__(self, 'setsmgr', config)
+        BasePlugin.__init__(self, 'setsmgr', config)
 
-    # Implementing PluginInfo
+    # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('hsCfgManage', '/holySynod/configuration/', controller = 'setsmgr', action = 'show')
         map.connect('hsCfgReset', '/holySynod/configuration/reset/', controller = 'setsmgr', action = 'reset')

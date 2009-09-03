@@ -305,7 +305,7 @@ class OrphieMainController(OrphieBaseController):
 
         self.forceNoncachedUser()
         c.additionalProfileLinks = []
-        linkGenerators = g.implementationsOf(AbstractProfileExtension) #g.extractFromConfigs('additionalProfileLinks')[0]
+        linkGenerators = g.implementationsOf(AbstractProfileExtension)
         for generator in linkGenerators:
             linkslist = generator.additionalProfileLinks(self.userInst)
             if linkslist:
@@ -678,13 +678,6 @@ class OrphieMainController(OrphieBaseController):
                 thread = thePost
             tags = thread.tags
         else:
-            """
-                handlers, plugins = g.extractFromConfigs('tagCreationHandler')
-                #log.debug(handlers)
-                #log.debug(plugins)
-                for num, handler in enumerate(handlers):
-                    tagstr, afterPostCallbackParams[plugins[num].pluginId()] = handler(tagstr, self.userInst, textFilter)
-            """
             for hook in postingHooks:
                 tagstr, afterPostCallbackParams[hook.pluginId()] = hook.tagCreationHandler(tagstr, self.userInst, textFilter)
 
@@ -730,13 +723,6 @@ class OrphieMainController(OrphieBaseController):
 
         for hook in postingHooks:
             prohibition = hook.beforePostCallback(self, request, thread = thread, tags = tags)
-            if prohibition:
-                return errorHandler(prohibition)
-
-        # code below is deprecated
-        restrictors = g.extractFromConfigs('postingRestrictor')[0]
-        for postingRestrictor in restrictors:
-            prohibition = postingRestrictor(self, request, thread = thread, tags = tags)
             if prohibition:
                 return errorHandler(prohibition)
 
@@ -865,11 +851,6 @@ class OrphieMainController(OrphieBaseController):
         if fileHolder:
             fileHolder.disableDeletion()
 
-        """
-            callbacks, plugins = g.extractFromConfigs('afterPostCallback')
-            for num, cb in enumerate(callbacks):
-                cb(post, self.userInst, afterPostCallbackParams.get(plugins[num].pluginId(), None))
-        """
         for hook in postingHooks:
             hook.afterPostCallback(post, self.userInst, afterPostCallbackParams.get(hook.pluginId(), None))
 

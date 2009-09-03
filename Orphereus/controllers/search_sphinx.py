@@ -2,22 +2,22 @@ from pylons.i18n import N_
 from string import *
 import time
 
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.base import *
 from Orphereus.model import *
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.miscUtils import filterText
-from Orphereus.lib.sphinxapi import *
+from Orphereus.lib.3dparty.sphinxapi import *
 from Orphereus.lib.interfaces.AbstractSearchModule import AbstractSearchModule
 
 import logging
 log = logging.getLogger(__name__)
 
-class SphinxSearchPlugin(PluginInfo, AbstractSearchModule):
+class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
     def __init__(self):
         config = {'name' : N_('Search with Sphinx full-text search engine'),
                  }
-        PluginInfo.__init__(self, 'search_sphinx', config)
+        BasePlugin.__init__(self, 'search_sphinx', config)
 
     # Implementing AbstractSearchModule
     def search(self, filteringClause, text, page, postsPerPage):

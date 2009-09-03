@@ -2,7 +2,7 @@ from pylons.i18n import N_
 from string import *
 from beaker.cache import CacheManager
 
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.base import *
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.model import *
@@ -11,12 +11,12 @@ from Orphereus.lib.interfaces.AbstractHomeExtension import AbstractHomeExtension
 import logging
 log = logging.getLogger(__name__)
 
-class HomeStatisticsPlugin(PluginInfo, AbstractHomeExtension):
+class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
     def __init__(self):
         config = {'name' : N_('Statistics for main page'),
                  }
 
-        PluginInfo.__init__(self, 'statistics', config)
+        BasePlugin.__init__(self, 'statistics', config)
         AbstractHomeExtension.__init__(self, 'statistics')
 
     def prepareData(self, controller, container):

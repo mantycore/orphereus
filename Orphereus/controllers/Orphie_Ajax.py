@@ -27,18 +27,18 @@ from Orphereus.model import *
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 
 log = logging.getLogger(__name__)
 
-class AjaxServicesPlugin(PluginInfo):
+class AjaxServicesPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('Ajax helpers'),
                  }
-        PluginInfo.__init__(self, 'ajaxhelpers', config)
+        BasePlugin.__init__(self, 'ajaxhelpers', config)
 
-    # Implementing PluginInfo
+    # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('ajHideThread', '/ajax/hideThread/:post/:redirect/:realm/:page', controller = 'Orphie_Ajax', action = 'hideThread', redirect = '', realm = '', page = 0, requirements = dict(post = '\d+', page = '\d+'))
         map.connect('ajShowThread', '/ajax/showThread/:post/:redirect/:realm/:page', controller = 'Orphie_Ajax', action = 'showThread', redirect = '', realm = '', page = 0, requirements = dict(post = '\d+', page = '\d+'))
@@ -77,7 +77,6 @@ class OrphieAjaxController(OrphieBaseController):
         freeNames = Tag.stringToTagLists(tags, False)[2]
         if freeNames:
             postingHooks = g.implementationsOf(AbstractPostingHook)
-            #handlers = g.extractFromConfigs('tagCheckHandler')[0]
             for tagname in freeNames:
                 for hook in postingHooks:
                     tag = hook.tagCheckHandler(tagname, self.userInst)

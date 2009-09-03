@@ -1,10 +1,10 @@
 from pylons.i18n import N_
 from string import *
 
-from Orphereus.lib.pluginInfo import *
+from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.base import *
 from Orphereus.lib.helpers import makeLangValid
-from Orphereus.lib.jsMinify import jsmin
+from Orphereus.lib.3dparty.jsMinify import jsmin
 from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.model import *
@@ -12,15 +12,15 @@ from Orphereus.model import *
 import logging
 log = logging.getLogger(__name__)
 
-class JSCompressorPlugin(PluginInfo):
+class JSCompressorPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('Javascript compression tool'),
                   'menuitems' : menuItems,
                   'menutest' : menuTest
                  }
-        PluginInfo.__init__(self, 'jsCompressor', config)
+        BasePlugin.__init__(self, 'jsCompressor', config)
 
-    # Implementing PluginInfo
+    # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('hsRebuildJs', '/holySynod/rebuildJs', controller = 'jsCompressor', action = 'rebuild')
 

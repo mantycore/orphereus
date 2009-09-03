@@ -1,6 +1,6 @@
 from pylons.i18n import N_
 
-from Orphereus.lib.pluginInfo import *
+from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.constantValues import CFG_LIST
 from Orphereus.lib.base import *
 from Orphereus.lib.menuItem import MenuItem
@@ -23,16 +23,16 @@ def menuTest(id, baseController):
     if id == 'id_ImportThread':
         return user.canManageBoards()
 
-class ThreadImportPlugin(PluginInfo):
+class ThreadImportPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('Thread import tool'),
                   'menuitems' : menuItems,
                   'menutest' : menuTest,
                   'entryPoints' : [('import', "ConsoleImport"), ],
                  }
-        PluginInfo.__init__(self, 'threadimport', config)
+        BasePlugin.__init__(self, 'threadimport', config)
 
-    # Implementing PluginInfo
+    # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('hsImportThread', '/holySynod/import', controller = 'threadImport', action = 'importThread')
 

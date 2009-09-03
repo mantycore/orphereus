@@ -22,7 +22,7 @@
 from pylons.i18n import N_
 import datetime
 
-from Orphereus.lib.pluginInfo import *
+from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.base import *
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.miscUtils import getUserIp
@@ -32,12 +32,11 @@ from Orphereus.model import *
 import logging
 log = logging.getLogger(__name__)
 
-class AntispamPlugin(PluginInfo, AbstractPostingHook):
+class AntispamPlugin(BasePlugin, AbstractPostingHook):
     def __init__(self):
         config = {'name' : N_('Wipe filter with auto-ban features'),
-              #'postingRestrictor' : restrictor,
              }
-        PluginInfo.__init__(self, 'antispam', config)
+        BasePlugin.__init__(self, 'antispam', config)
 
     def beforePostCallback(self, controller, request, **kwargs):
         user = controller.userInst

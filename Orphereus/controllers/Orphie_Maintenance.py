@@ -37,7 +37,7 @@ import re
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 
@@ -551,7 +551,7 @@ def menuItems(menuId):
                 )
     return menu
 
-class MaintenancePlugin(PluginInfo, AbstractPostingHook):
+class MaintenancePlugin(BasePlugin, AbstractPostingHook):
     def __init__(self):
         config = {'name' : N_('Maintenance'),
                  'entryPoints' : [('maintenance', "MaintenanceCommand"),
@@ -559,9 +559,9 @@ class MaintenancePlugin(PluginInfo, AbstractPostingHook):
                  'menutest' : menuTest,
                  'menuitems' : menuItems,
                  }
-        PluginInfo.__init__(self, 'maintenance', config)
+        BasePlugin.__init__(self, 'maintenance', config)
 
-    # Implementing PluginInfo
+    # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('hsMaintenance', '/holySynod/service/:actid', controller = 'Orphie_Maintenance', actid = '', action = 'mtnAction')
         #map.connect('hsMaintenance', '/holySynod/service/:actid/:secid', controller = 'Orphie_Maintenance', actid = '', secid = '', action = 'mtnAction')

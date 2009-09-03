@@ -1,7 +1,7 @@
 from pylons.i18n import N_
 from string import *
 
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.base import *
 from Orphereus.model import *
@@ -139,7 +139,7 @@ def pluginInit(globj = None):
              'menuitems' : menuItems, # menu items
              }
 
-    return PluginInfo('example', config)
+    return BasePlugin('example', config)
 
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import *

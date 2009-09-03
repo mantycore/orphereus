@@ -1,7 +1,7 @@
 from pylons.i18n import N_
 from string import *
 
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.base import *
@@ -81,7 +81,7 @@ def tagHandler(tag, userInst):
         return None, newName
     return None, None
 
-class UserTagsPlugin(PluginInfo, AbstractPostingHook, AbstractProfileExtension):
+class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension):
     def __init__(self):
         config = {'name' : N_('Personal tags module'),
                  #'orminit' : ormInit, # ORM initializer
@@ -92,9 +92,9 @@ class UserTagsPlugin(PluginInfo, AbstractPostingHook, AbstractProfileExtension):
                  #'tagCheckHandler' : tagCheckHandler,
                  #'afterPostCallback' : afterPostCallback,
                  }
-        PluginInfo.__init__(self, 'usertags', config)
+        BasePlugin.__init__(self, 'usertags', config)
 
-    # Implementing PluginInfo
+    # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('userTagsMapper', '/postTags/:post/:act/:tagid', controller = 'usertags', action = 'postTags', act = 'show', tagid = 0, requirements = dict(post = '\d+', tagid = '\d+'))
         map.connect('userTagsManager', '/userProfile/manageUserTags/:act/:tagid', controller = 'usertags', action = 'postTagsManage', act = 'show', tagid = 0, requirements = dict(tagid = '\d+'))
@@ -178,7 +178,7 @@ def pluginInit(globj = None):
             globj.tagHandlers = []
         globj.tagHandlers.append(tagHandler)
 
-    return UserTagsPlugin() #PluginInfo('usertags', config)
+    return UserTagsPlugin() #BasePlugin('usertags', config)
 
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import *

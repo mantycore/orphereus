@@ -37,7 +37,7 @@ import re
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.menuItem import MenuItem
 from Orphereus.lib.userBan import UserBan
 
@@ -86,15 +86,15 @@ def menuItems(menuId):
 
     return menu
 
-class AdminPanelPlugin(PluginInfo):
+class AdminPanelPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('Administration panel'),
                  'menutest' : menuTest, # returns True if menu item should be visible. If False, all items will be visible
                  'menuitems' : menuItems, # menu items
                  }
-        PluginInfo.__init__(self, 'adminpanel', config)
+        BasePlugin.__init__(self, 'adminpanel', config)
 
-    # Implementing PluginInfo
+    # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('holySynod', '/holySynod', controller = 'Orphie_Admin', action = 'index')
         map.connect('hsViewLogBase', '/holySynod/viewLog', controller = 'Orphie_Admin', action = 'viewLog', page = 0)

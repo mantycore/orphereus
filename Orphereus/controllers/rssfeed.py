@@ -1,7 +1,7 @@
 from pylons.i18n import N_
 from string import *
 
-from Orphereus.lib.pluginInfo import PluginInfo
+from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.base import *
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.model import *
@@ -25,14 +25,14 @@ def headCallback(context):
         result += auto_discovery_link(atomLink, feed_type = 'atom') + '\n'
     return result
 
-class RssFeedPlugin(PluginInfo):
+class RssFeedPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('RSS/Atom feeds'),
                  }
 
-        PluginInfo.__init__(self, 'rssfeed', config)
+        BasePlugin.__init__(self, 'rssfeed', config)
 
-    # Implementing PluginInfo
+    # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('feed', '/:watch/feed/auth/:authid/:uid.:feedType', controller = 'rssfeed', action = 'rss', requirements = dict(authid = '\d+'))
 

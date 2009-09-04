@@ -2,11 +2,6 @@
 
 class BasePlugin():
     def __init__(self, pluginId, pluginConfig = False):
-        # internal variables, init in app_globals.py
-        self.pfileName = ''
-        self.pnamespaceName = ''
-        self.pnamespace = False
-
         self.__pId = pluginId
 
         # plugin config
@@ -15,6 +10,14 @@ class BasePlugin():
 
             self.__pName = pluginConfig.get('name', False)
             self.__pdeps = pluginConfig.get('deps', False)
+
+        # internal variables, init in app_globals.py
+        self.setDetails(None, '', '')
+
+    def setDetails(self, namespace, namespaceName, fileName):
+        self.pnamespace = namespace
+        self.pnamespaceName = namespaceName
+        self.pfileName = fileName
 
     def pluginId(self):
         return self.__pId
@@ -54,10 +57,8 @@ class BasePlugin():
     def beforeRequestCallback(self, baseController):
         pass
 
-    # global text filter
     def globalFiltersList(self):
         return []
 
-    # text filtering helper
     def filtersList(self):
         return []

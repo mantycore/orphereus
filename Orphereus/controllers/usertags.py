@@ -86,7 +86,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
     """
     # Implementing AbstractPostingHook
     def tagCheckHandler(self, tagName, userInst):
-        ns = self.namespace() #g.pluginsDict['usertags'].pnamespace
+        ns = self.namespace()
         name = tagName
         if name.startswith('$'):
             name = tagName[1:]
@@ -99,7 +99,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
         afterPostCallbackParams = []
         newTagString = tagstring
         from Orphereus.controllers.Orphie_Main import OrphieMainController
-        ns = self.namespace() #g.pluginsDict['usertags'].pnamespace
+        ns = self.namespace()
         tags, dummy, nonexistent = Tag.stringToTagLists(tagstring, False)
         for usertag in nonexistent:
             if usertag.startswith('$'):
@@ -126,10 +126,10 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
 
     def tagHandler(self, tag, userInst):
         if tag.startswith('$'):
-            ns = self.namespace() #g.pluginsDict['usertags'].pnamespace
+            ns = self.namespace()
             if not userInst.Anonymous:
                 newName = tag[1:]
-                tag = ns.UserTag.get(newName, userInst) #ns.UserTag.query.filter(and_(ns.UserTag.tag == newName, ns.UserTag.userId == userInst.uidNumber)).first()
+                tag = ns.UserTag.get(newName, userInst)
                 if tag:
                     ids = []
                     for post in tag.posts:
@@ -200,9 +200,9 @@ class UsertagsController(OrphieBaseController):
 
             if act == 'add':
                 tagName = filterText(request.params.get('tagName', ''))
-                tag = UserTag.get(tagName, self.userInst) #UserTag.query.filter(and_(UserTag.tag == tagName, UserTag.userId == self.userInst.uidNumber)).first()
+                tag = UserTag.get(tagName, self.userInst)
                 if not tag:
-                    tag = UserTag.getById(tagid, self.userInst) #UserTag.query.filter(and_(UserTag.id == int(tagid), UserTag.userId == self.userInst.uidNumber)).first()
+                    tag = UserTag.getById(tagid, self.userInst)
                 if not tag:
                     return self.error(_("Tag doesn't exists"))
                 if tag.addToThread(thread):
@@ -236,7 +236,7 @@ class UsertagsController(OrphieBaseController):
                 else:
                     return self.error(_("Tag already exists"))
         elif act in ['delete', 'removefromall', 'rename']:
-            tag = UserTag.getById(tagid, self.userInst) #UserTag.query.filter(and_(UserTag.id == int(tagid), UserTag.userId == self.userInst.uidNumber)).first()
+            tag = UserTag.getById(tagid, self.userInst)
             if tag:
                 if act == 'delete':
                     if not tag.posts:

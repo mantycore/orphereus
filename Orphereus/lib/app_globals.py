@@ -291,7 +291,8 @@ class OptHolder(object):
 
 class Globals(object):
     def __init__(self, eggSetupMode = False):
-        appName = 'Orphereus'
+        appName = self.__module__.split('.')[0]
+        log.info('Starting application "%s"...' % appName)
         if eggSetupMode:
             log.setLevel(logging.DEBUG)
             ch = logging.StreamHandler()
@@ -352,9 +353,9 @@ class Globals(object):
                         log.info("Importing plugin: %s; file= %s" % (plid, file))
 
                         if not plugins.has_key(plid):
-                            plinf.pfileName = file
-                            plinf.pnamespaceName = basicNamespace + mod.__name__
-                            plinf.pnamespace = __import__(plinf.pnamespaceName, globals(), locals(), '*', -1)
+                            nsName = basicNamespace + mod.__name__
+                            ns = __import__(nsName, globals(), locals(), '*', -1)
+                            plinf.setDetails(ns, nsName, file)
                             plugins[plid] = plinf
                         else:
                             log.critical("POSSIBLE CONFLICT: Plugin with id '%s' already imported!" % plid)

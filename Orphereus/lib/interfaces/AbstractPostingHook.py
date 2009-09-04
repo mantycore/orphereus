@@ -32,3 +32,6 @@ class AbstractPostingHook(object):
 
     def beforePostCallback(self, controller, request, **kwargs):
         return None
+
+    def tagHandler(self, tag, userInst):
+        return None, None

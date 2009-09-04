@@ -41,10 +41,11 @@ from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.userBan import UserBan
 from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
+from Orphereus.lib.interfaces.AbstractPageHook import AbstractPageHook
 
 log = logging.getLogger(__name__)
 
-class AdminPanelPlugin(BasePlugin, AbstractMenuProvider):
+class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
     def __init__(self):
         config = {'name' : N_('Administration panel'),
                  }
@@ -113,40 +114,41 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider):
                     )
         return menu
 
-def postPanelCallback(thread, post, userInst):
-    from webhelpers.html.tags import link_to
-    result = ''
-    if userInst.isAdmin() and userInst.canManageUsers():
-        if post.uidNumber:
-            result += link_to(_("[User]"), h.url_for('hsUserEditAttempt', pid = post.id))
-        if post.ip:
-            result += link_to(_("[IP Ban]"), h.url_for('hsIpBanAttempt', pid = post.id))
-    return result
-
-def threadPanelCallback(thread, userInst):
-    from webhelpers.html.tags import link_to
-    result = postPanelCallback(thread, thread, userInst)
-    """
+    def postPanelCallback(self, thread, post, userInst):
+        from webhelpers.html.tags import link_to
+        result = ''
         if userInst.isAdmin() and userInst.canManageUsers():
             if post.uidNumber:
-                result += link_to(_("[User]"), h.url_for('hsUserEditAttempt', pid = thread.id))
+                result += link_to(_("[User]"), h.url_for('hsUserEditAttempt', pid = post.id))
             if post.ip:
-                result += link_to(_("[IP Ban]"), h.url_for('hsIpBanAttempt', pid = thread.id))
-    """
-    if c.userInst.isAdmin() and c.userInst.canManageMappings():
-        result += link_to(_("[Tags]"), h.url_for('hsMappings', act = 'show', id = thread.id))
+                result += link_to(_("[IP Ban]"), h.url_for('hsIpBanAttempt', pid = post.id))
+        return result
 
-    if c.userInst.isAdmin() and c.userInst.canManageMappings():
-        if thread.pinned:
-            result += link_to(_("[Unpin]"), h.url_for('hsPin', act = 'unpin', id = thread.id))
-        else:
-            result += link_to(_("[Pin]"), h.url_for('hsPin', act = 'pin', id = thread.id))
-    return result
+    def threadPanelCallback(self, thread, userInst):
+        from webhelpers.html.tags import link_to
+        result = self.postPanelCallback(thread, thread, userInst)
+        """
+            if userInst.isAdmin() and userInst.canManageUsers():
+                if post.uidNumber:
+                    result += link_to(_("[User]"), h.url_for('hsUserEditAttempt', pid = thread.id))
+                if post.ip:
+                    result += link_to(_("[IP Ban]"), h.url_for('hsIpBanAttempt', pid = thread.id))
+        """
+        if c.userInst.isAdmin() and c.userInst.canManageMappings():
+            result += link_to(_("[Tags]"), h.url_for('hsMappings', act = 'show', id = thread.id))
+
+        if c.userInst.isAdmin() and c.userInst.canManageMappings():
+            if thread.pinned:
+                result += link_to(_("[Unpin]"), h.url_for('hsPin', act = 'unpin', id = thread.id))
+            else:
+                result += link_to(_("[Pin]"), h.url_for('hsPin', act = 'pin', id = thread.id))
+        return result
 
 def pluginInit(globj = None):
     if globj:
-        h.threadPanelCallbacks.append(threadPanelCallback)
-        h.postPanelCallbacks.append(postPanelCallback)
+        pass
+        #h.threadPanelCallbacks.append(threadPanelCallback)
+        #h.postPanelCallbacks.append(postPanelCallback)
 
     return AdminPanelPlugin()
 

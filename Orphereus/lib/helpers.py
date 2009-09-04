@@ -34,6 +34,8 @@ import datetime
 import os
 import socket, struct, sys
 
+from Orphereus.lib.interfaces.AbstractPageHook import AbstractPageHook
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -45,7 +47,7 @@ def repliesProxy(thread, controller):
     # flags = (isBoardView, showLongMessages)
     intFlags = (int(bool(c.board)) << 1) + int(not(user.hideLongComments) or (c.count == 1))
     tmplPrefix = (len(g.OPT.templates) > 1 and user.template) or ''
-    keyPrefix = str('%s%d%s' %(tmplPrefix, intFlags, get_lang()[0]))
+    keyPrefix = str('%s%d%s' % (tmplPrefix, intFlags, get_lang()[0]))
     postsDict = dict([(post.id, post) for post in thread.Replies])
     postsRender = g.mc.get_multi(postsDict.keys(), key_prefix = keyPrefix)
     absentPosts = list(set(postsDict.keys()) - set(postsRender.keys()))
@@ -56,32 +58,44 @@ def repliesProxy(thread, controller):
     sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.keys())])
     return ''.join(sortedPostsRender)
 
-threadPanelCallbacks = []
 def threadPanelCallback(thread, userInst):
+    gvars = config['pylons.app_globals']
+    callbacks = gvars.implementationsOf(AbstractPageHook)
     result = ''
-    for cb in threadPanelCallbacks:
-        result += cb(thread, userInst)
+    for cb in callbacks:
+        ret = cb.threadPanelCallback(thread, userInst)
+        if ret:
+            result += ret
     return result
 
-postPanelCallbacks = []
 def postPanelCallback(thread, post, userInst):
+    gvars = config['pylons.app_globals']
+    callbacks = gvars.implementationsOf(AbstractPageHook)
     result = ''
-    for cb in postPanelCallbacks:
-        result += cb(thread, post, userInst)
+    for cb in callbacks:
+        ret = cb.postPanelCallback(thread, post, userInst)
+        if ret:
+            result += ret
     return result
 
-threadInfoCallbacks = []
 def threadInfoCallback(thread, userInst):
+    gvars = config['pylons.app_globals']
+    callbacks = gvars.implementationsOf(AbstractPageHook)
     result = ''
-    for cb in threadInfoCallbacks:
-        result += cb(thread, userInst)
+    for cb in callbacks:
+        ret = cb.threadInfoCallback(thread, userInst)
+        if ret:
+            result += ret
     return result
 
-headCallbacks = []
 def headCallback(context):
+    gvars = config['pylons.app_globals']
+    callbacks = gvars.implementationsOf(AbstractPageHook)
     result = ''
-    for cb in headCallbacks:
-        result += cb(context)
+    for cb in callbacks:
+        ret = cb.headCallback(context)
+        if ret:
+            result += ret
     return result
 
 def currentTime():

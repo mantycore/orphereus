@@ -7,6 +7,7 @@ from Orphereus.lib.miscUtils import *
 from Orphereus.lib.base import *
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 from Orphereus.lib.interfaces.AbstractProfileExtension import AbstractProfileExtension
+from Orphereus.lib.interfaces.AbstractPageHook import AbstractPageHook
 from Orphereus.model import *
 
 import logging
@@ -48,40 +49,7 @@ class UserTag(object):
             return UserTag.userTagsToPostsMappingTable
     """
 
-def threadPanelCallback(thread, userInst):
-    from webhelpers.html.tags import link_to
-    if not userInst.Anonymous:
-        return link_to(_("[My tags]"), h.url_for('userTagsMapper', post = thread.id), target = "_blank")
-    return ''
-
-def threadInfoCallback(thread, userInst):
-    ns = g.pluginsDict['usertags'].pnamespace
-    from webhelpers.html.tags import link_to
-    result = ''
-    if not userInst.Anonymous:
-        tags = ns.UserTag.getPostTags(thread.id, userInst.uidNumber)
-        result = " "
-        for t in tags:
-            result += ("%s ") % link_to("/$%s/" % t.tag, h.url_for('boardBase', board = '$' + t.tag), title = t.comment)
-    return result
-
-def tagHandler(tag, userInst):
-    if tag.startswith('$'):
-        ns = g.pluginsDict['usertags'].pnamespace
-        if not userInst.Anonymous:
-            newName = tag[1:]
-            tag = ns.UserTag.get(newName, userInst) #ns.UserTag.query.filter(and_(ns.UserTag.tag == newName, ns.UserTag.userId == userInst.uidNumber)).first()
-            if tag:
-                ids = []
-                for post in tag.posts:
-                    ids.append(post.id)
-                #log.critical(ids)
-                if ids:
-                    return Post.id.in_(ids), newName
-        return None, newName
-    return None, None
-
-class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension):
+class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, AbstractPageHook):
     def __init__(self):
         config = {'name' : N_('Personal tags module'),
                  }
@@ -156,6 +124,22 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension):
             for tag in params:
                 tag.addToThread(post)
 
+    def tagHandler(self, tag, userInst):
+        if tag.startswith('$'):
+            ns = self.namespace() #g.pluginsDict['usertags'].pnamespace
+            if not userInst.Anonymous:
+                newName = tag[1:]
+                tag = ns.UserTag.get(newName, userInst) #ns.UserTag.query.filter(and_(ns.UserTag.tag == newName, ns.UserTag.userId == userInst.uidNumber)).first()
+                if tag:
+                    ids = []
+                    for post in tag.posts:
+                        ids.append(post.id)
+                    #log.critical(ids)
+                    if ids:
+                        return Post.id.in_(ids), newName
+            return None, newName
+        return None, None
+
     # Implementing AbstractProfileExtension
     def additionalProfileLinks(self, userInst):
         links = []
@@ -163,15 +147,29 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension):
             links = (('userTagsManager', {}, _('User tags')),)
             return links
 
+    # AbstractPageHook
+    def threadPanelCallback(self, thread, userInst):
+        from webhelpers.html.tags import link_to
+        if not userInst.Anonymous:
+            return link_to(_("[My tags]"), h.url_for('userTagsMapper', post = thread.id), target = "_blank")
+        return ''
+
+    def threadInfoCallback(self, thread, userInst):
+        ns = self.namespace()
+        from webhelpers.html.tags import link_to
+        result = ''
+        if not userInst.Anonymous:
+            tags = ns.UserTag.getPostTags(thread.id, userInst.uidNumber)
+            result = " "
+            for t in tags:
+                result += ("%s ") % link_to("/$%s/" % t.tag, h.url_for('boardBase', board = '$' + t.tag), title = t.comment)
+        return result
+
 def pluginInit(globj = None):
     if globj:
-        h.threadPanelCallbacks.append(threadPanelCallback)
-        h.threadInfoCallbacks.append(threadInfoCallback)
-        if not getattr(globj, 'tagHandlers', None):
-            globj.tagHandlers = []
-        globj.tagHandlers.append(tagHandler)
+        pass
 
-    return UserTagsPlugin() #BasePlugin('usertags', config)
+    return UserTagsPlugin()
 
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import *

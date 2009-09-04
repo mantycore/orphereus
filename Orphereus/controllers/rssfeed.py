@@ -4,6 +4,7 @@ from string import *
 from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.base import *
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
+from Orphereus.lib.interfaces.AbstractPageHook import AbstractPageHook
 from Orphereus.model import *
 
 from webhelpers.feedgenerator import Atom1Feed, Rss201rev2Feed
@@ -12,20 +13,7 @@ from webhelpers.html.tags import auto_discovery_link
 import logging
 log = logging.getLogger(__name__)
 
-def headCallback(context):
-    result = ''
-    if g.OPT.allowFeeds and context.userInst.isValid() and context.threads:
-        rssLink = h.url_for('feed', uid = context.userInst.uid,
-                            authid = context.userInst.authid(),
-                            watch = context.currentRealm, feedType = 'rss')
-        atomLink = h.url_for('feed', uid = context.userInst.uid,
-                            authid = context.userInst.authid(),
-                            watch = context.currentRealm, feedType = 'atom')
-        result += auto_discovery_link(rssLink, feed_type = 'rss') + '\n'
-        result += auto_discovery_link(atomLink, feed_type = 'atom') + '\n'
-    return result
-
-class RssFeedPlugin(BasePlugin):
+class RssFeedPlugin(BasePlugin, AbstractPageHook):
     def __init__(self):
         config = {'name' : N_('RSS/Atom feeds'),
                  }
@@ -36,9 +24,23 @@ class RssFeedPlugin(BasePlugin):
     def initRoutes(self, map):
         map.connect('feed', '/:watch/feed/auth/:authid/:uid.:feedType', controller = 'rssfeed', action = 'rss', requirements = dict(authid = '\d+'))
 
+    # AbstractPageHook
+    def headCallback(self, context):
+        result = ''
+        if g.OPT.allowFeeds and context.userInst.isValid() and context.threads:
+            rssLink = h.url_for('feed', uid = context.userInst.uid,
+                                authid = context.userInst.authid(),
+                                watch = context.currentRealm, feedType = 'rss')
+            atomLink = h.url_for('feed', uid = context.userInst.uid,
+                                authid = context.userInst.authid(),
+                                watch = context.currentRealm, feedType = 'atom')
+            result += auto_discovery_link(rssLink, feed_type = 'rss') + '\n'
+            result += auto_discovery_link(atomLink, feed_type = 'atom') + '\n'
+        return result
+
 def pluginInit(globj = None):
     if globj:
-        h.headCallbacks.append(headCallback)
+        #h.headCallbacks.append(headCallback)
         booleanValues = [('rssfeed',
                                ('allowFeeds',
                                )

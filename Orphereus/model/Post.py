@@ -31,6 +31,7 @@ from Orphereus.model.TagOptions import TagOptions
 from Orphereus.model.LogEntry import LogEntry
 from Orphereus.lib.miscUtils import getRPN, empty
 from Orphereus.lib.constantValues import *
+from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 import datetime
 
 from pylons.i18n import _, ungettext, N_
@@ -73,11 +74,11 @@ class Post(object):
         try:        # no better ideas.
             post.secondaryIndex = postParams.secondaryIndex
         except:
-            pass 
+            pass
         try:
-            post.date = postParams.date 
+            post.date = postParams.date
         except:
-            pass 
+            pass
         post.message = postParams.message
         post.messageShort = postParams.messageShort
         post.messageRaw = postParams.messageRaw
@@ -213,7 +214,7 @@ class Post(object):
         def buildMyPostsFilter(opOnly = False):
             list = []
             posts = Post.filterByUid(userInst.uidNumber).all()
-            
+
             for p in posts:
                 if not p.parentid and not p.id in list:
                     list.append(p.id)
@@ -233,13 +234,13 @@ class Post(object):
                     return (not_(or_(disableExclusions, disableHidden)), [])
                 else:
                     retarg = [arg]
-                    if getattr(meta.globj, 'tagHandlers', None):
-                        for handler in meta.globj.tagHandlers:
-                            clause, newName = handler(arg, userInst)
-                            if clause and newName:
-                                return (clause, [newName])
-                            elif newName:
-                                retarg = [newName]
+                    hooks = meta.globj.implementationsOf(AbstractPostingHook)
+                    for handler in hooks:
+                        clause, newName = handler.tagHandler(arg, userInst)
+                        if clause and newName:
+                            return (clause, [newName])
+                        elif newName:
+                            retarg = [newName]
                     return (Post.tags.any(tag = arg), retarg)
             else:
                 return arg

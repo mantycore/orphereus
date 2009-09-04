@@ -124,7 +124,7 @@ def menuItems(menuId):
 def threadInfoCallback(thread, userInst):
     return '<b>Text</b> from example callback'
 
-def pluginInit(globj = None):
+def pluginInit_DISABLED(globj = None):
     if globj:
         h.exampleHelper = exampleHelper
         h.threadInfoCallbacks.append(threadInfoCallback)

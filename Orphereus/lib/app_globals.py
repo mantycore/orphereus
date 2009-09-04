@@ -441,7 +441,6 @@ class Globals(object):
             menuProviders = self.implementationsOf(AbstractMenuProvider)
             for plugin in menuProviders:
                 items = plugin.menuItemsFor(menuId)
-                log.error(items)
                 if items:
                     for item in items:
                         id = item.id

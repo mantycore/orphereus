@@ -1,0 +1,85 @@
+from pylons.i18n import N_
+from pylons.decorators import jsonify
+from string import *
+
+from Orphereus.lib.BasePlugin import *
+from Orphereus.lib.base import *
+from Orphereus.lib.MenuItem import MenuItem
+from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
+from Orphereus.model import *
+
+import logging
+log = logging.getLogger(__name__)
+
+class PluginsListPlugin(BasePlugin, AbstractMenuProvider):
+    def __init__(self):
+        config = {'name' : N_('Plugins list'),
+                  'deps' : ('adminpanel',)
+                 }
+        BasePlugin.__init__(self, 'pluginsList', config)
+
+    # Implementing BasePlugin
+    def initRoutes(self, map):
+        map.connect('hsListPlugins', '/holySynod/listPlugins', controller = 'pluginsList', action = 'show')
+        map.connect('hsAjPluginsList', '/holySynod/listPlugins/ajax', controller = 'pluginsList', action = 'ajax')
+
+
+    def menuItems(self, menuId):
+        #          id        link       name                weight   parent
+        menu = None
+        if menuId == "managementMenu":
+            menu = (MenuItem('id_ListPlugins', N_("Show active plugins"), h.url_for('hsListPlugins'), 320, 'id_hsMaintenance'),
+                    )
+        return menu
+
+    def MenuItemIsVisible(self, id, baseController):
+        user = baseController.userInst
+        if id == 'id_ListPlugins':
+            return user.canRunMaintenance()
+
+def pluginInit(g = None):
+    if g:
+        pass
+
+    return PluginsListPlugin()
+
+from OrphieBaseController import *
+
+class PluginslistController(OrphieBaseController):
+    def __before__(self):
+        OrphieBaseController.__before__(self)
+        if ('adminpanel' in g.pluginsDict.keys()):
+            self.requestForMenu("managementMenu")
+
+    def show(self):
+        if not self.currentUserIsAuthorized():
+            return redirect_to('boardBase')
+        self.initEnvironment()
+        if not (self.userInst.isAdmin() and self.userInst.canRunMaintenance()) or self.userInst.isBanned():
+            return redirect_to('boardBase')
+        c.userInst = self.userInst
+        if not checkAdminIP():
+            return redirect_to('boardBase')
+
+        c.boardName = _('Rebuild JavaScrtipt')
+        c.message = _("Rebuild completed")
+        c.returnUrl = h.url_for('holySynod')
+        c.currentItemId = 'id_ListPlugins'
+        return self.render('test')
+
+    @jsonify
+    def ajax(self):
+        ret = {}
+        result = []
+        for plugin in g.plugins:
+            info = {'id' : plugin.pluginId(),
+                    'descr' : plugin.pluginName(),
+                    'deps' : plugin.deps(),
+                    'namespace' : plugin.namespaceName(),
+                    'file' : plugin.fileName()
+                    }
+            result.append(info)
+        ret['results'] = result
+        ret['total'] = len(g.plugins)
+        return ret

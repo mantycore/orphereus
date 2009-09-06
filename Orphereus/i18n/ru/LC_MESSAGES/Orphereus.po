@@ -1422,7 +1422,7 @@ msgstr ""
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:7
 #: Orphereus/templates/wakaba/wakaba.z-menu.mako:4
 msgid "Special pages"
-msgstr "Спецстранинцы"
+msgstr "Спецстраницы"
 
 #: Orphereus/templates/wakaba/wakaba.frameMenu.mako:19
 #: Orphereus/templates/wakaba/wakaba.z-menu.mako:28
@@ -2078,9 +2078,9 @@ msgstr "Новости"
 #, python-format
 msgid "%d reply"
 msgid_plural "%d replies"
-msgstr[0] "%d ответ"
-msgstr[1] "%d ответа"
-msgstr[2] "%d ответов"
+msgstr[0] "%d комментарий"
+msgstr[1] "%d комментария"
+msgstr[2] "%d комментариев"
 
 #: Orphereus/templates/wakaba/wakaba.postForm.mako:11
 #: Orphereus/templates/wakaba/wakaba.postOp.mako:99

@@ -36,13 +36,8 @@ class HTMLCompressorPlugin(BasePlugin):
             return result
         return inp
 
-def pluginInit(g = None):
-    if g:
+    def updateGlobals(self, globj):
         listValues = [('htmlCompressor', ('disableCompressionList',)), ]
 
-        if not g.OPT.eggSetupMode:
-            g.OPT.registerCfgValues(listValues, CFG_LIST)
-
-    return HTMLCompressorPlugin()
-
-
+        if not globj.OPT.eggSetupMode:
+            globj.OPT.registerCfgValues(listValues, CFG_LIST)

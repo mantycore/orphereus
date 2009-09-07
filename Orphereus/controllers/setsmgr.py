@@ -35,9 +35,6 @@ class SettingsManagerPlugin(BasePlugin, AbstractMenuProvider):
         map.connect('hsCfgReset', '/holySynod/configuration/reset/', controller = 'setsmgr', action = 'reset')
         map.connect('hsCfgClearOrphaned', '/holySynod/configuration/cleanOrphaned/', controller = 'setsmgr', action = 'deleteOrphaned')
 
-def pluginInit(g = None):
-    return SettingsManagerPlugin()
-
 from OrphieBaseController import *
 
 class SetsmgrController(OrphieBaseController):

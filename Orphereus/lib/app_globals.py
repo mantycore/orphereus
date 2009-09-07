@@ -26,6 +26,7 @@ from pylons.i18n import get_lang
 import sys
 import os
 import re
+import inspect
 
 from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.cache import *
@@ -252,7 +253,7 @@ class OptHolder(object):
 
     @staticmethod
     def booleanGetter(value):
-        return value == 'true'
+        return value.lower() == 'true'
     @staticmethod
     def stringGetter(value):
         return value
@@ -326,9 +327,7 @@ class Globals(object):
 
     def enumeratePlugins(self, basicNamespace, eggSetupMode = False):
         import sys
-        def pluginscmp(a, b):
-            return cmp(len(a.deps()), len(b.deps()))
-
+        import types
         pluginDir = os.path.join(self.OPT.appPath, 'controllers')
         sys.path.append(pluginDir)
         #files = [f for f in os.listdir(pluginDir) if f[:3] == "atl" and  f[-3:]=='.py']
@@ -345,22 +344,30 @@ class Globals(object):
                 except Exception, e:
                     log.warning('Exception while importing %s: %s' % (file, str(e)))
                     mod = None
-                if mod and ("pluginInit" in dir(mod)):
-                    plinf = mod.pluginInit(not eggSetupMode and self or None)
-                    #tmpInfo = BasePlugin('', {})
-                    if (issubclass(type(plinf), BasePlugin) or isinstance(plinf, BasePlugin)): #type(plinf) == type(tmpInfo):
-                        plid = plinf.pluginId()
+
+                possiblePlugins = []
+                plPredicate = lambda x: type(x) == type and issubclass(x, BasePlugin) and x != BasePlugin
+                possiblePlugins = inspect.getmembers(mod, plPredicate)
+                if possiblePlugins:
+                    possiblePlugins = map(lambda x: x[1], possiblePlugins)
+
+                if possiblePlugins:
+                    for possiblePlugin in possiblePlugins:
+                        instance = possiblePlugin()
+                        plid = instance.pluginId()
                         log.info("Importing plugin: %s; file= %s" % (plid, file))
 
                         if not plugins.has_key(plid):
                             nsName = basicNamespace + mod.__name__
-                            ns = __import__(nsName, globals(), locals(), '*', -1)
-                            plinf.setDetails(ns, nsName, file)
-                            plugins[plid] = plinf
+                            ns = __import__(nsName, {}, {}, '*', -1)
+                            instance.setDetails(
+                                namespace = ns,
+                                namespaceName = nsName,
+                                fileName = file,
+                            )
+                            plugins[plid] = instance
                         else:
                             log.critical("POSSIBLE CONFLICT: Plugin with id '%s' already imported!" % plid)
-                    else:
-                        log.warning('Plugin returned incorrect descriptor')
                 else:
                     log.info('Not a plugin: %s' % file)
             else:
@@ -406,13 +413,16 @@ class Globals(object):
                     break
             #log.info('new iteration, already resolved: %s' % resolved)
 
-        cyclicDeps = sorted(plugins.values(), pluginscmp)
+        cyclicDeps = sorted(plugins.values(), lambda a, b: cmp(len(a.deps()), len(b.deps())))
         for plugin in cyclicDeps:
             log.warning('[WARNING] Adding loop-dependant plugin "%s" (deps: %s)' % (plugin.pluginId(), str(plugin.deps())))
             self.registerPlugin(plugin)
 
-        #log.info("Connected %d plugins" % len(self.plugins))
         log.info("RESOLVING STAGE COMPLETED. Connected %d plugins: %s" % (len(self.plugins), str(self.pluginsDict.keys())))
+
+        log.info("Updating globals...")
+        for plugin in self.plugins:
+            plugin.updateGlobals(self) #not eggSetupMode and self or None)
 
         # creating filters stack
         log.info("Populating filter's stack...")

@@ -144,14 +144,6 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
                 result += link_to(_("[Pin]"), h.url_for('hsPin', act = 'pin', id = thread.id))
         return result
 
-def pluginInit(globj = None):
-    if globj:
-        pass
-        #h.threadPanelCallbacks.append(threadPanelCallback)
-        #h.postPanelCallbacks.append(postPanelCallback)
-
-    return AdminPanelPlugin()
-
 class OrphieAdminController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)

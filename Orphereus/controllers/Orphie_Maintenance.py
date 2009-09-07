@@ -573,12 +573,6 @@ class MaintenancePlugin(BasePlugin, AbstractPostingHook, AbstractMenuProvider):
                     )
         return menu
 
-def pluginInit(globj = None):
-    if globj:
-        pass
-
-    return MaintenancePlugin()
-
 class OrphieMaintenanceController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)

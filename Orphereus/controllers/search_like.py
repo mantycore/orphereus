@@ -37,6 +37,3 @@ class LikeSearchPlugin(BasePlugin, AbstractSearchModule):
             for post in posts:
                 highlights[post.id] = (highlight(post.title, text), highlight(post.message, text))
         return (posts, count, failInfo, highlights, warnings)
-
-def pluginInit(globj = None):
-    return LikeSearchPlugin()

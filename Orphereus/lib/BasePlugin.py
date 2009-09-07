@@ -1,6 +1,6 @@
 
 
-class BasePlugin():
+class BasePlugin(object):
     def __init__(self, pluginId, pluginConfig = False):
         self.__pId = pluginId
 
@@ -39,6 +39,9 @@ class BasePlugin():
         return self.__pdeps
 
     # new methods
+    def updateGlobals(self, globj):
+        pass
+
     def entryPointsList(self):
         return []
 

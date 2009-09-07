@@ -38,12 +38,6 @@ class PluginsListPlugin(BasePlugin, AbstractMenuProvider):
         if id == 'id_ListPlugins':
             return user.canRunMaintenance()
 
-def pluginInit(g = None):
-    if g:
-        pass
-
-    return PluginsListPlugin()
-
 from OrphieBaseController import *
 
 class PluginslistController(OrphieBaseController):

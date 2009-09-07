@@ -38,9 +38,6 @@ class ThreadImportPlugin(BasePlugin, AbstractMenuProvider):
         if id == 'id_ImportThread':
             return user.canManageBoards()
 
-def pluginInit(g = None):
-    return ThreadImportPlugin()
-
 from OrphieBaseController import *
 
 class ImportWorker():

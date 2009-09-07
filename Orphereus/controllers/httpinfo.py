@@ -19,9 +19,6 @@ class HTTPInfoPlugin(BasePlugin):
     def initRoutes(self, map):
         map.connect('/uaInfo', controller = 'httpinfo', action = 'uaInfo')
 
-def pluginInit(globj = None):
-    return HTTPInfoPlugin()
-
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import *
 

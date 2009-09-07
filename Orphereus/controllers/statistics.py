@@ -60,15 +60,13 @@ class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
         container.lastWeekMessages = vts.lastWeekMessages
         container.prevWeekMessages = vts.prevWeekMessages
 
-def pluginInit(g = None):
-    if g:
+    def updateGlobals(self, globj):
         intValues = [('statistics',
                                ('statsCacheTime',
                                )
                               ),
                             ]
 
-        if not g.OPT.eggSetupMode:
-            g.OPT.registerCfgValues(intValues, CFG_INT)
+        if not globj.OPT.eggSetupMode:
+            globj.OPT.registerCfgValues(intValues, CFG_INT)
 
-    return HomeStatisticsPlugin()

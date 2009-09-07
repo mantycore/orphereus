@@ -35,7 +35,7 @@ log = logging.getLogger(__name__)
 class AntispamPlugin(BasePlugin, AbstractPostingHook):
     def __init__(self):
         config = {'name' : N_('Wipe filter with auto-ban features'),
-             }
+                 }
         BasePlugin.__init__(self, 'antispam', config)
 
     def beforePostCallback(self, controller, request, **kwargs):
@@ -66,8 +66,7 @@ class AntispamPlugin(BasePlugin, AbstractPostingHook):
         else:
             user.ban(g.OPT.banTimeDays, _("[AUTOMATIC BAN] Exceeded posting speed limits"))
 
-def pluginInit(globj = None):
-    if globj:
+    def updateGlobals(self, globj):
         intValues = [('antispam',
                                ('checkIntervalSeconds', 'postLimit', 'threadLimit', 'banTimeDays',
                                )
@@ -82,5 +81,3 @@ def pluginInit(globj = None):
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(intValues, CFG_INT)
             globj.OPT.registerCfgValues(boolValues, CFG_BOOL)
-
-    return AntispamPlugin()

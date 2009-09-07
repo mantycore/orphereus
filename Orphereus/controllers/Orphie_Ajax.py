@@ -59,12 +59,6 @@ class AjaxServicesPlugin(BasePlugin):
         map.connect('/ajax/getUserSettings', controller = 'Orphie_Ajax', action = 'getUserSettings')
         map.connect('/ajax/getUploadsPath', controller = 'Orphie_Ajax', action = 'getUploadsPath')
 
-def pluginInit(globj = None):
-    if globj:
-        pass
-
-    return AjaxServicesPlugin()
-
 class OrphieAjaxController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)

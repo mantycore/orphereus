@@ -75,18 +75,15 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
         if id == 'id_RebuildJs':
             return user.canRunMaintenance()
 
-def pluginInit(g = None):
-    if g:
+    def updateGlobals(self, globj):
         booleanValues = [('jsCompressor',
                                ('disableJSRegeneration',
                                )
                               ),
                             ]
 
-        if not g.OPT.eggSetupMode:
-            g.OPT.registerCfgValues(booleanValues, CFG_BOOL)
-
-    return JSCompressorPlugin()
+        if not globj.OPT.eggSetupMode:
+            globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
 
 from OrphieBaseController import *
 

@@ -38,9 +38,7 @@ class RssFeedPlugin(BasePlugin, AbstractPageHook):
             result += auto_discovery_link(atomLink, feed_type = 'atom') + '\n'
         return result
 
-def pluginInit(globj = None):
-    if globj:
-        #h.headCallbacks.append(headCallback)
+    def updateGlobals(self, globj):
         booleanValues = [('rssfeed',
                                ('allowFeeds',
                                )
@@ -49,9 +47,6 @@ def pluginInit(globj = None):
 
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
-
-
-    return RssFeedPlugin()
 
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import *

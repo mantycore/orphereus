@@ -102,8 +102,7 @@ class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
             c.log.append("Search: posts resolving time: %s" % (time.time() - timestart))
         return (posts, count, failInfo, highlights, warnings)
 
-def pluginInit(globj = None):
-    if globj:
+    def updateGlobals(self, globj):
         intValues = [('sphinx',
                                ('sphinxPort',
                                )
@@ -119,5 +118,3 @@ def pluginInit(globj = None):
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(intValues, CFG_INT)
             globj.OPT.registerCfgValues(stringValues, CFG_STRING)
-
-    return SphinxSearchPlugin()

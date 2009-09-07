@@ -56,8 +56,7 @@ class HomeNewsFeedPlugin(BasePlugin, AbstractHomeExtension, AbstractPostingHook)
             meta.Session.add(newTag)
             meta.Session.commit()
 
-def pluginInit(globj = None):
-    if globj:
+    def updateGlobals(self, globj):
         booleanValues = [('newsgenerator',
                                ('onlyAdminsCanPostNews', 'usersCanCommentNews',
                                )
@@ -78,5 +77,3 @@ def pluginInit(globj = None):
             globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
             globj.OPT.registerCfgValues(intValues, CFG_INT)
             globj.OPT.registerCfgValues(stringValues, CFG_STRING)
-
-    return HomeNewsFeedPlugin()

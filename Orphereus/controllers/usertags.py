@@ -165,12 +165,6 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
                 result += ("%s ") % link_to("/$%s/" % t.tag, h.url_for('boardBase', board = '$' + t.tag), title = t.comment)
         return result
 
-def pluginInit(globj = None):
-    if globj:
-        pass
-
-    return UserTagsPlugin()
-
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import *
 

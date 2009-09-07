@@ -20,7 +20,7 @@
 ################################################################################
 
 """
-Implements MCache class and it's fake copy, if memcache is unavailable. 
+Implements MCache class and it's fake copy, if memcache is unavailable.
 """
 from sqlalchemy.ext.serializer import loads, dumps
 
@@ -44,26 +44,26 @@ if Client:
             self.meta = kwargs.get('meta', '')
             del kwargs['key'], kwargs['meta']
             Client.__init__(self, *args, **kwargs)
-            
+
         def delete(self, key, **kwargs):
-            return Client.delete(self, self.uniqeKey+str(key), **kwargs)
-        
+            return Client.delete(self, self.uniqeKey + str(key), **kwargs)
+
         def set(self, key, val, **kwargs):
-            return Client.set(self, self.uniqeKey+str(key), val, **kwargs)
+            return Client.set(self, self.uniqeKey + str(key), val, **kwargs)
 
         def get(self, key):
-            return Client.get(self, self.uniqeKey+str(key))
-        
+            return Client.get(self, self.uniqeKey + str(key))
+
         def get_multi(self, keys, **kw):
-            kw['key_prefix'] = "%s%s" %(self.uniqeKey, kw.get('key_prefix', ''))
+            kw['key_prefix'] = "%s%s" % (self.uniqeKey, kw.get('key_prefix', ''))
             return Client.get_multi(self, keys, **kw)
-        
+
         def set_multi(self, mapping, **kw):
-            kw['key_prefix'] = "%s%s" %(self.uniqeKey, kw.get('key_prefix', ''))
+            kw['key_prefix'] = "%s%s" % (self.uniqeKey, kw.get('key_prefix', ''))
             return Client.set_multi(self, mapping, **kw)
-        
+
         def set_sqla(self, key, obj, **kwargs):
-            '''Saves SQLAlchemy object in a session-restorable form''' 
+            '''Saves SQLAlchemy object in a session-restorable form'''
             return self.set(key, dumps(obj), **kwargs)
 
         def get_sqla(self, key):
@@ -72,8 +72,8 @@ if Client:
             if serial:
                 return loads(serial, self.meta.metadata, self.meta.Session)
             return None
-        
-        def setdefaultEx(self, key, function, *args, **kwargs): 
+
+        def setdefaultEx(self, key, function, *args, **kwargs):
             '''extended dict-like setdefault, returns stored key value, if it exists.\
             Otherwise, executes function(), saves and returns the result'''
             res = self.get(key)
@@ -93,20 +93,20 @@ if Client:
 else:
     class MCache():
         '''Fake class with stub implementation of all methods.
-        It is used when memcache package is unavaliable.''' 
+        It is used when memcache package is unavaliable.'''
         valid = False
-        __init__ = set = get = delete = set_multi = set_sqla = get_sqla = disconnect_all = set_servers =\
-             lambda *args, **kwargs: None
-        get_multi = lambda *args, **kwargs: {}
-        setdefaultEx = setdefault_sqlaEx =\
+        __init__ = set = get = delete = set_multi = set_sqla = get_sqla = disconnect_all = set_servers = \
+             lambda * args, **kwargs: None
+        get_multi = lambda * args, **kwargs: {}
+        setdefaultEx = setdefault_sqlaEx = \
              lambda key, function, *args, **kwargs: function(*args)
-        
+
 class CacheDict(dict):
     def setdefaultEx(self, key, function, *args):
         '''extended setdefault, returns stored value, if it exists.\
         Otherwise, executes function(), saves and returns the result'''
-        try:
+        if key in self:
             return self[key]
-        except:
-            log.debug("Key '%s' not found in cache, calling %s to fill in" %(key, function))
+        else:
+            log.debug("Key '%s' not found in cache, calling %s to fill in" % (key, function))
             return self.setdefault(key, function(*args))

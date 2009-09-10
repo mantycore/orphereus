@@ -31,9 +31,9 @@ class SettingsManagerPlugin(BasePlugin, AbstractMenuProvider):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('hsCfgManage', '/holySynod/configuration/', controller = 'setsmgr', action = 'show')
-        map.connect('hsCfgReset', '/holySynod/configuration/reset/', controller = 'setsmgr', action = 'reset')
-        map.connect('hsCfgClearOrphaned', '/holySynod/configuration/cleanOrphaned/', controller = 'setsmgr', action = 'deleteOrphaned')
+        map.connect('hsCfgManage', '/holySynod/configuration/', controller = 'administration/setsmgr', action = 'show')
+        map.connect('hsCfgReset', '/holySynod/configuration/reset/', controller = 'administration/setsmgr', action = 'reset')
+        map.connect('hsCfgClearOrphaned', '/holySynod/configuration/cleanOrphaned/', controller = 'administration/setsmgr', action = 'deleteOrphaned')
 
 from OrphieBaseController import *
 

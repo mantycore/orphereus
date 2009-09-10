@@ -21,7 +21,7 @@ class ThreadImportPlugin(BasePlugin, AbstractMenuProvider):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('hsImportThread', '/holySynod/import', controller = 'threadImport', action = 'importThread')
+        map.connect('hsImportThread', '/holySynod/import', controller = 'administration/threadImport', action = 'importThread')
 
     def entryPointsList(self):
         return [('import', "ConsoleImport"), ]

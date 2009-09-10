@@ -302,6 +302,10 @@ class Post(object):
     def buildThreadFilter(userInst, threadId):
         return Post.filter(Post.excludeAdminTags(userInst)).filter(Post.id == threadId).options(eagerload('file'))
 
+    @staticmethod
+    def getThread(threadId):
+        return Post.filter(or_(Post.parentid == threadId, Post.id == threadId)).order_by(Post.id.desc()).all()
+
     def deletePost(self, userInst, fileonly = False, checkOwnage = True, reason = "???", rempPass = False):
         opPostDeleted = False
 

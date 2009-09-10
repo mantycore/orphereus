@@ -94,9 +94,12 @@ class ImportWorker():
         newPost = OrphiePost.create(pInfo)
         self.postMappings[pInfo.savedId] = newPost.id
         return newPost
-
+    
+    def savePosts(self, posts, targetThread):
+        for post in posts:
+            self.savePost(self.postToPInfo(post, None, targetThread))
+    
     def importProcess(self):
-        self.reader.fsClass = FieldStorageLike
         startIndex = 1
         if self.target:
             startIndex = 0
@@ -104,8 +107,7 @@ class ImportWorker():
         else:
             opPostInfo = self.postToPInfo(self.reader.thread.posts[0], self.tags)
             opPost = self.savePost(opPostInfo)
-        for post in self.reader.thread.posts[startIndex:]:
-            self.savePost(self.postToPInfo(post, None, opPost))
+        self.savePosts(self.reader.thread.posts[startIndex:], opPost)
         return opPost
 
     def webImport(self, file):
@@ -121,6 +123,7 @@ class ImportWorker():
         except:
             c.message = N_('This file is not a thread archive.')
             return
+        self.reader.fsClass = FieldStorageLike
         return self.importProcess()
 
     def fileImport(self, filename, saveDates, saveIds, tagline, target):
@@ -129,6 +132,7 @@ class ImportWorker():
         self.saveIds = saveIds
         self.target = target
         self.reader = ThreadReader(filename)
+        self.reader.fsClass = FieldStorageLike
         return self.importProcess()
 
 class ThreadimportController(OrphieBaseController):

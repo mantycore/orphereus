@@ -21,7 +21,7 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('hsRebuildJs', '/holySynod/rebuildJs', controller = 'jsCompressor', action = 'rebuild')
+        map.connect('hsRebuildJs', '/holySynod/rebuildJs', controller = 'tools/jsCompressor', action = 'rebuild')
 
     def beforeRequestCallback(self, baseController):
         if g.firstRequest and not g.OPT.disableJSRegeneration:

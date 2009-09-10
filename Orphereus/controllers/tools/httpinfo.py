@@ -17,7 +17,7 @@ class HTTPInfoPlugin(BasePlugin):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('/uaInfo', controller = 'httpinfo', action = 'uaInfo')
+        map.connect('/uaInfo', controller = 'tools/httpinfo', action = 'uaInfo')
 
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import *

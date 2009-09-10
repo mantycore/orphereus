@@ -41,9 +41,12 @@ class OptHolder(object):
     def __init__(self, appName, eggSetupMode = False):
         #in most cases you don't need to change these paths
         self.eggSetupMode = eggSetupMode
-        self.appRoot = os.path.dirname(__file__).replace('/%s/lib' % appName, '').replace('\\%s\\lib' % appName, '')
-        self.appPath = os.path.join(self.appRoot, appName)
-        self.templPath = os.path.join(self.appPath, 'templates')
+        applicationDirectory = os.path.dirname(__file__)
+        applicationDirectory = applicationDirectory.replace('%(sep)s%(appname)s%(sep)slib' % {'appname' : appName, 'sep' : os.path.sep}, '')
+        self.appRoot = os.path.realpath(applicationDirectory)
+
+        self.appPath = os.path.realpath(os.path.join(self.appRoot, appName))
+        self.templPath = os.path.realpath(os.path.join(self.appPath, 'templates'))
 
         self.captchaFont = os.path.join(self.appRoot, 'Orphereus/cfont.ttf')
         self.markupFile = os.path.join(self.appRoot, 'wakabaparse/mark.def')
@@ -328,21 +331,34 @@ class Globals(object):
     def enumeratePlugins(self, basicNamespace, eggSetupMode = False):
         import sys
         import types
-        pluginDir = os.path.join(self.OPT.appPath, 'controllers')
-        sys.path.append(pluginDir)
-        #files = [f for f in os.listdir(pluginDir) if f[:3] == "atl" and  f[-3:]=='.py']
-        files = [f for f in os.listdir(pluginDir) if f[-3:] == '.py']
+        pluginsDir = os.path.realpath(os.path.join(self.OPT.appPath, 'controllers'))
+        sys.path.append(pluginsDir)
+        log.info("Plugins root directory: %s" % pluginsDir)
+
+        namespacesToImport = []
+        for root, dirs, files in os.walk(pluginsDir):
+            fileList = filter(lambda x: x.endswith('.py') and not x.startswith('__'), files)
+            for file in fileList:
+                if file in self.OPT.disabledModules:
+                     log.warning('File ignored due config settings: %s' % file)
+                     fileList.remove(file)
+
+            fileList = map(lambda x: os.path.join(root, x), fileList)
+            fileList = map(lambda x: os.path.splitext(x)[0], fileList)
+            fileList = map(lambda x: x.replace(pluginsDir + os.path.sep, ''), fileList)
+            fileList = map(lambda x: x.replace(os.path.sep, '.'), fileList)
+            namespacesToImport.extend(fileList)
+
         plugins = {}
         log.info('Started plugins enumerator...')
-        for file in files:
-            if not file in self.OPT.disabledModules:
-                [fn, ext] = os.path.splitext(file)
-                log.info('trying %s...' % file)
+        for nsToImport in namespacesToImport:
+            if not nsToImport in self.OPT.disabledModules:
+                #log.info('trying %s...' % nsToImport)
                 mod = None
                 try:
-                    mod = __import__(fn)
+                    mod = __import__(nsToImport, fromlist = '*')
                 except Exception, e:
-                    log.warning('Exception while importing %s: %s' % (file, str(e)))
+                    log.warning('Exception while importing %s: %s' % (nsToImport, str(e)))
                     mod = None
 
                 possiblePlugins = []
@@ -355,7 +371,7 @@ class Globals(object):
                     for possiblePlugin in possiblePlugins:
                         instance = possiblePlugin()
                         plid = instance.pluginId()
-                        log.info("Importing plugin: %s; file= %s" % (plid, file))
+                        #log.info("Importing plugin: %s; base=%s" % (plid, nsToImport))
 
                         if not plugins.has_key(plid):
                             nsName = basicNamespace + mod.__name__
@@ -363,16 +379,20 @@ class Globals(object):
                             instance.setDetails(
                                 namespace = ns,
                                 namespaceName = nsName,
-                                fileName = file,
+                                fileName = ns.__file__.replace(pluginsDir + os.path.sep, '')
                             )
                             plugins[plid] = instance
+                            #log.info("Successfully imported: %s; %s; %s" % (ns, nsName, nsToImport))
                         else:
                             log.critical("POSSIBLE CONFLICT: Plugin with id '%s' already imported!" % plid)
                 else:
-                    log.info('Not a plugin: %s' % file)
+                    log.info('Not a plugin: %s' % nsToImport)
             else:
-                log.warning('Ignored due config settings: %s' % file)
-        log.info("IMPORT STAGE COMPLETED. Imported %d plugins: %s" % (len(plugins), str(plugins.keys())))
+                log.warning('Namespace ignored due config settings: %s' % nsToImport)
+
+        log.info("IMPORT STAGE COMPLETED. Imported %d plugins:" % len(plugins))
+        for plugin in plugins.values():
+            log.info("* %s, %s, %s" % (plugin.pluginId(), plugin.namespaceName(), plugin.fileName()))
         log.info('RESOLVING DEPENDENCIES...')
         needCheck = True
         while needCheck:
@@ -429,14 +449,14 @@ class Globals(object):
         for plugin in self.plugins:
             filters = plugin.filtersList()
             if filters:
-                for filter in filters:
-                    self.filterStack.append(filter)
-                    log.info('Added text filter %s from %s' % (str(filter), plugin.pluginId()))
+                for tfilter in filters:
+                    self.filterStack.append(tfilter)
+                    log.info('Added text filter %s from %s' % (str(tfilter), plugin.pluginId()))
             filters = plugin.globalFiltersList()
             if filters:
-                for filter in filters:
-                    self.globalFilterStack.append(filter)
-                    log.info('Added global text filter %s from %s' % (str(filter), plugin.pluginId()))
+                for tfilter in filters:
+                    self.globalFilterStack.append(tfilter)
+                    log.info('Added global text filter %s from %s' % (str(tfilter), plugin.pluginId()))
 
         log.info('COMPLETED PLUGINS CONNECTION STAGE')
 

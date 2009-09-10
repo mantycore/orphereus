@@ -192,28 +192,15 @@ class OrphieMainController(OrphieBaseController):
             c.boardName = _('Home')
             c.hometemplates = []
             homeModules = g.implementationsOf(AbstractHomeExtension)
-            enabledModules = g.OPT.homeModules
-            for homeModule in homeModules:
-                if homeModule.pluginId() in enabledModules:
-                    c.hometemplates.append(homeModule.templateName)
-                    homeModule.prepareData(self, c)
+            homeModulesDict = {}
+            for module in homeModules:
+                homeModulesDict[module.pluginId()] = module
 
-            """
-            homeModules = {}
-            for plugin in g.plugins:
-                config = plugin.config
-                generator = config.get('homeGenerator', None)
-                template = config.get('homeTemplate', None)
-                if generator and template:
-                    homeModules[plugin.pluginId()] = (generator, template)
-
-            for module in g.OPT.homeModules:
-                if module in homeModules.keys():
-                    generator = homeModules[module][0]
-                    template = homeModules[module][1]
-                    c.hometemplates.append(template)
-                    generator(self, c)
-            """
+            for enabledModuleName in g.OPT.homeModules:
+                if enabledModuleName in homeModulesDict:
+                    enabledModule = homeModulesDict[enabledModuleName]
+                    c.hometemplates.append(enabledModule.templateName)
+                    enabledModule.prepareData(self, c)
 
             if g.OPT.devMode:
                 c.log.append("home: " + str(time.time() - ct))

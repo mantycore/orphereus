@@ -22,7 +22,7 @@
 [DEFAULT]
 debug = false
 
-# settings for automatic mailing of internal engine errors  
+# settings for automatic mailing of internal engine errors
 email_to = admin@gmail.com
 smtp_server = smtp.gmail.com
 error_email_from = robot@domain.ch
@@ -42,7 +42,7 @@ set debug = false
 use = egg:Orphereus
 full_stack = true
 
-# default board and JS language 
+# default board and JS language
 lang = en
 
 cache_dir = %(here)s/data
@@ -59,7 +59,7 @@ core.disabledModules = example.py,httpinfo.py
 core.recovery = false
 
 ################################################################################
-# All settings below are copied into the database, these are only default      #   
+# All settings below are copied into the database, these are only default      #
 # values for engine first-time init or recovery.                               #
 ################################################################################
 
@@ -73,14 +73,14 @@ core.baseDomain = anoma.ch
 core.urlPrefix = /
 # this prevents users from using unsecure passwords
 core.minPassLength = 12
-# file system path for user uploads folder, must be writeable 
+# file system path for user uploads folder, must be writeable
 core.uploadPath = /var/www/OrphieUploads/
-# set this to folder (sym)linked to "Orphereus/public/" 
+# set this to folder (sym)linked to "Orphereus/public/"
 core.staticPath = /var/www/OrhpieStatic/
 core.staticPathWeb = http://wut.anoma.ch/
 # prefix for uploads filenames
 core.filesPathWeb = http://wut.anoma.ch/img1/
-# defines the template customization set 
+# defines the template customization set
 core.actuator = default
 # allowed user languages
 core.languages = en,ru
@@ -110,14 +110,14 @@ memcache.memcachedBans = false
 memcache.banCacheSeconds = 300
 # allows to cache user objects, so they are not read slooowly from the database. 3Kb/user
 memcache.memcachedUsers = false
-# this prefix is for eliminatng data collisions in cache 
-# when using single memcached for several Orphereus instances  
+# this prefix is for eliminatng data collisions in cache
+# when using single memcached for several Orphereus instances
 memcache.cachePrefix = ach
 
 # debug-only features
-# show render and processing times 
+# show render and processing times
 debug.devMode = false
-# use hotshot for profiling every request and saving 
+# use hotshot for profiling every request and saving
 # the result to profileDumpFile. SLOW.
 debug.requestProfiling = false
 debug.profileDumpFile = /tmp/orphie.perf
@@ -176,6 +176,8 @@ sphinx.sphinxPort = 3312
 sphinx.sphinxIndexName = anomach
 sphinx.sphinxPostDatePseudo = date
 sphinx.sphinxPostIdPseudo = postId
+# Enabling this options may decrease search performance
+sphinx.enableFiltersForSearch = false
 antispam.checkIntervalSeconds = 60
 antispam.postLimit = 6
 antispam.threadLimit = 3
@@ -214,15 +216,15 @@ security.alertServer = smtp.gmail.com
 security.alertPort = 587
 security.alertSender = alert@anoma.ch
 security.alertPassword = blablabla
-# enables HTTP referer check 
+# enables HTTP referer check
 security.refControlEnabled = true
 security.refControlList = anoma.ch,anoma.li,localhost,127.0.0.1
 # redirections
 security.fakeLinks = http://www.youtube.com/watch?v=oHg5SJYRHA0,http://meatspin.com/,http://youtube.com/watch?v=Uqot33mczsw,http://youtube.com/watch?v=dZBU6WzBrX8
-# enables useragent check and denies automatic downloaders 
+# enables useragent check and denies automatic downloaders
 security.checkUAs = true
 security.badUAs = Wget,Offline Explorer,Web Downloader,WebCopier,WebZIP,Teleport Pro
-# used for URL substitution 
+# used for URL substitution
 security.obfuscator=http://anonym.to/?$(url)s
 security.spiderTrap = true
 # allows admin users to login only from 127.0.0.1 (or via SSH tunneling). Useful.

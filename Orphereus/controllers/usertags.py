@@ -93,11 +93,11 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
         if not userInst.Anonymous:
             return ns.UserTag.get(name, userInst)
         else:
-             return name != tagName
+            return name != tagName
 
     def tagCreationHandler(self, tagstring, userInst, textFilter):
         afterPostCallbackParams = []
-        newTagString = tagstring
+        #newTagString = tagstring
         from Orphereus.controllers.Orphie_Main import OrphieMainController
         ns = self.namespace()
         tags, dummy, nonexistent = Tag.stringToTagLists(tagstring, False)
@@ -166,7 +166,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
         return result
 
 # this import MUST be placed after public definitions to avoid loop importing
-from OrphieBaseController import *
+from OrphieBaseController import OrphieBaseController
 
 class UsertagsController(OrphieBaseController):
     def __init__(self):

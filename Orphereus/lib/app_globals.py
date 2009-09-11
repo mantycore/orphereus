@@ -329,8 +329,6 @@ class Globals(object):
         self.pluginsDict[plugin.pluginId()] = plugin
 
     def enumeratePlugins(self, basicNamespace, eggSetupMode = False):
-        import sys
-        import types
         pluginsDir = os.path.realpath(os.path.join(self.OPT.appPath, 'controllers'))
         sys.path.append(pluginsDir)
         log.info("Plugins root directory: %s" % pluginsDir)
@@ -340,8 +338,8 @@ class Globals(object):
             fileList = filter(lambda x: x.endswith('.py') and not x.startswith('__'), files)
             for file in fileList:
                 if file in self.OPT.disabledModules:
-                     log.warning('File ignored due config settings: %s' % file)
-                     fileList.remove(file)
+                    log.warning('File ignored due config settings: %s' % file)
+                    fileList.remove(file)
 
             fileList = map(lambda x: os.path.join(root, x), fileList)
             fileList = map(lambda x: os.path.splitext(x)[0], fileList)

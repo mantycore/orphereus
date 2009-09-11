@@ -7,6 +7,7 @@ from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST, engineVersion
 from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 from Orphereus.model import *
+from Orphereus.lib.miscUtils import *
 
 import datetime
 import logging
@@ -35,7 +36,7 @@ class SettingsManagerPlugin(BasePlugin, AbstractMenuProvider):
         map.connect('hsCfgReset', '/holySynod/configuration/reset/', controller = 'administration/setsmgr', action = 'reset')
         map.connect('hsCfgClearOrphaned', '/holySynod/configuration/cleanOrphaned/', controller = 'administration/setsmgr', action = 'deleteOrphaned')
 
-from OrphieBaseController import *
+from Orphereus.controllers.OrphieBaseController import OrphieBaseController
 
 class SetsmgrController(OrphieBaseController):
     def __before__(self):

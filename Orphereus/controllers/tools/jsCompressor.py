@@ -85,7 +85,7 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
 
-from OrphieBaseController import *
+from Orphereus.controllers.OrphieBaseController import OrphieBaseController
 
 class JscompressorController(OrphieBaseController):
     def __before__(self):

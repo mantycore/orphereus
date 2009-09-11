@@ -98,10 +98,10 @@ class OrphiePublicController(OrphieBaseController):
                    redirect_to('captcha', cid = sessionCid)
         """
         if ("Wrong ID" == pic):
-           newCaptcha = Captcha.create()
-           session['anonCaptId'] = newCaptcha.id
-           session.save()
-           redirect_to('captcha', cid = newCaptcha.id)
+            newCaptcha = Captcha.create()
+            session['anonCaptId'] = newCaptcha.id
+            session.save()
+            redirect_to('captcha', cid = newCaptcha.id)
         response.headers['Content-Length'] = len(pic)
         response.headers['Content-Type'] = 'image/png'
         return str(pic)
@@ -125,9 +125,9 @@ class OrphiePublicController(OrphieBaseController):
             if session and session.has_key('anonCaptId'):
                 anonCapt = Captcha.getCaptcha(session['anonCaptId'])
                 if tracker.cid and (str(tracker.cid) != str(anonCapt.id)):
-                     trackerCapt = Captcha.getCaptcha(tracker.cid)
-                     if trackerCapt:
-                         trackerCapt.delete()
+                    trackerCapt = Captcha.getCaptcha(tracker.cid)
+                    if trackerCapt:
+                        trackerCapt.delete()
                 tracker.cid = anonCapt.id
                 meta.Session.commit()
 
@@ -213,10 +213,10 @@ class OrphiePublicController(OrphieBaseController):
                 session['openReg'] = False
                 session.save()
             elif g.OPT.allowRegistration:
-                 session['invite'] = invite
-                 session['iid'] = False
-                 session['openReg'] = True
-                 session.save()
+                session['invite'] = invite
+                session['iid'] = False
+                session['openReg'] = True
+                session.save()
             else:
                 c.currentURL = u''
                 return self.render('login')
@@ -277,7 +277,7 @@ class OrphiePublicController(OrphieBaseController):
         localFilePath = os.path.join(g.OPT.uploadPath, expandedName)
         targetDir = os.path.dirname(localFilePath)
         if not os.path.exists(targetDir):
-           os.makedirs(targetDir)
+            os.makedirs(targetDir)
         localFile = open(localFilePath, 'wb')
         localFile.write(content)
         localFile.close()

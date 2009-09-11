@@ -47,7 +47,7 @@ class AntispamPlugin(BasePlugin, AbstractPostingHook):
             filterCond = and_(Post.date > timeBnd, Post.uidNumber == user.options.uidNumber)
         lastPosts = Post.filter(filterCond).all()
         lastThreads = filter(lambda post: (post.parentid == None), lastPosts)
-       # log.info('Last posts: %s; threads: %s. Limits: %s/%s' %(len(lastPosts), len(lastThreads), g.OPT.postLimit, g.OPT.threadLimit))
+        # log.info('Last posts: %s; threads: %s. Limits: %s/%s' %(len(lastPosts), len(lastThreads), g.OPT.postLimit, g.OPT.threadLimit))
 
         if (len(lastPosts) == g.OPT.postLimit or len(lastThreads) == g.OPT.threadLimit):
             if g.OPT.enableAutoBan:

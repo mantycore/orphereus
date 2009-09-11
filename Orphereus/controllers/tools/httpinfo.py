@@ -20,7 +20,7 @@ class HTTPInfoPlugin(BasePlugin):
         map.connect('/uaInfo', controller = 'tools/httpinfo', action = 'uaInfo')
 
 # this import MUST be placed after public definitions to avoid loop importing
-from OrphieBaseController import *
+from Orphereus.controllers.OrphieBaseController import OrphieBaseController
 
 class HttpinfoController(OrphieBaseController):
     def __init__(self):

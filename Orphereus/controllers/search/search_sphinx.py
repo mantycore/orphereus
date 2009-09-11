@@ -34,24 +34,27 @@ class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
             result = []
 
             postIds = []
-            timestart = time.time()
-            base = meta.Session.query(Post.id).filter(filteringClause)
-            negBase = meta.Session.query(Post.id).filter(not_(filteringClause))
-            positiveCount = base.count()
-            negativeCount = negBase.count()
-            if positiveCount < maxCountForRestrictions or negativeCount < maxCountForRestrictions:
-                # We should select minimal array of post ids to search trough
-                positive = positiveCount <= negativeCount
-                #log.critical("%d : %d" % (positiveCount, negativeCount))
-                if positive:
-                    postIds = base.all()
+            if g.OPT.enableFiltersForSearch:
+                timestart = time.time()
+                base = meta.Session.query(Post.id).filter(filteringClause)
+                negBase = meta.Session.query(Post.id).filter(not_(filteringClause))
+                positiveCount = base.count()
+                negativeCount = negBase.count()
+                if positiveCount < maxCountForRestrictions or negativeCount < maxCountForRestrictions:
+                    # We should select minimal array of post ids to search trough
+                    positive = positiveCount <= negativeCount
+                    #log.critical("%d : %d" % (positiveCount, negativeCount))
+                    if positive:
+                        postIds = base.all()
+                    else:
+                        postIds = negBase.all()
+                    postIds = map(lambda seq: int(seq[0]), postIds)
                 else:
-                    postIds = negBase.all()
-                postIds = map(lambda seq: int(seq[0]), postIds)
+                    warnings.append(_("Search restrictions was ignored due large allowed range"))
+                c.log.append("Search: restriction computing time: %s" % (time.time() - timestart))
             else:
-                warnings.append(_("Search restrictions was ignored due large allowed range"))
+                warnings.append(_("Search restrictions was ignored due config settings"))
 
-            c.log.append("Search: restriction computing time: %s" % (time.time() - timestart))
             timestart = time.time()
 
             mode = SPH_MATCH_EXTENDED2
@@ -103,6 +106,11 @@ class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
         return (posts, count, failInfo, highlights, warnings)
 
     def updateGlobals(self, globj):
+        booleanValues = [('sphinx',
+                               ('enableFiltersForSearch',
+                               )
+                              ),
+                            ]
         intValues = [('sphinx',
                                ('sphinxPort',
                                )
@@ -118,3 +126,4 @@ class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(intValues, CFG_INT)
             globj.OPT.registerCfgValues(stringValues, CFG_STRING)
+            globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)

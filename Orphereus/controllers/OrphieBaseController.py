@@ -31,7 +31,6 @@ import shutil
 import datetime
 import time
 import Image
-import os
 import hashlib
 import string
 import re

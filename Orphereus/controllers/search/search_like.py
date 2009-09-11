@@ -20,7 +20,6 @@ class LikeSearchPlugin(BasePlugin, AbstractSearchModule):
     def search(self, filteringClause, text, page, postsPerPage):
         minLen = 3
         failInfo = None
-        postIds = []
         count = 0
         posts = []
         highlights = {}

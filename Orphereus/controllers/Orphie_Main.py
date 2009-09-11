@@ -521,25 +521,25 @@ class OrphieMainController(OrphieBaseController):
         c.height = request.POST.get('oekaki_y', '300')
 
         if not (isNumber(c.width) or isNumber(c.height)) or (int(c.width) <= 10 or int(c.height) <= 10):
-           c.width = 300
-           c.height = 300
+            c.width = 300
+            c.height = 300
         c.tempid = str(long(time.time() * 10 ** 7))
 
         oekSource = 0
         if isNumber(url) and enablePicLoading:
-           post = Post.getPost(url)
+            post = Post.getPost(url)
 
-           if post.picid:
-              pic = Picture.getPicture(post.picid)
+            if post.picid:
+                pic = Picture.getPicture(post.picid)
 
-              if pic and pic.width:
-                 oekSource = post.id
-                 c.canvas = h.modLink(pic.path, c.userInst.secid())
-                 c.width = pic.width
-                 c.height = pic.height
-                 if pic.animpath:
-                     c.pchPath = h.modLink(pic.animpath, c.userInst.secid())
-        oekaki = Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, c.selfy)
+                if pic and pic.width:
+                    oekSource = post.id
+                    c.canvas = h.modLink(pic.path, c.userInst.secid())
+                    c.width = pic.width
+                    c.height = pic.height
+                    if pic.animpath:
+                        c.pchPath = h.modLink(pic.animpath, c.userInst.secid())
+        Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, c.selfy)
         return self.render('spainter')
 
     def viewAnimation(self, source):
@@ -630,7 +630,6 @@ class OrphieMainController(OrphieBaseController):
         if tagstr:
             response.set_cookie('orphie-lastTagLine', quote_plus(c.postTagLine.encode('utf-8')))
 
-        fileHolder = False
         postRemovemd5 = None
         if self.userInst.Anonymous:
             captchaOk = (g.OPT.allowAnswersWithoutCaptcha and postid) or g.OPT.forbidCaptcha
@@ -721,36 +720,36 @@ class OrphieMainController(OrphieBaseController):
         tempid = request.POST.get('tempid', False)
         animPath = None
         if tempid: # TODO FIXME : move into parser
-           oekaki = Oekaki.get(tempid)
-           animPath = oekaki.animPath
-           file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
-           postMessageInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds</span>' \
-                            % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time / 1000)))
-           if oekaki.source:
-              postMessageInfo += ", source " + self.formatPostReference(oekaki.source)
-           oekaki.delete()
+            oekaki = Oekaki.get(tempid)
+            animPath = oekaki.animPath
+            file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
+            postMessageInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds</span>' \
+                             % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time / 1000)))
+            if oekaki.source:
+                postMessageInfo += ", source " + self.formatPostReference(oekaki.source)
+            oekaki.delete()
         else:
-           file = request.POST.get('file', False)
+            file = request.POST.get('file', False)
 
         postMessageShort = None
         postMessageRaw = None
         if postMessage:
-           if len(postMessage) <= 15000:
-               parser = WakabaParser(g.OPT, thread and thread.id or - 1)
-               maxLinesInPost = int(g.OPT.maxLinesInPost)
-               cutSymbols = g.OPT.cutSymbols
-               parsedMessage = parser.parseWakaba(postMessage, self, lines = maxLinesInPost, maxLen = cutSymbols)
-               fullMessage = parsedMessage[0]
-               postMessageShort = parsedMessage[1]
+            if len(postMessage) <= 15000:
+                parser = WakabaParser(g.OPT, thread and thread.id or - 1)
+                maxLinesInPost = int(g.OPT.maxLinesInPost)
+                cutSymbols = g.OPT.cutSymbols
+                parsedMessage = parser.parseWakaba(postMessage, self, lines = maxLinesInPost, maxLen = cutSymbols)
+                fullMessage = parsedMessage[0]
+                postMessageShort = parsedMessage[1]
 
-               #FIXME: not best solution
-               #if not fullMessage[5:].startswith(post.message):
-               if (not postMessage in fullMessage) or postMessageShort:
-                   postMessageRaw = postMessage
+                #FIXME: not best solution
+                #if not fullMessage[5:].startswith(post.message):
+                if (not postMessage in fullMessage) or postMessageShort:
+                    postMessageRaw = postMessage
 
-               postMessage = fullMessage
-           else:
-               return errorHandler(_('Message is too long'))
+                postMessage = fullMessage
+            else:
+                return errorHandler(_('Message is too long'))
 
         fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
         #log.debug(fileDescriptors)

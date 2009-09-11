@@ -408,17 +408,17 @@ class MaintenanceWorker(object):
             for post in posts:
                 #log.debug("Reparsing %d..." % post.id)
                 if post.messageRaw:
-                   self.currentUserId = post.uidNumber
-                   parser = WakabaParser(g.OPT, post.parentPost and post.parentPost.id or - 1)
-                   maxLinesInPost = int(g.OPT.maxLinesInPost)
-                   cutSymbols = g.OPT.cutSymbols
-                   parsedMessage = parser.parseWakaba(post.messageRaw, self, lines = maxLinesInPost, maxLen = cutSymbols)
-                   fullMessage = parsedMessage[0]
-                   #if painterMark:
-                   #    fullMessage += painterMark
-                   mtnLog.append(LogElement('Info', "Reparsed post %d" % post.id))
-                   post.message = fullMessage
-                   post.messageShort = parsedMessage[1]
+                    self.currentUserId = post.uidNumber
+                    parser = WakabaParser(g.OPT, post.parentPost and post.parentPost.id or - 1)
+                    maxLinesInPost = int(g.OPT.maxLinesInPost)
+                    cutSymbols = g.OPT.cutSymbols
+                    parsedMessage = parser.parseWakaba(post.messageRaw, self, lines = maxLinesInPost, maxLen = cutSymbols)
+                    fullMessage = parsedMessage[0]
+                    #if painterMark:
+                    #    fullMessage += painterMark
+                    mtnLog.append(LogElement('Info', "Reparsed post %d" % post.id))
+                    post.message = fullMessage
+                    post.messageShort = parsedMessage[1]
                 else:
                     if post.message:
                         post.message = fixHtml(post.message)
@@ -471,7 +471,6 @@ class MaintenanceWorker(object):
 
 from paste.script import command
 from Orphereus.config.environment import load_environment
-import Orphereus.lib.app_globals as app_globals
 from paste.deploy import appconfig
 from pylons import config
 
@@ -504,7 +503,7 @@ class MaintenanceCommand(command.Command):
         g._push_object(meta.globj) #zomg teh h4x
 
     def command(self):
-        devIni = self.args[0]
+        #devIni = self.args[0]
         self.setup_config(self.options.config, self.options.path)
 
         LogElement.setPrintAll(True)
@@ -579,7 +578,7 @@ class OrphieMaintenanceController(OrphieBaseController):
         self.requestForMenu("managementMenu")
 
     def mtnAction(self, actid): #, secid):
-        secTestPassed = False
+        #secTestPassed = False
         #if not secid:
         if not self.currentUserIsAuthorized():
             return redirect_to('boardBase')
@@ -592,7 +591,7 @@ class OrphieMaintenanceController(OrphieBaseController):
             return redirect_to('boardBase')
         secTestPassed = True
 
-         #TODO: legacy code. But MAY BE usable on weak hostings with small modifications (constant secid from config)
+        #TODO: legacy code. But MAY BE usable on weak hostings with small modifications (constant secid from config)
         """
         else:
             secidFilePath = os.path.join(g.OPT.appRoot, 'Orphereus/secid')

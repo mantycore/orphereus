@@ -36,7 +36,7 @@ import hashlib
 import re
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
-from OrphieBaseController import OrphieBaseController
+from Orphereus.controllers.OrphieBaseController import OrphieBaseController
 from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.userBan import UserBan
@@ -483,7 +483,7 @@ class OrphieAdminController(OrphieBaseController):
                 meta.Session.commit()
 
             redirect_to('hsMappings', act = 'show', id = id)
-           # return self.render('manageMappings')
+            # return self.render('manageMappings')
         else:
             redirect_to('hsMappings')
 

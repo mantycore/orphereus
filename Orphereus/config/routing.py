@@ -27,7 +27,6 @@ refer to the routes manual at http://routes.groovie.org/docs/
 """
 from pylons import config
 from routes import Mapper
-from pylons import config
 
 import logging
 log = logging.getLogger("ROUTING (%s)" % __name__)

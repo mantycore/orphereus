@@ -49,7 +49,7 @@ class RssFeedPlugin(BasePlugin, AbstractPageHook):
             globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
 
 # this import MUST be placed after public definitions to avoid loop importing
-from OrphieBaseController import *
+from OrphieBaseController import OrphieBaseController
 
 class RssfeedController(OrphieBaseController):
     def __init__(self):

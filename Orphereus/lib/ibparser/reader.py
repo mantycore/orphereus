@@ -59,27 +59,6 @@ class ThreadReader():
         reader.readArc()
         return reader
 
-class ThreadLoader():
-    def __init__(self, url):
-        pass
-'''
-HTTP/1.1 200 OK
-Date: Sat, 22 Aug 2009 17:39:35 GMT
-Server: Apache/2.2.0 (Win32) DAV/2 mod_ssl/2.2.0 OpenSSL/0.9.8a mod_autoindex_color PHP/5.1.1
-Last-Modified: Thu, 02 Oct 2008 07:29:06 GMT
-ETag: "289fa-2d42-2bfd1480"
-Accept-Ranges: bytes
-Content-Length: 11586
-Content-Type: text/html
-
-
-months = ['', u'Jan', u'Feb', u'Mar', u'Apr', u'May', u'Jun', u'Jul', u'Aug', u'Sep', u'Oct', u'Nov', u'Dec']
-regexp = re.compile(r"""\w+, (\d+) (\w+) (\d+) (\d+):(\d+):(\d+).+""")
-data = regexp.findall(date)
-month = months.index(data[0][1])
-return datetime.datetime(int(data[0][2]),month,int(data[0][0]),int(data[0][3]),int(data[0][4]),int(data[0][5]))
-'''
-    
 if (__name__ == '__main__'):
     tr = ThreadReader('pa_2467.tar.gz')
     print tr.test()

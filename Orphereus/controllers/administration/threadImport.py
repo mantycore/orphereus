@@ -42,6 +42,7 @@ from OrphieBaseController import *
 
 class ImportWorker():
     postMappings = {}
+    reader = None
     def fixReferences(self, text):
         def replacer(match):
             postId = match.groups()[0]
@@ -57,6 +58,10 @@ class ImportWorker():
                 return '<a href="%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % urlArgs
         refRe = re.compile('<a href=[^>]+>&gt\;&gt\;(\d+)</a>')
         return refRe.sub(replacer, text)
+    
+    def fileProcessor(self, fn):
+        if self.reader:
+            return processFile(self.reader.fieldStorage(fn), 200, False)
 
     def postToPInfo(self, post, tagstr, parent = None):
         pInfo = empty()
@@ -74,7 +79,7 @@ class ImportWorker():
         pInfo.thread = parent
         pInfo.tags = Tag.stringToTagLists(tagstr, True)[0]
         pInfo.bumplimit = 0
-        fileDescriptors = processFile(self.reader.fieldStorage(post.localName), 200, False)
+        fileDescriptors = self.fileProcessor(post.localName)
         picInfo = existentPic = fileHolder = False
         if fileDescriptors:
             fileHolder = fileDescriptors[0] # Object for file auto-removing
@@ -92,13 +97,13 @@ class ImportWorker():
 
     def savePost(self, pInfo):
         newPost = OrphiePost.create(pInfo)
-        self.postMappings[pInfo.savedId] = newPost.id
+        self.postMappings[str(pInfo.savedId)] = newPost.id
         return newPost
     
     def savePosts(self, posts, targetThread):
         for post in posts:
             self.savePost(self.postToPInfo(post, None, targetThread))
-    
+            
     def importProcess(self):
         startIndex = 1
         if self.target:

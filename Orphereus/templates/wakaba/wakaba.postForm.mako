@@ -80,7 +80,7 @@
             <td>
             	<input type="file" name="file" size="35" />
 				%if c.boardOptions.enableSpoilers:
-            	<div id="tspoiler">&nbsp; <input type="checkbox" name="spoiler" /> ${_('Spoiler')}</div>
+            	<span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler" /> ${_('Spoiler')}</span>
 				%endif
             </td>
         </tr>

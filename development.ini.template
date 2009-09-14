@@ -35,6 +35,7 @@ smtp_use_tls = true
 use = egg:Paste#http
 host = 127.0.0.1
 port = 5000
+scriptName = ""
 
 [app:main]
 # do not change

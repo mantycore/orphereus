@@ -74,7 +74,6 @@
         <a href="${link[0]}">${link[1]}</a><br />
         %endif
     %endfor
-    <a target="_blank" href="${h.url_for('static', page='donate')}">Donate</a><br />
     </div>
 %endif
 

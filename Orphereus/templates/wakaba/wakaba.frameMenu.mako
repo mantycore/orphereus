@@ -112,10 +112,6 @@
         %endfor
     %endif
 
-
-    <div><a href="${h.url_for('static', page='donate')}" target="board">Donate</a></div>
-        </td>
-    </tr>
 </tbody>
 </table>
 

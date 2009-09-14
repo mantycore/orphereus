@@ -36,7 +36,6 @@ ${h.boardMenu([h.itemsToSection(
     %endfor
 %endif
 
-[<a target="_blank" href="${h.url_for('static', page='donate')}">Donate</a>]
 %if not c.userInst.Anonymous:
 [<a href="${h.url_for('logout')}" target="_top" onclick="parent.top.list.location.reload(true);">${_('Logout')}</a>]
 %else:

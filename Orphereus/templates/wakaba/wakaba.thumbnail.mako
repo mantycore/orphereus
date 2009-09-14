@@ -1,7 +1,7 @@
 <%page args="post"/>
 
 %if h.overrideThumbnail(post, c):
-  <%include file="${'wakaba.thumbnail.%s.mako' % c.currentThumbnailHook.thumbnailForPost(post, c)} " args="post=post" />
+  <%include file="${'wakaba.thumbnail.%s.mako' % c.currentThumbnailHook.thumbnailForPost(post, c)}" args="post=post" />
 %else:
   %if post.spoiler:
       <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb" alt="Spoiler"/>

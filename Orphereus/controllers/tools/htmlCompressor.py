@@ -35,7 +35,7 @@ class HTMLCompressorPlugin(BasePlugin):
         result = str(tidy.parseString(str(inp), **options))
         if result:
             return result
-        return inp
+        #return inp
 
     def updateGlobals(self, globj):
         listValues = [('htmlCompressor', ('disableCompressionList',)), ]

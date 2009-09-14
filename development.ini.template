@@ -148,6 +148,7 @@ frontend.useFrameLogo = true
 frontend.frameLogo = logo.png
 frontend.defaultBoard = !
 frontend.obligatoryFrameCreation = false
+frontend.mixOldThreads = true
 frontend.showShortStatistics = true
 frontend.homeModules = newsgenerator,statistics
 frontend.maxTagsCount = 5
@@ -186,8 +187,6 @@ antispam.banTimeDays = 5
 antispam.enableAutoBan = false
 antispam.autoBanAnonTotally = false
 htmlCompressor.disableCompressionList = wakaba/wakaba.spainter.mako,wakaba/wakaba.shiAnimation.mako
-
-mediaplayer.extensionTypeToPlay = music
 
 ##################
 # Board defaults #

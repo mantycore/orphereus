@@ -4,7 +4,7 @@
 <!-- <img src="${g.OPT.staticPathWeb}ohhi.png" alt="oh hi"/> -->
 <object type="application/x-shockwave-flash"
         data="${g.OPT.staticPathWeb}anomi.swf"
-        width="550" height="400">
+        width="600" height="400">
   <param name="movie" value="${g.OPT.staticPathWeb}anomi.swf" />
 </object>
 

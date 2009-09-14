@@ -38,10 +38,12 @@
             <td class="postblock">${_('Highlight my posts')}</td>
             <td><input type="checkbox" name="hlOwnPosts" ${c.userInst.hlOwnPosts and 'checked="checked"' or ""} /></td>
         </tr>
+        %if g.OPT.mixOldThreads:
         <tr>
             <td class="postblock">${_('Mix old threads into boards')}</td>
             <td><input type="checkbox" name="mixOldThreads" ${c.userInst.mixOldThreads and 'checked="checked"' or ""} /></td>
         </tr>
+        %endif
         <tr>
             <td class="postblock">${_('Invert thread sorting mode')}
             %if g.OPT.newsSiteMode:

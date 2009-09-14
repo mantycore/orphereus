@@ -24,7 +24,7 @@ class HTMLCompressorPlugin(BasePlugin):
     def htmlCompress(self, inp):
         if c.template in g.OPT.disableCompressionList:
             return inp
-
+        return inp
         options = dict(output_xhtml = 1,
                     add_xml_decl = 0,
                     indent = 0,

@@ -35,9 +35,19 @@ import os
 import socket, struct, sys
 
 from Orphereus.lib.interfaces.AbstractPageHook import AbstractPageHook
+from Orphereus.lib.interfaces.AbstractPostOutputHook import AbstractPostOutputHook
 
 import logging
 log = logging.getLogger(__name__)
+
+def overrideThumbnail(post, context):
+    outputHooks = g.implementationsOf(AbstractPostOutputHook)
+    for hook in outputHooks:
+        if hook.overrideThumbnail(post, context):
+            c.currentThumbnailHook = hook
+            return True
+    c.currentThumbnailHook = None
+    return False
 
 def doFastRender(post, thread, controller):
     return controller.fastRender('postReply', disableFiltering = True, thread = thread, post = post)

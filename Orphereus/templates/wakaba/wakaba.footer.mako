@@ -7,7 +7,7 @@
 </p>
 
 %if g.OPT.devMode and c.sum:
-<br/>	Total time: ${c.sum} <br/><br/>
+<br/>  Total time: ${c.sum} <br/><br/>
 %endif
 
 
@@ -16,14 +16,14 @@
 %for l in c.log:
 ${l}<br/><br/>
 %endfor
-${"rendering: %s" % str(h.currentTime() - c.renderStartTime)} 
-%if g.OPT.memcachedPosts: 
-	memcached 
-%endif 
+${"rendering: %s" % str(h.currentTime() - c.renderStartTime)}
+%if g.OPT.memcachedPosts:
+  memcached
+%endif
 <br />
 ${"total: %s" % str(h.currentTime() - c.processStartTime)} (${"render %s%% time" % str((h.currentTime() - c.renderStartTime)*100/(h.currentTime() - c.processStartTime))})
 <br />request profiling: ${g.OPT.requestProfiling}
-<span style="display: none"><a href="${h.url_for('botTrap2', confirm=c.userInst.secid())}">.<a></span>
+<span style="display: none"><a href="${h.url_for('botTrap2', confirm=c.userInst.secid())}">.</a></span>
 </font>
 %endif
 

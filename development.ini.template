@@ -187,6 +187,8 @@ antispam.enableAutoBan = false
 antispam.autoBanAnonTotally = false
 htmlCompressor.disableCompressionList = wakaba/wakaba.spainter.mako,wakaba/wakaba.shiAnimation.mako
 
+mediaplayer.extensionTypeToPlay = music
+
 ##################
 # Board defaults #
 ##################

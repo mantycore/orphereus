@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 <div class="postarea" style="">
-    <!-- <img src="${g.OPT.staticPathWeb}ohhi.png" alt="oh hi"/> -->
-    <object width="550" height="400">
-	<param name="movie" value="${g.OPT.staticPathWeb}anomi.swf">
-	<embed src="${g.OPT.staticPathWeb}anomi.swf" width="600" height="400">
-	</embed>
-	</object>
+<!-- <img src="${g.OPT.staticPathWeb}ohhi.png" alt="oh hi"/> -->
+<object type="application/x-shockwave-flash"
+        data="${g.OPT.staticPathWeb}anomi.swf"
+        width="550" height="400">
+  <param name="movie" value="${g.OPT.staticPathWeb}anomi.swf" />
+</object>
 
     <form id="postform" action="${h.url_for('authorizeToUrl', url=c.currentURL)}" method="post">
         <span class="postblock">

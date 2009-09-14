@@ -38,7 +38,7 @@ class ThreadImportPlugin(BasePlugin, AbstractMenuProvider):
         if id == 'id_ImportThread':
             return user.canManageBoards()
 
-from OrphieBaseController import *
+from Orphereus.controllers.OrphieBaseController import *
 
 class ImportWorker():
     postMappings = {}

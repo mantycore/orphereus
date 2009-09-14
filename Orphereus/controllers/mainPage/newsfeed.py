@@ -34,10 +34,10 @@ class HomeNewsFeedPlugin(BasePlugin, AbstractHomeExtension, AbstractPostingHook)
     def beforePostCallback(self, controller, request, **kwargs):
         tags = kwargs.get('tags', None)
         thread = kwargs.get('thread', None)
-        if thread and not(g.OPT.usersCanCommentNews) and (not controller.userInst.isAdmin()):
-            return _("News commenting is not allowed.")
-        if tags and g.OPT.onlyAdminsCanPostNews and (not controller.userInst.isAdmin()) and not(thread and g.OPT.usersCanCommentNews):
-            if g.OPT.newsTag in (tag.tag for tag in tags):
+        if g.OPT.newsTag in (tag.tag for tag in tags):
+            if thread and not(g.OPT.usersCanCommentNews) and (not controller.userInst.isAdmin()):
+                return _("News commenting is not allowed.")
+            if tags and g.OPT.onlyAdminsCanPostNews and (not controller.userInst.isAdmin()) and not(thread and g.OPT.usersCanCommentNews):
                 return _("Posting into board /%s/ is prohibited." % g.OPT.newsTag)
         return None
 

@@ -3,7 +3,14 @@
 
 <table class="thumb">
 <tr><td>
+
+<a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}" \
+%if post.file.extension.newWindow:
+    target="_blank" \
+%endif
+>
 <img src="${g.OPT.staticPathWeb +  h.modLink(post.file.thumpath, c.userInst.secid())}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb"  alt="Preview" />
+</a>
 
 <br />
 </td></tr><tr><td>

@@ -8,6 +8,7 @@ from Orphereus.lib.thirdParty.jsMinify import jsmin
 from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
+from Orphereus.lib.miscUtils import checkAdminIP
 from Orphereus.model import *
 
 import logging

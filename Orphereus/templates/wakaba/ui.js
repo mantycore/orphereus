@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-//copy-pasted from 0chan. 
+//copy-pasted from 0chan.
 function menu_show(id) {
-	if(menu_current != '')
-	{
-		document.getElementById(menu_current).style.display = 'none';
-	}
-	if(id != '' && document.getElementById(id))
-	{
-		document.getElementById(id).style.display = 'block';
-		menu_current = id;
-	}
+  if(menu_current != '')
+  {
+    document.getElementById(menu_current).style.display = 'none';
+  }
+  if(id != '' && document.getElementById(id))
+  {
+    document.getElementById(id).style.display = 'block';
+    menu_current = id;
+  }
 }
 
 function toggle_div(id) {
@@ -118,7 +118,10 @@ function popup_posts(options){
     var content = $("#quickReplyNode"+m[2])
     if (content.size()){
       if (content[0].tagName == 'BLOCKQUOTE')
-        show_it(content.parent().html().split(/<table|<TABLE/)[0])
+      {
+        var re = new RegExp( "<div class=\"replies\">", "gi" );
+        show_it(content.parent().html().split(re)[0])
+      }
       else
         show_it(content.html())
     }else if(popup_posts.cache[m[2]] == 404){
@@ -229,7 +232,8 @@ YForm.prototype = {
         link = $(link)
         var m = link.attr("href").match(/\/(\d+)\D+(\d+)$/)
         if(!m){ //thread
-          m = ["", this.thread_for_link(link), link.attr('href').match(/E(\d+)/)[1]]
+          alert(link.attr('href').match(/>>(\d+)/));
+          m = ["", this.thread_for_link(link), link.attr('href').match(/>>(\d+)/)[1]];
         };
         this.form.parent().insertAfter($("#quickReplyNode" + m[2]))
         this.set_fields(m[1])

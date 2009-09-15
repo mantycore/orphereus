@@ -50,7 +50,6 @@ class ImportWorker():
                 localPostId = self.postMappings[postId]
                 localPost = OrphiePost.getPost(localPostId)
                 localPostLink = h.url_for('thread', **h.postKwargs(localPost.parentid, localPost.id))
-                log.debug(localPostLink)
                 if self.saveIds:
                     urlArgs = (localPostLink, localPostId, postId)
                 else:

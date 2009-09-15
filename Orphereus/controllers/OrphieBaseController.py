@@ -296,8 +296,9 @@ class OrphieBaseController(BaseController):
         post = Post.getPost(postid)
         if post:
             parentid = post.parentid
-            linkText = '%s%s' % (prependGt and '&gt;&gt;' or '', postid)
             linkUrl = h.postUrl(parentid, postid)
+            postid = g.OPT.secondaryIndex and post.secondaryIndex or post.id
+            linkText = '%s%s' % (prependGt and '&gt;&gt;' or '', postid)
             return '<a href="%s" onclick="highlight(%s)">%s</a>' % (linkUrl, postid, linkText)
         else:
             return "%s%s" % (prependGt and '&gt;&gt;' or '', postid)

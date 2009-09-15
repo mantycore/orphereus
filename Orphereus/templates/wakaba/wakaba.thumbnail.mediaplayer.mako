@@ -1,7 +1,7 @@
 <%page args="post"/>
+</a>
 
-<span class="thumb">
-<table>
+<table class="thumb">
 <tr><td>
 <img src="${g.OPT.staticPathWeb +  h.modLink(post.file.thumpath, c.userInst.secid())}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb"  alt="Preview" />
 
@@ -14,6 +14,7 @@
 </object>
 </td></tr>
 </table>
-</span>
+
+<a href="#" style="display: none">
 
 

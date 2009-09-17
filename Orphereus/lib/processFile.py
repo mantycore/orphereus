@@ -54,7 +54,7 @@ def processFile(file, thumbSize = 250, baseEncoded = False):
           return [False, False, False, _(u'Extension "%s" is disallowed') % ext]
 
        relativeFilePath = h.expandName('%s.%s' % (name, ext))
-       localFilePath = os.path.join(g.OPT.uploadPath, relativeFilePath)
+       localFilePath = os.path.join(meta.globj.OPT.uploadPath, relativeFilePath)
        targetDir = os.path.dirname(localFilePath)
        #log.debug(localFilePath)
        #log.debug(targetDir)
@@ -87,7 +87,7 @@ def processFile(file, thumbSize = 250, baseEncoded = False):
            picInfo.sizes = [pic.width, pic.height, pic.thwidth, pic.thheight]
            picInfo.thumbFilePath = pic.thumpath
            picInfo.relativeFilePath = pic.path
-           picInfo.localFilePath = os.path.join(g.OPT.uploadPath, picInfo.relativeFilePath)
+           picInfo.localFilePath = os.path.join(meta.globj.OPT.uploadPath, picInfo.relativeFilePath)
            return [False, picInfo, pic, False]
 
        thumbFilePath = False
@@ -102,7 +102,7 @@ def processFile(file, thumbSize = 250, baseEncoded = False):
                thumbFilePath = h.expandName('%ss.%s' % (name, ext))
            else:
               thumbFilePath = h.expandName('%ss.jpg' % (name))
-           localThumbPath = os.path.join(g.OPT.uploadPath, thumbFilePath)
+           localThumbPath = os.path.join(meta.globj.OPT.uploadPath, thumbFilePath)
            picInfo.thumbFilePath = thumbFilePath
            if not picInfo.sizes:
                picInfo.sizes = Picture.makeThumbnail(localFilePath, localThumbPath, (thumbSize, thumbSize))

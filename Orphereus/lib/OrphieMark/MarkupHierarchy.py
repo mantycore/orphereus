@@ -197,7 +197,6 @@ class LineWithEntities(RootElement):
         RootElement.__init__(self)
         #self.text = text
         #print "input=" + text
-        #print
         parseEntities(text, self)
 
     def __repr__(self):
@@ -244,12 +243,10 @@ class ComplexLine(RootElement):
                         inAmbig = False
                     else:
                         inAmbig = True
-            #print ret
             return ret
 
         tokens = disambiguate(tokens)
         #print ''.join(tokens) == input
-        #print
         parseInlineFormattingElements(tokens, self)
 
     def format(self, level, **kwargs):
@@ -301,9 +298,7 @@ class InlineEntity(RootElement):
         log.debug(sigString)
         postIds = sigString.split(',')
         log.debug(postIds)
-        #for nn, i, j, p in parts:
         for postId in postIds:
-            #postId = self.input[i:j]
             info = self.callbackSource.cbGetPostAndUser(postId)
             post = info[0]
             uidNumber = info[1]
@@ -342,14 +337,13 @@ class InlineEntity(RootElement):
 
     def format(self, level, **kwargs):
         self.callbackSource = kwargs.get('callbackSource', None)
-        #log.debug(kwargs)
         self.globj = kwargs.get('globj', None)
         self.parentId = kwargs.get('parentId', None)
 
         if self.entype == 'reference' and self.callbackSource:
             return self.callbackSource.formatPostReference(int(self.value))
         elif self.entype == 'prooflink':
-            return self.formatSignature(self.value) #'<a href="link">prooflink</a>'
+            return self.formatSignature(self.value)
         elif self.entype == 'htmlchar':
             #TODO: check entities for existence
             return '&%s;' % self.value
@@ -357,8 +351,6 @@ class InlineEntity(RootElement):
             #TODO: check entities for existence
             return '&#%s;' % self.value
         elif self.entype == 'url':
-            #if self.value.startswith('(') and self.value.endswith(')'):
-            #    self.value = self.value[1:-1]
             closingStr = ''
             if self.value.endswith(')'):
                 openedCount = 0
@@ -373,4 +365,4 @@ class InlineEntity(RootElement):
                         closingStr += ')'
                         openedCount += 1
             return "%s%s" % (self.formatLink(self.value, self.globj), closingStr)
-#            return '<a href="%s" target="_blank">%s</a>' % (self.value, self.value)
+

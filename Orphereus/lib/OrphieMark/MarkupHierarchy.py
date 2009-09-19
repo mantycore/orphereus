@@ -261,6 +261,13 @@ class ComplexLine(RootElement):
         if not kwargs.get('insideList', False):
             begin = '<div class="textBlock">'
             end = '</div>'
+            i = 0
+            while i < self.quoteLevel:
+                begin += '<blockquote>'
+                end = "%s%s" % ("</blockquote>", end)
+                i += 1
+            if self.quoteLevel:
+                begin += "&gt; " * self.quoteLevel
         return '%s%s%s' % (begin, childrensData, end)
 
 class InlineEntity(RootElement):

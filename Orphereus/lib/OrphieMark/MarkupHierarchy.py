@@ -93,7 +93,6 @@ class MarkupElement(RootElement):
                 lexer = PythonLexer()
             if lexer:
                 childrensData = highlight(childrensData, lexer, HtmlFormatter(cssclass = "sourcecode"))
-                print HtmlFormatter().get_style_defs('.sourcecode')
             else:
                 childrensData = replaceEntities(childrensData) # Don't forget, PlainText returns unsafe strings inside code blocks!
                 begin += '<pre>'

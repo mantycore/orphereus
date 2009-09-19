@@ -18,6 +18,7 @@ ${c.title} \
 <link rel="shortcut icon" type="image/x-icon" href="${g.OPT.staticPathWeb+g.OPT.favicon}" />
 <link rel="icon" type="image/x-icon" href="${g.OPT.staticPathWeb+g.OPT.favicon}" />
 <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style + ".css")}" title="${c.userInst.style}" />
+<link rel="stylesheet" type="text/css" href="${h.staticFile("highlight.css")}" />
 
 %for jsFile in c.jsFiles:
 <script type="text/javascript" src="${h.staticFile(jsFile)}"></script>
@@ -32,11 +33,11 @@ ${h.headCallback(c)}
 <%include file="wakaba.jsTest.mako" />
 
 %if not c.disableMenu:
-	%if g.OPT.useZMenu:
-		<%include file="wakaba.z-menu.mako" />
-	%else:
-		${c.menuRender}
-	%endif
+  %if g.OPT.useZMenu:
+    <%include file="wakaba.z-menu.mako" />
+  %else:
+    ${c.menuRender}
+  %endif
 %endif
 
 %if not c.disableLogo:
@@ -50,7 +51,7 @@ ${h.headCallback(c)}
 ${self.body()}
 
 %if not c.disableMenu:
-		${c.menuRender}
+    ${c.menuRender}
 %endif
 
 %if not c.disableFooter:

@@ -1,5 +1,15 @@
 from html5lib.html5parser import HTMLParser
 
+#todo: write plugin to regenerate, backgrounds
+def codeHighlightCss(background):
+    from pygments.formatters import HtmlFormatter
+    return HtmlFormatter().get_style_defs('.sourcecode')
+
+def generateHighlightCSS(path, background = None):
+    f = open(path, 'w')
+    f.write(codeHighlightCss(background))
+    f.close()
+
 def fixHtml(html):
     p = HTMLParser()
     return ''.join([token.toxml() for token in p.parseFragment(html).childNodes])
@@ -18,4 +28,7 @@ def replaceAcromyns(text):
                .replace('...', '&#8230;') \
 
 def filterText(text):
+    generateHighlightCSS('d:/highlight.css')
     return replaceAcromyns(replaceEntities(text))
+
+

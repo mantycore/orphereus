@@ -27,7 +27,7 @@ from Orphereus.lib.OrphieMark.EntitiesFormatting import parseEntities
 from Orphereus.lib.OrphieMark.tools import *
 
 from pygments import highlight
-from pygments.lexers import PythonLexer
+from pygments.lexers import *
 from pygments.formatters import HtmlFormatter
 
 import logging
@@ -111,9 +111,45 @@ class MarkupElement(RootElement):
 
         if childrensKwargs.get('insideCode', False):
             lexer = None
-            if self.paramString and self.paramString.lower() == "=python":
-                lexer = PythonLexer()
+            lexersDict = {'=lua' : LuaLexer,
+            '=perl' : PerlLexer,
+            '=python' : PythonLexer,
+            '=python3' : Python3Lexer,
+            '=ruby' : RubyLexer,
+            '=tcl' : TclLexer,
+            '=c' : CLexer,
+            '=cpp' : CppLexer,
+            '=d' : DLexer,
+            '=delphi' : DelphiLexer,
+            '=fortran' : FortranLexer,
+            '=java' : JavaLexer,
+            '=objectivec' : ObjectiveCLexer,
+            '=scala' : ScalaLexer,
+            #'=vala' : ValaLexer,
+            '=csharp' : CSharpLexer,
+            '=vbnet' : VbNetLexer,
+            '=clisp' : CommonLispLexer,
+            '=erlang' : ErlangLexer,
+            '=haskell' : HaskellLexer,
+            '=ocaml' : OcamlLexer,
+            '=scheme' : SchemeLexer,
+            '=bash' : BashLexer,
+            '=mysql' : MySqlLexer,
+            '=sql' : SqlLexer,
+            '=ini' : IniLexer,
+            '=tex' : TexLexer,
+            '=html' : HtmlLexer,
+            '=js' : JavascriptLexer,
+            '=php' : PhpLexer,
+            '=xml' : XmlLexer,
+            }
+            lexername = ''
+            if self.paramString:
+                lexername = self.paramString.lower()
+            lexer = lexersDict.get(lexername, None)
+
             if lexer:
+                lexer = lexer()
                 childrensData = highlight(childrensData, lexer, HtmlFormatter(cssclass = "sourcecode"))
             else:
                 childrensData = replaceEntities(childrensData) # Don't forget, PlainText returns unsafe strings inside code blocks!

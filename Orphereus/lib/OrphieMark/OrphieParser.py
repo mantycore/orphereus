@@ -52,7 +52,7 @@ class OrphieParser(object):
                                   globj = self.globj,
                                   parentId = parentId,
                                   )
-        shortMessage = cutHtmlString(shortMessage, maxLen)
+        #shortMessage = cutHtmlString(shortMessage, maxLen)
         if (shortMessage == fullMessage):
             shortMessage = None
 

@@ -49,7 +49,6 @@ class OptHolder(object):
         self.templPath = os.path.realpath(os.path.join(self.appPath, 'templates'))
 
         self.captchaFont = os.path.join(self.appRoot, 'Orphereus/cfont.ttf')
-        self.markupFile = os.path.join(self.appRoot, 'wakabaparse/mark.def')
         self.disabledModules = []
 
         self.booleanValues = [('core',

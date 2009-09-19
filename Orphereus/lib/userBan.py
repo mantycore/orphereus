@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
+#  Copyright (C) 2009 Hedger                                                   #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #

@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
+#  Copyright (C) 2009 Hedger                                                   #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -38,13 +39,13 @@ def chBoardList():
     sectionId = -1
     section = []
     boards = chGetBoards()
-    
+
     def sectionName(id):
         sName = ''
         if sectionId < len(g.sectionNames):
             sName = g.sectionNames[id]
         return sName
-    
+
     for b in boards:
         if sectionId == -1:
             sectionId = b.options.sectionId
@@ -69,4 +70,3 @@ def chSectionNames(boardlist):
         else:
             sectionNames.append(None)
     return sectionNames
-     

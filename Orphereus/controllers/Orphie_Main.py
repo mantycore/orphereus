@@ -37,7 +37,8 @@ import hashlib
 import re
 import base64
 from beaker.cache import CacheManager
-from wakabaparse import WakabaParser
+#from wakabaparse import WakabaParser
+from Orphereus.lib.OrphieMark.OrphieParser import OrphieParser
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from Orphereus.lib.fileHolder import AngryFileHolder
@@ -611,9 +612,11 @@ class OrphieMainController(OrphieBaseController):
 
         # VERY-VERY BIG CROCK OF SHIT !!!
         # VERY-VERY BIG CROCK OF SHIT !!!
-        postMessage = textFilter(request.POST.get('message', u''))
-        c.postMessage = postMessage
-        postMessage = postMessage.replace('&gt;', '>') #XXX: TODO: this must be fixed in parser
+        #postMessage = textFilter(request.POST.get('message', u''))
+        #c.postMessage = postMessage
+        #postMessage = postMessage.replace('&gt;', '>') #XXX: TODO: this must be fixed in parser
+        postMessage = request.POST.get('message', u'')
+        c.postMessage = textFilter(postMessage)
         # VERY-VERY BIG CROCK OF SHIT !!!
         # VERY-VERY BIG CROCK OF SHIT !!!!
 
@@ -735,10 +738,12 @@ class OrphieMainController(OrphieBaseController):
         postMessageRaw = None
         if postMessage:
             if len(postMessage) <= 15000:
-                parser = WakabaParser(g.OPT, thread and thread.id or - 1)
+                #parser = WakabaParser(g.OPT, thread and thread.id or - 1)
+                parser = OrphieParser(g, self)
                 maxLinesInPost = int(g.OPT.maxLinesInPost)
                 cutSymbols = g.OPT.cutSymbols
-                parsedMessage = parser.parseWakaba(postMessage, self, lines = maxLinesInPost, maxLen = cutSymbols)
+                #parsedMessage = parser.parseWakaba(postMessage, self, lines = maxLinesInPost, maxLen = cutSymbols)
+                parsedMessage = parser.parseMessage(postMessage, thread and thread.id or - 1, maxLinesInPost, cutSymbols)
                 fullMessage = parsedMessage[0]
                 postMessageShort = parsedMessage[1]
 

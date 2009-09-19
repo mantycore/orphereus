@@ -29,7 +29,6 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
             oldLang = get_lang()
             log.info('Generating js files...')
             self.generateFiles()
-            g.caches = {}
             set_lang(oldLang)
 
         if baseController.userInst.isValid():

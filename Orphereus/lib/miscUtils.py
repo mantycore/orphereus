@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -40,14 +40,11 @@ class empty(object):
     pass
 
 class FieldStorageLike(object):
-    def __init__(self,filename,filepath):
+    def __init__(self, filename, filepath):
         self.filename = filename
         self.file = open(filepath, 'rb')
 
-def filterText(text):
-    return text.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace("'",'&#39;') \
-               .replace('"','&quot;').replace('(c)','&copy;').replace('--','&mdash;') \
-               .replace('(tm)','&#153;').replace('...','&#8230;')
+from Orphereus.lib.OrphieMark.tools import filterText as filterText
 
 def isNumber(n):
     if isinstance(n, int):
@@ -59,14 +56,14 @@ def isNumber(n):
             return False
     else:
         return False
-    
+
 def currentUID():
     try:
         if c.userInst:
             return c.userInst.uidNumber
     except:
         pass
-    return -1
+    return - 1
 
 def toLog(event, text, commit = True):
     from Orphereus.model import LogEntry
@@ -85,7 +82,7 @@ def adminAlert(alertStr):
         msg = MIMEMultipart()
         msg['From'] = g.OPT.alertSender
         msg['To'] = mail
-        msg['Subject'] =  '%s: Security alert by %d: ' % (g.OPT.baseDomain, currentUID())
+        msg['Subject'] = '%s: Security alert by %d: ' % (g.OPT.baseDomain, currentUID())
         msg.attach(MIMEText(alertStr))
 
         server.sendmail(g.OPT.alertSender, mail, msg.as_string())
@@ -108,10 +105,10 @@ def checkAdminIP():
         return True
 
 def getRPN(text, operators):
-    whitespace = [' ',"\t","\r","\n","'",'"','\\','<','>']
+    whitespace = [' ', "\t", "\r", "\n", "'", '"', '\\', '<', '>']
     stack = []
-    temp  = []
-    result= []
+    temp = []
+    result = []
     for i in text:
         if i == '(':
             if temp:

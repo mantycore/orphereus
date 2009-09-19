@@ -294,6 +294,8 @@ class OrphieBaseController(BaseController):
     @staticmethod
     def formatPostReference(postid, prependGt = True):
         post = Post.getPost(postid)
+        log.critical(postid)
+        log.critical(post)
         if post:
             parentid = post.parentid
             linkUrl = h.postUrl(parentid, postid)

@@ -37,7 +37,6 @@ import hashlib
 import re
 import base64
 from beaker.cache import CacheManager
-#from wakabaparse import WakabaParser
 from Orphereus.lib.OrphieMark.OrphieParser import OrphieParser
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *

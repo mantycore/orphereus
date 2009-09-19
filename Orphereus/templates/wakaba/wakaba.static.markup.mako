@@ -5,7 +5,8 @@
 
 <div style="text-align: center;">
 <h2 style="margin: 0;">Orphie-Mark</h2>
-<i>(Разметка)</i>
+<h3 style="margin: 0;"><i>(Разметка)</i></h3>
+<h4 style="margin: 0;">Внутри строк</h4>
 </div>
 <table width="80%" class="hlTable" align="center">
     <thead>
@@ -16,20 +17,24 @@
     </thead>
     <tbody>
         <tr>
-            <td align="left">*курсивная надпись* или _курсивная надпись_</td>
+            <td align="left">*курсивная надпись*</td>
             <td align="left"><em>курсивная надпись</em></td>
         </tr>
         <tr>
-            <td align="left">**полужирный текст** или __полужирный текст__</td>
+            <td align="left">**полужирный текст**</td>
             <td align="left"><strong>полужирный текст</strong></td>
         </tr>
         <tr>
-            <td align="left">`код`</td>
-            <td align="left"><tt>код</tt></td>
+            <td align="left">__подчеркнутый текст__</td>
+            <td align="left"><span style="text-decoration: underline;">подчеркнутый текст</span></td>
         </tr>
         <tr>
-            <td align="left">``код` с `бэктиками``</td>
-            <td align="left"><tt>код` с `бэктиками</tt></td>
+            <td align="left">$$перечеркнутый текст$$</td>
+            <td align="left"><span style="text-decoration: line-through">перечеркнутый текст</span></td>
+        </tr>
+        <tr>
+            <td align="left">``код``</td>
+            <td align="left"><pre>код</pre></td>
         </tr>
         <tr>
             <td align="left">>>номер</td>
@@ -63,6 +68,51 @@
             <td align="left">%%спойлер%%</td>
             <td align="left"><span class="spoiler">спойлер</span></td>
         </tr>
+    </tbody>
+</table>
+<div style="text-align: center;">
+<h4 style="margin: 0;">Блоки</h4>
+</div>
+<table width="80%" class="hlTable" align="center">
+    <thead>
+        <tr>
+            <td style="width:50%;"><b>Входит</b></td>
+            <td style="width:50%;"><b>Выходит</b></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td align="left">**<br/>полужирный<br/>блок<br/>**</td>
+            <td align="left">
+                <div style="font-weight: bold;">
+                <p><br/>полужирный<br/>блок<br/></p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="left">*<br/>курсивный<br/>блок<br/>*</td>
+            <td align="left">
+                <div style="font-style: italic;">
+                <p>курсивный<br/>блок</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="left">__<br/>подчеркнутый<br/>блок<br/>__</td>
+            <td align="left">
+                <div style="text-decoration: underline;">
+                <p>подчеркнутый<br/>блок</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="left">$$<br/>перечеркнутый<br/>блок<br/>$$</td>
+            <td align="left">
+                <div style="text-decoration: line-through;">
+                <p>перечеркнутый<br/>блок</p>
+                </div>
+            </td>
+        </tr>
         <tr>
             <td align="left">%%<br/>блок<br/>спойлера<br/>%%</td>
             <td align="left">
@@ -72,16 +122,12 @@
             </td>
         </tr>
         <tr>
-            <td align="left">зачеркивание^H^H^H^H^H или зачеркивание^W</td>
-            <td align="left"><del>зачеркивание</del></td>
-        </tr>
-            <tr>
-            <td align="left">* текст<br/>* текст</td>
-            <td align="left"><ul><li>текст</li><li>текст</li></ul></td>
+            <td align="left">\***<br/>строка<br/>текст<br/>\***</td>
+            <td align="left"><ul><li>строка</li><li>текст</li></ul></td>
         </tr>
     <tr>
-            <td align="left">1. текст<br/>2. текст</td>
-            <td align="left"><ol><li>текст</li><li>текст</li></ol></td>
+            <td align="left">\123<br/>строка<br/>текст<br/>\123</td>
+            <td align="left"><ol><li>строка</li><li>текст</li></ol></td>
         </tr>
         <tr>
             <td align="left">&gt; текст<br/>или<br/>&gt;&gt; текст</td>
@@ -98,8 +144,34 @@
             </td>
         </tr>
         <tr>
-            <td align="left">блок<br/>кода</td>
-            <td align="left"><tt>блок<br/>кода</tt></td>
+            <td align="left">``<br/>блок<br/>кода<br/>``</td>
+            <td align="left"><pre>блок<br/>кода</pre></td>
+        </tr>
+        <tr>
+            <td align="left">``=python<br/>блок кода с подсветкой<br/>``</td>
+            <td align="left"><pre>блок кода с подсветкой</pre>
+            </td>
+        </tr>
+  </tbody>
+</table>
+<div style="text-align: center;">
+<h4 style="margin: 0;">Символы</h4>
+</div>
+<table width="80%" class="hlTable" align="center">
+    <thead>
+        <tr>
+            <td style="width:50%;"><b>Входит</b></td>
+            <td style="width:50%;"><b>Выходит</b></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td align="left">&amp;#число;<br/>&amp;#265;</td>
+            <td align="left">HTML-символ с кодом "число"<br/>&#265;</td>
+        </tr>
+        <tr>
+            <td align="left">&amp;название;<br/>&amp;quot;</td>
+            <td align="left">HTML-символ с названием "название"<br/>&quot;</td>
         </tr>
         <tr>
             <td align="left">-</td>
@@ -123,6 +195,7 @@
         </tr>
     </tbody>
 </table>
+
 
 <h2 style="margin: 0; text-align: center;">Особенности Orphereus</h2>
 <ol>
@@ -168,15 +241,60 @@
 <h3 style="text-align: center;">Поиск и фильтры</h3>
 <a name="search"></a>
 <p>Если поисковый запрос содержит знак двоеточия, то стоящий до двоеточия текст рассматривается как фильтр, внутри
-которого должен происходить поиск. Например, если в поле поиска вписать <i>b+d:поисковый_запрос</i>, 
+которого должен происходить поиск. Например, если в поле поиска вписать <i>b+d:поисковый_запрос</i>,
 то будут найдены все посты, удовлетворяющие "<i>поисковому_запросу</i>" из досок <b>/b/</b> и <b>/d/</b><br/>
 В противном случае осуществляется поиск всех постов, удовлетворяющих запросу (аналогично <i>~:поисковый_запрос</i>)</p>
 <p>
 %if g.OPT.searchPluginId == 'search_sphinx':
-В данный момент разрешен полнотекстовый поиск. Информацию о синтаксисе поисковых запросов можно 
+В данный момент разрешен полнотекстовый поиск. Информацию о синтаксисе поисковых запросов можно
 получить <a href="http://www.sphinxsearch.com/docs/current.html#extended-syntax">здесь</a>
 %else:
 В данный момент полнотекстовый поиск отключен, поиск производится по подстроке.
 %endif
 </p>
+
+<div style="text-align: center;">
+<h4 style="margin: 0;">Поддерживаемые языки подсветки</h4>
+</div>
+<table width="80%" class="hlTable" align="center">
+    <thead>
+        <tr>
+            <td style="width:50%;"><b>Название</b></td>
+            <td style="width:50%;"><b>Язык</b></td>
+        </tr>
+    </thead>
+    <tbody>
+      <tr><td align="left">lua</td><td align="left">Lua</td></tr>
+      <tr><td align="left">perl</td><td align="left">Perl</td></tr>
+      <tr><td align="left">python</td><td align="left">Python</td></tr>
+      <tr><td align="left">python3</td><td align="left">Python 3000</td></tr>
+      <tr><td align="left">ruby</td><td align="left">Ruby</td></tr>
+      <tr><td align="left">tcl</td><td align="left">TCL</td></tr>
+      <tr><td align="left">c</td><td align="left">C</td></tr>
+      <tr><td align="left">cpp</td><td align="left">C++</td></tr>
+      <tr><td align="left">d</td><td align="left">D</td></tr>
+      <tr><td align="left">delphi</td><td align="left">Delphi</td></tr>
+      <tr><td align="left">fortran</td><td align="left">Fortran</td></tr>
+      <tr><td align="left">java</td><td align="left">Java</td></tr>
+      <tr><td align="left">objectivec</td><td align="left">Objective C</td></tr>
+      <tr><td align="left">scala</td><td align="left">Scala</td></tr>
+      <tr><td align="left">csharp</td><td align="left">C#</td></tr>
+      <tr><td align="left">vbnet</td><td align="left">VB.Net</td></tr>
+      <tr><td align="left">clisp</td><td align="left">Common LISP</td></tr>
+      <tr><td align="left">erlang</td><td align="left">Erlang</td></tr>
+      <tr><td align="left">haskell</td><td align="left">Haskell</td></tr>
+      <tr><td align="left">ocaml</td><td align="left">Ocaml</td></tr>
+      <tr><td align="left">scheme</td><td align="left">Scheme</td></tr>
+      <tr><td align="left">bash</td><td align="left">Bash</td></tr>
+      <tr><td align="left">mysql</td><td align="left">MySQL</td></tr>
+      <tr><td align="left">sql</td><td align="left">SQL</td></tr>
+      <tr><td align="left">ini</td><td align="left">Ini files</td></tr>
+      <tr><td align="left">tex</td><td align="left">Tex</td></tr>
+      <tr><td align="left">html</td><td align="left">HTML</td></tr>
+      <tr><td align="left">js</td><td align="left">JavaScript</td></tr>
+      <tr><td align="left">php</td><td align="left">PHP</td></tr>
+      <tr><td align="left">xml</td><td align="left">XML</td></tr>
+    </tbody>
+</table>
+
 <hr />

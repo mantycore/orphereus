@@ -1,4 +1,5 @@
 from Orphereus.lib.OrphieMark.BlockFormatting import parseBlockFormattingElements
+from Orphereus.lib.OrphieMark.tools import fixHtml
 
 import logging
 log = logging.getLogger(__name__)
@@ -21,4 +22,5 @@ class OrphieParser(object):
         fullMessage = rootElement.format(callbackSource = self.callbackSource,
                                   globj = self.globj,
                                   parentId = parentId)
+        fullMessage = fixHtml(fullMessage)
         return (fullMessage, None)

@@ -41,7 +41,7 @@ def parseEntities(input, topBlock):
                    'prooflink' : re.compile('##((\d+)(,\d+)*)'),
                    'htmlchar' : re.compile('&(\w+);'),
                    'htmlcode' : re.compile('&#(\d+);'),
-                   'url' : re.compile(r"\({0,1}(\b(http|https)://([-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]))"),
+                   'url' : re.compile(r"(\b(http|https)://([-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]))"),
       }
 
   rules = []

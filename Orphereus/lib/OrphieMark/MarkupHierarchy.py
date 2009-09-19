@@ -292,7 +292,20 @@ class InlineEntity(RootElement):
             #TODO: check entities for existence
             return '&#%s;' % self.value
         elif self.entype == 'url':
-            if self.value.startswith('(') and self.value.endswith(')'):
-                self.value = self.value[1:-1]
-            return self.formatLink(self.value)
+            #if self.value.startswith('(') and self.value.endswith(')'):
+            #    self.value = self.value[1:-1]
+            closingStr = ''
+            if self.value.endswith(')'):
+                openedCount = 0
+                for ch in self.value:
+                    if ch == '(':
+                        openedCount += 1
+                    elif ch == ')':
+                        openedCount -= 1
+                if openedCount < 0:
+                    while self.value.endswith(')') and openedCount < 0:
+                        self.value = self.value[0:-1]
+                        closingStr += ')'
+                        openedCount += 1
+            return "%s%s" % (self.formatLink(self.value, self.globj), closingStr)
 #            return '<a href="%s" target="_blank">%s</a>' % (self.value, self.value)

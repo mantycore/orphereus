@@ -22,7 +22,7 @@
 
 from Orphereus.lib.OrphieMark.BlockFormatting import parseBlockFormattingElements
 from Orphereus.lib.OrphieMark.tools import fixHtml
-
+from htmlcutstring import cutHtmlString
 import logging
 log = logging.getLogger(__name__)
 
@@ -43,6 +43,20 @@ class OrphieParser(object):
         rootElement = parseBlockFormattingElements(messageText)
         fullMessage = rootElement.format(callbackSource = self.callbackSource,
                                   globj = self.globj,
-                                  parentId = parentId)
+                                  parentId = parentId,
+                                  )
+        while len(rootElement.children) > maxLines:
+            rootElement.children = rootElement.children[:-1]
+
+        shortMessage = rootElement.format(callbackSource = self.callbackSource,
+                                  globj = self.globj,
+                                  parentId = parentId,
+                                  )
+        shortMessage = cutHtmlString(shortMessage, maxLen)
+        if (shortMessage == fullMessage):
+            shortMessage = None
+
         fullMessage = fixHtml(fullMessage)
-        return (fullMessage, None)
+        if shortMessage:
+            shortMessage = fixHtml(shortMessage)
+        return (fullMessage, shortMessage)

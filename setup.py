@@ -62,7 +62,8 @@ setup(
     url = 'http://orphereus.anoma.ch',
     install_requires = ["Pylons>=0.9.7", "sqlalchemy>=0.5.1",
                       "mutagen>=1.15", "pil>=1.1.6",
-                      "egenix-mx-base>=3.1.0", "SimpleParse>=2.1.0a1",
+                      #"egenix-mx-base>=3.1.0", "SimpleParse>=2.1.0a1",
+                      "htmlcutstring"
                       "pycaptcha>=0.4", "html5lib>=0.11.0"],
     packages = find_packages(exclude = ['ez_setup']),
     include_package_data = True,

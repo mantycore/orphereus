@@ -608,16 +608,8 @@ class OrphieMainController(OrphieBaseController):
         if baseEncoded:
             textFilter = base64TextFilter
 
-
-        # VERY-VERY BIG CROCK OF SHIT !!!
-        # VERY-VERY BIG CROCK OF SHIT !!!
-        #postMessage = textFilter(request.POST.get('message', u''))
-        #c.postMessage = postMessage
-        #postMessage = postMessage.replace('&gt;', '>') #XXX: TODO: this must be fixed in parser
         postMessage = request.POST.get('message', u'')
         c.postMessage = textFilter(postMessage)
-        # VERY-VERY BIG CROCK OF SHIT !!!
-        # VERY-VERY BIG CROCK OF SHIT !!!!
 
         postTitle = textFilter(request.POST.get('title', u''))
         c.postTitle = postTitle

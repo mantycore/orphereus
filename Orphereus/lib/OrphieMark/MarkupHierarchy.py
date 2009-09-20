@@ -226,6 +226,7 @@ class ComplexLine(RootElement):
         delims = re.compile("(\*|\$\$|%%|__|``)")
         tokens = delims.split(input)
         tokens = filter(lambda token: token, tokens) #remove empty
+        #print tokens
 
         def disambiguate(tokens):
             #print tokens
@@ -243,6 +244,8 @@ class ComplexLine(RootElement):
                         inAmbig = False
                     else:
                         inAmbig = True
+            if inAmbig:
+                ret.append('*')
             return ret
 
         tokens = disambiguate(tokens)

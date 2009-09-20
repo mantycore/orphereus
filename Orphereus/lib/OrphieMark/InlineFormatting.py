@@ -31,6 +31,7 @@ def parseInlineFormattingElements(tokens, topBlock):
   tagStack = []
   buffer = ""
   currentBlocks = [topBlock]
+  #print tokens
   for token in tokens:
     if token in tagDelimiters and (not plainTextMode or token == codeToken):
       if not token in tagStack:
@@ -46,7 +47,6 @@ def parseInlineFormattingElements(tokens, topBlock):
           plainTextMode = True
           lineClass = PlainText
 
-        params = None
         newElement = InlineMarkupElement(token)
         currentElement.children.append(newElement)
         currentBlocks.append(newElement)
@@ -63,6 +63,7 @@ def parseInlineFormattingElements(tokens, topBlock):
         if token == codeToken:
           plainTextMode = False
           lineClass = LineWithEntities
+        #currentElement = currentBlocks[-1]
     else:
       buffer += token
   if buffer:

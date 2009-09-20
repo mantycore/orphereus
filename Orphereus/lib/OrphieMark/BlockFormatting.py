@@ -53,7 +53,7 @@ def  parseBlockFormattingElements(input):
     currentElement = topBlock
 
     for line in lines:
-        print ">> " + line
+        #print ">> " + line
         tokenWithParams = False
         lineIsToken = line in tagDelimiters
         token = line

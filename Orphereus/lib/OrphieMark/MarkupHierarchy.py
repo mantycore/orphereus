@@ -124,7 +124,7 @@ class MarkupElement(RootElement):
             '=fortran' : FortranLexer,
             '=java' : JavaLexer,
             '=objectivec' : ObjectiveCLexer,
-            '=scala' : ScalaLexer,
+            #'=scala' : ScalaLexer,
             #'=vala' : ValaLexer,
             '=csharp' : CSharpLexer,
             '=vbnet' : VbNetLexer,

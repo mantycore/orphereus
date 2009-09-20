@@ -48,14 +48,16 @@ class OrphieParser(object):
         while len(rootElement.children) > maxLines:
             rootElement.children = rootElement.children[:-1]
 
-        shortMessage = rootElement.format(callbackSource = self.callbackSource,
-                                  globj = self.globj,
-                                  parentId = parentId,
-                                  )
+        shortMessage = None
+        if len(fullMessage) > maxLen:
+            shortMessage = rootElement.format(callbackSource = self.callbackSource,
+                                      globj = self.globj,
+                                      parentId = parentId,
+                                      )
 
-        shortMessage = cutHtmlString(shortMessage, maxLen)
-        if (shortMessage == fullMessage):
-            shortMessage = None
+            shortMessage = cutHtmlString(shortMessage, maxLen)
+            if (shortMessage == fullMessage):
+                shortMessage = None
 
         fullMessage = fixHtml(fullMessage)
         if shortMessage:

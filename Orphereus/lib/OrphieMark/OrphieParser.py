@@ -48,11 +48,12 @@ class OrphieParser(object):
                                   )
         #print fullMessage
         #printTree(rootElement)
-        while len(rootElement.children) > maxLines:
-            rootElement.children = rootElement.children[:-1]
 
         shortMessage = None
-        if len(fullMessage) > maxLen:
+        if len(fullMessage) > maxLen or len(rootElement.children) > maxLines:
+            while len(rootElement.children) > maxLines:
+                rootElement.children = rootElement.children[:-1]
+
             shortMessage = rootElement.format(callbackSource = self.callbackSource,
                                       globj = self.globj,
                                       parentId = parentId,

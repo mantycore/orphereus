@@ -50,7 +50,6 @@ def replaceAcromyns(text):
                .replace('...', '&#8230;') \
 
 def filterText(text):
-    generateHighlightCSS('d:/highlight.css')
     return replaceAcromyns(replaceEntities(text))
 
 

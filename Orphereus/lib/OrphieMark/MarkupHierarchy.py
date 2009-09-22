@@ -150,7 +150,7 @@ class MarkupElement(RootElement):
 
             if lexer:
                 lexer = lexer()
-                childrensData = highlight(childrensData, lexer, HtmlFormatter(cssclass = "sourcecode"))
+                childrensData = highlight(childrensData, lexer, HtmlFormatter(cssclass = "sourcecode", linenos = 'table'))
             else:
                 childrensData = replaceEntities(childrensData) # Don't forget, PlainText returns unsafe strings inside code blocks!
                 begin += '<pre>'

@@ -48,22 +48,23 @@ class OrphieParser(object):
                                   )
         #print fullMessage
         #printTree(rootElement)
+        fullMessage = fixHtml(fullMessage)
 
         shortMessage = None
         if len(fullMessage) > maxLen or len(rootElement.children) > maxLines:
-            while len(rootElement.children) > maxLines:
-                rootElement.children = rootElement.children[:-1]
+            if len(rootElement.children) > maxLines:
+                rootElement.children = rootElement.children[:maxLines]
 
             shortMessage = rootElement.format(callbackSource = self.callbackSource,
                                       globj = self.globj,
                                       parentId = parentId,
                                       )
 
-            shortMessage = cutHtmlString(shortMessage, maxLen)
-            if (shortMessage == fullMessage):
-                shortMessage = None
+            if len(shortMessage) > maxLen:
+                shortMessage = cutHtmlString(shortMessage, maxLen)
+                if (shortMessage == fullMessage):
+                    shortMessage = None
 
-        fullMessage = fixHtml(fullMessage)
         if shortMessage:
             shortMessage = fixHtml(shortMessage)
         return (fullMessage, shortMessage)

@@ -21,6 +21,8 @@
 ################################################################################
 
 from html5lib.html5parser import HTMLParser
+from html5lib import treebuilders, treewalkers, serializer
+from lxml import etree
 
 #todo: write plugin to regenerate, backgrounds
 def codeHighlightCss(background):
@@ -52,4 +54,65 @@ def replaceAcromyns(text):
 def filterText(text):
     return replaceAcromyns(replaceEntities(text))
 
+def processItem(node, sentinel, level = 0):
+    if node.text:
+        if sentinel.slen < sentinel.maxlen:
+            delta = sentinel.maxlen - sentinel.slen
+            if len(node.text) > delta:
+                node.text = node.text[:delta]
+            sentinel.slen += len(node.text)
+        else:
+            node.text = ''
 
+    subs = node.getchildren()
+    for subitem in subs:
+        if not sentinel.stop:
+            processItem(subitem, sentinel, level + 1)
+        else:
+            node.remove(subitem)
+
+    if node.tail:
+        if sentinel.slen < sentinel.maxlen:
+            delta = sentinel.maxlen - sentinel.slen
+            if len(node.tail) > delta:
+                node.tail = node.tail[:delta]
+            sentinel.slen += len(node.tail)
+        else:
+            node.tail = ''
+
+#python 2.6 only
+class Sentinel(object):
+    def __init__(self, maxlen):
+        self.maxlen = maxlen
+        self._slen = 0
+
+    @property
+    def stop(self):
+        return self.maxlen <= self.slen
+
+    @property
+    def slen(self):
+        return self._slen
+
+    @slen.setter
+    def slen(self, slen):
+        self._slen = slen
+
+def cutHtml(text, max_len):
+    parser = HTMLParser(tree = treebuilders.getTreeBuilder("lxml"))
+    etree_document = parser.parse(text)
+    sentinel = Sentinel(max_len)
+    processItem(etree_document.getroot(), sentinel)
+
+    if sentinel.stop:
+        walker = treewalkers.getTreeWalker("lxml")
+        stream = walker(etree_document.getroot().getchildren()[1])
+        s = serializer.htmlserializer.HTMLSerializer(omit_optional_tags = False)
+        output_generator = s.serialize(stream)
+
+        output = []
+        for item in output_generator:
+            output.append(item)
+        output = output[1:-1] # remove <body></body>
+        return u"%s..." % ''.join(output)
+    return None

@@ -21,7 +21,7 @@
 ################################################################################
 
 from Orphereus.lib.OrphieMark.BlockFormatting import parseBlockFormattingElements
-from Orphereus.lib.OrphieMark.tools import fixHtml
+from Orphereus.lib.OrphieMark.tools import fixHtml, cutHtml
 from Orphereus.lib.thirdParty.htmlcutstring import cutHtmlString
 import logging
 log = logging.getLogger(__name__)
@@ -46,7 +46,6 @@ class OrphieParser(object):
                                   globj = self.globj,
                                   parentId = parentId,
                                   )
-        #print fullMessage
         #printTree(rootElement)
         fullMessage = fixHtml(fullMessage)
 
@@ -61,10 +60,10 @@ class OrphieParser(object):
                                       )
 
             if len(shortMessage) > maxLen:
-                shortMessage = cutHtmlString(shortMessage, maxLen)
-                if (shortMessage == fullMessage):
-                    shortMessage = None
+                shortMessage = cutHtml(shortMessage, maxLen)
 
         if shortMessage:
             shortMessage = fixHtml(shortMessage)
+        #print fullMessage
+        #print shortMessage
         return (fullMessage, shortMessage)

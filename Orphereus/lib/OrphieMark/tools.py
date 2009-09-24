@@ -59,7 +59,7 @@ def processItem(node, sentinel, level = 0):
         if sentinel.slen < sentinel.maxlen:
             delta = sentinel.maxlen - sentinel.slen
             if len(node.text) > delta:
-                node.text = node.text[:delta]
+                node.text = u"%s…" % node.text[:delta]
             sentinel.slen += len(node.text)
         else:
             node.text = ''
@@ -75,7 +75,7 @@ def processItem(node, sentinel, level = 0):
         if sentinel.slen < sentinel.maxlen:
             delta = sentinel.maxlen - sentinel.slen
             if len(node.tail) > delta:
-                node.tail = node.tail[:delta]
+                node.tail = u"%s…" % node.tail[:delta]
             sentinel.slen += len(node.tail)
         else:
             node.tail = ''
@@ -114,5 +114,5 @@ def cutHtml(text, max_len):
         for item in output_generator:
             output.append(item)
         output = output[1:-1] # remove <body></body>
-        return u"%s..." % ''.join(output)
+        return ''.join(output)
     return None

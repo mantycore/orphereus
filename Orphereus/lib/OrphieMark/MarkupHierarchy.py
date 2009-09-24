@@ -256,6 +256,8 @@ class ComplexLine(RootElement):
         childrensData = ''
         for child in self.children:
             childrensData += child.format(level + 1, **kwargs)
+        if not self.children:
+            childrensData = u'<br/>'
         begin = ''
         end = ''
         if not kwargs.get('insideList', False):

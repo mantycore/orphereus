@@ -80,6 +80,7 @@ def processItem(node, sentinel, level = 0):
         else:
             node.tail = ''
 
+"""
 #python 2.6 only
 class Sentinel(object):
     def __init__(self, maxlen):
@@ -97,7 +98,27 @@ class Sentinel(object):
     @slen.setter
     def slen(self, slen):
         self._slen = slen
+"""
 
+class Sentinel(object):
+    def __init__(self, maxlen):
+        self.maxlen = maxlen
+        self._slen = 0
+
+    #@property
+    def stopGet(self):
+        return self.maxlen <= self.slen
+    
+    #@property
+    def slenGet(self):
+        return self._slen
+
+    #@slen.setter
+    def slenSet(self, slen):
+        self._slen = slen
+    slen = property(fget=slenGet, fset=slenSet)
+    stop = property(fget=stopGet) #, fset=slenSet)
+    
 def cutHtml(text, max_len):
     parser = HTMLParser(tree = treebuilders.getTreeBuilder("lxml"))
     etree_document = parser.parse(text)

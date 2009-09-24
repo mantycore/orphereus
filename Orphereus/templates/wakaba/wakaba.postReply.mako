@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 <%page args="thread, post"/>
 
+<a name="${post.id}"></a>
 <table id="quickReplyNode${post.id}"><tbody><tr>
 <td class="doubledash">&gt;&gt;</td>
 <td

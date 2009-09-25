@@ -305,24 +305,18 @@ class InlineEntity(RootElement):
         #log.debug(sigString)
         postIds = sigString.split(',')
         #log.debug(postIds)
-        print sigString
         for postId in postIds:
-            print "=================="
             opLabel = postId.lower() == 'op'
-            print opLabel
-            print self.parentId
             if opLabel:
                 if self.parentId == -1:
                     continue
                 else:
                     postId = self.parentId
                     pseudos[postId] = "OP"
-            print postId
             info = self.callbackSource.cbGetPostAndUser(postId)
             post = info[0]
             uidNumber = info[1]
             if post:
-                print post
                 disablePL = (not self.globj.OPT.boardWideProoflabels) and \
                             (self.parentId == -1 or \
                             (post.parentid != self.parentId and post.id != self.parentId))
@@ -332,7 +326,6 @@ class InlineEntity(RootElement):
                     valid[postId] = post.id
                 else:
                     invalid[postId] = post.id
-            print "---"
 
         def addSpan(className, idList, result, pseudos):
             retval = u''
@@ -369,7 +362,6 @@ class InlineEntity(RootElement):
         if self.entype == 'reference' and self.callbackSource:
             return self.callbackSource.formatPostReference(int(self.value))
         elif self.entype == 'prooflink':
-            print ">>" + self.value
             return self.formatSignature(self.value)
         elif self.entype == 'htmlchar':
             #TODO: check entities for existence

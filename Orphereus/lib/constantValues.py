@@ -22,7 +22,7 @@
 
 from pylons.i18n import _, ungettext, N_
 
-decimalVersion = "1.2.1"
+decimalVersion = "1.2.5"
 engineVersion = "Orphereus %s" % decimalVersion
 
 id3FieldsNames = {

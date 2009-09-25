@@ -22,7 +22,6 @@
 
 from Orphereus.lib.OrphieMark.BlockFormatting import parseBlockFormattingElements
 from Orphereus.lib.OrphieMark.tools import fixHtml, cutHtml
-from Orphereus.lib.thirdParty.htmlcutstring import cutHtmlString
 import logging
 log = logging.getLogger(__name__)
 

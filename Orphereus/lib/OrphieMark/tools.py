@@ -55,14 +55,18 @@ def filterText(text):
     return replaceAcromyns(replaceEntities(text))
 
 def processItem(node, sentinel, level = 0):
-    if node.text:
-        if sentinel.slen < sentinel.maxlen:
-            delta = sentinel.maxlen - sentinel.slen
-            if len(node.text) > delta:
-                node.text = u"%s…" % node.text[:delta]
-            sentinel.slen += len(node.text)
-        else:
-            node.text = ''
+    def processText(text, sentinel):
+        if text:
+            if sentinel.slen < sentinel.maxlen:
+                delta = sentinel.maxlen - sentinel.slen
+                if len(text) > delta:
+                    text = u"%s…" % text[:delta]
+                sentinel.slen += len(text)
+            else:
+                text = ''
+        return text
+
+    node.text = processText(node.text, sentinel)
 
     subs = node.getchildren()
     for subitem in subs:
@@ -71,14 +75,7 @@ def processItem(node, sentinel, level = 0):
         else:
             node.remove(subitem)
 
-    if node.tail:
-        if sentinel.slen < sentinel.maxlen:
-            delta = sentinel.maxlen - sentinel.slen
-            if len(node.tail) > delta:
-                node.tail = u"%s…" % node.tail[:delta]
-            sentinel.slen += len(node.tail)
-        else:
-            node.tail = ''
+    node.tail = processText(node.tail, sentinel)
 
 """
 #python 2.6 only
@@ -105,20 +102,17 @@ class Sentinel(object):
         self.maxlen = maxlen
         self._slen = 0
 
-    #@property
     def stopGet(self):
         return self.maxlen <= self.slen
-    
-    #@property
+
     def slenGet(self):
         return self._slen
 
-    #@slen.setter
     def slenSet(self, slen):
         self._slen = slen
-    slen = property(fget=slenGet, fset=slenSet)
-    stop = property(fget=stopGet) #, fset=slenSet)
-    
+    slen = property(fget = slenGet, fset = slenSet)
+    stop = property(fget = stopGet)
+
 def cutHtml(text, max_len):
     parser = HTMLParser(tree = treebuilders.getTreeBuilder("lxml"))
     etree_document = parser.parse(text)

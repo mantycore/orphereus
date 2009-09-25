@@ -60,7 +60,7 @@ def tokenizeInput(input, rules, level = 0):
 def parseEntities(input, topBlock):
   from Orphereus.lib.OrphieMark.MarkupHierarchy import PlainText, InlineEntity
   entitiesRegexps = {'reference' : re.compile('>>(\d+)'),
-                   'prooflink' : re.compile('##((\d+)(,\d+)*)'),
+                   'prooflink' : re.compile('##((\d+|(op))(,(\d+|(op)))*)'),
                    'htmlchar' : re.compile('&(\w+);'),
                    'htmlcode' : re.compile('&#(\d+);'),
                    'url' : re.compile(r"(\b(http|https)://([-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]))"),

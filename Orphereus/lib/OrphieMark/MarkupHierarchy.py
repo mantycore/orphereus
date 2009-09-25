@@ -299,15 +299,30 @@ class InlineEntity(RootElement):
         valid = {}
         invalid = {}
         unknown = {}
+
+        pseudos = {}
         result = u''
-        log.debug(sigString)
+        #log.debug(sigString)
         postIds = sigString.split(',')
-        log.debug(postIds)
+        #log.debug(postIds)
+        print sigString
         for postId in postIds:
+            print "=================="
+            opLabel = postId.lower() == 'op'
+            print opLabel
+            print self.parentId
+            if opLabel:
+                if self.parentId == -1:
+                    continue
+                else:
+                    postId = self.parentId
+                    pseudos[postId] = "OP"
+            print postId
             info = self.callbackSource.cbGetPostAndUser(postId)
             post = info[0]
             uidNumber = info[1]
             if post:
+                print post
                 disablePL = (not self.globj.OPT.boardWideProoflabels) and \
                             (self.parentId == -1 or \
                             (post.parentid != self.parentId and post.id != self.parentId))
@@ -317,8 +332,9 @@ class InlineEntity(RootElement):
                     valid[postId] = post.id
                 else:
                     invalid[postId] = post.id
+            print "---"
 
-        def addSpan(className, idList, result):
+        def addSpan(className, idList, result, pseudos):
             retval = u''
             if result:
                 retval += ","
@@ -327,17 +343,22 @@ class InlineEntity(RootElement):
                 retval += '<span class="%s">##' % className
             sep = u''
             for i in idList:
-                retval += sep + self.callbackSource.formatPostReference(i, False)
+                proofResult = ''
+                if pseudos.get(i):
+                    proofResult = self.callbackSource.formatPostReference(i, False, linkText = pseudos[i])
+                else:
+                    proofResult = self.callbackSource.formatPostReference(i, False)
+                retval += sep + proofResult
                 sep = ','
             retval += '</span>'
             return retval
 
         if invalid:
-            result += addSpan("badsignature", invalid, result)
+            result += addSpan("badsignature", invalid, result, pseudos)
         if valid:
-            result += addSpan("signature", valid, result)
+            result += addSpan("signature", valid, result, pseudos)
         if unknown:
-            result += addSpan("nonsignature", unknown, result)
+            result += addSpan("nonsignature", unknown, result, pseudos)
         return result
 
     def format(self, level, **kwargs):
@@ -348,6 +369,7 @@ class InlineEntity(RootElement):
         if self.entype == 'reference' and self.callbackSource:
             return self.callbackSource.formatPostReference(int(self.value))
         elif self.entype == 'prooflink':
+            print ">>" + self.value
             return self.formatSignature(self.value)
         elif self.entype == 'htmlchar':
             #TODO: check entities for existence

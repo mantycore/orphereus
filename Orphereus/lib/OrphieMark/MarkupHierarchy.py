@@ -104,7 +104,7 @@ class MarkupElement(RootElement):
 
         if itemize:
             for child in self.children:
-                childrensData = "%s<li>%s</li>\n" % (childrensData, child.format(level + 1, insideList = True))
+                childrensData = "%s<li>%s</li>\n" % (childrensData, child.format(level + 1, insideList = True, **childrensKwargs))
         else:
             for child in self.children:
                 childrensData = "%s%s" % (childrensData, child.format(level + 1, **childrensKwargs))
@@ -361,7 +361,7 @@ class InlineEntity(RootElement):
 
         if self.entype == 'reference' and self.callbackSource:
             return self.callbackSource.formatPostReference(int(self.value))
-        elif self.entype == 'prooflink':
+        elif self.entype == 'prooflink' and self.callbackSource and self.globj and self.parentId:
             return self.formatSignature(self.value)
         elif self.entype == 'htmlchar':
             #TODO: check entities for existence
@@ -369,7 +369,7 @@ class InlineEntity(RootElement):
         elif self.entype == 'htmlcode':
             #TODO: check entities for existence
             return '&#%s;' % self.value
-        elif self.entype == 'url':
+        elif self.entype == 'url' and self.globj:
             closingStr = ''
             if self.value.endswith(')'):
                 openedCount = 0

@@ -184,8 +184,8 @@ class InlineMarkupElement(RootElement):
         elif self.tag == '%%':
             begin = '<span class="spoiler">'
         elif self.tag == '``':
-            begin = '<span class="code"><pre>'
-            end = '</pre></span>'
+            begin = '<code>'
+            end = '</code>'
             childrensKwargs['insideCode'] = True
 
         for child in self.children:

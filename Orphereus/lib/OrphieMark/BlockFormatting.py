@@ -96,5 +96,7 @@ def  parseBlockFormattingElements(input):
                 buffer.append(line)
 
     currentElement = currentBlocks.pop()
+    while buffer and len(buffer[-1]) == 0:
+        buffer = buffer[:-1]
     buffer = processChildren(buffer, blockClass, currentElement)
     return topBlock

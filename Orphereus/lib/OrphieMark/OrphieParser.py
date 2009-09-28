@@ -59,6 +59,7 @@ class OrphieParser(object):
             shortMessage = rootElement.format(callbackSource = self.callbackSource,
                                       globj = self.globj,
                                       parentId = parentId,
+                                      codeLineNumbers = None
                                       )
 
             if len(shortMessage) > maxLen:

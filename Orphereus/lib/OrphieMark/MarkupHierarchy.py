@@ -148,9 +148,10 @@ class MarkupElement(RootElement):
                 lexername = self.paramString.lower()
             lexer = lexersDict.get(lexername, None)
 
+            numberLines = kwargs.get('codeLineNumbers', 'table')
             if lexer:
                 lexer = lexer()
-                childrensData = highlight(childrensData, lexer, HtmlFormatter(cssclass = "sourcecode", linenos = 'table'))
+                childrensData = highlight(childrensData, lexer, HtmlFormatter(cssclass = "sourcecode", linenos = numberLines))
             else:
                 childrensData = replaceEntities(childrensData) # Don't forget, PlainText returns unsafe strings inside code blocks!
                 begin += '<pre>'

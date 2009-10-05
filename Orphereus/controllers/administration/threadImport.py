@@ -65,13 +65,14 @@ from Orphereus.controllers.OrphieBaseController import *
 class ImportWorker():
     postMappings = {}
     reader = None
+    url_for = h.url_for
     def fixReferences(self, text):
         def replacer(match):
             postId = match.groups()[0]
             if self.postMappings.has_key(postId):
                 localPostId = self.postMappings[postId]
                 localPost = OrphiePost.getPost(localPostId)
-                localPostLink = h.url_for('thread', **h.postKwargs(localPost.parentid, localPost.id))
+                localPostLink = self.url_for('thread', **h.postKwargs(localPost.parentid, localPost.id))
                 if self.saveIds:
                     urlArgs = (localPostLink, localPostId, postId)
                 else:

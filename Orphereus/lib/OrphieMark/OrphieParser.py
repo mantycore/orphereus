@@ -63,7 +63,9 @@ class OrphieParser(object):
                                       )
 
             if len(shortMessage) > maxLen:
-                shortMessage = cutHtml(shortMessage, maxLen)
+                cuttedMessage = cutHtml(shortMessage, maxLen)
+                if cuttedMessage:
+                    shortMessage = cuttedMessage
 
         if shortMessage:
             if abs(len(fullMessage) - len(shortMessage)) < symbolsTolerance:

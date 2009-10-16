@@ -52,7 +52,7 @@ class OrphiePublicController(OrphieBaseController):
                 if (rickroll):
                     redir = g.OPT.fakeLinks[random.randint(0, len(g.OPT.fakeLinks) - 1)]
                     toLog(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, getUserIp(), filterText(request.headers.get('User-Agent', '?'))))
-                    redirect_to(redir)
+                    redirect_to(str(redir))
 
         if (self.userInst and self.userInst.isValid()) or g.OPT.allowAnonymous:
             self.initEnvironment()

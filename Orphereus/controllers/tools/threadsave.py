@@ -79,6 +79,9 @@ class ThreadsaveController(OrphieBaseController):
         thread.hidden = thread.hideFromBoards
         thread.Replies = thread.filterReplies().all()
         thread.omittedPosts = 0
+        tagDescr = Post.tagLine(thread.tags)
+        c.boardName = tagDescr[1]
+        c.tagLine = tagDescr[0]
         c.threads = [thread]
         c.currentUserCanPost = False
         c.disableMenu = True

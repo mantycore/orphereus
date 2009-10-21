@@ -69,6 +69,7 @@
     <input value="${_('Search')}" type="submit" />
 </form>
 
+%if c.currentUserCanPost:
 <div class="y_replyform" style="display:none">
 <form action="/1" method="post" enctype="multipart/form-data" id="y_replyform" class="y_replyform_anon">
     <div class="hidden">
@@ -114,6 +115,7 @@
 </form>
 <div class="clear"></div>
 </div>
+%endif
 
 <%include file="wakaba.jsService.mako" />
 

@@ -74,7 +74,10 @@ class ThreadsaveController(OrphieBaseController):
         return html
     
     def loadThread(self):
-        thread = Post.buildThreadFilter(self.userInst, self.tid).one()
+        try:
+            thread = Post.buildThreadFilter(self.userInst, self.tid).one()
+        except:
+            return self.error(_(u"Post not found."))
         thread.hideFromBoards = False
         thread.hidden = thread.hideFromBoards
         thread.Replies = thread.filterReplies().all()

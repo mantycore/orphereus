@@ -94,7 +94,7 @@ class ThreadsaveController(OrphieBaseController):
         f = open('%s/%s.htm' % (self.path, self.tid), 'w')
         f.write(page)
         f.close()
-        return '%ssave/%s' % (meta.globj.OPT.filesPathWeb, self.compress())
+        return redirect_to(str('%ssave/%s' % (meta.globj.OPT.filesPathWeb, self.compress())))
 
     def compress(self):
         files = os.listdir(self.path)
@@ -114,4 +114,4 @@ class ThreadsaveController(OrphieBaseController):
     def save(self, post):
         self.path = mkdtemp()
         self.tid = post
-        return redirect_to(str(self.loadThread()))
+        return self.loadThread()

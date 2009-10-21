@@ -181,22 +181,16 @@ def itemsToSection(items):
     return [(url, hint, name,) for (name, url, testCase, hint) in items if testCase]
 
 def templateExists(relName):
-    #log.debug(config['pylons.g'].OPT.templPath)
-    #log.debug(relName)
     #log.debug(os.path.join(g.OPT.templPath, relName))
-    #log.debug(os.path.exists(os.path.join(g.OPT.templPath, relName)))
-    return os.path.exists(os.path.join(g.OPT.templPath, relName))
+    key = os.path.join(g.OPT.templPath, relName)
+    return g.caches.setdefaultEx(key, os.path.exists, key)
 
 def staticFile(fileName):
-    spw = g.OPT.staticPathWeb
-    spl = g.OPT.staticPath
+    spw, spl = g.OPT.staticPathWeb, g.OPT.staticPath
     ext = fileName.split('.')[-1]
     relFileName = "%s/%s" % (ext, fileName)
     localFileName = os.path.join(spl, relFileName)
-    version = g.caches.get(localFileName, False)
-    if not version:
-        version = os.path.getmtime(localFileName)
-        g.caches[localFileName] = version
+    version = g.caches.setdefaultEx(localFileName, os.path.getmtime, localFileName)
     return u"%s%s?version=%s" % (spw, relFileName, str(version))
 
 def ipToInt(ipStr):

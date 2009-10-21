@@ -82,6 +82,7 @@ class ThreadsaveController(OrphieBaseController):
         tagDescr = Post.tagLine(thread.tags)
         c.boardName = tagDescr[1]
         c.tagLine = tagDescr[0]
+        c.count = 1
         c.threads = [thread]
         c.currentUserCanPost = False
         c.disableMenu = True

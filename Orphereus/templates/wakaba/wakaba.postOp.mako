@@ -72,6 +72,7 @@ ${thread.date} \
 %endif
 </span>
 
+%if not(c.minimalRender):
     &nbsp;
     ${_('Posted in')}:
 %for t in thread.tags:
@@ -102,6 +103,7 @@ ${thread.date} \
 %endif
 
 ${h.threadInfoCallback(thread, c.userInst)}
+%endif
 
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
     %if (c.count > 1) and thread.messageShort and c.userInst.hideLongComments:

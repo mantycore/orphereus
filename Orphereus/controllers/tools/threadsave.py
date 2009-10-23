@@ -82,13 +82,12 @@ class ThreadsaveController(OrphieBaseController):
         thread.hidden = thread.hideFromBoards
         thread.Replies = thread.filterReplies().all()
         thread.omittedPosts = 0
-        tagDescr = Post.tagLine(thread.tags)
-        c.boardName = tagDescr[1]
-        c.tagLine = tagDescr[0]
         c.count = 1
+        c.minimalRender = True
         c.threads = [thread]
         c.currentUserCanPost = False
         c.disableMenu = True
+        c.tagLine, c.boardName = Post.tagLine(thread.tags)
         page = self.render('posts')
         page = self._prepareHtml(page)
         f = open('%s/%s.htm' % (self.path, self.tid), 'w')

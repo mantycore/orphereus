@@ -45,6 +45,7 @@
 <hr />
 %endif
 
+%if not(c.minimalRender):
 <table class="userdelete">
     <tbody>
         <tr><td>
@@ -68,6 +69,7 @@
     <input type="text" name="query" size="20" />
     <input value="${_('Search')}" type="submit" />
 </form>
+%endif
 
 %if c.currentUserCanPost:
 <div class="y_replyform" style="display:none">

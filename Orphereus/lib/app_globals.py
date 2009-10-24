@@ -498,10 +498,13 @@ class Globals(object):
                 plugins.append(plugin)
         return (result, plugins)
 
-    def implementationsOf(self, InterfaceClass):
+    def _implementationsOf(self, InterfaceClass):
         #TODO: cache results?
         plugins = []
         for plugin in self.plugins:
             if (issubclass(type(plugin), InterfaceClass)):
                 plugins.append(plugin)
         return plugins
+
+    def implementationsOf(self, InterfaceClass):
+        return self.caches.setdefaultEx(InterfaceClass, self._implementationsOf, InterfaceClass)

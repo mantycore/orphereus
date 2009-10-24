@@ -247,6 +247,7 @@ class UsertagsController(OrphieBaseController):
             if tagName:
                 if not tag:
                     tag = UserTag(tagName, tagDescr, self.userInst.uidNumber)
+                    meta.Session.add(tag)
                     meta.Session.commit()
                     doRedir = True
                 else:

@@ -24,6 +24,7 @@
 Implements MCache class and it's fake copy, if memcache is unavailable.
 """
 from sqlalchemy.ext.serializer import loads, dumps
+import threading
 
 try:
     from memcache import Client
@@ -103,11 +104,29 @@ else:
              lambda key, function, *args, **kwargs: function(*args)
 
 class CacheDict(dict):
+    def __init__(self):
+        self.lock = threading.Lock()
+    
     def setdefaultEx(self, key, function, *args):
         '''extended setdefault, returns stored value, if it exists.\
         Otherwise, executes function(), saves and returns the result'''
         if key in self:
             return self[key]
         else:
-            log.debug("Key '%s' not found in cache, calling %s to fill in" % (key, function))
-            return self.setdefault(key, function(*args))
+            try:
+                self.lock.acquire()
+                log.debug("Key '%s' not found in cache, calling %s to fill in" % (key, function))
+                return self.setdefault(key, function(*args))
+            finally:
+                self.lock.release()
+                
+    def invalidate(self, key):
+        if key in self:
+            try:
+                self.lock.acquire()
+                if key in self: # double check.
+                    del self[key]
+            finally:
+                self.lock.release()
+        else:
+            log.warning("Attempt to invalidate a non-existent key!")

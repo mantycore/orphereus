@@ -30,7 +30,7 @@ from pylons.i18n import get_lang, set_lang
 import miscUtils as utils
 from routes.util import url_for
 
-import datetime
+import time
 import os
 import socket, struct, sys
 
@@ -109,7 +109,6 @@ def headCallback(context):
     return result
 
 def currentTime():
-    import time
     return time.time()
 
 def applyFilters(inp, glob = False):
@@ -144,8 +143,8 @@ def expandName(name):
 def modLink(filePath, secid, hidePrefixes = False):
     #log.debug("gen link %s for id %s" %(filePath,secid))
     if hidePrefixes:
-         baseName = os.path.basename(filePath)
-         if baseName:
+        baseName = os.path.basename(filePath)
+        if baseName:
             return baseName
 
     return filePath
@@ -214,7 +213,7 @@ def setLang(lang):
             if lang in g.OPT.languages:
                 langToSet = lang
                 break
-        set_lang(lang)
+        set_lang(langToSet) # TODO: check
     return oldLang[0]
 
 def makeLangValid(lang):

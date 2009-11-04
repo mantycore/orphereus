@@ -56,6 +56,10 @@
 </div>
 <table id="postControls">
     <tbody >
+%if h.templateExists(c.actuatorTest+'wakaba.postFormTop.mako'):
+    <%include file="${c.actuator+'wakaba.postFormTop.mako'}" />
+%endif
+    
 %if not c.board:
     <tr id="trsage">
         <td class="postblock">${_('Sage')}</td>
@@ -139,6 +143,9 @@
             </select>
         </td>
     </tr>
+%if h.templateExists(c.actuatorTest+'wakaba.postFormBottom.mako'):
+    <%include file="${c.actuator+'wakaba.postFormBottom.mako'}" />
+%endif
 </tbody>
 </table>
 </form>

@@ -59,7 +59,7 @@ ${h.threadPanelCallback(thread, c.userInst)}
  style="font-weight: bold;" \
 %endif
 > \
-${thread.date} \
+${h.tsFormat(thread.date)} \
 </span>
 <span class="reflink"> \
 %if c.board:

@@ -43,7 +43,7 @@
                     %if pt.title:
                         <span class="replytitle">${pt.title}</span>
                     %endif
-                    ${pt.date}
+                    ${h.tsFormat(pt.date)}
                 </label>
                 <span class="reflink">
                 %if pt.parentPost:

@@ -8,7 +8,7 @@
     <span class="replytitle">${post.title}</span>
 %endif
 
- ${post.date}
+ ${h.tsFormat(post.date)}
  <a href="${h.url_for('thread', post=post.id)}">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
 
 &nbsp;

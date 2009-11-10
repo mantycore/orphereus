@@ -41,7 +41,7 @@ id="reply${post.id}">
         <span class="replytitle">${post.title}</span>
     %endif
 
-     ${post.date}
+     ${h.tsFormat(post.date)}
 
     <span class="reflink"> \
     %if c.board:

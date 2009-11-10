@@ -8,7 +8,7 @@
         %if post.title:
             <span class="filetitle">${post.title}</span>
         %endif
-        <span>${post.date}</span>
+        <span>${h.tsFormat(post.date)}</span>
         </span>
         %if post.file:
             <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}"

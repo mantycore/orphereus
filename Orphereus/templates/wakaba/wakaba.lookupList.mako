@@ -18,7 +18,7 @@
 
 </blockquote>
 </td>
-<td>${post.date}</td>
+<td>${h.tsFormat(post.date)}</td>
 </tr>
 %endfor
 </table>

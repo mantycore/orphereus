@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -23,42 +23,39 @@ import sqlalchemy as sa
 from sqlalchemy import orm
 
 from Orphereus.model import meta
-import datetime
 import os
 import Image
 
 import logging
 log = logging.getLogger(__name__)
 
-from Orphereus.model import meta
-
 t_piclist = sa.Table("picture", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("path"     , sa.types.String(255), nullable=False),
-    sa.Column("thumpath" , sa.types.String(255), nullable=False),
-    sa.Column("width"    , sa.types.Integer, nullable=True),
-    sa.Column("height"   , sa.types.Integer, nullable=True),
-    sa.Column("thwidth"  , sa.types.Integer, nullable=False),
-    sa.Column("thheight" , sa.types.Integer, nullable=False),
-    sa.Column("size"     , sa.types.Integer, nullable=False),
-    sa.Column("md5"      , sa.types.String(32), nullable=False),
+    sa.Column("id"       , sa.types.Integer, primary_key = True),
+    sa.Column("path"     , sa.types.String(255), nullable = False),
+    sa.Column("thumpath" , sa.types.String(255), nullable = False),
+    sa.Column("width"    , sa.types.Integer, nullable = True),
+    sa.Column("height"   , sa.types.Integer, nullable = True),
+    sa.Column("thwidth"  , sa.types.Integer, nullable = False),
+    sa.Column("thheight" , sa.types.Integer, nullable = False),
+    sa.Column("size"     , sa.types.Integer, nullable = False),
+    sa.Column("md5"      , sa.types.String(32), nullable = False),
     sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extension.id')),
-    sa.Column("animpath" , sa.types.String(255), nullable=True), #TODO: XXX: dirty solution
+    sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
     )
 
 class Picture(object):
     def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath):
-       self.path = relativeFilePath
-       self.thumpath = thumbFilePath
-       self.width = picSizes[0]
-       self.height = picSizes[1]
-       self.thwidth = picSizes[2]
-       self.thheight = picSizes[3]
-       self.extid = extId
-       self.size = fileSize
-       self.md5 = md5
-       if animPath:
-           self.animpath = animPath
+        self.path = relativeFilePath
+        self.thumpath = thumbFilePath
+        self.width = picSizes[0]
+        self.height = picSizes[1]
+        self.thwidth = picSizes[2]
+        self.thheight = picSizes[3]
+        self.extid = extId
+        self.size = fileSize
+        self.md5 = md5
+        if animPath:
+            self.animpath = animPath
 
     @staticmethod
     def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath = None, commit = False):
@@ -81,15 +78,18 @@ class Picture(object):
         sourceImage = Image.open(source)
         size = sourceImage.size
         if sourceImage:
-           sourceImage.thumbnail(maxSize, Image.ANTIALIAS)
-           sourceImage.save(dest)
-           return size + sourceImage.size
+            sourceImage.thumbnail(maxSize, Image.ANTIALIAS)
+            sourceImage.save(dest)
+            return size + sourceImage.size
         else:
-           return []
+            return []
+
+    def pictureRefCount(self):
+        from Orphereus.model.Post import Post
+        return Post.query.filter(Post.file == self).count()
 
     def deletePicture(self, commit = True):
-        from Orphereus.model.Post import Post
-        if Post.pictureRefCount(self.id) == 1:
+        if self.pictureRefCount() == 1:
             filePath = os.path.join(meta.globj.OPT.uploadPath, self.path)
             thumPath = os.path.join(meta.globj.OPT.uploadPath, self.thumpath)
             if os.path.isfile(filePath):
@@ -108,4 +108,3 @@ class Picture(object):
             meta.Session.delete(self)
             if commit:
                 meta.Session.commit()
-

@@ -28,7 +28,7 @@
 <%include file="wakaba.thumbnail.mako" args="post=thread" />
 
 </a>
-%elif thread.picid == -1:
+%elif thread.hasAttachment:
     <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
     <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>
 %endif

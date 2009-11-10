@@ -61,6 +61,7 @@ t_posts = sa.Table("post", meta.metadata,
     sa.Column("removemd5"  , sa.types.String(32), nullable = True),
     sa.Column("ip"         , meta.UIntType, nullable = True),
     sa.Column("pinned"  , sa.types.Boolean, nullable = True, index = True),
+    sa.Column("hasAttachment"  , sa.types.Boolean, nullable = False, index = False),
     )
 #sa.Index('idx_BumpPin', t_posts.c.bumpDate, t_posts.c.pinned)
 
@@ -117,8 +118,9 @@ class Post(object):
                                      picInfo.extId,
                                      picInfo.md5, picInfo.animPath)
         else:
-            post.picid = postParams.existentPic.id
+            post.file = postParams.existentPic
 
+        post.hasAttachment = bool(post.file)
         post.incrementStats()
         meta.Session.add(post)
         meta.Session.commit()
@@ -196,16 +198,12 @@ class Post(object):
         #return Post.query.filter(Post.id==id).one()
 
     @staticmethod
-    def pictureRefCount(picid):
-        return Post.query.filter(Post.picid == picid).count()
-
-    @staticmethod
     def filterByUid(uidNumber):
         return Post.query.filter(Post.uidNumber == uidNumber)
 
     @staticmethod
     def filter(filter):
-        if filter:
+        if filter is not None:
             return Post.query.filter(filter)
         return Post.query
 
@@ -281,12 +279,12 @@ class Post(object):
                     stack.append(buildArgument(i))
             if stack and isinstance(stack[0][0], sa.sql.expression.ClauseElement):
                 cl = stack.pop()
-                if filteringExpression:
+                if filteringExpression is not None:
                     filteringExpression = and_(cl[0], filteringExpression)
                 else:
                     filteringExpression = cl[0]
                 tagList = cl[1]
-        if filteringExpression:
+        if filteringExpression is not None:
             filter = filter.filter(filteringExpression)
         return (filter, tagList, filteringExpression)
 
@@ -362,15 +360,12 @@ class Post(object):
             for post in Post.query.filter(Post.parentid == self.id).all():
                 post.deletePost(userInst, checkOwnage = False)
 
-        pic = Picture.getPicture(self.picid)
-        if pic:
+        if self.file:
+            pic = self.file
+            self.file = None
             pic.deletePicture(True)
-            pic = True
 
-        if fileonly and postOptions.imagelessPost:
-            if pic:
-                self.picid = -1
-        else:
+        if not (fileonly and postOptions.imagelessPost):
             invisBumpDisabled = not(asbool(meta.globj.OPT.invisibleBump))
             parent = self.parentPost
             if parent:

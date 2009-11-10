@@ -54,24 +54,32 @@ def batchProcess(query, routine, packetSize = 1000):
         currentPacket += packetSize
         meta.Session.commit()
 
-def init_model(engine):
-    log.info("Trying to adjust engine to current dialect...")
+def adjust_dialect(engine, name = 'default'):
+    log.info("Trying to adjust %s engine to current dialect..." % name)
+    target = meta
+
     def logAndChange(var, newType):
         log.info("Using %s instead of %s" % (str(newType), str(var)))
         return newType
-    if ('mysql' in sa.databases.__dict__ and isinstance(engine.dialect, sa.databases.mysql.MySQLDialect)):
+
+    if (engine.dialect.name.lower() == "postgresql"):
         log.info("Currently using MySQL dialect, adjusting types...")
-        meta.FloatType = logAndChange(meta.FloatType, sa.databases.mysql.MSDouble)
-        meta.BlobType = logAndChange(meta.BlobType, sa.databases.mysql.MSLongBlob)
-        meta.UIntType = logAndChange(meta.UIntType, sa.databases.mysql.MSInteger(unsigned = True))
-    elif ('postgres' in sa.databases.__dict__ and isinstance(engine.dialect, sa.databases.postgres.PGDialect)):
+        from sqlalchemy.databases import mysql
+        target.FloatType = logAndChange(meta.FloatType, mysql.MSDouble)
+        target.BlobType = logAndChange(meta.BlobType, sa.databases.mysql.MSLongBlob)
+        target.UIntType = logAndChange(meta.UIntType, sa.databases.mysql.MSInteger(unsigned = True))
+    elif (engine.dialect.name.lower() == "mysql"):
         log.info("Currently using PostgreSQL dialect, adjusting types...")
-        meta.FloatType = logAndChange(meta.FloatType, sa.databases.postgres.PGFloat)
-        meta.BlobType = logAndChange(meta.BlobType, sa.databases.postgres.PGBinary)
-        meta.UIntType = logAndChange(meta.UIntType, sa.databases.postgres.PGBigInteger)
+        from sqlalchemy.databases import postgresql
+        target.FloatType = logAndChange(meta.FloatType, postgresql.DOUBLE_PRECISION)
+        target.BlobType = logAndChange(meta.BlobType, postgresql.BYTEA)
+        target.UIntType = logAndChange(meta.UIntType, postgresql.BIGINT)
     else:
-        log.info("[WARNING] Unknown SQL Dialect!")
+        log.warning("Unknown SQL Dialect!")
     log.info("Adjusting completed")
+
+def init_model(engine):
+    adjust_dialect(engine)
 
     sm = orm.sessionmaker(autoflush = False, autocommit = False, bind = engine)
     meta.engine = engine
@@ -88,7 +96,6 @@ def init_model(engine):
     #logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
     #logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.DEBUG)
     #logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.DEBUG)
-
 
     LoginTrackerProps = {}
     CaptchaProps = {}

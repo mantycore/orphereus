@@ -218,7 +218,7 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'Pictures...'))
         def picturesSearch(pictures):
             for pic in pictures:
-                post = Post.query.filter(Post.picid == pic.id).first()
+                post = Post.query.filter(Post.file == pic).first()
                 if not post:
                     msg = u'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
                     mtnLog.append(LogElement('Warning', msg))

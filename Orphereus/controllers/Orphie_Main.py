@@ -529,16 +529,14 @@ class OrphieMainController(OrphieBaseController):
         if isNumber(url) and enablePicLoading:
             post = Post.getPost(url)
 
-            if post.picid:
-                pic = Picture.getPicture(post.picid)
-
-                if pic and pic.width:
-                    oekSource = post.id
-                    c.canvas = h.modLink(pic.path, c.userInst.secid())
-                    c.width = pic.width
-                    c.height = pic.height
-                    if pic.animpath:
-                        c.pchPath = h.modLink(pic.animpath, c.userInst.secid())
+            pic = post.file
+            if pic and pic.width:
+                oekSource = post.id
+                c.canvas = h.modLink(pic.path, c.userInst.secid())
+                c.width = pic.width
+                c.height = pic.height
+                if pic.animpath:
+                    c.pchPath = h.modLink(pic.animpath, c.userInst.secid())
         Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, c.selfy)
         return self.render('spainter')
 

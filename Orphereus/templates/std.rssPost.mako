@@ -39,7 +39,7 @@
 
     <%include file="std.thumbnail.mako" args="post=post" />
     </a>
-%elif post.picid == -1:
+%elif post.hasAttachment:
     <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
     <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb"  alt="Removed" />
 %endif

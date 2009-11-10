@@ -60,8 +60,10 @@ class User(AbstractUser):
         if value != None:
             setattr(self.options, name, value)
 
-    def __init__(self, uid):
+    def __init__(self, uid, uidNumber):
         self.uid = uid
+        if not uidNumber is None:
+            self.uidNumber = uidNumber
         self.options = UserOptions()
         UserOptions.initDefaultOptions(self.options, meta.globj.OPT)
 
@@ -70,14 +72,14 @@ class User(AbstractUser):
         return (User.query.count(), User.query.filter(User.options.has(UserOptions.bantime > 0)).count())
 
     @staticmethod
-    def create(uid):
-        user = User(uid)
+    def create(uid, uidNumber = None):
+        user = User(uid, uidNumber)
         meta.Session.add(user)
         meta.Session.commit()
         return user
 
     @staticmethod
-    def _getUser(uidNumber): 
+    def _getUser(uidNumber):
         ret = User.query.options(eagerload('options')).filter(User.uidNumber == uidNumber).first()
         if ret:
             if meta.globj: #TODO: legacy code
@@ -92,7 +94,7 @@ class User(AbstractUser):
     @staticmethod
     def getUser(uidNumber, allowMemcached = True):
         if meta.globj.OPT.memcachedUsers and allowMemcached:
-            return meta.globj.mc.setdefault_sqlaEx('u%s' %uidNumber, User._getUser, uidNumber)
+            return meta.globj.mc.setdefault_sqlaEx('u%s' % uidNumber, User._getUser, uidNumber)
         return User._getUser(uidNumber)
 
     @staticmethod

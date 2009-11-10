@@ -52,14 +52,18 @@ def setup_config(command, filename, section, vars):
 
     if uc == 0:
         log.info("Adding user with password 'first'")
-        log.debug(config['core.hashSecret'])
+        log.debug("Hash secret: %s" % config['core.hashSecret'])
         uid = hashlib.sha512('first' + hashlib.sha512(config['core.hashSecret']).hexdigest()).hexdigest()
         user = User.create(uid)
-        log.debug(uid)
         uidNumber = user.uidNumber
-        log.debug(uidNumber)
+        log.debug("Created UID: %s (%d)" % (uid, uidNumber))
         user.options.isAdmin = True
         user.options.canChangeRights = True
+
+        log.info("Adding servive users 0 and -1")
+        ulogger = User.create("Anonymous", -1)
+        umaintenance = User.create("Dummy user for maintenance purposes", 0)
+
         meta.Session.commit()
     try:
         ec = meta.Session.query(Extension).count()

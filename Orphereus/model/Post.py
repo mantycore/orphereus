@@ -235,7 +235,7 @@ class Post(object):
                     hooks = meta.globj.implementationsOf(AbstractPostingHook)
                     for handler in hooks:
                         clause, newName = handler.tagHandler(arg, userInst)
-                        if clause and newName:
+                        if (clause is not None) and newName:
                             return (clause, [newName])
                         elif newName:
                             retarg = [newName]

@@ -64,7 +64,7 @@ class Picture(object):
         self.pictureInfo = pictureInfo
         if animPath:
             self.animpath = animPath
-        if id:
+        if not id is None:
             self.id = id
 
     @staticmethod
@@ -81,7 +81,9 @@ class Picture(object):
 
     @staticmethod
     def getByMd5(md5):
-        return Picture.query.filter(Picture.md5 == md5).first()
+        q = Picture.query.filter(Picture.md5 == md5)
+        assert q.count() < 2
+        return q.first()
 
     @staticmethod
     def makeThumbnail(source, dest, maxSize):
@@ -99,7 +101,7 @@ class Picture(object):
         return Post.query.filter(Post.attachments.any(Picture.id == self.id)).count()
 
     def deletePicture(self, commit = True):
-        if self.pictureRefCount() == 0:
+        if self.id > 0 and self.pictureRefCount() == 0:
             filePath = os.path.join(meta.globj.OPT.uploadPath, self.path)
             thumPath = os.path.join(meta.globj.OPT.uploadPath, self.thumpath)
             if os.path.isfile(filePath):

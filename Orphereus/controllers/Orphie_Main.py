@@ -760,7 +760,7 @@ class OrphieMainController(OrphieBaseController):
         fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
         #log.debug(fileDescriptors)
         fileHolder = False
-        existentPic = False
+        #existentPic = False
         picInfo = False
         if fileDescriptors:
             fileHolder = fileDescriptors[0] # Object for file auto-removing
@@ -769,6 +769,7 @@ class OrphieMainController(OrphieBaseController):
             errorMessage = fileDescriptors[3]
             if errorMessage:
                 return self.error(errorMessage)
+            picInfo.existentPic = existentPic
 
         if picInfo:
             if not options.images:
@@ -827,7 +828,7 @@ class OrphieMainController(OrphieBaseController):
         #postParams.replyTo = postid
         postParams.thread = thread
         postParams.tags = tags
-        postParams.existentPics = [existentPic, existentPic]
+        #postParams.existentPics = [existentPic, existentPic]
         postParams.picInfos = [picInfo, picInfo]
         postParams.bumplimit = options.bumplimit
 

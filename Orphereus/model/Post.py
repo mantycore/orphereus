@@ -108,9 +108,11 @@ class Post(object):
             post.bumpDate = datetime.datetime.now()
             post.tags = postParams.tags
 
+        recentlyCreated = {}
         for picInfo in postParams.picInfos:
             if picInfo:
-                if not picInfo in postParams.existentPics:
+                existent = recentlyCreated.get(picInfo.md5, picInfo.existentPic)
+                if not existent: # in postParams.existentPics:
                     newPic = Picture.create(picInfo.relativeFilePath,
                                          picInfo.thumbFilePath,
                                          picInfo.fileSize,
@@ -120,8 +122,9 @@ class Post(object):
                                          picInfo.additionalInfo,
                                          picInfo.animPath)
                     post.attachments.append(newPic)
-                else:
-                    post.attachments.append(postParams.existentPic)
+                    recentlyCreated[picInfo.md5] = newPic
+                elif not existent in post.attachments:
+                    post.attachments.append(existent)
 
         post.incrementStats()
         meta.Session.add(post)

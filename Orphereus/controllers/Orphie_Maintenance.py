@@ -299,7 +299,7 @@ class MaintenanceWorker(object):
 
         movedCC = 0
         movedTCC = 0
-        posts = Post.query.options(eagerload('file')).all()
+        posts = Post.query.options(eagerload('attachments')).all()
         for post in posts:
             for file in post.attachments:
                 if file:

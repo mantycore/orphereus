@@ -243,7 +243,7 @@ class Post(object):
             else:
                 return arg
 
-        filter = Post.query.options(eagerload('file')).filter(Post.parentid == None)
+        filter = Post.query.options(eagerload('attachments')).filter(Post.parentid == None)
         filteringExpression = Post.excludeAdminTags(userInst)
         tagList = []
         if url:
@@ -298,7 +298,7 @@ class Post(object):
 
     @staticmethod
     def buildThreadFilter(userInst, threadId):
-        return Post.filter(Post.excludeAdminTags(userInst)).filter(Post.id == threadId).options(eagerload('file'))
+        return Post.filter(Post.excludeAdminTags(userInst)).filter(Post.id == threadId).options(eagerload('attachments'))
 
     @staticmethod
     def getThread(threadId):

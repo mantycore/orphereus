@@ -351,7 +351,7 @@ class OrphieMainController(OrphieBaseController):
         for t in homeExcludeTags:
             homeExcludeList.append(t.tag)
         c.homeExclude = ', '.join(homeExcludeList)
-        c.hiddenThreads = Post.filter(Post.id.in_(self.userInst.hideThreads)).options(eagerload('file')).options(eagerload('tags')).all()
+        c.hiddenThreads = Post.filter(Post.id.in_(self.userInst.hideThreads)).options(eagerload('tags')).all()
         for t in c.hiddenThreads:
             tl = []
             for tag in t.tags:

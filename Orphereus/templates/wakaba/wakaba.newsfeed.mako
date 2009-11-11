@@ -21,6 +21,7 @@
             <%include file="wakaba.thumbnail.mako" args="post=post" />
             </a>
         %endif
+        %endfor
         %endif
         <blockquote class="postbody" id="quickReplyNode${post.id}">${post.message}</blockquote>
             <br clear="all" />

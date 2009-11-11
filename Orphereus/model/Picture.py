@@ -95,7 +95,7 @@ class Picture(object):
         return Post.query.filter(Post.attachments.any(Picture.id == self.id)).count()
 
     def deletePicture(self, commit = True):
-        if self.pictureRefCount() == 1:
+        if self.pictureRefCount() == 0:
             filePath = os.path.join(meta.globj.OPT.uploadPath, self.path)
             thumPath = os.path.join(meta.globj.OPT.uploadPath, self.thumpath)
             if os.path.isfile(filePath):

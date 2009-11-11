@@ -2,7 +2,6 @@
 <%page args="thread"/>
 
 %if thread.attachments:
-<pre>${len(thread.attachments)}</pre>
 %for attachment in thread.attachments:
 %if attachment.id != 0:
 <span class="filesize">

@@ -2,7 +2,7 @@
 <%page args="thread"/>
 
 %if thread.attachments:
-%for attachment in thread.attachments
+%for attachment in thread.attachments:
 %if attachment:
 <span class="filesize">
     <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \

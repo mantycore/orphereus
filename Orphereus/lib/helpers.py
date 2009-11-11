@@ -242,4 +242,4 @@ def postEnabledToShow(post, user):
 
 def tsFormat(dt):
     # TODO: move format string to config ?
-    return dt.strftime('%Y-%M-%d %H:%M:%S')
+    return dt.strftime('%Y-%m-%d %H:%M:%S')

@@ -74,7 +74,7 @@
                     %endif
                     >
 
-                    <%include file="wakaba.thumbnail.mako" args="post=pt" />
+                    <%include file="wakaba.thumbnail.mako" args="post=pt,attachment=attachment" />
 
                     </a>
                     %else:

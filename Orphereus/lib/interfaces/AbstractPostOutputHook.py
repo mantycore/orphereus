@@ -21,8 +21,8 @@
 ################################################################################
 
 class AbstractPostOutputHook(object):
-    def overrideThumbnail(self, post, context, thumbnailId):
+    def overrideThumbnail(self, post, context, attachment):
         return False
 
-    def thumbnailForPost(self, post, context, thumbnailId):
+    def thumbnailForPost(self, post, context, attachment):
         return None

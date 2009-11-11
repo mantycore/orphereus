@@ -89,7 +89,7 @@ id="reply${post.id}">
         %endif
         >
 
-        <%include file="wakaba.thumbnail.mako" args="post=post" />
+        <%include file="wakaba.thumbnail.mako" args="post=post,attachment=attachment" />
         </a>
     %else:
         <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>

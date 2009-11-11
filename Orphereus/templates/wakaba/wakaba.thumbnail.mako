@@ -1,13 +1,13 @@
-<%page args="post"/>
+<%page args="post,attachment"/>
 
-%if h.overrideThumbnail(post, c):
-  <%include file="${'wakaba.thumbnail.%s.mako' % c.currentThumbnailHook.thumbnailForPost(post, c)}" args="post=post" />
+%if h.overrideThumbnail(post, c, attachment):
+  <%include file="${'wakaba.thumbnail.%s.mako' % c.currentThumbnailHook.thumbnailForPost(post, c, attachment)}" args="post=post,attachment=attachment" />
 %else:
   %if post.spoiler:
       <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb" alt="Spoiler"/>
-  %elif 'image' in post.file.extension.type:
-      <img src="${g.OPT.filesPathWeb +  h.modLink(post.file.thumpath, c.userInst.secid())}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb"  alt="Preview" />
+  %elif 'image' in attachment.extension.type:
+      <img src="${g.OPT.filesPathWeb +  h.modLink(attachment.thumpath, c.userInst.secid())}" width="${attachment.thwidth}" height="${attachment.thheight}" class="thumb"  alt="Preview" />
   %else:
-      <img src="${g.OPT.staticPathWeb +  h.modLink(post.file.thumpath, c.userInst.secid())}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb"  alt="Preview" />
+      <img src="${g.OPT.staticPathWeb +  h.modLink(attachment.thumpath, c.userInst.secid())}" width="${attachment.thwidth}" height="${attachment.thheight}" class="thumb"  alt="Preview" />
   %endif
 %endif

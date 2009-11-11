@@ -39,12 +39,12 @@ class MediaPlayerPlugin(BasePlugin, AbstractPostOutputHook):
 
         BasePlugin.__init__(self, 'mediaplayer', config)
 
-    def overrideThumbnail(self, post, context, thumbnailId):
-        if post.attachments[thumbnailId].extension.type == g.OPT.extensionTypeToPlay:
+    def overrideThumbnail(self, post, context, attachment):
+        if attachment.extension.type == g.OPT.extensionTypeToPlay:
             return True
         return None
 
-    def thumbnailForPost(self, post, context, thumbnailId):
+    def thumbnailForPost(self, post, context, attachment):
         return 'mediaplayer'
 
     def updateGlobals(self, globj):

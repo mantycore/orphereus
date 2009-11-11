@@ -55,19 +55,21 @@
                 %endif
         </span>
         &nbsp;
-                %if pt.file:
+                %if pt.attachments:
+                %for attachment in pt.attachments
+                %if attachment:
                     <br /><span class="filesize">${_('File:')}
 
-                    <a href="${g.OPT.filesPathWeb + h.modLink(pt.file.path, c.userInst.secid())}"
-                    %if pt.file.extension.newWindow:
+                    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}"
+                    %if attachment.extension.newWindow:
                         target="_blank"
                     %endif
                     >
-                    ${h.modLink(pt.file.path, c.userInst.secid(), True)}</a>
-                    (<em>${'%.2f' % (pt.file.size / 1024.0)} Kbytes, ${pt.file.width}x${pt.file.height}</em>)</span>
+                    ${h.modLink(attachment.path, c.userInst.secid(), True)}</a>
+                    (<em>${'%.2f' % (attachment.size / 1024.0)} Kbytes, ${attachment.width}x${attachment.height}</em>)</span>
                     <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-                    <a href="${g.OPT.filesPathWeb + h.modLink(pt.file.path, c.userInst.secid())}"
-                    %if pt.file.extension.newWindow:
+                    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}"
+                    %if attachment.extension.newWindow:
                         target="_blank"
                     %endif
                     >
@@ -75,10 +77,13 @@
                     <%include file="wakaba.thumbnail.mako" args="post=pt" />
 
                     </a>
-                    %elif pt.hasAttachment:
+                    %else:
                         <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
                         <img src='${g.OPT.staticPathWeb}images/picDeleted.png' class="thumb">
                     %endif
+                  %endfor
+                  %endif
+
                 <blockquote class="postbody" id="postBQId${pt.id}">
                 %if pt.id in c.highlights:
                     ${c.highlights[pt.id][1]}

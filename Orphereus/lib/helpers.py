@@ -40,10 +40,10 @@ from Orphereus.lib.interfaces.AbstractPostOutputHook import AbstractPostOutputHo
 import logging
 log = logging.getLogger(__name__)
 
-def overrideThumbnail(post, context):
+def overrideThumbnail(post, context, thumbnailId):
     outputHooks = g.implementationsOf(AbstractPostOutputHook)
     for hook in outputHooks:
-        if hook.overrideThumbnail(post, context):
+        if hook.overrideThumbnail(post, context, thumbnailId):
             c.currentThumbnailHook = hook
             return True
     c.currentThumbnailHook = None

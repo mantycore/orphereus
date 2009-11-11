@@ -79,9 +79,27 @@ def make_map():
     map.connect('viewLog', '/viewLog/page/:page', controller = 'Orphie_Main', action = 'viewLog', requirements = dict(page = '\d+'))
 
     # Oekaki
-    map.connect('oekakiDraw', '/oekakiDraw/:url/:selfy/:anim/:tool', controller = 'Orphie_Main', action = 'oekakiDraw', selfy = '-selfy', anim = '-anim', tool = 'shiNormal')
-    map.connect('oekakiSave', '/oekakiSave/:url/:tempid', controller = 'Orphie_Public', action = 'oekakiSave', url = '', requirements = dict(tempid = '\d+'))
-    map.connect('viewAnimation', '/viewAnimation/:source', controller = 'Orphie_Main', action = 'viewAnimation', requirements = dict(source = '\d+'))
+    map.connect('oekakiDraw',
+                '/oekakiDraw/:url/:selfy/:anim/:tool/:sourceId',
+                 controller = 'Orphie_Main',
+                 action = 'oekakiDraw',
+                selfy = '-selfy',
+                anim = '-anim',
+                tool = 'shiNormal',
+                sourceId = '0',
+                requirements = dict(sourceId = '\d+'))
+    map.connect('oekakiSave',
+                '/oekakiSave/:url/:tempid',
+                controller = 'Orphie_Public',
+                action = 'oekakiSave',
+                url = '',
+                requirements = dict(tempid = '\d+'))
+    map.connect('viewAnimation',
+                '/viewAnimation/:source/:animid',
+                controller = 'Orphie_Main',
+                action = 'viewAnimation',
+                animid = '0',
+                requirements = dict(source = '\d+', animid = '\d+'))
 
     # Threads
     map.connect('postReply', '/:post', controller = 'Orphie_Main', action = 'PostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))

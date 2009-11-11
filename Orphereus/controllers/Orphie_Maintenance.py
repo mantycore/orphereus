@@ -218,8 +218,7 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'Pictures...'))
         def picturesSearch(pictures):
             for pic in pictures:
-                post = Post.query.filter(Post.file == pic).first()
-                if not post:
+                if pic.pictureRefCount() < 1:
                     msg = u'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
                     mtnLog.append(LogElement('Warning', msg))
                     toLog(LOG_EVENT_INTEGR, msg)
@@ -302,16 +301,17 @@ class MaintenanceWorker(object):
         movedTCC = 0
         posts = Post.query.options(eagerload('file')).all()
         for post in posts:
-            if post.file:
-                fname = post.file.path
-                if moveFile(fname):
-                    post.file.path = h.expandName(fname)
-                    movedCC += 1
-                tfname = post.file.thumpath
-                #log.debug(tfname)
-                if moveFile(tfname):
-                    post.file.thumpath = h.expandName(tfname)
-                    movedTCC += 1
+            for file in post.attachments:
+                if file:
+                    fname = file.path
+                    if moveFile(fname):
+                        file.path = h.expandName(fname)
+                        movedCC += 1
+                    tfname = file.thumpath
+                    #log.debug(tfname)
+                    if moveFile(tfname):
+                        file.thumpath = h.expandName(tfname)
+                        movedTCC += 1
 
         if movedCC or movedTCC:
             msg = '%d files and %d thumbnails moved' % (movedCC, movedTCC)

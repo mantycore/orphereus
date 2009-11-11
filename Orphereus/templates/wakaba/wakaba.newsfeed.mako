@@ -10,14 +10,17 @@
         %endif
         <span>${h.tsFormat(post.date)}</span>
         </span>
-        %if post.file:
-            <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}"
-            %if post.file.extension.newWindow:
+        %if post:
+        %for attachment in post.attachments
+        %if attachment:
+            <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}"
+            %if attachment.extension.newWindow:
                 target="_blank"
             %endif
             >
             <%include file="wakaba.thumbnail.mako" args="post=post" />
             </a>
+        %endif
         %endif
         <blockquote class="postbody" id="quickReplyNode${post.id}">${post.message}</blockquote>
             <br clear="all" />

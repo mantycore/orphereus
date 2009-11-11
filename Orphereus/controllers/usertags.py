@@ -159,7 +159,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
                     #log.critical(ids)
                     if ids:
                         return Post.id.in_(ids), newName
-            return None, newName
+                return None, newName
         return None, None
 
     # Implementing AbstractProfileExtension

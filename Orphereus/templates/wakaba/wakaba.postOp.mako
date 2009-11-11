@@ -1,26 +1,28 @@
 # -*- coding: utf-8 -*-
 <%page args="thread"/>
 
-%if thread.file:
+%if thread.attachments:
+%for attachment in thread.attachments
+%if attachment:
 <span class="filesize">
-    <a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}" \
-    %if thread.file.extension.newWindow:
+    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
+    %if attachment.extension.newWindow:
         target="_blank" \
     %endif
     >
-    ${h.modLink(thread.file.path, c.userInst.secid(), True)}</a>
+    ${h.modLink(attachment.path, c.userInst.secid(), True)}</a>
 
-    (<em>${'%.2f' % (thread.file.size / 1024.0)} \
-    %if thread.file.width and thread.file.height:
-        ${_('Kbytes')}, ${thread.file.width}x${thread.file.height}</em>)
+    (<em>${'%.2f' % (attachment.size / 1024.0)} \
+    %if attachment.width and attachment.height:
+        ${_('Kbytes')}, ${attachment.width}x${attachment.height}</em>)
     %else:
         ${_('Kbytes')}</em>)
     %endif
 </span>
 
 <br />
-<a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}" \
-%if thread.file.extension.newWindow:
+<a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
+%if attachment.extension.newWindow:
     target="_blank" \
 %endif
 >
@@ -28,10 +30,13 @@
 <%include file="wakaba.thumbnail.mako" args="post=thread" />
 
 </a>
-%elif thread.hasAttachment:
+%else:
     <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
     <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>
 %endif
+%endfor
+%endif
+
 <a name="i${thread.id}"></a>
 &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Delete"/></a>
 %if thread.pinned:
@@ -94,7 +99,7 @@ ${h.tsFormat(thread.date)} \
 %endif
 
 %if c.currentUserCanPost:
-    %if thread.file and thread.file.width:
+    %if thread.attachments and thread.attachments[0] and thread.attachments[0].width:
         [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
     %endif
     [<a href="${h.url_for('thread', post=thread.id)}">${_('Reply')}</a>]
@@ -116,7 +121,7 @@ ${h.threadInfoCallback(thread, c.userInst)}
     %if thread.messageInfo:
         <div>${thread.messageInfo}</div>
     %endif
-    %if thread.file and thread.file.animpath:
+    %if thread.attachments and thread.attachments[0] and thread.attachments[0].animpath:
         [<a href="${h.url_for('viewAnimation', source=thread.id)}" target="_blank">${_('Animation')}</a>]
     %endif
 </blockquote>

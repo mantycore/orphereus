@@ -43,6 +43,12 @@ t_piclist = sa.Table("picture", meta.metadata,
     sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
     )
 
+t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
+#    sa.Column("id"          , sa.types.Integer, primary_key=True),
+    sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id')),
+    sa.Column('fileId'   , sa.types.Integer, sa.ForeignKey('picture.id')),
+    )
+
 class Picture(object):
     def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath):
         self.path = relativeFilePath
@@ -86,7 +92,7 @@ class Picture(object):
 
     def pictureRefCount(self):
         from Orphereus.model.Post import Post
-        return Post.query.filter(Post.file == self).count()
+        return Post.query.filter(Post.attachments.any(Picture.id == self.id)).count()
 
     def deletePicture(self, commit = True):
         if self.pictureRefCount() == 1:

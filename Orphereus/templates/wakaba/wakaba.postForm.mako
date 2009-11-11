@@ -59,7 +59,7 @@
 %if h.templateExists(c.actuatorTest+'wakaba.postFormTop.mako'):
     <%include file="${c.actuator+'wakaba.postFormTop.mako'}" />
 %endif
-    
+
 %if not c.board:
     <tr id="trsage">
         <td class="postblock">${_('Sage')}</td>
@@ -82,10 +82,10 @@
         <tr id="trfile">
             <td class="postblock">${_('File')}</td>
             <td>
-            	<input type="file" name="file" size="35" />
-				%if c.boardOptions.enableSpoilers:
-            	<span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler" /> ${_('Spoiler')}</span>
-				%endif
+              <input type="file" name="file" size="35" />
+        %if c.boardOptions.enableSpoilers:
+              <span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler" /> ${_('Spoiler')}</span>
+        %endif
             </td>
         </tr>
 
@@ -169,7 +169,7 @@
         <label><input type="checkbox" name="selfy" ${c.userInst.oekUseSelfy and 'checked="checked"' or ""} /> ${_('Selfy')}</label>
         <label><input type="checkbox" name="animation" ${c.userInst.oekUseAnim and 'checked="checked"' or ""} /> ${_('Animation')}</label>
 
-        <input type="hidden" value="New" name="oekaki_type"/>
+        <input type="hidden" value="New" name="oekaki_type" />
         <input type="submit" value="${_('Draw')}"/>
 
         </td>

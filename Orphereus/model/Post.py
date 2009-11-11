@@ -53,7 +53,7 @@ t_posts = sa.Table("post", meta.metadata,
     sa.Column("title"    , sa.types.UnicodeText, nullable = True),
     sa.Column("sage"     , sa.types.Boolean, nullable = True),
     sa.Column("uidNumber", sa.types.Integer, nullable = True),
-    sa.Column("picid"    , sa.types.Integer, sa.ForeignKey('picture.id')),
+    #sa.Column("picid"    , sa.types.Integer, sa.ForeignKey('picture.id')),
     sa.Column("date"     , sa.types.DateTime, nullable = False, index = True),
     sa.Column("bumpDate", sa.types.DateTime, nullable = True, index = True),
     sa.Column("spoiler"  , sa.types.Boolean, nullable = True),
@@ -61,7 +61,7 @@ t_posts = sa.Table("post", meta.metadata,
     sa.Column("removemd5"  , sa.types.String(32), nullable = True),
     sa.Column("ip"         , meta.UIntType, nullable = True),
     sa.Column("pinned"  , sa.types.Boolean, nullable = True, index = True),
-    sa.Column("hasAttachment"  , sa.types.Boolean, nullable = False, index = False),
+    #sa.Column("hasAttachment"  , sa.types.Boolean, nullable = False, index = False),
     )
 #sa.Index('idx_BumpPin', t_posts.c.bumpDate, t_posts.c.pinned)
 
@@ -108,19 +108,19 @@ class Post(object):
             post.bumpDate = datetime.datetime.now()
             post.tags = postParams.tags
 
-        if not postParams.existentPic:
-            picInfo = postParams.picInfo
+        for picInfo in postParams.picInfos:
             if picInfo:
-                post.file = Picture.create(picInfo.relativeFilePath,
-                                     picInfo.thumbFilePath,
-                                     picInfo.fileSize,
-                                     picInfo.sizes,
-                                     picInfo.extId,
-                                     picInfo.md5, picInfo.animPath)
-        else:
-            post.file = postParams.existentPic
+                if not picInfo in postParams.existentPics:
+                    newPic = Picture.create(picInfo.relativeFilePath,
+                                         picInfo.thumbFilePath,
+                                         picInfo.fileSize,
+                                         picInfo.sizes,
+                                         picInfo.extId,
+                                         picInfo.md5, picInfo.animPath)
+                    post.attachments.append(newPic)
+                else:
+                    post.attachments.append(postParams.existentPic)
 
-        post.hasAttachment = bool(post.file)
         post.incrementStats()
         meta.Session.add(post)
         meta.Session.commit()
@@ -360,10 +360,17 @@ class Post(object):
             for post in Post.query.filter(Post.parentid == self.id).all():
                 post.deletePost(userInst, checkOwnage = False)
 
-        if self.file:
-            pic = self.file
-            self.file = None
-            pic.deletePicture(True)
+        if self.attachments:
+            attachments = []
+            filesToDelete = []
+            #TODO: ability for deletion separate files
+            for pic in self.attachments:
+                attachments.append(None)
+                filesToDelete.append(pic)
+            self.attachments = attachments
+
+            for pic in filesToDelete:
+                pic.deletePicture(True)
 
         if not (fileonly and postOptions.imagelessPost):
             invisBumpDisabled = not(asbool(meta.globj.OPT.invisibleBump))

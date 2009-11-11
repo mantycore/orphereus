@@ -50,13 +50,13 @@ id="reply${post.id}">
         <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a> \
     %endif
     %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()):
-      %if post.file and post.file.width:
-      [<a href="${h.url_for('oekakiDraw', url=post.id)}">${_('Draw')}</a>] \
-    %endif
-    %else:
-      %if c.currentUserCanPost and post.file and post.file.width:
-          [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>] \
+      %if post.attachments and post.attachments[0] and post.attachments[0].width:
+        [<a href="${h.url_for('oekakiDraw', url=post.id)}">${_('Draw')}</a>] \
       %endif
+    %else:
+        %if c.currentUserCanPost and post.attachments and post.attachments[0] and post.attachments[0].width:
+            [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>] \
+        %endif
     %endif
     %if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
         <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b> \
@@ -64,34 +64,38 @@ id="reply${post.id}">
     </span>
 
     &nbsp;
-    %if post.file:
+    %if post.attachments:
+    %for attachment in post.attachments
+    %if attachment:
         <br /><span class="filesize">${_('File:')}
-        <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}" \
-        %if post.file.extension.newWindow:
+        <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
+        %if attachment.extension.newWindow:
             target="_blank" \
         %endif
         > \
-        ${h.modLink(post.file.path, c.userInst.secid(), True)}</a>
+        ${h.modLink(attachment.path, c.userInst.secid(), True)}</a>
 
-        (<em>${'%.2f' % (post.file.size / 1024.0)} \
-        %if post.file.width and post.file.height:
-            ${_('Kbytes')}, ${post.file.width}x${post.file.height}</em>)</span>
+        (<em>${'%.2f' % (attachment.size / 1024.0)} \
+        %if attachment.width and attachment.height:
+            ${_('Kbytes')}, ${attachment.width}x${attachment.height}</em>)</span>
         %else:
             ${_('Kbytes')}</em>)</span>
         %endif
 
         <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-        <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}" \
-        %if post.file.extension.newWindow:
+        <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
+        %if attachment.extension.newWindow:
             target="_blank" \
         %endif
         >
 
         <%include file="wakaba.thumbnail.mako" args="post=post" />
         </a>
-    %elif post.hasAttachment:
+    %else:
         <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
         <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb"  alt="Removed" />
+    %endif
+    %endfor
     %endif
     <blockquote class="postbody" id="postBQId${post.id}">
   %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()):
@@ -114,7 +118,7 @@ id="reply${post.id}">
         %if post.messageInfo:
             <div>${post.messageInfo}</div>
         %endif
-        %if post.file and post.file.animpath:
+        %if post.attachments and post.attachments[0] and post.attachments[0].animpath:
             [<a href="${h.url_for('viewAnimation', source=post.id)}" target="_blank">${_('Animation')}</a>]
         %endif
     </blockquote>

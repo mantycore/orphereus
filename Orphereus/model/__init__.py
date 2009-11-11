@@ -121,7 +121,8 @@ def init_model(engine):
         }
     PostProps = {
         'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
-        'file': orm.relation(Picture),
+        #'file': orm.relation(Picture),
+        'attachments'  : orm.relation(Picture, secondary = t_filesToPostsMap),
         'parentPost' : orm.relation(Post, remote_side = [t_posts.c.id]),
         }
     LogEntryProps = {

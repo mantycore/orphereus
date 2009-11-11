@@ -499,7 +499,7 @@ class OrphieMainController(OrphieBaseController):
         else:
             return redirect_to('boardBase')
 
-    def oekakiDraw(self, url, selfy, anim, tool):
+    def oekakiDraw(self, url, selfy, anim, tool, sourceId):
         if not self.currentUserCanPost():
             return self.error(_("Posting is disabled"))
 
@@ -516,6 +516,8 @@ class OrphieMainController(OrphieBaseController):
             oekType = 'Shi normal'
             c.oekakiToolString = 'normal';
 
+        c.animation = request.POST.get('animation', False) or anim == '+anim'
+
         c.canvas = False
         c.width = request.POST.get('oekaki_x', '300')
         c.height = request.POST.get('oekaki_y', '300')
@@ -526,10 +528,16 @@ class OrphieMainController(OrphieBaseController):
         c.tempid = str(long(time.time() * 10 ** 7))
 
         oekSource = 0
-        if isNumber(url) and enablePicLoading:
+
+        sourceAttachment = request.POST.get('sourceAttachment', None) or sourceId
+        if sourceAttachment and isNumber(url) and enablePicLoading:
             post = Post.getPost(url)
 
-            pic = post.file
+            sourceAttachment = int(sourceAttachment)
+            if sourceAttachment >= len(post.attachments):
+                return self.error(_("Post doesn't have such many attachments"))
+
+            pic = post.attachments[sourceAttachment]
             if pic and pic.width:
                 oekSource = post.id
                 c.canvas = h.modLink(pic.path, c.userInst.secid())
@@ -540,12 +548,16 @@ class OrphieMainController(OrphieBaseController):
         Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, c.selfy)
         return self.render('spainter')
 
-    def viewAnimation(self, source):
+    def viewAnimation(self, source, animid):
         post = Post.getPost(source)
-        if not post or not post.file or not post.file.animpath:
+        animid = int(animid)
+        if not post or not post.attachments or animid >= len(post.attachments):
             return self.error(_("No animation associated with this post"))
 
-        c.pchPath = h.modLink(post.file.animpath, c.userInst.secid())
+        animpath = post.attachments[animid].animpath
+        if not animpath:
+            return self.error(_("Incorrect animation ID"))
+        c.pchPath = h.modLink(animpath, c.userInst.secid())
         return self.render('shiAnimation')
 
     def PostReply(self, post):
@@ -815,8 +827,8 @@ class OrphieMainController(OrphieBaseController):
         #postParams.replyTo = postid
         postParams.thread = thread
         postParams.tags = tags
-        postParams.existentPic = existentPic
-        postParams.picInfo = picInfo
+        postParams.existentPics = [existentPic, existentPic]
+        postParams.picInfos = [picInfo, picInfo]
         postParams.bumplimit = options.bumplimit
 
         if postParams.picInfo:

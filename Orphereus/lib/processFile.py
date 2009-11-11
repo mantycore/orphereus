@@ -35,81 +35,81 @@ log = logging.getLogger(__name__)
 def processFile(file, thumbSize = 250, baseEncoded = False):
     #log.debug('got file %s, dict: %s, test: %s' %(file, file.__dict__, isinstance(file, FieldStorageLike)))
     if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
-       name = str(long(time.time() * 10 ** 7))
-       ext = file.filename.rsplit('.', 1)[:0:-1]
+        name = str(long(time.time() * 10 ** 7))
+        ext = file.filename.rsplit('.', 1)[:0:-1]
 
-       #ret: [FileHolder, PicInfo, Picture, Error]
+        #ret: [FileHolder, PicInfo, Picture, Error]
 
-       # We should check whether we got this file already or not
-       # If we dont have it, we add it
-       if ext:
-          ext = ext[0].lstrip(os.sep).lower()
-       else:    # Panic, no extention found
-          ext = ''
-          return [False, False, False, _("Can't post files without extension")]
+        # We should check whether we got this file already or not
+        # If we dont have it, we add it
+        if ext:
+            ext = ext[0].lstrip(os.sep).lower()
+        else:    # Panic, no extention found
+            ext = ''
+            return [False, False, False, _("Can't post files without extension")]
 
-       # Make sure its something we want to have
-       extParams = Extension.getExtension(ext)
-       if not extParams or not extParams.enabled:
-          return [False, False, False, _(u'Extension "%s" is disallowed') % ext]
+        # Make sure its something we want to have
+        extParams = Extension.getExtension(ext)
+        if not extParams or not extParams.enabled:
+            return [False, False, False, _(u'Extension "%s" is disallowed') % ext]
 
-       relativeFilePath = h.expandName('%s.%s' % (name, ext))
-       localFilePath = os.path.join(meta.globj.OPT.uploadPath, relativeFilePath)
-       targetDir = os.path.dirname(localFilePath)
-       #log.debug(localFilePath)
-       #log.debug(targetDir)
-       if not os.path.exists(targetDir):
-           os.makedirs(targetDir)
+        relativeFilePath = h.expandName('%s.%s' % (name, ext))
+        localFilePath = os.path.join(meta.globj.OPT.uploadPath, relativeFilePath)
+        targetDir = os.path.dirname(localFilePath)
+        #log.debug(localFilePath)
+        #log.debug(targetDir)
+        if not os.path.exists(targetDir):
+            os.makedirs(targetDir)
 
-       localFile = open(localFilePath, 'w+b')
-       if not baseEncoded:
-           shutil.copyfileobj(file.file, localFile)
-       else:
-           base64.decode(file.file, localFile)
-       localFile.seek(0)
-       md5 = hashlib.md5(localFile.read()).hexdigest()
-       file.file.close()
-       localFile.close()
-       fileSize = os.stat(localFilePath)[6]
+        localFile = open(localFilePath, 'w+b')
+        if not baseEncoded:
+            shutil.copyfileobj(file.file, localFile)
+        else:
+            base64.decode(file.file, localFile)
+        localFile.seek(0)
+        md5 = hashlib.md5(localFile.read()).hexdigest()
+        file.file.close()
+        localFile.close()
+        fileSize = os.stat(localFilePath)[6]
 
-       picInfo = empty()
-       picInfo.localFilePath = localFilePath
-       picInfo.relativeFilePath = relativeFilePath
-       picInfo.fileSize = fileSize
-       picInfo.md5 = md5
-       picInfo.sizes = []
-       picInfo.extId = extParams.id
-       picInfo.animPath = None
+        picInfo = empty()
+        picInfo.localFilePath = localFilePath
+        picInfo.relativeFilePath = relativeFilePath
+        picInfo.fileSize = fileSize
+        picInfo.md5 = md5
+        picInfo.sizes = []
+        picInfo.extId = extParams.id
+        picInfo.animPath = None
 
-       pic = Picture.getByMd5(md5)
-       if pic:
-           os.unlink(localFilePath)
-           picInfo.sizes = [pic.width, pic.height, pic.thwidth, pic.thheight]
-           picInfo.thumbFilePath = pic.thumpath
-           picInfo.relativeFilePath = pic.path
-           picInfo.localFilePath = os.path.join(meta.globj.OPT.uploadPath, picInfo.relativeFilePath)
-           return [False, picInfo, pic, False]
+        pic = Picture.getByMd5(md5)
+        if pic:
+            os.unlink(localFilePath)
+            picInfo.sizes = [pic.width, pic.height, pic.thwidth, pic.thheight]
+            picInfo.thumbFilePath = pic.thumpath
+            picInfo.relativeFilePath = pic.path
+            picInfo.localFilePath = os.path.join(meta.globj.OPT.uploadPath, picInfo.relativeFilePath)
+            return [False, picInfo, pic, False]
 
-       thumbFilePath = False
-       localThumbPath = False
-       try:
-           #log.debug('Testing: %s' %extParams.type)
-           if not extParams.type in ('image', 'image-jpg'):
-             # log.debug('Not an image')
-             thumbFilePath = extParams.path
-             picInfo.sizes = [None, None, extParams.thwidth, extParams.thheight]
-           elif extParams.type == 'image':
-               thumbFilePath = h.expandName('%ss.%s' % (name, ext))
-           else:
-              thumbFilePath = h.expandName('%ss.jpg' % (name))
-           localThumbPath = os.path.join(meta.globj.OPT.uploadPath, thumbFilePath)
-           picInfo.thumbFilePath = thumbFilePath
-           if not picInfo.sizes:
-               picInfo.sizes = Picture.makeThumbnail(localFilePath, localThumbPath, (thumbSize, thumbSize))
-       except:
+        thumbFilePath = False
+        localThumbPath = False
+        try:
+            #log.debug('Testing: %s' %extParams.type)
+            if not extParams.type in ('image', 'image-jpg'):
+                # log.debug('Not an image')
+                thumbFilePath = extParams.path
+                picInfo.sizes = [None, None, extParams.thwidth, extParams.thheight]
+            elif extParams.type == 'image':
+                thumbFilePath = h.expandName('%ss.%s' % (name, ext))
+            else:
+                thumbFilePath = h.expandName('%ss.jpg' % (name))
+            localThumbPath = os.path.join(meta.globj.OPT.uploadPath, thumbFilePath)
+            picInfo.thumbFilePath = thumbFilePath
+            if not picInfo.sizes:
+                picInfo.sizes = Picture.makeThumbnail(localFilePath, localThumbPath, (thumbSize, thumbSize))
+        except:
             os.unlink(localFilePath)
             return [False, False, False, _(u"Broken picture. Maybe it is interlaced PNG?")]
 
-       return [AngryFileHolder((localFilePath, localThumbPath)), picInfo, False, False]
+        return [AngryFileHolder((localFilePath, localThumbPath)), picInfo, False, False]
     else:
-       return False
+        return False

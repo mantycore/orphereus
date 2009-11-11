@@ -832,7 +832,8 @@ class OrphieMainController(OrphieBaseController):
         postParams.bumplimit = options.bumplimit
 
         if postParams.picInfos:
-            postParams.picInfo.animPath = animPath
+            for picInfo in postParams.picInfos:
+                picInfo.animPath = animPath
 
         postParams.ip = None
         if self.userInst.Anonymous or g.OPT.saveAnyIP:

@@ -831,7 +831,7 @@ class OrphieMainController(OrphieBaseController):
         postParams.picInfos = [picInfo, picInfo]
         postParams.bumplimit = options.bumplimit
 
-        if postParams.picInfo:
+        if postParams.picInfos:
             postParams.picInfo.animPath = animPath
 
         postParams.ip = None

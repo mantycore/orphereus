@@ -50,7 +50,7 @@ t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
     )
 
 class Picture(object):
-    def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath):
+    def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath, id = None):
         self.path = relativeFilePath
         self.thumpath = thumbFilePath
         self.width = picSizes[0]
@@ -62,6 +62,8 @@ class Picture(object):
         self.md5 = md5
         if animPath:
             self.animpath = animPath
+        if id:
+            self.id = id
 
     @staticmethod
     def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath = None, commit = False):

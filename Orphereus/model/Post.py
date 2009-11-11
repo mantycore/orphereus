@@ -365,7 +365,7 @@ class Post(object):
             filesToDelete = []
             #TODO: ability for deletion separate files
             for pic in self.attachments:
-                attachments.append(None)
+                attachments.append(Picture.getPicture(0))
                 filesToDelete.append(pic)
             self.attachments = attachments
 

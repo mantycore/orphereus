@@ -3,7 +3,7 @@
 
 %if thread.attachments:
 %for attachment in thread.attachments:
-%if attachment:
+%if attachment.id != 0:
 <span class="filesize">
     <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
     %if attachment.extension.newWindow:

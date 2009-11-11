@@ -14,7 +14,7 @@
 &nbsp;
 %if post.attachments:
 %for attachment in post.attachments:
-%if attachment:
+%if attachment.id != 0:
     <br />
     <span class="filesize">${_('File:')}
     <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \

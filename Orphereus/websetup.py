@@ -108,6 +108,17 @@ def setup_config(command, filename, section, vars):
 
         meta.Session.commit()
 
+    try:
+        pc = meta.Session.query(Picture).count()
+    except:
+        pc = 0
+    log.debug('pictures: %d' % tc)
+    if tc == 0:
+        log.info("Adding dummy picture #0")
+        pic = Picture('', '', 0, [None, None, 0, 0], 1, '', None, 0) # TODO: special extension?
+        meta.Session.add(pic)
+        meta.Session.commit()
+
     log.info("Completed")
 
     gvars = config['pylons.app_globals']

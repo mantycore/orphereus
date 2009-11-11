@@ -116,7 +116,9 @@ class Post(object):
                                          picInfo.fileSize,
                                          picInfo.sizes,
                                          picInfo.extId,
-                                         picInfo.md5, picInfo.animPath)
+                                         picInfo.md5,
+                                         picInfo.additionalInfo,
+                                         picInfo.animPath)
                     post.attachments.append(newPic)
                 else:
                     post.attachments.append(postParams.existentPic)

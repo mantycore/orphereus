@@ -834,6 +834,7 @@ class OrphieMainController(OrphieBaseController):
         if postParams.picInfos:
             for picInfo in postParams.picInfos:
                 picInfo.animPath = animPath
+                picInfo.additionalInfo = None
 
         postParams.ip = None
         if self.userInst.Anonymous or g.OPT.saveAnyIP:

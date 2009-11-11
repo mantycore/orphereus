@@ -11,7 +11,7 @@
         <span>${h.tsFormat(post.date)}</span>
         </span>
         %if post:
-        %for attachment in post.attachments
+        %for attachment in post.attachments:
         %if attachment:
             <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}"
             %if attachment.extension.newWindow:

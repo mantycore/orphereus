@@ -65,7 +65,7 @@ id="reply${post.id}">
 
     &nbsp;
     %if post.attachments:
-    %for attachment in post.attachments
+    %for attachment in post.attachments:
     %if attachment:
         <br /><span class="filesize">${_('File:')}
         <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \

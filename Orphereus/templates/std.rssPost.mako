@@ -13,7 +13,7 @@
 
 &nbsp;
 %if post.attachments:
-%for attachment in post.attachments
+%for attachment in post.attachments:
 %if attachment:
     <br />
     <span class="filesize">${_('File:')}

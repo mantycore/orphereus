@@ -12,36 +12,40 @@
  <a href="${h.url_for('thread', post=post.id)}">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a>
 
 &nbsp;
-%if post.file:
+%if post.attachments:
+%for attachment in post.attachments
+%if attachment:
     <br />
     <span class="filesize">${_('File:')}
-    <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}" \
-    %if post.file.extension.newWindow:
+    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
+    %if attachment.extension.newWindow:
         target="_blank" \
     %endif
     >
-    ${h.modLink(post.file.path, c.userInst.secid(), True)}</a>
+    ${h.modLink(attachment.path, c.userInst.secid(), True)}</a>
 
-    (<em>${'%.2f' % (post.file.size / 1024.0)} \
-    %if post.file.width and post.file.height:
-        ${_('Kbytes')}, ${post.file.width}x${post.file.height}</em>) \
+    (<em>${'%.2f' % (attachment.size / 1024.0)} \
+    %if attachment.width and attachment.height:
+        ${_('Kbytes')}, ${attachment.width}x${attachment.height}</em>) \
     %else:
         ${_('Kbytes')}</em>)
     %endif
 
     </span>
     <br />
-    <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}" \
-    %if post.file.extension.newWindow:
+    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
+    %if attachment.extension.newWindow:
         target="_blank" \
     %endif
     >
 
-    <%include file="std.thumbnail.mako" args="post=post" />
+    <%include file="std.thumbnail.mako" args="post=post,attachment=attachment" />
     </a>
-%elif post.hasAttachment:
+%else:
     <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
     <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb"  alt="Removed" />
+%endif
+%endfor
 %endif
 <blockquote class="postbody" id="postBQId${post.id}">
     ${post.message}

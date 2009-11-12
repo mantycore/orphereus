@@ -49,6 +49,7 @@ t_tagOptions = sa.Table("tagOptions", meta.metadata,
     sa.Column("selfModeration", sa.types.Boolean, nullable = False),
     sa.Column("showInOverview", sa.types.Boolean, server_default = '1'),
     sa.Column("bumplimit", sa.types.Integer, nullable = True),
+    sa.Column("allowedAdditionalFiles", sa.types.Integer, nullable = False),
     )
 
 class TagOptions(object):
@@ -69,4 +70,5 @@ class TagOptions(object):
         self.selfModeration = meta.globj.OPT.defSelfModeration
         self.showInOverview = meta.globj.OPT.defShowInOverview
         self.bumplimit = meta.globj.OPT.defBumplimit
+        self.allowedAdditionalFiles = meta.globj.OPT.allowedAdditionalFiles
 

@@ -559,6 +559,7 @@ class OrphieAdminController(OrphieBaseController):
                     c.tag.options.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
                     c.tag.options.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
                     c.tag.options.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
+                    c.tag.options.allowedAdditionalFiles = request.POST.get('allowedAdditionalFiles', g.OPT.allowedAdditionalFiles)
                     bumplimit = request.POST.get('bumplimit', g.OPT.defBumplimit)
                     if not isNumber(bumplimit) or int(bumplimit) == 0:
                         bumplimit = None
@@ -698,7 +699,7 @@ class OrphieAdminController(OrphieBaseController):
         c.boardName = 'Editing user %s' % uid
         user = User.getUser(uid, False)
         if user:
-            if user.id <= 0:
+            if user.uidNumber <= 0:
                 return self.error("Can't edit internal users!")
 
             c.user = user

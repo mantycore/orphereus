@@ -768,6 +768,10 @@ class OrphieMainController(OrphieBaseController):
 
         picInfos = []
         for file in files:
+            assert len(picInfos) <= options.allowedAdditionalFiles + 1
+            if len(picInfos) == options.allowedAdditionalFiles + 1:
+                break
+
             fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
             #log.debug(fileDescriptors)
             fileHolder = False
@@ -819,7 +823,8 @@ class OrphieMainController(OrphieBaseController):
                 if options.enableSpoilers:
                     picInfo.spoiler = request.POST.get('spoiler_%d' % fileId, False)
 
-                picInfos.append(picInfo)
+                if len(picInfos) < options.allowedAdditionalFiles + 1:
+                    picInfos.append(picInfo)
 
         if not postMessage and not picInfos and not postMessageInfo:
             return errorHandler(_("At least message or file should be specified"))

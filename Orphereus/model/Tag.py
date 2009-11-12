@@ -158,6 +158,7 @@ class Tag(object):
                     options.selfModeration = t.options.selfModeration
                     options.showInOverview = t.options.showInOverview
                     options.bumplimit = t.options.bumplimit
+                    options.allowedAdditionalFiles = t.options.allowedAdditionalFiles
                     optionsFlag = False
                 else:
                     options.imagelessThread = options.imagelessThread & t.options.imagelessThread
@@ -180,6 +181,8 @@ class Tag(object):
                     if t.options.thumbSize < options.thumbSize:
                         options.thumbSize = t.options.thumbSize
 
+                    if t.options.allowedAdditionalFiles > options.allowedAdditionalFiles:
+                        options.allowedAdditionalFiles = t.options.allowedAdditionalFiles
                 tagRulesList = t.options.specialRules.split(';')
                 for rule in tagRulesList:
                     if rule and not rule in rulesList:

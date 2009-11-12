@@ -126,6 +126,13 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Additional files allowed')}
+                    </td>
+                    <td>
+                        <input type="text" name="allowedAdditionalFiles" size="35" value="${c.tag.options.allowedAdditionalFiles}" />
+                    </td>
+                </tr>
+                <tr>
                     <td class="postblock">${_('DELETE BOARD')}</td>
                     <td>
                         <input type="checkbox" name="deleteBoard" />

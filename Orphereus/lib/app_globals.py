@@ -138,7 +138,7 @@ class OptHolder(object):
 
                               ('defaults',
                                ('defThumbSize', 'defMinPicSize', 'defMaxFileSize', 'defBumplimit',
-
+                                'allowedAdditionalFiles',
                                )
                               ),
 

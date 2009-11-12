@@ -204,6 +204,7 @@ defaults.defSelfModeration = false
 defaults.defShowInOverview = true
 # 0 for unlimited
 defaults.defBumplimit = 0
+defaults.allowedAdditionalFiles = 4
 
 #####################
 # Security settings #

@@ -91,11 +91,16 @@
               <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_1" /> ${_('Spoiler')}</span>
         %endif
         %if c.boardOptions.allowedAdditionalFiles > 0:
-              <input id="addFileBtn" type="button" name="addFile" value="+" onclick="addFileRow();" onload="alert(1);"/>
+              <input id="addFileBtn" type="button" name="addFile" value="+" onclick="addFileRow();" />
         %endif
             </td>
         </tr>
     %endif
+
+    <tr id="filesBlockEnd" style="display: none;">
+      <td colspan="2" />
+    </tr>
+
     %if c.board:
         <tr id="trtags">
             <td class="postblock">${_('Boards')}</td>

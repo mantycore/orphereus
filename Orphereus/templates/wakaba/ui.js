@@ -534,7 +534,7 @@ function addFileRow() {
        if (spolierField) {
         spolierField.attr("name", "spoiler_" + (currentId + 1));
        }
-       $("#postControls").append(newRow);
+      newRow.insertBefore("#filesBlockEnd");
 }
 
 function removeRow(input)

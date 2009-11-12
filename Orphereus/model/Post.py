@@ -381,6 +381,8 @@ class Post(object):
                 filesToDelete.append(picAssoc.attachedFile)
                 picAssoc.attachedFile = Picture.getPicture(0)
 
+            meta.Session.commit()
+
             for picAssoc in filesToDelete:
                 picAssoc.deletePicture(True)
 

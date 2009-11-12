@@ -55,34 +55,7 @@
                 %endif
         </span>
         &nbsp;
-                %if pt.attachments:
-                %for attachment in pt.attachments
-                %if attachment.attachedFile.id != 0:
-                    <br /><span class="filesize">${_('File:')}
-
-                    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
-                    %if attachment.attachedFile.extension.newWindow:
-                        target="_blank"
-                    %endif
-                    >
-                    ${h.modLink(attachment.attachedFile.path, c.userInst.secid(), True)}</a>
-                    (<em>${'%.2f' % (attachment.attachedFile.size / 1024.0)} Kbytes, ${attachment.attachedFile.width}x${attachment.attachedFile.height}</em>)</span>
-                    <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-                    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
-                    %if attachment.attachedFile.extension.newWindow:
-                        target="_blank"
-                    %endif
-                    >
-
-                    <%include file="wakaba.thumbnail.mako" args="post=pt,attachment=attachment" />
-
-                    </a>
-                    %else:
-                        <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-                        <img src='${g.OPT.staticPathWeb}images/picDeleted.png' class="thumb">
-                    %endif
-                  %endfor
-                  %endif
+        <%include file="wakaba.fileBlock.mako" args="post=pt,opPost=None,searchMode=True" />
 
                 <blockquote class="postbody" id="postBQId${pt.id}">
                 %if pt.id in c.highlights:

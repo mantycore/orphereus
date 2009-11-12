@@ -64,39 +64,8 @@ id="reply${post.id}">
     </span>
 
     &nbsp;
-    %if post.attachments:
-    %for attachment in post.attachments:
-    %if attachment.attachedFile.id != 0:
-        <br /><span class="filesize">${_('File:')}
-        <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
-        %if attachment.attachedFile.extension.newWindow:
-            target="_blank" \
-        %endif
-        > \
-        ${h.modLink(attachment.attachedFile.path, c.userInst.secid(), True)}</a>
+    <%include file="wakaba.fileBlock.mako" args="post=post,opPost=None,searchMode=None" />
 
-        (<em>${'%.2f' % (attachment.attachedFile.size / 1024.0)} \
-        %if attachment.attachedFile.width and attachment.attachedFile.height:
-            ${_('Kbytes')}, ${attachment.attachedFile.width}x${attachment.attachedFile.height}</em>)</span>
-        %else:
-            ${_('Kbytes')}</em>)</span>
-        %endif
-
-        <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-        <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
-        %if attachment.attachedFile.extension.newWindow:
-            target="_blank" \
-        %endif
-        >
-
-        <%include file="wakaba.thumbnail.mako" args="post=post,attachment=attachment" />
-        </a>
-    %else:
-        <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-        <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb"  alt="Removed" />
-    %endif
-    %endfor
-    %endif
     <blockquote class="postbody" id="postBQId${post.id}">
   %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()):
         %if (c.count > 1) and post.messageShort and getattr(thread, 'enableShortMessages', True):

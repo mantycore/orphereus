@@ -813,15 +813,15 @@ class OrphieMainController(OrphieBaseController):
                             if value and isinstance(value, list) and tag in id3FieldsNames.keys():
                                 value = ' '.join(value)
                                 trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
-                        if not postMessageInfo:
-                            postMessageInfo = trackInfo
-                        else:
-                            postMessageInfo += '<br/>%s' % trackInfo
+                        picInfo.additionalInfo = trackInfo
+                        #if not postMessageInfo:
+                        #    postMessageInfo = trackInfo
+                        #else:
+                        #    postMessageInfo += '<br/>%s' % trackInfo
                 except:
                     pass
 
                 #TODO: move tags here
-                picInfo.additionalInfo = ''
                 picInfo.spoiler = None
                 if options.enableSpoilers:
                     picInfo.spoiler = request.POST.get('spoiler_%d' % fileId, None)

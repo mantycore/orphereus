@@ -13,5 +13,15 @@ window.loading_icon_path = "${g.OPT.staticPathWeb}images/loading.gif";
                    });
 %endif
 $(expandable_threads);
+
+var createdRowsField = $("#createdRows");
+var addFileBtn = $("#addFileBtn");
+if (createdRowsField){
+  createdRowsField.attr("value", 0);
+}
+if (addFileBtn){
+addFileBtn.attr("disabled", "");
+}
+
 </script>
 

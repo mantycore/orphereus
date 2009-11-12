@@ -513,3 +513,35 @@ window.onload=function(e)
         highlight(match[1]);
     }
 }
+
+function addFileRow() {
+      var currentCount = parseInt($("#createdRows").attr("value"));
+      var additionalFilesCount = parseInt($("#additionalFilesCount").attr("value"));
+      if (currentCount >= additionalFilesCount - 1)
+          $("#addFileBtn").attr("disabled", "disabled");
+      $("#createdRows").attr("value", currentCount + 1);
+
+       var currentId = parseInt($("#nextRowId").attr("value"));
+       $("#nextRowId").attr("value", currentId + 1);
+
+       var newRow = $("#trfile_").clone();
+       newRow.attr("id", "trfile_" +  currentId);
+       var fileField = $("input[name = file_]", newRow);
+       fileField.attr("name", "file_" + (currentId + 1));
+       var fileIdField = $("input[name = fileRowId]", newRow);
+       fileIdField.attr("value", currentId);
+       var spolierField = $("input[name = spoiler_]", newRow);
+       if (spolierField) {
+        spolierField.attr("name", "spoiler_" + (currentId + 1));
+       }
+       $("#postControls").append(newRow);
+}
+
+function removeRow(input)
+{
+  var idToRemove = $(input).next().val();
+  $("#trfile_" + idToRemove).remove();
+  var currentCount = parseInt($("#createdRows").attr("value"));
+  $("#createdRows").attr("value", currentCount - 1 );
+  $("#addFileBtn").attr("disabled", "");
+}

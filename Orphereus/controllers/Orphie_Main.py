@@ -790,6 +790,7 @@ class OrphieMainController(OrphieBaseController):
 
                 picInfo.existentPic = existentPic
                 picInfo.fileHolder = fileHolder
+                picInfo.additionalInfo = ''
 
             if picInfo:
                 if not options.images:

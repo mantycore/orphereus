@@ -57,19 +57,19 @@
         &nbsp;
                 %if pt.attachments:
                 %for attachment in pt.attachments
-                %if attachment.id != 0:
+                %if attachment.attachedFile.id != 0:
                     <br /><span class="filesize">${_('File:')}
 
-                    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}"
-                    %if attachment.extension.newWindow:
+                    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
+                    %if attachment.attachedFile.extension.newWindow:
                         target="_blank"
                     %endif
                     >
-                    ${h.modLink(attachment.path, c.userInst.secid(), True)}</a>
-                    (<em>${'%.2f' % (attachment.size / 1024.0)} Kbytes, ${attachment.width}x${attachment.height}</em>)</span>
+                    ${h.modLink(attachment.attachedFile.path, c.userInst.secid(), True)}</a>
+                    (<em>${'%.2f' % (attachment.attachedFile.size / 1024.0)} Kbytes, ${attachment.attachedFile.width}x${attachment.attachedFile.height}</em>)</span>
                     <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-                    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}"
-                    %if attachment.extension.newWindow:
+                    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
+                    %if attachment.attachedFile.extension.newWindow:
                         target="_blank"
                     %endif
                     >

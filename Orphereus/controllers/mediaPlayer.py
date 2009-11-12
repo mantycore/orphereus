@@ -40,7 +40,7 @@ class MediaPlayerPlugin(BasePlugin, AbstractPostOutputHook):
         BasePlugin.__init__(self, 'mediaplayer', config)
 
     def overrideThumbnail(self, post, context, attachment):
-        if attachment.extension.type == g.OPT.extensionTypeToPlay:
+        if attachment.attachedFile.extension.type == g.OPT.extensionTypeToPlay:
             return True
         return None
 

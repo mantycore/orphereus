@@ -301,7 +301,8 @@ class MaintenanceWorker(object):
         movedTCC = 0
         posts = Post.query.options(eagerload('attachments')).all()
         for post in posts:
-            for file in post.attachments:
+            for fileAssoc in post.attachments:
+                file = fileAssoc.attachedFile
                 if file:
                     fname = file.path
                     if moveFile(fname):

@@ -103,7 +103,7 @@ class Picture(object):
 
     def pictureRefCount(self):
         from Orphereus.model.Post import Post
-        return Post.query.filter(Post.attachments.any(Picture.id == self.id)).count()
+        return Post.query.filter(Post.attachments.any(Attachment.attachedFile.has(Picture.id == self.id))).count()
 
     def deletePicture(self, commit = True):
         if self.id > 0 and self.pictureRefCount() == 0:

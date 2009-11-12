@@ -13,8 +13,8 @@
         %if post:
         %for attachment in post.attachments:
         %if attachment:
-            <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}"
-            %if attachment.extension.newWindow:
+            <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
+            %if attachment.attachedFile.extension.newWindow:
                 target="_blank"
             %endif
             >

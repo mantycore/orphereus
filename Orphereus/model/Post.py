@@ -25,7 +25,7 @@ from sqlalchemy.orm import eagerload
 from sqlalchemy.sql import and_, or_, not_
 
 from Orphereus.model import meta
-from Orphereus.model.Picture import Picture
+from Orphereus.model.Picture import Picture, PictureAssociation
 from Orphereus.model.Tag import Tag
 from Orphereus.model.TagOptions import TagOptions
 from Orphereus.model.LogEntry import LogEntry
@@ -110,7 +110,8 @@ class Post(object):
         for picInfo in postParams.picInfos:
             log.debug(picInfo)
             if picInfo:
-                log.debug(picInfo.existentPic)
+                log.debug(picInfo.spoiler)
+                log.debug(type(picInfo.spoiler))
                 existent = recentlyCreated.get(picInfo.md5, picInfo.existentPic)
                 if not existent: # in postParams.existentPics:
                     newPic = Picture.create(picInfo.relativeFilePath,
@@ -121,10 +122,18 @@ class Post(object):
                                          picInfo.md5,
                                          picInfo.additionalInfo,
                                          picInfo.animPath)
-                    post.attachments.append(newPic)
+                    assoc = PictureAssociation(picInfo.spoiler)
+                    meta.Session.add(assoc)
+                    assoc.attachedFile = newPic
+                    post.attachments.append(assoc)
                     recentlyCreated[picInfo.md5] = newPic
                 elif not existent in post.attachments:
-                    post.attachments.append(existent)
+                    assoc = PictureAssociation(picInfo.spoiler)
+                    meta.Session.add(assoc)
+                    assoc.attachedFile = existent
+                    post.attachments.append(assoc)
+                else:
+                    log.warning('Strange situation: this should be blocked before!')
 
         post.incrementStats()
         meta.Session.add(post)
@@ -369,13 +378,13 @@ class Post(object):
             attachments = []
             filesToDelete = []
             #TODO: ability for deletion separate files
-            for pic in self.attachments:
+            for picAssoc in self.attachments:
                 attachments.append(Picture.getPicture(0))
-                filesToDelete.append(pic)
+                filesToDelete.append(picAssoc)
             self.attachments = attachments
 
-            for pic in filesToDelete:
-                pic.deletePicture(True)
+            for picAssoc in filesToDelete:
+                picAssoc.attachedFile.deletePicture(True)
 
         if not (fileonly and postOptions.imagelessPost):
             invisBumpDisabled = not(asbool(meta.globj.OPT.invisibleBump))

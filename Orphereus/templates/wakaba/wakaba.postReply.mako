@@ -50,11 +50,11 @@ id="reply${post.id}">
         <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a> \
     %endif
     %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()):
-      %if post.attachments and post.attachments[0] and post.attachments[0].width:
+      %if post.attachments and post.attachments[0] and post.attachments[0].attachedFile.width:
         [<a href="${h.url_for('oekakiDraw', url=post.id)}">${_('Draw')}</a>] \
       %endif
     %else:
-        %if c.currentUserCanPost and post.attachments and post.attachments[0] and post.attachments[0].width:
+        %if c.currentUserCanPost and post.attachments and post.attachments[0] and post.attachments[0].attachedFile.width:
             [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>] \
         %endif
     %endif
@@ -66,25 +66,25 @@ id="reply${post.id}">
     &nbsp;
     %if post.attachments:
     %for attachment in post.attachments:
-    %if attachment.id != 0:
+    %if attachment.attachedFile.id != 0:
         <br /><span class="filesize">${_('File:')}
-        <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
-        %if attachment.extension.newWindow:
+        <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
+        %if attachment.attachedFile.extension.newWindow:
             target="_blank" \
         %endif
         > \
-        ${h.modLink(attachment.path, c.userInst.secid(), True)}</a>
+        ${h.modLink(attachment.attachedFile.path, c.userInst.secid(), True)}</a>
 
-        (<em>${'%.2f' % (attachment.size / 1024.0)} \
-        %if attachment.width and attachment.height:
-            ${_('Kbytes')}, ${attachment.width}x${attachment.height}</em>)</span>
+        (<em>${'%.2f' % (attachment.attachedFile.size / 1024.0)} \
+        %if attachment.attachedFile.width and attachment.attachedFile.height:
+            ${_('Kbytes')}, ${attachment.attachedFile.width}x${attachment.attachedFile.height}</em>)</span>
         %else:
             ${_('Kbytes')}</em>)</span>
         %endif
 
         <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-        <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
-        %if attachment.extension.newWindow:
+        <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
+        %if attachment.attachedFile.extension.newWindow:
             target="_blank" \
         %endif
         >
@@ -118,7 +118,7 @@ id="reply${post.id}">
         %if post.messageInfo:
             <div>${post.messageInfo}</div>
         %endif
-        %if post.attachments and post.attachments[0] and post.attachments[0].animpath:
+        %if post.attachments and post.attachments[0] and post.attachments[0].attachedFile.animpath:
             [<a href="${h.url_for('viewAnimation', source=post.id)}" target="_blank">${_('Animation')}</a>]
         %endif
     </blockquote>

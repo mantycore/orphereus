@@ -3,26 +3,26 @@
 
 %if thread.attachments:
 %for attachment in thread.attachments:
-%if attachment.id != 0:
+%if attachment.attachedFile.id != 0:
 <span class="filesize">
-    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
-    %if attachment.extension.newWindow:
+    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
+    %if attachment.attachedFile.extension.newWindow:
         target="_blank" \
     %endif
     >
-    ${h.modLink(attachment.path, c.userInst.secid(), True)}</a>
+    ${h.modLink(attachment.attachedFile.path, c.userInst.secid(), True)}</a>
 
-    (<em>${'%.2f' % (attachment.size / 1024.0)} \
-    %if attachment.width and attachment.height:
-        ${_('Kbytes')}, ${attachment.width}x${attachment.height}</em>)
+    (<em>${'%.2f' % (attachment.attachedFile.size / 1024.0)} \
+    %if attachment.attachedFile.width and attachment.attachedFile.height:
+        ${_('Kbytes')}, ${attachment.attachedFile.width}x${attachment.attachedFile.height}</em>)
     %else:
         ${_('Kbytes')}</em>)
     %endif
 </span>
 
 <br />
-<a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
-%if attachment.extension.newWindow:
+<a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
+%if attachment.attachedFile.extension.newWindow:
     target="_blank" \
 %endif
 >
@@ -99,7 +99,7 @@ ${h.tsFormat(thread.date)} \
 %endif
 
 %if c.currentUserCanPost:
-    %if thread.attachments and thread.attachments[0] and thread.attachments[0].width:
+    %if thread.attachments and thread.attachments[0] and thread.attachments[0].attachedFile.width:
         [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
     %endif
     [<a href="${h.url_for('thread', post=thread.id)}">${_('Reply')}</a>]
@@ -121,7 +121,7 @@ ${h.threadInfoCallback(thread, c.userInst)}
     %if thread.messageInfo:
         <div>${thread.messageInfo}</div>
     %endif
-    %if thread.attachments and thread.attachments[0] and thread.attachments[0].animpath:
+    %if thread.attachments and thread.attachments[0] and thread.attachments[0].attachedFile.animpath:
         [<a href="${h.url_for('viewAnimation', source=thread.id)}" target="_blank">${_('Animation')}</a>]
     %endif
 </blockquote>

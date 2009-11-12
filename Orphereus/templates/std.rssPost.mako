@@ -14,27 +14,27 @@
 &nbsp;
 %if post.attachments:
 %for attachment in post.attachments:
-%if attachment.id != 0:
+%if attachment.attachedFile.id != 0:
     <br />
     <span class="filesize">${_('File:')}
-    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
-    %if attachment.extension.newWindow:
+    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
+    %if attachment.attachedFile.extension.newWindow:
         target="_blank" \
     %endif
     >
-    ${h.modLink(attachment.path, c.userInst.secid(), True)}</a>
+    ${h.modLink(attachment.attachedFile.path, c.userInst.secid(), True)}</a>
 
-    (<em>${'%.2f' % (attachment.size / 1024.0)} \
-    %if attachment.width and attachment.height:
-        ${_('Kbytes')}, ${attachment.width}x${attachment.height}</em>) \
+    (<em>${'%.2f' % (attachment.attachedFile.size / 1024.0)} \
+    %if attachment.attachedFile.width and attachment.attachedFile.height:
+        ${_('Kbytes')}, ${attachment.attachedFile.width}x${attachment.attachedFile.height}</em>) \
     %else:
         ${_('Kbytes')}</em>)
     %endif
 
     </span>
     <br />
-    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.path, c.userInst.secid())}" \
-    %if attachment.extension.newWindow:
+    <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
+    %if attachment.attachedFile.extension.newWindow:
         target="_blank" \
     %endif
     >

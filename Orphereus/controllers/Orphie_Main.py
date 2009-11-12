@@ -536,7 +536,7 @@ class OrphieMainController(OrphieBaseController):
             if sourceAttachment >= len(post.attachments):
                 return self.error(_("Post doesn't have such many attachments"))
 
-            pic = post.attachments[sourceAttachment]
+            pic = post.attachments[sourceAttachment].attachedFile
             if pic and pic.width:
                 oekSource = post.id
                 c.canvas = h.modLink(pic.path, c.userInst.secid())
@@ -553,7 +553,7 @@ class OrphieMainController(OrphieBaseController):
         if not post or not post.attachments or animid >= len(post.attachments):
             return self.error(_("No animation associated with this post"))
 
-        animpath = post.attachments[animid].animpath
+        animpath = post.attachments[animid].attachedFile.animpath
         if not animpath:
             return self.error(_("Incorrect animation ID"))
         c.pchPath = h.modLink(animpath, c.userInst.secid())
@@ -744,7 +744,7 @@ class OrphieMainController(OrphieBaseController):
             for fileId in fileIds:
                 file = request.POST.get('file_%d' % fileId, None)
                 if file is not None:
-                    files.append(file)
+                    files.append((file, fileId))
 
         postMessageShort = None
         postMessageRaw = None
@@ -769,7 +769,7 @@ class OrphieMainController(OrphieBaseController):
                 return errorHandler(_('Message is too long'))
 
         picInfos = []
-        for file in files:
+        for file, fileId in files:
             assert len(picInfos) <= options.allowedAdditionalFiles + 1
             if len(picInfos) == options.allowedAdditionalFiles + 1:
                 break
@@ -821,9 +821,10 @@ class OrphieMainController(OrphieBaseController):
 
                 #TODO: move tags here
                 picInfo.additionalInfo = ''
-                picInfo.spoiler = False
+                picInfo.spoiler = None
                 if options.enableSpoilers:
-                    picInfo.spoiler = request.POST.get('spoiler_%d' % fileId, False)
+                    picInfo.spoiler = request.POST.get('spoiler_%d' % fileId, None)
+                    log.error(picInfo.spoiler)
 
                 if len(picInfos) < options.allowedAdditionalFiles + 1:
                     picInfos.append(picInfo)

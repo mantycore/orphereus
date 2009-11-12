@@ -82,13 +82,30 @@
         <tr id="trfile">
             <td class="postblock">${_('File')}</td>
             <td>
-              <input type="file" name="file" size="35" />
+              <input type="file" name="file_1" size="35" />
         %if c.boardOptions.enableSpoilers:
-              <span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler" /> ${_('Spoiler')}</span>
+              <span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler_1" /> ${_('Spoiler')}</span>
         %endif
             </td>
         </tr>
-
+        <tr id="trfile">
+            <td class="postblock">${_('File')}</td>
+            <td>
+              <input type="file" name="file_2" size="35" />
+        %if c.boardOptions.enableSpoilers:
+              <span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler_2" /> ${_('Spoiler')}</span>
+        %endif
+            </td>
+        </tr>
+        <tr id="trfile">
+            <td class="postblock">${_('File')}</td>
+            <td>
+              <input type="file" name="file_5" size="35" />
+        %if c.boardOptions.enableSpoilers:
+              <span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler_5" /> ${_('Spoiler')}</span>
+        %endif
+            </td>
+        </tr>
     %endif
     %if c.board:
         <tr id="trtags">

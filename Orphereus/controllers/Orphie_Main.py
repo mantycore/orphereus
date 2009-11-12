@@ -36,7 +36,6 @@ import os
 import hashlib
 import re
 import base64
-from beaker.cache import CacheManager
 from Orphereus.lib.OrphieMark.OrphieParser import OrphieParser
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
@@ -720,21 +719,31 @@ class OrphieMainController(OrphieBaseController):
         if Tag.tagsInConflict(options, postid): #not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
             return errorHandler(_("Unacceptable combination of tags"))
 
+        files = []
         postMessageInfo = None
         tempid = request.POST.get('tempid', False)
         animPath = None
         if tempid: # TODO FIXME : move into parser
             oekaki = Oekaki.get(tempid)
             animPath = oekaki.animPath
-            file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
+            files = [FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))]
             postMessageInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds</span>' \
                              % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time / 1000)))
             if oekaki.source:
                 postMessageInfo += ", source " + self.formatPostReference(oekaki.source)
             oekaki.delete()
         else:
-            file = request.POST.get('file', False)
-
+            retest = re.compile("^file_(\d+)$")
+            fileIds = []
+            for i in request.POST.keys():
+                matcher = retest.match(i)
+                if matcher:
+                    fileIds.append(int(matcher.group(1)))
+            for fileId in fileIds:
+                file = request.POST.get('file_%d' % fileId, None)
+                if file is not None:
+                    files.append(file)
+        log.error("FILES: %s" % str(files))
         postMessageShort = None
         postMessageRaw = None
         if postMessage:
@@ -757,62 +766,70 @@ class OrphieMainController(OrphieBaseController):
             else:
                 return errorHandler(_('Message is too long'))
 
-        fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
-        #log.debug(fileDescriptors)
-        fileHolder = False
-        #existentPic = False
-        picInfo = False
-        if fileDescriptors:
-            fileHolder = fileDescriptors[0] # Object for file auto-removing
-            picInfo = fileDescriptors[1]
-            existentPic = fileDescriptors[2]
-            errorMessage = fileDescriptors[3]
-            if errorMessage:
-                return self.error(errorMessage)
-            picInfo.existentPic = existentPic
+        picInfos = []
+        for file in files:
+            fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
+            #log.debug(fileDescriptors)
+            fileHolder = False
+            #existentPic = False
+            picInfo = False
+            if fileDescriptors:
+                fileHolder = fileDescriptors[0] # Object for file auto-removing
+                picInfo = fileDescriptors[1]
+                existentPic = fileDescriptors[2]
+                errorMessage = fileDescriptors[3]
+                if errorMessage:
+                    return self.error(errorMessage)
 
-        if picInfo:
-            if not options.images:
-                return errorHandler(_("Files are not allowed on this board"))
-            if picInfo.fileSize > options.maxFileSize:
-                return errorHandler(_("File size (%d) exceeds the limit (%d)") % (picInfo.fileSize, options.maxFileSize))
-            if picInfo.sizes and picInfo.sizes[0] and picInfo.sizes[1] and (picInfo.sizes[0] < options.minPicSize or picInfo.sizes[1] < options.minPicSize):
-                return errorHandler(_("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize))
+                picInfo.existentPic = existentPic
+                picInfo.fileHolder = fileHolder
 
-            try:
-                audio = EasyID3(picInfo.localFilePath)
-                taglist = sorted(audio.keys())
-                taglist.reverse()
-                tagsToShow = taglist
-                if tagsToShow:
-                    trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
-                    for tag in tagsToShow:
-                        #log.debug(tag)
-                        #log.debug(audio[tag])
-                        value = audio[tag]
-                        if value and isinstance(value, list) and tag in id3FieldsNames.keys():
-                            value = ' '.join(value)
-                            trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
-                    if not postMessageInfo:
-                        postMessageInfo = trackInfo
-                    else:
-                        postMessageInfo += '<br/>%s' % trackInfo
-            except:
-                pass
+            if picInfo:
+                if not options.images:
+                    return errorHandler(_("Files are not allowed on this board"))
+                if picInfo.fileSize > options.maxFileSize:
+                    return errorHandler(_("File size (%d) exceeds the limit (%d)") % (picInfo.fileSize, options.maxFileSize))
+                if picInfo.sizes and picInfo.sizes[0] and picInfo.sizes[1] and (picInfo.sizes[0] < options.minPicSize or picInfo.sizes[1] < options.minPicSize):
+                    return errorHandler(_("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize))
 
-        if not postMessage and not picInfo and not postMessageInfo:
+                try:
+                    audio = EasyID3(picInfo.localFilePath)
+                    taglist = sorted(audio.keys())
+                    taglist.reverse()
+                    tagsToShow = taglist
+                    if tagsToShow:
+                        trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
+                        for tag in tagsToShow:
+                            #log.debug(tag)
+                            #log.debug(audio[tag])
+                            value = audio[tag]
+                            if value and isinstance(value, list) and tag in id3FieldsNames.keys():
+                                value = ' '.join(value)
+                                trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
+                        if not postMessageInfo:
+                            postMessageInfo = trackInfo
+                        else:
+                            postMessageInfo += '<br/>%s' % trackInfo
+                except:
+                    pass
+
+                #TODO: move tags here
+                picInfo.additionalInfo = ''
+                picInfo.spoiler = False
+                if options.enableSpoilers:
+                    picInfo.spoiler = request.POST.get('spoiler_%d' % fileId, False)
+
+                picInfos.append(picInfo)
+
+        if not postMessage and not picInfos and not postMessageInfo:
             return errorHandler(_("At least message or file should be specified"))
-
-        postSpoiler = False
-        if options.enableSpoilers:
-            postSpoiler = request.POST.get('spoiler', False)
 
         postSage = request.POST.get('sage', False)
         if postid:
-            if not picInfo and not options.imagelessPost:
+            if not picInfos and not options.imagelessPost:
                 return errorHandler(_("Replies without image are not allowed"))
         else:
-            if not picInfo and not options.imagelessThread:
+            if not picInfos and not options.imagelessThread:
                 return errorHandler(_("Threads without image are not allowed"))
 
         postParams = empty()
@@ -821,7 +838,7 @@ class OrphieMainController(OrphieBaseController):
         postParams.messageRaw = postMessageRaw
         postParams.messageInfo = postMessageInfo
         postParams.title = postTitle
-        postParams.spoiler = postSpoiler
+        #postParams.spoiler = postSpoiler
         postParams.uidNumber = self.userInst.uidNumber
         postParams.removemd5 = postRemovemd5
         postParams.postSage = postSage
@@ -829,10 +846,11 @@ class OrphieMainController(OrphieBaseController):
         postParams.thread = thread
         postParams.tags = tags
         #postParams.existentPics = [existentPic, existentPic]
-        postParams.picInfos = [picInfo, picInfo]
+        postParams.picInfos = picInfos #[picInfo, picInfo]
         postParams.bumplimit = options.bumplimit
 
-        if postParams.picInfos:
+        if animPath and postParams.picInfos:
+            assert len(postParams.picInfos) == 1
             for picInfo in postParams.picInfos:
                 picInfo.animPath = animPath
                 picInfo.additionalInfo = None
@@ -843,8 +861,9 @@ class OrphieMainController(OrphieBaseController):
 
         post = Post.create(postParams)
 
-        if fileHolder:
-            fileHolder.disableDeletion()
+        for picInfo in postParams.picInfos:
+            if picInfo.fileHolder:
+                picInfo.fileHolder.disableDeletion()
 
         for hook in postingHooks:
             hook.afterPostCallback(post, self.userInst, afterPostCallbackParams.get(hook.pluginId(), None))

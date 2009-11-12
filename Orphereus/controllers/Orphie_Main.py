@@ -855,7 +855,7 @@ class OrphieMainController(OrphieBaseController):
         postParams.thread = thread
         postParams.tags = tags
         #postParams.existentPics = [existentPic, existentPic]
-        postParams.picInfos = [picInfos[0], picInfos[0]] #[picInfo, picInfo]
+        postParams.picInfos = picInfos
         postParams.bumplimit = options.bumplimit
 
         if animPath and postParams.picInfos:

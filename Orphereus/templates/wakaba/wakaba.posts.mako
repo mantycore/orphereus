@@ -93,7 +93,7 @@
         </p>
         %endif
         <p id="y_replyform_file">
-            <input type="file" id="y_replyform_file_field" name="file_1" size="10" tabindex="40" />
+            <input type="file" id="y_replyform_file_field" name="file_0" size="10" tabindex="40" />
         </p>
         <p id="y_replyform_sage">
             <label for="y_replyform_sage_field" title="sage">

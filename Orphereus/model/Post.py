@@ -124,13 +124,17 @@ class Post(object):
                     assoc.attachedFile = newPic
                     post.attachments.append(assoc)
                     recentlyCreated[picInfo.md5] = newPic
-                elif not existent in post.attachments:
-                    assoc = PictureAssociation(picInfo.spoiler)
-                    meta.Session.add(assoc)
-                    assoc.attachedFile = existent
-                    post.attachments.append(assoc)
                 else:
-                    log.warning('Strange situation: this should be blocked before!')
+                    alreadyAdded = None
+                    for attachment in post.attachments:
+                        if attachment.attachedFile == existent:
+                            alreadyAdded = True
+                            break
+                    if not alreadyAdded:
+                        assoc = PictureAssociation(picInfo.spoiler)
+                        meta.Session.add(assoc)
+                        assoc.attachedFile = existent
+                        post.attachments.append(assoc)
 
         post.incrementStats()
         meta.Session.add(post)

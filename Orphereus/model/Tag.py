@@ -45,8 +45,8 @@ t_tags = sa.Table("tag", meta.metadata,
 
 t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
 #    sa.Column("id"          , sa.types.Integer, primary_key=True),
-    sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id')),
-    sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tag.id')),
+    sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
+    sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tag.id'), primary_key = True),
     )
 
 class Tag(object):

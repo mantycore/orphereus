@@ -724,9 +724,10 @@ class OrphieMainController(OrphieBaseController):
         tempid = request.POST.get('tempid', False)
         animPath = None
         if tempid: # TODO FIXME : move into parser
+            log.error(tempid)
             oekaki = Oekaki.get(tempid)
             animPath = oekaki.animPath
-            files = [FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))]
+            files = [(FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path)), 0)]
             postMessageInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds</span>' \
                              % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time / 1000)))
             if oekaki.source:
@@ -854,7 +855,7 @@ class OrphieMainController(OrphieBaseController):
         postParams.thread = thread
         postParams.tags = tags
         #postParams.existentPics = [existentPic, existentPic]
-        postParams.picInfos = picInfos #[picInfo, picInfo]
+        postParams.picInfos = [picInfos[0], picInfos[0]] #[picInfo, picInfo]
         postParams.bumplimit = options.bumplimit
 
         if animPath and postParams.picInfos:

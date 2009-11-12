@@ -119,10 +119,14 @@ def init_model(engine):
     TagProps = {
             'options' : orm.relation(TagOptions, uselist = False, backref = 'tag', cascade = "all, delete, delete-orphan")
         }
+
+    PictureAssociationProps = {'attachedFile' : orm.relation(Picture)}
+
     PostProps = {
         'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
         #'file': orm.relation(Picture),
-        'attachments'  : orm.relation(Picture, secondary = t_filesToPostsMap),
+        #'attachments'  : orm.relation(Picture, secondary = t_filesToPostsMap),
+        'attachments'  : orm.relation(PictureAssociation),
         'parentPost' : orm.relation(Post, remote_side = [t_posts.c.id]),
         }
     LogEntryProps = {
@@ -145,6 +149,7 @@ def init_model(engine):
                 "Tag" : TagProps,
                 "Post" : PostProps,
                 "LogEntry" : LogEntryProps,
+                "PictureAssociation" : PictureAssociationProps,
                 }
 
     gvars = config['pylons.app_globals']
@@ -177,6 +182,7 @@ def init_model(engine):
 
     meta.mapper(TagOptions, t_tagOptions, properties = TagOptionsProps)
     meta.mapper(Tag, t_tags, properties = TagProps)
+    meta.mapper(PictureAssociation, t_filesToPostsMap, properties = PictureAssociationProps)
     meta.mapper(Post, t_posts, properties = PostProps)
 
     meta.mapper(LogEntry, t_log, properties = LogEntryProps)

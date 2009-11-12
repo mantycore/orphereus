@@ -745,7 +745,7 @@ class OrphieMainController(OrphieBaseController):
                 file = request.POST.get('file_%d' % fileId, None)
                 if file is not None:
                     files.append(file)
-        log.error("FILES: %s" % str(files))
+
         postMessageShort = None
         postMessageRaw = None
         if postMessage:

@@ -46,9 +46,14 @@ t_piclist = sa.Table("picture", meta.metadata,
 
 t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
 #    sa.Column("id"          , sa.types.Integer, primary_key=True),
-    sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id')),
-    sa.Column('fileId'   , sa.types.Integer, sa.ForeignKey('picture.id')),
+    sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
+    sa.Column('fileId', sa.types.Integer, sa.ForeignKey('picture.id'), primary_key = True),
+    sa.Column("spoiler", sa.types.Boolean, nullable = True),
     )
+
+class PictureAssociation(object):
+    def __init__(self, spoiler):
+        self.spoiler = spoiler
 
 class Picture(object):
     def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo, animPath, id = None):

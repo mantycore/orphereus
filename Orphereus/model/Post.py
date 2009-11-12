@@ -375,16 +375,14 @@ class Post(object):
                 post.deletePost(userInst, checkOwnage = False)
 
         if self.attachments:
-            attachments = []
             filesToDelete = []
             #TODO: ability for deletion separate files
             for picAssoc in self.attachments:
-                attachments.append(Picture.getPicture(0))
-                filesToDelete.append(picAssoc)
-            self.attachments = attachments
+                filesToDelete.append(picAssoc.attachedFile)
+                picAssoc.attachedFile = Picture.getPicture(0)
 
             for picAssoc in filesToDelete:
-                picAssoc.attachedFile.deletePicture(True)
+                picAssoc.deletePicture(True)
 
         if not (fileonly and postOptions.imagelessPost):
             invisBumpDisabled = not(asbool(meta.globj.OPT.invisibleBump))

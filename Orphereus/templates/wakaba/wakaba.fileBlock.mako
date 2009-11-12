@@ -24,7 +24,7 @@
             %endif
             </span>
     %else:
-          ${_("Picture deleted")}
+           <span class="filesize">${_("Picture deleted")}</span>
     %endif
   </td>
   %endfor

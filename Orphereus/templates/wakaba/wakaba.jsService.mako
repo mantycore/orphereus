@@ -15,10 +15,14 @@ window.loading_icon_path = "${g.OPT.staticPathWeb}images/loading.gif";
 $(expandable_threads);
 
 var createdRowsField = $("#createdRows");
-var addFileBtn = $("#addFileBtn");
 if (createdRowsField){
   createdRowsField.attr("value", 0);
 }
+var nextRowIdField = $("#nextRowId");
+if (nextRowIdField){
+  nextRowIdField.attr("value", 0);
+}
+var addFileBtn = $("#addFileBtn");
 if (addFileBtn){
 addFileBtn.attr("disabled", "");
 }

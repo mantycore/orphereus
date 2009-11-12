@@ -86,9 +86,9 @@
         <tr id="trfile">
             <td class="postblock">${_('File')}</td>
             <td>
-              <input type="file" name="file_1" size="35" />
+              <input type="file" name="file_0" size="35" />
         %if c.boardOptions.enableSpoilers:
-              <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_1" /> ${_('Spoiler')}</span>
+              <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_0" /> ${_('Spoiler')}</span>
         %endif
         %if c.boardOptions.allowedAdditionalFiles > 0:
               <input id="addFileBtn" type="button" name="addFile" value="+" onclick="addFileRow();" />

@@ -739,6 +739,7 @@ class OrphieMainController(OrphieBaseController):
                 matcher = retest.match(i)
                 if matcher:
                     fileIds.append(int(matcher.group(1)))
+            fileIds.sort()
             for fileId in fileIds:
                 file = request.POST.get('file_%d' % fileId, None)
                 if file is not None:

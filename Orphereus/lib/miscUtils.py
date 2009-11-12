@@ -44,6 +44,11 @@ class FieldStorageLike(object):
         self.filename = filename
         self.file = open(filepath, 'rb')
 
+def natsort(list_):
+    tmp = [ (int(re.search('\d+', i).group(0)), i) for i in list_ ]
+    tmp.sort()
+    return [ i[1] for i in tmp ]
+
 from Orphereus.lib.OrphieMark.tools import filterText as filterText
 
 def isNumber(n):

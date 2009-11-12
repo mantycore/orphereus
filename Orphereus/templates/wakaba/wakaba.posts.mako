@@ -83,7 +83,7 @@
     <div><textarea id="y_replyform_text" name="message" rows="5" cols="40" tabindex="10"></textarea></div>
 
     <div class="y_replyform_fields">
-    	%if not(g.OPT.allowAnswersWithoutCaptcha):
+      %if not(g.OPT.allowAnswersWithoutCaptcha):
         <p id="y_replyform_captcha">
             <label for="y_replyform_captcha_field">
                 <img width="150" height="40" alt="${_("Captcha")}" src="${g.OPT.staticPathWeb}images/placeholder.png"  onclick="update_captcha(this)"/>
@@ -93,7 +93,7 @@
         </p>
         %endif
         <p id="y_replyform_file">
-            <input type="file" id="y_replyform_file_field" name="file" size="10" tabindex="40" />
+            <input type="file" id="y_replyform_file_field" name="file_1" size="10" tabindex="40" />
         </p>
         <p id="y_replyform_sage">
             <label for="y_replyform_sage_field" title="sage">

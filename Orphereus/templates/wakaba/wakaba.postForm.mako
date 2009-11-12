@@ -43,6 +43,46 @@
 <input type="hidden" name="tempid" value="${c.oekaki.tempid}" />
 %endif
 
+<input type="hidden" id="additionalFilesCount" value="${c.boardOptions.allowedAdditionalFiles}" />
+<input type="hidden" id="createdRows" value="0" />
+<input type="hidden" id="nextRowId" value="0" />
+
+<script type="text/javascript">
+$("#createdRows").attr("value", 0);
+$("#addFileBtn").attr("disabled", "");
+function addFileRow() {
+      var currentCount = parseInt($("#createdRows").attr("value"));
+      var additionalFilesCount = parseInt($("#additionalFilesCount").attr("value"));
+      if (currentCount >= additionalFilesCount - 1)
+          $("#addFileBtn").attr("disabled", "disabled");
+      $("#createdRows").attr("value", currentCount + 1);
+
+       var currentId = parseInt($("#nextRowId").attr("value"));
+       $("#nextRowId").attr("value", currentId + 1);
+
+       var newRow = $("#trfile_").clone();
+       newRow.attr("id", "trfile_" +  currentId);
+       var fileField = $("input[name = file_]", newRow);
+       fileField.attr("name", "file_" + (currentId + 1));
+       var fileIdField = $("input[name = fileRowId]", newRow);
+       fileIdField.attr("value", currentId);
+       var spolierField = $("input[name = spoiler_]", newRow);
+       if (spolierField) {
+        spolierField.attr("name", "spoiler_" + (currentId + 1));
+       }
+       $("#postControls").append(newRow);
+}
+
+function removeRow(input)
+{
+  var idToRemove = $(input).next().val();
+  $("#trfile_" + idToRemove).remove();
+  var currentCount = parseInt($("#createdRows").attr("value"));
+  $("#createdRows").attr("value", currentCount - 1 );
+  $("#addFileBtn").attr("disabled", "");
+}
+</script>
+
 <div id="paramPlaceholderContent" style="display: none;">
     <img  alt="${_("Loading")}" src="${g.OPT.staticPathWeb}images/loading.gif" />
 </div>
@@ -84,25 +124,10 @@
             <td>
               <input type="file" name="file_1" size="35" />
         %if c.boardOptions.enableSpoilers:
-              <span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler_1" /> ${_('Spoiler')}</span>
+              <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_1" /> ${_('Spoiler')}</span>
         %endif
-            </td>
-        </tr>
-        <tr id="trfile">
-            <td class="postblock">${_('File')}</td>
-            <td>
-              <input type="file" name="file_2" size="35" />
-        %if c.boardOptions.enableSpoilers:
-              <span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler_2" /> ${_('Spoiler')}</span>
-        %endif
-            </td>
-        </tr>
-        <tr id="trfile">
-            <td class="postblock">${_('File')}</td>
-            <td>
-              <input type="file" name="file_5" size="35" />
-        %if c.boardOptions.enableSpoilers:
-              <span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler_5" /> ${_('Spoiler')}</span>
+        %if c.boardOptions.allowedAdditionalFiles > 0:
+              <input id="addFileBtn" type="button" name="addFile" value="+" onclick="addFileRow();" onload="alert(1);"/>
         %endif
             </td>
         </tr>
@@ -268,3 +293,17 @@ ${_('Board-specific rules:')}
 
 </div>
 </div>
+
+<table style="display: none" id="dummyTable">
+    <tr id="trfile_">
+        <td class="postblock">${_('File')}</td>
+        <td>
+          <input type="file" name="file_" size="35" />
+    %if c.boardOptions.enableSpoilers:
+          <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_" /> ${_('Spoiler')}</span>
+    %endif
+          <input name="removeRowBtn" type="button" value="-" onclick="removeRow(this);" />
+          <input type="hidden" name="fileRowId" value="" />
+        </td>
+    </tr>
+</table>

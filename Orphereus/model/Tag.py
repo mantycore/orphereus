@@ -202,6 +202,7 @@ class Tag(object):
             options.selfModeration = meta.globj.OPT.defSelfModeration
             options.showInOverview = meta.globj.OPT.defShowInOverview
             options.bumplimit = meta.globj.OPT.defBumplimit
+            options.allowedAdditionalFiles = meta.globj.OPT.allowedAdditionalFiles
             options.specialRules = u''
         return options
 

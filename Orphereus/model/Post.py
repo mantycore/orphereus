@@ -108,10 +108,7 @@ class Post(object):
 
         recentlyCreated = {}
         for picInfo in postParams.picInfos:
-            log.debug(picInfo)
             if picInfo:
-                log.debug(picInfo.spoiler)
-                log.debug(type(picInfo.spoiler))
                 existent = recentlyCreated.get(picInfo.md5, picInfo.existentPic)
                 if not existent: # in postParams.existentPics:
                     newPic = Picture.create(picInfo.relativeFilePath,

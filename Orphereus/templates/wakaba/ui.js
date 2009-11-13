@@ -457,6 +457,62 @@ function userFiltersDelete(event,fid)
   event.preventDefault();
 }
 
+function addFileRow() {
+      var currentCount = parseInt($("#createdRows").attr("value"));
+      var additionalFilesCount = parseInt($("#additionalFilesCount").attr("value"));
+      if (currentCount >= additionalFilesCount - 1)
+          $("#addFileBtn").attr("disabled", "disabled");
+      $("#createdRows").attr("value", currentCount + 1);
+
+       var currentId = parseInt($("#nextRowId").attr("value"));
+       $("#nextRowId").attr("value", currentId + 1);
+
+       var newRow = $("#trfile_").clone();
+       newRow.attr("id", "trfile_" +  currentId);
+       var fileField = $("input[name = file_]", newRow);
+       fileField.attr("name", "file_" + (currentId + 1));
+       var fileIdField = $("input[name = fileRowId]", newRow);
+       fileIdField.attr("value", currentId);
+       var spolierField = $("input[name = spoiler_]", newRow);
+       if (spolierField) {
+        spolierField.attr("name", "spoiler_" + (currentId + 1));
+       }
+      newRow.insertBefore("#filesBlockEnd");
+}
+
+function removeRow(input)
+{
+  var idToRemove = $(input).next().val();
+  $("#trfile_" + idToRemove).remove();
+  var currentCount = parseInt($("#createdRows").attr("value"));
+  $("#createdRows").attr("value", currentCount - 1 );
+  $("#addFileBtn").attr("disabled", "");
+}
+
+function installPopupHintsOnFiles(){
+$('.file_thread img').each(function (i) {
+  var popupInfo = $(this).parents(".file_thread").children(".popupDiv").get()[0];
+  if (popupInfo)
+  {
+   $(this).qtip({
+     content: $(popupInfo).html(),
+     show : {
+       delay: 10,
+       when: {event : 'mouseover'},
+     },
+     hide: 'mouseout',
+     style: { name: 'light', tip: true },
+     position: {
+        corner: {
+           target: 'topLeft',
+           tooltip: 'bottomLeft'
+        }
+     }
+   });
+  }
+});
+}
+
 // code below should be rewritten using JQuery
 function insert(text,notFocus)
 {
@@ -515,36 +571,7 @@ window.onload=function(e)
          */
         highlight(match[1]);
     }
+    installPopupHintsOnFiles();
 }
 
-function addFileRow() {
-      var currentCount = parseInt($("#createdRows").attr("value"));
-      var additionalFilesCount = parseInt($("#additionalFilesCount").attr("value"));
-      if (currentCount >= additionalFilesCount - 1)
-          $("#addFileBtn").attr("disabled", "disabled");
-      $("#createdRows").attr("value", currentCount + 1);
 
-       var currentId = parseInt($("#nextRowId").attr("value"));
-       $("#nextRowId").attr("value", currentId + 1);
-
-       var newRow = $("#trfile_").clone();
-       newRow.attr("id", "trfile_" +  currentId);
-       var fileField = $("input[name = file_]", newRow);
-       fileField.attr("name", "file_" + (currentId + 1));
-       var fileIdField = $("input[name = fileRowId]", newRow);
-       fileIdField.attr("value", currentId);
-       var spolierField = $("input[name = spoiler_]", newRow);
-       if (spolierField) {
-        spolierField.attr("name", "spoiler_" + (currentId + 1));
-       }
-      newRow.insertBefore("#filesBlockEnd");
-}
-
-function removeRow(input)
-{
-  var idToRemove = $(input).next().val();
-  $("#trfile_" + idToRemove).remove();
-  var currentCount = parseInt($("#createdRows").attr("value"));
-  $("#createdRows").attr("value", currentCount - 1 );
-  $("#addFileBtn").attr("disabled", "");
-}

@@ -27,30 +27,5 @@ if (addFileBtn){
 addFileBtn.attr("disabled", "");
 }
 
-$(document).ready(function(){
-$('.file_thread img').each(function (i) {
-  var popupInfo = $(this).parents(".file_thread").children(".popupDiv").get()[0];
-  if (popupInfo)
-  {
-   $(this).qtip({
-     content: $(popupInfo).html(),
-     show : {
-       delay: 10,
-       when: {event : 'mouseover'},
-     },
-     hide: 'mouseout',
-     style: { name: 'light', tip: true },
-     position: {
-        corner: {
-           target: 'rightMiddle',
-           tooltip: 'leftMiddle'
-        }
-     }
-   });
-  }
-});
-
-});
-
 </script>
 

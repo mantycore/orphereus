@@ -245,7 +245,7 @@ class OrphieMainController(OrphieBaseController):
         else:
             return self.error(_("You must specify post tagline."))
 
-    def gotoDestination(self, post, postid):
+    def gotoDestination(self, post):
         taglineSource = post
         if post.parentid:
             taglineSource = post.parentPost
@@ -268,7 +268,7 @@ class OrphieMainController(OrphieBaseController):
         anchor = "i%d" % post.id
 
         if dest == 0: #current thread
-            if postid:
+            if post.parentid:
                 return redirect_to(action = 'GetThread', post = post.parentid, board = None, anchor = anchor)
             else:
                 return redirect_to(action = 'GetThread', post = post.id, board = None, anchor = anchor)
@@ -885,4 +885,4 @@ class OrphieMainController(OrphieBaseController):
         if ajaxRequest:
             return 'completed'
         else:
-            return self.gotoDestination(post, postid)
+            return self.gotoDestination(post)

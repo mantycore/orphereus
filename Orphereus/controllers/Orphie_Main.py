@@ -265,25 +265,27 @@ class OrphieMainController(OrphieBaseController):
         else:
             curPage = 0
 
+        anchor = "i%d" % post.id
+
         if dest == 0: #current thread
             if postid:
-                return redirect_to(action = 'GetThread', post = post.parentid, board = None)
+                return redirect_to(action = 'GetThread', post = post.parentid, board = None, anchor = anchor)
             else:
-                return redirect_to(action = 'GetThread', post = post.id, board = None)
+                return redirect_to(action = 'GetThread', post = post.id, board = None, anchor = anchor)
         elif dest == 1 or dest == 2: # current board
             if  tagLine:
                 if dest == 1:
                     curPage = 0
-                return redirect_to('board', board = tagLine, page = curPage)
+                return redirect_to('board', board = tagLine, page = curPage, anchor = anchor)
         elif dest == 3: # overview
             pass
         elif dest == 4: # destination board
             return redirect_to('boardBase', board = postTagline)
         elif dest == 5: #referrer
-            return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')))
+            return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')), anchor = anchor)
 
         # impossible with correct data
-        return redirect_to('boardBase', board = g.OPT.allowOverview and '~' or postTagline)
+        return redirect_to('boardBase', board = g.OPT.allowOverview and '~' or postTagline, anchor = anchor)
 
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
@@ -883,4 +885,4 @@ class OrphieMainController(OrphieBaseController):
         if ajaxRequest:
             return 'completed'
         else:
-            self.gotoDestination(post, postid)
+            return self.gotoDestination(post, postid)

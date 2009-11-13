@@ -508,8 +508,11 @@ window.onload=function(e)
     var match;
     if(match=/#i([0-9]+)/.exec(document.location.toString()))
     {
-        if(!document.forms.postform.message.value)
+        /*
+          // Annoying Wakaba behavior
+          if(!document.forms.postform.message.value)
             insert(">>"+match[1],1);
+         */
         highlight(match[1]);
     }
 }

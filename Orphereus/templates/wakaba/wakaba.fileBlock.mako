@@ -2,63 +2,49 @@
 
 %if post.attachments:
 %if len(post.attachments) > 1:
-  <table style="text-align: center;" cellpadding="0" cellspacing="2">
-  <tr>
   %for attachment in post.attachments:
-  <td>
     %if attachment.attachedFile.id != 0:
-          <span class="filesize">
-
+      <div class="file_thread">
             <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
             %if attachment.attachedFile.extension.newWindow:
                 target="_blank" \
             %endif
             > \
             ${h.modLink(attachment.attachedFile.path, c.userInst.secid(), True)}</a>
-          <br/>
+               <br />
+          <span class="fileinfo">
             (<em>${'%.2f' % (attachment.attachedFile.size / 1024.0)} \
             %if attachment.attachedFile.width and attachment.attachedFile.height:
                 ${_('Kbytes')}, ${attachment.attachedFile.width}x${attachment.attachedFile.height}</em>)
             %else:
                 ${_('Kbytes')}</em>)
             %endif
-            </span>
-    %else:
-           <span class="filesize">${_("Picture deleted")}</span>
-    %endif
-  </td>
-  %endfor
-  </tr>
-  <tr style="vertical-align: top;">
-  %for attachment in post.attachments:
-  <td>
-    %if attachment.attachedFile.id != 0:
+          </span><br />
+
           <span class="filesize" style="display: none">
           <!-- Quick & dirty JS fix -->
           <em>${attachment.attachedFile.width}x${attachment.attachedFile.height}</em>
           </span>
-
           <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
           %if attachment.attachedFile.extension.newWindow:
               target="_blank"
           %endif
           >
-
+                  
           <%include file="wakaba.thumbnail.mako" args="post=post,attachment=attachment" />
-
-          </a>
+    
+               </a>
+            </div>
     %else:
           <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>
     %endif
-  </td>
   %endfor
-  </tr>
-  </table>
+<br style="clear: both" />
 %else: # len(attachments) == 1
   %for attachment in post.attachments:
     %if attachment.attachedFile.id != 0:
           %if not opPost:
-          <br />
+          <!-- <br /> -->
           %endif
           <span class="filesize">
           %if not opPost:

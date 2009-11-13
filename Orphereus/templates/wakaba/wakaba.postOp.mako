@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 <%page args="thread"/>
-
+%if thread.attachments and (len(thread.attachments) == 1):
 <%include file="wakaba.fileBlock.mako" args="post=thread,opPost=True,searchMode=None" />
+%endif
 
 <a name="i${thread.id}"></a>
 &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Delete"/></a>
@@ -73,7 +74,11 @@ ${h.tsFormat(thread.date)} \
     [<a href="${h.postUrl(thread.id, thread.id)}">${_('Read')}</a>]
 %endif
 
-${h.threadInfoCallback(thread, c.userInst)}
+${h.threadInfoCallback(thread, c.userInst)}<br />
+%endif
+
+%if thread.attachments and (len(thread.attachments) > 1):
+<%include file="wakaba.fileBlock.mako" args="post=thread,opPost=True,searchMode=None" />
 %endif
 
 <blockquote class="postbody" id="quickReplyNode${thread.id}">

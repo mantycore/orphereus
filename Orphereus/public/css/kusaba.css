@@ -581,6 +581,35 @@ a img{ border: 0}
 .list div a:hover {
         color: #F4F7C9;
 }
+
+.file_thread { 
+    font-size: 80%;
+    float: left;
+    margin-top: 5px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    margin-left: 5px;
+    text-align: left;
+/*    background-attachment: scroll;
+    background-repeat: repeat;
+    background-position: 0% 0%;
+    background-color: #dddddd;
+    background-image: none;
+    border-top-color: #aaaaaa;
+    border-left-color: #aaaaaa;
+    border-right-color: #aaaaaa;
+    border-bottom-color: #aaaaaa;
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-top-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;*/
+}
+
+
 /*
 #x_replyform {
     display: block; border: 1px #117743; solid; margin: 0 2px 2px 2px; padding: 5px;

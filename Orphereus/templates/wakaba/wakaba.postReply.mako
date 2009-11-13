@@ -14,6 +14,7 @@
   %endif
 %endif
 id="reply${post.id}">
+  <div class="postheader">
     <a name="i${post.id}"></a>
     &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Del" /></a>
     <span style="display:none" class="delete">
@@ -64,6 +65,7 @@ id="reply${post.id}">
     </span>
 
     &nbsp;
+    </div>
     <%include file="wakaba.fileBlock.mako" args="post=post,opPost=None,searchMode=None" />
 
     <blockquote class="postbody" id="postBQId${post.id}">

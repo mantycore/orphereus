@@ -66,9 +66,6 @@ ${h.tsFormat(thread.date)} \
 %endif
 
 %if c.currentUserCanPost:
-    %if thread.attachments and thread.attachments[0] and thread.attachments[0].attachedFile.width:
-        [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
-    %endif
     [<a href="${h.url_for('thread', post=thread.id)}">${_('Reply')}</a>]
 %else:
     [<a href="${h.postUrl(thread.id, thread.id)}">${_('Read')}</a>]
@@ -91,9 +88,6 @@ ${h.threadInfoCallback(thread, c.userInst)}<br />
     %endif
     %if thread.messageInfo:
         <div>${thread.messageInfo}</div>
-    %endif
-    %if thread.attachments and thread.attachments[0] and thread.attachments[0].attachedFile.animpath:
-        [<a href="${h.url_for('viewAnimation', source=thread.id)}" target="_blank">${_('Animation')}</a>]
     %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:

@@ -78,8 +78,9 @@ def processFile(file, thumbSize = 250, baseEncoded = False):
         picInfo.fileSize = fileSize
         picInfo.md5 = md5
         picInfo.sizes = []
-        picInfo.extId = extParams.id
+        picInfo.extension = extParams
         picInfo.animPath = None
+        picInfo.relationInfo = None
 
         pic = Picture.getByMd5(md5)
         if pic:

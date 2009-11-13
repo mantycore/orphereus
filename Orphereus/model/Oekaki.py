@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -31,39 +31,41 @@ log = logging.getLogger(__name__)
 from Orphereus.model import meta
 
 t_oekaki = sa.Table("oekaki", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("tempid"   , sa.types.String(20), nullable=False),
-    sa.Column("time"     , sa.types.Integer, nullable=False),
-    sa.Column("source"   , sa.types.Integer, nullable=False),
-    sa.Column("uidNumber",sa.types.Integer, nullable=False),
-    sa.Column("type"     , sa.types.String(255), nullable=False),
-    sa.Column("path"     , sa.types.String(255), nullable=False),
-    sa.Column("timeStamp", sa.types.DateTime, nullable=False),
-    sa.Column("selfy", sa.types.Boolean, nullable=False, server_default='0'),
-    sa.Column("animPath", sa.types.String(255), nullable=True),
+    sa.Column("id"       , sa.types.Integer, primary_key = True),
+    sa.Column("tempid"   , sa.types.String(20), nullable = False),
+    sa.Column("time"     , sa.types.Integer, nullable = False),
+    sa.Column("sourcePost"   , sa.types.Integer, nullable = True),
+    sa.Column("sourcePicIdx" , sa.types.Integer, nullable = True),
+    sa.Column("uidNumber", sa.types.Integer, nullable = False),
+    sa.Column("type"     , sa.types.String(255), nullable = False),
+    sa.Column("path"     , sa.types.String(255), nullable = False),
+    sa.Column("timeStamp", sa.types.DateTime, nullable = False),
+    sa.Column("selfy", sa.types.Boolean, nullable = False, server_default = '0'),
+    sa.Column("animPath", sa.types.String(255), nullable = True),
     )
 
 class Oekaki(object):
-    def __init__(self, tempid, uidNumber, type, source, selfy):
+    def __init__(self, tempid, uidNumber, type, sourcePost, sourcePicIdx, selfy):
         self.timeStamp = datetime.datetime.now()
         self.time = -1
         self.path = ''
         self.type = type
         self.uidNumber = uidNumber
-        self.source = source
+        self.sourcePost = sourcePost
+        self.sourcePicIdx = sourcePicIdx
         self.tempid = tempid
         self.selfy = selfy
         self.animPath = None
 
     @staticmethod
-    def create(tempid, uidNumber, type, source, selfy):
-        oekaki = Oekaki(tempid, uidNumber, type, source, selfy)
+    def create(tempid, uidNumber, type, source, sourcePicIdx, selfy):
+        oekaki = Oekaki(tempid, uidNumber, type, source, sourcePicIdx, selfy)
         meta.Session.add(oekaki)
         meta.Session.commit()
 
     @staticmethod
     def get(tempid):
-        return Oekaki.query.filter(Oekaki.tempid==tempid).first()
+        return Oekaki.query.filter(Oekaki.tempid == tempid).first()
 
     def setPathsAndTime(self, path, animPath, time):
         self.path = path

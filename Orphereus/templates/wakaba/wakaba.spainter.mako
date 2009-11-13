@@ -17,9 +17,9 @@
 
 %if c.animation:
     <param name="thumbnail_type" value="animation" />
-    %if c.pchPath:
-        <param name="pch_file" value="${g.OPT.filesPathWeb + c.pchPath}" />
-    %endif
+%if (not c.canvas) and c.pchPath: #Painted image as source is more interesting than animation only. This condition will never be True for now
+    <param name="pch_file" value="${g.OPT.filesPathWeb + c.pchPath}" />
+%endif
 %endif
 
 

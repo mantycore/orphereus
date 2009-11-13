@@ -50,15 +50,6 @@ id="reply${post.id}">
     %else:
         <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a> \
     %endif
-    %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()):
-      %if post.attachments and post.attachments[0] and post.attachments[0].attachedFile.width:
-        [<a href="${h.url_for('oekakiDraw', url=post.id)}">${_('Draw')}</a>] \
-      %endif
-    %else:
-        %if c.currentUserCanPost and post.attachments and post.attachments[0] and post.attachments[0].attachedFile.width:
-            [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>] \
-        %endif
-    %endif
     %if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
         <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b> \
     %endif
@@ -86,11 +77,8 @@ id="reply${post.id}">
             ${post.message}
         %endif
     %endif
-        %if post.messageInfo:
-            <div>${post.messageInfo}</div>
-        %endif
-        %if post.attachments and post.attachments[0] and post.attachments[0].attachedFile.animpath:
-            [<a href="${h.url_for('viewAnimation', source=post.id)}" target="_blank">${_('Animation')}</a>]
-        %endif
+    %if post.messageInfo:
+        <div>${post.messageInfo}</div>
+    %endif
     </blockquote>
 </td></tr></tbody></table>

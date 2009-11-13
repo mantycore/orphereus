@@ -115,11 +115,11 @@ class Post(object):
                                          picInfo.thumbFilePath,
                                          picInfo.fileSize,
                                          picInfo.sizes,
-                                         picInfo.extId,
+                                         picInfo.extension.id,
                                          picInfo.md5,
                                          picInfo.additionalInfo,
-                                         picInfo.animPath)
-                    assoc = PictureAssociation(picInfo.spoiler)
+                                         )
+                    assoc = PictureAssociation(picInfo.spoiler, picInfo.relationInfo, picInfo.animPath)
                     meta.Session.add(assoc)
                     assoc.attachedFile = newPic
                     post.attachments.append(assoc)
@@ -131,7 +131,7 @@ class Post(object):
                             alreadyAdded = True
                             break
                     if not alreadyAdded:
-                        assoc = PictureAssociation(picInfo.spoiler)
+                        assoc = PictureAssociation(picInfo.spoiler, None, None)
                         meta.Session.add(assoc)
                         assoc.attachedFile = existent
                         post.attachments.append(assoc)

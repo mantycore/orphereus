@@ -528,25 +528,33 @@ class OrphieMainController(OrphieBaseController):
             c.height = 300
         c.tempid = str(long(time.time() * 10 ** 7))
 
-        oekSource = 0
-
+        oekSource = None
         sourceAttachment = request.POST.get('sourceAttachment', None) or sourceId
         if sourceAttachment and isNumber(url) and enablePicLoading:
             post = Post.getPost(url)
+            if not post:
+                return self.error(_("Post doesn't exists"))
 
             sourceAttachment = int(sourceAttachment)
             if sourceAttachment >= len(post.attachments):
                 return self.error(_("Post doesn't have such many attachments"))
 
-            pic = post.attachments[sourceAttachment].attachedFile
+            attachment = post.attachments[sourceAttachment]
+            pic = attachment.attachedFile
             if pic and pic.width:
                 oekSource = post.id
                 c.canvas = h.modLink(pic.path, c.userInst.secid())
                 c.width = pic.width
                 c.height = pic.height
-                if pic.animpath:
-                    c.pchPath = h.modLink(pic.animpath, c.userInst.secid())
-        Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, c.selfy)
+
+                if attachment.animpath:
+                    c.pchPath = h.modLink(attachment.animpath, c.userInst.secid())
+            else:
+                sourceAttachment = None
+        else:
+            sourceAttachment = None
+
+        Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, sourceAttachment, c.selfy)
         return self.render('spainter')
 
     def viewAnimation(self, source, animid):
@@ -555,7 +563,7 @@ class OrphieMainController(OrphieBaseController):
         if not post or not post.attachments or animid >= len(post.attachments):
             return self.error(_("No animation associated with this post"))
 
-        animpath = post.attachments[animid].attachedFile.animpath
+        animpath = post.attachments[animid].animpath
         if not animpath:
             return self.error(_("Incorrect animation ID"))
         c.pchPath = h.modLink(animpath, c.userInst.secid())
@@ -722,18 +730,19 @@ class OrphieMainController(OrphieBaseController):
             return errorHandler(_("Unacceptable combination of tags"))
 
         files = []
-        postMessageInfo = None
+        postMessageInfo = None # TODO: Reserved for future. It may be used for "USER WAS BANNED FOR THIS POST" messages
         tempid = request.POST.get('tempid', False)
         animPath = None
-        if tempid: # TODO FIXME : move into parser
-            log.error(tempid)
+        oekakiInfo = None
+        if tempid:
             oekaki = Oekaki.get(tempid)
             animPath = oekaki.animPath
             files = [(FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path)), 0)]
-            postMessageInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds</span>' \
+            oekakiInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds' \
                              % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time / 1000)))
-            if oekaki.source:
-                postMessageInfo += ", source " + self.formatPostReference(oekaki.source)
+            if oekaki.sourcePost:
+                oekakiInfo += ", picture %d from post %s was used as source" % (oekaki.sourcePicIdx + 1, self.formatPostReference(oekaki.sourcePost))
+            oekakiInfo += u'</span>'
             oekaki.delete()
         else:
             retest = re.compile("^file_(\d+)$")
@@ -771,6 +780,7 @@ class OrphieMainController(OrphieBaseController):
             else:
                 return errorHandler(_('Message is too long'))
 
+        assert not oekakiInfo or len(files) == 1
         picInfos = []
         for file, fileId in files:
             assert len(picInfos) <= options.allowedAdditionalFiles + 1
@@ -802,33 +812,36 @@ class OrphieMainController(OrphieBaseController):
                 if picInfo.sizes and picInfo.sizes[0] and picInfo.sizes[1] and (picInfo.sizes[0] < options.minPicSize or picInfo.sizes[1] < options.minPicSize):
                     return errorHandler(_("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize))
 
-                try:
-                    audio = EasyID3(picInfo.localFilePath)
-                    taglist = sorted(audio.keys())
-                    taglist.reverse()
-                    tagsToShow = taglist
-                    if tagsToShow:
-                        trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
-                        for tag in tagsToShow:
-                            #log.debug(tag)
-                            #log.debug(audio[tag])
-                            value = audio[tag]
-                            if value and isinstance(value, list) and tag in id3FieldsNames.keys():
-                                value = ' '.join(value)
-                                trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
-                        picInfo.additionalInfo = trackInfo
-                        #if not postMessageInfo:
-                        #    postMessageInfo = trackInfo
-                        #else:
-                        #    postMessageInfo += '<br/>%s' % trackInfo
-                except:
-                    pass
+                picInfo.relationInfo = oekakiInfo
+                picInfo.animPath = animPath
+
+                if picInfo.extension.type == 'music':
+                    try:
+                        audio = EasyID3(picInfo.localFilePath)
+                        taglist = sorted(audio.keys())
+                        taglist.reverse()
+                        tagsToShow = taglist
+                        if tagsToShow:
+                            trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
+                            for tag in tagsToShow:
+                                #log.debug(tag)
+                                #log.debug(audio[tag])
+                                value = audio[tag]
+                                if value and isinstance(value, list) and tag in id3FieldsNames.keys():
+                                    value = ' '.join(value)
+                                    trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
+                            picInfo.additionalInfo = trackInfo
+                            #if not postMessageInfo:
+                            #    postMessageInfo = trackInfo
+                            #else:
+                            #    postMessageInfo += '<br/>%s' % trackInfo
+                    except:
+                        log.debug("Can't load ID3 from %s" % picInfo.localFilePath)
 
                 #TODO: move tags here
                 picInfo.spoiler = None
                 if options.enableSpoilers:
                     picInfo.spoiler = request.POST.get('spoiler_%d' % fileId, None)
-                    log.error(picInfo.spoiler)
 
                 if len(picInfos) < options.allowedAdditionalFiles + 1:
                     picInfos.append(picInfo)
@@ -861,11 +874,11 @@ class OrphieMainController(OrphieBaseController):
         postParams.picInfos = picInfos
         postParams.bumplimit = options.bumplimit
 
-        if animPath and postParams.picInfos:
-            assert len(postParams.picInfos) == 1
-            for picInfo in postParams.picInfos:
-                picInfo.animPath = animPath
-                picInfo.additionalInfo = None
+        #if animPath and postParams.picInfos:
+        #    assert len(postParams.picInfos) == 1
+        #    for picInfo in postParams.picInfos:
+        #        picInfo.animPath = animPath
+        #        picInfo.additionalInfo = None
 
         postParams.ip = None
         if self.userInst.Anonymous or g.OPT.saveAnyIP:

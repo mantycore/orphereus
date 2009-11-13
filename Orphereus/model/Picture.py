@@ -41,7 +41,7 @@ t_piclist = sa.Table("picture", meta.metadata,
     sa.Column("md5"      , sa.types.String(32), nullable = False),
     sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extension.id')),
     sa.Column("pictureInfo"  , sa.types.UnicodeText, nullable = True),
-    sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
+    #sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
     )
 
 t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
@@ -49,14 +49,18 @@ t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
     sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
     sa.Column('fileId', sa.types.Integer, sa.ForeignKey('picture.id'), primary_key = True),
     sa.Column("spoiler", sa.types.Boolean, nullable = True),
+    sa.Column("relationInfo"  , sa.types.UnicodeText, nullable = True),
+    sa.Column("animpath" , sa.types.String(255), nullable = True),
     )
 
 class PictureAssociation(object):
-    def __init__(self, spoiler):
+    def __init__(self, spoiler, relationInfo, animPath):
         self.spoiler = spoiler
+        self.relationInfo = relationInfo
+        self.animpath = animPath
 
 class Picture(object):
-    def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo, animPath, id = None):
+    def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo, id = None):
         self.path = relativeFilePath
         self.thumpath = thumbFilePath
         self.width = picSizes[0]
@@ -67,14 +71,14 @@ class Picture(object):
         self.size = fileSize
         self.md5 = md5
         self.pictureInfo = pictureInfo
-        if animPath:
-            self.animpath = animPath
+        #if animPath:
+        #    self.animpath = animPath
         if not id is None:
             self.id = id
 
     @staticmethod
-    def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo, animPath = None, commit = False):
-        pic = Picture(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo, animPath)
+    def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo, commit = False):
+        pic = Picture(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo)
         if commit:
             meta.Session.add(pic)
             meta.Session.commit()

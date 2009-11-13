@@ -1,4 +1,4 @@
-<%page args="post,attachment"/>
+<%page args="post,attachment,attachmentId"/>
 </a>
 
 <table class="thumb">

@@ -322,7 +322,7 @@ class OrphieAdminController(OrphieBaseController):
                 path = filterText(request.POST.get('path', ''))
                 enabled = request.POST.get('enabled', False)
                 newWindow = request.POST.get('newWindow', False)
-                type = filterText(request.POST.get('type', 'image'))
+                type = filterText(request.POST.get('type', 'image')).strip().lower()
                 thwidth = request.POST.get('thwidth', 0)
                 thheight = request.POST.get('thheight', 0)
                 if not ext:

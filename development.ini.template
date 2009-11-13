@@ -87,7 +87,7 @@ core.actuator = default
 # allowed user languages
 core.languages = en,ru
 core.templates = wakaba
-core.javascripts = wakaba=jquery.js|ui.js
+core.javascripts = wakaba=jquery.js|qtip.js|ui.js
 # the first style in this list is the default one for Anonymous and new users
 core.styles = wakaba=photon_blue|bluemoon|photon|burichan|gurochan|futaba|kusaba
 # set this to true. if you plan to import threads with original post numbers

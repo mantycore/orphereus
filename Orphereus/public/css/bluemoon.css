@@ -35,7 +35,7 @@ a {
     color:#9DA6B0;
 }*/
 .boardlist a {
-    padding: 0px 3px 0px 3px; 
+    padding: 0px 3px 0px 3px;
     /*background-color: #E9E9E9*/
 }
 a:hover {
@@ -407,7 +407,7 @@ div a.show-hide-thread:hover {
     background: #FF6600;
 }
 .postInfo{
-background: #A8A8A8;
+background: #E8E8E8;
 }
 
 .img_loading{
@@ -583,7 +583,7 @@ a img{ border: 0}
     background: #EEEEEE;
 }
 
-.file_thread { 
+.file_thread {
     font-size: 80%;
     float: left;
     margin-top: 5px;

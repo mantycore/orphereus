@@ -36,7 +36,7 @@ div.delete {
     font-weight: bold;
 }
 .boardlist a {
-    padding: 0px 3px 0px 3px; 
+    padding: 0px 3px 0px 3px;
     /*background-color: #E9E9E9*/
 }
 .logo {
@@ -372,7 +372,7 @@ div a.show-hide-thread:hover {
     background: #044983;
 }
 .postInfo{
-background: #A8A8A8;
+background: #E8E8E8;
 }
 
 .img_loading{
@@ -547,7 +547,7 @@ a img{ border: 0}
     background: #EEEEEE;
 }
 
-.file_thread { 
+.file_thread {
     font-size: 80%;
     float: left;
     margin-top: 5px;

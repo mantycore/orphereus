@@ -21,6 +21,10 @@
                 %elif c.currentUserCanPost:
                     [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal', sourceId = attachmentId)}">${_('Draw')}</a>]
                 %endif
+
+                %if attachment.animpath:
+                  [<a href="${h.url_for('viewAnimation', source=post.id, animid = attachmentId)}" target="_blank">${_('Animation')}</a>]
+                %endif
             %else:
                 ${_('Kbytes')}</em>)
             %endif
@@ -30,7 +34,7 @@
           <!-- Quick & dirty JS fix -->
           <em>${attachment.attachedFile.width}x${attachment.attachedFile.height}</em>
           </span>
-          <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
+          <a class="linkWithPopup" href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
           %if attachment.attachedFile.extension.newWindow:
               target="_blank"
           %endif
@@ -38,7 +42,18 @@
 
           <%include file="wakaba.thumbnail.mako" args="post=post,attachment=attachment,attachmentId=attachmentId" />
 
-               </a>
+          </a>
+
+          %if attachment.attachedFile.pictureInfo or attachment.relationInfo:
+          <div class="popupDiv highlight reply" style="display: none;">
+            %if attachment.attachedFile.pictureInfo:
+              ${attachment.attachedFile.pictureInfo}
+            %endif
+            %if attachment.relationInfo:
+              ${attachment.relationInfo}
+            %endif
+          </div>
+          %endif
             </div>
     %else:
           <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>
@@ -99,7 +114,7 @@
           <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>
     %endif
           %if attachment.attachedFile.pictureInfo or attachment.relationInfo:
-          <blockquote class="postbody"
+          <blockquote class="postbody">
             %if attachment.attachedFile.pictureInfo:
               ${attachment.attachedFile.pictureInfo}
             %endif

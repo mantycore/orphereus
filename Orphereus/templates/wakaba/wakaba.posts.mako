@@ -83,15 +83,13 @@
     <div><textarea id="y_replyform_text" name="message" rows="5" cols="40" tabindex="10"></textarea></div>
 
     <div class="y_replyform_fields">
-      %if not(g.OPT.allowAnswersWithoutCaptcha):
         <p id="y_replyform_captcha">
             <label for="y_replyform_captcha_field">
                 <img width="150" height="40" alt="${_("Captcha")}" src="${g.OPT.staticPathWeb}images/placeholder.png"  onclick="update_captcha(this)"/>
             </label>
             <input type="text" size="35" name="captcha" id="y_replyform_captcha_field" class="inactive" value="${_('Captcha required')}" title="${_("Captcha text")}" tabindex="20"/>
-            <input type="password" value="risiku" size="35" name="remPass" id="y_replyform_password" title="${_("You can use this password to remove posts")}"/>
+            <input type="password" value="_" size="35" name="remPass" id="y_replyform_password" title="${_("You can use this password to remove posts")}"/>
         </p>
-        %endif
         <p id="y_replyform_file">
             <input type="file" id="y_replyform_file_field" name="file_0" size="10" tabindex="40" />
         </p>

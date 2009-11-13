@@ -52,9 +52,6 @@
     %if post.messageInfo:
         ${post.messageInfo}
     %endif
-    %if post.file and post.file.animpath:
-        [<a href="${h.url_for('viewAnimation', source=post.id)}" target="_blank">${_('Animation')}</a>]
-    %endif
 </blockquote>
 %if post.replies != None:
     <i>${_('Replies: %s') % post.replies }</i>

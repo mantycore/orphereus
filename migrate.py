@@ -93,6 +93,16 @@ extMembers = ["path",
 "newWindow",
 ]
 
+oekakiMembers = ["tempid",
+"time",
+"uidNumber",
+"type",
+"path",
+"timeStamp",
+"selfy",
+"animPath",
+]
+
 def copyMembers(membersList, source, target):
     for member in membersList:
         setattr(target, member, getattr(source, member))
@@ -223,6 +233,20 @@ def migrate(targetConfig, sourceModelUrl):
         meta.Session.commit()
         newRecord.date = record.date
         newRecord.id = record.id
+        meta.Session.commit()
+
+    log.info("=================================================================")
+    log.info("Migrating oekaki temporary IDs...")
+    log.info("-----------------------------------------------------------------")
+    oldOek = OM.Oekaki.query.all()
+    log.info("Oekaki temporary IDs count: %d" % len(oldOek))
+
+    for oek in oldOek:
+        log.info("Copying %s" % (oek.tempid,))
+        newOek = Oekaki('', 1, '', 0, 0, False)
+        copyMembers(oekakiMembers, oek, newOek)
+        newOek.sourcePicIdx = 0
+        newOek.sourcePost = oek.source
         meta.Session.commit()
 
 migrate("development.ini", "mysql://root:@127.0.0.1/orphieold?use_unicode=0&charset=utf8")

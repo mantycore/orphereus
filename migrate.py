@@ -84,6 +84,15 @@ banMembers = ["ip",
 "period",
 "enabled", ]
 
+extMembers = ["path",
+"thwidth",
+"thheight",
+"ext",
+"type",
+"enabled",
+"newWindow",
+]
+
 def copyMembers(membersList, source, target):
     for member in membersList:
         setattr(target, member, getattr(source, member))
@@ -102,6 +111,7 @@ def migrate(targetConfig, sourceModelUrl):
 
     init_globals(meta.globj, False)
 
+    # Classes which doesn't need migration: FCCaptcha, LoginTracker
     log.info("=================================================================")
     log.info("Initializing old model")
     engine = create_engine(sourceModelUrl)
@@ -170,6 +180,49 @@ def migrate(targetConfig, sourceModelUrl):
         newBan = Ban(0, 0, 0, '', datetime.datetime.now(), 0, False)
         copyMembers(banMembers, ban, newBan)
         meta.Session.add(newBan)
+        meta.Session.commit()
+
+    log.info("=================================================================")
+    log.info("Migrating extensions...")
+    log.info("-----------------------------------------------------------------")
+    oldExtensions = OM.Extension.query.all()
+    log.info("Extensions count: %d" % len(oldExtensions))
+
+    for ext in oldExtensions:
+        log.info("Creating .%s" % (ext.ext,))
+        newExt = Extension("", False, False, "", "", 0, 0)
+        copyMembers(extMembers, ext, newExt)
+        meta.Session.add(newExt)
+        meta.Session.commit()
+
+    log.info("=================================================================")
+    log.info("Migrating invites...")
+    log.info("-----------------------------------------------------------------")
+    oldInvites = OM.Invite.query.all()
+    log.info("Invites count: %d" % len(oldInvites))
+
+    for invite in oldInvites:
+        log.info("Creating %s" % (invite.invite,))
+        newInvite = Invite(invite.invite)
+        meta.Session.add(newInvite)
+        meta.Session.commit()
+        newInvite.date = invite.date
+        newInvite.id = invite.id
+        meta.Session.commit()
+
+    log.info("=================================================================")
+    log.info("Migrating logs...")
+    log.info("-----------------------------------------------------------------")
+    oldLog = OM.LogEntry.query.all()
+    log.info("Log records count: %d" % len(oldLog))
+
+    for record in oldLog:
+        log.info("Copying %d/%s" % (record.id, str(record.date),))
+        newRecord = LogEntry(record.uidNumber, record.event, record.entry)
+        meta.Session.add(newRecord)
+        meta.Session.commit()
+        newRecord.date = record.date
+        newRecord.id = record.id
         meta.Session.commit()
 
 migrate("development.ini", "mysql://root:@127.0.0.1/orphieold?use_unicode=0&charset=utf8")

@@ -246,7 +246,19 @@ class OrphieAdminController(OrphieBaseController):
             c.exists = False
             c.boardName = _('New IP ban')
             ip = c.ipToBan or 0
-            c.ban = Ban(ip, h.ipToInt('255.255.255.255'), 0, '', datetime.datetime.now(), 30, True)
+            # TODO: FIXME: VERY BAD CODE.
+            # You should NOT create temporary object.
+            # For example, if autocommit == True, this will break database integrity
+            # Empty() is temporary solution
+            c.ban = empty()
+            c.ban.id = 0
+            c.ban.ip = ip
+            c.ban.mask = h.ipToInt('255.255.255.255')
+            c.ban.type = 0   # 0 for read-only access, 1 for full ban
+            c.ban.reason = ''
+            c.ban.date = datetime.datetime.now()
+            c.ban.period = 30
+            c.ban.enabled = True
         else:
             c.ban = ban
 
@@ -270,8 +282,10 @@ class OrphieAdminController(OrphieBaseController):
                         c.message = _('Ban record no. %s deleted' % banId)
                         return self.manageBans()
             elif (int(postedId) == 0):
-                c.ban.id = None
+                c.ban = Ban(ip, h.ipToInt('255.255.255.255'), 0, '', datetime.datetime.now(), 30, True)
                 c.ban.setData(*getPostData())
+                meta.Session.add(c.ban)
+                meta.Session.commit()
                 toLog(LOG_EVENT_BAN_ADD, _('Added ban no. %s. Reason: %s') % (c.ban.id, c.ban.reason))
                 c.message = _('Added ban no. %s') % c.ban.id
                 return redirect_to('hsBans')

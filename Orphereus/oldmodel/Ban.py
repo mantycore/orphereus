@@ -30,8 +30,6 @@ log = logging.getLogger(__name__)
 
 t_bans = sa.Table("bans", meta.metadata,
     sa.Column("id"          , sa.types.Integer, primary_key = True),
-#    sa.Column("ip"          , sa.types.Integer, nullable=False),
-#    sa.Column("mask"        , sa.types.Integer, nullable=False),
     sa.Column("ip"          , meta.UIntType, nullable = False),
     sa.Column("mask"        , meta.UIntType, nullable = False),
     sa.Column("type"        , sa.types.Integer, nullable = False),
@@ -43,7 +41,6 @@ t_bans = sa.Table("bans", meta.metadata,
 
 class Ban(object):
     def __init__(self, ip, mask, type, reason, date, period, enabled):
-        self.id = 0
         self._setData(ip, mask, type, reason, date, period, enabled)
 
     def delete(self):
@@ -58,7 +55,6 @@ class Ban(object):
     @staticmethod
     def create(ip, mask, type, reason, date, period, enabled = 0):
         ban = Ban(ip, mask, type, reason, date, period, enabled)
-        ban.id = None
         meta.Session.add(ban)
         meta.Session.commit()
         return ban
@@ -91,9 +87,9 @@ class Ban(object):
     @staticmethod
     def getBanByIp(userIp):
         if meta.globj.OPT.memcachedBans:
-            (banInfo, isCached) = meta.globj.mc.get('ban%s' %userIp) or (None, False) 
+            (banInfo, isCached) = meta.globj.mc.get('ban%s' % userIp) or (None, False)
             if not(isCached):
                 banInfo = Ban._getBanByIp(userIp)
-                meta.globj.mc.set('ban%s' %userIp, (banInfo, True,), time=meta.globj.OPT.banCacheSeconds)
+                meta.globj.mc.set('ban%s' % userIp, (banInfo, True,), time = meta.globj.OPT.banCacheSeconds)
             return banInfo
         return Ban._getBanByIp(userIp)

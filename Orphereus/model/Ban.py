@@ -43,7 +43,6 @@ t_bans = sa.Table("bans", meta.metadata,
 
 class Ban(object):
     def __init__(self, ip, mask, type, reason, date, period, enabled):
-        self.id = 0
         self._setData(ip, mask, type, reason, date, period, enabled)
 
     def delete(self):
@@ -91,9 +90,9 @@ class Ban(object):
     @staticmethod
     def getBanByIp(userIp):
         if meta.globj.OPT.memcachedBans:
-            (banInfo, isCached) = meta.globj.mc.get('ban%s' %userIp) or (None, False) 
+            (banInfo, isCached) = meta.globj.mc.get('ban%s' % userIp) or (None, False)
             if not(isCached):
                 banInfo = Ban._getBanByIp(userIp)
-                meta.globj.mc.set('ban%s' %userIp, (banInfo, True,), time=meta.globj.OPT.banCacheSeconds)
+                meta.globj.mc.set('ban%s' % userIp, (banInfo, True,), time = meta.globj.OPT.banCacheSeconds)
             return banInfo
         return Ban._getBanByIp(userIp)

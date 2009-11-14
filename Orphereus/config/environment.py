@@ -34,6 +34,7 @@ from Orphereus.lib.miscUtils import adminAlert
 #from Orphereus.model import meta
 from sqlalchemy import engine_from_config
 from Orphereus.model import init_model, init_globals
+from Orphereus.model import meta
 
 import logging
 log = logging.getLogger(__name__)
@@ -71,7 +72,7 @@ def load_environment(global_conf, app_conf, setupMode):
         #TODO:turn escape filter on and use h.literal for all strings in templates
 
     engine = engine_from_config(config, 'sqlalchemy.')
-    init_model(engine)
+    init_model(engine, meta)
 
     #if not setupMode:
     init_globals(config['pylons.app_globals'], setupMode)

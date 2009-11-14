@@ -19,7 +19,6 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-"""Setup the FC application"""
 import logging
 
 from paste.deploy import appconfig
@@ -35,11 +34,11 @@ import Orphereus.lib.app_globals as app_globals
 log = logging.getLogger(__name__)
 
 def setup_config(command, filename, section, vars):
-    """Place any commands to setup Orphereus here"""
     conf = appconfig('config:' + filename)
     load_environment(conf.global_conf, conf.local_conf, True)
     from Orphereus.model import meta
     log.info("Creating tables")
+    #meta.metadata.drop_all(bind = meta.engine)
     meta.metadata.create_all(bind = meta.engine)
     log.info("Successfully setup")
     init_globals(meta.globj, False)
@@ -61,9 +60,21 @@ def setup_config(command, filename, section, vars):
         user.options.canChangeRights = True
 
         log.info("Adding servive users 0 and -1")
-        ulogger = User.create("Anonymous", -1)
-        umaintenance = User.create("Dummy user for maintenance purposes", 0)
+        ulogger = User("Anonymous", None)
+        umaintenance = User("Dummy user for maintenance purposes", None)
 
+        meta.Session.add(ulogger)
+        meta.Session.add(umaintenance)
+        meta.Session.commit()
+
+        ulogger.uidNumber = -1
+        umaintenance.uidNumber = 0
+        ulogger.options = UserOptions()
+        umaintenance.options = UserOptions()
+        UserOptions.initDefaultOptions(ulogger.options, meta.globj.OPT)
+        UserOptions.initDefaultOptions(umaintenance.options, meta.globj.OPT)
+        meta.Session.add(ulogger.options)
+        meta.Session.add(umaintenance.options)
         meta.Session.commit()
     try:
         ec = meta.Session.query(Extension).count()
@@ -115,8 +126,10 @@ def setup_config(command, filename, section, vars):
     log.debug('pictures: %d' % tc)
     if tc == 0:
         log.info("Adding dummy picture #0")
-        pic = Picture('', '', 0, [None, None, 0, 0], 1, '', u"", 0) # TODO: special extension?
+        pic = Picture('', '', 0, [None, None, 0, 0], 1, '', u"") # TODO: special extension?
         meta.Session.add(pic)
+        meta.Session.commit()
+        pic.id = 0
         meta.Session.commit()
 
     log.info("Completed")

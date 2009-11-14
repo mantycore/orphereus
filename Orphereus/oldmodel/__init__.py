@@ -2,7 +2,7 @@ import sqlalchemy as sa
 from sqlalchemy import orm
 from sqlalchemy.orm import mapper as sqla_mapper
 
-from Orphereus.model import meta
+from Orphereus.oldmodel import meta
 from Orphereus.lib.constantValues import *
 from Orphereus.lib.cache import MCache
 from pylons import config
@@ -54,8 +54,8 @@ def batchProcess(query, routine, packetSize = 1000):
         currentPacket += packetSize
         meta.Session.commit()
 
-def adjust_dialect(engine, meta):
-    log.info("Trying to adjust engine to current dialect...")
+def adjust_dialect(engine, name = 'default'):
+    log.info("Trying to adjust %s engine to current dialect..." % name)
     target = meta
 
     def logAndChange(var, newType):
@@ -78,8 +78,8 @@ def adjust_dialect(engine, meta):
         log.warning("Unknown SQL Dialect!")
     log.info("Adjusting completed")
 
-def init_model(engine, meta):
-    adjust_dialect(engine, meta)
+def init_model(engine):
+    adjust_dialect(engine)
 
     sm = orm.sessionmaker(autoflush = False, autocommit = False, bind = engine)
     meta.engine = engine
@@ -119,14 +119,9 @@ def init_model(engine, meta):
     TagProps = {
             'options' : orm.relation(TagOptions, uselist = False, backref = 'tag', cascade = "all, delete, delete-orphan")
         }
-
-    PictureAssociationProps = {'attachedFile' : orm.relation(Picture)}
-
     PostProps = {
         'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
-        #'file': orm.relation(Picture),
-        #'attachments'  : orm.relation(Picture, secondary = t_filesToPostsMap),
-        'attachments'  : orm.relation(PictureAssociation, cascade = "all, delete, delete-orphan"),
+        'file': orm.relation(Picture),
         'parentPost' : orm.relation(Post, remote_side = [t_posts.c.id]),
         }
     LogEntryProps = {
@@ -149,9 +144,9 @@ def init_model(engine, meta):
                 "Tag" : TagProps,
                 "Post" : PostProps,
                 "LogEntry" : LogEntryProps,
-                "PictureAssociation" : PictureAssociationProps,
                 }
 
+    """
     gvars = config['pylons.app_globals']
     log.info('Extending ORM properties, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
@@ -164,6 +159,7 @@ def init_model(engine, meta):
             log.info('calling ORM extender %s from: %s' % (str(ormPropChanger), plugin.pluginId()))
             ormPropChanger(orm, propDict, plugin.namespace())
     log.info('COMPLETED ORM EXTENDING STAGE')
+    """
 
     #create mappings
     meta.mapper(LoginTracker, t_logins, properties = LoginTrackerProps)
@@ -182,23 +178,26 @@ def init_model(engine, meta):
 
     meta.mapper(TagOptions, t_tagOptions, properties = TagOptionsProps)
     meta.mapper(Tag, t_tags, properties = TagProps)
-    meta.mapper(PictureAssociation, t_filesToPostsMap, properties = PictureAssociationProps)
     meta.mapper(Post, t_posts, properties = PostProps)
 
     meta.mapper(LogEntry, t_log, properties = LogEntryProps)
+    meta.mapper(UserTag, t_usertags, properties = {
+    'user' : orm.relation(User),
+    'posts' : orm.relation(Post, secondary = t_userTagsToPostsMappingTable),
+    })
 
+    """
     gvars = config['pylons.app_globals']
     log.info('Initialzing ORM, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
         plugin.initORM(orm, propDict)
 
-        """
-        orminit = plugin.ormInit()
-        if orminit:
-            log.error('config{} is deprecated')
-            log.info('calling ORM initializer %s from: %s' % (str(orminit), plugin.pluginId()))
-            orminit(orm, plugin.namespace(), propDict)
-        """
+        #orminit = plugin.ormInit()
+        #if orminit:
+        #    log.error('config{} is deprecated')
+        #    log.info('calling ORM initializer %s from: %s' % (str(orminit), plugin.pluginId()))
+        #    orminit(orm, plugin.namespace(), propDict)
+    """
     log.info('COMPLETED ORM INITIALIZATION STAGE')
 
 def upd_globals():

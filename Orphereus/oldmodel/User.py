@@ -24,10 +24,10 @@ from sqlalchemy import orm
 from sqlalchemy.orm import eagerload
 from sqlalchemy.ext.serializer import loads, dumps
 
-from Orphereus.model import meta
-from Orphereus.model.UserOptions import UserOptions
-from Orphereus.model.LogEntry import LogEntry
-from Orphereus.model.UserFilters import UserFilters
+from Orphereus.oldmodel import meta
+from Orphereus.oldmodel.UserOptions import UserOptions
+from Orphereus.oldmodel.LogEntry import LogEntry
+from Orphereus.oldmodel.UserFilters import UserFilters
 from Orphereus.lib.miscUtils import isNumber, toLog, filterText
 from Orphereus.lib.constantValues import *
 from Orphereus.lib.interfaces.AbstractUser import AbstractUser

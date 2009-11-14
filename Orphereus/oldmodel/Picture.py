@@ -22,7 +22,7 @@
 import sqlalchemy as sa
 from sqlalchemy import orm
 
-from Orphereus.model import meta
+from Orphereus.oldmodel import meta
 import os
 import Image
 
@@ -40,27 +40,11 @@ t_piclist = sa.Table("picture", meta.metadata,
     sa.Column("size"     , sa.types.Integer, nullable = False),
     sa.Column("md5"      , sa.types.String(32), nullable = False),
     sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extension.id')),
-    sa.Column("pictureInfo"  , sa.types.UnicodeText, nullable = True),
-    #sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
+    sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
     )
-
-t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
-    sa.Column("id"          , sa.types.Integer, primary_key = True),
-    sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
-    sa.Column('fileId', sa.types.Integer, sa.ForeignKey('picture.id'), primary_key = True),
-    sa.Column("spoiler", sa.types.Boolean, nullable = True),
-    sa.Column("relationInfo"  , sa.types.UnicodeText, nullable = True),
-    sa.Column("animpath" , sa.types.String(255), nullable = True),
-    )
-
-class PictureAssociation(object):
-    def __init__(self, spoiler, relationInfo, animPath):
-        self.spoiler = spoiler
-        self.relationInfo = relationInfo
-        self.animpath = animPath
 
 class Picture(object):
-    def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo):
+    def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath):
         self.path = relativeFilePath
         self.thumpath = thumbFilePath
         self.width = picSizes[0]
@@ -70,11 +54,12 @@ class Picture(object):
         self.extid = extId
         self.size = fileSize
         self.md5 = md5
-        self.pictureInfo = pictureInfo
+        if animPath:
+            self.animpath = animPath
 
     @staticmethod
-    def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo, commit = False):
-        pic = Picture(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo)
+    def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath = None, commit = False):
+        pic = Picture(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath)
         if commit:
             meta.Session.add(pic)
             meta.Session.commit()
@@ -86,9 +71,7 @@ class Picture(object):
 
     @staticmethod
     def getByMd5(md5):
-        q = Picture.query.filter(Picture.md5 == md5)
-        assert q.count() < 2
-        return q.first()
+        return Picture.query.filter(Picture.md5 == md5).first()
 
     @staticmethod
     def makeThumbnail(source, dest, maxSize):
@@ -102,15 +85,20 @@ class Picture(object):
             return []
 
     def pictureRefCount(self):
-        from Orphereus.model.Post import Post
-        return Post.query.filter(Post.attachments.any(PictureAssociation.attachedFile.has(Picture.id == self.id))).count()
+        from Orphereus.oldmodel.Post import Post
+        return Post.query.filter(Post.file == self).count()
 
     def deletePicture(self, commit = True):
-        if self.id > 0 and self.pictureRefCount() == 0:
+        if self.pictureRefCount() == 1:
             filePath = os.path.join(meta.globj.OPT.uploadPath, self.path)
             thumPath = os.path.join(meta.globj.OPT.uploadPath, self.thumpath)
             if os.path.isfile(filePath):
                 os.unlink(filePath)
+
+            if self.animpath:
+                animPath = os.path.join(meta.globj.OPT.uploadPath, self.animpath)
+                if os.path.isfile(animPath):
+                    os.unlink(animPath)
 
             ext = self.extension
             if not ext.path:

@@ -55,7 +55,7 @@
                 %endif
         </span>
         &nbsp;
-        <%include file="wakaba.fileBlock.mako" args="post=pt,opPost=None,searchMode=True" />
+        <%include file="wakaba.fileBlock.mako" args="post=pt,opPost=None,searchMode=True,newsMode=None" />
 
                 <blockquote class="postbody" id="postBQId${pt.id}">
                 %if pt.id in c.highlights:

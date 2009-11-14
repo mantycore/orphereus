@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 <%page args="thread"/>
 %if thread.attachments and (len(thread.attachments) == 1):
-<%include file="wakaba.fileBlock.mako" args="post=thread,opPost=True,searchMode=None" />
+<%include file="wakaba.fileBlock.mako" args="post=thread,opPost=True,searchMode=None,newsMode=None" />
 %endif
 
 <a name="i${thread.id}"></a>
@@ -75,7 +75,7 @@ ${h.threadInfoCallback(thread, c.userInst)}<br />
 %endif
 
 %if thread.attachments and (len(thread.attachments) > 1):
-<%include file="wakaba.fileBlock.mako" args="post=thread,opPost=True,searchMode=None" />
+<%include file="wakaba.fileBlock.mako" args="post=thread,opPost=True,searchMode=None,newsMode=None" />
 %endif
 
 <blockquote class="postbody" id="quickReplyNode${thread.id}">

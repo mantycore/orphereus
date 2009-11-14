@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 
 class HTTPInfoPlugin(BasePlugin):
     def __init__(self):
-        config = {'name' : N_('HTTP headers dumper'),
+        config = {'name' : N_('HTTP headers dumper and proxy judge'),
                  }
 
         BasePlugin.__init__(self, 'httpinfo', config)

@@ -10,6 +10,7 @@ from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 from Orphereus.model import *
+from Orphereus.lib.miscUtils import checkAdminIP
 
 import logging
 log = logging.getLogger(__name__)
@@ -58,11 +59,12 @@ class PluginslistController(OrphieBaseController):
         if not checkAdminIP():
             return redirect_to('boardBase')
 
-        c.boardName = _('Rebuild JavaScrtipt')
-        c.message = _("Rebuild completed")
+        c.boardName = _('Active plugins list')
         c.returnUrl = h.url_for('holySynod')
         c.currentItemId = 'id_ListPlugins'
-        return self.render('test')
+
+        c.plugins = g.plugins
+        return self.render('pluginsList')
 
     @jsonify
     def ajax(self):
@@ -79,3 +81,4 @@ class PluginslistController(OrphieBaseController):
         ret['results'] = result
         ret['total'] = len(g.plugins)
         return ret
+

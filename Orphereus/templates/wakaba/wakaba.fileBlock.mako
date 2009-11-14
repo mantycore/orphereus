@@ -1,10 +1,11 @@
-<%page args="post,opPost,searchMode"/>
+<%page args="post,opPost,searchMode,newsMode"/>
 
 %if post.attachments:
 %if len(post.attachments) > 1:
   %for attachmentId, attachment in enumerate(post.attachments):
     %if attachment.attachedFile.id != 0:
       <div class="file_thread">
+      %if not newsMode:
             <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
             %if attachment.attachedFile.extension.newWindow:
                 target="_blank" \
@@ -34,6 +35,8 @@
           <!-- Quick & dirty JS fix -->
           <em>${attachment.attachedFile.width}x${attachment.attachedFile.height}</em>
           </span>
+      %endif
+
           <a class="linkWithPopup" href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
           %if attachment.attachedFile.extension.newWindow:
               target="_blank"
@@ -63,6 +66,7 @@
 %else: # len(attachments) == 1
   %for attachmentId, attachment in enumerate(post.attachments):
     %if attachment.attachedFile.id != 0:
+        %if not newsMode:
           %if not opPost:
           <!-- <br /> -->
           %endif
@@ -100,6 +104,8 @@
           %endif
 
           <br />
+        %endif
+
           <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
           %if attachment.attachedFile.extension.newWindow:
               target="_blank"

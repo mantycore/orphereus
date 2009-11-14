@@ -38,6 +38,7 @@ from Orphereus.model.Tag import Tag
 class ThreadImportPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Thread import tool'),
+                  'deps' : ('adminpanel',)
                  }
         BasePlugin.__init__(self, 'threadimport', config)
 

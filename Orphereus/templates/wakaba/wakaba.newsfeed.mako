@@ -10,7 +10,8 @@
         %endif
         <span>${h.tsFormat(post.date)}</span>
         </span>
-        %if post:
+        <%include file="wakaba.fileBlock.mako" args="post=post,opPost=True,searchMode=None,newsMode=True" />
+        %if False and post:
         %for attachment in post.attachments:
         %if attachment:
             <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"

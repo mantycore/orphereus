@@ -57,7 +57,7 @@ id="reply${post.id}">
 
     &nbsp;
     </div>
-    <%include file="wakaba.fileBlock.mako" args="post=post,opPost=None,searchMode=None" />
+    <%include file="wakaba.fileBlock.mako" args="post=post,opPost=None,searchMode=None,newsMode=None" />
 
     <blockquote class="postbody" id="postBQId${post.id}">
   %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()):

@@ -38,6 +38,7 @@ log = logging.getLogger(__name__)
 class SettingsManagerPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Engine runtime settings editing tool'),
+                  'deps' : ('adminpanel',)
                  }
         BasePlugin.__init__(self, 'setsmgr', config)
 

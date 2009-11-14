@@ -116,11 +116,6 @@ class Picture(object):
             if os.path.isfile(filePath):
                 os.unlink(filePath)
 
-            if self.animpath:
-                animPath = os.path.join(meta.globj.OPT.uploadPath, self.animpath)
-                if os.path.isfile(animPath):
-                    os.unlink(animPath)
-
             ext = self.extension
             if not ext.path:
                 if os.path.isfile(thumPath):

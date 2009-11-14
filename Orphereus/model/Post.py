@@ -33,6 +33,7 @@ from Orphereus.lib.miscUtils import getRPN, empty
 from Orphereus.lib.constantValues import *
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 import datetime
+import os
 
 from pylons.i18n import _, ungettext, N_
 from paste.deploy.converters import asbool
@@ -381,6 +382,13 @@ class Post(object):
             for picAssoc in self.attachments:
                 filesToDelete.append(picAssoc.attachedFile)
                 picAssoc.attachedFile = Picture.getPicture(0)
+                picAssoc.spoiler = None
+                picAssoc.relationInfo = None
+                if picAssoc.animpath:
+                    picAssoc.animpath = None
+                    animPath = os.path.join(meta.globj.OPT.uploadPath, picAssoc.animpath)
+                    if os.path.isfile(animPath):
+                        os.unlink(animPath)
 
             meta.Session.commit()
 

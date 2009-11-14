@@ -736,27 +736,28 @@ class OrphieMainController(OrphieBaseController):
         oekakiInfo = None
         if tempid:
             oekaki = Oekaki.get(tempid)
-            animPath = oekaki.animPath
-            files = [(FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path)), 0)]
-            oekakiInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds' \
-                             % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time / 1000)))
-            if oekaki.sourcePost:
-                oekakiInfo += ", picture %d from post %s was used as source" % (oekaki.sourcePicIdx + 1, self.formatPostReference(oekaki.sourcePost))
-            oekakiInfo += u'</span>'
-            oekaki.delete()
-        else:
-            retest = re.compile("^file_(\d+)$")
-            fileIds = []
-            for i in request.POST.keys():
-                matcher = retest.match(i)
-                if matcher:
-                    fileIds.append(int(matcher.group(1)))
-            fileIds = list(set(fileIds))
-            fileIds.sort()
-            for fileId in fileIds:
-                file = request.POST.get('file_%d' % fileId, None)
-                if file is not None:
-                    files.append((file, fileId))
+            if oekaki:
+                animPath = oekaki.animPath
+                files = [(FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path)), -1)]
+                oekakiInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds' \
+                                 % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time / 1000)))
+                if oekaki.sourcePost:
+                    oekakiInfo += ", picture %d from post %s was used as source" % (oekaki.sourcePicIdx + 1, self.formatPostReference(oekaki.sourcePost))
+                oekakiInfo += u'</span>'
+                oekaki.delete()
+        #else:
+        retest = re.compile("^file_(\d+)$")
+        fileIds = []
+        for i in request.POST.keys():
+            matcher = retest.match(i)
+            if matcher:
+                fileIds.append(int(matcher.group(1)))
+        fileIds = list(set(fileIds))
+        fileIds.sort()
+        for fileId in fileIds:
+            file = request.POST.get('file_%d' % fileId, None)
+            if file is not None:
+                files.append((file, fileId))
 
         postMessageShort = None
         postMessageRaw = None
@@ -780,8 +781,7 @@ class OrphieMainController(OrphieBaseController):
             else:
                 return errorHandler(_('Message is too long'))
 
-        assert not oekakiInfo or len(files) == 1
-        picInfos = []
+        picInfos = [] #TODO: class PicInfo instead of Empty
         for file, fileId in files:
             assert len(picInfos) <= options.allowedAdditionalFiles + 1
             if len(picInfos) == options.allowedAdditionalFiles + 1:
@@ -812,8 +812,12 @@ class OrphieMainController(OrphieBaseController):
                 if picInfo.sizes and picInfo.sizes[0] and picInfo.sizes[1] and (picInfo.sizes[0] < options.minPicSize or picInfo.sizes[1] < options.minPicSize):
                     return errorHandler(_("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize))
 
-                picInfo.relationInfo = oekakiInfo
-                picInfo.animPath = animPath
+                if fileId == -1: # Oekaki
+                    picInfo.relationInfo = oekakiInfo
+                    picInfo.animPath = animPath
+                else:
+                    picInfo.relationInfo = None
+                    picInfo.animPath = None
 
                 if picInfo.extension.type == 'music':
                     try:

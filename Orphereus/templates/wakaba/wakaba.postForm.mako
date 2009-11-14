@@ -95,6 +95,16 @@
         %endif
             </td>
         </tr>
+    %elif c.oekaki:
+        <tr id="trfile">
+            <td class="postblock">${_('File')}</td>
+            <td>
+            ${_("Recently drawn Oekaki")}
+            %if c.boardOptions.allowedAdditionalFiles > 0:
+                  <input id="addFileBtn" type="button" name="addFile" value="Add file" onclick="addFileRow();" />
+            %endif
+            </td>
+        </tr>
     %endif
 
     <tr id="filesBlockEnd" style="display: none;">
@@ -220,7 +230,7 @@
 <li>${_('Visible in Overview')}:  ${c.boardOptions.showInOverview and _('yes') or _('no')}</li>
 %endif
 <li>${_('Bumplimit')}:  ${c.boardOptions.bumplimit and c.boardOptions.bumplimit or _('unlimited')}</li>
-<li>${_('Allowed files')}:  ${1 + c.boardOptions.allowedAdditionalFiles}</li>
+<li>${_('Additional files allowed: %d') % c.boardOptions.allowedAdditionalFiles}</li>
 </ul>
 <b>${_('Additional information')}:</b>
 <ul class="nomargin">

@@ -698,7 +698,7 @@ class OrphieAdminController(OrphieBaseController):
         c.boardName = 'Editing user %s' % uid
         user = User.getUser(uid, False)
         if user:
-            if user.id <= 0:
+            if user.uidNumber <= 0:
                 return self.error("Can't edit internal users!")
 
             c.user = user

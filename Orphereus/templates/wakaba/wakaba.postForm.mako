@@ -82,30 +82,23 @@
         <td class="postblock">${_('Text')}</td>
         <td><textarea id="replyText" name="message" cols="60" rows="6"></textarea></td>
     </tr>
-    %if c.boardOptions.images and not c.oekaki:
-        <tr id="trfile">
-            <td class="postblock">${_('File')}</td>
-            <td>
-              <input type="file" name="file_0" size="35" />
-        %if c.boardOptions.enableSpoilers:
-              <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_0" /> ${_('Spoiler')}</span>
-        %endif
-        %if c.boardOptions.allowedAdditionalFiles > 0:
-              <input id="addFileBtn" type="button" name="addFile" value="+" onclick="addFileRow();" />
-        %endif
-            </td>
-        </tr>
-    %elif c.oekaki:
-        <tr id="trfile">
-            <td class="postblock">${_('File')}</td>
-            <td>
-            ${_("Recently drawn Oekaki")}
-            %if c.boardOptions.allowedAdditionalFiles > 0:
-                  <input id="addFileBtn" type="button" name="addFile" value="Add file" onclick="addFileRow();" />
+    <tr id="trfile">
+        <td class="postblock">${_('File')}</td>
+        <td>
+          %if c.boardOptions.images and not c.oekaki:
+            <input type="file" name="file_0" size="35" />
+            %if c.boardOptions.enableSpoilers:
+                  <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_0" /> ${_('Spoiler')}</span>
             %endif
-            </td>
-        </tr>
-    %endif
+          %elif c.oekaki:
+            <!-- a style="cursor:pointer" onclick="$('#oekakiPreview').toggle();">${_("Recently drawn Oekaki")}</a -->
+            <a href="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" target="_blank">${_("Recently drawn Oekaki")}</a>
+          %endif
+          %if c.boardOptions.allowedAdditionalFiles > 0:
+                <input id="addFileBtn" type="button" name="addFile" value="Add file" onclick="addFileRow();" />
+          %endif
+        </td>
+    </tr>
 
     <tr id="filesBlockEnd" style="display: none;">
       <td colspan="2" />
@@ -264,9 +257,9 @@ ${_('Board-specific rules:')}
 </tr>
 </table>
 
-%if c.oekaki:
-<div id="trfile" class="theader">
-    <img src="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" alt="Oekaki preview" />
+%if False and c.oekaki: # Link is more pretty
+<div class="theader" >
+    <img id="oekakiPreview" src="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" alt="Oekaki preview" />
 </div>
 %endif
 
@@ -281,7 +274,7 @@ ${_('Board-specific rules:')}
     %if c.boardOptions.enableSpoilers:
           <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_" /> ${_('Spoiler')}</span>
     %endif
-          <input name="removeRowBtn" type="button" value="-" onclick="removeRow(this);" />
+          <input name="removeRowBtn" type="button" value="${_("Remove")}" onclick="removeRow(this);" />
           <input type="hidden" name="fileRowId" value="" />
         </td>
     </tr>

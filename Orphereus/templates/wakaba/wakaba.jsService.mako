@@ -26,6 +26,6 @@ var addFileBtn = $("#addFileBtn");
 if (addFileBtn){
 addFileBtn.attr("disabled", "");
 }
-
+/*$("#oekakiPreview").hide();*/
 </script>
 

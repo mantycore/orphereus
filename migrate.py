@@ -253,8 +253,8 @@ def migrate(targetConfig, sourceModelUrl):
     for record in oldLog:
         log.info("Copying %d/%s" % (record.id, str(record.date),))
         newRecord = LogEntry(record.uidNumber, record.event, record.entry)
-        meta.Session.add(newRecord)
         newRecord.id = record.id
+        meta.Session.add(newRecord)
         meta.Session.commit()
         newRecord.date = record.date
         newRecord.id = record.id

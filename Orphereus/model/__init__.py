@@ -62,13 +62,13 @@ def adjust_dialect(engine, meta):
         log.info("Using %s instead of %s" % (str(newType), str(var)))
         return newType
 
-    if (engine.dialect.name.lower() == "postgresql"):
+    if (engine.dialect.name.lower() == "mysql"):
         log.info("Currently using MySQL dialect, adjusting types...")
         from sqlalchemy.databases import mysql
         target.FloatType = logAndChange(meta.FloatType, mysql.MSDouble)
         target.BlobType = logAndChange(meta.BlobType, sa.databases.mysql.MSLongBlob)
         target.UIntType = logAndChange(meta.UIntType, sa.databases.mysql.MSInteger(unsigned = True))
-    elif (engine.dialect.name.lower() == "mysql"):
+    elif (engine.dialect.name.lower() == "postgresql"):
         log.info("Currently using PostgreSQL dialect, adjusting types...")
         from sqlalchemy.databases import postgresql
         target.FloatType = logAndChange(meta.FloatType, postgresql.DOUBLE_PRECISION)

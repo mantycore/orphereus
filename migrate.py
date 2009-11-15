@@ -103,6 +103,23 @@ oekakiMembers = ["tempid",
 "animPath",
 ]
 
+postMembers = ["id",
+"secondaryIndex",
+"parentid",
+"message",
+"messageShort",
+"messageRaw",
+"title",
+"sage",
+"uidNumber",
+"date",
+"bumpDate",
+"replyCount",
+"removemd5",
+"ip",
+"pinned",
+]
+
 def copyMembers(membersList, source, target):
     for member in membersList:
         setattr(target, member, getattr(source, member))
@@ -161,6 +178,8 @@ def migrate(targetConfig, sourceModelUrl):
     for tag in oldTags:
         log.info("Creating /%s/" % (tag.tag,))
         newTag = Tag(tag.tag)
+        newTag.replyCount = tag.replyCount
+        newTag.threadCount = tag.threadCount
         if tag.options:
             log.info("Copying options for /%s/..." % tag.tag)
             copyMembers(tagOptMembers, tag.options, newTag.options)
@@ -249,4 +268,69 @@ def migrate(targetConfig, sourceModelUrl):
         newOek.sourcePost = oek.source
         meta.Session.commit()
 
+    def migratePosts(posts):
+        for post in posts:
+            log.info("Copying %d" % (post.id,))
+            newPost = Post()
+            copyMembers(postMembers, post, newPost)
+            meta.Session.add(newPost)
+            meta.Session.commit()
+            newPost.id = post.id
+            meta.Session.commit()
+            # Picture
+            pic = post.file
+            if pic:
+                log.info("%d has picture, copying..." % (post.id,))
+                extension = Extension.getExtension(pic.extension.ext)
+                additionalInfo = None
+                relInfo = None
+                if post.messageInfo:
+                    if "ID3" in post.messageInfo:
+                        additionalInfo = post.messageInfo
+                    else:
+                        relInfo = post.messageInfo
+                newPic = Picture(pic.path,
+                                     pic.thumpath,
+                                     pic.size,
+                                     [pic.width, pic.height, pic.thwidth, pic.thheight],
+                                     extension.id,
+                                     pic.md5,
+                                     additionalInfo,
+                                     )
+                assoc = PictureAssociation(post.spoiler, relInfo, pic.animpath)
+                meta.Session.add(assoc)
+                assoc.attachedFile = newPic
+                newPost.attachments.append(assoc)
+            meta.Session.commit()
+            # Tags
+            if not newPost.parentid:
+                log.info("Attaching tags to %d..." % (post.id,))
+                for tag in post.tags:
+                    log.info("Attaching /%s/ to %d..." % (tag.tag, post.id,))
+                    newPost.tags.append(Tag.getTag(tag.tag))
+                meta.Session.commit()
+                # Usertags
+                utags = OM.UserTag.query.filter(OM.UserTag.posts.any(OM.Post.id == post.id)).all()
+                if utags:
+                    log.info("Attaching usertags to %d..." % (post.id,))
+                    for utag in utags:
+                        log.info("Attaching /$%s/ to %d (userId == %d)..." % (utag.tag, post.id, utag.userId))
+                        ns = meta.globj.pluginsDict['usertags'].pnamespace
+                        newUtag = ns.UserTag(utag.tag, utag.comment, utag.userId)
+                        meta.Session.add(newUtag)
+                    meta.Session.commit()
+
+    log.info("=================================================================")
+    log.info("Migrating OP-posts...")
+    log.info("-----------------------------------------------------------------")
+    oldOps = OM.Post.query.filter(OM.Post.parentid == None).all()
+    log.info("Op posts count: %d" % len(oldOps))
+    migratePosts(oldOps)
+
+    log.info("=================================================================")
+    log.info("Migrating replies...")
+    log.info("-----------------------------------------------------------------")
+    oldPosts = OM.Post.query.filter(not_(OM.Post.parentid == None)).all()
+    log.info("Replies posts count: %d" % len(oldPosts))
+    migratePosts(oldPosts)
 migrate("development.ini", "mysql://root:@127.0.0.1/orphieold?use_unicode=0&charset=utf8")

@@ -209,12 +209,14 @@ def migrate(targetConfig, sourceModelUrl):
     log.info("Bans count: %d" % len(oldBans))
 
     for ban in oldBans:
-        log.info("Creating ban for %d" % (ban.ip,))
-        newBan = Ban(0, 0, 0, '', datetime.datetime.now(), 0, False)
-        copyMembers(banMembers, ban, newBan)
-        meta.Session.add(newBan)
-        meta.Session.commit()
-
+        try:
+            log.info("Creating ban for %d" % (ban.ip,))
+            newBan = Ban(0, 0, 0, '', datetime.datetime.now(), 0, False)
+            copyMembers(banMembers, ban, newBan)
+            meta.Session.add(newBan)
+            meta.Session.commit()
+        except:
+            log.warning("problem with %d" % (ban.ip,))
     log.info("=================================================================")
     log.info("Migrating extensions...")
     log.info("-----------------------------------------------------------------")

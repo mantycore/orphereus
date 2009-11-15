@@ -74,6 +74,7 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
                 log.info("Generating '%s' as '%s'..." % (path, lid))
                 newJS = ""
                 for js in g.OPT.jsFiles.get(template, []):
+                    log.info("Adding '%s'..." % js)
                     newJS += render('/%s/%s' % (template, js)) + "\n"
                 uncompressedLen = len(newJS)
                 newJS = jsmin(newJS)

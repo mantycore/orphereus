@@ -252,13 +252,15 @@ def migrate(targetConfig, sourceModelUrl):
 
     for record in oldLog:
         log.info("Copying %d/%s" % (record.id, str(record.date),))
-        newRecord = LogEntry(record.uidNumber, record.event, record.entry)
-        newRecord.id = record.id
-        meta.Session.add(newRecord)
-        meta.Session.commit()
-        newRecord.date = record.date
-        newRecord.id = record.id
-        meta.Session.commit()
+        u = OM.User.query.filter(OM.User.uidNumber == record.uidNumber).first()
+        if u and record.uidNumber > 0:
+            newRecord = LogEntry(record.uidNumber, record.event, record.entry)
+            newRecord.id = record.id
+            meta.Session.add(newRecord)
+            meta.Session.commit()
+            newRecord.date = record.date
+            newRecord.id = record.id
+            meta.Session.commit()
 
     log.info("=================================================================")
     log.info("Migrating oekaki temporary IDs...")

@@ -130,7 +130,7 @@ def migrate(targetConfig, sourceModelUrl):
     """Place any commands to setup Orphereus here"""
     conf = appconfig('config:' + os.path.abspath(targetConfig))
     load_environment(conf.global_conf, conf.local_conf, True)
-
+    log.debug(meta.UIntType)
     log.info("Dropping tables")
     meta.metadata.drop_all(bind = meta.engine)
     log.info("Successfully dropped")
@@ -209,14 +209,12 @@ def migrate(targetConfig, sourceModelUrl):
     log.info("Bans count: %d" % len(oldBans))
 
     for ban in oldBans:
-        try:
-            log.info("Creating ban for %d" % (ban.ip,))
-            newBan = Ban(0, 0, 0, '', datetime.datetime.now(), 0, False)
-            copyMembers(banMembers, ban, newBan)
-            meta.Session.add(newBan)
-            meta.Session.commit()
-        except:
-            log.warning("problem with %d" % (ban.ip,))
+        log.info("Creating ban for %d" % (ban.ip,))
+        newBan = Ban(0, 0, 0, '', datetime.datetime.now(), 0, False)
+        copyMembers(banMembers, ban, newBan)
+        meta.Session.add(newBan)
+        meta.Session.commit()
+
     log.info("=================================================================")
     log.info("Migrating extensions...")
     log.info("-----------------------------------------------------------------")
@@ -291,27 +289,31 @@ def migrate(targetConfig, sourceModelUrl):
             # Picture
             pic = post.file
             if pic:
-                log.info("%d has picture, copying..." % (post.id,))
-                extension = Extension.getExtension(pic.extension.ext)
-                additionalInfo = None
-                relInfo = None
-                if post.messageInfo:
-                    if "ID3" in post.messageInfo:
-                        additionalInfo = post.messageInfo
-                    else:
-                        relInfo = post.messageInfo
-                newPic = Picture(pic.path,
-                                     pic.thumpath,
-                                     pic.size,
-                                     [pic.width, pic.height, pic.thwidth, pic.thheight],
-                                     extension.id,
-                                     pic.md5,
-                                     additionalInfo,
-                                     )
-                assoc = PictureAssociation(post.spoiler, relInfo, pic.animpath)
-                meta.Session.add(assoc)
-                assoc.attachedFile = newPic
-                newPost.attachments.append(assoc)
+                if pic.extension:
+                    log.info("%d has picture, copying..." % (post.id,))
+                    extension = Extension.getExtension(pic.extension.ext)
+                    additionalInfo = None
+                    relInfo = None
+                    if post.messageInfo:
+                        if "ID3" in post.messageInfo:
+                            additionalInfo = post.messageInfo
+                        else:
+                            relInfo = post.messageInfo
+                    newPic = Picture(pic.path,
+                                         pic.thumpath,
+                                         pic.size,
+                                         [pic.width, pic.height, pic.thwidth, pic.thheight],
+                                         extension.id,
+                                         pic.md5,
+                                         additionalInfo,
+                                         )
+                    assoc = PictureAssociation(post.spoiler, relInfo, pic.animpath)
+                    meta.Session.add(assoc)
+                    assoc.attachedFile = newPic
+                    newPost.attachments.append(assoc)
+                else:
+                    log.info("%d has pic with broken extension!" % (post.id,))
+
             meta.Session.commit()
             # Tags
             if not newPost.parentid:

@@ -28,18 +28,20 @@ import datetime
 import logging
 log = logging.getLogger(__name__)
 
-t_bans = sa.Table("bans", meta.metadata,
-    sa.Column("id"          , sa.types.Integer, primary_key = True),
-#    sa.Column("ip"          , sa.types.Integer, nullable=False),
-#    sa.Column("mask"        , sa.types.Integer, nullable=False),
-    sa.Column("ip"          , meta.UIntType, nullable = False),
-    sa.Column("mask"        , meta.UIntType, nullable = False),
-    sa.Column("type"        , sa.types.Integer, nullable = False),
-    sa.Column("reason"      , sa.types.UnicodeText, nullable = True),
-    sa.Column("date"        , sa.types.DateTime, nullable = False),
-    sa.Column("period"      , sa.types.Integer, nullable = False),
-    sa.Column("enabled"      , sa.types.Boolean, server_default = '1'),
-    )
+t_bans = None
+def t_bans_init():
+    return sa.Table("bans", meta.metadata,
+        sa.Column("id"          , sa.types.Integer, primary_key = True),
+    #    sa.Column("ip"          , sa.types.Integer, nullable=False),
+    #    sa.Column("mask"        , sa.types.Integer, nullable=False),
+        sa.Column("ip"          , meta.UIntType, nullable = False),
+        sa.Column("mask"        , meta.UIntType, nullable = False),
+        sa.Column("type"        , sa.types.Integer, nullable = False),
+        sa.Column("reason"      , sa.types.UnicodeText, nullable = True),
+        sa.Column("date"        , sa.types.DateTime, nullable = False),
+        sa.Column("period"      , sa.types.Integer, nullable = False),
+        sa.Column("enabled"      , sa.types.Boolean, server_default = '1'),
+        )
 
 class Ban(object):
     def __init__(self, ip, mask, type, reason, date, period, enabled):

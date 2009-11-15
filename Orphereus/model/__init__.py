@@ -25,6 +25,12 @@ from Ban import *
 
 import logging
 log = logging.getLogger("ORM (%s)" % __name__)
+log.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter("[MODEL] %(asctime)s %(name)s:%(levelname)s: %(message)s")
+ch.setFormatter(formatter)
+log.addHandler(ch)
 
 def session_mapper(scoped_session):
     def mapper(cls, *arg, **kw):
@@ -80,6 +86,8 @@ def adjust_dialect(engine, meta):
 
 def init_model(engine, meta):
     adjust_dialect(engine, meta)
+    t_posts = t_posts_init()
+    t_bans = t_bans_init()
 
     sm = orm.sessionmaker(autoflush = False, autocommit = False, bind = engine)
     meta.engine = engine

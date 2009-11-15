@@ -43,7 +43,9 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_posts = sa.Table("post", meta.metadata,
+t_posts = None
+def t_posts_init():
+    return sa.Table("post", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key = True),
     sa.Column("secondaryIndex", sa.types.Integer, nullable = True),
     sa.Column("parentid" , sa.types.Integer, sa.ForeignKey('post.id'), nullable = True, index = True),

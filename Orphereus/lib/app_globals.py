@@ -302,6 +302,14 @@ class Globals(object):
             log.addHandler(ch)
             log.info("EGG Setup mode")
 
+        log.setLevel(logging.DEBUG)
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        formatter = logging.Formatter("[TMP] %(asctime)s %(name)s:%(levelname)s: %(message)s")
+        ch.setFormatter(formatter)
+        log.addHandler(ch)
+        log.info("TMP Setup mode")
+
         self.OPT = OptHolder(appName, eggSetupMode)
         self.caches = CacheDict()
         self.uniqueVals = ()

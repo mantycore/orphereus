@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -33,22 +33,22 @@ log = logging.getLogger(__name__)
 from Orphereus.model import meta
 
 t_extension = sa.Table("extension", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("path"     , sa.types.String(255), nullable=False),
-    sa.Column("thwidth"  , sa.types.Integer, nullable=False),
-    sa.Column("thheight" , sa.types.Integer, nullable=False),
-    sa.Column("ext"      , sa.types.String(16), nullable=False, unique=True),
-    sa.Column("type"     , sa.types.String(16), nullable=False),
-    sa.Column("enabled"  , sa.types.Boolean, server_default='1'),
-    sa.Column("newWindow", sa.types.Boolean, server_default='1'),
+    sa.Column("id"       , sa.types.Integer, primary_key = True),
+    sa.Column("path"     , sa.types.String(255), nullable = False),
+    sa.Column("thwidth"  , sa.types.Integer, nullable = False),
+    sa.Column("thheight" , sa.types.Integer, nullable = False),
+    sa.Column("ext"      , sa.types.String(16), nullable = False, unique = True),
+    sa.Column("type"     , sa.types.String(16), nullable = False),
+    sa.Column("enabled"  , sa.types.Boolean, server_default = '1'),
+    sa.Column("newWindow", sa.types.Boolean, server_default = '1'),
     )
 
 class Extension(object):
-    def __init__(self, name, enabled, newWindow, type, path, thwidth, thheight):
+    def __init__(self, name, enabled, newWindow, type, path, thwidth, thheight, commit = True):
         self.ext = name
-        self.setData(enabled, newWindow, type, path, thwidth, thheight)
+        self.setData(enabled, newWindow, type, path, thwidth, thheight, commit)
 
-    def setData(self, enabled, newWindow, type, path, thwidth, thheight):
+    def setData(self, enabled, newWindow, type, path, thwidth, thheight, commit = True):
         self.path = path
         self.enabled = enabled
         self.newWindow = newWindow
@@ -78,7 +78,7 @@ class Extension(object):
 
     @staticmethod
     def getExtension(ext):
-        return Extension.query.filter(Extension.ext==ext).first()
+        return Extension.query.filter(Extension.ext == ext).first()
 
     @staticmethod
     def create(name, enabled, newWindow, type, path, thwidth, thheight):

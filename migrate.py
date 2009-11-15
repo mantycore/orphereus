@@ -225,7 +225,7 @@ def migrate(targetConfig, sourceModelUrl):
 
     for ext in oldExtensions:
         log.info("Creating .%s" % (ext.ext,))
-        newExt = Extension("", False, False, "", "", 0, 0)
+        newExt = Extension("", False, False, "", "", 0, 0, False)
         copyMembers(extMembers, ext, newExt)
         meta.Session.add(newExt)
         meta.Session.commit()

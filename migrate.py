@@ -242,8 +242,8 @@ def migrate(targetConfig, sourceModelUrl):
     log.info("=================================================================")
     log.info("Migrating logs...")
     log.info("-----------------------------------------------------------------")
-    oldLog = OM.LogEntry.query.all()
-    log.info("Log records count: %d" % len(oldLog))
+    oldLog = OM.LogEntry.query
+    log.info("Log records count: %d" % oldLog.count())
 
     for record in oldLog:
         log.info("Copying %d/%s" % (record.id, str(record.date),))
@@ -317,20 +317,24 @@ def migrate(targetConfig, sourceModelUrl):
                         log.info("Attaching /$%s/ to %d (userId == %d)..." % (utag.tag, post.id, utag.userId))
                         ns = meta.globj.pluginsDict['usertags'].pnamespace
                         newUtag = ns.UserTag(utag.tag, utag.comment, utag.userId)
+                        newUtag.posts.append(newPost)
                         meta.Session.add(newUtag)
                     meta.Session.commit()
 
     log.info("=================================================================")
     log.info("Migrating OP-posts...")
     log.info("-----------------------------------------------------------------")
-    oldOps = OM.Post.query.filter(OM.Post.parentid == None).all()
-    log.info("Op posts count: %d" % len(oldOps))
+    oldOps = OM.Post.query.filter(OM.Post.parentid == None)
+    log.info("Op posts count: %d" % oldOps.count())
     migratePosts(oldOps)
 
     log.info("=================================================================")
     log.info("Migrating replies...")
     log.info("-----------------------------------------------------------------")
-    oldPosts = OM.Post.query.filter(not_(OM.Post.parentid == None)).all()
-    log.info("Replies posts count: %d" % len(oldPosts))
+    oldPosts = OM.Post.query.filter(not_(OM.Post.parentid == None))
+    log.info("Replies posts count: %d" % oldPosts.count())
     migratePosts(oldPosts)
+
+# migrate(NEWCONFIG, oldDBUrl)
+# All tables from target database will be dropped!
 migrate("development.ini", "mysql://root:@127.0.0.1/orphieold?use_unicode=0&charset=utf8")

@@ -44,11 +44,11 @@ t_extension = sa.Table("extension", meta.metadata,
     )
 
 class Extension(object):
-    def __init__(self, name, enabled, newWindow, type, path, thwidth, thheight, commit = True):
+    def __init__(self, name, enabled, newWindow, type, path, thwidth, thheight):
         self.ext = name
         self.setData(enabled, newWindow, type, path, thwidth, thheight, commit)
 
-    def setData(self, enabled, newWindow, type, path, thwidth, thheight, commit = True):
+    def setData(self, enabled, newWindow, type, path, thwidth, thheight):
         self.path = path
         self.enabled = enabled
         self.newWindow = newWindow
@@ -56,8 +56,7 @@ class Extension(object):
         self.path = path
         self.thwidth = thwidth
         self.thheight = thheight
-        if commit:
-            meta.Session.commit()
+        meta.Session.commit()
 
     def count(self):
         return Picture.query.filter(Picture.extension.has(Extension.id == self.id)).count()

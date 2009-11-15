@@ -123,7 +123,7 @@ postMembers = ["id",
 def copyMembers(membersList, source, target):
     for member in membersList:
         val = getattr(source, member)
-        log.debug("%s=%s" % (member, str(val)))
+        log.debug("%s=%s" % (member, unicode(val)))
         setattr(target, member, val)
 
 def migrate(targetConfig, sourceModelUrl):
@@ -237,6 +237,7 @@ def migrate(targetConfig, sourceModelUrl):
     for invite in oldInvites:
         log.info("Creating %s" % (invite.invite,))
         newInvite = Invite(invite.invite)
+        newInvite.id = invite.id
         meta.Session.add(newInvite)
         meta.Session.commit()
         newInvite.date = invite.date
@@ -253,6 +254,7 @@ def migrate(targetConfig, sourceModelUrl):
         log.info("Copying %d/%s" % (record.id, str(record.date),))
         newRecord = LogEntry(record.uidNumber, record.event, record.entry)
         meta.Session.add(newRecord)
+        newRecord.id = record.id
         meta.Session.commit()
         newRecord.date = record.date
         newRecord.id = record.id
@@ -277,6 +279,7 @@ def migrate(targetConfig, sourceModelUrl):
             log.info("Copying %d" % (post.id,))
             newPost = Post()
             copyMembers(postMembers, post, newPost)
+            newPost.id = post.id
             meta.Session.add(newPost)
             meta.Session.commit()
             newPost.id = post.id

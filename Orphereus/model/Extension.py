@@ -56,7 +56,8 @@ class Extension(object):
         self.path = path
         self.thwidth = thwidth
         self.thheight = thheight
-        meta.Session.commit()
+        if commit:
+            meta.Session.commit()
 
     def count(self):
         return Picture.query.filter(Picture.extension.has(Extension.id == self.id)).count()

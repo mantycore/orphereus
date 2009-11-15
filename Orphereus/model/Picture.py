@@ -87,8 +87,9 @@ class Picture(object):
     @staticmethod
     def getByMd5(md5):
         q = Picture.query.filter(Picture.md5 == md5)
-        if q.count() > 1:
-            log.error("Many pictures with md5 %s" % md5)
+        cc = q.count()
+        if cc > 1:
+            log.error("Many pictures (%d) with md5 %s" % (cc, md5))
         return q.first()
 
     @staticmethod

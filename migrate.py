@@ -123,7 +123,7 @@ postMembers = ["id",
 def copyMembers(membersList, source, target):
     for member in membersList:
         val = getattr(source, member)
-        log.debug("%s=%s" % (member, unicode(val)))
+        #log.debug("%s=%s" % (member, unicode(val)))
         setattr(target, member, val)
 
 def migrate(targetConfig, sourceModelUrl):
@@ -223,7 +223,7 @@ def migrate(targetConfig, sourceModelUrl):
 
     for ext in oldExtensions:
         log.info("Creating .%s" % (ext.ext,))
-        newExt = Extension("", False, False, "", "", 0, 0, False)
+        newExt = Extension("", False, False, "", "", 0, 0)
         copyMembers(extMembers, ext, newExt)
         meta.Session.add(newExt)
         meta.Session.commit()
@@ -351,3 +351,11 @@ def migrate(targetConfig, sourceModelUrl):
 # migrate(NEWCONFIG, oldDBUrl)
 # All tables from target database will be dropped!
 migrate("development.ini", "mysql://root:@127.0.0.1/orphieold?use_unicode=0&charset=utf8")
+
+# Perform this if you migrating to PostgreSQL
+#
+# select setval('log_id_seq', (select max(id) from log));
+# select setval('invite_id_seq', (select max(id) from invite));
+# select setval('post_id_seq', (select max(id) from post));
+# select setval('"user_uidNumber_seq"', (select max("uidNumber") from "user"));
+

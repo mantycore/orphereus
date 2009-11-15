@@ -46,7 +46,7 @@ t_extension = sa.Table("extension", meta.metadata,
 class Extension(object):
     def __init__(self, name, enabled, newWindow, type, path, thwidth, thheight):
         self.ext = name
-        self.setData(enabled, newWindow, type, path, thwidth, thheight, commit)
+        self.setData(enabled, newWindow, type, path, thwidth, thheight)
 
     def setData(self, enabled, newWindow, type, path, thwidth, thheight):
         self.path = path

@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -31,9 +31,9 @@ log = logging.getLogger(__name__)
 from Orphereus.model import meta
 
 t_settings = sa.Table("settings", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("name"     , sa.types.String(64), nullable=False),
-    sa.Column("value"    , sa.types.UnicodeText, nullable=False)
+    sa.Column("id"       , sa.types.Integer, primary_key = True),
+    sa.Column("name"     , sa.types.String(64), nullable = False, unique = True),
+    sa.Column("value"    , sa.types.UnicodeText, nullable = False)
     )
 
 class Setting(object):
@@ -44,7 +44,7 @@ class Setting(object):
     def setValue(self, value):
         self.value = value
         meta.Session.commit()
-        
+
     def delete(self):
         meta.Session.delete(self)
         meta.Session.commit()
@@ -58,7 +58,7 @@ class Setting(object):
 
     @staticmethod
     def clearAll():
-        map(lambda obj: obj.delete(),Setting.query.all())
+        map(lambda obj: obj.delete(), Setting.query.all())
 
     @staticmethod
     def getAll():
@@ -66,9 +66,9 @@ class Setting(object):
 
     @staticmethod
     def getSection(name):
-        return Setting.query.filter(Setting.name.like('%s.%%' %name))
+        return Setting.query.filter(Setting.name.like('%s.%%' % name))
 
     @staticmethod
     def getSetting(name):
-        return Setting.query.filter(Setting.name==name).first()
+        return Setting.query.filter(Setting.name == name).first()
 

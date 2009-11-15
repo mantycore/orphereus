@@ -122,7 +122,9 @@ postMembers = ["id",
 
 def copyMembers(membersList, source, target):
     for member in membersList:
-        setattr(target, member, getattr(source, member))
+        val = getattr(source, member)
+        log.debug("%s=%s" % (member, str(val)))
+        setattr(target, member, val)
 
 def migrate(targetConfig, sourceModelUrl):
     """Place any commands to setup Orphereus here"""
@@ -148,14 +150,16 @@ def migrate(targetConfig, sourceModelUrl):
     log.info("=================================================================")
     log.info("Migrating users...")
     log.info("-----------------------------------------------------------------")
-    oldUsers = OM.User.query.all()
+    oldUsers = OM.User.query.order_by(User.uidNumber).all()
     log.info("Users count: %d" % len(oldUsers))
 
     for user in oldUsers:
         log.info("Creating [%d] %s" % (user.uidNumber, user.uid))
         newUser = User(user.uid, None)
+        newUser.uidNumber = user.uidNumber
         meta.Session.add(newUser)
         meta.Session.commit()
+        log.debug('NEWUIDN: %d -> %d' % (newUser.uidNumber, user.uidNumber))
         newUser.uidNumber = user.uidNumber
         if user.options:
             log.info("Copying options for %d..." % newUser.uidNumber)

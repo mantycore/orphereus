@@ -189,6 +189,8 @@ class OptHolder(object):
 
             # recovery option
             self.recoveryMode = self.booleanGetter(config['core.recovery'])
+        else:
+            self.recoveryMode = True
 
     def registerCfgValues(self, values, type):
         dest = {CFG_BOOL: self.booleanValues,
@@ -297,18 +299,10 @@ class Globals(object):
             log.setLevel(logging.DEBUG)
             ch = logging.StreamHandler()
             ch.setLevel(logging.DEBUG)
-            formatter = logging.Formatter("[EGGSETUP] %(asctime)s %(name)s:%(levelname)s: %(message)s")
+            formatter = logging.Formatter("[SETUP] %(asctime)s %(name)s:%(levelname)s: %(message)s")
             ch.setFormatter(formatter)
             log.addHandler(ch)
-            log.info("EGG Setup mode")
-
-        log.setLevel(logging.DEBUG)
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("[TMP] %(asctime)s %(name)s:%(levelname)s: %(message)s")
-        ch.setFormatter(formatter)
-        log.addHandler(ch)
-        log.info("TMP Setup mode")
+            log.info("Setup mode")
 
         self.OPT = OptHolder(appName, eggSetupMode)
         self.caches = CacheDict()

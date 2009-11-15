@@ -55,9 +55,10 @@ def load_environment(global_conf, app_conf, setupMode):
     #config['pylons.c_attach_args'] = True
 
     #config['pylons.g'] = app_globals.Globals()
-    config['pylons.app_globals'] = app_globals.Globals()
+    config['pylons.app_globals'] = app_globals.Globals(setupMode)
     config['pylons.h'] = Orphereus.lib.helpers
-    config['routes.map'] = make_map()
+    if not setupMode:
+        config['routes.map'] = make_map()
 
     # Customize templating options via this variable
     #tmpl_options = config['buffet.template_options']

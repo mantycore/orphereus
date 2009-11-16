@@ -190,7 +190,7 @@ class OrphieAdminController(OrphieBaseController):
         c.boardName = _('Invite creation')
         c.currentItemId = 'id_hsInvite'
         c.inviteCode = False
-        reason = request.POST.get('inviteReason', False)
+        reason = bool(request.POST.get('inviteReason', False))
         if reason and len(reason) > 1:
             reason = filterText(reason)
             invite = Invite.create(g.OPT.hashSecret)
@@ -219,8 +219,8 @@ class OrphieAdminController(OrphieBaseController):
                 mask = h.ipToInt(filterText(request.POST.get('mask', 0)))
             except:
                 return self.error(_("Please check the format of IP addresses and masks."))
-            type = request.POST.get('type', False) == 'on'
-            enabled = request.POST.get('enabled', False) == 'on'
+            type = bool(request.POST.get('type', False))
+            enabled = bool(request.POST.get('enabled', False))
             reason = filterText(unicode(request.POST.get('reason', '')))
             date = request.POST.get('date', 0)
             period = request.POST.get('period', 0)
@@ -265,7 +265,7 @@ class OrphieAdminController(OrphieBaseController):
         postedId = request.POST.get('id', None)
         if (postedId):
             if (int(postedId) > 0):
-                if not request.POST.get('delete', False):
+                if not bool(request.POST.get('delete', False)):
                     ban = Ban.getBanById(id)
                     if ban:
                         ban.setData(*getPostData())
@@ -298,7 +298,7 @@ class OrphieAdminController(OrphieBaseController):
         c.currentItemId = 'id_hsExtensions'
         c.boardName = _('Extensions management')
         c.extensions = Extension.getList(False)
-        c.showCount = request.POST.get('showCount', False)
+        c.showCount = bool(request.POST.get('showCount', False))
         return self.render('manageExtensions')
 
     def editExtension(self, name):
@@ -332,10 +332,10 @@ class OrphieAdminController(OrphieBaseController):
 
         name = request.POST.get('ext', False)
         if name:
-            if not request.POST.get('delete', False):
+            if not bool(request.POST.get('delete', False)):
                 path = filterText(request.POST.get('path', ''))
-                enabled = request.POST.get('enabled', False)
-                newWindow = request.POST.get('newWindow', False)
+                enabled = bool(request.POST.get('enabled', False))
+                newWindow = bool(request.POST.get('newWindow', False))
                 type = filterText(request.POST.get('type', 'image')).strip().lower()
                 thwidth = request.POST.get('thwidth', 0)
                 thheight = request.POST.get('thheight', 0)
@@ -579,7 +579,7 @@ class OrphieAdminController(OrphieBaseController):
                         bumplimit = None
                     c.tag.options.bumplimit = bumplimit
                     c.tag.save()
-                    if request.POST.get('deleteBoard', False) and c.tag.id:
+                    if bool(request.POST.get('deleteBoard', False)) and c.tag.id:
                         count = c.tag.getExactThreadCount()
                         if count > 0:
                             c.message = _("Board must be empty for deletion")
@@ -718,15 +718,15 @@ class OrphieAdminController(OrphieBaseController):
 
             c.user = user
             c.userInst = self.userInst
-            if request.POST.get('access', False) and self.userInst.canChangeRights():
+            if bool(request.POST.get('access', False)) and self.userInst.canChangeRights():
                 #Basic admin right
-                isAdmin = request.POST.get('isAdmin', False) and True or False
+                isAdmin = bool(request.POST.get('isAdmin', False))
                 if user.options.isAdmin != isAdmin:
                     user.options.isAdmin = isAdmin
                     toLog(LOG_EVENT_USER_ACCESS, _('Changed user %s isAdmin to %s') % (user.uidNumber, isAdmin))
 
                 def setRight(name):
-                    right = request.POST.get(name, False) and True or False
+                    right = bool(request.POST.get(name, False))
                     if getattr(user.options, name) != right:
                         setattr(user.options, name, right)
                         toLog(LOG_EVENT_USER_ACCESS, _('Changed right "%s" for user #%s to %s') % (name, user.uidNumber, right))
@@ -735,14 +735,14 @@ class OrphieAdminController(OrphieBaseController):
                                  "canManageBoards", "canManageUsers", "canManageExtensions", "canManageMappings",
                                  "canRunMaintenance"])
                 c.message = _('User access was changed')
-            elif request.POST.get('ban', False):
+            elif bool(request.POST.get('ban', False)):
                 if user.options.bantime > 0:
                     c.message = _('This user is already banned')
                 else:
                     banreason = filterText(request.POST.get('banreason', '???'))
                     bantime = request.POST.get('bantime', '0')
                     c.message = user.ban(bantime, banreason, self.userInst.uidNumber)
-            elif request.POST.get('unban', False):
+            elif bool(request.POST.get('unban', False)):
                 if user.options.bantime > 0:
                     banreason = user.options.banreason
                     bantime = user.options.bantime
@@ -752,7 +752,7 @@ class OrphieAdminController(OrphieBaseController):
                     c.message = _('User was unbanned')
                 else:
                     c.message = _('This user is not banned')
-            elif request.POST.get('lookup', False):
+            elif bool(request.POST.get('lookup', False)):
                 reason = filterText(request.POST.get('lookupreason', u''))
                 quantity = int(request.POST.get('quantity', '0'))
                 if isNumber(quantity) and int(quantity) > 0:
@@ -767,7 +767,7 @@ class OrphieAdminController(OrphieBaseController):
                         c.message = _('You should specify lookup reason')
                 else:
                     c.message = _('Incorrect quantity value')
-            elif request.POST.get('passwd', False):
+            elif bool(request.POST.get('passwd', False)):
                 key = request.POST.get('key', '').encode('utf-8')
                 key2 = request.POST.get('key2', '').encode('utf-8')
                 passwdRet = user.passwd(key, key2, True, False)
@@ -779,9 +779,9 @@ class OrphieAdminController(OrphieBaseController):
                     c.message = _('Incorrect security codes')
                 else:
                     return self.error(passwdRet)
-            elif request.POST.get('delete', False):
+            elif bool(request.POST.get('delete', False)):
                 reason = filterText(request.POST.get('deletereason', u'No reason given'))
-                deleteLegacy = request.POST.get('deleteLegacy', False)
+                deleteLegacy = bool(request.POST.get('deleteLegacy', False))
                 if self.userInst.canChangeRights():
                     if len(reason) > 1:
                         if deleteLegacy:

@@ -114,7 +114,7 @@ class SetsmgrController(OrphieBaseController):
 
     def show(self):
         self.initChecks()
-        if request.POST.get('update', False):
+        if bool(request.POST.get('update', False)):
             if not self.userInst.canChangeSettings():
                 return self.error(_("No way! You aren't holy enough!"))
 

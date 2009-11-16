@@ -304,7 +304,7 @@ class OrphieMainController(OrphieBaseController):
         c.languages = g.OPT.languages
         c.profileChanged = False
         c.boardName = _('Profile')
-        if request.POST.get('update', False):
+        if bool(request.POST.get('update', False)):
             lang = filterText(request.POST.get('lang', self.userInst.lang))
             c.reload = (h.makeLangValid(lang) != self.userInst.lang)
 
@@ -505,19 +505,17 @@ class OrphieMainController(OrphieBaseController):
             return self.error(_("Posting is disabled"))
 
         c.url = url
-        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
-        c.selfy = request.POST.get('selfy', False) or selfy == '+selfy'
-        c.animation = request.POST.get('animation', False) or anim == '+anim'
+        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply').lower() == 'new')
+        c.selfy = bool(request.POST.get('selfy', False)) or selfy == '+selfy'
+        c.animation = bool(request.POST.get('animation', False)) or anim == '+anim'
 
         oekType = ''
-        if request.POST.get('oekaki_painter', False) == 'shiPro' or tool == 'shiPro':
+        if request.POST.get('oekaki_painter', False).lower() == 'shipro' or tool.lower() == 'shipro':
             oekType = 'Shi pro'
             c.oekakiToolString = 'pro'
         else:
             oekType = 'Shi normal'
             c.oekakiToolString = 'normal';
-
-        c.animation = request.POST.get('animation', False) or anim == '+anim'
 
         c.canvas = False
         c.width = request.POST.get('oekaki_x', '300')
@@ -845,7 +843,7 @@ class OrphieMainController(OrphieBaseController):
                 #TODO: move tags here
                 picInfo.spoiler = None
                 if options.enableSpoilers:
-                    picInfo.spoiler = request.POST.get('spoiler_%d' % fileId, None)
+                    picInfo.spoiler = bool(request.POST.get('spoiler_%d' % fileId, None))
 
                 if len(picInfos) < options.allowedAdditionalFiles + 1:
                     picInfos.append(picInfo)
@@ -853,7 +851,7 @@ class OrphieMainController(OrphieBaseController):
         if not postMessage and not picInfos and not postMessageInfo:
             return errorHandler(_("At least message or file should be specified"))
 
-        postSage = request.POST.get('sage', False)
+        postSage = bool(request.POST.get('sage', False))
         if postid:
             if not picInfos and not options.imagelessPost:
                 return errorHandler(_("Replies without image are not allowed"))

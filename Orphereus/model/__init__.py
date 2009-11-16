@@ -17,7 +17,7 @@ from Picture import *
 from Post import *
 from Setting import *
 from Tag import *
-from TagOptions import *
+#from TagOptions import *
 from User import *
 from UserFilters import *
 from UserOptions import *
@@ -123,10 +123,10 @@ def init_model(engine, meta):
     PictureProps = {
         'extension' : orm.relation(Extension)
         }
-    TagOptionsProps = {}
-    TagProps = {
-            'options' : orm.relation(TagOptions, uselist = False, backref = 'tag', cascade = "all, delete, delete-orphan")
-        }
+    #TagOptionsProps = {}
+    TagProps = {}
+    #        'options' : orm.relation(TagOptions, uselist = False, backref = 'tag', cascade = "all, delete, delete-orphan")
+    #    }
 
     PictureAssociationProps = {'attachedFile' : orm.relation(Picture)}
 
@@ -153,7 +153,7 @@ def init_model(engine, meta):
                 "User" : UserProps,
                 "Extension" : ExtensionProps,
                 "Picture" : PictureProps,
-                "TagOptions" : TagOptionsProps,
+                #"TagOptions" : TagOptionsProps,
                 "Tag" : TagProps,
                 "Post" : PostProps,
                 "LogEntry" : LogEntryProps,
@@ -188,7 +188,7 @@ def init_model(engine, meta):
     meta.mapper(Extension, t_extension, properties = ExtensionProps)
     meta.mapper(Picture, t_piclist, properties = PictureProps)
 
-    meta.mapper(TagOptions, t_tagOptions, properties = TagOptionsProps)
+    #meta.mapper(TagOptions, t_tagOptions, properties = TagOptionsProps)
     meta.mapper(Tag, t_tags, properties = TagProps)
     meta.mapper(PictureAssociation, t_filesToPostsMap, properties = PictureAssociationProps)
     meta.mapper(Post, t_posts, properties = PostProps)

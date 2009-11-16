@@ -27,7 +27,7 @@ from sqlalchemy.sql import and_, or_, not_
 from Orphereus.model import meta
 from Orphereus.model.Picture import Picture, PictureAssociation
 from Orphereus.model.Tag import Tag
-from Orphereus.model.TagOptions import TagOptions
+#from Orphereus.model.TagOptions import TagOptions
 from Orphereus.model.LogEntry import LogEntry
 from Orphereus.lib.miscUtils import getRPN, empty
 from Orphereus.lib.constantValues import *
@@ -179,7 +179,7 @@ class Post(object):
         if getattr(self, 'smCached', None) == None:
             self.smCached = False
             for tag in self.tags:
-                if tag.options and tag.options.selfModeration:
+                if tag.selfModeration:
                     self.smCached = True
                     break
         return self.smCached
@@ -189,7 +189,7 @@ class Post(object):
         names = []
         rawNames = []
         for t in tags:
-            names.append(t.options and t.options.comment or (u"/%s/" % t.tag))
+            names.append(t.comment or (u"/%s/" % t.tag))
             rawNames.append(t.tag)
         if tagNames:
             for name in tagNames:
@@ -246,7 +246,7 @@ class Post(object):
                     return (buildMyPostsFilter(True), [])
                 elif arg == '~':
                     disableExclusions = Post.tags.any(Tag.id.in_(userInst.homeExclude))
-                    disableHidden = Post.tags.any(Tag.options.has(not_(TagOptions.showInOverview)))
+                    disableHidden = Post.tags.any(not_(Tag.showInOverview))
                     return (not_(or_(disableExclusions, disableHidden)), [])
                 else:
                     retarg = [arg]

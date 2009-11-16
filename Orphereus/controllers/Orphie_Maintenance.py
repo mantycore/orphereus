@@ -204,6 +204,7 @@ class MaintenanceWorker(object):
                     meta.Session.delete(fl)
         batchProcess(UserFilters.query, userFiltersSearch)
 
+        """
         mtnLog.append(LogElement('Task', 'Tag options...'))
         def tagOptsSearch(tagOpts):
             for opt in tagOpts:
@@ -214,6 +215,7 @@ class MaintenanceWorker(object):
                     toLog(LOG_EVENT_INTEGR, msg)
                     meta.Session.delete(opt)
         batchProcess(TagOptions.query, tagOptsSearch)
+        """
 
         mtnLog.append(LogElement('Task', 'Pictures...'))
         def picturesSearch(pictures):
@@ -389,9 +391,9 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'Removing empty tags...'))
         def searchRoutine(tags):
             for tag in tags:
-                if not tag.options or not tag.options.persistent:
+                if tag.persistent:
                     threadCount = Post.query.filter(Post.parentid == None).filter(Post.tags.any(Tag.id == tag.id)).count()
-                    if threadCount == 0 and not (tag.options and tag.options.service):
+                    if threadCount == 0 and not tag.service:
                         mtnLog.append(LogElement('Info', "Removed tag %s" % tag.tag))
                         meta.Session.delete(tag)
         batchProcess(Tag.query, searchRoutine)

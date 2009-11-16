@@ -511,8 +511,8 @@ class OrphieAdminController(OrphieBaseController):
         c.boards = {-1:[]}
         c.sectionList = []
         for b in boards:
-            if b.options and b.options.persistent and b.options.sectionId >= 0:
-                sid = b.options.sectionId
+            if b.persistent and b.sectionId >= 0:
+                sid = b.sectionId
                 if not sid in c.boards:
                     c.boards[sid] = []
                     c.sectionList.append(sid)
@@ -538,8 +538,8 @@ class OrphieAdminController(OrphieBaseController):
             c.tag = Tag(tag)
 
         #TODO: legacy code
-        if not c.tag.options:
-            c.tag.options = TagOptions()
+        #if not c.tag.options:
+        #    c.tag.options = TagOptions()
 
         if request.POST.get('tag', False):
             newtag = request.POST.get('tag', False)
@@ -553,31 +553,31 @@ class OrphieAdminController(OrphieBaseController):
                         c.tag.tag = newtag
                     else:
                         oldtag = u''
-                    c.tag.options.comment = filterText(request.POST.get('comment', u''))
-                    c.tag.options.specialRules = filterText(request.POST.get('specialRules', u''))
+                    c.tag.comment = filterText(request.POST.get('comment', u''))
+                    c.tag.specialRules = filterText(request.POST.get('specialRules', u''))
                     sid = request.POST.get('sectionId', 0)
                     if isNumber(sid) and int(sid) >= 0:
                         sid = int(sid)
                     else:
                         sid = 0
-                    c.tag.options.sectionId = sid
-                    c.tag.options.persistent = bool(request.POST.get('persistent', False))
-                    c.tag.options.service = bool(request.POST.get('service', False))
-                    c.tag.options.imagelessThread = bool(request.POST.get('imagelessThread', False))
-                    c.tag.options.imagelessPost = bool(request.POST.get('imagelessPost', False))
-                    c.tag.options.images = bool(request.POST.get('images', False))
-                    c.tag.options.enableSpoilers = bool(request.POST.get('spoilers', False))
-                    c.tag.options.canDeleteOwnThreads = bool(request.POST.get('canDeleteOwnThreads', False))
-                    c.tag.options.selfModeration = bool(request.POST.get('selfModeration', False))
-                    c.tag.options.showInOverview = bool(request.POST.get('showInOverview', False))
-                    c.tag.options.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
-                    c.tag.options.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
-                    c.tag.options.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
-                    c.tag.options.allowedAdditionalFiles = request.POST.get('allowedAdditionalFiles', g.OPT.allowedAdditionalFiles)
+                    c.tag.sectionId = sid
+                    c.tag.persistent = bool(request.POST.get('persistent', False))
+                    c.tag.service = bool(request.POST.get('service', False))
+                    c.tag.imagelessThread = bool(request.POST.get('imagelessThread', False))
+                    c.tag.imagelessPost = bool(request.POST.get('imagelessPost', False))
+                    c.tag.images = bool(request.POST.get('images', False))
+                    c.tag.enableSpoilers = bool(request.POST.get('spoilers', False))
+                    c.tag.canDeleteOwnThreads = bool(request.POST.get('canDeleteOwnThreads', False))
+                    c.tag.selfModeration = bool(request.POST.get('selfModeration', False))
+                    c.tag.showInOverview = bool(request.POST.get('showInOverview', False))
+                    c.tag.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
+                    c.tag.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
+                    c.tag.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
+                    c.tag.allowedAdditionalFiles = request.POST.get('allowedAdditionalFiles', g.OPT.allowedAdditionalFiles)
                     bumplimit = request.POST.get('bumplimit', g.OPT.defBumplimit)
                     if not isNumber(bumplimit) or int(bumplimit) == 0:
                         bumplimit = None
-                    c.tag.options.bumplimit = bumplimit
+                    c.tag.bumplimit = bumplimit
                     c.tag.save()
                     if bool(request.POST.get('deleteBoard', False)) and c.tag.id:
                         count = c.tag.getExactThreadCount()

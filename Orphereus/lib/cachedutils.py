@@ -48,15 +48,15 @@ def chBoardList():
 
     for b in boards:
         if sectionId == -1:
-            sectionId = b.options.sectionId
+            sectionId = b.sectionId
             section = []
-        if sectionId != b.options.sectionId:
+        if sectionId != b.sectionId:
             boardlist.append((section, sectionName(sectionId)))
-            sectionId = b.options.sectionId
+            sectionId = b.sectionId
             section = []
         bc = empty()
         bc.tag = b.tag
-        bc.comment = b.options.comment
+        bc.comment = b.comment
         section.append(bc) #b.tag)
     if section:
         boardlist.append((section, sectionName(sectionId)))

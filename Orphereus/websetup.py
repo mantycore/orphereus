@@ -110,11 +110,10 @@ def setup_config(command, filename, section, vars):
         log.info("Adding tag /b/")
 
         tag = Tag(u'b')
-        tag.options = TagOptions()
-        tag.options.comment = u'Random'
-        tag.options.sectionId = 1
-        tag.options.persistent = True
-        tag.options.specialRules = u"It's /b/, there is no rules"
+        tag.comment = u'Random'
+        tag.sectionId = 1
+        tag.persistent = True
+        tag.specialRules = u"It's /b/, there is no rules"
         meta.Session.add(tag)
 
         meta.Session.commit()

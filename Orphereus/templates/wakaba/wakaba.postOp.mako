@@ -49,9 +49,7 @@ ${h.tsFormat(thread.date)} \
     ${_('Posted in')}:
 %for t in thread.tags:
     <a href="${h.url_for('boardBase', board=t.tag)}" \
-    %if t.options:
-        title="${t.options.comment}" \
-    %endif
+    title="${t.comment}" \
     >/${t.tag}/</a>
 %endfor
 

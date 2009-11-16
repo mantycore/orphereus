@@ -124,7 +124,7 @@ class OrphieMainController(OrphieBaseController):
 
         if tagList and len(tagList) == 1 and tags:
             currentBoard = tags[0]
-            c.boardName = currentBoard.options and currentBoard.options.comment or (u"/%s/" % currentBoard.tag)
+            c.boardName = currentBoard and currentBoard.comment or (u"/%s/" % currentBoard.tag)
             c.tagLine = currentBoard.tag
         elif tagList or tags:
             tagDescr = Post.tagLine(tags, tagList)
@@ -682,7 +682,7 @@ class OrphieMainController(OrphieBaseController):
             for tag in createdTags:
                 tagdef = self.getTagDescription(tag.tag, textFilter)
                 if tagdef:
-                    tag.options.comment = tagdef
+                    tag.comment = tagdef
 
             if not tags:
                 return errorHandler(_("You should specify at least one board"))
@@ -695,11 +695,11 @@ class OrphieMainController(OrphieBaseController):
             svcTagsCC = 0
             permaTagsCC = 0
             for tag in tags:
-                if not (tag.options and tag.options.service):
+                if not tag.service:
                     usualTagsCC += 1
                 else:
                     svcTagsCC += 1
-                if tag.options and tag.options.persistent:
+                if tag.persistent:
                     permaTagsCC += 1
 
             if len(tags) > 1 and not g.OPT.allowCrossposting:

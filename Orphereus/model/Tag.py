@@ -168,7 +168,7 @@ class Tag(object):
         result = []
         tags = string #.split('|')
         for tag in tags:
-            aTag = Tag.query.options(eagerload('options')).filter(Tag.tag == tag).first()
+            aTag = Tag.query.filter(Tag.tag == tag).first()
             if aTag:
                 result.append(aTag.id)
         return result

@@ -259,11 +259,11 @@ class Tag(object):
                 bc.postsCount = b.replyCount
                 bc.board = b
 
-                if b.options and b.options.persistent:
+                if b.persistent:
                     ret.boards.append(bc)
                     ret.totalBoardsThreads += bc.count
                     ret.totalBoardsPosts += bc.postsCount
-                elif not (b.options and b.options.service):
+                elif not b.service:
                     ret.tags.append(bc)
                     ret.totalTagsThreads += bc.count
                     ret.totalTagsPosts += bc.postsCount

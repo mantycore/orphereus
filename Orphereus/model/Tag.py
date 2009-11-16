@@ -280,7 +280,7 @@ class Tag(object):
         tagsPermOk = True
         problemTags = []
         for tag in tags:
-            lengthNeedsToBeChecked = ((not tag.options) or (tag.options and not tag.options.persistent))
+            lengthNeedsToBeChecked = not tag.options.persistent
             tagLengthProblem = lengthNeedsToBeChecked and len(tag.tag) > maxTagLen
             tagDisabled = tag.tag.lower() in disabledTags
             if (tagLengthProblem or tagDisabled):

@@ -101,7 +101,7 @@ class MaintenanceWorker(object):
                         toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
                         user.unban()
                 else:
-                    mtnLog.append(LogElement('Error', u'Integrity error: user %d has no options object') % user.uidNumber)
+                    mtnLog.append(LogElement('Error', u'Integrity error: user %d has no options object' % user.uidNumber))
         batchProcess(User.query, usersSearch)
         mtnLog.append(LogElement('Task', 'Done'))
 

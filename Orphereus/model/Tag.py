@@ -38,7 +38,7 @@ from Orphereus.model import meta
 
 t_tags = sa.Table("tag", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key = True),
-    sa.Column("tag"      , sa.types.Unicode(16), nullable = False),
+    sa.Column("tag"      , sa.types.UnicodeText, nullable = False),
     sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
     sa.Column("threadCount" , sa.types.Integer, nullable = False, server_default = '0'),
     sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
@@ -130,7 +130,6 @@ class Tag(object):
 
     @staticmethod
     def getAllByNames(names):
-        log.error(Tag.query.filter(Tag.tag.in_(names)))
         return Tag.query.filter(Tag.tag.in_(names)).all()
 
     @staticmethod

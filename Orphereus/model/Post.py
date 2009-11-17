@@ -306,7 +306,6 @@ class Post(object):
                 tagList = cl[1]
         if filteringExpression is not None:
             filter = filter.filter(filteringExpression)
-        log.warning(filter)
         return (filter, tagList, filteringExpression)
 
     @staticmethod

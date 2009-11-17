@@ -322,7 +322,7 @@ class Post(object):
     @staticmethod
     def buildThreadFilter(userInst, threadId):
         exclusion = Post.excludeAdminOnlyThreads(userInst)
-        if exclusion:
+        if exclusion is not None:
             return Post.filter(exclusion).filter(Post.id == threadId).options(eagerload('attachments'))
         else:
             return Post.filter(Post.id == threadId).options(eagerload('attachments'))

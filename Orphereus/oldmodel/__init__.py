@@ -201,7 +201,7 @@ def init_model(engine):
     log.info('COMPLETED ORM INITIALIZATION STAGE')
 
 def upd_globals():
-    adminTagsLine = meta.globj.OPT.adminOnlyTags
+    adminTagsLine = u""
     meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)
     meta.globj.additionalLinks = [link.split('|') for link in meta.globj.OPT.additionalLinks]
     meta.globj.sectionNames = meta.globj.OPT.sectionNames

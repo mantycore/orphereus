@@ -206,7 +206,7 @@ class Post(object):
 
     def filterReplies(self):
         if self.parentPost:
-            return False
+            return []
         else:
             return Post.query.filter(Post.parentid == self.id).order_by(Post.id.asc())
 
@@ -245,9 +245,11 @@ class Post(object):
                 elif arg == "*":
                     return (buildMyPostsFilter(True), [])
                 elif arg == '~':
-                    disableExclusions = Post.tags.any(Tag.id.in_(userInst.homeExclude))
-                    disableHidden = Post.tags.any(not_(Tag.showInOverview))
-                    return (not_(or_(disableExclusions, disableHidden)), [])
+                    #disableExclusions = Post.tags.any(Tag.id.in_(userInst.homeExclude))
+                    #disableHidden = Post.tags.any(not_(Tag.showInOverview))
+                    #return (not_(or_(disableExclusions, disableHidden)), [])
+                    inclusion = Post.tags.any(and_(Tag.showInOverview, not_(Tag.id.in_(userInst.homeExclude))))
+                    return (inclusion, [])
                 else:
                     retarg = [arg]
                     hooks = meta.globj.implementationsOf(AbstractPostingHook)
@@ -304,13 +306,14 @@ class Post(object):
                 tagList = cl[1]
         if filteringExpression is not None:
             filter = filter.filter(filteringExpression)
+        log.warning(filter)
         return (filter, tagList, filteringExpression)
 
     @staticmethod
     def excludeAdminTags(userInst):
         blockHidden = not_(Post.id == None)
         if not userInst.isAdmin():
-            blocker = Post.tags.any(Tag.id.in_(meta.globj.forbiddenTags))
+            blocker = Post.tags.any(Tag.adminOnly)
             blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))
         return blockHidden
 

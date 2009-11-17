@@ -79,6 +79,7 @@ class Tag(object):
         self.sectionId = 0
         self.persistent = False
         self.service = False
+        self.adminOnly = False
         self.comment = u''
         self.specialRules = u''
         self.imagelessThread = meta.globj.OPT.defImagelessThread
@@ -163,7 +164,7 @@ class Tag(object):
                 else:
                     nonExistentTagNames.append(t)
         return (existentTags, createdTags, nonExistentTagNames)
-
+    """
     @staticmethod
     def csStringToExTagIdList(string):
         result = []
@@ -173,7 +174,7 @@ class Tag(object):
             if aTag:
                 result.append(aTag.id)
         return result
-
+    """
     @staticmethod
     def conjunctedOptionsDescript(tags):
         options = empty()
@@ -254,7 +255,7 @@ class Tag(object):
         ret.totalSTagsThreads = 0
         ret.totalSTagsPosts = 0
         for b in boards:
-            if not b.id in meta.globj.forbiddenTags:
+            if not b.adminOnly:
                 bc = empty()
                 bc.count = b.threadCount
                 bc.postsCount = b.replyCount

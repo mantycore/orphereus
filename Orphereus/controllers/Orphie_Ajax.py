@@ -132,7 +132,7 @@ class OrphieAjaxController(OrphieBaseController):
         if postInst:
             if not self.userInst.isAdmin() and postInst.parentPost:
                 for t in postInst.parentPost.tags:
-                    if t.id in g.forbiddenTags:
+                    if t.adminOnly:
                         abort(403)
             return postInst.message
         abort(404)
@@ -142,7 +142,7 @@ class OrphieAjaxController(OrphieBaseController):
         if postInst:
             if not self.userInst.isAdmin() and postInst.parentPost:
                 for t in postInst.parentPost.tags:
-                    if t.id in g.forbiddenTags:
+                    if t.adminOnly:
                         abort(403)
             parent = postInst.parentPost
             if not parent:
@@ -159,7 +159,7 @@ class OrphieAjaxController(OrphieBaseController):
         if postInst and not postInst.parentPost:
             if not self.userInst.isAdmin():
                 for t in postInst.tags:
-                    if t.id in g.forbiddenTags:
+                    if t.adminOnly:
                         abort(403)
             postInst.Replies = postInst.filterReplies().all()
             self.setRightsInfo()

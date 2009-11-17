@@ -21,7 +21,11 @@
     </td>
     <td>
         %for b in c.boards[s]:
-            <a href="${h.url_for('hsBoardEdit', tag=b.tag)}">/${b.tag}/</a>
+            <a href="${h.url_for('hsBoardEdit', tag=b.tag)}" \
+            %if b.adminOnly:
+            style="color: red; font-weight: bold;" \
+            %endif
+            >/${b.tag}/</a>
         %endfor
     </td>
 </tr>

@@ -175,7 +175,7 @@ class OptHolder(object):
                               ),
 
                               ('frontend',
-                                ('disabledTags', 'adminOnlyTags', 'additionalLinks',
+                                ('disabledTags', 'additionalLinks',
                                  'sectionNames', 'homeModules',
                                 )
                               ),

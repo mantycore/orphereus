@@ -235,7 +235,7 @@ def postEnabledToShow(post, user):
         post = post.parentPost
 
     for tag in post.tags:
-        if tag.id in g.forbiddenTags:
+        if tag.adminOnly:
             return False
 
     return True

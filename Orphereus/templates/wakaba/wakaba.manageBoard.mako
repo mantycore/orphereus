@@ -133,7 +133,13 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('DELETE BOARD')}</td>
+                    <td class="postblock" style="color: red;">${_('Tag for admins only')}</td>
+                    <td>
+                        <input type="checkbox" name="adminOnly" ${c.tag.adminOnly and 'checked="checked"' or ""} />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock" style="color: red;">${_('DELETE BOARD')}</td>
                     <td>
                         <input type="checkbox" name="deleteBoard" />
                     </td>

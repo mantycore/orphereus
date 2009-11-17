@@ -95,15 +95,15 @@ def init_model(engine, meta):
     meta.mapper = session_mapper(meta.Session)
     #log.debug(dir(engine))
     #log.debug(dir(engine.logger))
-    #engine.echo = True
-    #engine.logger.setLevel('debug')
-    #import logging
+    engine.echo = True
+    engine.logger.setLevel('debug')
+    import logging
 
-    #logging.basicConfig()
-    #logging.getLogger('sqlalchemy').setLevel(logging.DEBUG)
-    #logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
-    #logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.DEBUG)
-    #logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.DEBUG)
+    logging.basicConfig()
+    logging.getLogger('sqlalchemy').setLevel(logging.DEBUG)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+    logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.DEBUG)
+    logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.DEBUG)
 
     LoginTrackerProps = {}
     CaptchaProps = {}
@@ -210,8 +210,8 @@ def init_model(engine, meta):
     log.info('COMPLETED ORM INITIALIZATION STAGE')
 
 def upd_globals():
-    adminTagsLine = meta.globj.OPT.adminOnlyTags
-    meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)
+    #adminTagsLine = meta.globj.OPT.adminOnlyTags
+    #meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)
     meta.globj.additionalLinks = [link.split('|') for link in meta.globj.OPT.additionalLinks]
     meta.globj.sectionNames = meta.globj.OPT.sectionNames
     meta.globj.disabledTags = meta.globj.OPT.disabledTags

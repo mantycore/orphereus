@@ -159,7 +159,6 @@ frontend.cutSymbols = 5000
 frontend.dvachStyleMenu = true
 
 frontend.disabledTags = logout,authorize,register,youAreBanned,userProfile,holySynod,frameMenu,!
-frontend.adminOnlyTags = synod,logs
 frontend.additionalLinks = http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma
 frontend.sectionNames = Main
 

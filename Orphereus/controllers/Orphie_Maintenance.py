@@ -92,16 +92,19 @@ class MaintenanceWorker(object):
         currentTime = datetime.datetime.now()
         def usersSearch(users):
             for user in users:
-                bantime = user.options.bantime
-                banDate = user.options.banDate
-                if bantime > 10000:
-                    bantime = 10000
-                if banDate and bantime > 0 and banDate < currentTime - datetime.timedelta(days = bantime):
-                    unbanMessage = (u"Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
-                    mtnLog.append(LogElement('Info', unbanMessage))
-                    toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
-                    user.options.bantime = 0
-                    user.options.banreason = u''
+                if user.options:
+                    bantime = user.options.bantime
+                    banDate = user.options.banDate
+                    if bantime > 10000:
+                        bantime = 10000
+                    if banDate and bantime > 0 and banDate < currentTime - datetime.timedelta(days = bantime):
+                        unbanMessage = (u"Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
+                        mtnLog.append(LogElement('Info', unbanMessage))
+                        toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
+                        user.options.bantime = 0
+                        user.options.banreason = u''
+                else:
+                    mtnLog.append(LogElement('Error', u'Integrity error: user %d has no options object') % user.uidNumber)
         batchProcess(User.query, usersSearch)
         mtnLog.append(LogElement('Task', 'Done'))
 

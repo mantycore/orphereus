@@ -313,7 +313,7 @@ class Post(object):
     def excludeAdminOnlyThreads(userInst):
         blockHidden = None #not_(Post.id == None)
         if not userInst.isAdmin():
-            # Now excludeAdminTags uses only for thread exclusion, so we shouldn't exclude children...
+            # Now excludeAdminOnlyThreads uses only for thread exclusion, so we shouldn't exclude children...
             blockHidden = not_(Post.tags.any(Tag.adminOnly == True))
             #blocker = Post.tags.any(Tag.adminOnly == True)
             #blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))

@@ -95,7 +95,7 @@ def init_model(engine, meta):
     meta.mapper = session_mapper(meta.Session)
     #log.debug(dir(engine))
     #log.debug(dir(engine.logger))
-
+    """
     engine.echo = True
     engine.logger.setLevel('info')
 
@@ -106,7 +106,6 @@ def init_model(engine, meta):
     logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
     logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.INFO)
     logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.INFO)
-    """
     """
     LoginTrackerProps = {}
     CaptchaProps = {}

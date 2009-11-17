@@ -264,7 +264,7 @@ class Post(object):
                 return arg
 
         filter = Post.query.options(eagerload('attachments')).filter(Post.parentid == None)
-        filteringExpression = Post.excludeAdminTags(userInst)
+        filteringExpression = Post.excludeAdminOnlyThreads(userInst)
         tagList = []
         if url:
             operators = {'+':1, '-':1, '^':2, '&':2}
@@ -310,16 +310,18 @@ class Post(object):
         return (filter, tagList, filteringExpression)
 
     @staticmethod
-    def excludeAdminTags(userInst):
+    def excludeAdminOnlyThreads(userInst):
         blockHidden = None #not_(Post.id == None)
         if not userInst.isAdmin():
-            blocker = Post.tags.any(Tag.adminOnly == True)
-            blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))
+            # Now excludeAdminTags uses only for thread exclusion, so we shouldn't exclude children...
+            blockHidden = not_(Post.tags.any(Tag.adminOnly == True))
+            #blocker = Post.tags.any(Tag.adminOnly == True)
+            #blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))
         return blockHidden
 
     @staticmethod
     def buildThreadFilter(userInst, threadId):
-        exclusion = Post.excludeAdminTags(userInst)
+        exclusion = Post.excludeAdminOnlyThreads(userInst)
         if exclusion:
             return Post.filter(exclusion).filter(Post.id == threadId).options(eagerload('attachments'))
         else:

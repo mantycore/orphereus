@@ -138,6 +138,11 @@ class User(AbstractUser):
         LogEntry.create(who, LOG_EVENT_USER_BAN, N_('Banned user %d for %s days for reason "%s"') % (self.uidNumber, bantime, banreason))
         return N_('User was banned')
 
+    def unban(self):
+        self.options.bantime = 0
+        self.options.banreason = u''
+        meta.Session.commit()
+
     def passwd(self, key, key2, changeAnyway = False, currentKey = False):
         newuid = User.genUid(key)
         olduid = self.uid
@@ -189,7 +194,13 @@ class User(AbstractUser):
 
     # access
     def isBanned(self):
-        return self.options.bantime > 0
+        if self.options.bantime > 0:
+            if self.options.banDate < datetime.datetime.now() - datetime.timedelta(days = min(10000, self.options.bantime)):
+                toLog(LOG_EVENT_MTN_UNBAN, u"User %d unbanned instantly" % self.uidNumber)
+                self.unban()
+                return False
+            return True
+        return False
 
     def bantime(self):
         return self.options.bantime

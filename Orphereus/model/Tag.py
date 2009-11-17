@@ -58,6 +58,7 @@ t_tags = sa.Table("tag", meta.metadata,
     sa.Column("showInOverview", sa.types.Boolean, nullable = False),
     sa.Column("bumplimit", sa.types.Integer, nullable = True),
     sa.Column("allowedAdditionalFiles", sa.types.Integer, nullable = False),
+    sa.Column("adminOnly", sa.types.Boolean, nullable = False),
     )
 
 t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,

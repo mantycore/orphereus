@@ -570,6 +570,7 @@ class OrphieAdminController(OrphieBaseController):
                     c.tag.canDeleteOwnThreads = bool(request.POST.get('canDeleteOwnThreads', False))
                     c.tag.selfModeration = bool(request.POST.get('selfModeration', False))
                     c.tag.showInOverview = bool(request.POST.get('showInOverview', False))
+                    c.tag.adminOnly = bool(request.POST.get('adminOnly', False))
                     c.tag.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
                     c.tag.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
                     c.tag.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)

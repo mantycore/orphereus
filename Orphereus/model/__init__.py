@@ -95,16 +95,19 @@ def init_model(engine, meta):
     meta.mapper = session_mapper(meta.Session)
     #log.debug(dir(engine))
     #log.debug(dir(engine.logger))
+
     engine.echo = True
-    engine.logger.setLevel('debug')
+    engine.logger.setLevel('info')
+
     import logging
 
     logging.basicConfig()
-    logging.getLogger('sqlalchemy').setLevel(logging.DEBUG)
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
-    logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.DEBUG)
-    logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.DEBUG)
-
+    logging.getLogger('sqlalchemy').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.INFO)
+    """
+    """
     LoginTrackerProps = {}
     CaptchaProps = {}
     OekakiProps = {}

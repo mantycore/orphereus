@@ -311,15 +311,19 @@ class Post(object):
 
     @staticmethod
     def excludeAdminTags(userInst):
-        blockHidden = not_(Post.id == None)
+        blockHidden = None #not_(Post.id == None)
         if not userInst.isAdmin():
-            blocker = Post.tags.any(Tag.adminOnly)
+            blocker = Post.tags.any(Tag.adminOnly == True)
             blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))
         return blockHidden
 
     @staticmethod
     def buildThreadFilter(userInst, threadId):
-        return Post.filter(Post.excludeAdminTags(userInst)).filter(Post.id == threadId).options(eagerload('attachments'))
+        exclusion = Post.excludeAdminTags(userInst)
+        if exclusion:
+            return Post.filter(exclusion).filter(Post.id == threadId).options(eagerload('attachments'))
+        else:
+            return Post.filter(Post.id == threadId).options(eagerload('attachments'))
 
     @staticmethod
     def getThread(threadId):

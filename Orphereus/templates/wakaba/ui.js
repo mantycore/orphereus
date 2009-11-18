@@ -513,6 +513,13 @@ $('.file_thread img').each(function (i) {
 });
 }
 
+function resetRow(id, attr, value) {
+  var rowToModify = $(id);
+  if (rowToModify){
+    rowToModify.attr(attr, value);
+  }
+}
+
 // code below should be rewritten using JQuery
 function insert(text,notFocus)
 {

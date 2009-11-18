@@ -131,6 +131,7 @@ class OrphieBaseController(BaseController):
         c.menuLinks = g.additionalLinks
         c.menuRender = self.fastRender('menu')
         c.sectionNames = g.sectionNames
+        c.userPostsToHighlight = []
 
         self.setCookie()
 

@@ -193,7 +193,7 @@ def staticFile(fileName):
     return u"%s%s?version=%s" % (spw, relFileName, str(version))
 
 def ipToInt(ipStr):
-    val = struct.unpack('!L', socket.inet_aton(ipStr))[0]
+    val = struct.unpack('!L', socket.inet_aton(ipStr.split(":")[-1]))[0]
     if val > sys.maxint:
         val = -(sys.maxint + 1) * 2 + val
     return val

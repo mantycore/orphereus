@@ -190,7 +190,7 @@ class OrphieAdminController(OrphieBaseController):
         c.boardName = _('Invite creation')
         c.currentItemId = 'id_hsInvite'
         c.inviteCode = False
-        reason = bool(request.POST.get('inviteReason', False))
+        reason = request.POST.get('inviteReason', False)
         if reason and len(reason) > 1:
             reason = filterText(reason)
             invite = Invite.create(g.OPT.hashSecret)

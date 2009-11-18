@@ -86,7 +86,7 @@
         <td class="postblock">${_('File')}</td>
         <td>
           %if c.boardOptions.images and not c.oekaki:
-            <input type="file" name="file_0" size="35" />
+            <input type="file" name="file_0" size="35" onchange="addFileRowOnChange(this);" />
             %if c.boardOptions.enableSpoilers:
                   <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_0" /> ${_('Spoiler')}</span>
             %endif
@@ -270,7 +270,7 @@ ${_('Board-specific rules:')}
     <tr id="trfile_">
         <td class="postblock">${_('File')}</td>
         <td>
-          <input type="file" name="file_" size="35" />
+          <input type="file" name="file_" size="35" onchange="addFileRowOnChange(this);" />
     %if c.boardOptions.enableSpoilers:
           <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_" /> ${_('Spoiler')}</span>
     %endif

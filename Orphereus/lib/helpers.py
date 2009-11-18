@@ -60,14 +60,10 @@ def repliesProxy(thread, controller):
     keyPrefix = str('%s%d%s' % (tmplPrefix, intFlags, get_lang()[0]))
     postPairs = []
     prepareIdsForHighlight = (not c.userInst.Anonymous) and c.userInst.options.hlOwnPosts
-    print not c.userInst.Anonymous
-    print c.userInst.options.hlOwnPosts
     for post in thread.Replies:
         postPairs.append((post.id, post))
-        print "here"
         if prepareIdsForHighlight and post.uidNumber == c.userInst.uidNumber:
             c.userPostsToHighlight.append(post.id)
-            print post.id
     postsDict = dict(postPairs)
     postsRender = g.mc.get_multi(postsDict.keys(), key_prefix = keyPrefix)
     absentPosts = list(set(postsDict.keys()) - set(postsRender.keys()))

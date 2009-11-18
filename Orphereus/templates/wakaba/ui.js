@@ -354,7 +354,7 @@ function expandable_threads(){
 
 function showDeleteBoxes()
 {
-    $('.delete').animate({'opacity' : 'toggle',}, 250);
+    $('.delete').animate({'opacity' : 'toggle'}, 250);
 }
 
 function tagCheckComplete(data) {
@@ -509,7 +509,7 @@ $('.file_thread img').each(function (i) {
      content: $(popupInfo).html(),
      show : {
        delay: 10,
-       when: {event : 'mouseover'},
+       when: {event : 'mouseover'}
      },
      hide: 'mouseout',
      style: { name: 'light', tip: true },

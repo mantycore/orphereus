@@ -408,7 +408,7 @@ class OrphieMainController(OrphieBaseController):
         c.boardName = _("Search")
         c.query = text
 
-        tagfilter = False
+        tagfilter = None
         filteredQueryRe = re.compile("^(([^:]+):){1}(.+)$").match(text)
         if filteredQueryRe:
             groups = filteredQueryRe.groups()
@@ -417,7 +417,7 @@ class OrphieMainController(OrphieBaseController):
             tagfilter = Post.buildMetaboardFilter(filterName, self.userInst)[2]
 
         if tagfilter is None:
-            tagfilter = Post.buildMetaboardFilter(False, self.userInst)[2]
+            tagfilter = Post.buildMetaboardFilter(None, self.userInst)[2]
 
         filteringClause = or_(tagfilter, Post.parentPost.has(tagfilter))
 

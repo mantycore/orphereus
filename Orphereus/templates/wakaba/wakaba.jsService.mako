@@ -1,4 +1,4 @@
-%if c.currentUserCanPost:
+%if c.currentUserCanPost and c.boardOptions:
 <div class="y_replyform" style="display:none">
 <form action="/1" method="post" enctype="multipart/form-data" id="y_replyform" class="y_replyform_anon">
     <div class="hidden">
@@ -78,7 +78,16 @@
 %endif
 
 <script type="text/javascript">
- $(YForm.init);
+%if c.currentUserCanPost and c.boardOptions:
+$(YForm.init);
+resetRow("#createdRows", "value", 0);
+resetRow("#nextRowId", "value", 0);
+resetRow("#addFileBtn", "disabled", "");
+  %if False: # maybe it will be usable
+    $("#oekakiPreview").hide();
+  %endif
+%endif
+
 window.loading_icon_path = "${g.OPT.staticPathWeb}images/loading.gif";
 %if c.userInst.useAjax:
 popup_posts({ajax: true,
@@ -92,14 +101,6 @@ click_expands({max_width: ${c.userInst.maxExpandWidth},
                });
 %endif
 $(expandable_threads);
-
-resetRow("#createdRows", "value", 0);
-resetRow("#nextRowId", "value", 0);
-resetRow("#addFileBtn", "disabled", "");
-
-%if False:
-/*$("#oekakiPreview").hide();*/
-%endif
 
 %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()) and c.userPostsToHighlight:
 function highlightMyPosts(){

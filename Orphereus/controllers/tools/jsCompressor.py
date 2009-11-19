@@ -36,6 +36,8 @@ from Orphereus.model import *
 import logging
 log = logging.getLogger(__name__)
 
+import httplib, urllib, sys
+
 class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Javascript compression tool'),
@@ -63,7 +65,11 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
             c.jsFiles = ["%s_%s.js" % (template, lang)]
 
     @staticmethod
-    def generateFiles():
+    def generateFiles(useClosure = False):
+        logRecords = []
+        def logMsg(s):
+            log.info(s)
+            logRecords.append(s)
         for template in g.OPT.templates:
             for lang in g.OPT.languages:
                 lid = makeLangValid(lang)
@@ -71,20 +77,38 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
                     lid = g.OPT.defaultLang
                 set_lang(lid)
                 path = "%s_%s.js" % (template, lang)
-                log.info("Generating '%s' as '%s'..." % (path, lid))
+                logMsg("Generating '%s' as '%s'..." % (path, lid))
                 newJS = ""
                 for js in g.OPT.jsFiles.get(template, []):
-                    log.info("Adding '%s'..." % js)
+                    logMsg("Adding '%s'..." % js)
                     newJS += render('/%s/%s' % (template, js)) + "\n"
                 uncompressedLen = len(newJS)
-                newJS = jsmin(newJS)
+                newJS = unicode(jsmin(newJS))
+                if useClosure:
+                    logMsg("Sending data to closure compiler...")
+                    try:
+                        params = urllib.urlencode([
+                            ('js_code', newJS.encode('utf-8')),
+                            ('compilation_level', 'ADVANCED_OPTIMIZATIONS'),
+                            ('output_format', 'text'),
+                            ('output_info', 'compiled_code'),
+                          ])
+                        headers = { "Content-type": "application/x-www-form-urlencoded" }
+                        conn = httplib.HTTPConnection('closure-compiler.appspot.com')
+                        conn.request('POST', '/compile', params, headers)
+                        response = conn.getresponse()
+                        newJS = response.read()
+                        conn.close
+                    except Exception as e:
+                        logMsg("Exception: %s" % str(e))
                 basePath = os.path.join(g.OPT.staticPath, "js")
                 path = os.path.join(basePath, path)
                 f = open(path, 'w')
                 f.write(newJS.encode('utf-8'))
                 f.close()
                 newLen = len(newJS)
-                log.info("Done. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))
+                logMsg("Done. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))
+        return logRecords
 
     def menuItems(self, menuId):
         #          id        link       name                weight   parent
@@ -127,10 +151,9 @@ class JscompressorController(OrphieBaseController):
         if not checkAdminIP():
             return redirect_to('boardBase')
 
-        JSCompressorPlugin.generateFiles()
+        if 'rebuildjs' in request.POST:
+            c.compressingResult = JSCompressorPlugin.generateFiles(bool('useGClosure' in request.POST))
 
         c.boardName = _('Rebuild JavaScrtipt')
-        c.message = _("Rebuild completed")
-        c.returnUrl = h.url_for('holySynod')
         c.currentItemId = 'id_RebuildJs'
-        return self.render('managementMessage')
+        return self.render('management.jscompressor')

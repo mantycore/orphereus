@@ -212,7 +212,7 @@ class OrphieAdminController(OrphieBaseController):
         return self.render('manageBans')
 
     def editBan(self, id):
-
+        timeFormat = "%Y-%m-%d %H:%M:%S"
         def getPostData():
             try:
                 ip = h.ipToInt(filterText(request.POST.get('ip', 0)))
@@ -222,10 +222,10 @@ class OrphieAdminController(OrphieBaseController):
             type = bool(request.POST.get('type', False))
             enabled = bool(request.POST.get('enabled', False))
             reason = filterText(unicode(request.POST.get('reason', '')))
-            date = request.POST.get('date', 0)
+            date = datetime.datetime.strptime(request.POST.get('date', '1970-01-01 01:01:01'), timeFormat)
+
             period = request.POST.get('period', 0)
             return ip, mask, type, reason, date, period, enabled
-
 
         if not self.userInst.canManageUsers():
             return self.error(_("No way! You aren't holy enough!"))
@@ -256,7 +256,7 @@ class OrphieAdminController(OrphieBaseController):
             c.ban.mask = h.ipToInt('255.255.255.255')
             c.ban.type = 0   # 0 for read-only access, 1 for full ban
             c.ban.reason = ''
-            c.ban.date = datetime.datetime.now()
+            c.ban.date = datetime.datetime.now().strftime(timeFormat)
             c.ban.period = 30
             c.ban.enabled = True
         else:

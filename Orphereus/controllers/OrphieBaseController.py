@@ -83,6 +83,7 @@ class OrphieBaseController(BaseController):
                     self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") % hashlib.md5(ua).hexdigest(), -1)
                     break
 
+        c.userPostsToHighlight = []
         #log.debug(request.cookies)
         #log.debug(session)
         self.setLang()
@@ -131,7 +132,6 @@ class OrphieBaseController(BaseController):
         c.menuLinks = g.additionalLinks
         c.menuRender = self.fastRender('menu')
         c.sectionNames = g.sectionNames
-        c.userPostsToHighlight = []
 
         self.setCookie()
 

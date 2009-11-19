@@ -39,6 +39,9 @@ class LikeSearchPlugin(BasePlugin, AbstractSearchModule):
         BasePlugin.__init__(self, 'search_like', config)
 
     # Implementing AbstractSearchModule
+    def helpTemplateName(self):
+        return "man.search.like"
+
     def search(self, filteringClause, text, page, postsPerPage):
         minLen = 3
         failInfo = None

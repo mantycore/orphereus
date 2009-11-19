@@ -42,6 +42,9 @@ class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
         BasePlugin.__init__(self, 'search_sphinx', config)
 
     # Implementing AbstractSearchModule
+    def helpTemplateName(self):
+        return "man.search.sphinx"
+
     def search(self, filteringClause, text, page, postsPerPage):
         count = 0
         failInfo = None

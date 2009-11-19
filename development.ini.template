@@ -142,6 +142,7 @@ frontend.forbidCaptcha = false
 # if true, sets thread sorting mode to their creation time, not bump-date
 frontend.newsSiteMode = false
 frontend.permissiveFileSizeConjunction = true
+frontend.permissiveAdditionalFilesCountConjunction = false
 frontend.boardWideProoflabels = true
 frontend.allowOverview = true
 frontend.framedMain = true

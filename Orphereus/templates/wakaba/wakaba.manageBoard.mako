@@ -127,9 +127,10 @@
                 </tr>
                 <tr>
                     <td class="postblock">${_('Additional files allowed')}
+                    <div style="font-size: 60%; font-style:italic;">${_('(Any non-integer value for default, 0 for none)')}</div>
                     </td>
                     <td>
-                        <input type="text" name="allowedAdditionalFiles" size="35" value="${not c.tag.allowedAdditionalFiles is None and c.tag.allowedAdditionalFiles or "Default"}" />
+                        <input type="text" name="allowedAdditionalFiles" size="35" value="${(c.tag.allowedAdditionalFiles is None) and "Default" or c.tag.allowedAdditionalFiles}" />
                     </td>
                 </tr>
                 <tr>

@@ -195,7 +195,7 @@ class Tag(object):
                 options.selfModeration = t.selfModeration
                 options.showInOverview = t.showInOverview
                 options.bumplimit = t.bumplimit
-                options.allowedAdditionalFiles = not t.allowedAdditionalFiles is None and t.allowedAdditionalFiles or meta.globj.OPT.allowedAdditionalFiles
+                options.allowedAdditionalFiles = t.allowedAdditionalFiles is None and meta.globj.OPT.allowedAdditionalFiles or t.allowedAdditionalFiles
                 optionsFlag = False
             else:
                 options.imagelessThread = options.imagelessThread & t.imagelessThread
@@ -218,11 +218,13 @@ class Tag(object):
                 if t.thumbSize < options.thumbSize:
                     options.thumbSize = t.thumbSize
 
-                if t.allowedAdditionalFiles is None:
-                    options.allowedAdditionalFiles = meta.globj.OPT.allowedAdditionalFiles
-
-                if t.allowedAdditionalFiles > options.allowedAdditionalFiles:
-                    options.allowedAdditionalFiles = t.allowedAdditionalFiles
+                currentAllowed = t.allowedAdditionalFiles
+                if currentAllowed is None:
+                    currentAllowed = meta.globj.OPT.allowedAdditionalFiles
+                assert type(currentAllowed) == int
+                perm = meta.globj.OPT.permissiveAdditionalFilesCountConjunction
+                if (perm and currentAllowed > options.allowedAdditionalFiles) or (not perm and currentAllowed < options.allowedAdditionalFiles):
+                    options.allowedAdditionalFiles = currentAllowed
             tagRulesList = t.specialRules.split(';')
             for rule in tagRulesList:
                 if rule and not rule in rulesList:

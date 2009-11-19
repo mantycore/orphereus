@@ -76,7 +76,8 @@ class OptHolder(object):
                                  'useFrameLogo', 'permissiveFileSizeConjunction',
                                  'boardWideProoflabels', 'allowOverview', 'framedMain',
                                  'obligatoryFrameCreation', 'showShortStatistics', 'mixOldThreads',
-                                 'newsSiteMode', 'useTopPaginator', 'useZMenu', 'dvachStyleMenu'
+                                 'newsSiteMode', 'useTopPaginator', 'useZMenu', 'dvachStyleMenu',
+                                 'permissiveAdditionalFilesCountConjunction'
                                 )
                               ),
 

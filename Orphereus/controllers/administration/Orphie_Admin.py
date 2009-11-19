@@ -574,7 +574,8 @@ class OrphieAdminController(OrphieBaseController):
                     c.tag.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
                     c.tag.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
                     c.tag.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
-                    c.tag.allowedAdditionalFiles = request.POST.get('allowedAdditionalFiles', g.OPT.allowedAdditionalFiles)
+                    allowedFilesCount = request.POST.get('allowedAdditionalFiles', g.OPT.allowedAdditionalFiles)
+                    c.tag.allowedAdditionalFiles = isNumber(allowedFilesCount) and int(allowedFilesCount) or None
                     bumplimit = request.POST.get('bumplimit', g.OPT.defBumplimit)
                     if not isNumber(bumplimit) or int(bumplimit) == 0:
                         bumplimit = None

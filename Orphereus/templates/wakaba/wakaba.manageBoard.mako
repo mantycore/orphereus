@@ -129,7 +129,7 @@
                     <td class="postblock">${_('Additional files allowed')}
                     </td>
                     <td>
-                        <input type="text" name="allowedAdditionalFiles" size="35" value="${c.tag.allowedAdditionalFiles}" />
+                        <input type="text" name="allowedAdditionalFiles" size="35" value="${not c.tag.allowedAdditionalFiles is None and c.tag.allowedAdditionalFiles or "Default"}" />
                     </td>
                 </tr>
                 <tr>

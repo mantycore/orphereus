@@ -57,7 +57,7 @@ t_tags = sa.Table("tag", meta.metadata,
     sa.Column("selfModeration", sa.types.Boolean, nullable = False),
     sa.Column("showInOverview", sa.types.Boolean, nullable = False, index = True),
     sa.Column("bumplimit", sa.types.Integer, nullable = True),
-    sa.Column("allowedAdditionalFiles", sa.types.Integer, nullable = False),
+    sa.Column("allowedAdditionalFiles", sa.types.Integer, nullable = True),
     sa.Column("adminOnly", sa.types.Boolean, nullable = False, index = True),
     )
 
@@ -195,7 +195,7 @@ class Tag(object):
                 options.selfModeration = t.selfModeration
                 options.showInOverview = t.showInOverview
                 options.bumplimit = t.bumplimit
-                options.allowedAdditionalFiles = t.allowedAdditionalFiles
+                options.allowedAdditionalFiles = not t.allowedAdditionalFiles is None and t.allowedAdditionalFiles or meta.globj.OPT.allowedAdditionalFiles
                 optionsFlag = False
             else:
                 options.imagelessThread = options.imagelessThread & t.imagelessThread
@@ -217,6 +217,9 @@ class Tag(object):
                     options.minPicSize = t.minPicSize
                 if t.thumbSize < options.thumbSize:
                     options.thumbSize = t.thumbSize
+
+                if t.allowedAdditionalFiles is None:
+                    options.allowedAdditionalFiles = meta.globj.OPT.allowedAdditionalFiles
 
                 if t.allowedAdditionalFiles > options.allowedAdditionalFiles:
                     options.allowedAdditionalFiles = t.allowedAdditionalFiles

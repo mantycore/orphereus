@@ -38,13 +38,13 @@ from Orphereus.model import meta
 
 t_tags = sa.Table("tag", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key = True),
-    sa.Column("tag"      , sa.types.UnicodeText, nullable = False),
+    sa.Column("tag"      , sa.types.UnicodeText, nullable = False, unique = True, index = True),
     sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
     sa.Column("threadCount" , sa.types.Integer, nullable = False, server_default = '0'),
     sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
     sa.Column("sectionId", sa.types.Integer, nullable = False),
-    sa.Column("persistent", sa.types.Boolean, nullable = False),
-    sa.Column("service", sa.types.Boolean, nullable = False),
+    sa.Column("persistent", sa.types.Boolean, nullable = False,),
+    sa.Column("service", sa.types.Boolean, nullable = False,),
     sa.Column("imagelessThread", sa.types.Boolean, nullable = False),
     sa.Column("imagelessPost", sa.types.Boolean, nullable = False),
     sa.Column("images"   , sa.types.Boolean, nullable = False),
@@ -55,10 +55,10 @@ t_tags = sa.Table("tag", meta.metadata,
     sa.Column("canDeleteOwnThreads", sa.types.Boolean, nullable = False),
     sa.Column("specialRules"  , sa.types.UnicodeText, nullable = True),
     sa.Column("selfModeration", sa.types.Boolean, nullable = False),
-    sa.Column("showInOverview", sa.types.Boolean, nullable = False),
+    sa.Column("showInOverview", sa.types.Boolean, nullable = False, index = True),
     sa.Column("bumplimit", sa.types.Integer, nullable = True),
     sa.Column("allowedAdditionalFiles", sa.types.Integer, nullable = False),
-    sa.Column("adminOnly", sa.types.Boolean, nullable = False),
+    sa.Column("adminOnly", sa.types.Boolean, nullable = False, index = True),
     )
 
 t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
@@ -66,6 +66,8 @@ t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
     sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
     sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tag.id'), primary_key = True),
     )
+
+sa.Index('ix_tagmap_postid_tagid', t_tagsToPostsMap.c.postId, t_tagsToPostsMap.c.tagId)
 
 class Tag(object):
     def __repr__(self):

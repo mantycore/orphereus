@@ -40,7 +40,7 @@ t_oekaki = sa.Table("oekaki", meta.metadata,
     sa.Column("type"     , sa.types.String(255), nullable = False),
     sa.Column("path"     , sa.types.String(255), nullable = False),
     sa.Column("timeStamp", sa.types.DateTime, nullable = False),
-    sa.Column("selfy", sa.types.Boolean, nullable = False, server_default = '0'),
+    sa.Column("selfy", sa.types.Boolean, nullable = False),
     sa.Column("animPath", sa.types.String(255), nullable = True),
     )
 

@@ -531,6 +531,9 @@ input#y_replyform_password{
 .y_replyform_anon #y_replyform_buttons input{
     margin-top: 12px;
 }
+.y_fileLink {cursor:pointer; }
+.y_fileLinkActive {font-weight: bold;}
+.y_fileLinkSelected {font-style: italic;}
 
 .omittedposts.expanded span{
   display: none

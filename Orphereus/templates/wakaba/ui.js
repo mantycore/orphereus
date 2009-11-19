@@ -304,6 +304,22 @@ YForm.Captcha.prototype = {
     }
 }
 
+function YFormActivateFile(idx){
+$(".y_fileField").hide();
+if (idx > 0) {
+$("#y_replyform_file_field_" + idx).show();
+}
+else {
+$("#y_replyform_file_field").show();
+}
+$(".y_fileLink").removeClass("y_fileLinkActive");
+$("#y_replyform_file_link_" + idx).addClass("y_fileLinkActive");
+}
+
+function YFormMarkSelected(idx){
+$("#y_replyform_file_link_" + idx).addClass("y_fileLinkSelected");
+}
+
 function expandable_threads(){
   expandable_threads.mass_repair =  function(node){
     popup_posts.repair(node.find("blockquote a"))

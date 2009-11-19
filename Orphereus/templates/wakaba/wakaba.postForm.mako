@@ -82,10 +82,11 @@
         <td class="postblock">${_('Text')}</td>
         <td><textarea id="replyText" name="message" cols="60" rows="6"></textarea></td>
     </tr>
+    %if c.boardOptions.images:
     <tr id="trfile">
         <td class="postblock">${_('File')}</td>
         <td>
-          %if c.boardOptions.images and not c.oekaki:
+          %if not c.oekaki:
             <input type="file" name="file_0" size="35" onchange="addFileRowOnChange(this);" />
             %if c.boardOptions.enableSpoilers:
                   <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_0" /> ${_('Spoiler')}</span>
@@ -99,6 +100,7 @@
           %endif
         </td>
     </tr>
+    %endif
 
     <tr id="filesBlockEnd" style="display: none;">
       <td colspan="2" />
@@ -266,16 +268,3 @@ ${_('Board-specific rules:')}
 </div>
 </div>
 
-<table style="display: none" id="dummyTable">
-    <tr id="trfile_">
-        <td class="postblock">${_('File')}</td>
-        <td>
-          <input type="file" name="file_" size="35" onchange="addFileRowOnChange(this);" />
-    %if c.boardOptions.enableSpoilers:
-          <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_" /> ${_('Spoiler')}</span>
-    %endif
-          <input name="removeRowBtn" type="button" value="${_("Remove")}" onclick="removeRow(this);" />
-          <input type="hidden" name="fileRowId" value="" />
-        </td>
-    </tr>
-</table>

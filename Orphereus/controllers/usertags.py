@@ -91,10 +91,18 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
             sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
             )
 
+        sa.Index('ix_usertags_uidnum_tag',
+                 t_usertags.c.userId,
+                 t_usertags.c.tag)
+
         t_userTagsToPostsMappingTable = sa.Table("usertagsToPostsMap", meta.metadata,
             sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id')),
             sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('usertag.id')),
             )
+
+        sa.Index('ix_usertagmap_postid_tagid',
+                 t_userTagsToPostsMappingTable.c.postId,
+                 t_userTagsToPostsMappingTable.c.tagId)
 
         #orm.mapper
         meta.mapper(namespace.UserTag, t_usertags, properties = {

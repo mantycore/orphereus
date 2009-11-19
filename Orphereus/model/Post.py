@@ -46,7 +46,7 @@ from Orphereus.model import meta
 t_posts = None
 def t_posts_init():
     return sa.Table("post", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key = True),
+    sa.Column("id"       , sa.types.Integer, primary_key = True, index = True),
     sa.Column("secondaryIndex", sa.types.Integer, nullable = True),
     sa.Column("parentid" , sa.types.Integer, sa.ForeignKey('post.id'), nullable = True, index = True),
     sa.Column("message"  , sa.types.UnicodeText, nullable = True),
@@ -55,7 +55,7 @@ def t_posts_init():
     sa.Column("messageInfo"  , sa.types.UnicodeText, nullable = True),
     sa.Column("title"    , sa.types.UnicodeText, nullable = True),
     sa.Column("sage"     , sa.types.Boolean, nullable = True),
-    sa.Column("uidNumber", sa.types.Integer, nullable = True),
+    sa.Column("uidNumber", sa.types.Integer, nullable = True, index = True),
     sa.Column("date"     , sa.types.DateTime, nullable = False, index = True),
     sa.Column("bumpDate", sa.types.DateTime, nullable = True, index = True),
     sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),

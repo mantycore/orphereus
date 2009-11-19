@@ -308,6 +308,7 @@ class OrphieMainController(OrphieBaseController):
             lang = filterText(request.POST.get('lang', self.userInst.lang))
             c.reload = (h.makeLangValid(lang) != self.userInst.lang)
 
+            oldUseFrame = self.userInst.useFrame
             for valueName in self.userInst.booleanValues:
                 val = bool(request.POST.get(valueName, False))
                 setattr(self.userInst, valueName, val)
@@ -321,6 +322,9 @@ class OrphieMainController(OrphieBaseController):
                 val = filterText(request.POST.get(valueName, getattr(self.userInst, valueName)))
                 setattr(self.userInst, valueName, val)
 
+            if oldUseFrame != self.userInst.useFrame:
+                c.proceedRedirect = True
+                c.currentURL = None
             homeExcludeTags = Tag.stringToTagLists(request.POST.get('homeExclude', u''), False)[0]
             #log.debug(homeExcludeTags)
             homeExcludeList = []

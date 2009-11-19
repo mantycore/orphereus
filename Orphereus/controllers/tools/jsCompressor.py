@@ -104,7 +104,7 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
                         response = conn.getresponse()
                         newJS = response.read()
                         conn.close
-                    except Exception as e:
+                    except Exception, e:
                         logMsg("Exception: %s" % str(e))
                 basePath = os.path.join(g.OPT.staticPath, "js")
                 path = os.path.join(basePath, path)

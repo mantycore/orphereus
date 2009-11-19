@@ -45,7 +45,7 @@ t_piclist = sa.Table("picture", meta.metadata,
     )
 
 t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
-    sa.Column("id"          , sa.types.Integer, primary_key = True),
+    #sa.Column("id"          , sa.types.Integer, primary_key = True),
     sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
     sa.Column('fileId', sa.types.Integer, sa.ForeignKey('picture.id'), primary_key = True),
     sa.Column("spoiler", sa.types.Boolean, nullable = True),

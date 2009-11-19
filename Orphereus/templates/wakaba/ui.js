@@ -609,4 +609,31 @@ window.onload=function(e)
     installPopupHintsOnFiles();
 }
 
-
+/* exports for Google Closure. They are disabled for now because Closure doesn't supports jQuery */
+/*
+window['menu_show'] = menu_show;
+window['toggle_div'] = toggle_div;
+window['update_captcha'] = update_captcha;
+window['click_expands'] = click_expands;
+window['popup_posts'] = popup_posts;
+window['YForm'] = YForm;
+window['YFormActivateFile'] = YFormActivateFile;
+window['YFormMarkSelected'] = YFormMarkSelected;
+window['expandable_threads'] = expandable_threads;
+window['showDeleteBoxes'] = showDeleteBoxes;
+window['tagCheckComplete'] = tagCheckComplete;
+window['checkForTagNames'] = checkForTagNames;
+window['restoreForm'] = restoreForm;
+window['getFullText'] = getFullText;
+window['userFiltersAdd'] = userFiltersAdd;
+window['userFiltersEdit'] = userFiltersEdit;
+window['userFiltersDelete'] = userFiltersDelete;
+window['addFileRow'] = addFileRow;
+window['addFileRowOnChange'] = addFileRowOnChange;
+window['removeRow'] = removeRow;
+window['resetRow'] = resetRow;
+window['insert'] = insert;
+window['highlight'] = highlight;
+window['jQuery'] = jQuery;
+window['$'] = $;
+*/

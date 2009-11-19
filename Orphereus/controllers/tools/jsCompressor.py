@@ -65,7 +65,7 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
             c.jsFiles = ["%s_%s.js" % (template, lang)]
 
     @staticmethod
-    def generateFiles(useClosure = False):
+    def generateFiles(useClosure = False, advancedOpt = False):
         logRecords = []
         def logMsg(s):
             log.info(s)
@@ -84,12 +84,17 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
                     newJS += render('/%s/%s' % (template, js)) + "\n"
                 uncompressedLen = len(newJS)
                 newJS = unicode(jsmin(newJS))
+                newLen = len(newJS)
+                logMsg("Minified. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))
                 if useClosure:
                     logMsg("Sending data to closure compiler...")
+                    optLevel = 'SIMPLE_OPTIMIZATIONS'
+                    if advancedOpt:
+                        optLevel = 'ADVANCED_OPTIMIZATIONS'
                     try:
                         params = urllib.urlencode([
                             ('js_code', newJS.encode('utf-8')),
-                            ('compilation_level', 'ADVANCED_OPTIMIZATIONS'),
+                            ('compilation_level', optLevel),
                             ('output_format', 'text'),
                             ('output_info', 'compiled_code'),
                           ])
@@ -107,7 +112,7 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
                 f.write(newJS.encode('utf-8'))
                 f.close()
                 newLen = len(newJS)
-                logMsg("Done. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))
+                logMsg("Written. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))
         return logRecords
 
     def menuItems(self, menuId):
@@ -152,8 +157,8 @@ class JscompressorController(OrphieBaseController):
             return redirect_to('boardBase')
 
         if 'rebuildjs' in request.POST:
-            c.compressingResult = JSCompressorPlugin.generateFiles(bool('useGClosure' in request.POST))
+            c.compressingResult = JSCompressorPlugin.generateFiles(bool('useGClosure' in request.POST), bool('advancedOpt' in request.POST))
 
-        c.boardName = _('Rebuild JavaScrtipt')
+        c.boardName = _('Rebuild JavaScript')
         c.currentItemId = 'id_RebuildJs'
         return self.render('management.jscompressor')

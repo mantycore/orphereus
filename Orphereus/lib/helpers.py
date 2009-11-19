@@ -198,7 +198,9 @@ def staticFile(fileName):
     if os.path.exists(localFileName):
         version = g.caches.setdefaultEx(localFileName, os.path.getmtime, localFileName)
         return u"%s%s?version=%s" % (spw, relFileName, str(version))
+    log.error("Static file not found: %s" % localFileName)
     return u"fileNotFound"
+
 def ipToInt(ipStr):
     val = struct.unpack('!L', socket.inet_aton(ipStr.split(":")[-1]))[0]
     if val > sys.maxint:

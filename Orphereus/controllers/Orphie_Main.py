@@ -416,7 +416,7 @@ class OrphieMainController(OrphieBaseController):
             text = groups[2]
             tagfilter = Post.buildMetaboardFilter(filterName, self.userInst)[2]
 
-        if not tagfilter:
+        if tagfilter is None:
             tagfilter = Post.buildMetaboardFilter(False, self.userInst)[2]
 
         filteringClause = or_(tagfilter, Post.parentPost.has(tagfilter))

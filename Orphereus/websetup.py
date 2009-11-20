@@ -125,7 +125,8 @@ def setup_config(command, filename, section, vars):
     log.debug('pictures: %d' % tc)
     if tc == 0:
         log.info("Adding dummy picture #0")
-        pic = Picture('', '', 0, [None, None, 0, 0], 1, '', u"") # TODO: special extension?
+        firstEx = meta.Session.query(Extension).first()
+        pic = Picture('', '', 0, [None, None, 0, 0], firstEx.id, '', u"") # TODO: special extension?
         meta.Session.add(pic)
         meta.Session.commit()
         pic.id = 0

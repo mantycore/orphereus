@@ -80,8 +80,13 @@ def adjust_dialect(engine, meta):
         target.FloatType = logAndChange(meta.FloatType, postgresql.DOUBLE_PRECISION)
         target.BlobType = logAndChange(meta.BlobType, postgresql.BYTEA)
         target.UIntType = logAndChange(meta.UIntType, postgresql.BIGINT)
+    elif (engine.dialect.name.lower() == "sqlite"):
+        log.info("Currently using SQLite dialect, adjusting doesn't required ^_^")
+    elif (engine.dialect.name.lower() == "oracle"):
+        log.info("Currently using Oracle dialect, ZOMG TEH ENTERPRISE!")
+        raise Exception("Too enterprise for me")
     else:
-        log.warning("Unknown SQL Dialect!")
+        log.warning("\n\n!!!!!!!!!!!!!!!!!!!!\nUnknown SQL Dialect!\n!!!!!!!!!!!!!!!!!!!!\n\n")
     log.info("Adjusting completed")
 
 def init_model(engine, meta):

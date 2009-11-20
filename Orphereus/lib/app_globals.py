@@ -241,13 +241,13 @@ class OptHolder(object):
         for elem in self.styles:
             matcher = rex.match(elem)
             if not matcher:
-                raise "Incorrect styles list"
+                raise Exception("Incorrect styles list")
             else:
                 self.cssFiles[matcher.group(1)] = matcher.group(2).split('|')
         for elem in self.javascripts:
             matcher = rex.match(elem)
             if not matcher:
-                raise "Incorrect js list"
+                raise Exception("Incorrect js list")
             else:
                 self.jsFiles[matcher.group(1)] = matcher.group(2).split('|')
         fullCssList = []

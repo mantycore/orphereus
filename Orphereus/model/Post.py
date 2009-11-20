@@ -151,7 +151,7 @@ class Post(object):
                 tag.replyCount -= (self.replyCount + 1)
                 self.tags.remove(tag)
         else:
-            raise "Can't remove tags from reply"
+            raise Exception("Can't remove tags from reply")
 
     def appendTag(self, tag):
         if not self.parentid:
@@ -160,7 +160,7 @@ class Post(object):
                 tag.replyCount += (self.replyCount + 1)
                 self.tags.append(tag)
         else:
-            raise "Can't remove tags from reply"
+            raise Exception("Can't remove tags from reply")
 
     def incrementStats(self):
         taglist = self.tags

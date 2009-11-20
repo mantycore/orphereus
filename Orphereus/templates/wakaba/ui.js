@@ -551,7 +551,7 @@ $.fn.easyTooltip = function(options){
                             "' class='easytooltip'>" +
                             content +
                             "<br/>" +
-                            "<a onclick=\"$('#" + options.tooltipId + "').remove();\">${_("Close")}</a></div>");
+                            "<a onclick=\"$('#" + options.tooltipId + "').remove();\">${_('Close')}</a></div>");
 
           $("#" + options.tooltipId)
             .css("position","absolute")

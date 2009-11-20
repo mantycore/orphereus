@@ -550,25 +550,38 @@ $.fn.easyTooltip = function(options){
                             options.tooltipId +
                             "' class='easytooltip'>" +
                             content +
-                            "<br/>" +
-                            "<a onclick=\"$('#" + options.tooltipId + "').remove();\">${_('Close')}</a></div>");
+                            "</div>");
+                            /*"<br/>" +
+                            "<a onclick=\"$('#" + options.tooltipId + "').remove();\">${_('Close')}</a></div>");*/
 
           $("#" + options.tooltipId)
             .css("position","absolute")
             .css("top",(e.pageY - options.yOffset) + "px")
             .css("left",(e.pageX + options.xOffset) + "px")
             .css("display","none")
+            .attr("close", "no")
+            .mouseout (function(){$("#" + options.tooltipId).attr("close", "yes");})
+            .mouseover(function(){$("#" + options.tooltipId).attr("close", "no");})
             .show();
        }
       }
     },
-    function(){}
+    function(){
+
+      var test = function()
+      {
+        var tt = $("#" + options.tooltipId);
+        if (tt.attr("close") == "yes")
+        {tt.remove();}
+        else
+        {setTimeout(test, 200);}
+      }
+      setTimeout(test, 200);
+    }
     );
 
     if(options.clickRemove){
-      $(this).mousedown(function(e){
-        $("#" + options.tooltipId).remove();
-      });
+        $(this).mousedown(function(e){$("#" + options.tooltipId).remove();});
     }
   });
 

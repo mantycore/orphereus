@@ -73,9 +73,7 @@ class OrphiePublicController(OrphieBaseController):
             self.logout()
 
     def logout(self):
-        session.clear()
-        session.save()
-        session.delete()
+        self.destroySession()
         redirect_to('boardBase')
 
     def captchaPic(self, cid):

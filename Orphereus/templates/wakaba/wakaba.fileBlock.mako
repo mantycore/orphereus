@@ -29,6 +29,10 @@
             %else:
                 ${_('Kbytes')}</em>)
             %endif
+
+            %if attachment.attachedFile.pictureInfo or attachment.relationInfo:
+              <a class="linkWithPopup" id="link-${attachment.postId}-${attachment.fileId}">[?]</a>
+            %endif
           </span><br />
 
           <span class="filesize" style="display: none">
@@ -37,9 +41,9 @@
           </span>
       %endif
 
-          <a class="linkWithPopup" href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}"
+          <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
           %if attachment.attachedFile.extension.newWindow:
-              target="_blank"
+              target="_blank" \
           %endif
           >
 
@@ -48,7 +52,7 @@
           </a>
 
           %if attachment.attachedFile.pictureInfo or attachment.relationInfo:
-          <div class="popupDiv highlight reply" style="display: none;">
+          <div id="filePopup-link-${attachment.postId}-${attachment.fileId}" class="popupDiv highlight reply" style="display: none;">
             %if attachment.attachedFile.pictureInfo:
               ${attachment.attachedFile.pictureInfo}
             %endif

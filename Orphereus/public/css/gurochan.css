@@ -568,34 +568,16 @@ a img{ border: 0}
     border-bottom-style: solid;*/
 }
 
-
-/*
-#x_replyform {
-  display: block; border: 1px solid #CA927B; margin: 0 2px 2px 2px; padding: 5px;
-  background-color: #D9AF9E;
+.linkWithPopup {cursor: pointer;}
+.easytooltip{
+margin:0 10px 1em 0;
+width:250px;
+padding:8px;
+background:#fcfcfc;
+border:1px solid #e1e1e1;
+line-height:130%;
+z-index: 9000;
 }
-#x_replyform textarea {
-  width: 100%; border: 1px solid #CA927B;
+.easytooltip a{
+cursor: pointer;
 }
-#x_replyform div {
-  overflow: hidden; margin-top: 5px;
-}
-#x_replyform label {
-  float: left; margin-right: 10px;
-}
-#x_replyform input[type="text"], #x_replyform input[type="password"] {
-  border: 1px solid #CA927B;
-}
-#x_replyform input[type="file"] > input[type="text"] {
-  border: 1px solid #CA927B;
-}
-#x_replyform input[type="submit"] {
-
-}
-#x_replyform button {
-border: 1px solid #CA927B; background-color: #E6CBC0;
-}
-#x_replyform_goto{margin: 0px 4px 0px 4px; width: 120px}
-#x_replyform_captcha_input{margin: 0px 4px 0px 4px; width: 70px}
-#x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
-*/

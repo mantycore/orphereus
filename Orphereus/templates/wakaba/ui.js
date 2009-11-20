@@ -516,35 +516,71 @@ function removeRow(input)
   $("#addFileBtn").attr("disabled", "");
 }
 
-function installPopupHintsOnFiles(){
-$('.file_thread img').each(function (i) {
-  var popupInfo = $(this).parents(".file_thread").children(".popupDiv").get()[0];
-  if (popupInfo)
-  {
-   $(this).qtip({
-     content: $(popupInfo).html(),
-     show : {
-       delay: 10,
-       when: {event : 'mouseover'}
-     },
-     hide: 'mouseout',
-     style: { name: 'light', tip: true },
-     position: {
-        corner: {
-           target: 'topLeft',
-           tooltip: 'bottomLeft'
-        }
-     }
-   });
-  }
-});
-}
-
 function resetRow(id, attr, value) {
   var rowToModify = $(id);
   if (rowToModify){
     rowToModify.attr(attr, value);
   }
+}
+
+(function($) {
+$.fn.easyTooltip = function(options){
+
+  // default configuration properties
+  var defaults = {
+    xOffset: 10,
+    yOffset: -10,
+    tooltipId: "easyTooltip",
+    clickRemove: false,
+    content: "",
+    useElement: ""
+  };
+
+  var options = $.extend(defaults, options);
+  var content;
+
+  this.each(function() {
+    $(this).hover(function(e){
+      content = (options.useElement != "") ? $("#" + options.useElement).html() : content;
+
+      if (content != "" && content != undefined){
+        if (! $("#" + options.tooltipId).get()[0] )
+        {
+          $("body").append("<div id='"+
+                            options.tooltipId +
+                            "' class='easytooltip'>" +
+                            content +
+                            "<br/>" +
+                            "<a onclick=\"$('#" + options.tooltipId + "').remove();\">${_("Close")}</a></div>");
+
+          $("#" + options.tooltipId)
+            .css("position","absolute")
+            .css("top",(e.pageY - options.yOffset) + "px")
+            .css("left",(e.pageX + options.xOffset) + "px")
+            .css("display","none")
+            .show();
+       }
+      }
+    },
+    function(){}
+    );
+
+    if(options.clickRemove){
+      $(this).mousedown(function(e){
+        $("#" + options.tooltipId).remove();
+      });
+    }
+  });
+
+};
+})(jQuery);
+
+function installPopupHintsOnFiles(){
+$('.linkWithPopup').each(function (i) {
+  $(this).easyTooltip({ useElement: "filePopup-" + $(this).attr("id"),
+                        clickRemove: true,
+                        tooltipId : "tooltip-" + $(this).attr("id")});
+  });
 }
 
 // code below should be rewritten using JQuery

@@ -30,19 +30,20 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_oekaki = sa.Table("oekaki", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key = True),
-    sa.Column("tempid"   , sa.types.String(20), nullable = False),
-    sa.Column("time"     , sa.types.Integer, nullable = False),
-    sa.Column("sourcePost"   , sa.types.Integer, nullable = True),
-    sa.Column("sourcePicIdx" , sa.types.Integer, nullable = True),
-    sa.Column("uidNumber", sa.types.Integer, nullable = False),
-    sa.Column("type"     , sa.types.String(255), nullable = False),
-    sa.Column("path"     , sa.types.String(255), nullable = False),
-    sa.Column("timeStamp", sa.types.DateTime, nullable = False),
-    sa.Column("selfy", sa.types.Boolean, nullable = False),
-    sa.Column("animPath", sa.types.String(255), nullable = True),
-    )
+def t_oekaki_init(dialectProps):
+    return sa.Table("oekaki", meta.metadata,
+        sa.Column("id"       , sa.types.Integer, primary_key = True),
+        sa.Column("tempid"   , sa.types.String(20), nullable = False),
+        sa.Column("time"     , sa.types.Integer, nullable = False),
+        sa.Column("sourcePost"   , sa.types.Integer, nullable = True),
+        sa.Column("sourcePicIdx" , sa.types.Integer, nullable = True),
+        sa.Column("uidNumber", sa.types.Integer, nullable = False),
+        sa.Column("type"     , sa.types.String(255), nullable = False),
+        sa.Column("path"     , sa.types.String(255), nullable = False),
+        sa.Column("timeStamp", sa.types.DateTime, nullable = False),
+        sa.Column("selfy", sa.types.Boolean, nullable = False),
+        sa.Column("animPath", sa.types.String(255), nullable = True),
+        )
 
 class Oekaki(object):
     def __init__(self, tempid, uidNumber, type, sourcePost, sourcePicIdx, selfy):

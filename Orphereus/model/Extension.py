@@ -32,13 +32,18 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_extension = sa.Table("extension", meta.metadata,
+__CONST_MAX_EXTENSION_LENGTH = 16
+__CONST_MAX_EXTENSION_TYPE_LENGTH = 16
+__CONST_MAX_EXTENSION_PATH_LENGTH = 255
+
+def t_extension_init(dialectProps):
+    return sa.Table("extension", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key = True),
-    sa.Column("path"     , sa.types.String(255), nullable = False),
+    sa.Column("path"     , sa.types.String(__CONST_MAX_EXTENSION_PATH_LENGTH), nullable = False),
     sa.Column("thwidth"  , sa.types.Integer, nullable = False),
     sa.Column("thheight" , sa.types.Integer, nullable = False),
-    sa.Column("ext"      , sa.types.String(16), nullable = False, unique = True, index = True),
-    sa.Column("type"     , sa.types.String(16), nullable = False),
+    sa.Column("ext"      , sa.types.String(__CONST_MAX_EXTENSION_LENGTH), nullable = False, unique = True, index = True),
+    sa.Column("type"     , sa.types.String(__CONST_MAX_EXTENSION_TYPE_LENGTH), nullable = False),
     sa.Column("enabled"  , sa.types.Boolean, server_default = '1'),
     sa.Column("newWindow", sa.types.Boolean, server_default = '1'),
     )

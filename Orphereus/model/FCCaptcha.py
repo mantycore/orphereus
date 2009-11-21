@@ -61,12 +61,13 @@ log = logging.getLogger(__name__)
 from Orphereus.model import meta
 from pylons.i18n import get_lang, set_lang, _
 
-t_captchas = sa.Table("captcha", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key = True),
-    sa.Column("text"     , sa.types.UnicodeText, nullable = False),
-    sa.Column("content"  , sa.types.Binary, nullable = True),
-    sa.Column("timestamp", sa.types.DateTime, nullable = False)
-    )
+def t_captcha_init(dialectProps):
+    return sa.Table("captcha", meta.metadata,
+        sa.Column("id"       , sa.types.Integer, primary_key = True),
+        sa.Column("text"     , sa.types.UnicodeText, nullable = False),
+        sa.Column("content"  , sa.types.Binary, nullable = True),
+        sa.Column("timestamp", sa.types.DateTime, nullable = False)
+        )
 
 def randomStr(min = 6, max = 8):
     vowels = _("euoa")

@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -33,13 +33,14 @@ log = logging.getLogger(__name__)
 from Orphereus.model import meta
 from Orphereus.lib.miscUtils import filterText
 
-t_log = sa.Table("log", meta.metadata,
-    sa.Column("id"    , sa.types.Integer, primary_key=True),
-    sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('user.uidNumber')),
-    sa.Column("date"  , sa.types.DateTime, nullable=False),
-    sa.Column("event" , sa.types.Integer, nullable=False),
-    sa.Column("entry" , sa.types.UnicodeText, nullable=False)
-    )
+def t_log_init(dialectProps):
+    return sa.Table("log", meta.metadata,
+            sa.Column("id"    , sa.types.Integer, primary_key = True),
+            sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('user.uidNumber')),
+            sa.Column("date"  , sa.types.DateTime, nullable = False),
+            sa.Column("event" , sa.types.Integer, nullable = False),
+            sa.Column("entry" , sa.types.UnicodeText, nullable = False)
+            )
 
 class LogEntry(object):
     def __init__(self, uidNumber, event, text):

@@ -30,12 +30,12 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_userFilters = sa.Table("userFilters", meta.metadata,
-    sa.Column("id"        , sa.types.Integer    , primary_key = True),
-    sa.Column("uidNumber" , sa.types.Integer    , sa.ForeignKey('user.uidNumber')),
-    sa.Column("filter"    , sa.types.UnicodeText, nullable = False)
-    )
-sa.Index('ix_userfilter_uidnum_filter', t_userFilters.c.uidNumber, t_userFilters.c.filter)
+def t_userfilters_init(dialectProps):
+    return sa.Table("userFilters", meta.metadata,
+            sa.Column("id"        , sa.types.Integer    , primary_key = True),
+            sa.Column("uidNumber" , sa.types.Integer    , sa.ForeignKey('user.uidNumber'), index = True),
+            sa.Column("filter"    , sa.types.UnicodeText, nullable = False)
+            )
 
 class UserFilters(object):
     def __init__(self, uidNumber, filter):

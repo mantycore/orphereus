@@ -31,3 +31,4 @@ globj = None
 FloatType = sa.types.Float
 BlobType = sa.types.Binary
 UIntType = sa.types.Integer
+

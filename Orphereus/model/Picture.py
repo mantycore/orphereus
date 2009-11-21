@@ -29,29 +29,36 @@ import Image
 import logging
 log = logging.getLogger(__name__)
 
-t_piclist = sa.Table("picture", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key = True),
-    sa.Column("path"     , sa.types.String(255), nullable = False),
-    sa.Column("thumpath" , sa.types.String(255), nullable = False),
-    sa.Column("width"    , sa.types.Integer, nullable = True),
-    sa.Column("height"   , sa.types.Integer, nullable = True),
-    sa.Column("thwidth"  , sa.types.Integer, nullable = False),
-    sa.Column("thheight" , sa.types.Integer, nullable = False),
-    sa.Column("size"     , sa.types.Integer, nullable = False),
-    sa.Column("md5"      , sa.types.String(32), nullable = False, index = True),
-    sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extension.id')),
-    sa.Column("pictureInfo"  , sa.types.UnicodeText, nullable = True),
-    #sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
-    )
+def t_picture_init(dialectProps):
+    t_piclist = sa.Table("picture", meta.metadata,
+        sa.Column("id"       , sa.types.Integer, primary_key = True),
+        sa.Column("path"     , sa.types.String(255), nullable = False),
+        sa.Column("thumpath" , sa.types.String(255), nullable = False),
+        sa.Column("width"    , sa.types.Integer, nullable = True),
+        sa.Column("height"   , sa.types.Integer, nullable = True),
+        sa.Column("thwidth"  , sa.types.Integer, nullable = False),
+        sa.Column("thheight" , sa.types.Integer, nullable = False),
+        sa.Column("size"     , sa.types.Integer, nullable = False),
+        sa.Column("md5"      , sa.types.String(32), nullable = False, index = True),
+        sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extension.id')),
+        sa.Column("pictureInfo"  , sa.types.UnicodeText, nullable = True),
+        #sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
+        )
 
-t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
-    #sa.Column("id"          , sa.types.Integer, primary_key = True),
-    sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
-    sa.Column('fileId', sa.types.Integer, sa.ForeignKey('picture.id'), primary_key = True),
-    sa.Column("spoiler", sa.types.Boolean, nullable = True),
-    sa.Column("relationInfo"  , sa.types.UnicodeText, nullable = True),
-    sa.Column("animpath" , sa.types.String(255), nullable = True),
-    )
+    t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
+        sa.Column("id"          , sa.types.Integer, primary_key = True),
+        #sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
+        #sa.Column('fileId', sa.types.Integer, sa.ForeignKey('picture.id'), primary_key = True),
+        sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id')),
+        sa.Column('fileId', sa.types.Integer, sa.ForeignKey('picture.id')),
+        sa.Column("spoiler", sa.types.Boolean, nullable = True),
+        sa.Column("relationInfo"  , sa.types.UnicodeText, nullable = True),
+        sa.Column("animpath" , sa.types.String(255), nullable = True),
+        )
+    #sa.UniqueConstraint(t_filesToPostsMap.c.postId, t_filesToPostsMap.c.fileId)
+    sa.Index('ix_filemap_postid_fileid', t_filesToPostsMap.c.postId, t_filesToPostsMap.c.fileId)
+
+    return t_piclist, t_filesToPostsMap
 
 class PictureAssociation(object):
     def __init__(self, spoiler, relationInfo, animPath):

@@ -68,18 +68,22 @@ def adjust_dialect(engine, meta):
         log.info("Using %s instead of %s" % (str(newType), str(var)))
         return newType
 
-    if (engine.dialect.name.lower() == "mysql"):
+    props = {'disableTextIndexing' : None}
+
+    dialectName = engine.dialect.name
+    diam = __import__("sqlalchemy.dialects.%s.base" % dialectName, globals(), locals(), ['base'], -1)
+    dialectName = dialectName.lower()
+    if (dialectName == "mysql"):
         log.info("Currently using MySQL dialect, adjusting types...")
-        from sqlalchemy.databases import mysql
-        target.FloatType = logAndChange(meta.FloatType, mysql.MSDouble)
-        target.BlobType = logAndChange(meta.BlobType, sa.databases.mysql.MSLongBlob)
-        target.UIntType = logAndChange(meta.UIntType, sa.databases.mysql.MSInteger(unsigned = True))
+        target.FloatType = logAndChange(meta.FloatType, diam.MSDouble)
+        target.BlobType = logAndChange(meta.BlobType, diam.MSLongBlob)
+        target.UIntType = logAndChange(meta.UIntType, diam.MSInteger(unsigned = True))
+        props['disableTextIndexing'] = True
     elif (engine.dialect.name.lower() == "postgresql"):
         log.info("Currently using PostgreSQL dialect, adjusting types...")
-        from sqlalchemy.databases import postgresql
-        target.FloatType = logAndChange(meta.FloatType, postgresql.DOUBLE_PRECISION)
-        target.BlobType = logAndChange(meta.BlobType, postgresql.BYTEA)
-        target.UIntType = logAndChange(meta.UIntType, postgresql.BIGINT)
+        target.FloatType = logAndChange(meta.FloatType, diam.DOUBLE_PRECISION)
+        target.BlobType = logAndChange(meta.BlobType, diam.BYTEA)
+        target.UIntType = logAndChange(meta.UIntType, diam.BIGINT)
     elif (engine.dialect.name.lower() == "sqlite"):
         log.info("Currently using SQLite dialect, adjusting doesn't required ^_^")
     elif (engine.dialect.name.lower() == "oracle"):
@@ -89,10 +93,25 @@ def adjust_dialect(engine, meta):
         log.warning("\n\n!!!!!!!!!!!!!!!!!!!!\nUnknown SQL Dialect!\n!!!!!!!!!!!!!!!!!!!!\n\n")
     log.info("Adjusting completed")
 
+    return props
+
 def init_model(engine, meta):
-    adjust_dialect(engine, meta)
-    t_posts = t_posts_init()
-    t_bans = t_bans_init()
+    dialectProps = adjust_dialect(engine, meta)
+
+    t_logins = t_loginTracker_init(dialectProps)
+    t_captchas = t_captcha_init(dialectProps)
+    t_oekaki = t_oekaki_init(dialectProps)
+    t_invites = t_invite_init(dialectProps)
+    t_settings = t_settings_init(dialectProps)
+    t_userOptions = t_useroptions_init(dialectProps)
+    t_userFilters = t_userfilters_init(dialectProps)
+    t_users = t_user_init(dialectProps)
+    t_extension = t_extension_init(dialectProps)
+    t_piclist, t_filesToPostsMap = t_picture_init(dialectProps)
+    t_tags, t_tagsToPostsMap = t_tags_init(dialectProps)
+    t_log = t_log_init(dialectProps)
+    t_posts = t_posts_init(dialectProps)
+    t_bans = t_bans_init(dialectProps)
 
     sm = orm.sessionmaker(autoflush = False, autocommit = False, bind = engine)
     meta.engine = engine
@@ -170,14 +189,7 @@ def init_model(engine, meta):
     gvars = config['pylons.app_globals']
     log.info('Extending ORM properties, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
-        plugin.extendORMProperties(orm, propDict)
-
-        pconfig = plugin.config
-        ormPropChanger = pconfig.get('ormPropChanger', None)
-        if ormPropChanger:
-            log.error('config{} is deprecated')
-            log.info('calling ORM extender %s from: %s' % (str(ormPropChanger), plugin.pluginId()))
-            ormPropChanger(orm, propDict, plugin.namespace())
+        plugin.extendORMProperties(orm, engine, dialectProps, propDict)
     log.info('COMPLETED ORM EXTENDING STAGE')
 
     #create mappings
@@ -205,7 +217,7 @@ def init_model(engine, meta):
     gvars = config['pylons.app_globals']
     log.info('Initialzing ORM, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
-        plugin.initORM(orm, propDict)
+        plugin.initORM(orm, engine, dialectProps, propDict)
 
         """
         orminit = plugin.ormInit()

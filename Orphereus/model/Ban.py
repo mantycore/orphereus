@@ -28,8 +28,7 @@ import datetime
 import logging
 log = logging.getLogger(__name__)
 
-t_bans = None
-def t_bans_init():
+def t_bans_init(dialectProps):
     return sa.Table("bans", meta.metadata,
         sa.Column("id"          , sa.types.Integer, primary_key = True),
     #    sa.Column("ip"          , sa.types.Integer, nullable=False),

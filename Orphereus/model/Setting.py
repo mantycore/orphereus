@@ -30,11 +30,12 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_settings = sa.Table("settings", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key = True),
-    sa.Column("name"     , sa.types.String(64), nullable = False, unique = True),
-    sa.Column("value"    , sa.types.UnicodeText, nullable = False)
-    )
+def t_settings_init(dialectProps):
+    return sa.Table("settings", meta.metadata,
+        sa.Column("id"       , sa.types.Integer, primary_key = True),
+        sa.Column("name"     , sa.types.String(64), nullable = False, unique = True),
+        sa.Column("value"    , sa.types.UnicodeText, nullable = False)
+        )
 
 class Setting(object):
     def __init__(self, name, value):

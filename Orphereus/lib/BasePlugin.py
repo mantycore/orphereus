@@ -48,10 +48,10 @@ class BasePlugin(object):
     def initRoutes(self, map):
         pass
 
-    def initORM(self, orm, propDict):
+    def initORM(self, orm, engine, dialectProps, propDict):
         pass
 
-    def extendORMProperties(self, orm, propDict):
+    def extendORMProperties(self, orm, engine, dialectProps, propDict):
         pass
 
     def deployCallback(self):

@@ -82,7 +82,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
         map.connect('userTagsMapper', '/postTags/:post/:act/:tagid', controller = 'usertags', action = 'postTags', act = 'show', tagid = 0, requirements = dict(post = '\d+', tagid = '\d+'))
         map.connect('userTagsManager', '/userProfile/manageUserTags/:act/:tagid', controller = 'usertags', action = 'postTagsManage', act = 'show', tagid = 0, requirements = dict(tagid = '\d+'))
 
-    def initORM(self, orm, propDict):
+    def initORM(self, orm, engine, dialectProps, propDict):
         namespace = self.namespace()
         t_usertags = sa.Table("usertag", meta.metadata,
             sa.Column("id"       , sa.types.Integer, primary_key = True),
@@ -91,18 +91,23 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
             sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
             )
 
-        sa.Index('ix_usertags_uidnum_tag',
-                 t_usertags.c.userId,
-                 t_usertags.c.tag)
-
         t_userTagsToPostsMappingTable = sa.Table("usertagsToPostsMap", meta.metadata,
-            sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id')),
-            sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('usertag.id')),
+            sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
+            sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('usertag.id'), primary_key = True),
             )
 
         sa.Index('ix_usertagmap_postid_tagid',
                  t_userTagsToPostsMappingTable.c.postId,
-                 t_userTagsToPostsMappingTable.c.tagId)
+                 t_userTagsToPostsMappingTable.c.tagId,
+                 unique = True)
+
+        if not dialectProps.get('disableTextIndexing', None):
+            sa.Index('ix_usertags_uidnum_tag',
+                     t_usertags.c.userId,
+                     t_usertags.c.tag,
+                     unique = True)
+        else:
+            log.warning("Current SQL dialect doesn't support text indexing!")
 
         #orm.mapper
         meta.mapper(namespace.UserTag, t_usertags, properties = {
@@ -110,7 +115,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
             'posts' : orm.relation(Post, secondary = t_userTagsToPostsMappingTable),
             })
     """
-        def extendORMProperties(self, orm, propDict):
+        def extendORMProperties(self, orm, engine, dialectProps, propDict):
             namespace = self.namespace()
             propDict['Post']['userTags'] = orm.relation(namespace.UserTag, secondary = namespace.UserTag.getMappingTable())
     """

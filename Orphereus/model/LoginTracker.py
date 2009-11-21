@@ -30,13 +30,14 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_logins = sa.Table("loginTracker", meta.metadata,
-    sa.Column("id"          , sa.types.Integer, primary_key = True),
-    sa.Column("ip"          , sa.types.String(16), nullable = False),
-    sa.Column("attempts"    , sa.types.Integer, nullable = False),
-    sa.Column("cid"         , sa.types.Integer, nullable = True),
-    sa.Column("lastAttempt" , sa.types.DateTime, nullable = True)
-    )
+def t_loginTracker_init(dialectProps):
+    return sa.Table("loginTracker", meta.metadata,
+            sa.Column("id"          , sa.types.Integer, primary_key = True),
+            sa.Column("ip"          , sa.types.String(16), nullable = False),
+            sa.Column("attempts"    , sa.types.Integer, nullable = False),
+            sa.Column("cid"         , sa.types.Integer, nullable = True),
+            sa.Column("lastAttempt" , sa.types.DateTime, nullable = True)
+            )
 
 class LoginTracker(object):
     def __init__(self, ip):

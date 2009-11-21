@@ -43,6 +43,8 @@ def setup_config(command, filename, section, vars):
     log.info("Successfully setup")
     init_globals(meta.globj, False)
 
+    disableInstantIdSetting = meta.dialectProps.get('disableInstantIdSetting', None)
+
     try:
         uc = meta.Session.query(User).count()
     except:
@@ -65,7 +67,8 @@ def setup_config(command, filename, section, vars):
 
         meta.Session.add(ulogger)
         meta.Session.add(umaintenance)
-        meta.Session.commit()
+        if disableInstantIdSetting:
+            meta.Session.commit()
 
         ulogger.uidNumber = -1
         umaintenance.uidNumber = 0
@@ -115,7 +118,6 @@ def setup_config(command, filename, section, vars):
         tag.persistent = True
         tag.specialRules = u"It's /b/, there is no rules"
         meta.Session.add(tag)
-
         meta.Session.commit()
 
     try:
@@ -128,7 +130,8 @@ def setup_config(command, filename, section, vars):
         firstEx = meta.Session.query(Extension).first()
         pic = Picture('', '', 0, [None, None, 0, 0], firstEx.id, '', u"") # TODO: special extension?
         meta.Session.add(pic)
-        meta.Session.commit()
+        if disableInstantIdSetting:
+            meta.Session.commit()
         pic.id = 0
         meta.Session.commit()
 

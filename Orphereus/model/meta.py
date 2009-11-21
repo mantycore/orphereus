@@ -28,6 +28,8 @@ Session = None
 metadata = MetaData()
 globj = None
 
+dialectProps = {}
+
 FloatType = sa.types.Float
 BlobType = sa.types.Binary
 UIntType = sa.types.Integer

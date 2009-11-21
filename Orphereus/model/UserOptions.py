@@ -46,7 +46,7 @@ def t_useroptions_init(dialectProps):
         sa.Column("homeExclude", sa.types.Text, nullable = False),
         sa.Column("hideThreads", sa.types.Text, nullable = True),
         sa.Column("bantime"  , sa.types.Integer, nullable = False),
-        sa.Column("banreason", sa.types.UnicodeText(256), nullable = True),
+        sa.Column("banreason", sa.types.UnicodeText, nullable = True),
         sa.Column("banDate", sa.types.DateTime, nullable = True),
         sa.Column("useFrame", sa.types.Boolean, nullable = True),
         sa.Column("hideLongComments", sa.types.Boolean, nullable = True),

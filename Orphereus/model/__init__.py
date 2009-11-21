@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+import sqlalchemy.databases as databases
 from sqlalchemy import orm
 from sqlalchemy.orm import mapper as sqla_mapper
 
@@ -72,27 +73,34 @@ def adjust_dialect(engine, meta):
 
     dialectName = engine.dialect.name
     diam = __import__("sqlalchemy.dialects.%s.base" % dialectName, globals(), locals(), ['base'], -1)
-    dialectName = dialectName.lower()
-    if (dialectName == "mysql"):
+
+    if (isinstance(engine.dialect, databases.mysql.MySQLDialect)):
         log.info("Currently using MySQL dialect, adjusting types...")
         target.FloatType = logAndChange(meta.FloatType, diam.MSDouble)
         target.BlobType = logAndChange(meta.BlobType, diam.MSLongBlob)
         target.UIntType = logAndChange(meta.UIntType, diam.MSInteger(unsigned = True))
         props['disableTextIndexing'] = True
-    elif (engine.dialect.name.lower() == "postgresql"):
+        props['disableInstantIdSetting'] = True
+    elif (isinstance(engine.dialect, databases.postgres.PGDialect)):
         log.info("Currently using PostgreSQL dialect, adjusting types...")
         target.FloatType = logAndChange(meta.FloatType, diam.DOUBLE_PRECISION)
         target.BlobType = logAndChange(meta.BlobType, diam.BYTEA)
         target.UIntType = logAndChange(meta.UIntType, diam.BIGINT)
-    elif (engine.dialect.name.lower() == "sqlite"):
+    elif (isinstance(engine.dialect, databases.sqlite.SQLiteDialect)):
         log.info("Currently using SQLite dialect, adjusting doesn't required ^_^")
-    elif (engine.dialect.name.lower() == "oracle"):
+    elif (isinstance(engine.dialect, databases.mssql.MSSQLDialect)):
+        log.info("Currently using Microsoft SQL dialect, ZOMG TEH ENTERPRISE!")
+        target.UIntType = logAndChange(meta.UIntType, diam.BIGINT)
+        props['disableTextIndexing'] = True
+        raise Exception("Too enterprise for me")
+    elif (isinstance(engine.dialect, databases.oracle.OracleDialect)):
         log.info("Currently using Oracle dialect, ZOMG TEH ENTERPRISE!")
+        props['disableTextIndexing'] = True
         raise Exception("Too enterprise for me")
     else:
-        log.warning("\n\n!!!!!!!!!!!!!!!!!!!!\nUnknown SQL Dialect!\n!!!!!!!!!!!!!!!!!!!!\n\n")
+        log.warning("\n\nUnknown SQL Dialect %s!\n\n" % dialectName)
     log.info("Adjusting completed")
-
+    meta.dialectProps = props
     return props
 
 def init_model(engine, meta):

@@ -501,6 +501,15 @@ class MaintenanceCommand(command.Command):
 
     @staticmethod
     def setup_config(filename, relative_to):
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        formatter = logging.Formatter("[MAINTENANCE] %(asctime)s %(name)s:%(levelname)s: %(message)s")
+        ch.setFormatter(formatter)
+        corelog = logging.getLogger("CORE")
+        ormlog = logging.getLogger("ORM")
+        corelog.addHandler(ch)
+        ormlog.addHandler(ch)
+
         if not relative_to or not os.path.exists(relative_to):
             relative_to = "."
         print 'Loading config "%s" at path "%s"...' % (filename, relative_to)

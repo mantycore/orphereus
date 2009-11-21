@@ -28,7 +28,7 @@ except ImportError:
 
 from Orphereus.lib.app_globals import Globals
 from Orphereus.lib.constantValues import decimalVersion
-globj = Globals(True)
+globj = Globals(eggSetupMode = True)
 
 print ""
 

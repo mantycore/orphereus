@@ -35,7 +35,8 @@ from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 
 import logging
-log = logging.getLogger("CORE")
+_log = logging.getLogger("CORE")
+_log.setLevel(logging.DEBUG)
 
 class OptHolder(object):
     def __init__(self, appName, eggSetupMode = False):
@@ -213,9 +214,9 @@ class OptHolder(object):
             return None
 
     def initValues(self, settingObj):
-        log.info('LOADING SETTINGS...')
+        _log.info('LOADING SETTINGS...')
         if self.recoveryMode:
-            log.warning('RUNNING IN RECOVERY MODE')
+            _log.warning('RUNNING IN RECOVERY MODE')
         self.setter = settingObj
         self.valueGetters = {}
         self.setValues(self.booleanValues, self.booleanGetter)
@@ -295,24 +296,24 @@ class OptHolder(object):
 class Globals(object):
     def __init__(self, eggSetupMode = False):
         appName = self.__module__.split('.')[0]
-        log.info('Starting application "%s"...' % appName)
+        _log.info('Starting application "%s"...' % appName)
         if eggSetupMode:
-            log.setLevel(logging.DEBUG)
+            _log.setLevel(logging.DEBUG)
             ch = logging.StreamHandler()
             ch.setLevel(logging.DEBUG)
             formatter = logging.Formatter("[SETUP] %(asctime)s %(name)s:%(levelname)s: %(message)s")
             ch.setFormatter(formatter)
-            log.addHandler(ch)
-            log.info("Setup mode")
+            _log.addHandler(ch)
+            _log.info("Setup mode")
 
         self.OPT = OptHolder(appName, eggSetupMode)
         self.caches = CacheDict()
         self.uniqueVals = ()
-        log.info("---------- Core settings:")
-        log.info("appRoot   == %s" % self.OPT.appRoot)
-        log.info("appPath   == %s" % self.OPT.appPath)
-        log.info("templPath == %s" % self.OPT.templPath)
-        log.info("----------")
+        _log.info("---------- Core settings:")
+        _log.info("appRoot   == %s" % self.OPT.appRoot)
+        _log.info("appPath   == %s" % self.OPT.appPath)
+        _log.info("templPath == %s" % self.OPT.templPath)
+        _log.info("----------")
         self.plugins = []
         self.pluginsDict = {}
         self.filterStack = []
@@ -330,14 +331,14 @@ class Globals(object):
     def enumeratePlugins(self, basicNamespace, eggSetupMode = False):
         pluginsDir = os.path.realpath(os.path.join(self.OPT.appPath, 'controllers'))
         sys.path.append(pluginsDir)
-        log.info("Plugins root directory: %s" % pluginsDir)
+        _log.info("Plugins root directory: %s" % pluginsDir)
 
         namespacesToImport = []
         for root, dirs, files in os.walk(pluginsDir):
             fileList = filter(lambda x: x.endswith('.py') and not x.startswith('__'), files)
             for file in fileList:
                 if file in self.OPT.disabledModules:
-                    log.warning('File ignored due config settings: %s' % file)
+                    _log.warning('File ignored due config settings: %s' % file)
                     fileList.remove(file)
 
             fileList = map(lambda x: os.path.join(root, x), fileList)
@@ -347,15 +348,15 @@ class Globals(object):
             namespacesToImport.extend(fileList)
 
         plugins = {}
-        log.info('Started plugins enumerator...')
+        _log.info('Started plugins enumerator...')
         for nsToImport in namespacesToImport:
             if not nsToImport in self.OPT.disabledModules:
-                #log.info('trying %s...' % nsToImport)
+                #_log.info('trying %s...' % nsToImport)
                 mod = None
                 try:
                     mod = __import__(nsToImport, fromlist = '*')
                 except Exception, e:
-                    log.warning('Exception while importing %s: %s' % (nsToImport, str(e)))
+                    _log.warning('Exception while importing %s: %s' % (nsToImport, str(e)))
                     mod = None
 
                 possiblePlugins = []
@@ -368,7 +369,7 @@ class Globals(object):
                     for possiblePlugin in possiblePlugins:
                         instance = possiblePlugin()
                         plid = instance.pluginId()
-                        #log.info("Importing plugin: %s; base=%s" % (plid, nsToImport))
+                        #_log.info("Importing plugin: %s; base=%s" % (plid, nsToImport))
 
                         if not plugins.has_key(plid):
                             nsName = basicNamespace + mod.__name__
@@ -379,18 +380,18 @@ class Globals(object):
                                 fileName = ns.__file__.replace(pluginsDir + os.path.sep, '')
                             )
                             plugins[plid] = instance
-                            #log.info("Successfully imported: %s; %s; %s" % (ns, nsName, nsToImport))
+                            #_log.info("Successfully imported: %s; %s; %s" % (ns, nsName, nsToImport))
                         else:
-                            log.critical("POSSIBLE CONFLICT: Plugin with id '%s' already imported!" % plid)
+                            _log.critical("POSSIBLE CONFLICT: Plugin with id '%s' already imported!" % plid)
                 else:
-                    log.info('Not a plugin: %s' % nsToImport)
+                    _log.info('Not a plugin: %s' % nsToImport)
             else:
-                log.warning('Namespace ignored due config settings: %s' % nsToImport)
+                _log.warning('Namespace ignored due config settings: %s' % nsToImport)
 
-        log.info("IMPORT STAGE COMPLETED. Imported %d plugins:" % len(plugins))
+        _log.info("IMPORT STAGE COMPLETED. Imported %d plugins:" % len(plugins))
         for plugin in plugins.values():
-            log.info("* %s, %s, %s" % (plugin.pluginId(), plugin.namespaceName(), plugin.fileName()))
-        log.info('RESOLVING DEPENDENCIES...')
+            _log.info("* %s, %s, %s" % (plugin.pluginId(), plugin.namespaceName(), plugin.fileName()))
+        _log.info('RESOLVING DEPENDENCIES...')
         needCheck = True
         while needCheck:
             needCheck = False
@@ -399,18 +400,18 @@ class Globals(object):
                 if deps:
                     for dep in deps:
                         if not dep in plugins:
-                            log.warning('[WARNING] Disconnected: "%s"; non-existent dependence: "%s"' % (id, dep))
+                            _log.warning('[WARNING] Disconnected: "%s"; non-existent dependence: "%s"' % (id, dep))
                             del plugins[id]
                             needCheck = True
                             break
 
-        log.info('Arranging plugins...')
+        _log.info('Arranging plugins...')
         resolved = []
         needIteration = True
         while needIteration:
             needIteration = False
             for id in plugins.keys():
-                #log.info('testing: ' + id)
+                #_log.info('testing: ' + id)
                 deps = plugins[id].deps()
 
                 ok = True
@@ -420,42 +421,42 @@ class Globals(object):
 
                 if ok:
                     #if not deps:
-                    #    log.info('No dependencies for "%s"; adding as %d' % (id, len(self.plugins)))
+                    #    _log.info('No dependencies for "%s"; adding as %d' % (id, len(self.plugins)))
                     #else:
-                    #    log.info('Already resolved dependencies for "%s"; adding as %d' % (id, len(self.plugins)))
+                    #    _log.info('Already resolved dependencies for "%s"; adding as %d' % (id, len(self.plugins)))
                     self.registerPlugin(plugins[id])
                     resolved.append(id)
                     del plugins[id]
                     needIteration = True
                     break
-            #log.info('new iteration, already resolved: %s' % resolved)
+            #_log.info('new iteration, already resolved: %s' % resolved)
 
         cyclicDeps = sorted(plugins.values(), lambda a, b: cmp(len(a.deps()), len(b.deps())))
         for plugin in cyclicDeps:
-            log.warning('[WARNING] Adding loop-dependant plugin "%s" (deps: %s)' % (plugin.pluginId(), str(plugin.deps())))
+            _log.warning('[WARNING] Adding loop-dependant plugin "%s" (deps: %s)' % (plugin.pluginId(), str(plugin.deps())))
             self.registerPlugin(plugin)
 
-        log.info("RESOLVING STAGE COMPLETED. Connected %d plugins: %s" % (len(self.plugins), str(self.pluginsDict.keys())))
+        _log.info("RESOLVING STAGE COMPLETED. Connected %d plugins: %s" % (len(self.plugins), str(self.pluginsDict.keys())))
 
-        log.info("Updating globals...")
+        _log.info("Updating globals...")
         for plugin in self.plugins:
             plugin.updateGlobals(self) #not eggSetupMode and self or None)
 
         # creating filters stack
-        log.info("Populating filter's stack...")
+        _log.info("Populating filter's stack...")
         for plugin in self.plugins:
             filters = plugin.filtersList()
             if filters:
                 for tfilter in filters:
                     self.filterStack.append(tfilter)
-                    log.info('Added text filter %s from %s' % (str(tfilter), plugin.pluginId()))
+                    _log.info('Added text filter %s from %s' % (str(tfilter), plugin.pluginId()))
             filters = plugin.globalFiltersList()
             if filters:
                 for tfilter in filters:
                     self.globalFilterStack.append(tfilter)
-                    log.info('Added global text filter %s from %s' % (str(tfilter), plugin.pluginId()))
+                    _log.info('Added global text filter %s from %s' % (str(tfilter), plugin.pluginId()))
 
-        log.info('COMPLETED PLUGINS CONNECTION STAGE')
+        _log.info('COMPLETED PLUGINS CONNECTION STAGE')
 
     def getMenuItems(self, menuId):
         def itemsscmp(a, b):
@@ -472,7 +473,7 @@ class Globals(object):
                     for item in items:
                         id = item.id
                         if id in uniqueIds:
-                            log.error('Duplicated menu item Ids: %s' % id)
+                            _log.error('Duplicated menu item Ids: %s' % id)
                         else:
                             uniqueIds.append(id)
                         parentid = item.parentId
@@ -490,7 +491,7 @@ class Globals(object):
 
     def extractFromConfigs(self, elementName):
         #TODO: cache results?
-        log.error('extractFromConfigs() is deprecated, use interfaces and implementationsOf() instead')
+        _log.error('extractFromConfigs() is deprecated, use interfaces and implementationsOf() instead')
         result = []
         plugins = []
         for plugin in self.plugins:

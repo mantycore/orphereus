@@ -25,13 +25,8 @@ from UserOptions import *
 from Ban import *
 
 import logging
-log = logging.getLogger("ORM (%s)" % __name__)
-log.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter("[MODEL] %(asctime)s %(name)s:%(levelname)s: %(message)s")
-ch.setFormatter(formatter)
-log.addHandler(ch)
+_log = logging.getLogger("ORM")
+_log.setLevel(logging.DEBUG)
 
 def session_mapper(scoped_session):
     def mapper(cls, *arg, **kw):
@@ -62,11 +57,11 @@ def batchProcess(query, routine, packetSize = 1000):
         meta.Session.commit()
 
 def adjust_dialect(engine, meta):
-    log.info("Trying to adjust engine to current dialect...")
+    _log.info("Trying to adjust engine to current dialect...")
     target = meta
 
     def logAndChange(var, newType):
-        log.info("Using %s instead of %s" % (str(newType), str(var)))
+        _log.info("Using %s instead of %s" % (str(newType), str(var)))
         return newType
 
     props = {'disableTextIndexing' : None}
@@ -75,31 +70,31 @@ def adjust_dialect(engine, meta):
     diam = __import__("sqlalchemy.dialects.%s.base" % dialectName, globals(), locals(), ['base'], -1)
 
     if (isinstance(engine.dialect, databases.mysql.MySQLDialect)):
-        log.info("Currently using MySQL dialect, adjusting types...")
+        _log.info("Currently using MySQL dialect, adjusting types...")
         target.FloatType = logAndChange(meta.FloatType, diam.MSDouble)
         target.BlobType = logAndChange(meta.BlobType, diam.MSLongBlob)
         target.UIntType = logAndChange(meta.UIntType, diam.MSInteger(unsigned = True))
         props['disableTextIndexing'] = True
         props['disableInstantIdSetting'] = True
     elif (isinstance(engine.dialect, databases.postgres.PGDialect)):
-        log.info("Currently using PostgreSQL dialect, adjusting types...")
+        _log.info("Currently using PostgreSQL dialect, adjusting types...")
         target.FloatType = logAndChange(meta.FloatType, diam.DOUBLE_PRECISION)
         target.BlobType = logAndChange(meta.BlobType, diam.BYTEA)
         target.UIntType = logAndChange(meta.UIntType, diam.BIGINT)
     elif (isinstance(engine.dialect, databases.sqlite.SQLiteDialect)):
-        log.info("Currently using SQLite dialect, adjusting doesn't required ^_^")
+        _log.info("Currently using SQLite dialect, adjusting doesn't required ^_^")
     elif (isinstance(engine.dialect, databases.mssql.MSSQLDialect)):
-        log.info("Currently using Microsoft SQL dialect, ZOMG TEH ENTERPRISE!")
+        _log.info("Currently using Microsoft SQL dialect, ZOMG TEH ENTERPRISE!")
         target.UIntType = logAndChange(meta.UIntType, diam.BIGINT)
         props['disableTextIndexing'] = True
         raise Exception("Too enterprise for me")
     elif (isinstance(engine.dialect, databases.oracle.OracleDialect)):
-        log.info("Currently using Oracle dialect, ZOMG TEH ENTERPRISE!")
+        _log.info("Currently using Oracle dialect, ZOMG TEH ENTERPRISE!")
         props['disableTextIndexing'] = True
         raise Exception("Too enterprise for me")
     else:
-        log.warning("\n\nUnknown SQL Dialect %s!\n\n" % dialectName)
-    log.info("Adjusting completed")
+        _log.warning("\n\nUnknown SQL Dialect %s!\n\n" % dialectName)
+    _log.info("Adjusting completed")
     meta.dialectProps = props
     return props
 
@@ -125,8 +120,8 @@ def init_model(engine, meta):
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
     meta.mapper = session_mapper(meta.Session)
-    #log.debug(dir(engine))
-    #log.debug(dir(engine.logger))
+    #_log.debug(dir(engine))
+    #_log.debug(dir(engine.logger))
     """
     engine.echo = True
     engine.logger.setLevel('info')
@@ -195,10 +190,10 @@ def init_model(engine, meta):
                 }
 
     gvars = config['pylons.app_globals']
-    log.info('Extending ORM properties, registered plugins: %d' % (len(gvars.plugins)),)
+    _log.info('Extending ORM properties, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
         plugin.extendORMProperties(orm, engine, dialectProps, propDict)
-    log.info('COMPLETED ORM EXTENDING STAGE')
+    _log.info('COMPLETED ORM EXTENDING STAGE')
 
     #create mappings
     meta.mapper(LoginTracker, t_logins, properties = LoginTrackerProps)
@@ -223,18 +218,18 @@ def init_model(engine, meta):
     meta.mapper(LogEntry, t_log, properties = LogEntryProps)
 
     gvars = config['pylons.app_globals']
-    log.info('Initialzing ORM, registered plugins: %d' % (len(gvars.plugins)),)
+    _log.info('Initialzing ORM, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
         plugin.initORM(orm, engine, dialectProps, propDict)
 
         """
         orminit = plugin.ormInit()
         if orminit:
-            log.error('config{} is deprecated')
-            log.info('calling ORM initializer %s from: %s' % (str(orminit), plugin.pluginId()))
+            _log.error('config{} is deprecated')
+            _log.info('calling ORM initializer %s from: %s' % (str(orminit), plugin.pluginId()))
             orminit(orm, plugin.namespace(), propDict)
         """
-    log.info('COMPLETED ORM INITIALIZATION STAGE')
+    _log.info('COMPLETED ORM INITIALIZATION STAGE')
 
 def upd_globals():
     #adminTagsLine = meta.globj.OPT.adminOnlyTags
@@ -251,15 +246,15 @@ def upd_globals():
         meta.globj.mc = MCache(meta.globj.OPT.memcachedServers, debug = 0,
                                         key = meta.globj.OPT.cachePrefix,
                                         meta = meta)
-    log.info('UPDATING GLOBALS COMPLETED')
+    _log.info('UPDATING GLOBALS COMPLETED')
 
-def init_globals(globalObject, setupMode):
+def init_globals(globalObject, deployMode):
     meta.globj = globalObject
 
-    if not setupMode:
-        log.info('LOADING CONFIGURATION DATA')
+    if not deployMode:
+        _log.info('LOADING CONFIGURATION DATA')
         meta.globj.OPT.initValues(Setting)
-        log.info('LOAD COMPLETED')
+        _log.info('LOAD COMPLETED')
 
         upd_globals()
 
@@ -270,5 +265,5 @@ def init_globals(globalObject, setupMode):
     for tag in tags:
         gv.tagCache[tag.tag] = tag.id
 
-    log.debug(gv.tagCache)
+    _log.debug(gv.tagCache)
     """

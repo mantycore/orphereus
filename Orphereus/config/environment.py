@@ -39,7 +39,7 @@ from Orphereus.model import meta
 import logging
 log = logging.getLogger(__name__)
 
-def load_environment(global_conf, app_conf, setupMode):
+def load_environment(global_conf, app_conf, deployMode):
     # Pylons paths
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     paths = dict(root = root,
@@ -55,9 +55,9 @@ def load_environment(global_conf, app_conf, setupMode):
     #config['pylons.c_attach_args'] = True
 
     #config['pylons.g'] = app_globals.Globals()
-    config['pylons.app_globals'] = app_globals.Globals(setupMode)
+    config['pylons.app_globals'] = app_globals.Globals()
     config['pylons.h'] = Orphereus.lib.helpers
-    if not setupMode:
+    if not deployMode:
         config['routes.map'] = make_map()
 
     # Customize templating options via this variable
@@ -76,5 +76,5 @@ def load_environment(global_conf, app_conf, setupMode):
     init_model(engine, meta)
 
     #if not setupMode:
-    init_globals(config['pylons.app_globals'], setupMode)
+    init_globals(config['pylons.app_globals'], deployMode)
     #adminAlert("Orphie-kun: Hello, I'm respawned")

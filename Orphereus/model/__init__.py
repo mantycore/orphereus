@@ -64,7 +64,9 @@ def adjust_dialect(engine, meta):
         _log.info("Using %s instead of %s" % (str(newType), str(var)))
         return newType
 
-    props = {'disableTextIndexing' : None}
+    props = {'disableTextIndexing' : None,
+             'tagLengthHardLimit' : 24,
+             'userFilterLengthLimit' : 512}
 
     dialectName = engine.dialect.name
     diam = __import__("sqlalchemy.dialects.%s.base" % dialectName, globals(), locals(), ['base'], -1)
@@ -84,10 +86,10 @@ def adjust_dialect(engine, meta):
     elif (isinstance(engine.dialect, databases.sqlite.SQLiteDialect)):
         _log.info("Currently using SQLite dialect, adjusting doesn't required ^_^")
     elif (isinstance(engine.dialect, databases.mssql.MSSQLDialect)):
-        _log.info("Currently using Microsoft SQL dialect, ZOMG TEH ENTERPRISE!")
+        _log.info("O_o ZOMG TEH ENTERPRISE! o_O")
+        _log.info("Currently using Microsoft SQL dialect, adjusting types...")
         target.UIntType = logAndChange(meta.UIntType, diam.BIGINT)
         props['disableTextIndexing'] = True
-        raise Exception("Too enterprise for me")
     elif (isinstance(engine.dialect, databases.oracle.OracleDialect)):
         _log.info("Currently using Oracle dialect, ZOMG TEH ENTERPRISE!")
         props['disableTextIndexing'] = True
@@ -131,9 +133,10 @@ def init_model(engine, meta):
     logging.basicConfig()
     logging.getLogger('sqlalchemy').setLevel(logging.INFO)
     logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-    logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.INFO)
+    #logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.INFO)
     logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.INFO)
     """
+
     LoginTrackerProps = {}
     CaptchaProps = {}
     OekakiProps = {}

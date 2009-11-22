@@ -34,10 +34,11 @@ def t_userfilters_init(dialectProps):
     return sa.Table("userFilters", meta.metadata,
             sa.Column("id"        , sa.types.Integer    , primary_key = True),
             sa.Column("uidNumber" , sa.types.Integer    , sa.ForeignKey('user.uidNumber'), index = True),
-            sa.Column("filter"    , sa.types.UnicodeText, nullable = False)
+            sa.Column("filter"    , sa.types.Unicode(meta.dialectProps['userFilterLengthLimit']), nullable = False)
             )
 
 class UserFilters(object):
     def __init__(self, uidNumber, filter):
         self.uidNumber = uidNumber
-        self.filter = filter
+        maxLen = meta.dialectProps['userFilterLengthLimit']
+        self.filter = filter[:maxLen]

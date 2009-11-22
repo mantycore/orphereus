@@ -43,7 +43,7 @@ def t_tags_init(dialectProps):
 
     t_tags = sa.Table("tag", meta.metadata,
         sa.Column("id"       , sa.types.Integer, primary_key = True),
-        sa.Column("tag"      , sa.types.UnicodeText, nullable = False, unique = indexText, index = indexText),
+        sa.Column("tag"      , sa.types.Unicode(meta.dialectProps['tagLengthHardLimit']), nullable = False, unique = indexText, index = indexText),
         sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
         sa.Column("threadCount" , sa.types.Integer, nullable = False, server_default = '0'),
         sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
@@ -292,9 +292,19 @@ class Tag(object):
         return ret
 
     @staticmethod
+    def maxLen(onlyHardLimit = False):
+        if onlyHardLimit:
+            return meta.dialectProps['tagLengthHardLimit']
+        return min(int(meta.globj.OPT.maxTagLen), meta.dialectProps['tagLengthHardLimit'])
+
+    @staticmethod
+    def cutTag(tagName, onlyHardLimit = False):
+        return tagName[:Tag.maxLen(onlyHardLimit)]
+
+    @staticmethod
     def checkForConfilcts(tags):
         disabledTags = meta.globj.disabledTags
-        maxTagLen = int(meta.globj.OPT.maxTagLen)
+        maxTagLen = Tag.maxLen()
         tagsPermOk = True
         problemTags = []
         for tag in tags:

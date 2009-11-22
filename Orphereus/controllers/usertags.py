@@ -87,7 +87,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
         t_usertags = sa.Table("usertag", meta.metadata,
             sa.Column("id"       , sa.types.Integer, primary_key = True),
             sa.Column('userId'  , sa.types.Integer, sa.ForeignKey('user.uidNumber')),
-            sa.Column("tag"      , sa.types.UnicodeText, nullable = False),
+            sa.Column("tag"      , sa.types.Unicode(meta.dialectProps['tagLengthHardLimit']), nullable = False),
             sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
             )
 
@@ -124,7 +124,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
         ns = self.namespace()
         name = tagName
         if name.startswith('$'):
-            name = tagName[1:]
+            name = Tag.cutTag(tagName[1:], True)
         if not userInst.Anonymous:
             return ns.UserTag.get(name, userInst)
         else:
@@ -140,7 +140,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
             if usertag.startswith('$'):
                 nonexistent.remove(usertag)
                 if not userInst.Anonymous:
-                    tagName = usertag[1:]
+                    tagName = Tag.cutTag(usertag[1:], True)
                     tag = ns.UserTag.get(tagName, userInst)
                     if not tag:
                         descr = OrphieMainController.getTagDescription(usertag, textFilter)

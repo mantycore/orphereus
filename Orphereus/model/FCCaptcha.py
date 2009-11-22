@@ -63,7 +63,7 @@ from pylons.i18n import get_lang, set_lang, _
 
 def t_captcha_init(dialectProps):
     return sa.Table("captcha", meta.metadata,
-        sa.Column("id"       , sa.types.Integer, primary_key = True),
+        sa.Column("id"       , sa.types.Integer, sa.Sequence('captcha_id_seq'), primary_key = True),
         sa.Column("text"     , sa.types.UnicodeText, nullable = False),
         sa.Column("content"  , sa.types.Binary, nullable = True),
         sa.Column("timestamp", sa.types.DateTime, nullable = False)

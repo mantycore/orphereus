@@ -32,7 +32,7 @@ from Orphereus.model import meta
 
 def t_oekaki_init(dialectProps):
     return sa.Table("oekaki", meta.metadata,
-        sa.Column("id"       , sa.types.Integer, primary_key = True),
+        sa.Column("id"       , sa.types.Integer, sa.Sequence('oekaki_id_seq'), primary_key = True),
         sa.Column("tempid"   , sa.types.String(20), nullable = False),
         sa.Column("time"     , sa.types.Integer, nullable = False),
         sa.Column("sourcePost"   , sa.types.Integer, nullable = True),

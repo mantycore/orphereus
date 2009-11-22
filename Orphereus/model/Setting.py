@@ -32,7 +32,7 @@ from Orphereus.model import meta
 
 def t_settings_init(dialectProps):
     return sa.Table("settings", meta.metadata,
-        sa.Column("id"       , sa.types.Integer, primary_key = True),
+        sa.Column("id"       , sa.types.Integer, sa.Sequence('settings_id_seq'), primary_key = True),
         sa.Column("name"     , sa.types.String(64), nullable = False, unique = True),
         sa.Column("value"    , sa.types.UnicodeText, nullable = False)
         )

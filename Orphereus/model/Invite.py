@@ -33,7 +33,7 @@ from Orphereus.model import meta
 
 def t_invite_init(dialectProps):
     return sa.Table("invite", meta.metadata,
-            sa.Column("id"       , sa.types.Integer, primary_key = True),
+            sa.Column("id"       , sa.types.Integer, sa.Sequence('invite_id_seq'), primary_key = True),
             sa.Column("invite"   , sa.types.String(128), nullable = False),
             sa.Column("date"     , sa.types.DateTime, nullable = False)
             )

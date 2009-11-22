@@ -48,7 +48,7 @@ log = logging.getLogger(__name__)
 
 def t_user_init(dialectProps):
     return sa.Table("user", meta.metadata,
-        sa.Column("uidNumber", sa.types.Integer, primary_key = True),
+        sa.Column("uidNumber", sa.types.Integer, sa.Sequence('user_uidNumber_seq'), primary_key = True),
         sa.Column("uid"      , sa.types.String(128), nullable = False, unique = True)
         )
 

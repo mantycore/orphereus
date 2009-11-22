@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 
 def t_picture_init(dialectProps):
     t_piclist = sa.Table("picture", meta.metadata,
-        sa.Column("id"       , sa.types.Integer, primary_key = True),
+        sa.Column("id"       , sa.types.Integer, sa.Sequence('picture_id_seq'), primary_key = True),
         sa.Column("path"     , sa.types.String(255), nullable = False),
         sa.Column("thumpath" , sa.types.String(255), nullable = False),
         sa.Column("width"    , sa.types.Integer, nullable = True),
@@ -46,7 +46,7 @@ def t_picture_init(dialectProps):
         )
 
     t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
-        sa.Column("id"          , sa.types.Integer, primary_key = True),
+        sa.Column("id"          , sa.types.Integer, sa.Sequence('filesToPostsMap_id_seq'), primary_key = True),
         #sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
         #sa.Column('fileId', sa.types.Integer, sa.ForeignKey('picture.id'), primary_key = True),
         sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id')),

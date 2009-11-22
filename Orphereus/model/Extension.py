@@ -38,7 +38,7 @@ __CONST_MAX_EXTENSION_PATH_LENGTH = 255
 
 def t_extension_init(dialectProps):
     return sa.Table("extension", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key = True),
+    sa.Column("id"       , sa.types.Integer, sa.Sequence('extension_id_seq'), primary_key = True),
     sa.Column("path"     , sa.types.String(__CONST_MAX_EXTENSION_PATH_LENGTH), nullable = False),
     sa.Column("thwidth"  , sa.types.Integer, nullable = False),
     sa.Column("thheight" , sa.types.Integer, nullable = False),

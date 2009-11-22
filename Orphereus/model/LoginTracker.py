@@ -32,7 +32,7 @@ from Orphereus.model import meta
 
 def t_loginTracker_init(dialectProps):
     return sa.Table("loginTracker", meta.metadata,
-            sa.Column("id"          , sa.types.Integer, primary_key = True),
+            sa.Column("id"          , sa.types.Integer, sa.Sequence('loginTracker_id_seq'), primary_key = True),
             sa.Column("ip"          , sa.types.String(16), nullable = False),
             sa.Column("attempts"    , sa.types.Integer, nullable = False),
             sa.Column("cid"         , sa.types.Integer, nullable = True),

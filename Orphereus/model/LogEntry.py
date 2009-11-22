@@ -35,7 +35,7 @@ from Orphereus.lib.miscUtils import filterText
 
 def t_log_init(dialectProps):
     return sa.Table("log", meta.metadata,
-            sa.Column("id"    , sa.types.Integer, primary_key = True),
+            sa.Column("id"    , sa.types.Integer, sa.Sequence('log_id_seq'), primary_key = True),
             sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('user.uidNumber')),
             sa.Column("date"  , sa.types.DateTime, nullable = False),
             sa.Column("event" , sa.types.Integer, nullable = False),

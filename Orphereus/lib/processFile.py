@@ -54,7 +54,7 @@ def processFile(file, thumbSize = 250, baseEncoded = False):
             return [False, False, False, _(u'Extension "%s" is disallowed') % ext]
 
         relativeFilePath = h.expandName('%s.%s' % (name, ext))
-        localFilePath = os.path.join(meta.globj.OPT.uploadPath, relativeFilePath)
+        localFilePath = os.path.realpath(os.path.join(meta.globj.OPT.uploadPath, relativeFilePath))
         targetDir = os.path.dirname(localFilePath)
         #log.debug(localFilePath)
         #log.debug(targetDir)
@@ -107,8 +107,12 @@ def processFile(file, thumbSize = 250, baseEncoded = False):
             picInfo.thumbFilePath = thumbFilePath
             if not picInfo.sizes:
                 picInfo.sizes = Picture.makeThumbnail(localFilePath, localThumbPath, (thumbSize, thumbSize))
-        except:
-            os.unlink(localFilePath)
+        except Exception, e:
+            log.debug("Exception in image thumbnail maker: %s" % str(e))
+            try:
+                os.unlink(localFilePath)
+            except Exception, e:
+                log.debug("can't remove incorrect file %s (%s)" % (localFilePath, str(e)))
             return [False, False, False, _(u"Broken picture. Maybe it is interlaced PNG?")]
 
         return [AngryFileHolder((localFilePath, localThumbPath)), picInfo, False, False]

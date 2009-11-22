@@ -45,7 +45,7 @@ from Orphereus.model import meta
 
 def t_posts_init(dialectProps):
     return sa.Table("post", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key = True, index = True),
+    sa.Column("id"       , sa.types.Integer, sa.Sequence('post_id_seq'), primary_key = True, index = not meta.dialectProps['disableComplexIndexes']),
     sa.Column("secondaryIndex", sa.types.Integer, nullable = True),
     sa.Column("parentid" , sa.types.Integer, sa.ForeignKey('post.id'), nullable = True, index = True),
     sa.Column("message"  , sa.types.UnicodeText, nullable = True),

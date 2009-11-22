@@ -101,13 +101,10 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
                  t_userTagsToPostsMappingTable.c.tagId,
                  unique = True)
 
-        if not dialectProps.get('disableTextIndexing', None):
-            sa.Index('ix_usertags_uidnum_tag',
-                     t_usertags.c.userId,
-                     t_usertags.c.tag,
-                     unique = True)
-        else:
-            log.warning("Current SQL dialect doesn't support text indexing!")
+        sa.Index('ix_usertags_uidnum_tag',
+                 t_usertags.c.userId,
+                 t_usertags.c.tag,
+                 unique = True)
 
         #orm.mapper
         meta.mapper(namespace.UserTag, t_usertags, properties = {

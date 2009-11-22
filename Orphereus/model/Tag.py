@@ -37,13 +37,9 @@ log = logging.getLogger(__name__)
 from Orphereus.model import meta
 
 def t_tags_init(dialectProps):
-    indexText = not dialectProps.get('disableTextIndexing', None)
-    if not indexText:
-        log.warning("Current SQL dialect doesn't support text indexing!")
-
     t_tags = sa.Table("tag", meta.metadata,
         sa.Column("id"       , sa.types.Integer, primary_key = True),
-        sa.Column("tag"      , sa.types.Unicode(meta.dialectProps['tagLengthHardLimit']), nullable = False, unique = indexText, index = indexText),
+        sa.Column("tag"      , sa.types.Unicode(meta.dialectProps['tagLengthHardLimit']), nullable = False, unique = True, index = True),
         sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
         sa.Column("threadCount" , sa.types.Integer, nullable = False, server_default = '0'),
         sa.Column("comment"  , sa.types.UnicodeText, nullable = True),

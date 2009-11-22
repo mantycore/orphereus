@@ -50,9 +50,10 @@ cache_dir = %(here)s/data
 beaker.session.key = Orphereus
 beaker.session.secret = somesecret
 # database connection settings
-sqlalchemy.url = mysql://user:passwd@127.0.0.1/database?use_unicode=0&charset=utf8
+#sqlalchemy.url = sqlite:////absolute/path/to/database.db
 #sqlalchemy.url = postgresql+psycopg2://user:passwd@127.0.0.1/database
-#sqlalchemy.url = sqlite:////absolute/path/to/foo.db
+#sqlalchemy.url = mysql://user:passwd@127.0.0.1/database?use_unicode=0&charset=utf8
+#sqlalchemy.url = mssql+pyodbc://user:passwd@127.0.0.1/database
 sqlalchemy.pool_recycle = 3600
 
 # this is not configurable in runtime

@@ -64,7 +64,7 @@ def adjust_dialect(engine, meta):
         _log.info("Using %s instead of %s" % (str(newType), str(var)))
         return newType
 
-    props = {'disableTextIndexing' : None,
+    props = {'disableInstantIdSetting' : None,
              'tagLengthHardLimit' : 24,
              'userFilterLengthLimit' : 512}
 
@@ -76,7 +76,6 @@ def adjust_dialect(engine, meta):
         target.FloatType = logAndChange(meta.FloatType, diam.MSDouble)
         target.BlobType = logAndChange(meta.BlobType, diam.MSLongBlob)
         target.UIntType = logAndChange(meta.UIntType, diam.MSInteger(unsigned = True))
-        props['disableTextIndexing'] = True
         props['disableInstantIdSetting'] = True
     elif (isinstance(engine.dialect, databases.postgres.PGDialect)):
         _log.info("Currently using PostgreSQL dialect, adjusting types...")
@@ -89,10 +88,8 @@ def adjust_dialect(engine, meta):
         _log.info("O_o ZOMG TEH ENTERPRISE! o_O")
         _log.info("Currently using Microsoft SQL dialect, adjusting types...")
         target.UIntType = logAndChange(meta.UIntType, diam.BIGINT)
-        props['disableTextIndexing'] = True
     elif (isinstance(engine.dialect, databases.oracle.OracleDialect)):
         _log.info("Currently using Oracle dialect, ZOMG TEH ENTERPRISE!")
-        props['disableTextIndexing'] = True
         raise Exception("Too enterprise for me")
     else:
         _log.warning("\n\nUnknown SQL Dialect %s!\n\n" % dialectName)

@@ -26,7 +26,7 @@ from string import *
 from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.base import *
 from Orphereus.lib.MenuItem import MenuItem
-from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST, engineVersion
+from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 from Orphereus.model import *
 from Orphereus.lib.miscUtils import *
@@ -139,7 +139,7 @@ class SetsmgrController(OrphieBaseController):
             c.message = _('Settings were updated')
 
         c.cfg = {}
-        c.ver = engineVersion
+        c.ver = g.version
         c.now = datetime.datetime.now()
         c.allSettings = self.settings
         for sect in self.getSectionNames():

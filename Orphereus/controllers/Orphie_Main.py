@@ -444,51 +444,6 @@ class OrphieMainController(OrphieBaseController):
         c.posts = posts
         return self.render('search')
 
-    def Anonimyze(self, post):
-        postid = request.POST.get('postId', False)
-        batch = request.POST.get('batchFA', False)
-        if postid and isNumber(postid):
-            c.FAResult = self.processAnomymize(int(postid), batch)
-        else:
-            c.boardName = _('Final Anonymization')
-            c.FAResult = False
-            c.postId = post
-        return self.render('finalAnonymization')
-
-    def processAnomymize(self, postid, batch):
-        if not g.OPT.enableFinalAnonymity:
-            return [_("Final Anonymity is disabled")]
-
-        if self.userInst.Anonymous:
-            return [_("Final Anonymity available only for registered users")]
-
-        result = []
-        post = Post.getPost(postid)
-        if post:
-            posts = []
-            if not batch:
-                posts = [post]
-            else:
-                posts = Post.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date <= post.date)).all()
-            for post in posts:
-                if post.uidNumber != self.userInst.uidNumber:
-                    result.append(_("You are not author of post #%s") % post.id)
-                else:
-                    delay = g.OPT.finalAHoursDelay
-                    timeDelta = datetime.timedelta(hours = delay)
-                    if post.date < datetime.datetime.now() - timeDelta:
-                        post.uidNumber = 0
-                        post.ip = None
-                        result.append(_("Post #%d successfully anonymized") % post.id)
-                    else:
-                        params = (post.id, str(post.date + timeDelta), str(datetime.datetime.now()))
-                        result.append(_("Can't anomymize post #%d now, it will be allowed after %s (now: %s)" % params))
-            meta.Session.commit()
-        else:
-            result = [_("Nothing to anonymize")]
-
-        return result
-
     def viewLog(self, page):
         if g.OPT.usersCanViewLogs:
             c.boardName = 'Logs'

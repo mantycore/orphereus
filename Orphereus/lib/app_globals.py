@@ -92,7 +92,7 @@ class OptHolder(object):
                               ('security',
                                ('useXRealIP', 'saveAnyIP', 'refControlEnabled',
                                 'checkUAs', 'spiderTrap',
-                                'useAnalBarriering', 'enableFinalAnonymity', 'hlAnonymizedPosts',
+                                'useAnalBarriering',
                                ),
                               ),
                              ]
@@ -145,7 +145,7 @@ class OptHolder(object):
                               ),
 
                               ('security',
-                               ('alertPort', 'finalAHoursDelay',
+                               ('alertPort',
                                )
                               ),
 

@@ -247,7 +247,7 @@ class Post(object):
                     #disableExclusions = Post.tags.any(Tag.id.in_(userInst.homeExclude))
                     #disableHidden = Post.tags.any(not_(Tag.showInOverview))
                     #return (not_(or_(disableExclusions, disableHidden)), [])
-                    inclusion = Post.tags.any(and_(Tag.showInOverview, not_(Tag.id.in_(userInst.homeExclude))))
+                    inclusion = Post.tags.any(and_(Tag.showInOverview == True, not_(Tag.id.in_(userInst.homeExclude))))
                     return (inclusion, [])
                 else:
                     retarg = [arg]

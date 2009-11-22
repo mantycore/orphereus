@@ -66,7 +66,8 @@ def adjust_dialect(engine, meta):
 
     props = {'disableInstantIdSetting' : None,
              'tagLengthHardLimit' : 24,
-             'userFilterLengthLimit' : 512}
+             'userFilterLengthLimit' : 512,
+             'disableComplexIndexes' : None}
 
     dialectName = engine.dialect.name
     diam = __import__("sqlalchemy.dialects.%s.base" % dialectName, globals(), locals(), ['base'], -1)
@@ -89,8 +90,10 @@ def adjust_dialect(engine, meta):
         _log.info("Currently using Microsoft SQL dialect, adjusting types...")
         target.UIntType = logAndChange(meta.UIntType, diam.BIGINT)
     elif (isinstance(engine.dialect, databases.oracle.OracleDialect)):
-        _log.info("Currently using Oracle dialect, ZOMG TEH ENTERPRISE!")
-        raise Exception("Too enterprise for me")
+        _log.info("O_o ZOMG TEH ENTERPRISE! o_O")
+        _log.info("Currently using Oracle dialect, adjusting types...")
+        props['disableComplexIndexes'] = True
+        #raise Exception("Too enterprise for me")
     else:
         _log.warning("\n\nUnknown SQL Dialect %s!\n\n" % dialectName)
     _log.info("Adjusting completed")

@@ -85,7 +85,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
     def initORM(self, orm, engine, dialectProps, propDict):
         namespace = self.namespace()
         t_usertags = sa.Table("usertag", meta.metadata,
-            sa.Column("id"       , sa.types.Integer, primary_key = True),
+            sa.Column("id"       , sa.types.Integer, sa.Sequence('usertag_id_seq'), primary_key = True),
             sa.Column('userId'  , sa.types.Integer, sa.ForeignKey('user.uidNumber')),
             sa.Column("tag"      , sa.types.Unicode(meta.dialectProps['tagLengthHardLimit']), nullable = False),
             sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
@@ -96,10 +96,11 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
             sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('usertag.id'), primary_key = True),
             )
 
-        sa.Index('ix_usertagmap_postid_tagid',
-                 t_userTagsToPostsMappingTable.c.postId,
-                 t_userTagsToPostsMappingTable.c.tagId,
-                 unique = True)
+        if not meta.dialectProps['disableComplexIndexes']:
+            sa.Index('ix_usertagmap_postid_tagid',
+                     t_userTagsToPostsMappingTable.c.postId,
+                     t_userTagsToPostsMappingTable.c.tagId,
+                     unique = True)
 
         sa.Index('ix_usertags_uidnum_tag',
                  t_usertags.c.userId,

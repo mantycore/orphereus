@@ -37,7 +37,7 @@ from Orphereus.model import meta
 
 def t_useroptions_init(dialectProps):
     return sa.Table("userOptions", meta.metadata,
-        sa.Column("optid"    , sa.types.Integer, primary_key = True),
+        sa.Column("optid"    , sa.types.Integer, sa.Sequence('userOptions_optid_seq'), primary_key = True),
         sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('user.uidNumber'), nullable = False, index = True),
         sa.Column("threadsPerPage", sa.types.Integer, nullable = False),
         sa.Column("repliesPerThread", sa.types.Integer, nullable = False),
@@ -72,8 +72,8 @@ def t_useroptions_init(dialectProps):
         sa.Column("canManageExtensions", sa.types.Boolean, nullable = True),
         sa.Column("canManageMappings", sa.types.Boolean, nullable = True),
         sa.Column("canRunMaintenance", sa.types.Boolean, nullable = True),
-        sa.Column("lang", sa.types.String(2), nullable = False),
-        sa.Column("cLang", sa.types.String(2), nullable = False),
+        sa.Column("lang", sa.types.String(2), nullable = True),
+        sa.Column("cLang", sa.types.String(2), nullable = True),
         )
 
 class UserOptions(object):

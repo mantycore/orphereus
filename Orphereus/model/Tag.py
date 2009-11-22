@@ -38,7 +38,7 @@ from Orphereus.model import meta
 
 def t_tags_init(dialectProps):
     t_tags = sa.Table("tag", meta.metadata,
-        sa.Column("id"       , sa.types.Integer, primary_key = True),
+        sa.Column("id"       , sa.types.Integer, sa.Sequence('tag_id_seq'), primary_key = True),
         sa.Column("tag"      , sa.types.Unicode(meta.dialectProps['tagLengthHardLimit']), nullable = False, unique = True, index = True),
         sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
         sa.Column("threadCount" , sa.types.Integer, nullable = False, server_default = '0'),
@@ -67,11 +67,11 @@ def t_tags_init(dialectProps):
         sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
         sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tag.id'), primary_key = True),
         )
-
-    sa.Index('ix_tagmap_postid_tagid',
-             t_tagsToPostsMap.c.postId,
-             t_tagsToPostsMap.c.tagId,
-             unique = True)
+    if not meta.dialectProps['disableComplexIndexes']:
+        sa.Index('ix_tagmap_postid_tagid',
+                 t_tagsToPostsMap.c.postId,
+                 t_tagsToPostsMap.c.tagId,
+                 unique = True)
 
     return t_tags, t_tagsToPostsMap
 class Tag(object):
@@ -226,7 +226,7 @@ class Tag(object):
                 currentAllowed = t.allowedAdditionalFiles
                 if currentAllowed is None:
                     currentAllowed = meta.globj.OPT.allowedAdditionalFiles
-                assert type(currentAllowed) == int
+                assert type(currentAllowed) == int or type(currentAllowed) == long
                 perm = meta.globj.OPT.permissiveAdditionalFilesCountConjunction
                 if (perm and currentAllowed > options.allowedAdditionalFiles) or (not perm and currentAllowed < options.allowedAdditionalFiles):
                     options.allowedAdditionalFiles = currentAllowed

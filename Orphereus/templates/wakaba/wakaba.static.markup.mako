@@ -251,9 +251,47 @@
 
 <%include file="${'wakaba.%s.mako' % g.pluginsDict[g.OPT.searchPluginId].helpTemplateName()}" />
 
+<h3 style="text-align: center;">Мазня (Oekaki)</h3>
+<a name="oekaki"></a>
+Если вы хотите дорисовать чью-то картинку, использую отличные от указанных в профиле настройки,
+то это можно сделать, введя в адресную строку браузера такой URL:
+<code>http://${g.OPT.baseDomain}/oekakiDraw/НОМЕР_ПОСТА/НОМЕР_КАРТИНКИ/ИСПОЛЬЗОВАТЬ_SELFY/ЗАПИСЫВАТЬ_АНИМАЦИЮ/РЕДАКТОР</code>,
+параметры в котором означают следующее:
 
+<table width="40%" align="center">
+    <col style="background:#DEDEDE;" />
+    <col />
+    <thead>
+        <tr>
+            <td><b>Параметр</b></td>
+            <td><b>Описание</b></td>
+        </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td align="left">НОМЕР_ПОСТА</td>
+        <td align="left">Номер поста, картинку из которого вы хотите дорисовать.</td>
+      </tr>
+      <tr>
+        <td align="left">НОМЕР_КАРТИНКИ</td>
+        <td align="left">Номер картинки из исходного поста, которую вы хотите дорисовать. Картинки нумеруются слева направо, нумерация начинается с нуля.</td>
+      </tr>
+      <tr>
+        <td align="left">ИСПОЛЬЗОВАТЬ_SELFY</td>
+        <td align="left"><code>+selfy</code> если вы хотите использовать Selfy, <code>-selfy</code> в противном случае</td>
+      </tr>
+      <tr>
+        <td align="left">ЗАПИСЫВАТЬ_АНИМАЦИЮ</td>
+        <td align="left"><code>+anim</code> если вы хотите записать анимацию, <code>-anim</code> в противном случае</td>
+      </tr>
+      <tr>
+        <td align="left">РЕДАКТОР</td>
+        <td align="left"><code>shiPro</code> для использования редактора ShiPro, <code>shiNormal</code> для ShiNormal</td>
+      </tr>
+    </tbody>
+</table>
 <div style="text-align: center;">
-<h4 style="margin: 0;">Поддерживаемые языки подсветки</h4>
+<h3 style="margin: 0;">Поддерживаемые языки подсветки</h3>
 <a name="syntax"></a>
 </div>
 <table width="40%" align="center">

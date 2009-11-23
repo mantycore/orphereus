@@ -464,12 +464,23 @@ class OrphieMainController(OrphieBaseController):
             return self.error(_("Posting is disabled"))
 
         c.url = url
-        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply').lower() == 'new')
-        c.selfy = bool(request.POST.get('selfy', False)) or selfy == '+selfy'
-        c.animation = bool(request.POST.get('animation', False)) or anim == '+anim'
+        enablePicLoading = not (request.POST.get('oekaki_type', 'reply').lower() == 'new')
+
+        selfy = request.POST.get('selfy', selfy)
+        if selfy:
+            c.selfy = (selfy == '+selfy') or (selfy == 'on')
+        else:
+            c.selfy = self.userInst.oekUseSelfy
+
+        anim = request.POST.get('animation', anim)
+        if anim:
+            c.animation = (anim == '+anim') or (anim == 'on')
+        else:
+            c.animation = self.userInst.oekUseAnim
 
         oekType = ''
-        if request.POST.get('oekaki_painter', False).lower() == 'shipro' or tool.lower() == 'shipro':
+        tool = request.POST.get('oekaki_painter', tool)
+        if (tool and tool.lower() == 'shipro') or (not tool and c.userInst.oekUsePro):
             oekType = 'Shi pro'
             c.oekakiToolString = 'pro'
         else:

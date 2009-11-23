@@ -80,12 +80,12 @@ def make_map():
 
     # Oekaki
     map.connect('oekakiDraw',
-                '/oekakiDraw/:url/:selfy/:anim/:tool/:sourceId',
-                 controller = 'Orphie_Main',
-                 action = 'oekakiDraw',
-                selfy = '-selfy',
-                anim = '-anim',
-                tool = 'shiNormal',
+                '/oekakiDraw/:url/:sourceId/:selfy/:anim/:tool',
+                controller = 'Orphie_Main',
+                action = 'oekakiDraw',
+                selfy = None,
+                anim = None,
+                tool = None,
                 sourceId = '0',
                 requirements = dict(sourceId = '\d+'))
     map.connect('oekakiSave',

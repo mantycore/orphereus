@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
+#  Copyright (C) 2009 Hedger                                                   #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -30,7 +30,7 @@ log = logging.getLogger(__name__)
 
 def t_bans_init(dialectProps):
     return sa.Table("bans", meta.metadata,
-        sa.Column("id"          , sa.types.Integer, primary_key = True),
+        sa.Column("id"          , sa.types.Integer, sa.Sequence('bans_id_seq'), primary_key = True),
     #    sa.Column("ip"          , sa.types.Integer, nullable=False),
     #    sa.Column("mask"        , sa.types.Integer, nullable=False),
         sa.Column("ip"          , meta.UIntType, nullable = False),
@@ -86,7 +86,10 @@ class Ban(object):
 
     @staticmethod
     def _getBanByIp(userIp):
-        return Ban.query.filter(Ban.mask.op('&')(userIp) == Ban.ip.op('&')(Ban.mask)).first() #OMGWTF
+        if not (isinstance(meta.engine.dialect, sa.databases.oracle.OracleDialect)):
+            return Ban.query.filter(Ban.mask.op('&')(userIp) == Ban.ip.op('&')(Ban.mask)).first() #OMGWTF
+        log.error('Bans are not compatible with Oracle')
+        return None
 
     @staticmethod
     def getBanByIp(userIp):

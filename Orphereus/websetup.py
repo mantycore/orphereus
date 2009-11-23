@@ -128,7 +128,7 @@ def setup_config(command, filename, section, vars):
     if tc == 0:
         log.info("Adding dummy picture #0")
         firstEx = meta.Session.query(Extension).first()
-        pic = Picture('', '', 0, [None, None, 0, 0], firstEx.id, '', u"") # TODO: special extension?
+        pic = Picture('', '', 0, [None, None, 0, 0], firstEx.id, 'dummy', u"") # TODO: special extension?
         meta.Session.add(pic)
         if disableInstantIdSetting:
             meta.Session.commit()

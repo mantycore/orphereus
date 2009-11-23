@@ -32,8 +32,8 @@ log = logging.getLogger(__name__)
 def t_picture_init(dialectProps):
     t_piclist = sa.Table("picture", meta.metadata,
         sa.Column("id"       , sa.types.Integer, sa.Sequence('picture_id_seq'), primary_key = True),
-        sa.Column("path"     , sa.types.String(255), nullable = False),
-        sa.Column("thumpath" , sa.types.String(255), nullable = False),
+        sa.Column("path"     , sa.types.String(255), nullable = True),
+        sa.Column("thumpath" , sa.types.String(255), nullable = True),
         sa.Column("width"    , sa.types.Integer, nullable = True),
         sa.Column("height"   , sa.types.Integer, nullable = True),
         sa.Column("thwidth"  , sa.types.Integer, nullable = False),

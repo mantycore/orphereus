@@ -543,9 +543,9 @@ class OrphieAdminController(OrphieBaseController):
 
         if request.POST.get('tag', False):
             newtag = request.POST.get('tag', False)
-            newtagre = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""").match(newtag)
-            if newtagre:
-                newtag = newtagre.groups()[0]
+            matches = re.findall(re.compile(Tag.TAGREGEX), newtag)
+            if matches:
+                newtag = matches[0]
                 newtagRecord = Tag.getTag(newtag)
                 if not newtagRecord or newtagRecord.id == c.tag.id:
                     if c.tag.tag != newtag:

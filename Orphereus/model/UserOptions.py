@@ -79,13 +79,10 @@ def t_useroptions_init(dialectProps):
 class UserOptions(object):
     @staticmethod
     def optionsDump(optionsObject):
-        optionsNames = dir(optionsObject)
         ret = {}
-        retest = re.compile("^(<.*(at (0x){0,1}[0-9a-fA-F]+)+.*>)|(__.*__)$")
-        for name in optionsNames:
-            attr = str(getattr(optionsObject, name))
-            if not (retest.match(name) or retest.match(attr)):
-                ret[name] = attr
+        for k in optionsObject.__dict__:
+            if not k.startswith("_"):
+                ret[k] = optionsObject.__dict__[k]
         return ret
 
     @staticmethod

@@ -186,8 +186,9 @@ class OrphieAjaxController(OrphieBaseController):
                 return str(','.join(ret))
         abort(404)
 
+    @jsonify
     def getUserSettings(self):
-        return str(self.userInst.optionsDump())
+        return self.userInst.optionsDump()
 
     def getUploadsPath(self):
         return g.OPT.filesPathWeb

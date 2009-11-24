@@ -74,7 +74,10 @@ def t_tags_init(dialectProps):
                  unique = True)
 
     return t_tags, t_tagsToPostsMap
+
 class Tag(object):
+    TAGREGEX = r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)"""
+
     def __repr__(self):
         return u"%s (#%d)" % (self.tag, self.id)
 
@@ -147,7 +150,7 @@ class Tag(object):
     def splitTagString(tagstr):
         if tagstr:
             tagstr = tagstr.replace('&amp;', '&')
-            regex = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""")
+            regex = re.compile(Tag.TAGREGEX)
             return regex.findall(tagstr)
         return []
 

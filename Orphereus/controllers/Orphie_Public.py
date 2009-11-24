@@ -146,8 +146,9 @@ class OrphiePublicController(OrphieBaseController):
 
             c.captcha = Captcha.getCaptcha(tracker.cid)
 
-        if request.POST.get('code', False):
-            code = User.genUid(request.POST['code'].encode('utf-8'))
+        code = request.POST.get('password', False)
+        if code:
+            code = User.genUid(code.encode('utf-8'))
             user = User.getByUid(code)
             #log.debug("code: %s user: %s",code,str(user))
 

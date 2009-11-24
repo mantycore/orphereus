@@ -4,7 +4,8 @@
 <div class="postarea">
   <form id="postform" action="${h.url_for('authorizeToUrl', url=c.currentURL)}" method="post">
     <span class="postblock">${_('Enter your security code')}</span>
-    <p><input name="code" type="password" size="60" style="text-align: center" /></p>
+    <p style="display: none;"><input name="login" type="text" size="60" value="dummy" /></p>
+    <p><input name="password" type="password" size="60" style="text-align: center" /></p>
         %if c.showCaptcha:
             <p class="postblock">${_('Too many login attempts. Enter CAPTCHA please')}</p>
             <div><img src="${h.url_for('captcha', cid=c.captcha.id)}" alt="Captcha" /></div>

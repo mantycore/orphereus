@@ -12,6 +12,7 @@
         <span class="postblock">
         ${_('Enter your security code')}
         </span>
+        <p style="display: none;"><input name="login" type="text" size="60" value="dummy" /></p>
         <p><input name="code" type="password" size="60"/></p>
         %if c.showCaptcha:
             <p class="postblock">${_('Too many login attempts. Enter CAPTCHA please')}</p>

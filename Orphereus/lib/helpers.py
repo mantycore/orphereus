@@ -59,10 +59,9 @@ def repliesProxy(thread, controller):
     tmplPrefix = (len(g.OPT.templates) > 1 and user.template) or ''
     keyPrefix = str('%s%d%s' % (tmplPrefix, intFlags, get_lang()[0]))
     postPairs = []
-    prepareIdsForHighlight = (not c.userInst.Anonymous) and c.userInst.options.hlOwnPosts
     for post in thread.Replies:
         postPairs.append((post.id, post))
-        if prepareIdsForHighlight and post.uidNumber == c.userInst.uidNumber:
+        if c.userInst.hlOwnPosts and post.uidNumber == c.userInst.uidNumber:
             c.userPostsToHighlight.append(post.id)
     postsDict = dict(postPairs)
     postsRender = g.mc.get_multi(postsDict.keys(), key_prefix = keyPrefix)

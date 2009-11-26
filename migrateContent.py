@@ -329,9 +329,14 @@ def migrate(targetConfig, sourceModelUrl):
                     for utag in utags:
                         log.info("Attaching /$%s/ to %d (userId == %d)..." % (utag.tag, post.id, utag.userId))
                         ns = meta.globj.pluginsDict['usertags'].pnamespace
-                        newUtag = ns.UserTag(utag.tag, utag.comment, utag.userId)
+                        newUtag = ns.UserTag.query.filter(and_(ns.UserTag.tag == utag.tag, ns.UserTag.userId == utag.userId)).first()
+                        addToSess = False
+                        if not newUtag:
+                            newUtag = ns.UserTag(utag.tag, utag.comment, utag.userId)
+                            addToSess = True
                         newUtag.posts.append(newPost)
-                        meta.Session.add(newUtag)
+                        if addToSess:
+                            meta.Session.add(newUtag)
                     meta.Session.commit()
 
     log.info("=================================================================")

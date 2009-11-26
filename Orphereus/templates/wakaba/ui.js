@@ -320,48 +320,68 @@ function YFormMarkSelected(idx){
 $("#y_replyform_file_link_" + idx).addClass("y_fileLinkSelected");
 }
 
+function highlightMyPosts(myPosts){
+  for (var i = 0; i < myPosts.length; i++){
+     $(myPosts[i]).addClass("myreply");
+  }
+}
+
 function expandable_threads(){
   expandable_threads.mass_repair =  function(node){
-    popup_posts.repair(node.find("blockquote a"))
-    click_expands.repair(node)
-    YForm.repair(node)
+    popup_posts.repair(node.find("blockquote a"));
+    click_expands.repair(node);
+    YForm.repair(node);
   }
 
   expandable_threads.repair_deleteboxes = function(visible)
   {
      var allDeleteBoxesSpans = $(".delete");
      if (visible) {
-        allDeleteBoxesSpans.show()
+        allDeleteBoxesSpans.show();
      }
      else {
-        allDeleteBoxesSpans.hide()
+        allDeleteBoxesSpans.hide();
      }
   }
   $(".thread .omittedposts a").click(function() {
-    var me = $(this)
+    var me = $(this);
     var thread = me.parent().parent();
     var deleteBoxesShown = thread.find('.delete').is(':visible');
     if(me.data("oldreplies")){
-      var t = me.data("oldreplies")
-      me.data("oldreplies", thread.find(".replies").html())
-      thread.find(".replies").html(t)
+      var t = me.data("oldreplies");
+      me.data("oldreplies", thread.find(".replies").html());
+      thread.find(".replies").html(t);
 
-      t = me.data("orig_html")
-      me.data("orig_html", me.html())
-      me.html(t)
+      t = me.data("orig_html");
+      me.data("orig_html", me.tml());
+      me.html(t);
 
-      expandable_threads.mass_repair(thread.find(".replies"))
+      expandable_threads.mass_repair(thread.find(".replies"));
       expandable_threads.repair_deleteboxes(deleteBoxesShown);
-      me.parent().toggleClass("expanded")
+      me.parent().toggleClass("expanded");
     }else{
       me.data("orig_html", me.html())
-      me.data("oldreplies", thread.find(".replies").html())
-      me.html("<img src='"+window.loading_icon_path+"'>"+"${_('Loading')}"+"…")
-      thread.find(".replies").load("${g.OPT.urlPrefix}ajax/getRenderedReplies/" + thread.attr("id").match(/\d+/)[0], function() {
-        me.parent().toggleClass("expanded")
-        me.html("${_('Collapse thread')}")
-        expandable_threads.mass_repair(thread.find(".replies"))
+      me.data("oldreplies", thread.find(".replies").html());
+      me.html("<img src='"+window.loading_icon_path+"'>"+"${_('Loading')}"+"…");
+      var threadId = thread.attr("id").match(/\d+/)[0];
+      thread.find(".replies").load("${g.OPT.urlPrefix}ajax/getRenderedReplies/" + threadId, function() {
+        me.parent().toggleClass("expanded");
+        me.html("${_('Collapse thread')}");
+        expandable_threads.mass_repair(thread.find(".replies"));
         expandable_threads.repair_deleteboxes(deleteBoxesShown);
+
+        if (window.highlightMyPostsAfterExpand)
+        {
+          $.getJSON("${g.OPT.urlPrefix}ajax/getMyPostIds/" + threadId,
+                  function(data){
+                    var myPosts=new Array();
+                    $.each(data, function(i,item){
+                      myPosts.push('#reply' + item);
+                    });
+                    highlightMyPosts(myPosts);
+                  });
+
+        }
       })
     }
     return false;

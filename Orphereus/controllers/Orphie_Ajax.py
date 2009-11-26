@@ -52,6 +52,8 @@ class AjaxServicesPlugin(BasePlugin):
         map.connect('ajPostThread', '/ajax/postThread/:board', controller = 'Orphie_Main', action = 'ajaxPostThread', conditions = dict(method = ['POST']))
         map.connect('ajPostReply', '/ajax/postReply/:post', controller = 'Orphie_Main', action = 'ajaxPostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
         map.connect('ajTagsCheck', '/ajax/checkTags', controller = 'Orphie_Ajax', action = 'checkTags')
+        map.connect('ajGetMyPostIds', '/ajax/getMyPostIds/:thread', controller = 'Orphie_Ajax', action = 'getMyPostIds', requirements = dict(thread = '\d+'))
+
         # routines below isn't actually used
         map.connect('ajGetText', '/ajax/getText/:text', controller = 'Orphie_Ajax', action = 'getText', text = '')
         map.connect('/ajax/getRepliesCountForThread/:post', controller = 'Orphie_Ajax', action = 'getRepliesCountForThread', requirements = dict(post = '\d+'))
@@ -137,6 +139,17 @@ class OrphieAjaxController(OrphieBaseController):
             return postInst.message
         abort(404)
 
+    @jsonify
+    def getMyPostIds(self, thread):
+        if self.userInst.Anonymous:
+            abort(403)
+        postInst = Post.getPost(int(thread))
+        if postInst and not postInst.parentPost:
+            ids = meta.Session.query(Post.id).filter(and_(Post.parentid == thread, Post.uidNumber == self.userInst.uidNumber)).all()
+            ids = map(lambda x: x[0], ids)
+            return ids
+        abort(404)
+
     def getRenderedPost(self, post):
         postInst = Post.getPost(post)
         if postInst:
@@ -185,6 +198,7 @@ class OrphieAjaxController(OrphieBaseController):
                     ret.append(str(reply.id))
                 return str(','.join(ret))
         abort(404)
+
 
     @jsonify
     def getUserSettings(self):

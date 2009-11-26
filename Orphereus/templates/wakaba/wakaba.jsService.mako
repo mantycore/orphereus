@@ -103,13 +103,12 @@ click_expands({max_width: ${c.userInst.maxExpandWidth},
 $(expandable_threads);
 
 %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()) and c.userPostsToHighlight:
-function highlightMyPosts(){
+window.highlightMyPostsAfterExpand = true;
+function performHighlight(){
   var myPosts=new Array(${','.join(['"#reply%d"' % x for x in c.userPostsToHighlight])});
-  for (var i = 0; i < myPosts.length; i++){
-     $(myPosts[i]).addClass("myreply");
-  }
+  highlightMyPosts(myPosts);
 }
-highlightMyPosts();
+performHighlight();
 %endif
 </script>
 

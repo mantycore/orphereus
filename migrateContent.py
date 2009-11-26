@@ -186,7 +186,7 @@ def migrate(targetConfig, sourceModelUrl):
         newTag.threadCount = tag.threadCount
         if tag.options:
             log.info("Copying options for /%s/..." % tag.tag)
-            copyMembers(tagOptMembers, tag.options, newTag.options)
+            copyMembers(tagOptMembers, tag, newTag)
         else:
             log.error("No options for tag /%s/" % tag.tag)
         meta.Session.add(newTag)

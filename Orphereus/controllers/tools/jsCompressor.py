@@ -65,7 +65,7 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
             c.jsFiles = ["%s_%s.js" % (template, lang)]
 
     @staticmethod
-    def generateFiles(useClosure = False, advancedOpt = False):
+    def generateFiles(useClosure = False, advancedOpt = False, joinOnly = False):
         logRecords = []
         def logMsg(s):
             log.info(s)
@@ -83,7 +83,10 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
                     logMsg("Adding '%s'..." % js)
                     newJS += render('/%s/%s' % (template, js)) + "\n"
                 uncompressedLen = len(newJS)
-                newJS = unicode(jsmin(newJS))
+                if not joinOnly:
+                    newJS = unicode(jsmin(newJS))
+                else:
+                    logMsg("Compression skipped")
                 newLen = len(newJS)
                 logMsg("Minified. Length: %d (saved: %d)" % (newLen, uncompressedLen - newLen))
                 if useClosure:
@@ -157,7 +160,10 @@ class JscompressorController(OrphieBaseController):
             return redirect_to('boardBase')
 
         if 'rebuildjs' in request.POST:
-            c.compressingResult = JSCompressorPlugin.generateFiles(bool('useGClosure' in request.POST), bool('advancedOpt' in request.POST))
+            c.compressingResult = JSCompressorPlugin.generateFiles('useGClosure' in request.POST,
+                                                                   'advancedOpt' in request.POST,
+                                                                   'joinOnly' in request.POST
+                                                                   )
 
         c.boardName = _('Rebuild JavaScript')
         c.currentItemId = 'id_RebuildJs'

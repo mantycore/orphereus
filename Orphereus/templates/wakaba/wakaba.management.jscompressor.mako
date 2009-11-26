@@ -9,6 +9,8 @@ ${line}
 </pre>
 %else:
 <form action="${h.url_for('hsRebuildJs')}" method="post">
+<label><input type="checkbox" name="joinOnly" />Merge files only. Don't compress.</label><br/>
+
 <label><input type="checkbox" name="useGClosure" />Use Google Closure</label><br/>
 
 <label><input type="checkbox" name="advancedOpt" />

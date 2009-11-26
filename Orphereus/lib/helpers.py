@@ -211,17 +211,21 @@ def intToIp(ipint):
     ipi = int(ipint)
     return str((ipi >> 24) & 0xff) + '.' + str((ipi >> 16) & 0xff) + '.' + str((ipi >> 8) & 0xff) + '.' + str(ipi & 0xff)
 
+def langForCurrentRequest():
+    langToSet = g.OPT.defaultLang
+    for lang in request.languages:
+        lang = lang[0:2]
+        if lang in g.OPT.languages:
+            langToSet = lang
+            break
+    return langToSet
+
 def setLang(lang):
     oldLang = get_lang()
     if (lang and (len(lang) == 2)):
         set_lang(lang)
     else:
-        langToSet = g.OPT.defaultLang
-        for lang in request.languages:
-            lang = lang[0:2]
-            if lang in g.OPT.languages:
-                langToSet = lang
-                break
+        langToSet = langForCurrentRequest()
         set_lang(langToSet) # TODO: check
     return oldLang[0]
 

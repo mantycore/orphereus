@@ -231,7 +231,7 @@ class OptHolder(object):
         if not os.path.exists(self.staticPath):
             self.staticPath = os.path.join(self.appRoot, 'Orphereus/public/')
 
-        self.languages.insert(0, 'Default')
+        #self.languages.insert(0, 'Default')
         self.obfuscator = self.obfuscator.replace('$(', '%(')
         self.allowAnonymousPosting = self.allowAnonymous and self.allowAnonymousPosting
         self.allowAnonProfile = self.allowAnonymous and self.allowAnonProfile

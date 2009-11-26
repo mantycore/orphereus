@@ -49,20 +49,21 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
         map.connect('hsRebuildJs', '/holySynod/rebuildJs', controller = 'tools/jsCompressor', action = 'rebuild')
 
     def beforeRequestCallback(self, baseController):
+        currentLang = get_lang()
         if g.firstRequest and not g.OPT.disableJSRegeneration:
-            oldLang = get_lang()
             log.info('Generating js files...')
             self.generateFiles()
             set_lang(oldLang)
 
         if baseController.userInst.isValid():
-            lang = baseController.userInst.lang
             template = baseController.userInst.template
-            if not lang:
-                lang = g.OPT.languages[0]
+            if not currentLang:
+                currentLang = h.langForCurrentRequest()
+            else:
+                currentLang = currentLang[0] # At this point correct language already set by OrphieBaseController
             if not template:
                 template = g.OPT.templates[0]
-            c.jsFiles = ["%s_%s.js" % (template, lang)]
+            c.jsFiles = ["%s_%s.js" % (template, currentLang)]
 
     @staticmethod
     def generateFiles(useClosure = False, advancedOpt = False, joinOnly = False):

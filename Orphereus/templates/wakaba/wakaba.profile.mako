@@ -3,7 +3,7 @@
 
 <form id="postform" action="${h.url_for('userProfile')}" method="post">
     <div class="postarea">
-    
+
     %if c.profileChanged:
       <h3 class="errorMessage">
         ${c.profileMsg}
@@ -13,7 +13,7 @@
 <tbody>
 <tr>
 <td style="vertical-align: top;">
-    
+
     <div class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('viewsOptions');">${_("Views' customization")}</a></div>
     <div id="viewsOptions">
     <table>
@@ -57,7 +57,7 @@
     </tbody>
     </table>
     </div>
-    
+
     <div class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('ajaxOptions');">${_('AJAX')}</a></div>
     <div id="ajaxOptions">
     <table>
@@ -111,18 +111,18 @@
     </tbody>
     </table>
     </div>
-    
+
     <div class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('siteOptions');">${_('Site customization')}</a></div>
     <div id="siteOptions">
     <table>
     <tbody>
-        %if g.OPT.framedMain: 
+        %if g.OPT.framedMain:
         <tr>
             <td class="postblock">${_('Use frames')}</td>
             <td><input type="checkbox" name="useFrame" ${c.userInst.useFrame and 'checked="checked"' or ""} /></td>
         </tr>
         %endif
-        
+
         <tr id="trgoto">
             <td class="postblock">${_('By default Go To')}</td>
             <td>
@@ -143,7 +143,7 @@
             <td class="postblock">${_('Template')}</td>
             <td>
                 <select name="template" style="width: 170px;">
-        
+
                     %for t in c.templates:
                        <option value="${t}" \
                          %if t == c.userInst.template:
@@ -173,6 +173,7 @@
             <td>
                 <select name="lang" style="width: 170px;">
                     %for lang in c.languages:
+                      <option value="auto">${_("Auto")}</option>
                        <option value="${lang}" \
                          %if lang == c.userInst.lang:
                             selected="selected" \
@@ -201,7 +202,7 @@
     </tbody>
     </table>
     </div>
-    
+
 </td>
 
 <td style="vertical-align: top;">
@@ -224,7 +225,7 @@
     </tbody>
     </table>
     </div>
-    
+
     %if not c.userInst.Anonymous:
     <div class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('userFilters');">${_('User filters')}</a></div>
     <div id="userFilters">
@@ -241,7 +242,7 @@
     </table>
     </div>
     %endif
-    
+
     <div class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('accessOptions');">${_('Access and security')}</a></div>
     <div id="accessOptions">
     <table>
@@ -277,7 +278,7 @@
     </tbody>
     </table>
     </div>
-    
+
 %if c.additionalProfileLinks:
     <div class="theader"><a style="cursor:pointer; display: block;" onclick="toggle_div('additionalParameters');">${_('Additional parameters')}</a></div>
     <div id="additionalParameters">

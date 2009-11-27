@@ -81,7 +81,7 @@ class GraphsCommand(command.Command):
     def command(self):
         #devIni = self.args[0]
         self.setup_config(self.options.config, self.options.path)
-        birthdate = meta.Session.query(sa.sql.functions.max(Post.date)).scalar()
+        birthdate = meta.Session.query(sa.sql.functions.min(Post.date)).scalar()
         lastdate = datetime.datetime.now()
         currentdate = birthdate
         xsvals = []

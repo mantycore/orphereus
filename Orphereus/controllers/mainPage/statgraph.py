@@ -86,8 +86,9 @@ class GraphsCommand(command.Command):
         fig = plt.figure(1)
         plt.suptitle(header)
         ax = fig.add_subplot(1, 1, 1)
-        color = (0, 0, 1)
+        color = (1, 0.4, 0)
         line = plt.plot_date(xsvals, ysvals, '-', color = color, linewidth = 1)
+        plt.grid(True)
         fig.autofmt_xdate()
         imgdata = StringIO.StringIO()
         plt.savefig(imgdata, format = 'png')
@@ -109,20 +110,26 @@ class GraphsCommand(command.Command):
         xsvals = []
         ysvalsPPD = []
         ysvalsT = []
+        ysvalsUU = []
         dayscount = (lastdate - birthdate).days
         ccount = 0
         while currentdate < lastdate:
             nextdate = (currentdate + datetime.timedelta(days = 1))
-            countfordate = Post.query.filter(and_(Post.date <= nextdate, Post.date >= currentdate)).count()
+            uniqueUidsExpr = meta.Session.query(Post.uidNumber).distinct()
+            dayClause = and_(Post.date <= nextdate, Post.date >= currentdate)
+            uuserscount = uniqueUidsExpr.filter(dayClause).count()
+            countfordate = Post.query.filter(dayClause).count()
             countupdate = Post.query.filter(Post.date <= nextdate).count()
             xsvals.append(currentdate.date())
             ysvalsPPD.append(countfordate)
             ysvalsT.append(countupdate)
+            ysvalsUU.append(uuserscount)
             currentdate = nextdate
-            print "Day %d/%d: %d posts, %d total" % (ccount, dayscount, countfordate, countupdate)
+            print "Day %d/%d: %d posts, %d total, %d uniq users" % (ccount, dayscount, countfordate, countupdate, uuserscount)
             ccount += 1
-        self.plotStdGraph(xsvals, ysvalsPPD, "stat_posts_ppd", "Posts per day")
+        self.plotStdGraph(xsvals, ysvalsPPD, "stat_posts_pd", "Posts per day")
         self.plotStdGraph(xsvals, ysvalsT, "stat_posts_total", "Total posts")
+        self.plotStdGraph(xsvals, ysvalsUU, "stat_users_pd", "Unique users per day")
 
 
 class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
@@ -137,4 +144,10 @@ class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
         return [('statgraphs', "GraphsCommand"), ]
 
     def prepareData(self, controller, container):
-        pass
+        c.graphsToShow = []
+        graphsToShow = ["stat_posts_pd", "stat_posts_total", "stat_users_pd"]
+        for graph in graphsToShow:
+            fname = "%s.png" % graph
+            path = os.path.join(g.OPT.staticPath, fname)
+            if os.path.exists(path):
+                c.graphsToShow.append(fname)

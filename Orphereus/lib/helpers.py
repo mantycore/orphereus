@@ -194,6 +194,9 @@ def staticFile(fileName):
     ext = fileName.split('.')[-1]
     relFileName = "%s/%s" % (ext, fileName)
     localFileName = os.path.join(spl, relFileName)
+    if not os.path.exists(localFileName):
+        localFileName = os.path.join(spl, fileName)
+        relFileName = fileName
     if os.path.exists(localFileName):
         version = g.caches.setdefaultEx(localFileName, os.path.getmtime, localFileName)
         return u"%s%s?version=%s" % (spw, relFileName, str(version))

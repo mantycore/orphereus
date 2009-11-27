@@ -78,6 +78,28 @@ class GraphsCommand(command.Command):
         load_environment(conf.global_conf, conf.local_conf, False)
         g._push_object(meta.globj) #zomg teh h4x
 
+    def plotStdGraph(self, xsvals, ysvals, name, header):
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        from matplotlib.dates import date2num
+        fig = plt.figure(1)
+        plt.suptitle(header)
+        ax = fig.add_subplot(1, 1, 1)
+        color = (0, 0, 1)
+        line = plt.plot_date(xsvals, ysvals, '-', color = color, linewidth = 1)
+        fig.autofmt_xdate()
+        imgdata = StringIO.StringIO()
+        plt.savefig(imgdata, format = 'png')
+        plt.close()
+        imgdata.seek(0)
+        out = imgdata.getvalue()
+        path = os.path.join(g.OPT.staticPath, "%s.png" % name)
+        print "Created:", path
+        f = open(path, "wb+")
+        f.write(out)
+        f.close()
+
     def command(self):
         #devIni = self.args[0]
         self.setup_config(self.options.config, self.options.path)
@@ -85,38 +107,23 @@ class GraphsCommand(command.Command):
         lastdate = datetime.datetime.now()
         currentdate = birthdate
         xsvals = []
-        ysvals = []
+        ysvalsPPD = []
+        ysvalsT = []
         dayscount = (lastdate - birthdate).days
         ccount = 0
         while currentdate < lastdate:
             nextdate = (currentdate + datetime.timedelta(days = 1))
             countfordate = Post.query.filter(and_(Post.date <= nextdate, Post.date >= currentdate)).count()
+            countupdate = Post.query.filter(and_(Post.date <= nextdate, Post.date >= currentdate)).count()
             xsvals.append(currentdate.date())
-            ysvals.append(countfordate)
+            ysvalsPPD.append(countfordate)
+            ysvalsT.append(countupdate)
             currentdate = nextdate
-            print "%d/%d" % (ccount, dayscount)
+            print "Day %d/%d: %d posts, %d total" % (ccount, dayscount, countfordate, countupdate)
             ccount += 1
+        self.plotStdGraph(xsvals, ysvalsPPD, "stat_posts_ppd", "Posts per day")
+        self.plotStdGraph(xsvals, ysvalsT, "stat_posts_total", "Total posts")
 
-        import matplotlib
-        matplotlib.use('Agg')
-        import matplotlib.pyplot as plt
-        from matplotlib.dates import date2num
-        fig = plt.figure(1)
-        plt.suptitle("Total posts count")
-        ax = fig.add_subplot(1, 1, 1)
-        color = (0, 0, 1)
-        line = plt.plot_date(xsvals, ysvals, '-', color = color, linewidth = 1.5)
-        fig.autofmt_xdate()
-        imgdata = StringIO.StringIO()
-        plt.savefig(imgdata, format = 'png')
-        plt.close()
-        imgdata.seek(0)
-        out = imgdata.getvalue()
-        path = os.path.join(g.OPT.staticPath, "stat_posts.png")
-        print "Created:", path
-        f = open(path, "wb+")
-        f.write(out)
-        f.close()
 
 class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
     def __init__(self):

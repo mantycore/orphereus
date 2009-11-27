@@ -172,8 +172,8 @@
             <td class="postblock">${_('Board language')}</td>
             <td>
                 <select name="lang" style="width: 170px;">
+                    <option value="auto">${_("Auto")}</option>
                     %for lang in c.languages:
-                      <option value="auto">${_("Auto")}</option>
                        <option value="${lang}" \
                          %if lang == c.userInst.lang:
                             selected="selected" \
@@ -188,6 +188,7 @@
             <td class="postblock">${_('Captcha language')}</td>
             <td>
                 <select name="cLang" style="width: 170px;">
+                    <option value="auto">${_("Auto")}</option>
                     %for lang in c.languages:
                        <option value="${lang}" \
                          %if lang == c.userInst.cLang:

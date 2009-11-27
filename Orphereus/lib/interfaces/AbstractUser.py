@@ -68,8 +68,8 @@ class AbstractUser(object):
 
                     'style' : lambda val: val in g.OPT.styles,
                     'template' : lambda val: val in g.OPT.templates,
-                    'lang' : lambda val: val in g.OPT.languages,
-                    'cLang' : lambda val: val in g.OPT.languages,
+                    'lang' : lambda val: val in g.OPT.languages or val == "auto",
+                    'cLang' : lambda val: val in g.OPT.languages or val == "auto",
                    }
 
     proxies = {'lang' : lambda val: h.makeLangValid(val),

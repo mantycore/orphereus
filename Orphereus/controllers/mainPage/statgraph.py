@@ -114,7 +114,7 @@ class GraphsCommand(command.Command):
         while currentdate < lastdate:
             nextdate = (currentdate + datetime.timedelta(days = 1))
             countfordate = Post.query.filter(and_(Post.date <= nextdate, Post.date >= currentdate)).count()
-            countupdate = Post.query.filter(and_(Post.date <= nextdate, Post.date >= currentdate)).count()
+            countupdate = Post.query.filter(Post.date <= nextdate).count()
             xsvals.append(currentdate.date())
             ysvalsPPD.append(countfordate)
             ysvalsT.append(countupdate)

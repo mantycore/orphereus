@@ -23,6 +23,7 @@
 from pylons.i18n import N_
 from string import *
 from beaker.cache import CacheManager
+from Orphereus.model.Picture import Picture
 import datetime
 import  sqlalchemy as sa
 from sqlalchemy.sql import and_, or_, not_
@@ -42,6 +43,7 @@ from paste.deploy import appconfig
 from pylons import config
 
 class GraphsCommand(command.Command):
+    graphsToShow = ["stat_posts_pd", "stat_posts_total", "stat_users_pd"]
     max_args = 0
     min_args = 0
 
@@ -80,14 +82,26 @@ class GraphsCommand(command.Command):
 
     def plotStdGraph(self, xsvals, ysvals, name, header):
         import matplotlib
-        matplotlib.use('Agg')
         import matplotlib.pyplot as plt
+        from matplotlib import rc
         from matplotlib.dates import date2num
+        maincolor = "#2E499E"
+        linecolor = "#1CB8E9"
+        #rc('xtick', labelsize = 12, color = 'white', direction = 'out') # x tick labels
+        #rc('lines', lw = 0.5, color = maincolor) # thicker black lines
+        #rc('grid', c = maincolor, lw = 0.5) # solid gray grid lines
+        #rc('text', color = maincolor)
+        rc('axes', edgecolor = maincolor)
+        rc('xtick', color = maincolor)
+        rc('ytick', color = maincolor)
+
         fig = plt.figure(1)
-        plt.suptitle(header)
-        ax = fig.add_subplot(1, 1, 1)
-        color = (1, 0.4, 0)
-        line = plt.plot_date(xsvals, ysvals, '-', color = color, linewidth = 1)
+        #fig.patch.set_alpha(0.0)
+        print dir (fig.patch)
+        plt.suptitle(header, color = maincolor)
+        ax = fig.add_subplot(1, 1, 1) #, axisbg = "#E2E0A7")
+        ax.axes.grid(color = maincolor)
+        line = plt.plot_date(xsvals, ysvals, '-', color = linecolor, linewidth = 1)
         plt.grid(True)
         fig.autofmt_xdate()
         imgdata = StringIO.StringIO()
@@ -100,9 +114,13 @@ class GraphsCommand(command.Command):
         f = open(path, "wb+")
         f.write(out)
         f.close()
+        Picture.makeThumbnail(path, os.path.join(g.OPT.staticPath, "%ss.png" % name), (200, 200))
 
     def command(self):
         #devIni = self.args[0]
+        import matplotlib
+        matplotlib.use('Agg')
+
         self.setup_config(self.options.config, self.options.path)
         birthdate = meta.Session.query(sa.sql.functions.min(Post.date)).scalar()
         lastdate = datetime.datetime.now()
@@ -145,9 +163,11 @@ class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
 
     def prepareData(self, controller, container):
         c.graphsToShow = []
-        graphsToShow = ["stat_posts_pd", "stat_posts_total", "stat_users_pd"]
-        for graph in graphsToShow:
+
+        for graph in GraphsCommand.graphsToShow:
             fname = "%s.png" % graph
-            path = os.path.join(g.OPT.staticPath, fname)
-            if os.path.exists(path):
-                c.graphsToShow.append(fname)
+            tname = "%ss.png" % graph
+            fpath = os.path.join(g.OPT.staticPath, fname)
+            tpath = os.path.join(g.OPT.staticPath, tname)
+            if os.path.exists(fpath) and os.path.exists(tpath):
+                c.graphsToShow.append((tname, fname))

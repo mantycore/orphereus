@@ -18,6 +18,7 @@
 #  along with this program; if not, write to the Free Software                 #
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
+from routes.util import redirect_to
 
 import logging
 from Orphereus.lib.base import *
@@ -57,6 +58,7 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
         map.connect('hsViewLogBase', '/holySynod/viewLog', controller = 'administration/Orphie_Admin', action = 'viewLog', page = 0)
         map.connect('hsViewLog', '/holySynod/viewLog/page/:page', controller = 'administration/Orphie_Admin', action = 'viewLog', requirements = dict(page = '\d+'))
         map.connect('hsInvite', '/holySynod/makeInvite', controller = 'administration/Orphie_Admin', action = 'makeInvite')
+        map.connect('hsCancelInvite', '/holySynod/cancelInvite/:id', controller = 'administration/Orphie_Admin', action = 'cancelInvite', requirements = dict(id = '\d+'))
         map.connect('hsMappings', '/holySynod/manageMappings/:act/:id/:tagid', controller = 'administration/Orphie_Admin', action = 'manageMappings', act = 'show', id = 0, tagid = 0, requirements = dict(id = '\d+', tagid = '\d+'))
         map.connect('hsMergeTags', '/holySynod/mergeTags/:act', controller = 'administration/Orphie_Admin', action = 'mergeTags', act = None)
         map.connect('hsBans', '/holySynod/manageBans', controller = 'administration/Orphie_Admin', action = 'manageBans')
@@ -174,15 +176,6 @@ class OrphieAdminController(OrphieBaseController):
         c.logs = LogEntry.getRange(page * tpp, (page + 1) * tpp)
         return self.render('managementLogs')
 
-    def invitePage(self):
-        if not self.userInst.canMakeInvite():
-            return self.error(_("No way! You aren't holy enough!"))
-
-        c.boardName = _('Invites')
-        c.currentItemId = 'id_hsInvite'
-
-        return self.render('invitePage')
-
     def makeInvite(self):
         if not self.userInst.canMakeInvite():
             return self.error(_("No way! You aren't holy enough!"))
@@ -197,7 +190,17 @@ class OrphieAdminController(OrphieBaseController):
 
             toLog(LOG_EVENT_INVITE, _("Generated invite id %s. Reason: %s") % (invite.id, reason))
             c.inviteCode = invite.invite
+        c.inviteList = Invite.query.all()
         return self.render('manageInvites')
+
+    def cancelInvite(self, id):
+        if not self.userInst.canMakeInvite():
+            return self.error(_("No way! You aren't holy enough!"))
+        invite = Invite.query.filter(Invite.id == int(id)).first()
+        if invite:
+            meta.Session.delete(invite)
+            meta.Session.commit()
+        return redirect_to('hsInvite')
 
     def manageBans(self):
         if not self.userInst.canManageUsers():

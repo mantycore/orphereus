@@ -8,8 +8,7 @@ ${'http://%s/register/%s' % (g.OPT.baseDomain, c.inviteCode)}
 </textarea>
 </div>
 %else:
-<div class="postarea">
-    <form id="inviteForm" method="post" action="${h.url_for('hsInvite')}">
+<form id="inviteForm" method="post" action="${h.url_for('hsInvite')}">
 <table>
     <tr>
         <td>${_('Reason:')}</td>
@@ -20,6 +19,28 @@ ${'http://%s/register/%s' % (g.OPT.baseDomain, c.inviteCode)}
         <td><input type='submit' name='generateInvite' value='${_('Generate invite')}' /></td>
     </tr>
 </table>
-    </form>
-</div>
+</form>
+%if c.inviteList:
+  <hr/>
+  <table class="hlTable" >
+  <thead>
+  <tr>
+  <td>${_('Id')}</td>
+  <td>${_('Date')}</td>
+  <td>${_('Code')}</td>
+  <td>${_('Management')}</td>
+  </tr>
+  </thead>
+  <tbody>
+  %for invite in c.inviteList:
+  <tr>
+  <td>${invite.id}</td>
+  <td>${h.tsFormat(invite.date)}</td>
+  <td><input type="text" value="${invite.invite}" readonly="readonly" /></td>
+  <td><a href="${h.url_for('hsCancelInvite', id=invite.id)}">${_('Cancel')}</a></td>
+  </tr>
+  %endfor
+  </tbody>
+  </table>
+%endif
 %endif

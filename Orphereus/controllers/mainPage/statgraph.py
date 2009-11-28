@@ -97,7 +97,6 @@ class GraphsCommand(command.Command):
 
         fig = plt.figure(1)
         #fig.patch.set_alpha(0.0)
-        print dir (fig.patch)
         plt.suptitle(header, color = maincolor)
         ax = fig.add_subplot(1, 1, 1) #, axisbg = "#E2E0A7")
         ax.axes.grid(color = maincolor)

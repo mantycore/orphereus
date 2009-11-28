@@ -85,8 +85,8 @@ class GraphsCommand(command.Command):
         import matplotlib.pyplot as plt
         from matplotlib import rc
         from matplotlib.dates import date2num
-        maincolor = "#7c7c7c"
-        linecolor = "#b5b5b5"
+        maincolor = "#6c6c6c"
+        linecolor = "#2f3f3f"
         #rc('xtick', labelsize = 12, color = 'white', direction = 'out') # x tick labels
         #rc('lines', lw = 0.5, color = maincolor) # thicker black lines
         #rc('grid', c = maincolor, lw = 0.5) # solid gray grid lines

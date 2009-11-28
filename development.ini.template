@@ -57,8 +57,9 @@ beaker.session.secret = somesecret
 #sqlalchemy.url = oracle://user:passwd@127.0.0.1/SID
 sqlalchemy.pool_recycle = 3600
 
-# this is not configurable in runtime
-core.disabledModules = example.py,httpinfo.py
+# Disabled modules (file or module namespace  names)
+# This option is not configurable at runtime
+core.disabledModules = httpinfo.py,tools.htmlCompressor,mainPage.statgraph
 
 # makes engine ignore configuration in database and use this file
 core.recovery = false

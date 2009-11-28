@@ -85,19 +85,19 @@ class GraphsCommand(command.Command):
         import matplotlib.pyplot as plt
         from matplotlib import rc
         from matplotlib.dates import date2num
-        maincolor = "#2E499E"
-        linecolor = "#1CB8E9"
+        maincolor = "#7c7c7c"
+        linecolor = "#b5b5b5"
         #rc('xtick', labelsize = 12, color = 'white', direction = 'out') # x tick labels
         #rc('lines', lw = 0.5, color = maincolor) # thicker black lines
         #rc('grid', c = maincolor, lw = 0.5) # solid gray grid lines
         #rc('text', color = maincolor)
         rc('axes', edgecolor = maincolor)
-        rc('xtick', color = maincolor)
-        rc('ytick', color = maincolor)
+        #rc('xtick', color = maincolor)
+        #rc('ytick', color = maincolor)
 
         fig = plt.figure(1)
-        #fig.patch.set_alpha(0.0)
-        plt.suptitle(header, color = maincolor)
+        fig.patch.set_alpha(0.0)
+        plt.suptitle(header) # color = maincolor)
         ax = fig.add_subplot(1, 1, 1) #, axisbg = "#E2E0A7")
         ax.axes.grid(color = maincolor)
         line = plt.plot_date(xsvals, ysvals, '-', color = linecolor, linewidth = 1)

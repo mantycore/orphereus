@@ -46,10 +46,11 @@ from pylons.i18n import _, ungettext, N_
 import logging
 log = logging.getLogger(__name__)
 
-t_users = sa.Table("user", meta.metadata,
-    sa.Column("uidNumber", sa.types.Integer, primary_key = True),
-    sa.Column("uid"      , sa.types.String(128), nullable = False)
-    )
+def t_user_init(dialectProps):
+    return sa.Table("user", meta.metadata,
+        sa.Column("uidNumber", sa.types.Integer, sa.Sequence('user_uidNumber_seq'), primary_key = True),
+        sa.Column("uid"      , sa.types.String(128), nullable = False, unique = True)
+        )
 
 #TODO: universal setter/getter, FakeUser-like
 class User(AbstractUser):
@@ -60,20 +61,19 @@ class User(AbstractUser):
         if value != None:
             setattr(self.options, name, value)
 
-    def __init__(self, uid, uidNumber):
+    def __init__(self, uid, createOptions = True):
         self.uid = uid
-        if not uidNumber is None:
-            self.uidNumber = uidNumber
-        self.options = UserOptions()
-        UserOptions.initDefaultOptions(self.options, meta.globj.OPT)
+        if createOptions:
+            self.options = UserOptions()
+            UserOptions.initDefaultOptions(self.options, meta.globj.OPT)
 
     @staticmethod
     def getStats():
         return (User.query.count(), User.query.filter(User.options.has(UserOptions.bantime > 0)).count())
 
     @staticmethod
-    def create(uid, uidNumber = None):
-        user = User(uid, uidNumber)
+    def create(uid):
+        user = User(uid)
         meta.Session.add(user)
         meta.Session.commit()
         return user
@@ -139,6 +139,11 @@ class User(AbstractUser):
         LogEntry.create(who, LOG_EVENT_USER_BAN, N_('Banned user %d for %s days for reason "%s"') % (self.uidNumber, bantime, banreason))
         return N_('User was banned')
 
+    def unban(self):
+        self.options.bantime = 0
+        self.options.banreason = u''
+        meta.Session.commit()
+
     def passwd(self, key, key2, changeAnyway = False, currentKey = False):
         newuid = User.genUid(key)
         olduid = self.uid
@@ -190,7 +195,13 @@ class User(AbstractUser):
 
     # access
     def isBanned(self):
-        return self.options.bantime > 0
+        if self.options.bantime > 0:
+            if self.options.banDate < datetime.datetime.now() - datetime.timedelta(days = min(10000, self.options.bantime)):
+                toLog(LOG_EVENT_MTN_UNBAN, u"User %d unbanned instantly" % self.uidNumber)
+                self.unban()
+                return False
+            return True
+        return False
 
     def bantime(self):
         return self.options.bantime

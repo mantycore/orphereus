@@ -29,22 +29,45 @@ import Image
 import logging
 log = logging.getLogger(__name__)
 
-t_piclist = sa.Table("picture", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key = True),
-    sa.Column("path"     , sa.types.String(255), nullable = False),
-    sa.Column("thumpath" , sa.types.String(255), nullable = False),
-    sa.Column("width"    , sa.types.Integer, nullable = True),
-    sa.Column("height"   , sa.types.Integer, nullable = True),
-    sa.Column("thwidth"  , sa.types.Integer, nullable = False),
-    sa.Column("thheight" , sa.types.Integer, nullable = False),
-    sa.Column("size"     , sa.types.Integer, nullable = False),
-    sa.Column("md5"      , sa.types.String(32), nullable = False),
-    sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extension.id')),
-    sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
-    )
+def t_picture_init(dialectProps):
+    t_piclist = sa.Table("picture", meta.metadata,
+        sa.Column("id"       , sa.types.Integer, sa.Sequence('picture_id_seq'), primary_key = True),
+        sa.Column("path"     , sa.types.String(255), nullable = True),
+        sa.Column("thumpath" , sa.types.String(255), nullable = True),
+        sa.Column("width"    , sa.types.Integer, nullable = True),
+        sa.Column("height"   , sa.types.Integer, nullable = True),
+        sa.Column("thwidth"  , sa.types.Integer, nullable = False),
+        sa.Column("thheight" , sa.types.Integer, nullable = False),
+        sa.Column("size"     , sa.types.Integer, nullable = False),
+        sa.Column("md5"      , sa.types.String(32), nullable = False, index = True),
+        sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extension.id')),
+        sa.Column("pictureInfo"  , sa.types.UnicodeText, nullable = True),
+        #sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
+        )
+
+    t_filesToPostsMap = sa.Table("filesToPostsMap", meta.metadata,
+        sa.Column("id"          , sa.types.Integer, sa.Sequence('filesToPostsMap_id_seq'), primary_key = True),
+        #sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
+        #sa.Column('fileId', sa.types.Integer, sa.ForeignKey('picture.id'), primary_key = True),
+        sa.Column('postId', sa.types.Integer, sa.ForeignKey('post.id')),
+        sa.Column('fileId', sa.types.Integer, sa.ForeignKey('picture.id')),
+        sa.Column("spoiler", sa.types.Boolean, nullable = True),
+        sa.Column("relationInfo"  , sa.types.UnicodeText, nullable = True),
+        sa.Column("animpath" , sa.types.String(255), nullable = True),
+        )
+    #sa.UniqueConstraint(t_filesToPostsMap.c.postId, t_filesToPostsMap.c.fileId)
+    sa.Index('ix_filemap_postid_fileid', t_filesToPostsMap.c.postId, t_filesToPostsMap.c.fileId)
+
+    return t_piclist, t_filesToPostsMap
+
+class PictureAssociation(object):
+    def __init__(self, spoiler, relationInfo, animPath):
+        self.spoiler = spoiler
+        self.relationInfo = relationInfo
+        self.animpath = animPath
 
 class Picture(object):
-    def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath):
+    def __init__(self, relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo):
         self.path = relativeFilePath
         self.thumpath = thumbFilePath
         self.width = picSizes[0]
@@ -54,12 +77,11 @@ class Picture(object):
         self.extid = extId
         self.size = fileSize
         self.md5 = md5
-        if animPath:
-            self.animpath = animPath
+        self.pictureInfo = pictureInfo
 
     @staticmethod
-    def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath = None, commit = False):
-        pic = Picture(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, animPath)
+    def create(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo, commit = False):
+        pic = Picture(relativeFilePath, thumbFilePath, fileSize, picSizes, extId, md5, pictureInfo)
         if commit:
             meta.Session.add(pic)
             meta.Session.commit()
@@ -71,7 +93,11 @@ class Picture(object):
 
     @staticmethod
     def getByMd5(md5):
-        return Picture.query.filter(Picture.md5 == md5).first()
+        q = Picture.query.filter(Picture.md5 == md5)
+        cc = q.count()
+        if cc > 1:
+            log.error("Many pictures (%d) with md5 %s" % (cc, md5))
+        return q.first()
 
     @staticmethod
     def makeThumbnail(source, dest, maxSize):
@@ -86,19 +112,14 @@ class Picture(object):
 
     def pictureRefCount(self):
         from Orphereus.model.Post import Post
-        return Post.query.filter(Post.file == self).count()
+        return Post.query.filter(Post.attachments.any(PictureAssociation.attachedFile.has(Picture.id == self.id))).count()
 
     def deletePicture(self, commit = True):
-        if self.pictureRefCount() == 1:
+        if self.id > 0 and self.pictureRefCount() == 0:
             filePath = os.path.join(meta.globj.OPT.uploadPath, self.path)
             thumPath = os.path.join(meta.globj.OPT.uploadPath, self.thumpath)
             if os.path.isfile(filePath):
                 os.unlink(filePath)
-
-            if self.animpath:
-                animPath = os.path.join(meta.globj.OPT.uploadPath, self.animpath)
-                if os.path.isfile(animPath):
-                    os.unlink(animPath)
 
             ext = self.extension
             if not ext.path:

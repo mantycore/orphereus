@@ -36,7 +36,6 @@ import os
 import hashlib
 import re
 import base64
-from beaker.cache import CacheManager
 from Orphereus.lib.OrphieMark.OrphieParser import OrphieParser
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
@@ -125,7 +124,7 @@ class OrphieMainController(OrphieBaseController):
 
         if tagList and len(tagList) == 1 and tags:
             currentBoard = tags[0]
-            c.boardName = currentBoard.options and currentBoard.options.comment or (u"/%s/" % currentBoard.tag)
+            c.boardName = currentBoard and currentBoard.comment or (u"/%s/" % currentBoard.tag)
             c.tagLine = currentBoard.tag
         elif tagList or tags:
             tagDescr = Post.tagLine(tags, tagList)
@@ -246,7 +245,7 @@ class OrphieMainController(OrphieBaseController):
         else:
             return self.error(_("You must specify post tagline."))
 
-    def gotoDestination(self, post, postid):
+    def gotoDestination(self, post):
         taglineSource = post
         if post.parentid:
             taglineSource = post.parentPost
@@ -266,25 +265,27 @@ class OrphieMainController(OrphieBaseController):
         else:
             curPage = 0
 
+        anchor = "i%d" % post.id
+
         if dest == 0: #current thread
-            if postid:
-                return redirect_to(action = 'GetThread', post = post.parentid, board = None)
+            if post.parentid:
+                return redirect_to(action = 'GetThread', post = post.parentid, board = None, anchor = anchor)
             else:
-                return redirect_to(action = 'GetThread', post = post.id, board = None)
+                return redirect_to(action = 'GetThread', post = post.id, board = None, anchor = anchor)
         elif dest == 1 or dest == 2: # current board
             if  tagLine:
                 if dest == 1:
                     curPage = 0
-                return redirect_to('board', board = tagLine, page = curPage)
+                return redirect_to('board', board = tagLine, page = curPage, anchor = anchor)
         elif dest == 3: # overview
             pass
         elif dest == 4: # destination board
             return redirect_to('boardBase', board = postTagline)
         elif dest == 5: #referrer
-            return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')))
+            return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')), anchor = anchor)
 
         # impossible with correct data
-        return redirect_to('boardBase', board = g.OPT.allowOverview and '~' or postTagline)
+        return redirect_to('boardBase', board = g.OPT.allowOverview and '~' or postTagline, anchor = anchor)
 
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
@@ -303,10 +304,11 @@ class OrphieMainController(OrphieBaseController):
         c.languages = g.OPT.languages
         c.profileChanged = False
         c.boardName = _('Profile')
-        if request.POST.get('update', False):
+        if bool(request.POST.get('update', False)):
             lang = filterText(request.POST.get('lang', self.userInst.lang))
             c.reload = (h.makeLangValid(lang) != self.userInst.lang)
 
+            oldUseFrame = self.userInst.useFrame
             for valueName in self.userInst.booleanValues:
                 val = bool(request.POST.get(valueName, False))
                 setattr(self.userInst, valueName, val)
@@ -320,6 +322,9 @@ class OrphieMainController(OrphieBaseController):
                 val = filterText(request.POST.get(valueName, getattr(self.userInst, valueName)))
                 setattr(self.userInst, valueName, val)
 
+            if oldUseFrame != self.userInst.useFrame:
+                c.proceedRedirect = True
+                c.currentURL = None
             homeExcludeTags = Tag.stringToTagLists(request.POST.get('homeExclude', u''), False)[0]
             #log.debug(homeExcludeTags)
             homeExcludeList = []
@@ -351,7 +356,7 @@ class OrphieMainController(OrphieBaseController):
         for t in homeExcludeTags:
             homeExcludeList.append(t.tag)
         c.homeExclude = ', '.join(homeExcludeList)
-        c.hiddenThreads = Post.filter(Post.id.in_(self.userInst.hideThreads)).options(eagerload('file')).options(eagerload('tags')).all()
+        c.hiddenThreads = Post.filter(Post.id.in_(self.userInst.hideThreads)).options(eagerload('tags')).all()
         for t in c.hiddenThreads:
             tl = []
             for tag in t.tags:
@@ -403,7 +408,7 @@ class OrphieMainController(OrphieBaseController):
         c.boardName = _("Search")
         c.query = text
 
-        tagfilter = False
+        tagfilter = None
         filteredQueryRe = re.compile("^(([^:]+):){1}(.+)$").match(text)
         if filteredQueryRe:
             groups = filteredQueryRe.groups()
@@ -411,8 +416,8 @@ class OrphieMainController(OrphieBaseController):
             text = groups[2]
             tagfilter = Post.buildMetaboardFilter(filterName, self.userInst)[2]
 
-        if not tagfilter:
-            tagfilter = Post.buildMetaboardFilter(False, self.userInst)[2]
+        if tagfilter is None:
+            tagfilter = Post.buildMetaboardFilter(None, self.userInst)[2]
 
         filteringClause = or_(tagfilter, Post.parentPost.has(tagfilter))
 
@@ -439,51 +444,6 @@ class OrphieMainController(OrphieBaseController):
         c.posts = posts
         return self.render('search')
 
-    def Anonimyze(self, post):
-        postid = request.POST.get('postId', False)
-        batch = request.POST.get('batchFA', False)
-        if postid and isNumber(postid):
-            c.FAResult = self.processAnomymize(int(postid), batch)
-        else:
-            c.boardName = _('Final Anonymization')
-            c.FAResult = False
-            c.postId = post
-        return self.render('finalAnonymization')
-
-    def processAnomymize(self, postid, batch):
-        if not g.OPT.enableFinalAnonymity:
-            return [_("Final Anonymity is disabled")]
-
-        if self.userInst.Anonymous:
-            return [_("Final Anonymity available only for registered users")]
-
-        result = []
-        post = Post.getPost(postid)
-        if post:
-            posts = []
-            if not batch:
-                posts = [post]
-            else:
-                posts = Post.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date <= post.date)).all()
-            for post in posts:
-                if post.uidNumber != self.userInst.uidNumber:
-                    result.append(_("You are not author of post #%s") % post.id)
-                else:
-                    delay = g.OPT.finalAHoursDelay
-                    timeDelta = datetime.timedelta(hours = delay)
-                    if post.date < datetime.datetime.now() - timeDelta:
-                        post.uidNumber = 0
-                        post.ip = None
-                        result.append(_("Post #%d successfully anonymized") % post.id)
-                    else:
-                        params = (post.id, str(post.date + timeDelta), str(datetime.datetime.now()))
-                        result.append(_("Can't anomymize post #%d now, it will be allowed after %s (now: %s)" % params))
-            meta.Session.commit()
-        else:
-            result = [_("Nothing to anonymize")]
-
-        return result
-
     def viewLog(self, page):
         if g.OPT.usersCanViewLogs:
             c.boardName = 'Logs'
@@ -499,17 +459,28 @@ class OrphieMainController(OrphieBaseController):
         else:
             return redirect_to('boardBase')
 
-    def oekakiDraw(self, url, selfy, anim, tool):
+    def oekakiDraw(self, url, selfy, anim, tool, sourceId):
         if not self.currentUserCanPost():
             return self.error(_("Posting is disabled"))
 
         c.url = url
-        enablePicLoading = not (request.POST.get('oekaki_type', 'Reply') == 'New')
-        c.selfy = request.POST.get('selfy', False) or selfy == '+selfy'
-        c.animation = request.POST.get('animation', False) or anim == '+anim'
+        enablePicLoading = not (request.POST.get('oekaki_type', 'reply').lower() == 'new')
+
+        selfy = request.POST.get('selfy', selfy)
+        if selfy:
+            c.selfy = (selfy == '+selfy') or (selfy == 'on')
+        else:
+            c.selfy = self.userInst.oekUseSelfy
+
+        anim = request.POST.get('animation', anim)
+        if anim:
+            c.animation = (anim == '+anim') or (anim == 'on')
+        else:
+            c.animation = self.userInst.oekUseAnim
 
         oekType = ''
-        if request.POST.get('oekaki_painter', False) == 'shiPro' or tool == 'shiPro':
+        tool = request.POST.get('oekaki_painter', tool)
+        if (tool and tool.lower() == 'shipro') or (not tool and c.userInst.oekUsePro):
             oekType = 'Shi pro'
             c.oekakiToolString = 'pro'
         else:
@@ -525,27 +496,45 @@ class OrphieMainController(OrphieBaseController):
             c.height = 300
         c.tempid = str(long(time.time() * 10 ** 7))
 
-        oekSource = 0
-        if isNumber(url) and enablePicLoading:
+        oekSource = None
+        sourceAttachment = request.POST.get('sourceAttachment', None) or sourceId
+        if sourceAttachment and isNumber(url) and enablePicLoading:
             post = Post.getPost(url)
+            if not post:
+                return self.error(_("Post doesn't exists"))
 
-            pic = post.file
+            sourceAttachment = int(sourceAttachment)
+            if sourceAttachment >= len(post.attachments):
+                return self.error(_("Post doesn't have such many attachments"))
+
+            attachment = post.attachments[sourceAttachment]
+            pic = attachment.attachedFile
             if pic and pic.width:
                 oekSource = post.id
                 c.canvas = h.modLink(pic.path, c.userInst.secid())
                 c.width = pic.width
                 c.height = pic.height
-                if pic.animpath:
-                    c.pchPath = h.modLink(pic.animpath, c.userInst.secid())
-        Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, c.selfy)
+
+                if attachment.animpath:
+                    c.pchPath = h.modLink(attachment.animpath, c.userInst.secid())
+            else:
+                sourceAttachment = None
+        else:
+            sourceAttachment = None
+
+        Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, sourceAttachment, c.selfy)
         return self.render('spainter')
 
-    def viewAnimation(self, source):
+    def viewAnimation(self, source, animid):
         post = Post.getPost(source)
-        if not post or not post.file or not post.file.animpath:
+        animid = int(animid)
+        if not post or not post.attachments or animid >= len(post.attachments):
             return self.error(_("No animation associated with this post"))
 
-        c.pchPath = h.modLink(post.file.animpath, c.userInst.secid())
+        animpath = post.attachments[animid].animpath
+        if not animpath:
+            return self.error(_("Incorrect animation ID"))
+        c.pchPath = h.modLink(animpath, c.userInst.secid())
         return self.render('shiAnimation')
 
     def PostReply(self, post):
@@ -663,7 +652,7 @@ class OrphieMainController(OrphieBaseController):
             for tag in createdTags:
                 tagdef = self.getTagDescription(tag.tag, textFilter)
                 if tagdef:
-                    tag.options.comment = tagdef
+                    tag.comment = tagdef
 
             if not tags:
                 return errorHandler(_("You should specify at least one board"))
@@ -676,11 +665,11 @@ class OrphieMainController(OrphieBaseController):
             svcTagsCC = 0
             permaTagsCC = 0
             for tag in tags:
-                if not (tag.options and tag.options.service):
+                if not tag.service:
                     usualTagsCC += 1
                 else:
                     svcTagsCC += 1
-                if tag.options and tag.options.persistent:
+                if tag.persistent:
                     permaTagsCC += 1
 
             if len(tags) > 1 and not g.OPT.allowCrossposting:
@@ -708,20 +697,35 @@ class OrphieMainController(OrphieBaseController):
         if Tag.tagsInConflict(options, postid): #not options.images and ((not options.imagelessThread and not postid) or (postid and not options.imagelessPost)):
             return errorHandler(_("Unacceptable combination of tags"))
 
-        postMessageInfo = None
+        files = []
+        postMessageInfo = None # TODO: Reserved for future. It may be used for "USER WAS BANNED FOR THIS POST" messages
         tempid = request.POST.get('tempid', False)
         animPath = None
-        if tempid: # TODO FIXME : move into parser
+        oekakiInfo = None
+        if tempid:
             oekaki = Oekaki.get(tempid)
-            animPath = oekaki.animPath
-            file = FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path))
-            postMessageInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds</span>' \
-                             % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time / 1000)))
-            if oekaki.source:
-                postMessageInfo += ", source " + self.formatPostReference(oekaki.source)
-            oekaki.delete()
-        else:
-            file = request.POST.get('file', False)
+            if oekaki:
+                animPath = oekaki.animPath
+                files = [(FieldStorageLike(oekaki.path, os.path.join(g.OPT.uploadPath, oekaki.path)), -1)]
+                oekakiInfo = u'<span class="postInfo">Drawn with <b>%s%s</b> in %s seconds' \
+                                 % (oekaki.type, oekaki.selfy and "+selfy" or "", str(int(oekaki.time / 1000)))
+                if oekaki.sourcePost:
+                    oekakiInfo += ", picture %d from post %s was used as source" % (oekaki.sourcePicIdx + 1, self.formatPostReference(oekaki.sourcePost))
+                oekakiInfo += u'</span>'
+                oekaki.delete()
+        #else:
+        retest = re.compile("^file_(\d+)$")
+        fileIds = []
+        for i in request.POST.keys():
+            matcher = retest.match(i)
+            if matcher:
+                fileIds.append(int(matcher.group(1)))
+        fileIds = list(set(fileIds))
+        fileIds.sort()
+        for fileId in fileIds:
+            file = request.POST.get('file_%d' % fileId, None)
+            if file is not None:
+                files.append((file, fileId))
 
         postMessageShort = None
         postMessageRaw = None
@@ -745,61 +749,84 @@ class OrphieMainController(OrphieBaseController):
             else:
                 return errorHandler(_('Message is too long'))
 
-        fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
-        #log.debug(fileDescriptors)
-        fileHolder = False
-        existentPic = False
-        picInfo = False
-        if fileDescriptors:
-            fileHolder = fileDescriptors[0] # Object for file auto-removing
-            picInfo = fileDescriptors[1]
-            existentPic = fileDescriptors[2]
-            errorMessage = fileDescriptors[3]
-            if errorMessage:
-                return self.error(errorMessage)
+        picInfos = [] #TODO: class PicInfo instead of Empty
+        for file, fileId in files:
+            assert len(picInfos) <= options.allowedAdditionalFiles + 1
+            if len(picInfos) == options.allowedAdditionalFiles + 1:
+                break
 
-        if picInfo:
-            if not options.images:
-                return errorHandler(_("Files are not allowed on this board"))
-            if picInfo.fileSize > options.maxFileSize:
-                return errorHandler(_("File size (%d) exceeds the limit (%d)") % (picInfo.fileSize, options.maxFileSize))
-            if picInfo.sizes and picInfo.sizes[0] and picInfo.sizes[1] and (picInfo.sizes[0] < options.minPicSize or picInfo.sizes[1] < options.minPicSize):
-                return errorHandler(_("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize))
+            fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
+            #log.debug(fileDescriptors)
+            fileHolder = False
+            #existentPic = False
+            picInfo = False
+            if fileDescriptors:
+                fileHolder = fileDescriptors[0] # Object for file auto-removing
+                picInfo = fileDescriptors[1]
+                existentPic = fileDescriptors[2]
+                errorMessage = fileDescriptors[3]
+                if errorMessage:
+                    return self.error(errorMessage)
 
-            try:
-                audio = EasyID3(picInfo.localFilePath)
-                taglist = sorted(audio.keys())
-                taglist.reverse()
-                tagsToShow = taglist
-                if tagsToShow:
-                    trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
-                    for tag in tagsToShow:
-                        #log.debug(tag)
-                        #log.debug(audio[tag])
-                        value = audio[tag]
-                        if value and isinstance(value, list) and tag in id3FieldsNames.keys():
-                            value = ' '.join(value)
-                            trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
-                    if not postMessageInfo:
-                        postMessageInfo = trackInfo
-                    else:
-                        postMessageInfo += '<br/>%s' % trackInfo
-            except:
-                pass
+                picInfo.existentPic = existentPic
+                picInfo.fileHolder = fileHolder
+                picInfo.additionalInfo = ''
 
-        if not postMessage and not picInfo and not postMessageInfo:
+            if picInfo:
+                if not options.images:
+                    return errorHandler(_("Files are not allowed on this board"))
+                if picInfo.fileSize > options.maxFileSize:
+                    return errorHandler(_("File size (%d) exceeds the limit (%d)") % (picInfo.fileSize, options.maxFileSize))
+                if picInfo.sizes and picInfo.sizes[0] and picInfo.sizes[1] and (picInfo.sizes[0] < options.minPicSize or picInfo.sizes[1] < options.minPicSize):
+                    return errorHandler(_("Image is too small. At least one side should be %d or more pixels.") % (options.minPicSize))
+
+                if fileId == -1: # Oekaki
+                    picInfo.relationInfo = oekakiInfo
+                    picInfo.animPath = animPath
+                else:
+                    picInfo.relationInfo = None
+                    picInfo.animPath = None
+
+                if picInfo.extension.type == 'music':
+                    try:
+                        audio = EasyID3(picInfo.localFilePath)
+                        taglist = sorted(audio.keys())
+                        taglist.reverse()
+                        tagsToShow = taglist
+                        if tagsToShow:
+                            trackInfo = '<span class="postInfo">ID3 info:</span><br/>'
+                            for tag in tagsToShow:
+                                #log.debug(tag)
+                                #log.debug(audio[tag])
+                                value = audio[tag]
+                                if value and isinstance(value, list) and tag in id3FieldsNames.keys():
+                                    value = ' '.join(value)
+                                    trackInfo += u'<b>%s</b>: %s<br/>' % (filterText(id3FieldsNames[tag]), filterText(value))
+                            picInfo.additionalInfo = trackInfo
+                            #if not postMessageInfo:
+                            #    postMessageInfo = trackInfo
+                            #else:
+                            #    postMessageInfo += '<br/>%s' % trackInfo
+                    except:
+                        log.debug("Can't load ID3 from %s" % picInfo.localFilePath)
+
+                #TODO: move tags here
+                picInfo.spoiler = None
+                if options.enableSpoilers:
+                    picInfo.spoiler = bool(request.POST.get('spoiler_%d' % fileId, None))
+
+                if len(picInfos) < options.allowedAdditionalFiles + 1:
+                    picInfos.append(picInfo)
+
+        if not postMessage and not picInfos and not postMessageInfo:
             return errorHandler(_("At least message or file should be specified"))
 
-        postSpoiler = False
-        if options.enableSpoilers:
-            postSpoiler = request.POST.get('spoiler', False)
-
-        postSage = request.POST.get('sage', False)
+        postSage = bool(request.POST.get('sage', False))
         if postid:
-            if not picInfo and not options.imagelessPost:
+            if not picInfos and not options.imagelessPost:
                 return errorHandler(_("Replies without image are not allowed"))
         else:
-            if not picInfo and not options.imagelessThread:
+            if not picInfos and not options.imagelessThread:
                 return errorHandler(_("Threads without image are not allowed"))
 
         postParams = empty()
@@ -808,19 +835,22 @@ class OrphieMainController(OrphieBaseController):
         postParams.messageRaw = postMessageRaw
         postParams.messageInfo = postMessageInfo
         postParams.title = postTitle
-        postParams.spoiler = postSpoiler
+        #postParams.spoiler = postSpoiler
         postParams.uidNumber = self.userInst.uidNumber
         postParams.removemd5 = postRemovemd5
         postParams.postSage = postSage
         #postParams.replyTo = postid
         postParams.thread = thread
         postParams.tags = tags
-        postParams.existentPic = existentPic
-        postParams.picInfo = picInfo
+        #postParams.existentPics = [existentPic, existentPic]
+        postParams.picInfos = picInfos
         postParams.bumplimit = options.bumplimit
 
-        if postParams.picInfo:
-            postParams.picInfo.animPath = animPath
+        #if animPath and postParams.picInfos:
+        #    assert len(postParams.picInfos) == 1
+        #    for picInfo in postParams.picInfos:
+        #        picInfo.animPath = animPath
+        #        picInfo.additionalInfo = None
 
         postParams.ip = None
         if self.userInst.Anonymous or g.OPT.saveAnyIP:
@@ -828,8 +858,9 @@ class OrphieMainController(OrphieBaseController):
 
         post = Post.create(postParams)
 
-        if fileHolder:
-            fileHolder.disableDeletion()
+        for picInfo in postParams.picInfos:
+            if picInfo.fileHolder:
+                picInfo.fileHolder.disableDeletion()
 
         for hook in postingHooks:
             hook.afterPostCallback(post, self.userInst, afterPostCallbackParams.get(hook.pluginId(), None))
@@ -839,4 +870,4 @@ class OrphieMainController(OrphieBaseController):
         if ajaxRequest:
             return 'completed'
         else:
-            self.gotoDestination(post, postid)
+            return self.gotoDestination(post)

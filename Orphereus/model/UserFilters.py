@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -30,13 +30,15 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_userFilters = sa.Table("userFilters", meta.metadata,
-    sa.Column("id"        , sa.types.Integer    , primary_key=True),
-    sa.Column("uidNumber" , sa.types.Integer    , sa.ForeignKey('user.uidNumber')),
-    sa.Column("filter"    , sa.types.UnicodeText, nullable=False)
-    )
+def t_userfilters_init(dialectProps):
+    return sa.Table("userFilters", meta.metadata,
+            sa.Column("id"        , sa.types.Integer    , sa.Sequence('userFilters_id_seq'), primary_key = True),
+            sa.Column("uidNumber" , sa.types.Integer    , sa.ForeignKey('user.uidNumber'), index = True),
+            sa.Column("filter"    , sa.types.Unicode(meta.dialectProps['userFilterLengthLimit']), nullable = False)
+            )
 
 class UserFilters(object):
     def __init__(self, uidNumber, filter):
         self.uidNumber = uidNumber
-        self.filter = filter
+        maxLen = meta.dialectProps['userFilterLengthLimit']
+        self.filter = filter[:maxLen]

@@ -39,7 +39,7 @@ def  parseBlockFormattingElements(input):
     tagDelimiters = ['%%', '``', '**', '*', '__', '$$']
     tagDelimiters.extend(itemizers)
     tagRegex = {
-                '``' : re.compile("``(=\w+){0,1}")
+                '``' : re.compile("^``(=\w+){0,1}$")
                }
     plainTextMode = False
     blockClass = None

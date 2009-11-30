@@ -25,14 +25,15 @@ from sqlalchemy.orm import eagerload
 from sqlalchemy.sql import and_, or_, not_
 
 from Orphereus.model import meta
-from Orphereus.model.Picture import Picture
+from Orphereus.model.Picture import Picture, PictureAssociation
 from Orphereus.model.Tag import Tag
-from Orphereus.model.TagOptions import TagOptions
+#from Orphereus.model.TagOptions import TagOptions
 from Orphereus.model.LogEntry import LogEntry
 from Orphereus.lib.miscUtils import getRPN, empty
 from Orphereus.lib.constantValues import *
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 import datetime
+import os
 
 from pylons.i18n import _, ungettext, N_
 from paste.deploy.converters import asbool
@@ -42,8 +43,9 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_posts = sa.Table("post", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key = True),
+def t_posts_init(dialectProps):
+    return sa.Table("post", meta.metadata,
+    sa.Column("id"       , sa.types.Integer, sa.Sequence('post_id_seq'), primary_key = True, index = not meta.dialectProps['disableComplexIndexes']),
     sa.Column("secondaryIndex", sa.types.Integer, nullable = True),
     sa.Column("parentid" , sa.types.Integer, sa.ForeignKey('post.id'), nullable = True, index = True),
     sa.Column("message"  , sa.types.UnicodeText, nullable = True),
@@ -52,16 +54,14 @@ t_posts = sa.Table("post", meta.metadata,
     sa.Column("messageInfo"  , sa.types.UnicodeText, nullable = True),
     sa.Column("title"    , sa.types.UnicodeText, nullable = True),
     sa.Column("sage"     , sa.types.Boolean, nullable = True),
-    sa.Column("uidNumber", sa.types.Integer, nullable = True),
-    sa.Column("picid"    , sa.types.Integer, sa.ForeignKey('picture.id')),
+    sa.Column("uidNumber", sa.types.Integer, nullable = True, index = True),
     sa.Column("date"     , sa.types.DateTime, nullable = False, index = True),
     sa.Column("bumpDate", sa.types.DateTime, nullable = True, index = True),
-    sa.Column("spoiler"  , sa.types.Boolean, nullable = True),
     sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
     sa.Column("removemd5"  , sa.types.String(32), nullable = True),
     sa.Column("ip"         , meta.UIntType, nullable = True),
     sa.Column("pinned"  , sa.types.Boolean, nullable = True, index = True),
-    sa.Column("hasAttachment"  , sa.types.Boolean, nullable = False, index = False),
+    #sa.Column("spoiler"  , sa.types.Boolean, nullable = True),
     )
 #sa.Index('idx_BumpPin', t_posts.c.bumpDate, t_posts.c.pinned)
 
@@ -85,7 +85,7 @@ class Post(object):
         post.messageRaw = postParams.messageRaw
         post.messageInfo = postParams.messageInfo
         post.title = postParams.title
-        post.spoiler = postParams.spoiler
+        #post.spoiler = postParams.spoiler
         post.uidNumber = postParams.uidNumber
         if postParams.removemd5:
             post.removemd5 = postParams.removemd5
@@ -108,19 +108,36 @@ class Post(object):
             post.bumpDate = datetime.datetime.now()
             post.tags = postParams.tags
 
-        if not postParams.existentPic:
-            picInfo = postParams.picInfo
+        recentlyCreated = {}
+        for picInfo in postParams.picInfos:
             if picInfo:
-                post.file = Picture.create(picInfo.relativeFilePath,
-                                     picInfo.thumbFilePath,
-                                     picInfo.fileSize,
-                                     picInfo.sizes,
-                                     picInfo.extId,
-                                     picInfo.md5, picInfo.animPath)
-        else:
-            post.file = postParams.existentPic
+                existent = recentlyCreated.get(picInfo.md5, picInfo.existentPic)
+                if not existent: # in postParams.existentPics:
+                    newPic = Picture.create(picInfo.relativeFilePath,
+                                         picInfo.thumbFilePath,
+                                         picInfo.fileSize,
+                                         picInfo.sizes,
+                                         picInfo.extension.id,
+                                         picInfo.md5,
+                                         picInfo.additionalInfo,
+                                         )
+                    assoc = PictureAssociation(picInfo.spoiler, picInfo.relationInfo, picInfo.animPath)
+                    meta.Session.add(assoc)
+                    assoc.attachedFile = newPic
+                    post.attachments.append(assoc)
+                    recentlyCreated[picInfo.md5] = newPic
+                else:
+                    alreadyAdded = None
+                    for attachment in post.attachments:
+                        if attachment.attachedFile == existent:
+                            alreadyAdded = True
+                            break
+                    if not alreadyAdded:
+                        assoc = PictureAssociation(picInfo.spoiler, None, None)
+                        meta.Session.add(assoc)
+                        assoc.attachedFile = existent
+                        post.attachments.append(assoc)
 
-        post.hasAttachment = bool(post.file)
         post.incrementStats()
         meta.Session.add(post)
         meta.Session.commit()
@@ -133,7 +150,7 @@ class Post(object):
                 tag.replyCount -= (self.replyCount + 1)
                 self.tags.remove(tag)
         else:
-            raise "Can't remove tags from reply"
+            raise Exception("Can't remove tags from reply")
 
     def appendTag(self, tag):
         if not self.parentid:
@@ -142,7 +159,7 @@ class Post(object):
                 tag.replyCount += (self.replyCount + 1)
                 self.tags.append(tag)
         else:
-            raise "Can't remove tags from reply"
+            raise Exception("Can't remove tags from reply")
 
     def incrementStats(self):
         taglist = self.tags
@@ -161,7 +178,7 @@ class Post(object):
         if getattr(self, 'smCached', None) == None:
             self.smCached = False
             for tag in self.tags:
-                if tag.options and tag.options.selfModeration:
+                if tag.selfModeration:
                     self.smCached = True
                     break
         return self.smCached
@@ -171,7 +188,7 @@ class Post(object):
         names = []
         rawNames = []
         for t in tags:
-            names.append(t.options and t.options.comment or (u"/%s/" % t.tag))
+            names.append(t.comment or (u"/%s/" % t.tag))
             rawNames.append(t.tag)
         if tagNames:
             for name in tagNames:
@@ -188,7 +205,7 @@ class Post(object):
 
     def filterReplies(self):
         if self.parentPost:
-            return False
+            return []
         else:
             return Post.query.filter(Post.parentid == self.id).order_by(Post.id.asc())
 
@@ -227,9 +244,14 @@ class Post(object):
                 elif arg == "*":
                     return (buildMyPostsFilter(True), [])
                 elif arg == '~':
-                    disableExclusions = Post.tags.any(Tag.id.in_(userInst.homeExclude))
-                    disableHidden = Post.tags.any(Tag.options.has(not_(TagOptions.showInOverview)))
-                    return (not_(or_(disableExclusions, disableHidden)), [])
+                    #disableExclusions = Post.tags.any(Tag.id.in_(userInst.homeExclude))
+                    #disableHidden = Post.tags.any(not_(Tag.showInOverview))
+                    #return (not_(or_(disableExclusions, disableHidden)), [])
+                    #inclusion = Post.tags.any(and_(Tag.showInOverview == True, not_(Tag.id.in_(userInst.homeExclude))))
+                    if userInst.homeExclude:
+                        return (not_(Post.tags.any(or_(Tag.showInOverview == False, Tag.id.in_(userInst.homeExclude)))), [])
+                    else:
+                        return (not_(Post.tags.any(Tag.showInOverview == False)), [])
                 else:
                     retarg = [arg]
                     hooks = meta.globj.implementationsOf(AbstractPostingHook)
@@ -243,8 +265,8 @@ class Post(object):
             else:
                 return arg
 
-        filter = Post.query.options(eagerload('file')).filter(Post.parentid == None)
-        filteringExpression = Post.excludeAdminTags(userInst)
+        filter = Post.query.options(eagerload('attachments')).filter(Post.parentid == None)
+        filteringExpression = Post.excludeAdminOnlyThreads(userInst)
         tagList = []
         if url:
             operators = {'+':1, '-':1, '^':2, '&':2}
@@ -289,16 +311,22 @@ class Post(object):
         return (filter, tagList, filteringExpression)
 
     @staticmethod
-    def excludeAdminTags(userInst):
-        blockHidden = not_(Post.id == None)
+    def excludeAdminOnlyThreads(userInst):
+        blockHidden = None #not_(Post.id == None)
         if not userInst.isAdmin():
-            blocker = Post.tags.any(Tag.id.in_(meta.globj.forbiddenTags))
-            blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))
+            # Now excludeAdminOnlyThreads uses only for thread exclusion, so we shouldn't exclude children...
+            blockHidden = not_(Post.tags.any(Tag.adminOnly == True))
+            #blocker = Post.tags.any(Tag.adminOnly == True)
+            #blockHidden = not_(or_(blocker, Post.parentPost.has(blocker)))
         return blockHidden
 
     @staticmethod
     def buildThreadFilter(userInst, threadId):
-        return Post.filter(Post.excludeAdminTags(userInst)).filter(Post.id == threadId).options(eagerload('file'))
+        exclusion = Post.excludeAdminOnlyThreads(userInst)
+        if exclusion is not None:
+            return Post.filter(exclusion).filter(Post.id == threadId).options(eagerload('attachments'))
+        else:
+            return Post.filter(Post.id == threadId).options(eagerload('attachments'))
 
     @staticmethod
     def getThread(threadId):
@@ -360,10 +388,24 @@ class Post(object):
             for post in Post.query.filter(Post.parentid == self.id).all():
                 post.deletePost(userInst, checkOwnage = False)
 
-        if self.file:
-            pic = self.file
-            self.file = None
-            pic.deletePicture(True)
+        if self.attachments:
+            filesToDelete = []
+            #TODO: ability for deletion separate files
+            for picAssoc in self.attachments:
+                filesToDelete.append(picAssoc.attachedFile)
+                picAssoc.attachedFile = Picture.getPicture(0)
+                picAssoc.spoiler = None
+                picAssoc.relationInfo = None
+                if picAssoc.animpath:
+                    picAssoc.animpath = None
+                    animPath = os.path.join(meta.globj.OPT.uploadPath, picAssoc.animpath)
+                    if os.path.isfile(animPath):
+                        os.unlink(animPath)
+
+            meta.Session.commit()
+
+            for picAssoc in filesToDelete:
+                picAssoc.deletePicture(True)
 
         if not (fileonly and postOptions.imagelessPost):
             invisBumpDisabled = not(asbool(meta.globj.OPT.invisibleBump))

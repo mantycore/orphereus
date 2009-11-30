@@ -1,37 +1,9 @@
 # -*- coding: utf-8 -*-
 <%page args="thread"/>
-
-%if thread.file:
-<span class="filesize">
-    <a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}" \
-    %if thread.file.extension.newWindow:
-        target="_blank" \
-    %endif
-    >
-    ${h.modLink(thread.file.path, c.userInst.secid(), True)}</a>
-
-    (<em>${'%.2f' % (thread.file.size / 1024.0)} \
-    %if thread.file.width and thread.file.height:
-        ${_('Kbytes')}, ${thread.file.width}x${thread.file.height}</em>)
-    %else:
-        ${_('Kbytes')}</em>)
-    %endif
-</span>
-
-<br />
-<a href="${g.OPT.filesPathWeb + h.modLink(thread.file.path, c.userInst.secid())}" \
-%if thread.file.extension.newWindow:
-    target="_blank" \
+%if thread.attachments and (len(thread.attachments) == 1):
+<%include file="wakaba.fileBlock.mako" args="post=thread,opPost=True,searchMode=None,newsMode=None" />
 %endif
->
 
-<%include file="wakaba.thumbnail.mako" args="post=thread" />
-
-</a>
-%elif thread.hasAttachment:
-    <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-    <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>
-%endif
 <a name="i${thread.id}"></a>
 &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Delete"/></a>
 %if thread.pinned:
@@ -77,9 +49,7 @@ ${h.tsFormat(thread.date)} \
     ${_('Posted in')}:
 %for t in thread.tags:
     <a href="${h.url_for('boardBase', board=t.tag)}" \
-    %if t.options:
-        title="${t.options.comment}" \
-    %endif
+    title="${t.comment}" \
     >/${t.tag}/</a>
 %endfor
 
@@ -94,15 +64,16 @@ ${h.tsFormat(thread.date)} \
 %endif
 
 %if c.currentUserCanPost:
-    %if thread.file and thread.file.width:
-        [<a href="${h.url_for('oekakiDraw', url=thread.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>]
-    %endif
     [<a href="${h.url_for('thread', post=thread.id)}">${_('Reply')}</a>]
 %else:
     [<a href="${h.postUrl(thread.id, thread.id)}">${_('Read')}</a>]
 %endif
 
-${h.threadInfoCallback(thread, c.userInst)}
+${h.threadInfoCallback(thread, c.userInst)}<br />
+%endif
+
+%if thread.attachments and (len(thread.attachments) > 1):
+<%include file="wakaba.fileBlock.mako" args="post=thread,opPost=True,searchMode=None,newsMode=None" />
 %endif
 
 <blockquote class="postbody" id="quickReplyNode${thread.id}">
@@ -115,9 +86,6 @@ ${h.threadInfoCallback(thread, c.userInst)}
     %endif
     %if thread.messageInfo:
         <div>${thread.messageInfo}</div>
-    %endif
-    %if thread.file and thread.file.animpath:
-        [<a href="${h.url_for('viewAnimation', source=thread.id)}" target="_blank">${_('Animation')}</a>]
     %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:

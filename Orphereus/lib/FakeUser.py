@@ -63,7 +63,7 @@ class FakeUser(AbstractUser):
         #return session.get(name, default)
 
     def optionsDump(self):
-        return UserOptions.optionsDump(self.options)
+        return UserOptions.optionsDump(self.__user.options)
 
     def isValid(self):
         return self.__valid

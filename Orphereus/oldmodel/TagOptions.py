@@ -22,13 +22,13 @@
 import sqlalchemy as sa
 from sqlalchemy import orm
 
-from Orphereus.model import meta
+from Orphereus.oldmodel import meta
 import datetime
 
 import logging
 log = logging.getLogger(__name__)
 
-from Orphereus.model import meta
+from Orphereus.oldmodel import meta
 
 t_tagOptions = sa.Table("tagOptions", meta.metadata,
     sa.Column("id"       , sa.types.Integer, primary_key = True),

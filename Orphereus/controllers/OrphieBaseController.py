@@ -83,6 +83,7 @@ class OrphieBaseController(BaseController):
                     self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 1: %s") % hashlib.md5(ua).hexdigest(), -1)
                     break
 
+        c.userPostsToHighlight = []
         #log.debug(request.cookies)
         #log.debug(session)
         self.setLang()
@@ -280,6 +281,11 @@ class OrphieBaseController(BaseController):
 
     def currentUserCanPost(self):
         return g.OPT.allowPosting and self.userInst and ((self.userInst.Anonymous and g.OPT.allowAnonymousPosting) or not self.userInst.Anonymous)
+
+    def destroySession(self):
+        session.clear()
+        session.save()
+        session.delete()
 
     def currentUserIsAuthorized(self):
         return self.userInst.isValid() and (self.sessUid() == self.userInst.uidNumber)

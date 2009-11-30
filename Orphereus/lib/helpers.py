@@ -40,10 +40,10 @@ from Orphereus.lib.interfaces.AbstractPostOutputHook import AbstractPostOutputHo
 import logging
 log = logging.getLogger(__name__)
 
-def overrideThumbnail(post, context):
+def overrideThumbnail(post, context, thumbnailId):
     outputHooks = g.implementationsOf(AbstractPostOutputHook)
     for hook in outputHooks:
-        if hook.overrideThumbnail(post, context):
+        if hook.overrideThumbnail(post, context, thumbnailId):
             c.currentThumbnailHook = hook
             return True
     c.currentThumbnailHook = None
@@ -58,7 +58,12 @@ def repliesProxy(thread, controller):
     intFlags = (int(bool(c.board)) << 1) + int(not(user.hideLongComments) or (c.count == 1))
     tmplPrefix = (len(g.OPT.templates) > 1 and user.template) or ''
     keyPrefix = str('%s%d%s' % (tmplPrefix, intFlags, get_lang()[0]))
-    postsDict = dict([(post.id, post) for post in thread.Replies])
+    postPairs = []
+    for post in thread.Replies:
+        postPairs.append((post.id, post))
+        if c.userInst.hlOwnPosts and post.uidNumber == c.userInst.uidNumber:
+            c.userPostsToHighlight.append(post.id)
+    postsDict = dict(postPairs)
     postsRender = g.mc.get_multi(postsDict.keys(), key_prefix = keyPrefix)
     absentPosts = list(set(postsDict.keys()) - set(postsRender.keys()))
     if absentPosts:
@@ -189,11 +194,17 @@ def staticFile(fileName):
     ext = fileName.split('.')[-1]
     relFileName = "%s/%s" % (ext, fileName)
     localFileName = os.path.join(spl, relFileName)
-    version = g.caches.setdefaultEx(localFileName, os.path.getmtime, localFileName)
-    return u"%s%s?version=%s" % (spw, relFileName, str(version))
+    if not os.path.exists(localFileName):
+        localFileName = os.path.join(spl, fileName)
+        relFileName = fileName
+    if os.path.exists(localFileName):
+        version = g.caches.setdefaultEx(localFileName, os.path.getmtime, localFileName)
+        return u"%s%s?version=%s" % (spw, relFileName, str(version))
+    log.error("Static file not found: %s" % localFileName)
+    return u"fileNotFound"
 
 def ipToInt(ipStr):
-    val = struct.unpack('!L', socket.inet_aton(ipStr))[0]
+    val = struct.unpack('!L', socket.inet_aton(ipStr.split(":")[-1]))[0]
     if val > sys.maxint:
         val = -(sys.maxint + 1) * 2 + val
     return val
@@ -202,17 +213,21 @@ def intToIp(ipint):
     ipi = int(ipint)
     return str((ipi >> 24) & 0xff) + '.' + str((ipi >> 16) & 0xff) + '.' + str((ipi >> 8) & 0xff) + '.' + str(ipi & 0xff)
 
+def langForCurrentRequest():
+    langToSet = g.OPT.defaultLang
+    for lang in request.languages:
+        lang = lang[0:2]
+        if lang in g.OPT.languages:
+            langToSet = lang
+            break
+    return langToSet
+
 def setLang(lang):
     oldLang = get_lang()
     if (lang and (len(lang) == 2)):
         set_lang(lang)
     else:
-        langToSet = g.OPT.defaultLang
-        for lang in request.languages:
-            lang = lang[0:2]
-            if lang in g.OPT.languages:
-                langToSet = lang
-                break
+        langToSet = langForCurrentRequest()
         set_lang(langToSet) # TODO: check
     return oldLang[0]
 
@@ -235,7 +250,7 @@ def postEnabledToShow(post, user):
         post = post.parentPost
 
     for tag in post.tags:
-        if tag.id in g.forbiddenTags:
+        if tag.adminOnly:
             return False
 
     return True

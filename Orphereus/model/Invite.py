@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -31,11 +31,12 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_invites = sa.Table("invite", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("invite"   , sa.types.String(128), nullable=False),
-    sa.Column("date"     , sa.types.DateTime,  nullable=False)
-    )
+def t_invite_init(dialectProps):
+    return sa.Table("invite", meta.metadata,
+            sa.Column("id"       , sa.types.Integer, sa.Sequence('invite_id_seq'), primary_key = True),
+            sa.Column("invite"   , sa.types.String(128), nullable = False),
+            sa.Column("date"     , sa.types.DateTime, nullable = False)
+            )
 
 class Invite(object):
     def __init__(self, code):
@@ -44,7 +45,7 @@ class Invite(object):
 
     @staticmethod
     def getId(code):
-        invite = Invite.query.filter(Invite.invite==code).first()
+        invite = Invite.query.filter(Invite.invite == code).first()
         ret = False
         if invite:
             ret = invite.id
@@ -61,4 +62,4 @@ class Invite(object):
 
     @staticmethod
     def generateId(secret):
-        return hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(secret).hexdigest()).hexdigest()
+        return hashlib.sha512(str(long(time.time() * 10 ** 7)) + hashlib.sha512(secret).hexdigest()).hexdigest()

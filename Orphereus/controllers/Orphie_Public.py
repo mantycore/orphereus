@@ -73,9 +73,7 @@ class OrphiePublicController(OrphieBaseController):
             self.logout()
 
     def logout(self):
-        session.clear()
-        session.save()
-        session.delete()
+        self.destroySession()
         redirect_to('boardBase')
 
     def captchaPic(self, cid):
@@ -148,8 +146,9 @@ class OrphiePublicController(OrphieBaseController):
 
             c.captcha = Captcha.getCaptcha(tracker.cid)
 
-        if request.POST.get('code', False):
-            code = User.genUid(request.POST['code'].encode('utf-8'))
+        code = request.POST.get('password', False)
+        if code:
+            code = User.genUid(code.encode('utf-8'))
             user = User.getByUid(code)
             #log.debug("code: %s user: %s",code,str(user))
 

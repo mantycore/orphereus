@@ -38,6 +38,7 @@ from Orphereus.model.Tag import Tag
 class ThreadImportPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Thread import tool'),
+                  'deps' : ('adminpanel',)
                  }
         BasePlugin.__init__(self, 'threadimport', config)
 
@@ -108,13 +109,16 @@ class ImportWorker():
             if fileHolder:
                 fileHolder.disableDeletion()
             picInfo = fileDescriptors[1]
-            existentPic = fileDescriptors[2]
+            picInfo.existentPic = fileDescriptors[2]
+            picInfo.additionalInfo = None
+            picInfo.spoiler = False
             errorMessage = fileDescriptors[3]
             if errorMessage:
                 log.error(errorMessage)
                 return None
-        pInfo.picInfo = picInfo
-        pInfo.existentPic = existentPic
+        pInfo.picInfos = [picInfo]
+        #pInfo.picInfo = picInfo
+        #pInfo.existentPic = existentPic
         return pInfo
 
     def savePost(self, pInfo):

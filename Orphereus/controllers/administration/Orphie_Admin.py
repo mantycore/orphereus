@@ -18,6 +18,7 @@
 #  along with this program; if not, write to the Free Software                 #
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
+from routes.util import redirect_to
 
 import logging
 from Orphereus.lib.base import *
@@ -57,6 +58,7 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
         map.connect('hsViewLogBase', '/holySynod/viewLog', controller = 'administration/Orphie_Admin', action = 'viewLog', page = 0)
         map.connect('hsViewLog', '/holySynod/viewLog/page/:page', controller = 'administration/Orphie_Admin', action = 'viewLog', requirements = dict(page = '\d+'))
         map.connect('hsInvite', '/holySynod/makeInvite', controller = 'administration/Orphie_Admin', action = 'makeInvite')
+        map.connect('hsCancelInvite', '/holySynod/cancelInvite/:id', controller = 'administration/Orphie_Admin', action = 'cancelInvite', requirements = dict(id = '\d+'))
         map.connect('hsMappings', '/holySynod/manageMappings/:act/:id/:tagid', controller = 'administration/Orphie_Admin', action = 'manageMappings', act = 'show', id = 0, tagid = 0, requirements = dict(id = '\d+', tagid = '\d+'))
         map.connect('hsMergeTags', '/holySynod/mergeTags/:act', controller = 'administration/Orphie_Admin', action = 'mergeTags', act = None)
         map.connect('hsBans', '/holySynod/manageBans', controller = 'administration/Orphie_Admin', action = 'manageBans')
@@ -174,15 +176,6 @@ class OrphieAdminController(OrphieBaseController):
         c.logs = LogEntry.getRange(page * tpp, (page + 1) * tpp)
         return self.render('managementLogs')
 
-    def invitePage(self):
-        if not self.userInst.canMakeInvite():
-            return self.error(_("No way! You aren't holy enough!"))
-
-        c.boardName = _('Invites')
-        c.currentItemId = 'id_hsInvite'
-
-        return self.render('invitePage')
-
     def makeInvite(self):
         if not self.userInst.canMakeInvite():
             return self.error(_("No way! You aren't holy enough!"))
@@ -197,7 +190,17 @@ class OrphieAdminController(OrphieBaseController):
 
             toLog(LOG_EVENT_INVITE, _("Generated invite id %s. Reason: %s") % (invite.id, reason))
             c.inviteCode = invite.invite
+        c.inviteList = Invite.query.all()
         return self.render('manageInvites')
+
+    def cancelInvite(self, id):
+        if not self.userInst.canMakeInvite():
+            return self.error(_("No way! You aren't holy enough!"))
+        invite = Invite.query.filter(Invite.id == int(id)).first()
+        if invite:
+            meta.Session.delete(invite)
+            meta.Session.commit()
+        return redirect_to('hsInvite')
 
     def manageBans(self):
         if not self.userInst.canManageUsers():
@@ -212,20 +215,20 @@ class OrphieAdminController(OrphieBaseController):
         return self.render('manageBans')
 
     def editBan(self, id):
-
+        timeFormat = "%Y-%m-%d %H:%M:%S"
         def getPostData():
             try:
                 ip = h.ipToInt(filterText(request.POST.get('ip', 0)))
                 mask = h.ipToInt(filterText(request.POST.get('mask', 0)))
             except:
                 return self.error(_("Please check the format of IP addresses and masks."))
-            type = request.POST.get('type', False) == 'on'
-            enabled = request.POST.get('enabled', False) == 'on'
+            type = bool(request.POST.get('type', False))
+            enabled = bool(request.POST.get('enabled', False))
             reason = filterText(unicode(request.POST.get('reason', '')))
-            date = request.POST.get('date', 0)
+            date = datetime.datetime.strptime(request.POST.get('date', '1970-01-01 01:01:01'), timeFormat)
+
             period = request.POST.get('period', 0)
             return ip, mask, type, reason, date, period, enabled
-
 
         if not self.userInst.canManageUsers():
             return self.error(_("No way! You aren't holy enough!"))
@@ -246,14 +249,26 @@ class OrphieAdminController(OrphieBaseController):
             c.exists = False
             c.boardName = _('New IP ban')
             ip = c.ipToBan or 0
-            c.ban = Ban(ip, h.ipToInt('255.255.255.255'), 0, '', datetime.datetime.now(), 30, True)
+            # TODO: FIXME: VERY BAD CODE.
+            # You should NOT create temporary object.
+            # For example, if autocommit == True, this will break database integrity
+            # Empty() is temporary solution
+            c.ban = empty()
+            c.ban.id = 0
+            c.ban.ip = ip
+            c.ban.mask = h.ipToInt('255.255.255.255')
+            c.ban.type = 0   # 0 for read-only access, 1 for full ban
+            c.ban.reason = ''
+            c.ban.date = datetime.datetime.now().strftime(timeFormat)
+            c.ban.period = 30
+            c.ban.enabled = True
         else:
             c.ban = ban
 
         postedId = request.POST.get('id', None)
         if (postedId):
             if (int(postedId) > 0):
-                if not request.POST.get('delete', False):
+                if not bool(request.POST.get('delete', False)):
                     ban = Ban.getBanById(id)
                     if ban:
                         ban.setData(*getPostData())
@@ -270,8 +285,10 @@ class OrphieAdminController(OrphieBaseController):
                         c.message = _('Ban record no. %s deleted' % banId)
                         return self.manageBans()
             elif (int(postedId) == 0):
-                c.ban.id = None
+                c.ban = Ban(ip, h.ipToInt('255.255.255.255'), 0, '', datetime.datetime.now(), 30, True)
                 c.ban.setData(*getPostData())
+                meta.Session.add(c.ban)
+                meta.Session.commit()
                 toLog(LOG_EVENT_BAN_ADD, _('Added ban no. %s. Reason: %s') % (c.ban.id, c.ban.reason))
                 c.message = _('Added ban no. %s') % c.ban.id
                 return redirect_to('hsBans')
@@ -284,7 +301,7 @@ class OrphieAdminController(OrphieBaseController):
         c.currentItemId = 'id_hsExtensions'
         c.boardName = _('Extensions management')
         c.extensions = Extension.getList(False)
-        c.showCount = request.POST.get('showCount', False)
+        c.showCount = bool(request.POST.get('showCount', False))
         return self.render('manageExtensions')
 
     def editExtension(self, name):
@@ -318,11 +335,11 @@ class OrphieAdminController(OrphieBaseController):
 
         name = request.POST.get('ext', False)
         if name:
-            if not request.POST.get('delete', False):
+            if not bool(request.POST.get('delete', False)):
                 path = filterText(request.POST.get('path', ''))
-                enabled = request.POST.get('enabled', False)
-                newWindow = request.POST.get('newWindow', False)
-                type = filterText(request.POST.get('type', 'image'))
+                enabled = bool(request.POST.get('enabled', False))
+                newWindow = bool(request.POST.get('newWindow', False))
+                type = filterText(request.POST.get('type', 'image')).strip().lower()
                 thwidth = request.POST.get('thwidth', 0)
                 thheight = request.POST.get('thheight', 0)
                 if not ext:
@@ -497,8 +514,8 @@ class OrphieAdminController(OrphieBaseController):
         c.boards = {-1:[]}
         c.sectionList = []
         for b in boards:
-            if b.options and b.options.persistent and b.options.sectionId >= 0:
-                sid = b.options.sectionId
+            if b.persistent and b.sectionId >= 0:
+                sid = b.sectionId
                 if not sid in c.boards:
                     c.boards[sid] = []
                     c.sectionList.append(sid)
@@ -524,14 +541,14 @@ class OrphieAdminController(OrphieBaseController):
             c.tag = Tag(tag)
 
         #TODO: legacy code
-        if not c.tag.options:
-            c.tag.options = TagOptions()
+        #if not c.tag.options:
+        #    c.tag.options = TagOptions()
 
         if request.POST.get('tag', False):
             newtag = request.POST.get('tag', False)
-            newtagre = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""").match(newtag)
-            if newtagre:
-                newtag = newtagre.groups()[0]
+            matches = re.findall(re.compile(Tag.TAGREGEX), newtag)
+            if matches:
+                newtag = matches[0]
                 newtagRecord = Tag.getTag(newtag)
                 if not newtagRecord or newtagRecord.id == c.tag.id:
                     if c.tag.tag != newtag:
@@ -539,32 +556,39 @@ class OrphieAdminController(OrphieBaseController):
                         c.tag.tag = newtag
                     else:
                         oldtag = u''
-                    c.tag.options.comment = filterText(request.POST.get('comment', u''))
-                    c.tag.options.specialRules = filterText(request.POST.get('specialRules', u''))
+                    c.tag.comment = filterText(request.POST.get('comment', u''))
+                    c.tag.specialRules = filterText(request.POST.get('specialRules', u''))
                     sid = request.POST.get('sectionId', 0)
                     if isNumber(sid) and int(sid) >= 0:
                         sid = int(sid)
                     else:
                         sid = 0
-                    c.tag.options.sectionId = sid
-                    c.tag.options.persistent = request.POST.get('persistent', False)
-                    c.tag.options.service = request.POST.get('service', False)
-                    c.tag.options.imagelessThread = request.POST.get('imagelessThread', False)
-                    c.tag.options.imagelessPost = request.POST.get('imagelessPost', False)
-                    c.tag.options.images = request.POST.get('images', False)
-                    c.tag.options.enableSpoilers = request.POST.get('spoilers', False)
-                    c.tag.options.canDeleteOwnThreads = request.POST.get('canDeleteOwnThreads', False)
-                    c.tag.options.selfModeration = request.POST.get('selfModeration', False)
-                    c.tag.options.showInOverview = request.POST.get('showInOverview', False)
-                    c.tag.options.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
-                    c.tag.options.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
-                    c.tag.options.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
+                    c.tag.sectionId = sid
+                    c.tag.persistent = bool(request.POST.get('persistent', False))
+                    c.tag.service = bool(request.POST.get('service', False))
+                    c.tag.imagelessThread = bool(request.POST.get('imagelessThread', False))
+                    c.tag.imagelessPost = bool(request.POST.get('imagelessPost', False))
+                    c.tag.images = bool(request.POST.get('images', False))
+                    c.tag.enableSpoilers = bool(request.POST.get('spoilers', False))
+                    c.tag.canDeleteOwnThreads = bool(request.POST.get('canDeleteOwnThreads', False))
+                    c.tag.selfModeration = bool(request.POST.get('selfModeration', False))
+                    c.tag.showInOverview = bool(request.POST.get('showInOverview', False))
+                    c.tag.adminOnly = bool(request.POST.get('adminOnly', False))
+                    c.tag.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
+                    c.tag.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
+                    c.tag.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
+                    allowedFilesCount = request.POST.get('allowedAdditionalFiles', g.OPT.allowedAdditionalFiles)
+                    if isNumber(allowedFilesCount):
+                        allowedFilesCount = int(allowedFilesCount)
+                    else:
+                        allowedFilesCount = None
+                    c.tag.allowedAdditionalFiles = allowedFilesCount
                     bumplimit = request.POST.get('bumplimit', g.OPT.defBumplimit)
                     if not isNumber(bumplimit) or int(bumplimit) == 0:
                         bumplimit = None
-                    c.tag.options.bumplimit = bumplimit
+                    c.tag.bumplimit = bumplimit
                     c.tag.save()
-                    if request.POST.get('deleteBoard', False) and c.tag.id:
+                    if bool(request.POST.get('deleteBoard', False)) and c.tag.id:
                         count = c.tag.getExactThreadCount()
                         if count > 0:
                             c.message = _("Board must be empty for deletion")
@@ -703,15 +727,15 @@ class OrphieAdminController(OrphieBaseController):
 
             c.user = user
             c.userInst = self.userInst
-            if request.POST.get('access', False) and self.userInst.canChangeRights():
+            if bool(request.POST.get('access', False)) and self.userInst.canChangeRights():
                 #Basic admin right
-                isAdmin = request.POST.get('isAdmin', False) and True or False
+                isAdmin = bool(request.POST.get('isAdmin', False))
                 if user.options.isAdmin != isAdmin:
                     user.options.isAdmin = isAdmin
                     toLog(LOG_EVENT_USER_ACCESS, _('Changed user %s isAdmin to %s') % (user.uidNumber, isAdmin))
 
                 def setRight(name):
-                    right = request.POST.get(name, False) and True or False
+                    right = bool(request.POST.get(name, False))
                     if getattr(user.options, name) != right:
                         setattr(user.options, name, right)
                         toLog(LOG_EVENT_USER_ACCESS, _('Changed right "%s" for user #%s to %s') % (name, user.uidNumber, right))
@@ -720,14 +744,14 @@ class OrphieAdminController(OrphieBaseController):
                                  "canManageBoards", "canManageUsers", "canManageExtensions", "canManageMappings",
                                  "canRunMaintenance"])
                 c.message = _('User access was changed')
-            elif request.POST.get('ban', False):
+            elif bool(request.POST.get('ban', False)):
                 if user.options.bantime > 0:
                     c.message = _('This user is already banned')
                 else:
                     banreason = filterText(request.POST.get('banreason', '???'))
                     bantime = request.POST.get('bantime', '0')
                     c.message = user.ban(bantime, banreason, self.userInst.uidNumber)
-            elif request.POST.get('unban', False):
+            elif bool(request.POST.get('unban', False)):
                 if user.options.bantime > 0:
                     banreason = user.options.banreason
                     bantime = user.options.bantime
@@ -737,7 +761,7 @@ class OrphieAdminController(OrphieBaseController):
                     c.message = _('User was unbanned')
                 else:
                     c.message = _('This user is not banned')
-            elif request.POST.get('lookup', False):
+            elif bool(request.POST.get('lookup', False)):
                 reason = filterText(request.POST.get('lookupreason', u''))
                 quantity = int(request.POST.get('quantity', '0'))
                 if isNumber(quantity) and int(quantity) > 0:
@@ -752,7 +776,7 @@ class OrphieAdminController(OrphieBaseController):
                         c.message = _('You should specify lookup reason')
                 else:
                     c.message = _('Incorrect quantity value')
-            elif request.POST.get('passwd', False):
+            elif bool(request.POST.get('passwd', False)):
                 key = request.POST.get('key', '').encode('utf-8')
                 key2 = request.POST.get('key2', '').encode('utf-8')
                 passwdRet = user.passwd(key, key2, True, False)
@@ -764,9 +788,9 @@ class OrphieAdminController(OrphieBaseController):
                     c.message = _('Incorrect security codes')
                 else:
                     return self.error(passwdRet)
-            elif request.POST.get('delete', False):
+            elif bool(request.POST.get('delete', False)):
                 reason = filterText(request.POST.get('deletereason', u'No reason given'))
-                deleteLegacy = request.POST.get('deleteLegacy', False)
+                deleteLegacy = bool(request.POST.get('deleteLegacy', False))
                 if self.userInst.canChangeRights():
                     if len(reason) > 1:
                         if deleteLegacy:

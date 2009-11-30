@@ -50,12 +50,16 @@ cache_dir = %(here)s/data
 beaker.session.key = Orphereus
 beaker.session.secret = somesecret
 # database connection settings
-sqlalchemy.url = mysql://user:passwd@127.0.0.1/database?use_unicode=0&charset=utf8
+#sqlalchemy.url = sqlite:////absolute/path/to/database.db
 #sqlalchemy.url = postgresql+psycopg2://user:passwd@127.0.0.1/database
+#sqlalchemy.url = mysql://user:passwd@127.0.0.1/database?use_unicode=0&charset=utf8
+#sqlalchemy.url = mssql+pyodbc://user:passwd@127.0.0.1/database
+#sqlalchemy.url = oracle://user:passwd@127.0.0.1/SID
 sqlalchemy.pool_recycle = 3600
 
-# this is not configurable in runtime
-core.disabledModules = example.py,httpinfo.py
+# Disabled modules (file or module namespace  names)
+# This option is not configurable at runtime
+core.disabledModules = httpinfo.py,tools.htmlCompressor,mainPage.statgraph
 
 # makes engine ignore configuration in database and use this file
 core.recovery = false
@@ -142,6 +146,7 @@ frontend.forbidCaptcha = false
 # if true, sets thread sorting mode to their creation time, not bump-date
 frontend.newsSiteMode = false
 frontend.permissiveFileSizeConjunction = true
+frontend.permissiveAdditionalFilesCountConjunction = false
 frontend.boardWideProoflabels = true
 frontend.allowOverview = true
 frontend.framedMain = true
@@ -159,7 +164,6 @@ frontend.cutSymbols = 5000
 frontend.dvachStyleMenu = true
 
 frontend.disabledTags = logout,authorize,register,youAreBanned,userProfile,holySynod,frameMenu,!
-frontend.adminOnlyTags = synod,logs
 frontend.additionalLinks = http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma
 frontend.sectionNames = Main
 
@@ -204,6 +208,7 @@ defaults.defSelfModeration = false
 defaults.defShowInOverview = true
 # 0 for unlimited
 defaults.defBumplimit = 0
+defaults.allowedAdditionalFiles = 4
 
 #####################
 # Security settings #

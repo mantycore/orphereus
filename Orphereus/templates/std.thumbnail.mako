@@ -1,9 +1,9 @@
-<%page args="post"/>
+<%page args="post,attachment"/>
 
-%if post.spoiler:
+%if attachment.spoiler:
     <img src="${g.OPT.staticPathWeb}images/spoiler.png" class="thumb" alt="Spoiler"/>
-%elif 'image' in post.file.extension.type:
-    <img src="${g.OPT.filesPathWeb +  h.modLink(post.file.thumpath, c.userInst.secid())}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb"  alt="Preview" />
+%elif 'image' in attachment.attachedFile.extension.type:
+    <img src="${g.OPT.filesPathWeb +  h.modLink(attachment.attachedFile.thumpath, c.userInst.secid())}" width="${attachment.attachedFile.thwidth}" height="${attachment.attachedFile.thheight}" class="thumb"  alt="Preview" />
 %else:
-    <img src="${g.OPT.staticPathWeb +  h.modLink(post.file.thumpath, c.userInst.secid())}" width="${post.file.thwidth}" height="${post.file.thheight}" class="thumb"  alt="Preview" />
+    <img src="${g.OPT.staticPathWeb +  h.modLink(attachment.attachedFile.thumpath, c.userInst.secid())}" width="${attachment.attachedFile.thwidth}" height="${attachment.attachedFile.thheight}" class="thumb"  alt="Preview" />
 %endif

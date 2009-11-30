@@ -92,16 +92,16 @@ class MaintenanceWorker(object):
         currentTime = datetime.datetime.now()
         def usersSearch(users):
             for user in users:
-                bantime = user.options.bantime
-                banDate = user.options.banDate
-                if bantime > 10000:
-                    bantime = 10000
-                if banDate and bantime > 0 and banDate < currentTime - datetime.timedelta(days = bantime):
-                    unbanMessage = (u"Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
-                    mtnLog.append(LogElement('Info', unbanMessage))
-                    toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
-                    user.options.bantime = 0
-                    user.options.banreason = u''
+                if user.options:
+                    bantime = user.options.bantime
+                    banDate = user.options.banDate
+                    if banDate and bantime > 0 and banDate < currentTime - datetime.timedelta(days = min(10000, bantime)):
+                        unbanMessage = (u"Automatic unban: user <b>#%d</b> (Reason was %s)") % (user.uidNumber, user.options.banreason)
+                        mtnLog.append(LogElement('Info', unbanMessage))
+                        toLog(LOG_EVENT_MTN_UNBAN, unbanMessage)
+                        user.unban()
+                else:
+                    mtnLog.append(LogElement('Error', u'Integrity error: user %d has no options object' % user.uidNumber))
         batchProcess(User.query, usersSearch)
         mtnLog.append(LogElement('Task', 'Done'))
 
@@ -204,6 +204,7 @@ class MaintenanceWorker(object):
                     meta.Session.delete(fl)
         batchProcess(UserFilters.query, userFiltersSearch)
 
+        """
         mtnLog.append(LogElement('Task', 'Tag options...'))
         def tagOptsSearch(tagOpts):
             for opt in tagOpts:
@@ -214,17 +215,17 @@ class MaintenanceWorker(object):
                     toLog(LOG_EVENT_INTEGR, msg)
                     meta.Session.delete(opt)
         batchProcess(TagOptions.query, tagOptsSearch)
+        """
 
         mtnLog.append(LogElement('Task', 'Pictures...'))
         def picturesSearch(pictures):
             for pic in pictures:
-                post = Post.query.filter(Post.file == pic).first()
-                if not post:
+                if pic.pictureRefCount() < 1:
                     msg = u'Orphaned picture with id == %s, fileName == %s, removing' % (str(pic.id), pic.path)
                     mtnLog.append(LogElement('Warning', msg))
                     toLog(LOG_EVENT_INTEGR, msg)
                     meta.Session.delete(pic)
-        batchProcess(Picture.query, picturesSearch)
+        batchProcess(Picture.query.filter(Picture.id > 0), picturesSearch)
 
         meta.Session.commit()
         mtnLog.append(LogElement('Task', 'Orpaned database entries check completed'))
@@ -300,18 +301,20 @@ class MaintenanceWorker(object):
 
         movedCC = 0
         movedTCC = 0
-        posts = Post.query.options(eagerload('file')).all()
+        posts = Post.query.options(eagerload('attachments')).all()
         for post in posts:
-            if post.file:
-                fname = post.file.path
-                if moveFile(fname):
-                    post.file.path = h.expandName(fname)
-                    movedCC += 1
-                tfname = post.file.thumpath
-                #log.debug(tfname)
-                if moveFile(tfname):
-                    post.file.thumpath = h.expandName(tfname)
-                    movedTCC += 1
+            for fileAssoc in post.attachments:
+                file = fileAssoc.attachedFile
+                if file:
+                    fname = file.path
+                    if moveFile(fname):
+                        file.path = h.expandName(fname)
+                        movedCC += 1
+                    tfname = file.thumpath
+                    #log.debug(tfname)
+                    if moveFile(tfname):
+                        file.thumpath = h.expandName(tfname)
+                        movedTCC += 1
 
         if movedCC or movedTCC:
             msg = '%d files and %d thumbnails moved' % (movedCC, movedTCC)
@@ -379,7 +382,7 @@ class MaintenanceWorker(object):
                         mtnLog.append(LogElement('Info', "%d autobanned" % user.uidNumber))
                 else:
                     mtnLog.append(LogElement('Warning', "User %d haven't options object" % user.uidNumber))
-        batchProcess(User.query, searchRoutine)
+        batchProcess(User.query.filter(User.uidNumber > 0), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 
@@ -388,9 +391,9 @@ class MaintenanceWorker(object):
         mtnLog.append(LogElement('Task', 'Removing empty tags...'))
         def searchRoutine(tags):
             for tag in tags:
-                if not tag.options or not tag.options.persistent:
+                if tag.persistent:
                     threadCount = Post.query.filter(Post.parentid == None).filter(Post.tags.any(Tag.id == tag.id)).count()
-                    if threadCount == 0 and not (tag.options and tag.options.service):
+                    if threadCount == 0 and not tag.service:
                         mtnLog.append(LogElement('Info', "Removed tag %s" % tag.tag))
                         meta.Session.delete(tag)
         batchProcess(Tag.query, searchRoutine)
@@ -498,6 +501,15 @@ class MaintenanceCommand(command.Command):
 
     @staticmethod
     def setup_config(filename, relative_to):
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        formatter = logging.Formatter("[MAINTENANCE] %(asctime)s %(name)s:%(levelname)s: %(message)s")
+        ch.setFormatter(formatter)
+        corelog = logging.getLogger("CORE")
+        ormlog = logging.getLogger("ORM")
+        corelog.addHandler(ch)
+        ormlog.addHandler(ch)
+
         if not relative_to or not os.path.exists(relative_to):
             relative_to = "."
         print 'Loading config "%s" at path "%s"...' % (filename, relative_to)

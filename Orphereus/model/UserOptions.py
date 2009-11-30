@@ -35,56 +35,54 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_userOptions = sa.Table("userOptions", meta.metadata,
-    sa.Column("optid"    , sa.types.Integer, primary_key = True),
-    sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('user.uidNumber')),
-    sa.Column("threadsPerPage", sa.types.Integer, nullable = False),
-    sa.Column("repliesPerThread", sa.types.Integer, nullable = False),
-    sa.Column("style"    , sa.types.String(32), nullable = False),
-    sa.Column("template" , sa.types.String(32), nullable = False),
-    sa.Column("homeExclude", sa.types.Text, nullable = False),
-    sa.Column("hideThreads", sa.types.Text, nullable = True),
-    sa.Column("bantime"  , sa.types.Integer, nullable = False),
-    sa.Column("banreason", sa.types.UnicodeText(256), nullable = True),
-    sa.Column("banDate", sa.types.DateTime, nullable = True),
-    sa.Column("useFrame", sa.types.Boolean, nullable = True),
-    sa.Column("hideLongComments", sa.types.Boolean, nullable = True),
-    sa.Column("useAjax", sa.types.Boolean, nullable = True),
-    sa.Column("expandImages", sa.types.Boolean, nullable = True, server_default = '1'),
-    sa.Column("maxExpandWidth", sa.types.Integer, nullable = True, server_default = '1024'),
-    sa.Column("maxExpandHeight", sa.types.Integer, nullable = True, server_default = '768'),
-    sa.Column("mixOldThreads", sa.types.Boolean, nullable = True),
-    sa.Column("useTitleCollapse", sa.types.Boolean, nullable = True),
-    sa.Column("hlOwnPosts", sa.types.Boolean, nullable = True, server_default = '0'),
-    sa.Column("invertSortingMode", sa.types.Boolean, nullable = True, server_default = '0'),
-    sa.Column("defaultGoto", sa.types.Integer, nullable = True),
-    sa.Column("oekUseSelfy", sa.types.Boolean, nullable = True, server_default = '0'),
-    sa.Column("oekUseAnim", sa.types.Boolean, nullable = True, server_default = '0'),
-    sa.Column("oekUsePro", sa.types.Boolean, nullable = True, server_default = '0'),
-    sa.Column("isAdmin"  , sa.types.Boolean, nullable = True),
-    sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable = True),
-    sa.Column("canMakeInvite", sa.types.Boolean, nullable = True),
-    sa.Column("canChangeRights", sa.types.Boolean, nullable = True),
-    sa.Column("canChangeSettings", sa.types.Boolean, nullable = True),
-    sa.Column("canManageBoards", sa.types.Boolean, nullable = True),
-    sa.Column("canManageUsers", sa.types.Boolean, nullable = True),
-    sa.Column("canManageExtensions", sa.types.Boolean, nullable = True),
-    sa.Column("canManageMappings", sa.types.Boolean, nullable = True),
-    sa.Column("canRunMaintenance", sa.types.Boolean, nullable = True),
-    sa.Column("lang", sa.types.String(2), nullable = False),
-    sa.Column("cLang", sa.types.String(2), nullable = False),
-    )
+def t_useroptions_init(dialectProps):
+    return sa.Table("userOptions", meta.metadata,
+        sa.Column("optid"    , sa.types.Integer, sa.Sequence('userOptions_optid_seq'), primary_key = True),
+        sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('user.uidNumber'), nullable = False, index = True),
+        sa.Column("threadsPerPage", sa.types.Integer, nullable = False),
+        sa.Column("repliesPerThread", sa.types.Integer, nullable = False),
+        sa.Column("style"    , sa.types.String(32), nullable = False),
+        sa.Column("template" , sa.types.String(32), nullable = False),
+        sa.Column("homeExclude", sa.types.Text, nullable = False),
+        sa.Column("hideThreads", sa.types.Text, nullable = True),
+        sa.Column("bantime"  , sa.types.Integer, nullable = False),
+        sa.Column("banreason", sa.types.UnicodeText, nullable = True),
+        sa.Column("banDate", sa.types.DateTime, nullable = True),
+        sa.Column("useFrame", sa.types.Boolean, nullable = True),
+        sa.Column("hideLongComments", sa.types.Boolean, nullable = True),
+        sa.Column("useAjax", sa.types.Boolean, nullable = True),
+        sa.Column("expandImages", sa.types.Boolean, nullable = True),
+        sa.Column("maxExpandWidth", sa.types.Integer, nullable = True),
+        sa.Column("maxExpandHeight", sa.types.Integer, nullable = True),
+        sa.Column("mixOldThreads", sa.types.Boolean, nullable = True),
+        sa.Column("useTitleCollapse", sa.types.Boolean, nullable = True),
+        sa.Column("hlOwnPosts", sa.types.Boolean, nullable = True),
+        sa.Column("invertSortingMode", sa.types.Boolean, nullable = True),
+        sa.Column("defaultGoto", sa.types.Integer, nullable = True),
+        sa.Column("oekUseSelfy", sa.types.Boolean, nullable = True),
+        sa.Column("oekUseAnim", sa.types.Boolean, nullable = True),
+        sa.Column("oekUsePro", sa.types.Boolean, nullable = True),
+        sa.Column("isAdmin"  , sa.types.Boolean, nullable = True),
+        sa.Column("canDeleteAllPosts", sa.types.Boolean, nullable = True),
+        sa.Column("canMakeInvite", sa.types.Boolean, nullable = True),
+        sa.Column("canChangeRights", sa.types.Boolean, nullable = True),
+        sa.Column("canChangeSettings", sa.types.Boolean, nullable = True),
+        sa.Column("canManageBoards", sa.types.Boolean, nullable = True),
+        sa.Column("canManageUsers", sa.types.Boolean, nullable = True),
+        sa.Column("canManageExtensions", sa.types.Boolean, nullable = True),
+        sa.Column("canManageMappings", sa.types.Boolean, nullable = True),
+        sa.Column("canRunMaintenance", sa.types.Boolean, nullable = True),
+        sa.Column("lang", sa.types.String(2), nullable = True),
+        sa.Column("cLang", sa.types.String(2), nullable = True),
+        )
 
 class UserOptions(object):
     @staticmethod
     def optionsDump(optionsObject):
-        optionsNames = dir(optionsObject)
         ret = {}
-        retest = re.compile("^(<.*(at (0x){0,1}[0-9a-fA-F]+)+.*>)|(__.*__)$")
-        for name in optionsNames:
-            attr = str(getattr(optionsObject, name))
-            if not (retest.match(name) or retest.match(attr)):
-                ret[name] = attr
+        for k in optionsObject.__dict__:
+            if not k.startswith("_"):
+                ret[k] = optionsObject.__dict__[k]
         return ret
 
     @staticmethod

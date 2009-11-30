@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+import sqlalchemy.databases as databases
 from sqlalchemy import orm
 from sqlalchemy.orm import mapper as sqla_mapper
 
@@ -17,14 +18,15 @@ from Picture import *
 from Post import *
 from Setting import *
 from Tag import *
-from TagOptions import *
+#from TagOptions import *
 from User import *
 from UserFilters import *
 from UserOptions import *
 from Ban import *
 
 import logging
-log = logging.getLogger("ORM (%s)" % __name__)
+_log = logging.getLogger("ORM")
+_log.setLevel(logging.DEBUG)
 
 def session_mapper(scoped_session):
     def mapper(cls, *arg, **kw):
@@ -54,48 +56,86 @@ def batchProcess(query, routine, packetSize = 1000):
         currentPacket += packetSize
         meta.Session.commit()
 
-def adjust_dialect(engine, name = 'default'):
-    log.info("Trying to adjust %s engine to current dialect..." % name)
+def adjust_dialect(engine, meta):
+    _log.info("Trying to adjust engine to current dialect...")
     target = meta
 
     def logAndChange(var, newType):
-        log.info("Using %s instead of %s" % (str(newType), str(var)))
+        _log.info("Using %s instead of %s" % (str(newType), str(var)))
         return newType
 
-    if (engine.dialect.name.lower() == "postgresql"):
-        log.info("Currently using MySQL dialect, adjusting types...")
-        from sqlalchemy.databases import mysql
-        target.FloatType = logAndChange(meta.FloatType, mysql.MSDouble)
-        target.BlobType = logAndChange(meta.BlobType, sa.databases.mysql.MSLongBlob)
-        target.UIntType = logAndChange(meta.UIntType, sa.databases.mysql.MSInteger(unsigned = True))
-    elif (engine.dialect.name.lower() == "mysql"):
-        log.info("Currently using PostgreSQL dialect, adjusting types...")
-        from sqlalchemy.databases import postgresql
-        target.FloatType = logAndChange(meta.FloatType, postgresql.DOUBLE_PRECISION)
-        target.BlobType = logAndChange(meta.BlobType, postgresql.BYTEA)
-        target.UIntType = logAndChange(meta.UIntType, postgresql.BIGINT)
-    else:
-        log.warning("Unknown SQL Dialect!")
-    log.info("Adjusting completed")
+    props = {'disableInstantIdSetting' : None,
+             'tagLengthHardLimit' : 24,
+             'userFilterLengthLimit' : 512,
+             'disableComplexIndexes' : None}
 
-def init_model(engine):
-    adjust_dialect(engine)
+    dialectName = engine.dialect.name
+    diam = __import__("sqlalchemy.dialects.%s.base" % dialectName, globals(), locals(), ['base'], -1)
+
+    if (isinstance(engine.dialect, databases.mysql.MySQLDialect)):
+        _log.info("Currently using MySQL dialect, adjusting types...")
+        target.FloatType = logAndChange(meta.FloatType, diam.MSDouble)
+        target.BlobType = logAndChange(meta.BlobType, diam.MSLongBlob)
+        target.UIntType = logAndChange(meta.UIntType, diam.MSInteger(unsigned = True))
+        props['disableInstantIdSetting'] = True
+    elif (isinstance(engine.dialect, databases.postgres.PGDialect)):
+        _log.info("Currently using PostgreSQL dialect, adjusting types...")
+        target.FloatType = logAndChange(meta.FloatType, diam.DOUBLE_PRECISION)
+        target.BlobType = logAndChange(meta.BlobType, diam.BYTEA)
+        target.UIntType = logAndChange(meta.UIntType, diam.BIGINT)
+    elif (isinstance(engine.dialect, databases.sqlite.SQLiteDialect)):
+        _log.info("Currently using SQLite dialect, adjusting doesn't required ^_^")
+    elif (isinstance(engine.dialect, databases.mssql.MSSQLDialect)):
+        _log.info("O_o ZOMG TEH ENTERPRISE! o_O")
+        _log.info("Currently using Microsoft SQL dialect, adjusting types...")
+        target.UIntType = logAndChange(meta.UIntType, diam.BIGINT)
+    elif (isinstance(engine.dialect, databases.oracle.OracleDialect)):
+        _log.info("O_o ZOMG TEH ENTERPRISE! o_O")
+        _log.info("Currently using Oracle dialect, adjusting types...")
+        props['disableComplexIndexes'] = True
+        #raise Exception("Too enterprise for me")
+    else:
+        _log.warning("\n\nUnknown SQL Dialect %s!\n\n" % dialectName)
+    _log.info("Adjusting completed")
+    meta.dialectProps = props
+    return props
+
+def init_model(engine, meta):
+    dialectProps = adjust_dialect(engine, meta)
+
+    t_logins = t_loginTracker_init(dialectProps)
+    t_captchas = t_captcha_init(dialectProps)
+    t_oekaki = t_oekaki_init(dialectProps)
+    t_invites = t_invite_init(dialectProps)
+    t_settings = t_settings_init(dialectProps)
+    t_userOptions = t_useroptions_init(dialectProps)
+    t_userFilters = t_userfilters_init(dialectProps)
+    t_users = t_user_init(dialectProps)
+    t_extension = t_extension_init(dialectProps)
+    t_piclist, t_filesToPostsMap = t_picture_init(dialectProps)
+    t_tags, t_tagsToPostsMap = t_tags_init(dialectProps)
+    t_log = t_log_init(dialectProps)
+    t_posts = t_posts_init(dialectProps)
+    t_bans = t_bans_init(dialectProps)
 
     sm = orm.sessionmaker(autoflush = False, autocommit = False, bind = engine)
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
     meta.mapper = session_mapper(meta.Session)
-    #log.debug(dir(engine))
-    #log.debug(dir(engine.logger))
-    #engine.echo = True
-    #engine.logger.setLevel('debug')
-    #import logging
+    #_log.debug(dir(engine))
+    #_log.debug(dir(engine.logger))
+    """
+    engine.echo = True
+    engine.logger.setLevel('info')
 
-    #logging.basicConfig()
-    #logging.getLogger('sqlalchemy').setLevel(logging.DEBUG)
-    #logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
-    #logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.DEBUG)
-    #logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.DEBUG)
+    import logging
+
+    logging.basicConfig()
+    logging.getLogger('sqlalchemy').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    #logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.orm.logging').setLevel(logging.INFO)
+    """
 
     LoginTrackerProps = {}
     CaptchaProps = {}
@@ -115,13 +155,18 @@ def init_model(engine):
     PictureProps = {
         'extension' : orm.relation(Extension)
         }
-    TagOptionsProps = {}
-    TagProps = {
-            'options' : orm.relation(TagOptions, uselist = False, backref = 'tag', cascade = "all, delete, delete-orphan")
-        }
+    #TagOptionsProps = {}
+    TagProps = {}
+    #        'options' : orm.relation(TagOptions, uselist = False, backref = 'tag', cascade = "all, delete, delete-orphan")
+    #    }
+
+    PictureAssociationProps = {'attachedFile' : orm.relation(Picture)}
+
     PostProps = {
         'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
-        'file': orm.relation(Picture),
+        #'file': orm.relation(Picture),
+        #'attachments'  : orm.relation(Picture, secondary = t_filesToPostsMap),
+        'attachments'  : orm.relation(PictureAssociation, cascade = "all, delete, delete-orphan"),
         'parentPost' : orm.relation(Post, remote_side = [t_posts.c.id]),
         }
     LogEntryProps = {
@@ -140,24 +185,18 @@ def init_model(engine):
                 "User" : UserProps,
                 "Extension" : ExtensionProps,
                 "Picture" : PictureProps,
-                "TagOptions" : TagOptionsProps,
+                #"TagOptions" : TagOptionsProps,
                 "Tag" : TagProps,
                 "Post" : PostProps,
                 "LogEntry" : LogEntryProps,
+                "PictureAssociation" : PictureAssociationProps,
                 }
 
     gvars = config['pylons.app_globals']
-    log.info('Extending ORM properties, registered plugins: %d' % (len(gvars.plugins)),)
+    _log.info('Extending ORM properties, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
-        plugin.extendORMProperties(orm, propDict)
-
-        pconfig = plugin.config
-        ormPropChanger = pconfig.get('ormPropChanger', None)
-        if ormPropChanger:
-            log.error('config{} is deprecated')
-            log.info('calling ORM extender %s from: %s' % (str(ormPropChanger), plugin.pluginId()))
-            ormPropChanger(orm, propDict, plugin.namespace())
-    log.info('COMPLETED ORM EXTENDING STAGE')
+        plugin.extendORMProperties(orm, engine, dialectProps, propDict)
+    _log.info('COMPLETED ORM EXTENDING STAGE')
 
     #create mappings
     meta.mapper(LoginTracker, t_logins, properties = LoginTrackerProps)
@@ -174,29 +213,30 @@ def init_model(engine):
     meta.mapper(Extension, t_extension, properties = ExtensionProps)
     meta.mapper(Picture, t_piclist, properties = PictureProps)
 
-    meta.mapper(TagOptions, t_tagOptions, properties = TagOptionsProps)
+    #meta.mapper(TagOptions, t_tagOptions, properties = TagOptionsProps)
     meta.mapper(Tag, t_tags, properties = TagProps)
+    meta.mapper(PictureAssociation, t_filesToPostsMap, properties = PictureAssociationProps)
     meta.mapper(Post, t_posts, properties = PostProps)
 
     meta.mapper(LogEntry, t_log, properties = LogEntryProps)
 
     gvars = config['pylons.app_globals']
-    log.info('Initialzing ORM, registered plugins: %d' % (len(gvars.plugins)),)
+    _log.info('Initialzing ORM, registered plugins: %d' % (len(gvars.plugins)),)
     for plugin in gvars.plugins:
-        plugin.initORM(orm, propDict)
+        plugin.initORM(orm, engine, dialectProps, propDict)
 
         """
         orminit = plugin.ormInit()
         if orminit:
-            log.error('config{} is deprecated')
-            log.info('calling ORM initializer %s from: %s' % (str(orminit), plugin.pluginId()))
+            _log.error('config{} is deprecated')
+            _log.info('calling ORM initializer %s from: %s' % (str(orminit), plugin.pluginId()))
             orminit(orm, plugin.namespace(), propDict)
         """
-    log.info('COMPLETED ORM INITIALIZATION STAGE')
+    _log.info('COMPLETED ORM INITIALIZATION STAGE')
 
 def upd_globals():
-    adminTagsLine = meta.globj.OPT.adminOnlyTags
-    meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)
+    #adminTagsLine = meta.globj.OPT.adminOnlyTags
+    #meta.globj.forbiddenTags = Tag.csStringToExTagIdList(adminTagsLine)
     meta.globj.additionalLinks = [link.split('|') for link in meta.globj.OPT.additionalLinks]
     meta.globj.sectionNames = meta.globj.OPT.sectionNames
     meta.globj.disabledTags = meta.globj.OPT.disabledTags
@@ -209,15 +249,15 @@ def upd_globals():
         meta.globj.mc = MCache(meta.globj.OPT.memcachedServers, debug = 0,
                                         key = meta.globj.OPT.cachePrefix,
                                         meta = meta)
-    log.info('UPDATING GLOBALS COMPLETED')
+    _log.info('UPDATING GLOBALS COMPLETED')
 
-def init_globals(globalObject, setupMode):
+def init_globals(globalObject, deployMode):
     meta.globj = globalObject
 
-    if not setupMode:
-        log.info('LOADING CONFIGURATION DATA')
+    if not deployMode:
+        _log.info('LOADING CONFIGURATION DATA')
         meta.globj.OPT.initValues(Setting)
-        log.info('LOAD COMPLETED')
+        _log.info('LOAD COMPLETED')
 
         upd_globals()
 
@@ -228,5 +268,5 @@ def init_globals(globalObject, setupMode):
     for tag in tags:
         gv.tagCache[tag.tag] = tag.id
 
-    log.debug(gv.tagCache)
+    _log.debug(gv.tagCache)
     """

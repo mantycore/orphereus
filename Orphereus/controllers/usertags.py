@@ -82,19 +82,33 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
         map.connect('userTagsMapper', '/postTags/:post/:act/:tagid', controller = 'usertags', action = 'postTags', act = 'show', tagid = 0, requirements = dict(post = '\d+', tagid = '\d+'))
         map.connect('userTagsManager', '/userProfile/manageUserTags/:act/:tagid', controller = 'usertags', action = 'postTagsManage', act = 'show', tagid = 0, requirements = dict(tagid = '\d+'))
 
-    def initORM(self, orm, propDict):
+    def initORM(self, orm, engine, dialectProps, propDict):
         namespace = self.namespace()
         t_usertags = sa.Table("usertag", meta.metadata,
-            sa.Column("id"       , sa.types.Integer, primary_key = True),
+            sa.Column("id"       , sa.types.Integer, sa.Sequence('usertag_id_seq'), primary_key = True),
             sa.Column('userId'  , sa.types.Integer, sa.ForeignKey('user.uidNumber')),
-            sa.Column("tag"      , sa.types.UnicodeText, nullable = False),
+            sa.Column("tag"      , sa.types.Unicode(meta.dialectProps['tagLengthHardLimit']), nullable = False),
             sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
             )
 
         t_userTagsToPostsMappingTable = sa.Table("usertagsToPostsMap", meta.metadata,
-            sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id')),
-            sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('usertag.id')),
+            sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
+            sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('usertag.id'), primary_key = True),
             )
+
+        sa.UniqueConstraint(t_usertags.c.userId,
+                            t_usertags.c.tag)
+
+        if not meta.dialectProps['disableComplexIndexes']:
+            sa.Index('ix_usertagmap_postid_tagid',
+                     t_userTagsToPostsMappingTable.c.postId,
+                     t_userTagsToPostsMappingTable.c.tagId,
+                     unique = True)
+
+        sa.Index('ix_usertags_uidnum_tag',
+                 t_usertags.c.userId,
+                 t_usertags.c.tag,
+                 unique = True)
 
         #orm.mapper
         meta.mapper(namespace.UserTag, t_usertags, properties = {
@@ -102,7 +116,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
             'posts' : orm.relation(Post, secondary = t_userTagsToPostsMappingTable),
             })
     """
-        def extendORMProperties(self, orm, propDict):
+        def extendORMProperties(self, orm, engine, dialectProps, propDict):
             namespace = self.namespace()
             propDict['Post']['userTags'] = orm.relation(namespace.UserTag, secondary = namespace.UserTag.getMappingTable())
     """
@@ -111,7 +125,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
         ns = self.namespace()
         name = tagName
         if name.startswith('$'):
-            name = tagName[1:]
+            name = Tag.cutTag(tagName[1:], True)
         if not userInst.Anonymous:
             return ns.UserTag.get(name, userInst)
         else:
@@ -127,7 +141,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
             if usertag.startswith('$'):
                 nonexistent.remove(usertag)
                 if not userInst.Anonymous:
-                    tagName = usertag[1:]
+                    tagName = Tag.cutTag(usertag[1:], True)
                     tag = ns.UserTag.get(tagName, userInst)
                     if not tag:
                         descr = OrphieMainController.getTagDescription(usertag, textFilter)
@@ -159,7 +173,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
                     #log.critical(ids)
                     if ids:
                         return Post.id.in_(ids), newName
-            return None, newName
+                return None, newName
         return None, None
 
     # Implementing AbstractProfileExtension

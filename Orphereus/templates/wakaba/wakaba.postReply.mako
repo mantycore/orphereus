@@ -14,6 +14,7 @@
   %endif
 %endif
 id="reply${post.id}">
+  <div class="postheader">
     <a name="i${post.id}"></a>
     &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Del" /></a>
     <span style="display:none" class="delete">
@@ -49,50 +50,15 @@ id="reply${post.id}">
     %else:
         <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a> \
     %endif
-    %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()):
-      %if post.file and post.file.width:
-      [<a href="${h.url_for('oekakiDraw', url=post.id)}">${_('Draw')}</a>] \
-    %endif
-    %else:
-      %if c.currentUserCanPost and post.file and post.file.width:
-          [<a href="${h.url_for('oekakiDraw', url=post.id, selfy=c.userInst.oekUseSelfy and '+selfy' or '-selfy', anim=c.userInst.oekUseAnim and '+anim' or '-anim', tool=c.userInst.oekUsePro and 'shiPro' or 'shiNormal')}">${_('Draw')}</a>] \
-      %endif
-    %endif
     %if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
         <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b> \
     %endif
     </span>
 
     &nbsp;
-    %if post.file:
-        <br /><span class="filesize">${_('File:')}
-        <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}" \
-        %if post.file.extension.newWindow:
-            target="_blank" \
-        %endif
-        > \
-        ${h.modLink(post.file.path, c.userInst.secid(), True)}</a>
+    </div>
+    <%include file="wakaba.fileBlock.mako" args="post=post,opPost=None,searchMode=None,newsMode=None" />
 
-        (<em>${'%.2f' % (post.file.size / 1024.0)} \
-        %if post.file.width and post.file.height:
-            ${_('Kbytes')}, ${post.file.width}x${post.file.height}</em>)</span>
-        %else:
-            ${_('Kbytes')}</em>)</span>
-        %endif
-
-        <span class="thumbnailmsg">${_('This is resized copy. Click it to view original image')}</span><br />
-        <a href="${g.OPT.filesPathWeb + h.modLink(post.file.path, c.userInst.secid())}" \
-        %if post.file.extension.newWindow:
-            target="_blank" \
-        %endif
-        >
-
-        <%include file="wakaba.thumbnail.mako" args="post=post" />
-        </a>
-    %elif post.hasAttachment:
-        <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
-        <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb"  alt="Removed" />
-    %endif
     <blockquote class="postbody" id="postBQId${post.id}">
   %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()):
         %if (c.count > 1) and post.messageShort and getattr(thread, 'enableShortMessages', True):
@@ -111,11 +77,8 @@ id="reply${post.id}">
             ${post.message}
         %endif
     %endif
-        %if post.messageInfo:
-            <div>${post.messageInfo}</div>
-        %endif
-        %if post.file and post.file.animpath:
-            [<a href="${h.url_for('viewAnimation', source=post.id)}" target="_blank">${_('Animation')}</a>]
-        %endif
+    %if post.messageInfo:
+        <div>${post.messageInfo}</div>
+    %endif
     </blockquote>
 </td></tr></tbody></table>

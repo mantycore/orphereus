@@ -35,7 +35,7 @@ a {
     color:#9DA6B0;
 }*/
 .boardlist a {
-    padding: 0px 3px 0px 3px; 
+    padding: 0px 3px 0px 3px;
     /*background-color: #E9E9E9*/
 }
 a:hover {
@@ -407,7 +407,7 @@ div a.show-hide-thread:hover {
     background: #FF6600;
 }
 .postInfo{
-background: #A8A8A8;
+background: #E8E8E8;
 }
 
 .img_loading{
@@ -535,6 +535,9 @@ input#y_replyform_password{
 .y_replyform_anon #y_replyform_buttons input{
     margin-top: 12px;
 }
+.y_fileLink {cursor:pointer; }
+.y_fileLinkActive {font-weight: bold;}
+.y_fileLinkSelected {font-style: italic;}
 
 .omittedposts.expanded span{
   display: none
@@ -582,54 +585,45 @@ a img{ border: 0}
     color: #0066FF;
     background: #EEEEEE;
 }
-/*
-#x_replyform {
-    display: block; border: 1px #117743; solid; margin: 0 2px 2px 2px; padding: 5px;
-    background-color: #49525D;
-    -moz-border-radius: 6px;
-}
-#x_replyform textarea {
-    width: 100%; background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #B6C2CF;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #B6C2CF;
-}
-#x_replyform div {
-    overflow: hidden; margin-top: 5px;
-}
-#x_replyform label {
-    float: left; margin-right: 10px;
-}
-#x_replyform input[type="text"], #x_replyform input[type="password"] {
-    background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #B6C2CF;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #B6C2CF;
-}
-#x_replyform input[type="file"] > input[type="text"] {
-    background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #B6C2CF;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #B6C2CF;
-}
-#x_replyform input[type="submit"] {background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #B6C2CF;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #B6C2CF;
 
+.file_thread {
+    font-size: 80%;
+    float: left;
+    margin-top: 5px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    margin-left: 5px;
+    text-align: left;
+/*    background-attachment: scroll;
+    background-repeat: repeat;
+    background-position: 0% 0%;
+    background-color: #dddddd;
+    background-image: none;
+    border-top-color: #aaaaaa;
+    border-left-color: #aaaaaa;
+    border-right-color: #aaaaaa;
+    border-bottom-color: #aaaaaa;
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-top-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;*/
 }
-#x_replyform button {background-color: #EEEEEE;
-    border-top: 1px solid #49525D;
-    border-bottom: 1px solid #B6C2CF;
-    border-left: 1px solid #49525D;
-    border-right: 1px solid #B6C2CF;
 
+
+.linkWithPopup {cursor: pointer;}
+.easytooltip{
+margin:0 10px 1em 0;
+width:250px;
+padding:8px;
+background:#fcfcfc;
+border:1px solid #e1e1e1;
+line-height:130%;
+z-index: 9000;
 }
-#x_replyform_goto{margin: 0px 4px 0px 4px; width: 120px}
-#x_replyform_captcha_input{margin: 0px 4px 0px 4px; width: 70px}
-#x_replyform_password_input{margin: 0px 4px 0px 0px; width: 70px}
-*/
+.easytooltip a{
+cursor: pointer;
+}

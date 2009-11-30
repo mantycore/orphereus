@@ -79,14 +79,31 @@ def make_map():
     map.connect('viewLog', '/viewLog/page/:page', controller = 'Orphie_Main', action = 'viewLog', requirements = dict(page = '\d+'))
 
     # Oekaki
-    map.connect('oekakiDraw', '/oekakiDraw/:url/:selfy/:anim/:tool', controller = 'Orphie_Main', action = 'oekakiDraw', selfy = '-selfy', anim = '-anim', tool = 'shiNormal')
-    map.connect('oekakiSave', '/oekakiSave/:url/:tempid', controller = 'Orphie_Public', action = 'oekakiSave', url = '', requirements = dict(tempid = '\d+'))
-    map.connect('viewAnimation', '/viewAnimation/:source', controller = 'Orphie_Main', action = 'viewAnimation', requirements = dict(source = '\d+'))
+    map.connect('oekakiDraw',
+                '/oekakiDraw/:url/:sourceId/:selfy/:anim/:tool',
+                controller = 'Orphie_Main',
+                action = 'oekakiDraw',
+                selfy = None,
+                anim = None,
+                tool = None,
+                sourceId = '0',
+                requirements = dict(sourceId = '\d+'))
+    map.connect('oekakiSave',
+                '/oekakiSave/:url/:tempid',
+                controller = 'Orphie_Public',
+                action = 'oekakiSave',
+                url = '',
+                requirements = dict(tempid = '\d+'))
+    map.connect('viewAnimation',
+                '/viewAnimation/:source/:animid',
+                controller = 'Orphie_Main',
+                action = 'viewAnimation',
+                animid = '0',
+                requirements = dict(source = '\d+', animid = '\d+'))
 
     # Threads
     map.connect('postReply', '/:post', controller = 'Orphie_Main', action = 'PostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
     map.connect('delete', '/:board/delete', controller = 'Orphie_Main', action = 'DeletePost', conditions = dict(method = ['POST']))
-    map.connect('anonymize', '/:post/anonymize', controller = 'Orphie_Main', action = 'Anonimyze', requirements = dict(post = '\d+'))
     map.connect('thread', '/:post/:tempid', controller = 'Orphie_Main', action = 'GetThread', tempid = 0, requirements = dict(post = '\d+', tempid = '\d+'))
     map.connect('postThread', '/:board', controller = 'Orphie_Main', action = 'PostThread', conditions = dict(method = ['POST']))
 

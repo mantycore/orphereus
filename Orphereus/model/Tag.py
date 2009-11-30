@@ -24,7 +24,7 @@ from sqlalchemy import orm
 from sqlalchemy.orm import eagerload
 
 from Orphereus.model import meta
-from Orphereus.model.TagOptions import TagOptions
+#from Orphereus.model.TagOptions import TagOptions
 from Orphereus.lib.miscUtils import empty
 import datetime
 import re
@@ -36,20 +36,48 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_tags = sa.Table("tag", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key = True),
-    sa.Column("tag"      , sa.types.UnicodeText, nullable = False),
-    sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
-    sa.Column("threadCount" , sa.types.Integer, nullable = False, server_default = '0'),
-    )
+def t_tags_init(dialectProps):
+    t_tags = sa.Table("tag", meta.metadata,
+        sa.Column("id"       , sa.types.Integer, sa.Sequence('tag_id_seq'), primary_key = True),
+        sa.Column("tag"      , sa.types.Unicode(meta.dialectProps['tagLengthHardLimit']), nullable = False, unique = True, index = True),
+        sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
+        sa.Column("threadCount" , sa.types.Integer, nullable = False, server_default = '0'),
+        sa.Column("comment"  , sa.types.UnicodeText, nullable = True),
+        sa.Column("sectionId", sa.types.Integer, nullable = False),
+        sa.Column("persistent", sa.types.Boolean, nullable = False,),
+        sa.Column("service", sa.types.Boolean, nullable = False,),
+        sa.Column("imagelessThread", sa.types.Boolean, nullable = False),
+        sa.Column("imagelessPost", sa.types.Boolean, nullable = False),
+        sa.Column("images"   , sa.types.Boolean, nullable = False),
+        sa.Column("maxFileSize" , sa.types.Integer, nullable = False),
+        sa.Column("minPicSize", sa.types.Integer, nullable = False),
+        sa.Column("thumbSize", sa.types.Integer, nullable = False),
+        sa.Column("enableSpoilers", sa.types.Boolean, nullable = False),
+        sa.Column("canDeleteOwnThreads", sa.types.Boolean, nullable = False),
+        sa.Column("specialRules"  , sa.types.UnicodeText, nullable = True),
+        sa.Column("selfModeration", sa.types.Boolean, nullable = False),
+        sa.Column("showInOverview", sa.types.Boolean, nullable = False, index = True),
+        sa.Column("bumplimit", sa.types.Integer, nullable = True),
+        sa.Column("allowedAdditionalFiles", sa.types.Integer, nullable = True),
+        sa.Column("adminOnly", sa.types.Boolean, nullable = False, index = True),
+        )
 
-t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
-#    sa.Column("id"          , sa.types.Integer, primary_key=True),
-    sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id')),
-    sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tag.id')),
-    )
+    t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
+    #    sa.Column("id"          , sa.types.Integer, primary_key=True),
+        sa.Column('postId'  , sa.types.Integer, sa.ForeignKey('post.id'), primary_key = True),
+        sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('tag.id'), primary_key = True),
+        )
+    if not meta.dialectProps['disableComplexIndexes']:
+        sa.Index('ix_tagmap_postid_tagid',
+                 t_tagsToPostsMap.c.postId,
+                 t_tagsToPostsMap.c.tagId,
+                 unique = True)
+
+    return t_tags, t_tagsToPostsMap
 
 class Tag(object):
+    TAGREGEX = r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)"""
+
     def __repr__(self):
         return u"%s (#%d)" % (self.tag, self.id)
 
@@ -57,7 +85,25 @@ class Tag(object):
         self.tag = tag
         self.replyCount = 0
         self.threadCount = 0
-        self.options = TagOptions()
+        #self.options = TagOptions()
+        self.sectionId = 0
+        self.persistent = False
+        self.service = False
+        self.adminOnly = False
+        self.comment = u''
+        self.specialRules = u''
+        self.imagelessThread = meta.globj.OPT.defImagelessThread
+        self.imagelessPost = meta.globj.OPT.defImagelessPost
+        self.images = meta.globj.OPT.defImages
+        self.enableSpoilers = meta.globj.OPT.defEnableSpoilers
+        self.canDeleteOwnThreads = meta.globj.OPT.defCanDeleteOwnThreads
+        self.maxFileSize = meta.globj.OPT.defMaxFileSize
+        self.minPicSize = meta.globj.OPT.defMinPicSize
+        self.thumbSize = meta.globj.OPT.defThumbSize
+        self.selfModeration = meta.globj.OPT.defSelfModeration
+        self.showInOverview = meta.globj.OPT.defShowInOverview
+        self.bumplimit = meta.globj.OPT.defBumplimit
+        self.allowedAdditionalFiles = meta.globj.OPT.allowedAdditionalFiles
 
     def save(self):
         meta.Session.commit()
@@ -74,27 +120,27 @@ class Tag(object):
     """
     @staticmethod
     def getBoards():
-        return Tag.query.join('options').filter(TagOptions.persistent == True).order_by(TagOptions.sectionId).all()
+        return Tag.query.filter(Tag.persistent == True).order_by(Tag.sectionId).all()
 
     @staticmethod
     def getTag(tagName):
-        return Tag.query.options(eagerload('options')).filter(Tag.tag == tagName).first()
+        return Tag.query.filter(Tag.tag == tagName).first()
 
     @staticmethod
     def getById(tagId):
-        return Tag.query.options(eagerload('options')).filter(Tag.id == tagId).first()
+        return Tag.query.filter(Tag.id == tagId).first()
 
     @staticmethod
     def getAll():
-        return Tag.query.options(eagerload('options')).all()
+        return Tag.query.all()
 
     @staticmethod
     def getAllByIds(idList):
-        return Tag.query.options(eagerload('options')).filter(Tag.id.in_(idList)).all()
+        return Tag.query.filter(Tag.id.in_(idList)).all()
 
     @staticmethod
     def getAllByNames(names):
-        return Tag.query.options(eagerload('options')).filter(Tag.tag.in_(names)).all()
+        return Tag.query.filter(Tag.tag.in_(names)).all()
 
     @staticmethod
     def getAllByThreadCount(tc):
@@ -104,7 +150,7 @@ class Tag(object):
     def splitTagString(tagstr):
         if tagstr:
             tagstr = tagstr.replace('&amp;', '&')
-            regex = re.compile(r"""([^,@~\#\+\-\&\s\/\\\(\)<>'"%\d][^,@~\#\+\-\&\s\/\\\(\)<>'"%]*)""")
+            regex = re.compile(Tag.TAGREGEX)
             return regex.findall(tagstr)
         return []
 
@@ -128,62 +174,69 @@ class Tag(object):
                 else:
                     nonExistentTagNames.append(t)
         return (existentTags, createdTags, nonExistentTagNames)
-
+    """
     @staticmethod
     def csStringToExTagIdList(string):
         result = []
         tags = string #.split('|')
         for tag in tags:
-            aTag = Tag.query.options(eagerload('options')).filter(Tag.tag == tag).first()
+            aTag = Tag.query.filter(Tag.tag == tag).first()
             if aTag:
                 result.append(aTag.id)
         return result
-
+    """
     @staticmethod
     def conjunctedOptionsDescript(tags):
         options = empty()
         optionsFlag = True
         rulesList = []
         for t in tags:
-            if t.options:
-                if optionsFlag:
-                    options.imagelessThread = t.options.imagelessThread
-                    options.imagelessPost = t.options.imagelessPost
-                    options.images = t.options.images
-                    options.enableSpoilers = t.options.enableSpoilers
-                    options.maxFileSize = t.options.maxFileSize
-                    options.minPicSize = t.options.minPicSize
-                    options.thumbSize = t.options.thumbSize
-                    options.canDeleteOwnThreads = t.options.canDeleteOwnThreads
-                    options.selfModeration = t.options.selfModeration
-                    options.showInOverview = t.options.showInOverview
-                    options.bumplimit = t.options.bumplimit
-                    optionsFlag = False
-                else:
-                    options.imagelessThread = options.imagelessThread & t.options.imagelessThread
-                    options.imagelessPost = options.imagelessPost & t.options.imagelessPost
-                    options.enableSpoilers = options.enableSpoilers & t.options.enableSpoilers
-                    options.canDeleteOwnThreads = options.canDeleteOwnThreads & t.options.canDeleteOwnThreads
-                    options.images = options.images & t.options.images
-                    options.selfModeration = options.selfModeration | t.options.selfModeration
-                    options.showInOverview = options.showInOverview & t.options.showInOverview
+            if optionsFlag:
+                options.imagelessThread = t.imagelessThread
+                options.imagelessPost = t.imagelessPost
+                options.images = t.images
+                options.enableSpoilers = t.enableSpoilers
+                options.maxFileSize = t.maxFileSize
+                options.minPicSize = t.minPicSize
+                options.thumbSize = t.thumbSize
+                options.canDeleteOwnThreads = t.canDeleteOwnThreads
+                options.selfModeration = t.selfModeration
+                options.showInOverview = t.showInOverview
+                options.bumplimit = t.bumplimit
+                options.allowedAdditionalFiles = t.allowedAdditionalFiles is None and meta.globj.OPT.allowedAdditionalFiles or t.allowedAdditionalFiles
+                optionsFlag = False
+            else:
+                options.imagelessThread = options.imagelessThread & t.imagelessThread
+                options.imagelessPost = options.imagelessPost & t.imagelessPost
+                options.enableSpoilers = options.enableSpoilers & t.enableSpoilers
+                options.canDeleteOwnThreads = options.canDeleteOwnThreads & t.canDeleteOwnThreads
+                options.images = options.images & t.images
+                options.selfModeration = options.selfModeration | t.selfModeration
+                options.showInOverview = options.showInOverview & t.showInOverview
 
-                    if t.options.bumplimit and (not options.bumplimit or (t.options.bumplimit < options.bumplimit)):
-                        options.bumplimit = t.options.bumplimit
+                if t.bumplimit and (not options.bumplimit or (t.bumplimit < options.bumplimit)):
+                    options.bumplimit = t.bumplimit
 
-                    perm = meta.globj.OPT.permissiveFileSizeConjunction
-                    if (perm and t.options.maxFileSize > options.maxFileSize) or (not perm and t.options.maxFileSize < options.maxFileSize):
-                        options.maxFileSize = t.options.maxFileSize
+                perm = meta.globj.OPT.permissiveFileSizeConjunction
+                if (perm and t.maxFileSize > options.maxFileSize) or (not perm and t.maxFileSize < options.maxFileSize):
+                    options.maxFileSize = t.maxFileSize
 
-                    if t.options.minPicSize > options.minPicSize:
-                        options.minPicSize = t.options.minPicSize
-                    if t.options.thumbSize < options.thumbSize:
-                        options.thumbSize = t.options.thumbSize
+                if t.minPicSize > options.minPicSize:
+                    options.minPicSize = t.minPicSize
+                if t.thumbSize < options.thumbSize:
+                    options.thumbSize = t.thumbSize
 
-                tagRulesList = t.options.specialRules.split(';')
-                for rule in tagRulesList:
-                    if rule and not rule in rulesList:
-                        rulesList.append(rule)
+                currentAllowed = t.allowedAdditionalFiles
+                if currentAllowed is None:
+                    currentAllowed = meta.globj.OPT.allowedAdditionalFiles
+                assert type(currentAllowed) == int or type(currentAllowed) == long
+                perm = meta.globj.OPT.permissiveAdditionalFilesCountConjunction
+                if (perm and currentAllowed > options.allowedAdditionalFiles) or (not perm and currentAllowed < options.allowedAdditionalFiles):
+                    options.allowedAdditionalFiles = currentAllowed
+            tagRulesList = t.specialRules.split(';')
+            for rule in tagRulesList:
+                if rule and not rule in rulesList:
+                    rulesList.append(rule)
 
         options.rulesList = rulesList
 
@@ -199,6 +252,7 @@ class Tag(object):
             options.selfModeration = meta.globj.OPT.defSelfModeration
             options.showInOverview = meta.globj.OPT.defShowInOverview
             options.bumplimit = meta.globj.OPT.defBumplimit
+            options.allowedAdditionalFiles = meta.globj.OPT.allowedAdditionalFiles
             options.specialRules = u''
         return options
 
@@ -216,17 +270,17 @@ class Tag(object):
         ret.totalSTagsThreads = 0
         ret.totalSTagsPosts = 0
         for b in boards:
-            if not b.id in meta.globj.forbiddenTags:
+            if not b.adminOnly:
                 bc = empty()
                 bc.count = b.threadCount
                 bc.postsCount = b.replyCount
                 bc.board = b
 
-                if b.options and b.options.persistent:
+                if b.persistent:
                     ret.boards.append(bc)
                     ret.totalBoardsThreads += bc.count
                     ret.totalBoardsPosts += bc.postsCount
-                elif not (b.options and b.options.service):
+                elif not b.service:
                     ret.tags.append(bc)
                     ret.totalTagsThreads += bc.count
                     ret.totalTagsPosts += bc.postsCount
@@ -237,13 +291,23 @@ class Tag(object):
         return ret
 
     @staticmethod
+    def maxLen(onlyHardLimit = False):
+        if onlyHardLimit:
+            return meta.dialectProps['tagLengthHardLimit']
+        return min(int(meta.globj.OPT.maxTagLen), meta.dialectProps['tagLengthHardLimit'])
+
+    @staticmethod
+    def cutTag(tagName, onlyHardLimit = False):
+        return tagName[:Tag.maxLen(onlyHardLimit)]
+
+    @staticmethod
     def checkForConfilcts(tags):
         disabledTags = meta.globj.disabledTags
-        maxTagLen = int(meta.globj.OPT.maxTagLen)
+        maxTagLen = Tag.maxLen()
         tagsPermOk = True
         problemTags = []
         for tag in tags:
-            lengthNeedsToBeChecked = ((not tag.options) or (tag.options and not tag.options.persistent))
+            lengthNeedsToBeChecked = not tag.persistent
             tagLengthProblem = lengthNeedsToBeChecked and len(tag.tag) > maxTagLen
             tagDisabled = tag.tag.lower() in disabledTags
             if (tagLengthProblem or tagDisabled):

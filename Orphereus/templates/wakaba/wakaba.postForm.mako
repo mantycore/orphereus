@@ -43,6 +43,10 @@
 <input type="hidden" name="tempid" value="${c.oekaki.tempid}" />
 %endif
 
+<input type="hidden" id="additionalFilesCount" value="${c.boardOptions.allowedAdditionalFiles}" />
+<input type="hidden" id="createdRows" value="0" />
+<input type="hidden" id="nextRowId" value="0" />
+
 <div id="paramPlaceholderContent" style="display: none;">
     <img  alt="${_("Loading")}" src="${g.OPT.staticPathWeb}images/loading.gif" />
 </div>
@@ -59,7 +63,7 @@
 %if h.templateExists(c.actuatorTest+'wakaba.postFormTop.mako'):
     <%include file="${c.actuator+'wakaba.postFormTop.mako'}" />
 %endif
-    
+
 %if not c.board:
     <tr id="trsage">
         <td class="postblock">${_('Sage')}</td>
@@ -78,18 +82,30 @@
         <td class="postblock">${_('Text')}</td>
         <td><textarea id="replyText" name="message" cols="60" rows="6"></textarea></td>
     </tr>
-    %if c.boardOptions.images and not c.oekaki:
-        <tr id="trfile">
-            <td class="postblock">${_('File')}</td>
-            <td>
-            	<input type="file" name="file" size="35" />
-				%if c.boardOptions.enableSpoilers:
-            	<span id="tspoiler">&nbsp; <input type="checkbox" name="spoiler" /> ${_('Spoiler')}</span>
-				%endif
-            </td>
-        </tr>
-
+    %if c.boardOptions.images:
+    <tr id="trfile">
+        <td class="postblock">${_('File')}</td>
+        <td>
+          %if not c.oekaki:
+            <input type="file" name="file_0" size="35" onchange="addFileRowOnChange(this);" />
+            %if c.boardOptions.enableSpoilers:
+                  <span class="tspoiler">&nbsp; <input type="checkbox" name="spoiler_0" /> ${_('Spoiler')}</span>
+            %endif
+          %elif c.oekaki:
+            <!-- a style="cursor:pointer" onclick="$('#oekakiPreview').toggle();">${_("Recently drawn Oekaki")}</a -->
+            <a href="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" target="_blank">${_("Recently drawn Oekaki")}</a>
+          %endif
+          %if c.boardOptions.allowedAdditionalFiles > 0:
+                <input id="addFileBtn" type="button" name="addFile" value="Add file" onclick="addFileRow();" />
+          %endif
+        </td>
+    </tr>
     %endif
+
+    <tr id="filesBlockEnd" style="display: none;">
+      <td colspan="2" />
+    </tr>
+
     %if c.board:
         <tr id="trtags">
             <td class="postblock">${_('Boards')}</td>
@@ -169,7 +185,7 @@
         <label><input type="checkbox" name="selfy" ${c.userInst.oekUseSelfy and 'checked="checked"' or ""} /> ${_('Selfy')}</label>
         <label><input type="checkbox" name="animation" ${c.userInst.oekUseAnim and 'checked="checked"' or ""} /> ${_('Animation')}</label>
 
-        <input type="hidden" value="New" name="oekaki_type"/>
+        <input type="hidden" value="New" name="oekaki_type" />
         <input type="submit" value="${_('Draw')}"/>
 
         </td>
@@ -209,6 +225,7 @@
 <li>${_('Visible in Overview')}:  ${c.boardOptions.showInOverview and _('yes') or _('no')}</li>
 %endif
 <li>${_('Bumplimit')}:  ${c.boardOptions.bumplimit and c.boardOptions.bumplimit or _('unlimited')}</li>
+<li>${_('Additional files allowed: %d') % c.boardOptions.allowedAdditionalFiles}</li>
 </ul>
 <b>${_('Additional information')}:</b>
 <ul class="nomargin">
@@ -242,11 +259,12 @@ ${_('Board-specific rules:')}
 </tr>
 </table>
 
-%if c.oekaki:
-<div id="trfile" class="theader">
-    <img src="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" alt="Oekaki preview" />
+%if False and c.oekaki: # Link is more pretty
+<div class="theader" >
+    <img id="oekakiPreview" src="${g.OPT.filesPathWeb + h.modLink(c.oekaki.path, c.userInst.secid())}" alt="Oekaki preview" />
 </div>
 %endif
 
 </div>
 </div>
+

@@ -304,48 +304,84 @@ YForm.Captcha.prototype = {
     }
 }
 
+function YFormActivateFile(idx){
+$(".y_fileField").hide();
+if (idx > 0) {
+$("#y_replyform_file_field_" + idx).show();
+}
+else {
+$("#y_replyform_file_field").show();
+}
+$(".y_fileLink").removeClass("y_fileLinkActive");
+$("#y_replyform_file_link_" + idx).addClass("y_fileLinkActive");
+}
+
+function YFormMarkSelected(idx){
+$("#y_replyform_file_link_" + idx).addClass("y_fileLinkSelected");
+}
+
+function highlightMyPosts(myPosts){
+  for (var i = 0; i < myPosts.length; i++){
+     $(myPosts[i]).addClass("myreply");
+  }
+}
+
 function expandable_threads(){
   expandable_threads.mass_repair =  function(node){
-    popup_posts.repair(node.find("blockquote a"))
-    click_expands.repair(node)
-    YForm.repair(node)
+    popup_posts.repair(node.find("blockquote a"));
+    click_expands.repair(node);
+    YForm.repair(node);
   }
 
   expandable_threads.repair_deleteboxes = function(visible)
   {
      var allDeleteBoxesSpans = $(".delete");
      if (visible) {
-        allDeleteBoxesSpans.show()
+        allDeleteBoxesSpans.show();
      }
      else {
-        allDeleteBoxesSpans.hide()
+        allDeleteBoxesSpans.hide();
      }
   }
   $(".thread .omittedposts a").click(function() {
-    var me = $(this)
+    var me = $(this);
     var thread = me.parent().parent();
     var deleteBoxesShown = thread.find('.delete').is(':visible');
     if(me.data("oldreplies")){
-      var t = me.data("oldreplies")
-      me.data("oldreplies", thread.find(".replies").html())
-      thread.find(".replies").html(t)
+      var t = me.data("oldreplies");
+      me.data("oldreplies", thread.find(".replies").html());
+      thread.find(".replies").html(t);
 
-      t = me.data("orig_html")
-      me.data("orig_html", me.html())
-      me.html(t)
+      t = me.data("orig_html");
+      me.data("orig_html", me.tml());
+      me.html(t);
 
-      expandable_threads.mass_repair(thread.find(".replies"))
+      expandable_threads.mass_repair(thread.find(".replies"));
       expandable_threads.repair_deleteboxes(deleteBoxesShown);
-      me.parent().toggleClass("expanded")
+      me.parent().toggleClass("expanded");
     }else{
       me.data("orig_html", me.html())
-      me.data("oldreplies", thread.find(".replies").html())
-      me.html("<img src='"+window.loading_icon_path+"'>"+"${_('Loading')}"+"…")
-      thread.find(".replies").load("${g.OPT.urlPrefix}ajax/getRenderedReplies/" + thread.attr("id").match(/\d+/)[0], function() {
-        me.parent().toggleClass("expanded")
-        me.html("${_('Collapse thread')}")
-        expandable_threads.mass_repair(thread.find(".replies"))
+      me.data("oldreplies", thread.find(".replies").html());
+      me.html("<img src='"+window.loading_icon_path+"'>"+"${_('Loading')}"+"…");
+      var threadId = thread.attr("id").match(/\d+/)[0];
+      thread.find(".replies").load("${g.OPT.urlPrefix}ajax/getRenderedReplies/" + threadId, function() {
+        me.parent().toggleClass("expanded");
+        me.html("${_('Collapse thread')}");
+        expandable_threads.mass_repair(thread.find(".replies"));
         expandable_threads.repair_deleteboxes(deleteBoxesShown);
+
+        if (window.highlightMyPostsAfterExpand)
+        {
+          $.getJSON("${g.OPT.urlPrefix}ajax/getMyPostIds/" + threadId,
+                  function(data){
+                    var myPosts=new Array();
+                    $.each(data, function(i,item){
+                      myPosts.push('#reply' + item);
+                    });
+                    highlightMyPosts(myPosts);
+                  });
+
+        }
       })
     }
     return false;
@@ -354,7 +390,7 @@ function expandable_threads(){
 
 function showDeleteBoxes()
 {
-    $('.delete').animate({'opacity' : 'toggle',}, 250);
+    $('.delete').animate({'opacity' : 'toggle'}, 250);
 }
 
 function tagCheckComplete(data) {
@@ -457,6 +493,129 @@ function userFiltersDelete(event,fid)
   event.preventDefault();
 }
 
+function addFileRow() {
+  var currentCount = parseInt($("#createdRows").attr("value"));
+  var additionalFilesCount = parseInt($("#additionalFilesCount").attr("value"));
+  if (currentCount > additionalFilesCount - 1) {
+    return;
+  } else
+  {
+    if (currentCount == additionalFilesCount - 1)
+        $("#addFileBtn").attr("disabled", "disabled");
+    $("#createdRows").attr("value", currentCount + 1);
+
+     var currentId = parseInt($("#nextRowId").attr("value"));
+     $("#nextRowId").attr("value", currentId + 1);
+
+     var newRow = $("#trfile_").clone();
+     newRow.attr("id", "trfile_" +  currentId);
+     var fileField = $("input[name = file_]", newRow);
+     fileField.attr("name", "file_" + (currentId + 1));
+     var fileIdField = $("input[name = fileRowId]", newRow);
+     fileIdField.attr("value", currentId);
+     var spolierField = $("input[name = spoiler_]", newRow);
+     if (spolierField) {
+      spolierField.attr("name", "spoiler_" + (currentId + 1));
+     }
+    newRow.insertBefore("#filesBlockEnd");
+  }
+}
+
+function addFileRowOnChange(input) {
+  if (!input.previousValue)
+    addFileRow();
+  input.previousValue = input.value;
+}
+
+function removeRow(input)
+{
+  var idToRemove = $(input).next().val();
+  $("#trfile_" + idToRemove).remove();
+  var currentCount = parseInt($("#createdRows").attr("value"));
+  $("#createdRows").attr("value", currentCount - 1 );
+  $("#addFileBtn").attr("disabled", "");
+}
+
+function resetRow(id, attr, value) {
+  var rowToModify = $(id);
+  if (rowToModify){
+    rowToModify.attr(attr, value);
+  }
+}
+
+(function($) {
+$.fn.easyTooltip = function(options){
+
+  // default configuration properties
+  var defaults = {
+    xOffset: 10,
+    yOffset: -10,
+    tooltipId: "easyTooltip",
+    clickRemove: false,
+    content: "",
+    useElement: ""
+  };
+
+  var options = $.extend(defaults, options);
+  var content;
+
+  this.each(function() {
+    $(this).hover(function(e){
+      content = (options.useElement != "") ? $("#" + options.useElement).html() : content;
+
+      if (content != "" && content != undefined){
+        if (! $("#" + options.tooltipId).get()[0] )
+        {
+          $("body").append("<div id='"+
+                            options.tooltipId +
+                            "' class='easytooltip'>" +
+                            content +
+                            "</div>");
+                            /*"<br/>" +
+                            "<a onclick=\"$('#" + options.tooltipId + "').remove();\">${_('Close')}</a></div>");*/
+
+          $("#" + options.tooltipId)
+            .css("position","absolute")
+            .css("top",(e.pageY - options.yOffset) + "px")
+            .css("left",(e.pageX + options.xOffset) + "px")
+            .css("display","none")
+            .attr("close", "no")
+            .mouseout (function(){$("#" + options.tooltipId).attr("close", "yes");})
+            .mouseover(function(){$("#" + options.tooltipId).attr("close", "no");})
+            .show();
+       }
+      }
+    },
+    function(){
+
+      var test = function()
+      {
+        var tt = $("#" + options.tooltipId);
+        if (tt.attr("close") == "yes")
+        {tt.remove();}
+        else
+        {setTimeout(test, 200);}
+      }
+      setTimeout(test, 200);
+    }
+    );
+
+    if(options.clickRemove){
+        $(this).mousedown(function(e){$("#" + options.tooltipId).remove();});
+    }
+  });
+
+};
+})(jQuery);
+
+function installPopupHintsOnFiles(){
+$('.linkWithPopup').each(function (i) {
+  $(this).easyTooltip({ useElement: "filePopup-" + $(this).attr("id"),
+                        clickRemove: true,
+                        tooltipId : "tooltip-" + $(this).attr("id")});
+  });
+}
+
 // code below should be rewritten using JQuery
 function insert(text,notFocus)
 {
@@ -496,20 +655,54 @@ function highlight(post)
     {
         reply.className="highlight";
 /*      var match=/^([^#]*)/.exec(document.location.toString());
-        document.location=match[1]+"#"+post;*/
+        document.location=match[1]+"#"+post;
+*/
         return false;
     }
-
     return true;
 }
 
 window.onload=function(e)
 {
-    var match;
-    if(match=/#i([0-9]+)/.exec(document.location.toString()))
+    var match = /#i([0-9]+)/.exec(document.location.toString());
+    if(match)
     {
+       var postId = match[1];
+       highlight(postId);
+      /*
+        // Annoying Wakaba behavior
         if(!document.forms.postform.message.value)
-            insert(">>"+match[1],1);
-        highlight(match[1]);
+          insert(">>"+postId,1);
+       */
     }
+    installPopupHintsOnFiles();
 }
+
+/* exports for Google Closure. They are disabled for now because Closure doesn't supports jQuery */
+/*
+window['menu_show'] = menu_show;
+window['toggle_div'] = toggle_div;
+window['update_captcha'] = update_captcha;
+window['click_expands'] = click_expands;
+window['popup_posts'] = popup_posts;
+window['YForm'] = YForm;
+window['YFormActivateFile'] = YFormActivateFile;
+window['YFormMarkSelected'] = YFormMarkSelected;
+window['expandable_threads'] = expandable_threads;
+window['showDeleteBoxes'] = showDeleteBoxes;
+window['tagCheckComplete'] = tagCheckComplete;
+window['checkForTagNames'] = checkForTagNames;
+window['restoreForm'] = restoreForm;
+window['getFullText'] = getFullText;
+window['userFiltersAdd'] = userFiltersAdd;
+window['userFiltersEdit'] = userFiltersEdit;
+window['userFiltersDelete'] = userFiltersDelete;
+window['addFileRow'] = addFileRow;
+window['addFileRowOnChange'] = addFileRowOnChange;
+window['removeRow'] = removeRow;
+window['resetRow'] = resetRow;
+window['insert'] = insert;
+window['highlight'] = highlight;
+window['jQuery'] = jQuery;
+window['$'] = $;
+*/

@@ -52,6 +52,8 @@ class AjaxServicesPlugin(BasePlugin):
         map.connect('ajPostThread', '/ajax/postThread/:board', controller = 'Orphie_Main', action = 'ajaxPostThread', conditions = dict(method = ['POST']))
         map.connect('ajPostReply', '/ajax/postReply/:post', controller = 'Orphie_Main', action = 'ajaxPostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
         map.connect('ajTagsCheck', '/ajax/checkTags', controller = 'Orphie_Ajax', action = 'checkTags')
+        map.connect('ajGetMyPostIds', '/ajax/getMyPostIds/:thread', controller = 'Orphie_Ajax', action = 'getMyPostIds', requirements = dict(thread = '\d+'))
+
         # routines below isn't actually used
         map.connect('ajGetText', '/ajax/getText/:text', controller = 'Orphie_Ajax', action = 'getText', text = '')
         map.connect('/ajax/getRepliesCountForThread/:post', controller = 'Orphie_Ajax', action = 'getRepliesCountForThread', requirements = dict(post = '\d+'))
@@ -132,9 +134,20 @@ class OrphieAjaxController(OrphieBaseController):
         if postInst:
             if not self.userInst.isAdmin() and postInst.parentPost:
                 for t in postInst.parentPost.tags:
-                    if t.id in g.forbiddenTags:
+                    if t.adminOnly:
                         abort(403)
             return postInst.message
+        abort(404)
+
+    @jsonify
+    def getMyPostIds(self, thread):
+        if self.userInst.Anonymous:
+            abort(403)
+        postInst = Post.getPost(int(thread))
+        if postInst and not postInst.parentPost:
+            ids = meta.Session.query(Post.id).filter(and_(Post.parentid == thread, Post.uidNumber == self.userInst.uidNumber)).all()
+            ids = map(lambda x: x[0], ids)
+            return ids
         abort(404)
 
     def getRenderedPost(self, post):
@@ -142,7 +155,7 @@ class OrphieAjaxController(OrphieBaseController):
         if postInst:
             if not self.userInst.isAdmin() and postInst.parentPost:
                 for t in postInst.parentPost.tags:
-                    if t.id in g.forbiddenTags:
+                    if t.adminOnly:
                         abort(403)
             parent = postInst.parentPost
             if not parent:
@@ -159,7 +172,7 @@ class OrphieAjaxController(OrphieBaseController):
         if postInst and not postInst.parentPost:
             if not self.userInst.isAdmin():
                 for t in postInst.tags:
-                    if t.id in g.forbiddenTags:
+                    if t.adminOnly:
                         abort(403)
             postInst.Replies = postInst.filterReplies().all()
             self.setRightsInfo()
@@ -186,8 +199,10 @@ class OrphieAjaxController(OrphieBaseController):
                 return str(','.join(ret))
         abort(404)
 
+
+    @jsonify
     def getUserSettings(self):
-        return str(self.userInst.optionsDump())
+        return self.userInst.optionsDump()
 
     def getUploadsPath(self):
         return g.OPT.filesPathWeb

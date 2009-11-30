@@ -85,7 +85,7 @@
             <div><a href="${h.url_for('authorizeToUrl', url='!')}" target="board">${_('Login')}</a></div>
         %endif
         %if g.OPT.allowAnonProfile:
-	        <div><a href="${h.url_for('logout')}" target="_top">${_('Kill session')}</a></div>
+          <div><a href="${h.url_for('logout')}" target="_top">${_('Kill session')}</a></div>
         %endif
     %if g.OPT.allowRegistration:
     <div><a href="${h.url_for('register', invite='register')}" target="board" onclick="parent.top.list.location.reload(true);">${_('Register')}</a></div>
@@ -111,7 +111,8 @@
             %endif
         %endfor
     %endif
-
+        </td>
+    </tr>
 </tbody>
 </table>
 
@@ -128,11 +129,11 @@
             <div><a href="${h.url_for('boardBase', board=f.filter)}" target="board">/${f.filter}/</a><div>
         %endfor
 %endif
-		<div id="custFwdLink"><a onclick="javascript:toggle_div('custFwd');toggle_div('custFwdLink');">${_('Custom filter...')}</a></div>
+    <div id="custFwdLink"><a onclick="javascript:toggle_div('custFwd');toggle_div('custFwdLink');">${_('Custom filter...')}</a></div>
         <div style="display:none" id="custFwd">
-	        <form method="post" action="${h.url_for('makeFwdTo')}" target="board">
-	        <input type="text" name="tags"/>
-	        </form>
+          <form method="post" action="${h.url_for('makeFwdTo')}" target="board">
+          <input type="text" name="tags"/>
+          </form>
         </div>
         </td>
     </tr>

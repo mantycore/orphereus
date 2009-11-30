@@ -1,5 +1,5 @@
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -30,19 +30,20 @@ log = logging.getLogger(__name__)
 
 from Orphereus.model import meta
 
-t_logins = sa.Table("loginTracker", meta.metadata,
-    sa.Column("id"          , sa.types.Integer, primary_key=True),
-    sa.Column("ip"          , sa.types.String(16), nullable=False),
-    sa.Column("attempts"    , sa.types.Integer, nullable=False),
-    sa.Column("cid"         , sa.types.Integer, nullable=True),
-    sa.Column("lastAttempt" , sa.types.DateTime, nullable=True)
-    )
+def t_loginTracker_init(dialectProps):
+    return sa.Table("loginTracker", meta.metadata,
+            sa.Column("id"          , sa.types.Integer, sa.Sequence('loginTracker_id_seq'), primary_key = True),
+            sa.Column("ip"          , sa.types.String(16), nullable = False),
+            sa.Column("attempts"    , sa.types.Integer, nullable = False),
+            sa.Column("cid"         , sa.types.Integer, nullable = True),
+            sa.Column("lastAttempt" , sa.types.DateTime, nullable = True)
+            )
 
 class LoginTracker(object):
     def __init__(self, ip):
-        self.ip = ip
+        self.ip = ip.split(':')[-1]
         self.attempts = 0
-        self.lastAttempt =  datetime.datetime.now()
+        self.lastAttempt = datetime.datetime.now()
 
     def delete(self):
         meta.Session.delete(self)
@@ -50,7 +51,7 @@ class LoginTracker(object):
 
     @staticmethod
     def getTracker(ip):
-        tracker = LoginTracker.query.filter(LoginTracker.ip==ip).first()
+        tracker = LoginTracker.query.filter(LoginTracker.ip == ip).first()
         if not tracker:
             tracker = LoginTracker(ip)
             meta.Session.add(tracker)

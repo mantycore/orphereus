@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 
 class UserTagsPlugin(BasePlugin, AbstractPageHook):
     def __init__(self):
-        config = {'name' : N_('Thread saving pluging'),
+        config = {'name' : N_('Thread saving plugin'),
                  }
         BasePlugin.__init__(self, 'threadsave', config)
 
@@ -53,26 +53,26 @@ class ThreadsaveController(OrphieBaseController):
     def __init__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-        
+
     def __del__(self):
         shutil.rmtree(self.path, True)
 
     def _prepareHtml(self, html):
         staticFiles = list(set(re.findall('%s([^"]+)"' % meta.globj.OPT.staticPathWeb, html)))
         staticFiles = map(lambda s: s.split('?')[0], staticFiles)
-        dirs = list(set(map(lambda fn: (fn.find('/') > -1) and fn.split('/')[0] or '',  staticFiles)))
+        dirs = list(set(map(lambda fn: (fn.find('/') > -1) and fn.split('/')[0] or '', staticFiles)))
         dirs.append('files')
-        html = re.sub('%s([^"]+)"' % meta.globj.OPT.staticPathWeb, r'\1"', html)
-        
+        html = re.sub('%s([^"]+")' % meta.globj.OPT.staticPathWeb, r'\1', html)
+
         postFiles = list(set(re.findall('%s([^"]+)"' % meta.globj.OPT.filesPathWeb, html)))
-        html = re.sub('%s[^"]+/([^"]+)"' % meta.globj.OPT.filesPathWeb, r'files/\1"', html)
-        
+        html = re.sub('%s[^"]+/([^"]+")' % meta.globj.OPT.filesPathWeb, r'files/\1', html)
+
         #html = re.sub('f="/\d+(#i\d+)', r'f="\1', html)
-        map(lambda dir: dir and os.mkdir('%s/%s' %(self.path, dir)), dirs)
-        map(lambda fn: shutil.copyfile('%s/%s' %(meta.globj.OPT.staticPath, fn), '%s/%s' %(self.path, fn)) , staticFiles)
-        map(lambda fn: shutil.copyfile('%s/%s' %(meta.globj.OPT.uploadPath, fn), '%s/files/%s' %(self.path, os.path.basename(fn))), postFiles)
+        map(lambda dir: dir and os.mkdir('%s/%s' % (self.path, dir)), dirs)
+        map(lambda fn: shutil.copyfile('%s/%s' % (meta.globj.OPT.staticPath, fn), '%s/%s' % (self.path, fn)) , staticFiles)
+        map(lambda fn: shutil.copyfile('%s/%s' % (meta.globj.OPT.uploadPath, fn), '%s/files/%s' % (self.path, os.path.basename(fn))), postFiles)
         return html
-    
+
     def loadThread(self):
         try:
             thread = Post.buildThreadFilter(self.userInst, self.tid).one()
@@ -91,7 +91,7 @@ class ThreadsaveController(OrphieBaseController):
         page = self.render('posts')
         page = self._prepareHtml(page)
         f = open('%s/%s.htm' % (self.path, self.tid), 'w')
-        f.write(page)
+        f.write(page.encode('utf-8'))
         f.close()
         return redirect_to(str('%ssave/%s' % (meta.globj.OPT.filesPathWeb, self.compress())))
 
@@ -99,7 +99,7 @@ class ThreadsaveController(OrphieBaseController):
         files = os.listdir(self.path)
         os.chdir(self.path)
         mark = (self.userInst.Anonymous and 0) or (str(self.userInst.secid())*4)[-4:]
-        arcName = '%s.%s.tar.gz' % (self.tid, mark)
+        arcName = '%s.%d.%s.tar.gz' % (self.tid, int(time.time()*1000), mark)
         arcPath = '%s/save/' % meta.globj.OPT.uploadPath
         tar = tarfile.open(arcName, 'w:gz')
         for file in files:
@@ -107,9 +107,11 @@ class ThreadsaveController(OrphieBaseController):
         tar.close()
         if not(os.path.exists(arcPath)):
             os.makedirs(arcPath)
+#        if os.path.exists(arcPath):
+#	    os.remove(arcPath)
         shutil.move(arcName, arcPath)
         return arcName
-    
+
     def save(self, post):
         self.path = mkdtemp()
         self.tid = post

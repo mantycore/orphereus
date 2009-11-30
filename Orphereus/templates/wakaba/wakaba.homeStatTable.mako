@@ -17,14 +17,14 @@
         <td>${b.count}</td>
         <td>${b.postsCount}</td>
         <td>
-        %if b.board.options and b.board.options.comment:
-            ${b.board.options.comment}
+        %if b.board.comment:
+            ${b.board.comment}
         %endif
-        %if b.board.options and b.board.options.specialRules:
+        %if b.board.specialRules:
             <div class="smallFont">
             Rules:
             <ul class="nomargin">
-            %for rule in b.board.options.specialRules.split(';'):
+            %for rule in b.board.specialRules.split(';'):
                 <li>${rule}</li>
             %endfor
             </ul>

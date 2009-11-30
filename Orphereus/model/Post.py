@@ -249,9 +249,9 @@ class Post(object):
                     #return (not_(or_(disableExclusions, disableHidden)), [])
                     #inclusion = Post.tags.any(and_(Tag.showInOverview == True, not_(Tag.id.in_(userInst.homeExclude))))
                     if userInst.homeExclude:
-                        return (Post.tags.any(and_(Tag.showInOverview == True, not_(Tag.id.in_(userInst.homeExclude)))), [])
+                        return (not_(Post.tags.any(or_(Tag.showInOverview == False, Tag.id.in_(userInst.homeExclude)))), [])
                     else:
-                        return (Post.tags.any(Tag.showInOverview == True), [])
+                        return (not_(Post.tags.any(Tag.showInOverview == False)), [])
                 else:
                     retarg = [arg]
                     hooks = meta.globj.implementationsOf(AbstractPostingHook)

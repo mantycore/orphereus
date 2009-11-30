@@ -225,7 +225,7 @@ class MaintenanceWorker(object):
                     mtnLog.append(LogElement('Warning', msg))
                     toLog(LOG_EVENT_INTEGR, msg)
                     meta.Session.delete(pic)
-        batchProcess(Picture.query, picturesSearch)
+        batchProcess(Picture.query.filter(Picture.id > 0), picturesSearch)
 
         meta.Session.commit()
         mtnLog.append(LogElement('Task', 'Orpaned database entries check completed'))
@@ -382,7 +382,7 @@ class MaintenanceWorker(object):
                         mtnLog.append(LogElement('Info', "%d autobanned" % user.uidNumber))
                 else:
                     mtnLog.append(LogElement('Warning', "User %d haven't options object" % user.uidNumber))
-        batchProcess(User.query, searchRoutine)
+        batchProcess(User.query.filter(User.uidNumber > 0), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 

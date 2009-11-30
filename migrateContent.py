@@ -359,8 +359,9 @@ migrate("development.ini", "mysql://root:@127.0.0.1/orphieold?use_unicode=0&char
 
 # Perform this if you migrating to PostgreSQL
 #
-# select setval('log_id_seq', (select max(id) from log));
-# select setval('invite_id_seq', (select max(id) from invite));
-# select setval('post_id_seq', (select max(id) from post));
-# select setval('"user_uidNumber_seq"', (select max("uidNumber") from "user"));
-
+"""
+select setval('log_id_seq', (select max(id) from log));
+select setval('invite_id_seq', (select max(id) from invite));
+select setval('post_id_seq', (select max(id) from post));
+select setval('"user_uidNumber_seq"', (select max("uidNumber") from "user"));
+"""

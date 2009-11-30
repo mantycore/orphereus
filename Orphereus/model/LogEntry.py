@@ -38,7 +38,7 @@ def t_log_init(dialectProps):
             sa.Column("id"    , sa.types.Integer, sa.Sequence('log_id_seq'), primary_key = True),
             sa.Column("uidNumber", sa.types.Integer, sa.ForeignKey('user.uidNumber')),
             sa.Column("date"  , sa.types.DateTime, nullable = False),
-            sa.Column("event" , sa.types.Integer, nullable = False),
+            sa.Column("event" , sa.types.Integer, nullable = False, index = True),
             sa.Column("entry" , sa.types.UnicodeText, nullable = False)
             )
 
@@ -69,3 +69,7 @@ class LogEntry(object):
         meta.Session.add(logEntry)
         if commit:
             meta.Session.commit()
+
+    @staticmethod
+    def allTypes():
+        return meta.Session.query(LogEntry.id).distinct().all()

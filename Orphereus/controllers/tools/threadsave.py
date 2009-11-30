@@ -99,7 +99,7 @@ class ThreadsaveController(OrphieBaseController):
         files = os.listdir(self.path)
         os.chdir(self.path)
         mark = (self.userInst.Anonymous and 0) or (str(self.userInst.secid())*4)[-4:]
-        arcName = '%s.%s.tar.gz' % (self.tid, mark)
+        arcName = '%s.%d.%s.tar.gz' % (self.tid, int(time.time()*1000), mark)
         arcPath = '%s/save/' % meta.globj.OPT.uploadPath
         tar = tarfile.open(arcName, 'w:gz')
         for file in files:
@@ -107,6 +107,8 @@ class ThreadsaveController(OrphieBaseController):
         tar.close()
         if not(os.path.exists(arcPath)):
             os.makedirs(arcPath)
+#        if os.path.exists(arcPath):
+#	    os.remove(arcPath)
         shutil.move(arcName, arcPath)
         return arcName
 

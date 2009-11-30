@@ -62,10 +62,10 @@ class ThreadsaveController(OrphieBaseController):
         staticFiles = map(lambda s: s.split('?')[0], staticFiles)
         dirs = list(set(map(lambda fn: (fn.find('/') > -1) and fn.split('/')[0] or '', staticFiles)))
         dirs.append('files')
-        html = re.sub('%s([^"]+)"' % meta.globj.OPT.staticPathWeb, r'\1"', html)
+        html = re.sub('%s([^"]+")' % meta.globj.OPT.staticPathWeb, r'\1', html)
 
         postFiles = list(set(re.findall('%s([^"]+)"' % meta.globj.OPT.filesPathWeb, html)))
-        html = re.sub('%s[^"]+/([^"]+)"' % meta.globj.OPT.filesPathWeb, r'files/\1"', html)
+        html = re.sub('%s[^"]+/([^"]+")' % meta.globj.OPT.filesPathWeb, r'files/\1', html)
 
         #html = re.sub('f="/\d+(#i\d+)', r'f="\1', html)
         map(lambda dir: dir and os.mkdir('%s/%s' % (self.path, dir)), dirs)
@@ -91,7 +91,7 @@ class ThreadsaveController(OrphieBaseController):
         page = self.render('posts')
         page = self._prepareHtml(page)
         f = open('%s/%s.htm' % (self.path, self.tid), 'w')
-        f.write(page)
+        f.write(page.encode('utf-8'))
         f.close()
         return redirect_to(str('%ssave/%s' % (meta.globj.OPT.filesPathWeb, self.compress())))
 

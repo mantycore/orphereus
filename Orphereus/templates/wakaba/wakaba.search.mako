@@ -34,6 +34,7 @@
         <tr>
             <td class="doubledash">&gt;&gt;</td>
             <td class="reply" id="reply${pt.id}">
+              <div class="postheader">
               &nbsp;
                 <a name="i${pt.id}"></a>
                 <label>
@@ -53,9 +54,11 @@
                     <a href="${h.postUrl(pt.id, pt.id)}">#${g.OPT.secondaryIndex and pt.secondaryIndex or pt.id}</a>;
                     ${threadInfo(pt)}
                 %endif
-        </span>
-        &nbsp;
-        <%include file="wakaba.fileBlock.mako" args="post=pt,opPost=None,searchMode=True,newsMode=None" />
+                </span>
+              &nbsp;
+              </div>
+
+<%include file="wakaba.fileBlock.mako" args="post=pt,opPost=None,searchMode=True,newsMode=None" />
 
                 <blockquote class="postbody" id="postBQId${pt.id}">
                 %if pt.id in c.highlights:

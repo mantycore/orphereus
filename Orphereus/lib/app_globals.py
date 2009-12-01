@@ -172,7 +172,7 @@ class OptHolder(object):
 
                               ('security',
                                ('alertEmail', 'refControlList', 'fakeLinks',
-                                'badUAs',
+                                'badUAs', 'trustedIPRanges'
                                )
                               ),
 

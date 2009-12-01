@@ -225,9 +225,9 @@ security.alertPort = 587
 security.alertSender = alert@anoma.ch
 security.alertPassword = blablabla
 # enables HTTP referer check
-security.refControlEnabled = true
+security.refControlEnabled = false
 security.refControlList = anoma.ch,anoma.li,localhost,127.0.0.1
-# redirections
+# redirections for referers that are not in security.refControlList
 security.fakeLinks = http://www.youtube.com/watch?v=oHg5SJYRHA0,http://meatspin.com/,http://youtube.com/watch?v=Uqot33mczsw,http://youtube.com/watch?v=dZBU6WzBrX8
 # enables useragent check and denies automatic downloaders
 security.checkUAs = true
@@ -235,8 +235,9 @@ security.badUAs = Wget,Offline Explorer,Web Downloader,WebCopier,WebZIP,Teleport
 # used for URL substitution
 security.obfuscator=http://anonym.to/?$(url)s
 security.spiderTrap = true
-# allows admin users to login only from 127.0.0.1 (or via SSH tunneling). Useful.
+# allows admin users to login only from trusted IP ranges. Useful.
 security.useAnalBarriering = true
+security.trustedIPRanges = 127.0.0.1/32,192.168.0.0/24
 # FA-related features
 security.enableFinalAnonymity = true
 security.finalAHoursDelay = 24

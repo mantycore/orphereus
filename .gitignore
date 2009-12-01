@@ -6,7 +6,6 @@
 /data/*
 /.settings/*
 *.pyc
-/Orphereus/public/js/full_*.js
 /Orphereus.egg-info/*
 /Orphereus/public/js/wakaba_en.js
 /Orphereus/public/js/wakaba_ru.js

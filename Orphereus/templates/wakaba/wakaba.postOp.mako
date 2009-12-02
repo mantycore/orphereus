@@ -12,9 +12,6 @@
 <span style="display:none" class="delete">
 %if thread.uidNumber == c.uidNumber or c.enableAllPostDeletion:
     <input type="checkbox" name="delete-${thread.id}" value="${thread.id}" />
-    %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous and thread.uidNumber == c.uidNumber:
-        <a href="${h.url_for('anonymize', post=thread.id)}">[FA]</a>
-    %endif
 %endif
 ${h.threadPanelCallback(thread, c.userInst)}
 &nbsp;
@@ -39,9 +36,7 @@ ${h.tsFormat(thread.date)} \
 %else:
     <a href="javascript:insert('&gt;&gt;${thread.id}')">#${g.OPT.secondaryIndex and thread.secondaryIndex or thread.id}</a> \
 %endif
-%if g.OPT.hlAnonymizedPosts and thread.uidNumber == 0:
-    <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b> \
-%endif
+${h.threadHeaderCallback(thread, c.userInst)}
 </span>
 
 %if not(c.minimalRender):

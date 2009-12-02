@@ -21,6 +21,7 @@
 ################################################################################
 
 from pylons.i18n import N_
+from webhelpers.html.tags import link_to
 from string import *
 
 from Orphereus.lib.BasePlugin import BasePlugin
@@ -185,14 +186,12 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
 
     # AbstractPageHook
     def threadPanelCallback(self, thread, userInst):
-        from webhelpers.html.tags import link_to
         if not userInst.Anonymous:
             return link_to(_("[My tags]"), h.url_for('userTagsMapper', post = thread.id), target = "_blank")
         return ''
 
     def threadInfoCallback(self, thread, userInst):
         ns = self.namespace()
-        from webhelpers.html.tags import link_to
         result = ''
         if not userInst.Anonymous:
             tags = ns.UserTag.getPostTags(thread.id, userInst.uidNumber)

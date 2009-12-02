@@ -73,45 +73,37 @@ def repliesProxy(thread, controller):
     sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.keys())])
     return ''.join(sortedPostsRender)
 
-def threadPanelCallback(thread, userInst):
+def universalCallback(methodName, *args):
     gvars = config['pylons.app_globals']
     callbacks = gvars.implementationsOf(AbstractPageHook)
     result = ''
     for cb in callbacks:
-        ret = cb.threadPanelCallback(thread, userInst)
+        method = getattr(cb, methodName)
+        ret = method(*args)
         if ret:
             result += ret
     return result
 
-def postPanelCallback(thread, post, userInst):
-    gvars = config['pylons.app_globals']
-    callbacks = gvars.implementationsOf(AbstractPageHook)
-    result = ''
-    for cb in callbacks:
-        ret = cb.postPanelCallback(thread, post, userInst)
-        if ret:
-            result += ret
-    return result
+def threadPanelCallback(thread, userInst):
+    return universalCallback("threadPanelCallback", thread, userInst)
 
 def threadInfoCallback(thread, userInst):
-    gvars = config['pylons.app_globals']
-    callbacks = gvars.implementationsOf(AbstractPageHook)
-    result = ''
-    for cb in callbacks:
-        ret = cb.threadInfoCallback(thread, userInst)
-        if ret:
-            result += ret
-    return result
+    return universalCallback("threadInfoCallback", thread, userInst)
+
+def postPanelCallback(thread, post, userInst):
+    return universalCallback("postPanelCallback", thread, post, userInst)
+
+def postHeaderCallback(thread, post, userInst):
+    return universalCallback("postHeaderCallback", thread, post, userInst)
+
+def threadHeaderCallback(thread, userInst):
+    return universalCallback("threadHeaderCallback", thread, userInst)
 
 def headCallback(context):
-    gvars = config['pylons.app_globals']
-    callbacks = gvars.implementationsOf(AbstractPageHook)
-    result = ''
-    for cb in callbacks:
-        ret = cb.headCallback(context)
-        if ret:
-            result += ret
-    return result
+    return universalCallback("headCallback", context)
+
+def boardInfoCallback(context):
+    return universalCallback("boardInfoCallback", context)
 
 def currentTime():
     return time.time()

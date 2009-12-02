@@ -20,9 +20,11 @@
 ################################################################################
 
 import logging
+from sqlalchemy.sql import and_, or_, not_
+from webhelpers.html.tags import link_to
+
 from Orphereus.lib.base import *
 from Orphereus.model import Post
-from sqlalchemy.sql import and_, or_, not_
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from Orphereus.controllers.OrphieBaseController import OrphieBaseController
@@ -43,22 +45,38 @@ class FinalAnonymizationPlugin(BasePlugin, AbstractPageHook):
         map.connect('anonymize', '/:post/anonymize', controller = 'tools/anonymization', action = 'Anonimyze', requirements = dict(post = '\d+'))
 
     def updateGlobals(self, globj):
-        boolValues = [('security', ('enableFinalAnonymity', 'hlAnonymizedPosts',)), ]
-        intValues = [('security', ('finalAHoursDelay',)), ]
+        boolValues = [('finalanonymity', ('enableFinalAnonymity', 'hlAnonymizedPosts',)), ]
+        intValues = [('finalanonymity', ('finalAHoursDelay',)), ]
 
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(intValues, CFG_INT)
             globj.OPT.registerCfgValues(boolValues, CFG_BOOL)
 
     def postPanelCallback(self, thread, post, userInst):
-        from webhelpers.html.tags import link_to
         result = ''
+        if g.OPT.enableFinalAnonymity and (g.OPT.memcachedPosts or (not userInst.Anonymous and post.uidNumber == c.uidNumber)):
+            result += link_to(_("[FA]"), h.url_for('anonymize', post = post.id))
         return result
 
     def threadPanelCallback(self, thread, userInst):
-        from webhelpers.html.tags import link_to
-        result = ''
+        result = self.postPanelCallback(thread, thread, userInst)
         return result
+
+    def postHeaderCallback(self, thread, post, userInst):
+        result = ''
+        if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
+            result = '<b class="signature">%s</b>' % link_to(_("FA"), h.url_for('static', page = 'finalAnonymity'), target = "_blank")
+        return result
+
+    def threadHeaderCallback(self, thread, userInst):
+        result = self.postHeaderCallback(thread, thread, userInst)
+        return result
+
+    def boardInfoCallback(self, context):
+        faState = _('Final Anonymity: %s %s') % (not g.OPT.enableFinalAnonymity and _('off') or _('on'),
+                                                   g.OPT.enableFinalAnonymity and
+                                                   (g.OPT.hlAnonymizedPosts and _('(with marks)') or _('(without marks)')) or '')
+        return "<li>%s</li>" % faState
 
 class AnonymizationController(OrphieBaseController):
     def __before__(self):

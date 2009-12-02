@@ -192,6 +192,11 @@ antispam.banTimeDays = 5
 antispam.enableAutoBan = false
 antispam.autoBanAnonTotally = false
 htmlCompressor.disableCompressionList = wakaba/wakaba.spainter.mako,wakaba/wakaba.shiAnimation.mako
+mediaplayer.extensionTypeToPlay = music
+# FA-related features
+finalanonymity.enableFinalAnonymity = true
+finalanonymity.finalAHoursDelay = 24
+finalanonymity.hlAnonymizedPosts = true
 
 ##################
 # Board defaults #
@@ -238,10 +243,6 @@ security.spiderTrap = true
 # allows admin users to login only from trusted IP ranges. Useful.
 security.useAnalBarriering = true
 security.trustedIPRanges = 127.0.0.1/32,192.168.0.0/24
-# FA-related features
-security.enableFinalAnonymity = true
-security.finalAHoursDelay = 24
-security.hlAnonymizedPosts = true
 
 ################################################################################
 # do not change anything below

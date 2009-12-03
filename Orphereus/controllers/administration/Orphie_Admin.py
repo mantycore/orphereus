@@ -185,7 +185,7 @@ class OrphieAdminController(OrphieBaseController):
         reason = request.POST.get('inviteReason', False)
         if reason and len(reason) > 1:
             reason = filterText(reason)
-            invite = Invite.create(g.OPT.hashSecret)
+            invite = Invite.create(g.OPT.hashSecret, self.userInst.uidNumber, reason)
 
             toLog(LOG_EVENT_INVITE, _("Generated invite id %s. Reason: %s") % (invite.id, reason))
             c.inviteCode = invite.invite

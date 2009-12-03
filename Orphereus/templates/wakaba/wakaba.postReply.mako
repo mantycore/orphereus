@@ -27,8 +27,8 @@ id="reply${post.id}">
           <i>${_('[REMOVABLE]')}</i>
           %endif
       %endif
-      ${h.postPanelCallback(thread, post, c.userInst)}
     %endif
+    ${h.postPanelCallback(thread, post, c.userInst)}
     &nbsp;
     </span>
     %if post.sage:
@@ -73,6 +73,9 @@ id="reply${post.id}">
     %endif
     %if post.messageInfo:
         <div>${post.messageInfo}</div>
+    %endif
+    %if post.attachments and len(post.attachments) == 1:
+      <%include file="wakaba.fileInfoSingle.mako" args="attachment=post.attachments[0]" />
     %endif
     </blockquote>
 </td></tr></tbody></table>

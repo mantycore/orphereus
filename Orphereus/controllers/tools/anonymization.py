@@ -59,7 +59,10 @@ class FinalAnonymizationPlugin(BasePlugin, AbstractPageHook):
         return result
 
     def threadPanelCallback(self, thread, userInst):
-        result = self.postPanelCallback(thread, thread, userInst)
+        #result = self.postPanelCallback(thread, thread, userInst)
+        result = ''
+        if g.OPT.enableFinalAnonymity and (not userInst.Anonymous and thread.uidNumber == c.uidNumber):
+            result += link_to(_("[FA]"), h.url_for('anonymize', post = thread.id))
         return result
 
     def postHeaderCallback(self, thread, post, userInst):
@@ -85,16 +88,17 @@ class AnonymizationController(OrphieBaseController):
 
     def Anonimyze(self, post):
         postid = request.POST.get('postId', False)
-        batch = request.POST.get('batchFA', False)
+        batchOlder = request.POST.get('batchFAOlder', False)
+        batchNewer = request.POST.get('batchFANewer', False)
         if postid and isNumber(postid):
-            c.FAResult = self.processAnomymize(int(postid), batch)
+            c.FAResult = self.processAnomymize(int(postid), batchOlder, batchNewer)
         else:
             c.boardName = _('Final Anonymization')
             c.FAResult = False
             c.postId = post
         return self.render('finalAnonymization')
 
-    def processAnomymize(self, postid, batch):
+    def processAnomymize(self, postid, batchOlder, batchNewer):
         if not g.OPT.enableFinalAnonymity:
             return [_("Final Anonymity is disabled")]
 
@@ -104,11 +108,15 @@ class AnonymizationController(OrphieBaseController):
         result = []
         post = Post.getPost(postid)
         if post:
-            posts = []
-            if not batch:
-                posts = [post]
-            else:
-                posts = Post.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date <= post.date)).all()
+            posts = [post]
+            if batchOlder:
+                olderPosts = Post.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date < post.date)).all()
+                if olderPosts:
+                    posts.extend(olderPosts)
+            if batchNewer:
+                newerPosts = Post.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date > post.date)).all()
+                if newerPosts:
+                    posts.extend(newerPosts)
             for post in posts:
                 if post.uidNumber != self.userInst.uidNumber:
                     result.append(_("You are not author of post #%s") % post.id)

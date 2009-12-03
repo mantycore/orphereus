@@ -38,22 +38,8 @@ class OrphiePublicController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         c.title = g.OPT.title
-        if g.OPT.refControlEnabled:
-            ref = request.headers.get('REFERER', False)
-            if ref:
-                ref = filterText(ref)
-
-            if ref:
-                rickroll = True
-                for rc in g.OPT.refControlList:
-                    if rc in ref:
-                        rickroll = False
-
-                if (rickroll):
-                    redir = g.OPT.fakeLinks[random.randint(0, len(g.OPT.fakeLinks) - 1)]
-                    toLog(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, getUserIp(), filterText(request.headers.get('User-Agent', '?'))))
-                    redirect_to(str(redir))
-
+        if not g.OPT.refControlForAnyRequest:
+            self.refererCheck()
         if (self.userInst and self.userInst.isValid()) or g.OPT.allowAnonymous:
             self.initEnvironment()
         else:

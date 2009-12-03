@@ -82,6 +82,9 @@ ${h.threadInfoCallback(thread, c.userInst)}<br />
     %if thread.messageInfo:
         <div>${thread.messageInfo}</div>
     %endif
+    %if thread.attachments and len(thread.attachments) == 1:
+      <%include file="wakaba.fileInfoSingle.mako" args="attachment=thread.attachments[0]" />
+    %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:
     <span class="omittedposts"><span>${ungettext('%s post omitted.', '%s posts omitted.', thread.omittedPosts) % thread.omittedPosts}</span> <a href="#">${_('Expand thread')}</a> </span>

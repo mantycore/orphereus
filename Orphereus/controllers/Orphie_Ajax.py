@@ -101,7 +101,9 @@ class OrphieAjaxController(OrphieBaseController):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             abort(403)
         self.forceNoncachedUser()
+        post = int(post)
         postInst = Post.getPost(post)
+        Post.normalizeHiddenThreadsList(self.userInst)
         if postInst and not postInst.parentPost:
             hideThreads = self.userInst.hideThreads
             if not post in hideThreads:
@@ -117,7 +119,9 @@ class OrphieAjaxController(OrphieBaseController):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
             abort(403)
         self.forceNoncachedUser()
+        post = int(post)
         postInst = Post.getPost(post)
+        Post.normalizeHiddenThreadsList(self.userInst)
         if postInst and not postInst.parentPost:
             hideThreads = self.userInst.hideThreads
             if post in hideThreads:

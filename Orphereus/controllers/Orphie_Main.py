@@ -145,8 +145,9 @@ class OrphieMainController(OrphieBaseController):
         c.tagList = ' '.join(tagList)
 
         hiddenThreads = self.userInst.hideThreads
+        hiddenThreads = map(lambda x: int(x), hiddenThreads) # legacy support
         for thread in c.threads:
-            thread.hideFromBoards = (str(thread.id) in hiddenThreads)
+            thread.hideFromBoards = (thread.id in hiddenThreads)
             thread.hidden = thread.hideFromBoards
             if thread.hideFromBoards:
                 tl = []
@@ -292,6 +293,7 @@ class OrphieMainController(OrphieBaseController):
             return self.error(_("Profile is not avaiable to Anonymous users."))
 
         self.forceNoncachedUser()
+        Post.normalizeHiddenThreadsList(self.userInst)
         c.additionalProfileLinks = []
         linkGenerators = g.implementationsOf(AbstractProfileExtension)
         for generator in linkGenerators:

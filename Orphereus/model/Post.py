@@ -443,3 +443,10 @@ class Post(object):
         ret.lastWeekMessages = meta.Session.query(Post.id).filter(Post.date >= firstBnd).count()
         ret.prevWeekMessages = meta.Session.query(Post.id).filter(and_(Post.date <= firstBnd, Post.date >= secondBnd)).count()
         return ret
+
+    @staticmethod
+    def normalizeHiddenThreadsList(userInst):
+        userInst.hideThreads = map(lambda x: int(x), userInst.hideThreads) #legacy support
+        hiddenTuples = meta.Session.query(Post.id).filter(Post.id.in_(userInst.hideThreads)).all()
+        userInst.hideThreads = map(lambda x: x[0], hiddenTuples)
+        meta.Session.commit()

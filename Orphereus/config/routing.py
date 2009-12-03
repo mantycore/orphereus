@@ -90,7 +90,7 @@ def make_map():
     # Oekaki
     map.connect('oekakiDraw',
                 '/oekakiDraw/:url/:sourceId/:selfy/:anim/:tool',
-                controller = 'Orphie_Main',
+                controller = 'Orphie_Posting',
                 action = 'oekakiDraw',
                 selfy = None,
                 anim = None,
@@ -105,9 +105,9 @@ def make_map():
                 requirements = dict(tempid = '\d+'))
 
     # Threads
-    map.connect('postReply', '/:post', controller = 'Orphie_Main', action = 'PostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
-    map.connect('delete', '/:board/delete', controller = 'Orphie_Main', action = 'DeletePost', conditions = dict(method = ['POST']))
-    map.connect('postThread', '/:board', controller = 'Orphie_Main', action = 'PostThread', conditions = dict(method = ['POST']))
+    map.connect('postReply', '/:post', controller = 'Orphie_Posting', action = 'PostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
+    map.connect('delete', '/:board/delete', controller = 'Orphie_Posting', action = 'DeletePost', conditions = dict(method = ['POST']))
+    map.connect('postThread', '/:board', controller = 'Orphie_Posting', action = 'PostThread', conditions = dict(method = ['POST']))
 
     ## VIEW
     map.connect('thread', '/:post/:tempid', controller = 'Orphie_View', action = 'GetThread', tempid = 0, requirements = dict(post = '\d+', tempid = '\d+'))

@@ -63,16 +63,7 @@ class OrphieMainController(OrphieBaseController):
     def cbGetPostAndUser(self, id):
         return (Post.getPost(id), self.userInst.uidNumber)
 
-    def selfBan(self, confirm):
-        if g.OPT.spiderTrap and not self.userInst.Anonymous:
-            if confirm:
-                self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 2"), -1)
-                redirect_to('boardBase')
-            else:
-                return self.render('selfBan')
-        else:
-            return redirect_to('boardBase')
-
+    """
     def frameMenu(self):
         c.disableMenu = True
         c.disableFooter = True
@@ -245,6 +236,7 @@ class OrphieMainController(OrphieBaseController):
             return redirect_to('boardBase', board = '%2B'.join(tags).encode('utf-8'))
         else:
             return self.error(_("You must specify post tagline."))
+    """
 
     def gotoDestination(self, post):
         taglineSource = post
@@ -446,6 +438,7 @@ class OrphieMainController(OrphieBaseController):
         c.posts = posts
         return self.render('search')
 
+    """
     def viewLog(self, page):
         if g.OPT.usersCanViewLogs:
             c.boardName = 'Logs'
@@ -460,7 +453,7 @@ class OrphieMainController(OrphieBaseController):
             return self.render('logs')
         else:
             return redirect_to('boardBase')
-
+    """
     def oekakiDraw(self, url, selfy, anim, tool, sourceId):
         if not self.currentUserCanPost():
             return self.error(_("Posting is disabled"))
@@ -527,6 +520,7 @@ class OrphieMainController(OrphieBaseController):
         Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, sourceAttachment, c.selfy)
         return self.render('spainter')
 
+    """
     def viewAnimation(self, source, animid):
         post = Post.getPost(source)
         animid = int(animid)
@@ -538,7 +532,7 @@ class OrphieMainController(OrphieBaseController):
             return self.error(_("Incorrect animation ID"))
         c.pchPath = h.modLink(animpath, c.userInst.secid())
         return self.render('shiAnimation')
-
+    """
     def PostReply(self, post):
         return self.processPost(postid = post)
 

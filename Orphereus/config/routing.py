@@ -57,7 +57,19 @@ def make_map():
         #    rinit(map)
     log.info('COMPLETED ROUTING INITIALIZATION STAGE')
 
-    map.connect('makeFwdTo', '/makeFwdTo', controller = 'Orphie_Main', action = 'makeFwdTo')
+    ## VIEW
+    map.connect('makeFwdTo', '/makeFwdTo', controller = 'Orphie_View', action = 'makeFwdTo')
+    map.connect('frameMenu', '/frameMenu', controller = 'Orphie_View', action = 'frameMenu')
+    map.connect('viewLogBase', '/viewLog', controller = 'Orphie_View', action = 'viewLog', page = 0, requirements = dict(page = '\d+'))
+    map.connect('viewLog', '/viewLog/page/:page', controller = 'Orphie_View', action = 'viewLog', requirements = dict(page = '\d+'))
+    map.connect('viewAnimation',
+                '/viewAnimation/:source/:animid',
+                controller = 'Orphie_View',
+                action = 'viewAnimation',
+                animid = '0',
+                requirements = dict(source = '\d+', animid = '\d+'))
+    ## VIEW: END
+
 
     # Special routes
     map.connect('authorize', '/authorize', controller = 'Orphie_Public', action = 'authorize', url = '')
@@ -71,12 +83,9 @@ def make_map():
     map.connect('static', '/static/:page', controller = 'Orphie_Main', action = 'showStatic', page = 'rules')
     map.connect('searchBase', '/search/:text', controller = 'Orphie_Main', action = 'search', text = '', page = 0, requirements = dict(page = '\d+'))
     map.connect('search', '/search/:text/page/:page', controller = 'Orphie_Main', action = 'search', requirements = dict(page = '\d+'))
-    map.connect('frameMenu', '/frameMenu', controller = 'Orphie_Main', action = 'frameMenu')
 
     # Users subsystem
     map.connect('userProfile', '/userProfile', controller = 'Orphie_Main', action = 'showProfile')
-    map.connect('viewLogBase', '/viewLog', controller = 'Orphie_Main', action = 'viewLog', page = 0, requirements = dict(page = '\d+'))
-    map.connect('viewLog', '/viewLog/page/:page', controller = 'Orphie_Main', action = 'viewLog', requirements = dict(page = '\d+'))
 
     # Oekaki
     map.connect('oekakiDraw',
@@ -94,35 +103,22 @@ def make_map():
                 action = 'oekakiSave',
                 url = '',
                 requirements = dict(tempid = '\d+'))
-    map.connect('viewAnimation',
-                '/viewAnimation/:source/:animid',
-                controller = 'Orphie_Main',
-                action = 'viewAnimation',
-                animid = '0',
-                requirements = dict(source = '\d+', animid = '\d+'))
 
     # Threads
     map.connect('postReply', '/:post', controller = 'Orphie_Main', action = 'PostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
     map.connect('delete', '/:board/delete', controller = 'Orphie_Main', action = 'DeletePost', conditions = dict(method = ['POST']))
-    map.connect('thread', '/:post/:tempid', controller = 'Orphie_Main', action = 'GetThread', tempid = 0, requirements = dict(post = '\d+', tempid = '\d+'))
     map.connect('postThread', '/:board', controller = 'Orphie_Main', action = 'PostThread', conditions = dict(method = ['POST']))
 
+    ## VIEW
+    map.connect('thread', '/:post/:tempid', controller = 'Orphie_View', action = 'GetThread', tempid = 0, requirements = dict(post = '\d+', tempid = '\d+'))
     # Generic filter
-    map.connect('boardBase', '/:board/:tempid', controller = 'Orphie_Main', action = 'GetBoard', board = not framedMain and defaultBoard or None, tempid = 0, page = 0, requirements = dict(tempid = '\d+'))
-    map.connect('board', '/:board/page/:page', controller = 'Orphie_Main', action = 'GetBoard', tempid = 0, requirements = dict(page = '\d+'))
+    map.connect('boardBase', '/:board/:tempid', controller = 'Orphie_View', action = 'GetBoard', board = not framedMain and defaultBoard or None, tempid = 0, page = 0, requirements = dict(tempid = '\d+'))
+    map.connect('board', '/:board/page/:page', controller = 'Orphie_View', action = 'GetBoard', tempid = 0, requirements = dict(page = '\d+'))
+    ## VIEW: END
 
     # traps for bots
-    map.connect('botTrap1', '/ajax/stat/:confirm', controller = 'Orphie_Main', action = 'selfBan', confirm = '')
-    map.connect('botTrap2', '/holySynod/stat/:confirm', controller = 'Orphie_Main', action = 'selfBan', confirm = '')
+    map.connect('botTrap1', '/ajax/stat/:confirm', controller = 'Orphie_Bot_Trap', action = 'selfBan', confirm = '')
+    map.connect('botTrap2', '/holySynod/stat/:confirm', controller = 'Orphie_Bot_Trap', action = 'selfBan', confirm = '')
 
     map.connect('*url', controller = 'Orphie_Public', action = 'UnknownAction')
-
-    #map.connect('search', '/search/:text/:page_dummy/:page', controller='Orphie_Main', action='search', text='', page=0, page_dummy='page', requirements=dict(page='\d+', page_dummy='page'))
-    #map.connect('/search/:text/page/:page', controller='Orphie_Main', action='search', text='', page=0, requirements=dict(page='\d+'))
-    #map.connect('/Join', controller='Orphie_Public', action='showStatic', page = 'Join')
-    #map.connect('/:url/oekakiDraw', controller='Orphie_Main', action='oekakiDraw', url='')
-    #map.connect('viewLog', '/viewLog/:page_dummy/:page', controller='Orphie_Main', action='viewLog', page_dummy='page', page=0, requirements=dict(page='\d+', page_dummy='page'))
-    #map.connect('viewLogPage', '/viewLog/page/:page', controller='Orphie_Main', action='viewLog', page=0, requirements=dict(page='\d+'))
-    #map.connect('/userProfile/messages', controller='Orphie_Main', action='showMessages')
-
     return map

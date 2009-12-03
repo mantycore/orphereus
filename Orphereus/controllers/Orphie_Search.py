@@ -67,7 +67,9 @@ class OrphieSearchController(OrphieBaseController):
         if tagfilter is None:
             tagfilter = Post.buildMetaboardFilter(None, self.userInst)[2]
 
-        filteringClause = or_(tagfilter, Post.parentPost.has(tagfilter))
+        filteringClause = None
+        if not tagfilter is None:
+            filteringClause = or_(tagfilter, Post.parentPost.has(tagfilter))
 
         searchModules = g.implementationsOf(AbstractSearchModule)
         searchPlugin = None

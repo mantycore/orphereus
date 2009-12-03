@@ -266,10 +266,6 @@ class OrphieBaseController(BaseController):
         c.boardName = header
         return self.render('error')
 
-    def showStatic(self, page):
-        c.boardName = _(page)
-        return self.render('static.%s' % page)
-
     def paginate(self, count, page, tpp):
         if count > 1:
             p = divmod(count, tpp)

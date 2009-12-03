@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
+#  Copyright (C) 2009 Hedger                                                   #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -20,23 +20,39 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-from Orphereus.lib.base import g
-from OrphieBaseController import OrphieBaseController
+from pylons.i18n import N_
+from string import *
 
-import logging
-log = logging.getLogger(__name__)
+from Orphereus.lib.BasePlugin import BasePlugin
+from Orphereus.lib.base import *
+from Orphereus.lib.interfaces.AbstractPostOutputHook import AbstractPostOutputHook
+from Orphereus.lib.constantValues import CFG_STRING
+from Orphereus.model import *
 
-class OrphieBotTrapController(OrphieBaseController):
-    def __before__(self):
-        OrphieBaseController.__before__(self)
-        self.initiate()
+from logging import getLogger
+log = getLogger(__name__)
 
-    def selfBan(self, confirm):
-        if g.OPT.spiderTrap and not self.userInst.Anonymous:
-            if confirm:
-                self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 2"), -1)
-                redirect_to('boardBase')
-            else:
-                return self.render('selfBan')
-        else:
-            return redirect_to('boardBase')
+class MediaPlayerPlugin(BasePlugin, AbstractPostOutputHook):
+    def __init__(self):
+        config = {'name' : N_('Flash player for music files'),
+                 }
+
+        BasePlugin.__init__(self, 'mediaplayer', config)
+
+    def overrideThumbnail(self, post, context, attachment):
+        if attachment.attachedFile.extension.type == g.OPT.extensionTypeToPlay:
+            return True
+        return None
+
+    def thumbnailForPost(self, post, context, attachment):
+        return 'mediaplayer'
+
+    def updateGlobals(self, globj):
+        stringValues = [('mediaplayer',
+                               ('extensionTypeToPlay',
+                               )
+                              ),
+                            ]
+
+        if not globj.OPT.eggSetupMode:
+            globj.OPT.registerCfgValues(stringValues, CFG_STRING)

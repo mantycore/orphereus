@@ -22,32 +22,13 @@
 
 from Orphereus.lib.base import *
 from Orphereus.model import *
-from sqlalchemy.orm import eagerload
-from sqlalchemy.sql import and_, or_, not_
-from sqlalchemy.orm import class_mapper
 import sqlalchemy
-import os
-import cgi
-import shutil
-import datetime
 import time
-import Image
-import os
-import hashlib
 import re
-import base64
-from Orphereus.lib.OrphieMark.OrphieParser import OrphieParser
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
-from Orphereus.lib.fileHolder import AngryFileHolder
-from Orphereus.lib.processFile import processFile
-from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
-from Orphereus.lib.interfaces.AbstractProfileExtension import AbstractProfileExtension
-from Orphereus.lib.interfaces.AbstractSearchModule import AbstractSearchModule
 from Orphereus.lib.interfaces.AbstractHomeExtension import AbstractHomeExtension
 from OrphieBaseController import OrphieBaseController
-from mutagen.easyid3 import EasyID3
-from urllib import quote_plus, unquote
 
 import logging
 log = logging.getLogger(__name__)
@@ -58,6 +39,10 @@ class OrphieViewController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
+
+    def showStatic(self, page):
+        c.boardName = _(page)
+        return self.render('static.%s' % page)
 
     def frameMenu(self):
         c.disableMenu = True
@@ -143,7 +128,6 @@ class OrphieViewController(OrphieBaseController):
 
             if count > 1:
                 replyCount = thread.replyCount
-                #replyCount = Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).count()
                 replyLim = replyCount - self.userInst.repliesPerThread
                 if replyLim < 0:
                     replyLim = 0

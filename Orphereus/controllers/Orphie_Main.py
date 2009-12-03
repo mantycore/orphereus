@@ -20,36 +20,35 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-from Orphereus.lib.base import *
-from Orphereus.model import *
-from sqlalchemy.orm import eagerload
-from sqlalchemy.sql import and_, or_, not_
-from sqlalchemy.orm import class_mapper
+import logging
 import sqlalchemy
 import os
-import cgi
-import shutil
 import datetime
 import time
 import Image
-import os
 import hashlib
 import re
 import base64
-from Orphereus.lib.OrphieMark.OrphieParser import OrphieParser
+
+from sqlalchemy.orm import eagerload
+from sqlalchemy.sql import and_, or_, not_
+
+from mutagen.easyid3 import EasyID3
+from urllib import quote_plus, unquote
+
+from Orphereus.lib.base import *
+from Orphereus.model import *
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
+from OrphieBaseController import OrphieBaseController
+from Orphereus.lib.OrphieMark.OrphieParser import OrphieParser
 from Orphereus.lib.fileHolder import AngryFileHolder
 from Orphereus.lib.processFile import processFile
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 from Orphereus.lib.interfaces.AbstractProfileExtension import AbstractProfileExtension
 from Orphereus.lib.interfaces.AbstractSearchModule import AbstractSearchModule
 from Orphereus.lib.interfaces.AbstractHomeExtension import AbstractHomeExtension
-from OrphieBaseController import OrphieBaseController
-from mutagen.easyid3 import EasyID3
-from urllib import quote_plus, unquote
 
-import logging
 log = logging.getLogger(__name__)
 
 #TODO: new debug system. Don't forget about c.log and c.sum
@@ -58,227 +57,6 @@ class OrphieMainController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-
-    #parser callback
-    def cbGetPostAndUser(self, id):
-        return (Post.getPost(id), self.userInst.uidNumber)
-
-    """
-    def frameMenu(self):
-        c.disableMenu = True
-        c.disableFooter = True
-        return self.render('frameMenu')
-
-    def showPosts(self, threadFilter, tempid = '', page = 0, board = '', tags = [], tagList = []):
-        if not g.OPT.allowTagCreation:
-            for tag in tagList:
-                if not Tag.getTag(tag):
-                    return self.error(_(u"Board creation denied: %s") % tag)
-        if isNumber(page):
-            page = int(page)
-        else:
-            page = 0
-
-        c.board = board
-
-        extensions = g.caches.setdefaultEx('extensions', Extension.getList, True)
-        extList = (ext.ext for ext in extensions)
-        c.extLine = ', '.join(extList)
-
-        count = threadFilter.count()
-        tpp = self.userInst.threadsPerPage
-        if page * tpp >= count and count > 0:
-            return self.error(_("Incorrect page"))
-        self.paginate(count, page, tpp)
-
-        if count > 1:
-            if bool(g.OPT.newsSiteMode) ^ bool(self.userInst.invertSortingMode):
-                sortClause = Post.date.desc()
-            else:
-                sortClause = Post.bumpDate.desc()
-            c.threads = threadFilter.order_by(Post.pinned.desc(), sortClause)[page * tpp: (page + 1) * tpp]
-            if g.OPT.mixOldThreads and self.userInst.mixOldThreads and not board == '@':
-                if g.OPT.newsSiteMode:
-                    filterClause = Post.date < c.threads[-1].date
-                else:
-                    filterClause = Post.bumpDate < c.threads[-1].bumpDate
-                oldThread = threadFilter.filter(filterClause).order_by(sqlalchemy.func.random()).first()
-                #log.debug(oldThread)
-                if oldThread:
-                    oldThread.mixed = True
-                    c.threads.insert(1, oldThread)
-
-        elif count == 1:
-            c.threads = [threadFilter.one()]
-        elif count == 0:
-            c.threads = []
-
-        if tagList and len(tagList) == 1 and tags:
-            currentBoard = tags[0]
-            c.boardName = currentBoard and currentBoard.comment or (u"/%s/" % currentBoard.tag)
-            c.tagLine = currentBoard.tag
-        elif tagList or tags:
-            tagDescr = Post.tagLine(tags, tagList)
-            c.boardName = tagDescr[1]
-            c.tagLine = tagDescr[0]
-        else:
-            c.boardName = board
-            c.tagLine = c.boardName
-            if board == '~':
-                c.boardName = _('Overview')
-            elif board == '@':
-                c.boardName = _('Related threads')
-            elif board == '*':
-                c.boardName = _('My threads')
-
-        c.boardOptions = Tag.conjunctedOptionsDescript(tags)
-        c.invisibleBumps = asbool(meta.globj.OPT.invisibleBump)
-        c.tagList = ' '.join(tagList)
-
-        hiddenThreads = self.userInst.hideThreads
-        hiddenThreads = map(lambda x: int(x), hiddenThreads) # legacy support
-        for thread in c.threads:
-            thread.hideFromBoards = (thread.id in hiddenThreads)
-            thread.hidden = thread.hideFromBoards
-            if thread.hideFromBoards:
-                tl = []
-                for tag in thread.tags:
-                    tl.append(tag.tag)
-                thread.tagLine = ', '.join(tl)
-
-            if count > 1:
-                replyCount = thread.replyCount
-                #replyCount = Post.query.options(eagerload('file')).filter(Post.parentid==thread.id).count()
-                replyLim = replyCount - self.userInst.repliesPerThread
-                if replyLim < 0:
-                    replyLim = 0
-                thread.omittedPosts = replyLim
-                thread.Replies = thread.filterReplies()[replyLim:]
-            else:
-                thread.Replies = thread.filterReplies().all()
-                thread.omittedPosts = 0
-                thread.hideFromBoards = False
-
-        if tempid:
-            oekaki = Oekaki.get(tempid)
-            c.oekaki = oekaki
-        else:
-            c.oekaki = False
-
-        c.curPage = page
-        return self.render('posts')
-
-
-    def GetBoard(self, board, tempid, page = 0):
-        if board == None:
-            if (g.OPT.framedMain and self.userInst and self.userInst.useFrame):
-                c.frameTarget = request.params.get('frameTarget', h.url_for('boardBase', board = g.OPT.defaultBoard)) or h.url_for('boardBase', board = g.OPT.defaultBoard)
-                return self.render('frameMain')
-            else:
-                board = g.OPT.defaultBoard
-
-        if board == '!':
-            if g.OPT.devMode:
-                ct = time.time()
-            c.boardName = _('Home')
-            c.hometemplates = []
-            homeModules = g.implementationsOf(AbstractHomeExtension)
-            homeModulesDict = {}
-            for module in homeModules:
-                homeModulesDict[module.pluginId()] = module
-
-            for enabledModuleName in g.OPT.homeModules:
-                if enabledModuleName in homeModulesDict:
-                    enabledModule = homeModulesDict[enabledModuleName]
-                    c.hometemplates.append(enabledModule.templateName)
-                    enabledModule.prepareData(self, c)
-
-            if g.OPT.devMode:
-                c.log.append("home: " + str(time.time() - ct))
-            return self.render('home')
-
-        board = filterText(board)
-        if not g.OPT.allowOverview and '~' in board:
-            return self.error(_("Overview is disabled."))
-        c.PostAction = h.url_for('postThread', board = board) #board
-        c.currentRealm = board
-
-        if isNumber(page):
-            page = int(page)
-        else:
-            page = 0
-
-        filter = Post.buildMetaboardFilter(board, self.userInst)
-        tags = Tag.getAllByNames(filter[1])
-        return self.showPosts(threadFilter = filter[0], tempid = tempid, page = int(page), board = board, tags = tags, tagList = filter[1])
-
-    def GetThread(self, post, tempid):
-        thePost = Post.getPost(post)
-        #if thePost isn't op-post, redirect to op-post instead
-        if thePost and thePost.parentPost:
-            if isNumber(tempid) and not int(tempid) == 0:
-                redirect_to('thread', post = thePost.parentid, tempid = int(tempid))
-            else:
-                redirect_to('thread', **h.postKwargs(thePost.parentid, thePost.id))
-
-        if not thePost:
-            return self.error(_("No such post exist."))
-
-        c.PostAction = h.url_for('postReply', post = thePost.id) #thePost.id
-        c.currentRealm = thePost.id
-        filter = Post.buildThreadFilter(self.userInst, thePost.id)
-        return self.showPosts(threadFilter = filter, tempid = tempid, page = 0, board = '', tags = thePost.tags)
-
-    def makeFwdTo(self):
-        tagsStr = request.POST.get('tags', '')
-        if tagsStr:
-            tags = tagsStr.split(' ')
-            return redirect_to('boardBase', board = '%2B'.join(tags).encode('utf-8'))
-        else:
-            return self.error(_("You must specify post tagline."))
-    """
-
-    def gotoDestination(self, post):
-        taglineSource = post
-        if post.parentid:
-            taglineSource = post.parentPost
-        postTagline = Post.tagLine(taglineSource.tags)[0]
-
-        tagLine = request.POST.get('tagLine', postTagline)
-
-        dest = int(request.POST.get('goto', 0))
-        if isNumber(dest):
-            dest = int(dest)
-        else:
-            dest = 0
-
-        curPage = request.POST.get('curPage', 0)
-        if isNumber(curPage):
-            curPage = int(curPage)
-        else:
-            curPage = 0
-
-        anchor = "i%d" % post.id
-
-        if dest == 0: #current thread
-            if post.parentid:
-                return redirect_to(action = 'GetThread', post = post.parentid, board = None, anchor = anchor)
-            else:
-                return redirect_to(action = 'GetThread', post = post.id, board = None, anchor = anchor)
-        elif dest == 1 or dest == 2: # current board
-            if  tagLine:
-                if dest == 1:
-                    curPage = 0
-                return redirect_to('board', board = tagLine, page = curPage, anchor = anchor)
-        elif dest == 3: # overview
-            pass
-        elif dest == 4: # destination board
-            return redirect_to('boardBase', board = postTagline)
-        elif dest == 5: #referrer
-            return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')), anchor = anchor)
-
-        # impossible with correct data
-        return redirect_to('boardBase', board = g.OPT.allowOverview and '~' or postTagline, anchor = anchor)
 
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
@@ -359,6 +137,52 @@ class OrphieMainController(OrphieBaseController):
         c.userInst = self.userInst
         return self.render('profile')
 
+    #parser callback
+    def cbGetPostAndUser(self, id):
+        return (Post.getPost(id), self.userInst.uidNumber)
+
+    def gotoDestination(self, post):
+        taglineSource = post
+        if post.parentid:
+            taglineSource = post.parentPost
+        postTagline = Post.tagLine(taglineSource.tags)[0]
+
+        tagLine = request.POST.get('tagLine', postTagline)
+
+        dest = int(request.POST.get('goto', 0))
+        if isNumber(dest):
+            dest = int(dest)
+        else:
+            dest = 0
+
+        curPage = request.POST.get('curPage', 0)
+        if isNumber(curPage):
+            curPage = int(curPage)
+        else:
+            curPage = 0
+
+        anchor = "i%d" % post.id
+
+        if dest == 0: #current thread
+            if post.parentid:
+                return redirect_to(action = 'GetThread', post = post.parentid, board = None, anchor = anchor)
+            else:
+                return redirect_to(action = 'GetThread', post = post.id, board = None, anchor = anchor)
+        elif dest == 1 or dest == 2: # current board
+            if  tagLine:
+                if dest == 1:
+                    curPage = 0
+                return redirect_to('board', board = tagLine, page = curPage, anchor = anchor)
+        elif dest == 3: # overview
+            pass
+        elif dest == 4: # destination board
+            return redirect_to('boardBase', board = postTagline)
+        elif dest == 5: #referrer
+            return redirect_to(request.headers.get('REFERER', tagLine.encode('utf-8')), anchor = anchor)
+
+        # impossible with correct data
+        return redirect_to('boardBase', board = g.OPT.allowOverview and '~' or postTagline, anchor = anchor)
+
     def DeletePost(self, board):
         if not self.currentUserCanPost():
             return self.error(_("Removing prohibited"))
@@ -387,73 +211,6 @@ class OrphieMainController(OrphieBaseController):
 
         return redirect_to('boardBase', board = redirectAddr)
 
-    def search(self, text, page = 0):
-        rawtext = text
-        if not text:
-            rawtext = request.POST.get('query', u'')
-        text = filterText(rawtext)
-
-        if isNumber(page):
-            page = int(page)
-        else:
-            page = 0
-
-        pp = self.userInst.threadsPerPage
-        c.boardName = _("Search")
-        c.query = text
-
-        tagfilter = None
-        filteredQueryRe = re.compile("^(([^:]+):){1}(.+)$").match(text)
-        if filteredQueryRe:
-            groups = filteredQueryRe.groups()
-            filterName = groups[1]
-            text = groups[2]
-            tagfilter = Post.buildMetaboardFilter(filterName, self.userInst)[2]
-
-        if tagfilter is None:
-            tagfilter = Post.buildMetaboardFilter(None, self.userInst)[2]
-
-        filteringClause = or_(tagfilter, Post.parentPost.has(tagfilter))
-
-        searchModules = g.implementationsOf(AbstractSearchModule)
-        searchPlugin = None
-        for sm in searchModules:
-            if sm.pluginId() == g.OPT.searchPluginId:
-                searchPlugin = sm
-
-        if not searchPlugin:
-            return self.error(_("Search plugin isn't configured"))
-
-        #searchRoutine = searchPlugin.config.get('searchRoutine', None)
-        #if not searchRoutine:
-        #    return self.error(_("The plugin selected to search doesn't provide search features"))
-
-        posts, count, failInfo, highlights, warnings = searchPlugin.search(filteringClause, text, page, pp)
-        if failInfo:
-            return self.error(failInfo)
-        self.paginate(count, page, pp)
-
-        c.warnings = warnings
-        c.highlights = highlights
-        c.posts = posts
-        return self.render('search')
-
-    """
-    def viewLog(self, page):
-        if g.OPT.usersCanViewLogs:
-            c.boardName = 'Logs'
-            page = int(page)
-            count = LogEntry.count(disabledEvents)
-            tpp = 50
-            self.paginate(count, page, tpp)
-            c.logs = LogEntry.getRange(page * tpp, (page + 1) * tpp, disabledEvents)
-            rv = re.compile('(\d+\.){3}\d+')
-            for le in c.logs:
-                le.entry = rv.sub('<font color="red">[IP REMOVED]</font>', le.entry)
-            return self.render('logs')
-        else:
-            return redirect_to('boardBase')
-    """
     def oekakiDraw(self, url, selfy, anim, tool, sourceId):
         if not self.currentUserCanPost():
             return self.error(_("Posting is disabled"))
@@ -520,19 +277,6 @@ class OrphieMainController(OrphieBaseController):
         Oekaki.create(c.tempid, self.sessUid(), oekType, oekSource, sourceAttachment, c.selfy)
         return self.render('spainter')
 
-    """
-    def viewAnimation(self, source, animid):
-        post = Post.getPost(source)
-        animid = int(animid)
-        if not post or not post.attachments or animid >= len(post.attachments):
-            return self.error(_("No animation associated with this post"))
-
-        animpath = post.attachments[animid].animpath
-        if not animpath:
-            return self.error(_("Incorrect animation ID"))
-        c.pchPath = h.modLink(animpath, c.userInst.secid())
-        return self.render('shiAnimation')
-    """
     def PostReply(self, post):
         return self.processPost(postid = post)
 

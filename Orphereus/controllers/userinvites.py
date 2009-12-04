@@ -25,11 +25,13 @@ import datetime
 from pylons.i18n import N_
 from webhelpers.html.tags import link_to
 from string import *
+from beaker.cache import CacheManager
 
 from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.base import *
+from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.interfaces.AbstractProfileExtension import AbstractProfileExtension
 from Orphereus.lib.interfaces.AbstractPageHook import AbstractPageHook
 from Orphereus.model import *
@@ -56,12 +58,14 @@ class UserInviteData(object):
             meta.Session.commit()
         return inviteData
 
+    """
     @staticmethod
     def countFor(userInst):
         if userInst.Anonymous:
             return 0
         inviteData = UserInviteData.get(userInst)
         return inviteData.invitesCount
+    """
 
     @staticmethod
     def generateInvite(userInst, reason):
@@ -97,14 +101,36 @@ class InvitesPlugin(BasePlugin, AbstractProfileExtension, AbstractPageHook):
         #orm.mapper
         meta.mapper(namespace.UserInviteData, t_userinvites, properties = {'user' : orm.relation(User), })
 
+    def updateGlobals(self, globj):
+        intValues = [('invites',
+                               ('minimalPostsCount', 'minimalRecentPostsCount',
+                                'minimalAge', 'recentPostsPercentage',
+                                'inviteIssuingInterval'
+                               )
+                              ),
+                            ]
+        boolValues = [('invites',
+                               ('enableDirectInvitesGeneration',
+                               )
+                              ),
+                            ]
+
+        if not globj.OPT.eggSetupMode:
+            globj.OPT.registerCfgValues(intValues, CFG_INT)
+            globj.OPT.registerCfgValues(boolValues, CFG_BOOL)
+
     def additionalProfileLinks(self, userInst):
         links = []
         if not userInst.Anonymous:
-            inviteData = self.namespace().UserInviteData.get(userInst)
-            if self.checkCond(userInst):
-                inviteData.increment()
+            inviteData = self.incrementInvitesIfNeeded(userInst)
             links = (('userInvitesManager', {}, _('Invites (%d)') % inviteData.invitesCount),)
             return links
+
+    def incrementInvitesIfNeeded(self, userInst):
+        inviteData = self.namespace().UserInviteData.get(userInst)
+        if self.checkCond(userInst):
+            inviteData.increment()
+        return inviteData
 
     def __getUserAge(self, userInst):
         ns = self.namespace()
@@ -126,20 +152,30 @@ class InvitesPlugin(BasePlugin, AbstractProfileExtension, AbstractPageHook):
     def __checkLastGivenInvite(self, userInst):
         ns = self.namespace()
         inviteData = self.namespace().UserInviteData.get(userInst)
-        return (not inviteData.lastIncrement) or (datetime.datetime.now() - inviteData.lastIncrement).days > 7
+        return (not inviteData.lastIncrement) or (datetime.datetime.now() - inviteData.lastIncrement).days > g.OPT.inviteIssuingInterval
 
     def checkCond(self, userInst):
+        """
         print self.__getUserAge(userInst)
         print self.__getAllPostsCount(userInst)
         print self.__getRecentPostsCount(userInst)
         print self.__checkLastGivenInvite(userInst)
-
-        return not(userInst.Anonymous) and \
-                (self.__getUserAge(userInst) > 182) and \
-                (self.__getAllPostsCount(userInst) > 1000) and \
-                (self.__getRecentPostsCount(userInst) > 45) and \
+        """
+        obligatoryCondition = not(userInst.Anonymous) and \
+                (self.__getUserAge(userInst) >= g.OPT.minimalAge) and \
+                (self.__getAllPostsCount(userInst) >= minimalPostsCount) and \
                 (self.__checkLastGivenInvite(userInst))
 
+        if obligatoryCondition:
+            recentPostsCount = self.__getRecentPostsCount(userInst)
+            cm = CacheManager(type = 'memory')
+            cch = cm.get_cache('home_stats')
+            cacheTime = getattr(g.OPT, 'statsCacheTime', 30)
+            vts = cch.get_value(key = "vitalSigns", createfunc = Post.vitalSigns, expiretime = cacheTime)
+
+            return (recentPostsCount >= g.OPT.minimalRecentPostsCount) and \
+                   (100.0 * recentPostsCount) / vts.lastWeekMessages >= g.OPT.recentPostsPercentage
+        return None
 
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import OrphieBaseController
@@ -162,6 +198,7 @@ class UserinvitesController(OrphieBaseController):
             else:
                 c.message = _("Invite #%d successfully created") % invite.id
 
+        inviteData = g.pluginsDict['invites'].incrementInvitesIfNeeded(self.userInst)
         c.invites = Invite.query.filter(Invite.issuer == self.userInst.uidNumber).order_by(Invite.date.desc()).all()
-        c.invitesCount = UserInviteData.countFor(self.userInst)
+        c.invitesCount = inviteData.invitesCount #UserInviteData.countFor(self.userInst)
         return self.render('userInvites')

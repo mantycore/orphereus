@@ -198,6 +198,13 @@ finalanonymity.enableFinalAnonymity = true
 finalanonymity.finalAHoursDelay = 24
 finalanonymity.hlAnonymizedPosts = true
 
+invites.enableDirectInvitesGeneration = true
+invites.minimalPostsCount = 1000
+invites.minimalRecentPostsCount = 45
+invites.minimalAge = 182
+invites.recentPostsPercentage = 5
+invites.inviteIssuingInterval = 7
+
 ##################
 # Board defaults #
 ##################

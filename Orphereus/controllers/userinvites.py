@@ -48,6 +48,7 @@ class UserInviteData(object):
         self.lastIncrement = datetime.datetime.now()
         self.invitesCount += count
         meta.Session.commit()
+        toLog(LOG_EVENT_INVITE + 1, _("Invite given to user %d") % (self.userId,))
 
     @staticmethod
     def get(userInst):
@@ -83,12 +84,14 @@ class UserInviteData(object):
 class InvitesPlugin(BasePlugin, AbstractProfileExtension, AbstractPageHook):
     def __init__(self):
         config = {'name' : N_('Userspace invite generator'),
+                  'deps' : ('adminpanel',)
                  }
         BasePlugin.__init__(self, 'invites', config)
 
     # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('userInvitesManager', '/userProfile/invites/:act', controller = 'userinvites', action = 'manageInvites', act = 'show')
+        map.connect('userInvitesGive', '/holySynod/giveInvite/:post', controller = 'userinvites', action = 'giveInvite', requirements = dict(post = '\d+'))
 
     def initORM(self, orm, engine, dialectProps, propDict):
         namespace = self.namespace()
@@ -125,6 +128,15 @@ class InvitesPlugin(BasePlugin, AbstractProfileExtension, AbstractPageHook):
             inviteData = self.incrementInvitesIfNeeded(userInst)
             links = (('userInvitesManager', {}, _('Invites (%d)') % inviteData.invitesCount),)
             return links
+
+    def postPanelCallback(self, thread, post, userInst):
+        result = ''
+        if g.OPT.enableDirectInvitesGeneration and c.userInst.isAdmin() and c.userInst.canMakeInvite():
+            result += link_to(_("[Give invite]"), h.url_for('userInvitesGive', post = post.id))
+        return result
+
+    def threadPanelCallback(self, thread, userInst):
+        return self.postPanelCallback(thread, thread, userInst)
 
     def incrementInvitesIfNeeded(self, userInst):
         inviteData = self.namespace().UserInviteData.get(userInst)
@@ -202,3 +214,31 @@ class UserinvitesController(OrphieBaseController):
         c.invites = Invite.query.filter(Invite.issuer == self.userInst.uidNumber).order_by(Invite.date.desc()).all()
         c.invitesCount = inviteData.invitesCount #UserInviteData.countFor(self.userInst)
         return self.render('userInvites')
+
+    def giveInvite(self, post):
+        if not self.userInst.isAdmin() or self.userInst.isBanned() or not self.userInst.canMakeInvite():
+            c.errorText = _("No way! You aren't holy enough!")
+            return redirect_to('boardBase')
+
+        if not g.OPT.enableDirectInvitesGeneration:
+            return self.error(_("This action disabled in config"))
+
+        if not checkAdminIP():
+            return redirect_to('boardBase')
+
+        postInst = Post.getPost(int(post))
+        if not postInst:
+            return self.error(_("Post doesn't exists"))
+
+        uid = postInst.uidNumber
+        if not (uid > 0):
+             return self.error(_("Can't give invite to anonymous user"))
+
+        user = User.getUser(uid)
+        if user.options.isAdmin and user.options.canMakeInvite:
+            return self.error(_("Giving invites to superuser is meaningless"))
+
+        inviteData = UserInviteData.get(user)
+        inviteData.increment()
+
+        return redirect_to('hsInvite')

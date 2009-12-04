@@ -68,10 +68,10 @@ class ImportWorker():
     postMappings = {}
     reader = None
     cutMessage = False
-    cutLength = 2048
+    cutLength = 1024
     url_for = h.url_for
     
-    def __init__(**option_kwargs):
+    def __init__(self, **option_kwargs):
         for option in option_kwargs:
             setattr(self, option, option_kwargs[option])
         
@@ -106,14 +106,16 @@ class ImportWorker():
         pInfo.postSage = (post.link == 'mailto:sage')
         pInfo.messageShort = pInfo.messageRaw = pInfo.messageInfo = pInfo.removemd5 = u''
         if self.cutMessage:
-            pInfo.messageShort = fixHtml(cutHtml(pInfo.message, self.cutLength))
+            cutMessageCont = cutHtml(pInfo.message, self.cutLength)
+            if cutMessageCont:
+                pInfo.messageShort = fixHtml(cutMessageCont)
         pInfo.ip = pInfo.uidNumber = 0
         pInfo.spoiler = False
         pInfo.thread = parent
         pInfo.tags = Tag.stringToTagLists(tagstr, True)[0]
         pInfo.bumplimit = 0
         fileDescriptors = self.fileProcessor(post.localName)
-        picInfo = existentPic = fileHolder = False
+        picInfo = fileHolder = False
         if fileDescriptors:
             fileHolder = fileDescriptors[0] # Object for file auto-removing
             if fileHolder:

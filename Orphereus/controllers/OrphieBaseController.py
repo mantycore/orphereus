@@ -43,6 +43,9 @@ log = logging.getLogger(__name__)
 
 class OrphieBaseController(BaseController):
     def __before__(self):
+        if g.OPT.refControlForAnyRequest:
+            self.refererCheck()
+
         c.log = []
         if g.OPT.devMode:
             c.sum = 0
@@ -174,6 +177,23 @@ class OrphieBaseController(BaseController):
             return redirect_to('boardBase')
         self.initEnvironment()
 
+    def refererCheck(self):
+        if g.OPT.refControlEnabled and (not g.OPT.allowAnonymous or g.OPT.refControlWhenAnonEnabled):
+            ref = request.headers.get('REFERER', False)
+            if ref:
+                ref = filterText(ref)
+
+            if ref:
+                rickroll = True
+                for rc in g.OPT.refControlList:
+                    if rc in ref:
+                        rickroll = False
+
+                if (rickroll):
+                    redir = g.OPT.fakeLinks[random.randint(0, len(g.OPT.fakeLinks) - 1)]
+                    toLog(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, getUserIp(), filterText(request.headers.get('User-Agent', '?'))))
+                    redirect_to(str(redir))
+
     def requestForMenu(self, menuId):
         if not menuId in self.requestedMenus:
             self.requestedMenus.append(menuId)
@@ -245,10 +265,6 @@ class OrphieBaseController(BaseController):
             header = _('Error')
         c.boardName = header
         return self.render('error')
-
-    def showStatic(self, page):
-        c.boardName = _(page)
-        return self.render('static.%s' % page)
 
     def paginate(self, count, page, tpp):
         if count > 1:

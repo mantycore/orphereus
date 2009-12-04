@@ -21,6 +21,7 @@
 
 import re, shutil, tarfile
 from tempfile import mkdtemp
+from webhelpers.html.tags import link_to
 
 from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.MenuItem import MenuItem
@@ -43,7 +44,6 @@ class UserTagsPlugin(BasePlugin, AbstractPageHook):
 
     # AbstractPageHook
     def threadPanelCallback(self, thread, userInst):
-        from webhelpers.html.tags import link_to
         return link_to(_("[Save]"), h.url_for('saveThread', post = thread.id), target = "_blank")
 
 # this import MUST be placed after public definitions to avoid loop importing
@@ -108,7 +108,7 @@ class ThreadsaveController(OrphieBaseController):
         if not(os.path.exists(arcPath)):
             os.makedirs(arcPath)
 #        if os.path.exists(arcPath):
-#	    os.remove(arcPath)
+#      os.remove(arcPath)
         shutil.move(arcName, arcPath)
         return arcName
 

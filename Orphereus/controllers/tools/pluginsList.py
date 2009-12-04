@@ -24,8 +24,8 @@ class PluginsListPlugin(BasePlugin, AbstractMenuProvider):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('hsListPlugins', '/holySynod/listPlugins', controller = 'pluginsList', action = 'show')
-        map.connect('hsAjPluginsList', '/holySynod/listPlugins/ajax', controller = 'pluginsList', action = 'ajax')
+        map.connect('hsListPlugins', '/holySynod/listPlugins', controller = 'tools/pluginsList', action = 'show')
+        map.connect('hsAjPluginsList', '/holySynod/listPlugins/ajax', controller = 'tools/pluginsList', action = 'ajax')
 
 
     def menuItems(self, menuId):

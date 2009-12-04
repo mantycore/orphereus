@@ -19,20 +19,16 @@ id="reply${post.id}">
     &nbsp;<a href="javascript:void(0)" onclick="showDeleteBoxes()"><img src="${g.OPT.staticPathWeb}images/delete.gif" border="0" alt="x" title="Del" /></a>
     <span style="display:none" class="delete">
     %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()):
-          <input type="checkbox" name="delete-${post.id}" value="${post.id}" />
-      <a href="${h.url_for('anonymize', post=post.id)}">[FA]</a>
+      <input type="checkbox" name="delete-${post.id}" value="${post.id}" />
     %else:
       %if post.uidNumber == c.uidNumber or (thread.selfModeratable() and c.uidNumber == thread.uidNumber) or c.enableAllPostDeletion:
           <input type="checkbox" name="delete-${post.id}" value="${post.id}" />
           %if post.uidNumber != c.uidNumber and (thread.selfModeratable() and c.uidNumber == thread.uidNumber):
           <i>${_('[REMOVABLE]')}</i>
           %endif
-          %if g.OPT.enableFinalAnonymity and not c.userInst.Anonymous and post.uidNumber == c.uidNumber:
-              <a href="${h.url_for('anonymize', post=post.id)}">[FA]</a>
-          %endif
       %endif
-      ${h.postPanelCallback(thread, post, c.userInst)}
     %endif
+    ${h.postPanelCallback(thread, post, c.userInst)}
     &nbsp;
     </span>
     %if post.sage:
@@ -50,9 +46,7 @@ id="reply${post.id}">
     %else:
         <a href="javascript:insert('&gt;&gt;${post.id}')">#${g.OPT.secondaryIndex and post.secondaryIndex or post.id}</a> \
     %endif
-    %if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
-        <b class="signature"><a href="${h.url_for('static', page='finalAnonymity')}" target="_blank">FA</a></b> \
-    %endif
+    ${h.postHeaderCallback(thread, post, c.userInst)}
     </span>
 
     &nbsp;
@@ -79,6 +73,9 @@ id="reply${post.id}">
     %endif
     %if post.messageInfo:
         <div>${post.messageInfo}</div>
+    %endif
+    %if post.attachments and len(post.attachments) == 1:
+      <%include file="wakaba.fileInfoSingle.mako" args="attachment=post.attachments[0]" />
     %endif
     </blockquote>
 </td></tr></tbody></table>

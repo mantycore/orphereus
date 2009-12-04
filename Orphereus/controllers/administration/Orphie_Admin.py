@@ -21,11 +21,7 @@
 from routes.util import redirect_to
 
 import logging
-from Orphereus.lib.base import *
-from Orphereus.model import *
-from sqlalchemy.orm import eagerload
-from sqlalchemy.orm import class_mapper
-from sqlalchemy.sql import and_, or_, not_
+from webhelpers.html.tags import link_to
 import os
 import cgi
 import shutil
@@ -35,6 +31,11 @@ import Image
 import os
 import hashlib
 import re
+from Orphereus.lib.base import *
+from Orphereus.model import *
+from sqlalchemy.orm import eagerload
+from sqlalchemy.orm import class_mapper
+from sqlalchemy.sql import and_, or_, not_
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from Orphereus.controllers.OrphieBaseController import OrphieBaseController
@@ -117,7 +118,6 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
         return menu
 
     def postPanelCallback(self, thread, post, userInst):
-        from webhelpers.html.tags import link_to
         result = ''
         if userInst.isAdmin() and userInst.canManageUsers():
             if post.uidNumber:
@@ -127,7 +127,6 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
         return result
 
     def threadPanelCallback(self, thread, userInst):
-        from webhelpers.html.tags import link_to
         result = self.postPanelCallback(thread, thread, userInst)
         """
             if userInst.isAdmin() and userInst.canManageUsers():
@@ -186,7 +185,7 @@ class OrphieAdminController(OrphieBaseController):
         reason = request.POST.get('inviteReason', False)
         if reason and len(reason) > 1:
             reason = filterText(reason)
-            invite = Invite.create(g.OPT.hashSecret)
+            invite = Invite.create(g.OPT.hashSecret, self.userInst.uidNumber, reason)
 
             toLog(LOG_EVENT_INVITE, _("Generated invite id %s. Reason: %s") % (invite.id, reason))
             c.inviteCode = invite.invite

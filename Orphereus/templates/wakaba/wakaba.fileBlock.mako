@@ -123,17 +123,6 @@
           <span class="thumbnailmsg">${_('Picture was removed by user or administrator')}</span><br/>
           <img src="${g.OPT.staticPathWeb}images/picDeleted.png" class="thumb" alt="Removed"/>
     %endif
-          %if attachment.attachedFile.pictureInfo or attachment.relationInfo:
-          <blockquote class="postbody">
-            %if attachment.attachedFile.pictureInfo:
-              ${attachment.attachedFile.pictureInfo}
-            %endif
-            %if attachment.relationInfo:
-              ${attachment.relationInfo}
-            %endif
-          </blockquote>
-          <hr/>
-          %endif
   %endfor
 %endif
 %endif

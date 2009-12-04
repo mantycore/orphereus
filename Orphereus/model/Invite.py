@@ -35,13 +35,17 @@ def t_invite_init(dialectProps):
     return sa.Table("invite", meta.metadata,
             sa.Column("id"       , sa.types.Integer, sa.Sequence('invite_id_seq'), primary_key = True),
             sa.Column("invite"   , sa.types.String(128), nullable = False),
-            sa.Column("date"     , sa.types.DateTime, nullable = False)
+            sa.Column("date"     , sa.types.DateTime, nullable = False),
+            sa.Column("issuer", sa.types.Integer, nullable = True),
+            sa.Column("reason" , sa.types.UnicodeText, nullable = True)
             )
 
 class Invite(object):
-    def __init__(self, code):
+    def __init__(self, code, issuer = None, reason = None):
         self.date = datetime.datetime.now()
         self.invite = code
+        self.issuer = issuer
+        self.reason = reason
 
     @staticmethod
     def getId(code):
@@ -54,8 +58,8 @@ class Invite(object):
         return ret
 
     @staticmethod
-    def create(secret):
-        invite = Invite(Invite.generateId(secret))
+    def create(secret, issuer, reason):
+        invite = Invite(Invite.generateId(secret), issuer, reason)
         meta.Session.add(invite)
         meta.Session.commit()
         return invite

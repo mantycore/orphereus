@@ -26,7 +26,9 @@ ${'http://%s/register/%s' % (g.OPT.baseDomain, c.inviteCode)}
   <thead>
   <tr>
   <td>${_('Id')}</td>
+  <td>${_('Issuer')}</td>
   <td>${_('Date')}</td>
+  <td>${_('Reason')}</td>
   <td>${_('Code')}</td>
   <td>${_('Management')}</td>
   </tr>
@@ -35,7 +37,9 @@ ${'http://%s/register/%s' % (g.OPT.baseDomain, c.inviteCode)}
   %for invite in c.inviteList:
   <tr>
   <td>${invite.id}</td>
+  <td>${invite.issuer}</td>
   <td>${h.tsFormat(invite.date)}</td>
+  <td>${invite.reason}</td>
   <td><input type="text" value="${invite.invite}" readonly="readonly" /></td>
   <td><a href="${h.url_for('hsCancelInvite', id=invite.id)}">${_('Cancel')}</a></td>
   </tr>

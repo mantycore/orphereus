@@ -99,15 +99,19 @@ def getUserIp():
     return request.environ["REMOTE_ADDR"]
 
 def checkAdminIP():
-    if g.OPT.useAnalBarriering and getUserIp() != '127.0.0.1':
+    import ipcalc
+    if g.OPT.useAnalBarriering:
+        userip = getUserIp()
+        for range in g.OPT.trustedIPRanges:
+            if userip in ipcalc.Network(range):
+                return True
         msg = _("Access attempt from %s for admin account!") % getUserIp()
         toLog(LOG_EVENT_SECURITY_IP, msg)
         adminAlert(msg)
         session['uidNumber'] = -1
         session.save()
         return False
-    else:
-        return True
+    return True
 
 def getRPN(text, operators):
     whitespace = [' ', "\t", "\r", "\n", "'", '"', '\\', '<', '>']

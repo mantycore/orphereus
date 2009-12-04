@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 ################################################################################
-#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #  
+#  Copyright (C) 2009 Johan Liebert, Mantycore, Hedger, Rusanon                #
 #  < anoma.team@gmail.com ; http://orphereus.anoma.ch >                        #
 #                                                                              #
 #  This file is part of Orphereus, an imageboard engine.                       #
@@ -19,46 +20,23 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-import sqlalchemy as sa
-
-from Orphereus.oldmodel import meta
-import datetime
-import time
-import hashlib
+from Orphereus.lib.base import g
+from OrphieBaseController import OrphieBaseController
 
 import logging
 log = logging.getLogger(__name__)
 
-from Orphereus.oldmodel import meta
+class OrphieBotTrapController(OrphieBaseController):
+    def __before__(self):
+        OrphieBaseController.__before__(self)
+        self.initiate()
 
-t_invites = sa.Table("invite", meta.metadata,
-    sa.Column("id"       , sa.types.Integer, primary_key=True),
-    sa.Column("invite"   , sa.types.String(128), nullable=False),
-    sa.Column("date"     , sa.types.DateTime,  nullable=False)
-    )
-
-class Invite(object):
-    def __init__(self, code):
-        self.date = datetime.datetime.now()
-        self.invite = code
-
-    @staticmethod
-    def getId(code):
-        invite = Invite.query.filter(Invite.invite==code).first()
-        ret = False
-        if invite:
-            ret = invite.id
-            meta.Session.delete(invite)
-            meta.Session.commit()
-        return ret
-
-    @staticmethod
-    def create(secret):
-        invite = Invite(Invite.generateId(secret))
-        meta.Session.add(invite)
-        meta.Session.commit()
-        return invite
-
-    @staticmethod
-    def generateId(secret):
-        return hashlib.sha512(str(long(time.time() * 10**7)) + hashlib.sha512(secret).hexdigest()).hexdigest()
+    def selfBan(self, confirm):
+        if g.OPT.spiderTrap and not self.userInst.Anonymous:
+            if confirm:
+                self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 2"), -1)
+                redirect_to('boardBase')
+            else:
+                return self.render('selfBan')
+        else:
+            return redirect_to('boardBase')

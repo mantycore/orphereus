@@ -230,10 +230,6 @@
 <b>${_('Additional information')}:</b>
 <ul class="nomargin">
 <li>${_('Enabled extensions')}:<br/>  ${c.extLine}</li>
-<li>${_('Final Anonymity')}:  ${_('turned')} ${not g.OPT.enableFinalAnonymity and _('off') or _('on')}
-${g.OPT.enableFinalAnonymity and g.OPT.hlAnonymizedPosts and _('(with marks)') or ''}
-${g.OPT.enableFinalAnonymity and not g.OPT.hlAnonymizedPosts and _('(without marks)') or ''}
-</li>
 <li>${_('Board-wide prooflabels')}:  ${_('turned')} ${not g.OPT.boardWideProoflabels and _('off') or _('on')}</li>
 <li>${_('IP logging')}:  ${not g.OPT.saveAnyIP and (g.OPT.allowAnonymous and _('only for anonymous') or _('disabled')) or _('for all users')}</li>
 <li>${_('Invisible bumps')}:  ${not c.invisibleBumps and _('disabled') or _('enabled')}</li>
@@ -242,6 +238,7 @@ ${g.OPT.enableFinalAnonymity and not g.OPT.hlAnonymizedPosts and _('(without mar
 ${_('(but inverted in your profile)')}
 %endif
 </li>
+${h.boardInfoCallback(c)}
 <li><a href="${h.url_for('static', page='markup')}" target="_blank">${_('Markup and features')}</a></li>
 </ul>
 </div>

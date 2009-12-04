@@ -90,7 +90,9 @@ class OptHolder(object):
                               ),
 
                               ('security',
-                               ('useXRealIP', 'saveAnyIP', 'refControlEnabled',
+                               ('useXRealIP', 'saveAnyIP',
+                                'refControlEnabled', 'refControlForAnyRequest',
+                                'refControlWhenAnonEnabled',
                                 'checkUAs', 'spiderTrap',
                                 'useAnalBarriering',
                                ),
@@ -172,7 +174,7 @@ class OptHolder(object):
 
                               ('security',
                                ('alertEmail', 'refControlList', 'fakeLinks',
-                                'badUAs',
+                                'badUAs', 'trustedIPRanges'
                                )
                               ),
 

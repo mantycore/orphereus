@@ -7,7 +7,8 @@
 %if not c.FAResult:
 <form action="${h.url_for('anonymize', post=c.postId)}" method="post">
     <p>${_("You are trying to anonymize post #%s.") % c.postId}</p>
-    <h3><input type="checkbox" name="batchFA">${_('Anonymize ALL posts older than this one')}</h3>
+    <h3><input type="checkbox" name="batchFAOlder">${_('Anonymize ALL posts OLDER than this one')}</h3>
+    <h3><input type="checkbox" name="batchFANewer">${_('Anonymize ALL posts NEWER than this one')}</h3>
     <p>${_("This action will remove mapping to your UID. You will loss abilities to:")}</p>
     <ol>
     <li>${_("delete this post")}</li>

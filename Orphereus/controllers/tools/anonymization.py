@@ -20,9 +20,11 @@
 ################################################################################
 
 import logging
+from sqlalchemy.sql import and_, or_, not_
+from webhelpers.html.tags import link_to
+
 from Orphereus.lib.base import *
 from Orphereus.model import Post
-from sqlalchemy.sql import and_, or_, not_
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from Orphereus.controllers.OrphieBaseController import OrphieBaseController
@@ -43,22 +45,41 @@ class FinalAnonymizationPlugin(BasePlugin, AbstractPageHook):
         map.connect('anonymize', '/:post/anonymize', controller = 'tools/anonymization', action = 'Anonimyze', requirements = dict(post = '\d+'))
 
     def updateGlobals(self, globj):
-        boolValues = [('security', ('enableFinalAnonymity', 'hlAnonymizedPosts',)), ]
-        intValues = [('security', ('finalAHoursDelay',)), ]
+        boolValues = [('finalanonymity', ('enableFinalAnonymity', 'hlAnonymizedPosts',)), ]
+        intValues = [('finalanonymity', ('finalAHoursDelay',)), ]
 
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(intValues, CFG_INT)
             globj.OPT.registerCfgValues(boolValues, CFG_BOOL)
 
     def postPanelCallback(self, thread, post, userInst):
-        from webhelpers.html.tags import link_to
         result = ''
+        if g.OPT.enableFinalAnonymity and (g.OPT.memcachedPosts or (not userInst.Anonymous and post.uidNumber == c.uidNumber)):
+            result += link_to(_("[FA]"), h.url_for('anonymize', post = post.id))
         return result
 
     def threadPanelCallback(self, thread, userInst):
-        from webhelpers.html.tags import link_to
+        #result = self.postPanelCallback(thread, thread, userInst)
         result = ''
+        if g.OPT.enableFinalAnonymity and (not userInst.Anonymous and thread.uidNumber == c.uidNumber):
+            result += link_to(_("[FA]"), h.url_for('anonymize', post = thread.id))
         return result
+
+    def postHeaderCallback(self, thread, post, userInst):
+        result = ''
+        if g.OPT.hlAnonymizedPosts and post.uidNumber == 0:
+            result = '<b class="signature">%s</b>' % link_to(_("FA"), h.url_for('static', page = 'finalAnonymity'), target = "_blank")
+        return result
+
+    def threadHeaderCallback(self, thread, userInst):
+        result = self.postHeaderCallback(thread, thread, userInst)
+        return result
+
+    def boardInfoCallback(self, context):
+        faState = _('Final Anonymity: %s %s') % (not g.OPT.enableFinalAnonymity and _('off') or _('on'),
+                                                   g.OPT.enableFinalAnonymity and
+                                                   (g.OPT.hlAnonymizedPosts and _('(with marks)') or _('(without marks)')) or '')
+        return "<li>%s</li>" % faState
 
 class AnonymizationController(OrphieBaseController):
     def __before__(self):
@@ -67,16 +88,17 @@ class AnonymizationController(OrphieBaseController):
 
     def Anonimyze(self, post):
         postid = request.POST.get('postId', False)
-        batch = request.POST.get('batchFA', False)
+        batchOlder = request.POST.get('batchFAOlder', False)
+        batchNewer = request.POST.get('batchFANewer', False)
         if postid and isNumber(postid):
-            c.FAResult = self.processAnomymize(int(postid), batch)
+            c.FAResult = self.processAnomymize(int(postid), batchOlder, batchNewer)
         else:
             c.boardName = _('Final Anonymization')
             c.FAResult = False
             c.postId = post
         return self.render('finalAnonymization')
 
-    def processAnomymize(self, postid, batch):
+    def processAnomymize(self, postid, batchOlder, batchNewer):
         if not g.OPT.enableFinalAnonymity:
             return [_("Final Anonymity is disabled")]
 
@@ -86,11 +108,15 @@ class AnonymizationController(OrphieBaseController):
         result = []
         post = Post.getPost(postid)
         if post:
-            posts = []
-            if not batch:
-                posts = [post]
-            else:
-                posts = Post.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date <= post.date)).all()
+            posts = [post]
+            if batchOlder:
+                olderPosts = Post.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date < post.date)).all()
+                if olderPosts:
+                    posts.extend(olderPosts)
+            if batchNewer:
+                newerPosts = Post.filter(and_(Post.uidNumber == self.userInst.uidNumber, Post.date > post.date)).all()
+                if newerPosts:
+                    posts.extend(newerPosts)
             for post in posts:
                 if post.uidNumber != self.userInst.uidNumber:
                     result.append(_("You are not author of post #%s") % post.id)

@@ -32,6 +32,7 @@ from Orphereus.lib.ibparser.chans.Post import *
 from Orphereus.lib.ibparser.chans.Thread import *
 from Orphereus.lib.ibparser.reader import ThreadReader
 from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
+from Orphereus.lib.OrphieMark.tools import fixHtml, cutHtml
 from Orphereus.model.Post import Post as OrphiePost
 from Orphereus.model.Tag import Tag
 
@@ -66,7 +67,14 @@ from Orphereus.controllers.OrphieBaseController import *
 class ImportWorker():
     postMappings = {}
     reader = None
+    cutMessage = False
+    cutLength = 2048
     url_for = h.url_for
+    
+    def __init__(**option_kwargs):
+        for option in option_kwargs:
+            setattr(self, option, option_kwargs[option])
+        
     def fixReferences(self, text):
         def replacer(match):
             postId = match.groups()[0]
@@ -97,6 +105,8 @@ class ImportWorker():
             pInfo.secondaryIndex = post.id
         pInfo.postSage = (post.link == 'mailto:sage')
         pInfo.messageShort = pInfo.messageRaw = pInfo.messageInfo = pInfo.removemd5 = u''
+        if self.cutMessage:
+            pInfo.messageShort = fixHtml(cutHtml(pInfo.message, self.cutLength))
         pInfo.ip = pInfo.uidNumber = 0
         pInfo.spoiler = False
         pInfo.thread = parent

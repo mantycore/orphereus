@@ -15,6 +15,10 @@ ${'http://%s/register/%s' % (g.OPT.baseDomain, c.inviteCode)}
         <td><input type='text' name='inviteReason' /></td>
     </tr>
     <tr>
+        <td>${_('Make user read-only:')}</td>
+        <td><input type='checkbox' name='readonly' /></td>
+    </tr>
+    <tr>
         <td>&nbsp;</td>
         <td><input type='submit' name='generateInvite' value='${_('Generate invite')}' /></td>
     </tr>
@@ -29,6 +33,7 @@ ${'http://%s/register/%s' % (g.OPT.baseDomain, c.inviteCode)}
   <td>${_('Issuer')}</td>
   <td>${_('Date')}</td>
   <td>${_('Reason')}</td>
+  <td>${_('RO')}</td>
   <td>${_('Code')}</td>
   <td>${_('Management')}</td>
   </tr>
@@ -40,6 +45,7 @@ ${'http://%s/register/%s' % (g.OPT.baseDomain, c.inviteCode)}
   <td>${invite.issuer}</td>
   <td>${h.tsFormat(invite.date)}</td>
   <td>${invite.reason}</td>
+  <td>${invite.readonly}</td>
   <td><input type="text" value="${invite.invite}" readonly="readonly" /></td>
   <td><a href="${h.url_for('hsCancelInvite', id=invite.id)}">${_('Cancel')}</a></td>
   </tr>

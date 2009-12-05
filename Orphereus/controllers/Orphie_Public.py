@@ -190,26 +190,39 @@ class OrphiePublicController(OrphieBaseController):
         return self.render('login')
 
     def register(self, invite):
+        def cleanup():
+            del session['invite']
+            del session['iid']
+            del session['roinvite']
+            session.save()
+
         if 'invite' not in session:
-            iid = Invite.getId(invite)
+            invitedata = Invite.utilize(invite)
+            iid = invitedata['id']
+            roinvite = invitedata['readonly']
             if iid:
+                toLog(LOG_EVENT_INVITE_USED, _("Utilized invite #%d") % iid)
                 session['invite'] = invite
                 session['iid'] = iid
+                session['roinvite'] = roinvite
                 session['openReg'] = False
                 session.save()
             elif g.OPT.allowRegistration:
                 session['invite'] = invite
                 session['iid'] = False
+                session['roinvite'] = g.OPT.setReadonlyToRegistered
                 session['openReg'] = True
                 session.save()
             else:
+                cleanup()
                 c.currentURL = u''
                 return self.render('login')
 
         c.openReg = session['openReg']
+        c.roInvite = session['roinvite']
         c.captcha = None
         captchaOk = True
-        if session['openReg']:
+        if c.openReg:
             captchaOk = False
             if session.get('cid', False):
                 captcha = Captcha.getCaptcha(session['cid'])
@@ -231,16 +244,19 @@ class OrphiePublicController(OrphieBaseController):
                 user = User.getByUid(uid)
                 if user:
                     user.ban(7777, _("Your Security Code was used during registration by another user. Contact administrator immediately please."), -1)
-                    del session['invite']
-                    del session['iid']
+                    cleanup()
                     return self.error(_("You entered already existing password. Previous account was banned. Contact administrator please."))
 
                 user = User.create(uid)
+                user.options.readonly = session['roinvite']
                 regId = user.secid() * user.secid() - user.secid()
-                toLog(LOG_EVENT_INVITE_USED, _("Utilized invite #%d [RID:%d]") % (session['iid'], regId))
-                del session['invite']
-                del session['iid']
-                session.save()
+                infoline = "[%d]" % regId
+
+                if user.options.readonly:
+                    infoline += "[readonly]"
+
+                toLog(LOG_EVENT_INVITE_USED, _("Completed registration by invite #%d; %s") % (session['iid'], infoline))
+                cleanup()
                 self.login(user)
                 redirect_to('boardBase', board = '!')
         c.boardName = _('Register')

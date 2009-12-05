@@ -21,6 +21,10 @@
 %endif
 
 <div style="text-align: center;">
+%if g.OPT.allowRegistration:
+  <a href="${h.url_for('register', invite='register')}"><strong>${_('Register')}</strong></a><br /><br />
+%endif
+
 %if h.templateExists(c.actuatorTest+'std.login_bottom.mako'):
    <%include file="${c.actuator+'std.login_bottom.mako'}" />
 %endif

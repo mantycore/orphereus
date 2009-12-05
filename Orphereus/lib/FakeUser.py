@@ -52,6 +52,7 @@ class FakeUser(AbstractUser):
             self.filters = ()
 
             UserOptions.initDefaultOptions(self.__user.options, g.OPT)
+            self.__user.options.readonly = not g.OPT.allowAnonymousPosting
 
     def simpleGetter(self, name):
         return session.get(name, getattr(self.__user.options, name))

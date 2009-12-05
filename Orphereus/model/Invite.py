@@ -37,33 +37,38 @@ def t_invite_init(dialectProps):
             sa.Column("invite"   , sa.types.String(128), nullable = False),
             sa.Column("date"     , sa.types.DateTime, nullable = False),
             sa.Column("issuer", sa.types.Integer, nullable = True),
-            sa.Column("reason" , sa.types.UnicodeText, nullable = True)
+            sa.Column("reason" , sa.types.UnicodeText, nullable = True),
+            sa.Column("readonly", sa.types.Boolean, nullable = True),
             )
 
 class Invite(object):
-    def __init__(self, code, issuer = None, reason = None):
+    def __init__(self, code, issuer, reason, readonly):
         self.date = datetime.datetime.now()
         self.invite = code
         self.issuer = issuer
         self.reason = reason
+        self.readonly = readonly
 
     @staticmethod
-    def getId(code):
+    def utilize(code):
         invite = Invite.query.filter(Invite.invite == code).first()
-        ret = False
+        ret = {'id' : None,
+               'readonly' : True}
         if invite:
-            ret = invite.id
+            ret['id'] = invite.id
+            ret['readonly'] = invite.readonly
             meta.Session.delete(invite)
             meta.Session.commit()
         return ret
 
     @staticmethod
-    def create(secret, issuer, reason):
-        invite = Invite(Invite.generateId(secret), issuer, reason)
+    def create(secret, issuer, reason, readonly = False):
+        invite = Invite(Invite.generateId(secret), issuer, reason, readonly)
         meta.Session.add(invite)
         meta.Session.commit()
         return invite
 
     @staticmethod
     def generateId(secret):
-        return hashlib.sha512(str(long(time.time() * 10 ** 7)) + hashlib.sha512(secret).hexdigest()).hexdigest()
+        fullhash = hashlib.sha512(str(long(time.time() * 10 ** 7)) + hashlib.sha512(secret).hexdigest()).hexdigest()
+        return fullhash[:42]

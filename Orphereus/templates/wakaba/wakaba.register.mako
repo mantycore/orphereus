@@ -3,18 +3,23 @@
 
 <div class="postarea">
   <form id="postform" action="${h.url_for('register', invite='doesntmatteranymore')}" method="post">
-        <h2>${_('New UID')}</h2>
+   <h2>${_('New UID')}</h2>
 
-         <p><i>
-            ${_('Now you can enter your personal security code.')}
-            <br/>
-            %if not c.openReg:
-            ${_("Warning: you can't use this link twice.")}
-            <br/>
-            ${_("If you close browser now you'll loss your ability to join us.")}
-            <br/>
-            %endif
-         </i></p>
+   <p><i>
+      ${_('Now you can enter your personal security code.')}
+      <br/>
+      %if not c.openReg:
+        ${_("Warning: you can't use this link twice.")}
+        <br/>
+        ${_("If you close browser now you'll loss your ability to join us.")}
+        <br/>
+      %endif
+      %if g.OPT.setReadonlyToRegistered or c.roInvite:
+          <br/>
+          ${_("After registration you will be in read-only mode!")}
+          <br/>
+      %endif
+   </i></p>
 
   <span class="postblock">${_('Enter your security code')}</span>
         <p><input name="key" type="password" size="60" style="text-align: center" /></p>

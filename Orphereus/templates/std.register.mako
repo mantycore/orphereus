@@ -14,6 +14,11 @@ ${_('Now you can enter your personal security code.')}
     ${_("If you close browser now you'll loss your ability to join us.")}
     <br/>
 %endif
+%if g.OPT.setReadonlyToRegistered or c.roInvite:
+    <br/>
+    ${_("After registration you will be in read-only mode!")}
+    <br/>
+%endif
 </i></p>
 
 <span class="postblock">${_('Enter your security code')}</span>

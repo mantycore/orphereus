@@ -185,9 +185,10 @@ class OrphieAdminController(OrphieBaseController):
         reason = request.POST.get('inviteReason', False)
         if reason and len(reason) > 1:
             reason = filterText(reason)
-            invite = Invite.create(g.OPT.hashSecret, self.userInst.uidNumber, reason)
-
-            toLog(LOG_EVENT_INVITE, _("Generated invite id %s. Reason: %s") % (invite.id, reason))
+            readonly = bool(request.POST.get('readonly', False))
+            invite = Invite.create(g.OPT.hashSecret, self.userInst.uidNumber, reason, readonly)
+            itype = readonly and "RO" or "STD"
+            toLog(LOG_EVENT_INVITE, _("Generated invite id %s. Type: %s. Reason: %s.") % (invite.id, itype, reason))
             c.inviteCode = invite.invite
         c.inviteList = Invite.query.all()
         return self.render('manageInvites')
@@ -735,13 +736,14 @@ class OrphieAdminController(OrphieBaseController):
 
                 def setRight(name):
                     right = bool(request.POST.get(name, False))
+                    reason = filterText(request.POST.get('reason', '???'))
                     if getattr(user.options, name) != right:
                         setattr(user.options, name, right)
-                        toLog(LOG_EVENT_USER_ACCESS, _('Changed right "%s" for user #%s to %s') % (name, user.uidNumber, right))
+                        toLog(LOG_EVENT_USER_ACCESS, _('Changed right "%s" for user #%s to %s. Reason: %s') % (name, user.uidNumber, right, reason))
 
                 map(setRight, ["canDeleteAllPosts", "canMakeInvite", "canChangeRights", "canChangeSettings",
                                  "canManageBoards", "canManageUsers", "canManageExtensions", "canManageMappings",
-                                 "canRunMaintenance"])
+                                 "canRunMaintenance", "readonly"])
                 c.message = _('User access was changed')
             elif bool(request.POST.get('ban', False)):
                 if user.options.bantime > 0:

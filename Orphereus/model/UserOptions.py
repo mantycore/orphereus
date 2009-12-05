@@ -74,6 +74,7 @@ def t_useroptions_init(dialectProps):
         sa.Column("canRunMaintenance", sa.types.Boolean, nullable = True),
         sa.Column("lang", sa.types.String(2), nullable = True),
         sa.Column("cLang", sa.types.String(2), nullable = True),
+        sa.Column("readonly", sa.types.Boolean, nullable = True),
         )
 
 class UserOptions(object):
@@ -98,6 +99,7 @@ class UserOptions(object):
         optionsObject.canManageMappings = False
         optionsObject.canRunMaintenance = False
         optionsObject.bantime = 0
+        optionsObject.readonly = False
         #
         optionsObject.template = globalOptHolder.templates[0]
         optionsObject.style = globalOptHolder.cssFiles[optionsObject.template][0]

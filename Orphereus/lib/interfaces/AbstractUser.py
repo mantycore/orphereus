@@ -45,6 +45,7 @@ class AbstractUser(object):
                           'useTitleCollapse',
                           'hlOwnPosts',
                           'invertSortingMode',
+                          'readonly'
                          )
     intValues = ('threadsPerPage',
                  'repliesPerThread',

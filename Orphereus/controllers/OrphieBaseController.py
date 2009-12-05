@@ -296,7 +296,9 @@ class OrphieBaseController(BaseController):
         c.count = count
 
     def currentUserCanPost(self):
-        return g.OPT.allowPosting and self.userInst and ((self.userInst.Anonymous and g.OPT.allowAnonymousPosting) or not self.userInst.Anonymous)
+        return g.OPT.allowPosting and self.userInst \
+              and not self.userInst.readonly
+              #and ((self.userInst.Anonymous and g.OPT.allowAnonymousPosting) or not self.userInst.Anonymous)
 
     def destroySession(self):
         session.clear()

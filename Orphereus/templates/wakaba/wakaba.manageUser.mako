@@ -25,15 +25,13 @@
             <tbody>
                 %if c.message:
                     <tr id="trmessage">
-                        <td colspan=2>
-                            <span class="theader">
-                                ${c.message}
-                            </span>
+                        <td colspan="2" class="errorMessage">
+                          ${c.message}
                         </td>
                     </tr>
                 %endif
                 <tr>
-                    <td colspan="2">${_('Access')}</td>
+                    <td colspan="2" class="theader">${_('Access')}</td>
                 </tr>
                 <tr>
                     <td class="postblock"><u>${_('Admin')}</u></td>
@@ -108,11 +106,25 @@
                         <input type="checkbox" name="canChangeRights" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""} ${c.user.options.canChangeRights and 'checked="checked"' or ""} />
                     </td>
                 </tr>
+
+                <tr>
+                    <td class="postblock">${_('Read only')}</td>
+                    <td>
+                        <input type="checkbox" name="readonly" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.readonly and 'checked="checked"' or ""} />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">${_('Reason')}</td>
+                    <td>
+                        <input type="text" name="reason" size="35" value="" />
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="2"><input type="submit" name="access" value="${_('Update')}" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}/></td>
                 </tr>
                 <tr>
-                    <td colspan="2">${_('Ban')}</td>
+                    <td colspan="2" class="theader">${_('Ban')}</td>
                 </tr>
                 %if c.user.options.bantime:
                 <tr>
@@ -147,22 +159,24 @@
                     <td colspan='2'><input type="submit" name="ban" value="${_('Ban')}" /></td>
                 </tr>
                 %endif
+
                 <tr>
-                    <td colspan="2">${_('Delete user')}</td>
+                    <td colspan="2" class="theader">${_('Change security code')}</td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('Reason')}</td>
-                    <td>
-                        <input type="text" name="deletereason" size="35" value="" /><br/>
-                        <input type="checkbox" name="deleteLegacy" /> ${_("Remove all users's posts")}
-                    </td>
+                    <td class="postblock">${_('New Security Code')}</td>
+                    <td><input name="key" value="" size="35" type="password" /></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" name="delete" value="${_('Delete')}" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""} /></td>
+                    <td class="postblock">${_('Repeat Security Code')}</td>
+                    <td><input name="key2" value="" size="35" type="password" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" name="passwd" value="${_('Change')}"/></td>
                 </tr>
 
                 <tr>
-                    <td colspan="2">${_('Look up posts')}</td>
+                    <td colspan="2" class="theader">${_('Look up posts')}</td>
                 </tr>
                 <tr>
                     <td class="postblock">${_('Quantity of last posts to view')}</td>
@@ -181,18 +195,17 @@
                 </tr>
 
                 <tr>
-                    <td colspan="2">${_('Change security code')}</td>
+                    <td colspan="2" class="theader">${_('Delete user')}</td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('New Security Code')}</td>
-                    <td><input name="key" value="" size="35" type="password" /></td>
+                    <td class="postblock">${_('Reason')}</td>
+                    <td>
+                        <input type="text" name="deletereason" size="35" value="" /><br/>
+                        <input type="checkbox" name="deleteLegacy" /> ${_("Remove all users's posts")}
+                    </td>
                 </tr>
                 <tr>
-                    <td class="postblock">${_('Repeat Security Code')}</td>
-                    <td><input name="key2" value="" size="35" type="password" /></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><input type="submit" name="passwd" value="${_('Change')}"/></td>
+                    <td colspan="2"><input type="submit" name="delete" value="${_('Delete')}" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""} /></td>
                 </tr>
             </tbody>
         </table>

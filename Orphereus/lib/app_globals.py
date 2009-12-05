@@ -54,7 +54,8 @@ class OptHolder(object):
 
         self.booleanValues = [('core',
                                ('secondaryIndex', 'allowPosting',
-                                'allowRegistration', 'allowAnonymous',
+                                'allowRegistration', 'setReadonlyToRegistered',
+                                'allowAnonymous',
                                 'allowLogin', 'allowAnonymousPosting', 'allowAnonProfile',
                                )
                               ),

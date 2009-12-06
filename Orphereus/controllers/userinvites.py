@@ -175,7 +175,7 @@ class InvitesPlugin(BasePlugin, AbstractProfileExtension, AbstractPageHook):
         """
         obligatoryCondition = not(userInst.Anonymous) and \
                 (self.__getUserAge(userInst) >= g.OPT.minimalAge) and \
-                (self.__getAllPostsCount(userInst) >= minimalPostsCount) and \
+                (self.__getAllPostsCount(userInst) >= g.OPT.minimalPostsCount) and \
                 (self.__checkLastGivenInvite(userInst))
 
         if obligatoryCondition:

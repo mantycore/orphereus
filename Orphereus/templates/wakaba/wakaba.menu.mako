@@ -1,12 +1,12 @@
 <div class="adminbar">
 <span class="boardlist">
 ${h.boardMenu([h.itemsToSection(
-	[
-		(_('Overview'), '~', g.OPT.allowOverview, h.url_for('boardBase', board='~')),
-		(_('Related threads'), '@', not c.userInst.Anonymous, h.url_for('boardBase', board='@')),
-		(_('My threads'), '*', not c.userInst.Anonymous, h.url_for('boardBase', board='*')),
-		(_('Home'), '!', True, h.url_for('boardBase', board='!')),
-	]
+  [
+    (_('Overview'), '~', g.OPT.allowOverview, h.url_for('boardBase', board='~')),
+    (_('Related threads'), '@', not c.userInst.Anonymous, h.url_for('boardBase', board='@')),
+    (_('My threads'), '*', not c.userInst.Anonymous, h.url_for('boardBase', board='*')),
+    (_('Home'), '!', True, h.url_for('boardBase', board='!')),
+  ]
   )], False
 )}
 
@@ -14,7 +14,7 @@ ${h.boardMenu([h.itemsToSection(
 %if g.OPT.spiderTrap:
 <span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap2', confirm=c.userInst.secid())}">.</a></span>
 %endif
-	${h.boardMenu(c.boardlist)}
+  ${h.boardMenu(c.boardlist)}
 %endif
 </span>
 %if not c.userInst.Anonymous:
@@ -59,4 +59,16 @@ ${h.boardMenu([h.itemsToSection(
     %endfor
     ]
 %endif
+
+<a href="${h.url_for('ajChangeOption', name='useFrame', value=not c.userInst.useFrame, returnTo=c.currentURL)}">
+${c.userInst.useFrame and _("Turn frame off") or _("Turn frame on")}
+</a>
+
+%for style in c.styles:
+<a onclick="changeCSS(event, '${style}', '${h.staticFile(style + ".css")}')" \
+href="${h.url_for('ajChangeOption', name='style', value=style, returnTo=c.currentURL)}">
+${style}
+</a>
+%endfor
+
 </div>

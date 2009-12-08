@@ -6,7 +6,8 @@
 %endif
 
 <div class="theader">
-<a style="cursor:pointer; display: block;" onclick="toggle_div('newThreadPlaceholder');">
+<a style="cursor:pointer; display: block;" onclick="return toggle_div('newThreadPlaceholder');" \
+href="${h.url_for('ajChangeOption', name='useTitleCollapse', value='False', returnTo=c.currentURL)}">
 %if not c.board:
     ${_('Reply')}
 %else:

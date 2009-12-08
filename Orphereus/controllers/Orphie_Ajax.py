@@ -21,6 +21,7 @@
 ################################################################################
 
 import logging
+from paste.deploy.converters import asbool
 
 from Orphereus.lib.base import *
 from Orphereus.model import *
@@ -53,6 +54,7 @@ class AjaxServicesPlugin(BasePlugin):
         map.connect('ajPostReply', '/ajax/postReply/:post', controller = 'Orphie_Main', action = 'ajaxPostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
         map.connect('ajTagsCheck', '/ajax/checkTags', controller = 'Orphie_Ajax', action = 'checkTags')
         map.connect('ajGetMyPostIds', '/ajax/getMyPostIds/:thread', controller = 'Orphie_Ajax', action = 'getMyPostIds', requirements = dict(thread = '\d+'))
+        map.connect('ajChangeOption', '/ajax/changeOption/:name/:value/*returnTo', controller = 'Orphie_Ajax', action = 'changeOption', returnTo = '')
 
         # routines below isn't actually used
         map.connect('ajGetText', '/ajax/getText/:text', controller = 'Orphie_Ajax', action = 'getText', text = '')
@@ -60,6 +62,10 @@ class AjaxServicesPlugin(BasePlugin):
         map.connect('/ajax/getRepliesIds/:post', controller = 'Orphie_Ajax', action = 'getRepliesIds', requirements = dict(post = '\d+'))
         map.connect('/ajax/getUserSettings', controller = 'Orphie_Ajax', action = 'getUserSettings')
         map.connect('/ajax/getUploadsPath', controller = 'Orphie_Ajax', action = 'getUploadsPath')
+
+    def beforeRequestCallback(self, baseController):
+        if baseController.userInst.isValid():
+            c.styles = g.OPT.cssFiles[baseController.userInst.template]
 
 class OrphieAjaxController(OrphieBaseController):
     def __before__(self):
@@ -247,3 +253,27 @@ class OrphieAjaxController(OrphieBaseController):
                 return str(ct.id)
         else:
             abort(404)
+
+    def changeOption(self, name, value, returnTo):
+        val = None
+        ok = True
+        if name in self.userInst.booleanValues:
+            val = asbool(value)
+        elif name in self.userInst.intValues and isNumber(value):
+            val = int(val)
+        elif name in self.userInst.stringValues:
+            val = filterText(value)
+        else:
+            ok = None
+        if ok:
+            setattr(self.userInst, name, val)
+            if not c.userInst.Anonymous:
+                meta.Session.commit()
+            if returnTo:
+                if self.userInst.useFrame:
+                    return redirect_to('boardBase', frameTarget = returnTo)
+                else:
+                    return redirect_to('boardBase', board = returnTo)
+            else:
+                return 'ok'
+        return abort(404)

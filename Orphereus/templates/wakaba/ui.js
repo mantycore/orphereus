@@ -12,8 +12,16 @@ function menu_show(id) {
   }
 }
 
+function changeCSS(event, stylename, csspath)
+{
+  event.preventDefault();
+  $.ajax({type: 'get', url: "${g.OPT.urlPrefix}ajax/changeOption/style/" + stylename});
+  $('#baseCSS').attr('href', csspath);
+}
+
 function toggle_div(id) {
     $('#'+id).slideToggle('fast');
+    return false;
 }
 
 function update_captcha(e) {
@@ -343,7 +351,8 @@ function expandable_threads(){
         allDeleteBoxesSpans.hide();
      }
   }
-  $(".thread .omittedposts a").click(function() {
+  $(".thread .omittedposts a").click(function(event) {
+    event.preventDefault();
     var me = $(this);
     var thread = me.parent().parent();
     var deleteBoxesShown = thread.find('.delete').is(':visible');

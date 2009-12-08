@@ -17,8 +17,8 @@ ${c.title} \
 <meta name="robots" content="noarchive" />
 <link rel="shortcut icon" type="image/x-icon" href="${g.OPT.staticPathWeb+g.OPT.favicon}" />
 <link rel="icon" type="image/x-icon" href="${g.OPT.staticPathWeb+g.OPT.favicon}" />
-<link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style + ".css")}" title="${c.userInst.style}" />
-<link rel="stylesheet" type="text/css" href="${h.staticFile("highlight.css")}" />
+<link id="baseCSS" rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style + ".css")}" title="${c.userInst.style}" />
+<link id="hlCSS" rel="stylesheet" type="text/css" href="${h.staticFile("highlight.css")}" />
 
 %for jsFile in c.jsFiles:
 <script type="text/javascript" src="${h.staticFile(jsFile)}"></script>

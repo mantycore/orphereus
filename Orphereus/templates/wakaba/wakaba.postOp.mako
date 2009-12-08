@@ -87,5 +87,5 @@ ${h.threadInfoCallback(thread, c.userInst)}<br />
     %endif
 </blockquote>
 %if 'omittedPosts' in dir(thread) and thread.omittedPosts:
-    <span class="omittedposts"><span>${ungettext('%s post omitted.', '%s posts omitted.', thread.omittedPosts) % thread.omittedPosts}</span> <a href="#">${_('Expand thread')}</a> </span>
+    <span class="omittedposts"><span>${ungettext('%s post omitted.', '%s posts omitted.', thread.omittedPosts) % thread.omittedPosts}</span> <a href="${h.postUrl(thread.id, thread.id)}">${_('Expand thread')}</a> </span>
 %endif

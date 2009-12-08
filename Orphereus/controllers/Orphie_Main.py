@@ -80,7 +80,11 @@ class OrphieMainController(OrphieBaseController):
 
             if oldUseFrame != self.userInst.useFrame:
                 c.proceedRedirect = True
-                c.currentURL = None
+                if self.userInst.useFrame:
+                    c.frameTargetToRedir = h.url_for('userProfile')
+                    c.currentURL = None
+                else:
+                    c.currentURL = h.url_for('userProfile')
             homeExcludeTags = Tag.stringToTagLists(request.POST.get('homeExclude', u''), False)[0]
             #log.debug(homeExcludeTags)
             homeExcludeList = []

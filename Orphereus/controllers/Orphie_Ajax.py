@@ -271,10 +271,14 @@ class OrphieAjaxController(OrphieBaseController):
                 meta.Session.commit()
             returnTo = request.params.get('returnTo', None)
             if returnTo:
-                if self.userInst.useFrame:
-                    return redirect_to('boardBase', frameTarget = returnTo)
+                if c.userInst.useFrame:
+                    c.frameTargetToRedir = returnTo
+                    c.currentURL = None
                 else:
-                    return redirect_to('boardBase', board = returnTo)
+                    c.currentURL = returnTo
+                c.proceedRedirect = True
+                c.suppressLoginMessage = True
+                return self.render('loginRedirect')
             else:
                 return 'ok'
         return abort(404)

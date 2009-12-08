@@ -54,7 +54,7 @@ class AjaxServicesPlugin(BasePlugin):
         map.connect('ajPostReply', '/ajax/postReply/:post', controller = 'Orphie_Main', action = 'ajaxPostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
         map.connect('ajTagsCheck', '/ajax/checkTags', controller = 'Orphie_Ajax', action = 'checkTags')
         map.connect('ajGetMyPostIds', '/ajax/getMyPostIds/:thread', controller = 'Orphie_Ajax', action = 'getMyPostIds', requirements = dict(thread = '\d+'))
-        map.connect('ajChangeOption', '/ajax/changeOption/:name/:value/*returnTo', controller = 'Orphie_Ajax', action = 'changeOption', returnTo = '')
+        map.connect('ajChangeOption', '/ajax/changeOption/:name/:value', controller = 'Orphie_Ajax', action = 'changeOption')
 
         # routines below isn't actually used
         map.connect('ajGetText', '/ajax/getText/:text', controller = 'Orphie_Ajax', action = 'getText', text = '')
@@ -254,7 +254,7 @@ class OrphieAjaxController(OrphieBaseController):
         else:
             abort(404)
 
-    def changeOption(self, name, value, returnTo):
+    def changeOption(self, name, value):
         val = None
         ok = True
         if name in self.userInst.booleanValues:
@@ -269,6 +269,7 @@ class OrphieAjaxController(OrphieBaseController):
             setattr(self.userInst, name, val)
             if not c.userInst.Anonymous:
                 meta.Session.commit()
+            returnTo = request.params.get('returnTo', None)
             if returnTo:
                 if self.userInst.useFrame:
                     return redirect_to('boardBase', frameTarget = returnTo)

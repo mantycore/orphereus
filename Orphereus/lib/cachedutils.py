@@ -45,7 +45,6 @@ def chBoardList():
         if sectionId < len(g.sectionNames):
             sName = g.sectionNames[id]
         return sName
-    print "B", boards
     for b in boards:
         if sectionId == -1:
             sectionId = b.sectionId
@@ -60,7 +59,6 @@ def chBoardList():
         section.append(bc) #b.tag)
     if section:
         boardlist.append((section, sectionName(sectionId), sectionId))
-    print "BL", boardlist
     return boardlist
 
 def chSectionNames(boardlist):

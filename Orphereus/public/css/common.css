@@ -11,3 +11,77 @@ margin: 0px 4px 1px 4px;
 margin: 0px 4px 1px 4px;
 font-style: italic;
 }
+
+/**************** menu coding *****************/
+.CSSMenu {
+/*width: 100%;*/
+/*background: #eee;*/
+/*float: right;*/
+display: inline;
+}
+
+.CSSMenu ul {
+list-style: none;
+margin: 0;
+padding: 0;
+display: inline;
+/*width: 12em;*/
+/*float: right;*/
+}
+
+.CSSMenu a, .CSSMenu h2 {
+/*font: bold 11px/16px arial, helvetica, sans-serif;*/
+display: inline;
+/*border-width: 1px;
+border-style: solid;
+border-color: #ccc #888 #555 #bbb;*/
+margin: 0;
+padding: 2px 3px;
+}
+
+.CSSMenu ul li ul a, .CSSMenu ul li ul h2 {
+display: block;
+}
+
+.CSSMenu h2 {
+color: #fff;
+background: #000;
+text-transform: uppercase;
+}
+
+.CSSMenu a {
+/*color: #000;
+background: #efefef;*/
+text-decoration: none;
+}
+
+.CSSMenu a:hover {
+color: #a00;
+background: #fff;
+}
+
+.CSSMenu li {position: relative; display: inline;}
+
+.CSSMenu ul ul {
+left: 0px;
+
+position: absolute;
+z-index: 500;
+width: 12em;
+}
+
+.CSSMenu ul ul ul {
+position: absolute;
+top: 0;
+left: 100%;
+}
+
+div.CSSMenu ul ul,
+div.CSSMenu ul li:hover ul ul,
+div.CSSMenu ul ul li:hover ul ul
+{display: none;}
+
+div.CSSMenu ul li:hover ul,
+div.CSSMenu ul ul li:hover ul,
+div.CSSMenu ul ul ul li:hover ul
+{display: block;}

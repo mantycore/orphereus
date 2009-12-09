@@ -17,11 +17,31 @@ ${h.boardMenu([h.itemsToSection(
   ${h.boardMenu(c.boardlist)}
 %endif
 </span>
+
+<div class="CSSMenu">
+<ul>
+  <li>
 %if not c.userInst.Anonymous:
     [<a href="${h.url_for('userProfile')}">${_('Profile')}</a>]
 %elif g.OPT.allowAnonProfile:
     [<a href="${h.url_for('userProfile')}">${_('Settings')}</a>]
 %endif
+    <ul class="category list">
+      <li><a href="${h.url_for('ajChangeOption', name='useFrame', value=not c.userInst.useFrame, returnTo=c.currentURL)}">
+      ${c.userInst.useFrame and _("Turn frame off") or _("Turn frame on")}
+      </a></li>
+      <li class="header" style="display: block;">${_("Style")}</li>
+      %for style in c.styles:
+      <li><a onclick="changeCSS(event, '${style}', '${h.staticFile(style + ".css")}')" \
+      href="${h.url_for('ajChangeOption', name='style', value=style, returnTo=c.currentURL)}">
+      ${style}
+      </a></li>
+      %endfor
+    </ul>
+  </li>
+</ul>
+</div>
+
 %if c.userInst.isAdmin():
     [<a href="${h.url_for('holySynod')}">${_('Holy Synod')}</a>]
 %endif
@@ -59,16 +79,6 @@ ${h.boardMenu([h.itemsToSection(
     %endfor
     ]
 %endif
-
-<a href="${h.url_for('ajChangeOption', name='useFrame', value=not c.userInst.useFrame, returnTo=c.currentURL)}">
-${c.userInst.useFrame and _("Turn frame off") or _("Turn frame on")}
-</a>
-
-%for style in c.styles:
-<a onclick="changeCSS(event, '${style}', '${h.staticFile(style + ".css")}')" \
-href="${h.url_for('ajChangeOption', name='style', value=style, returnTo=c.currentURL)}">
-${style}
-</a>
-%endfor
-
 </div>
+
+

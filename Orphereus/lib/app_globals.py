@@ -283,7 +283,11 @@ class OptHolder(object):
             sectionName = section[0]
             for valueName in section[1]:
                 paramName = '%s.%s' % (sectionName, valueName)
-                rawValue = config[paramName]
+                rawValue = config.get(paramName, None)
+                if rawValue is None:
+                    msg = "Required option '%s' (assotiated with '%s') isn't defined in config!" % (paramName, getter.__name__)
+                    log.error(msg)
+                    raise Exception(msg)
                 value = getter(rawValue)
                 if self.setter and not(self.recoveryMode):
                     sqlValue = None
@@ -334,16 +338,19 @@ class Globals(object):
     def enumeratePlugins(self, basicNamespace, eggSetupMode = False):
         pluginsDir = os.path.realpath(os.path.join(self.OPT.appPath, 'controllers'))
         sys.path.append(pluginsDir)
+        _log.info("Collecting names of possible plugins...")
         _log.info("Plugins root directory: %s" % pluginsDir)
 
         namespacesToImport = []
         for root, dirs, files in os.walk(pluginsDir):
             fileList = filter(lambda x: x.endswith('.py') and not x.startswith('__'), files)
+            ignoredFiles = []
             for file in fileList:
                 if file in self.OPT.disabledModules:
                     _log.warning('File ignored due config settings: %s' % file)
-                    fileList.remove(file)
+                    ignoredFiles.append(file)
 
+            fileList = list(set(fileList).difference(ignoredFiles))
             fileList = map(lambda x: os.path.join(root, x), fileList)
             fileList = map(lambda x: os.path.splitext(x)[0], fileList)
             fileList = map(lambda x: x.replace(pluginsDir + os.path.sep, ''), fileList)

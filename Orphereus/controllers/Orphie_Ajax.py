@@ -79,11 +79,13 @@ class OrphieAjaxController(OrphieBaseController):
         freeNames = Tag.stringToTagLists(tags, False)[2]
         if freeNames:
             postingHooks = g.implementationsOf(AbstractPostingHook)
+            existentNames = []
             for tagname in freeNames:
                 for hook in postingHooks:
                     tag = hook.tagCheckHandler(tagname, self.userInst)
                     if tag:
-                        freeNames.remove(tagname)
+                        existentNames.append(tagname)
+            freeNames = list(set(freeNames).difference(existentNames))
             c.tags = freeNames
         if freeNames:
             return self.render('tagNames', disableFiltering = True)

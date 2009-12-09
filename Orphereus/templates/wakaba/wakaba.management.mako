@@ -6,18 +6,19 @@
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <meta name="robots" content="noarchive" />
         <link rel="shortcut icon" type="image/x-icon" href="${g.OPT.staticPathWeb+g.OPT.favicon}" />
-        <link rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style + ".css")}" title="${c.userInst.style}" />
+        <link id="baseCSS" rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style + ".css")}" title="${c.userInst.style}" />
+        <link id="commonCSS" rel="stylesheet" type="text/css" href="${h.staticFile("common.css")}" />
 %for jsFile in c.jsFiles:
         <script type="text/javascript" src="${h.staticFile(jsFile)}"></script>
 %endfor
     </head>
     <body>
         %if not c.serviceOut:
-		%if g.OPT.useZMenu:
-			<%include file="wakaba.z-menu.mako" />
-		%else:
+    %if g.OPT.useZMenu:
+      <%include file="wakaba.z-menu.mako" />
+    %else:
             ${c.menuRender}
-		%endif
+    %endif
             <%include file="wakaba.logo.mako" />
             <hr />
             <table cellpadding="5" width="100%">

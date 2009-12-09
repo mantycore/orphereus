@@ -16,7 +16,7 @@ function changeCSS(event, stylename, csspath)
 {
   event.preventDefault();
   $.ajax({type: 'get', url: "${g.OPT.urlPrefix}ajax/changeOption/style/" + stylename});
-  $('#baseCSS').attr('href', csspath);
+  $('#baseCSS').attr('title', stylename).attr('href', csspath);
 }
 
 function toggle_div(id) {

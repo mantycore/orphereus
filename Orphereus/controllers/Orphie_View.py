@@ -45,8 +45,9 @@ class OrphieViewController(OrphieBaseController):
         return self.render('static.%s' % page)
 
     def frameMenu(self):
-        c.disableMenu = True
-        c.disableFooter = True
+        c.suppressMenu = True
+        c.suppressFooter = True
+        c.suppressJsTest = True
         return self.render('frameMenu')
 
     def showPosts(self, threadFilter, tempid = '', page = 0, board = '', tags = [], tagList = []):

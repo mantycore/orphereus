@@ -166,7 +166,7 @@ frontend.dvachStyleMenu = true
 
 frontend.disabledTags = logout,authorize,register,youAreBanned,userProfile,holySynod,frameMenu,!
 frontend.additionalLinks = http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma
-frontend.sectionNames = Main
+frontend.sectionNames = Main,Second,Third
 
 ###########
 # Plugins #

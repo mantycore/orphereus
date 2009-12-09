@@ -61,7 +61,7 @@ def adjust_dialect(engine, meta):
     target = meta
 
     def logAndChange(var, newType):
-        _log.info("Using %s instead of %s" % (str(newType), str(var)))
+        _log.info("Using %s instead of %s" % (str(newType.__name__), str(var.__name__)))
         return newType
 
     props = {'disableInstantIdSetting' : None,

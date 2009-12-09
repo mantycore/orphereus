@@ -410,16 +410,6 @@ class OrphieAdminController(OrphieBaseController):
                             for post in posts:
                                 tmp = [post.id, tagsToStr(post.tags)]
                                 post.removeTag(tag)
-                                """
-                                    tags = post.tags
-                                    tags.remove(tag)
-                                    tag.threadCount -= 1
-                                    tag.replyCount -= (post.replyCount + 1)
-                                    if not targetTag in tags:
-                                        tags.append(targetTag)
-                                        targetTag.threadCount += 1
-                                        targetTag.replyCount += (post.replyCount + 1)
-                                """
                                 post.appendTag(targetTag)
                                 tmp.append(tagsToStr(post.tags))
                                 options = Tag.conjunctedOptionsDescript(post.tags)
@@ -479,9 +469,6 @@ class OrphieAdminController(OrphieBaseController):
                 if act == 'del' and tagid > 0:
                     if len(post.tags) > 1:
                         tag = Tag.getById(tagid)
-                        #tag.threadCount -= 1
-                        #tag.replyCount -= (post.replyCount + 1)
-                        #post.tags.remove(tag)
                         post.removeTag(tag)
                         toLog(LOG_EVENT_EDITEDPOST, _('Removed tag %s from post %d') % (tag.tag, post.id))
                     else:
@@ -491,9 +478,6 @@ class OrphieAdminController(OrphieBaseController):
                     if tag:
                         toLog(LOG_EVENT_EDITEDPOST, _('Added tag %s to post %d') % (tag.tag, post.id))
                         post.appendTag(tag)
-                        #post.tags.append(tag)
-                        #tag.threadCount += 1
-                        #tag.replyCount += (post.replyCount + 1)
                     else:
                         return self.error(_("Non-existent tag"))
 

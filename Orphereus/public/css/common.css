@@ -1,0 +1,13 @@
+#overlay_menu div a {
+display: block;
+margin: 0px 4px 1px 4px;
+-moz-border-radius-bottomleft:5px;
+-moz-border-radius-bottomright:5px;
+-moz-border-radius-topleft:5px;
+-moz-border-radius-topright:5px;
+}
+
+#overlay_menu div div {
+margin: 0px 4px 1px 4px;
+font-style: italic;
+}

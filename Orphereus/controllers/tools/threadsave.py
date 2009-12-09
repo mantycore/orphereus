@@ -86,7 +86,8 @@ class ThreadsaveController(OrphieBaseController):
         c.minimalRender = True
         c.threads = [thread]
         c.currentUserCanPost = False
-        c.disableMenu = True
+        c.suppressMenu = True
+        c.suppressJsTest = True
         c.tagLine, c.boardName = Post.tagLine(thread.tags)
         page = self.render('posts')
         page = self._prepareHtml(page)

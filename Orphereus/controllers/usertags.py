@@ -138,9 +138,10 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
         from Orphereus.controllers.Orphie_Main import OrphieMainController
         ns = self.namespace()
         tags, dummy, nonexistent = Tag.stringToTagLists(tagstring, False)
+        existent = []
         for usertag in nonexistent:
             if usertag.startswith('$'):
-                nonexistent.remove(usertag)
+                existent.append(usertag)
                 if not userInst.Anonymous:
                     tagName = Tag.cutTag(usertag[1:], True)
                     tag = ns.UserTag.get(tagName, userInst)
@@ -150,6 +151,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
                         meta.Session.add(tag)
                         meta.Session.commit()
                     afterPostCallbackParams.append(tag)
+        nonexistent = list(set(nonexistent).difference(existent))
         newTagString = ''
         for tag in tags:
             newTagString += '%s ' % tag.tag

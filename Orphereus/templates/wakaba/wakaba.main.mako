@@ -19,6 +19,7 @@ ${c.title} \
 <link rel="icon" type="image/x-icon" href="${g.OPT.staticPathWeb+g.OPT.favicon}" />
 <link id="baseCSS" rel="stylesheet" type="text/css" href="${h.staticFile(c.userInst.style + ".css")}" title="${c.userInst.style}" />
 <link id="hlCSS" rel="stylesheet" type="text/css" href="${h.staticFile("highlight.css")}" />
+<link id="commonCSS" rel="stylesheet" type="text/css" href="${h.staticFile("common.css")}" />
 
 %for jsFile in c.jsFiles:
 <script type="text/javascript" src="${h.staticFile(jsFile)}"></script>
@@ -32,7 +33,7 @@ ${h.headCallback(c)}
 <body>
 <%include file="wakaba.jsTest.mako" />
 
-%if not c.disableMenu:
+%if not c.suppressMenu:
   %if g.OPT.useZMenu:
     <%include file="wakaba.z-menu.mako" />
   %else:
@@ -44,17 +45,17 @@ ${h.headCallback(c)}
 <%include file="wakaba.logo.mako" />
 %endif
 
-%if not (c.disableLogo and c.disableMenu):
+%if not (c.disableLogo and c.suppressMenu):
 <hr />
 %endif
 
 ${self.body()}
 
-%if not c.disableMenu:
+%if not c.suppressMenu:
     ${c.menuRender}
 %endif
 
-%if not c.disableFooter:
+%if not c.suppressFooter:
 <%include file="wakaba.footer.mako" />
 %endif
 </body>

@@ -601,8 +601,10 @@ class OrphieAdminController(OrphieBaseController):
 
         c.currentItemId = 'id_hsUsers'
         c.boardName = _('Users management')
+
+        print request.POST
         uid = request.POST.get("uid", False)
-        if uid:
+        if uid and "view" in request.POST:
             user = False
             if isNumber(uid):
                 user = User.getUser(uid)
@@ -612,6 +614,18 @@ class OrphieAdminController(OrphieBaseController):
                 return redirect_to('hsUserEdit', uid = user.uidNumber)
             else:
                 c.message = _('No such user exists.')
+        elif "deactivateRO" in request.POST:
+            roUsers = User.query.filter(User.options.has(and_(UserOptions.readonly == True, UserOptions.bantime == 0))).all()
+            for user in roUsers:
+                user.ban(10000, "[AUTOMATIC BAN] Batch read-only deactivation")
+
+        if "showRO" in request.GET:
+            c.roActive = User.query.filter(User.options.has(and_(UserOptions.readonly == True, UserOptions.bantime == 0))).all()
+            c.roBanned = User.query.filter(User.options.has(and_(UserOptions.readonly == True, UserOptions.bantime > 0))).all()
+
+        c.ustats = (User.query.count(),
+                    User.query.filter(User.options.has(UserOptions.bantime > 0)).count(),
+                    User.query.filter(User.options.has(UserOptions.readonly == True)).count())
         return self.render('manageUsers')
 
     def editUserAttempt(self, pid):

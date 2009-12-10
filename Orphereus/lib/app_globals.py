@@ -445,7 +445,8 @@ class Globals(object):
             _log.warning('[WARNING] Adding loop-dependant plugin "%s" (deps: %s)' % (plugin.pluginId(), str(plugin.deps())))
             self.registerPlugin(plugin)
 
-        _log.info("RESOLVING STAGE COMPLETED. Connected %d plugins: %s" % (len(self.plugins), str(self.pluginsDict.keys())))
+        pluginsNames = map(lambda p: p.pluginId(), self.plugins)
+        _log.info("RESOLVING STAGE COMPLETED. Connected %d plugins: %s" % (len(self.plugins), str(pluginsNames)))
 
         _log.info("Updating globals...")
         for plugin in self.plugins:

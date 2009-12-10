@@ -37,6 +37,7 @@ log = logging.getLogger(__name__)
 class OrphieSearchPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('Search support (Obligatory)'),
+                  'deps' : ('base_view',)
                  }
         BasePlugin.__init__(self, 'base_search', config)
 

@@ -75,6 +75,7 @@ class UserTag(object):
 class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, AbstractPageHook):
     def __init__(self):
         config = {'name' : N_('Personal tags module'),
+                  'deps' : ('base_view',)
                  }
         BasePlugin.__init__(self, 'usertags', config)
 

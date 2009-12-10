@@ -38,6 +38,7 @@ log = logging.getLogger(__name__)
 class RssFeedPlugin(BasePlugin, AbstractPageHook):
     def __init__(self):
         config = {'name' : N_('RSS/Atom feeds'),
+                  'deps' : ('base_view',)
                  }
 
         BasePlugin.__init__(self, 'rssfeed', config)

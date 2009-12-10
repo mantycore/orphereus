@@ -37,6 +37,7 @@ log = logging.getLogger(__name__)
 class FinalAnonymizationPlugin(BasePlugin, AbstractPageHook):
     def __init__(self):
         config = {'name' : N_('Final anonymization'),
+                  'deps' : ('base_view',)
                  }
         BasePlugin.__init__(self, 'anonymiztaion', config)
 

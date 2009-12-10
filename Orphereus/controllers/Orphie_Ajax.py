@@ -36,6 +36,7 @@ log = logging.getLogger(__name__)
 class AjaxServicesPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('Ajax helpers'),
+                  'deps' : ('base_view', 'base_profile')
                  }
         BasePlugin.__init__(self, 'ajaxhelpers', config)
 

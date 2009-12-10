@@ -38,6 +38,7 @@ log = logging.getLogger(__name__)
 class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
     def __init__(self):
         config = {'name' : N_('Search with Sphinx full-text search engine'),
+                  'deps' : ('base_search',)
                  }
         BasePlugin.__init__(self, 'search_sphinx', config)
 

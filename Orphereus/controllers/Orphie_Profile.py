@@ -39,6 +39,7 @@ log = logging.getLogger(__name__)
 class OrphieProfilePlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('User profile (Obligatory)'),
+                  'deps' : ('base_view',)
                  }
         BasePlugin.__init__(self, 'base_profile', config)
 

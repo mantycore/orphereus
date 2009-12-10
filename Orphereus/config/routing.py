@@ -61,66 +61,7 @@ def make_map():
         #    rinit(map)
     log.info('COMPLETED ROUTING INITIALIZATION STAGE')
 
-    # Special routes
-    map.connect('authorize', '/authorize',
-                controller = 'Orphie_Public',
-                action = 'authorize',
-                url = '')
-    map.connect('authorizeToUrl',
-                '/{url:.*?}/authorize',
-                controller = 'Orphie_Public',
-                action = 'authorize',
-                url = '')
-    map.connect('logout', '/logout',
-                controller = 'Orphie_Public',
-                action = 'logout',
-                url = '')
-    map.connect('captcha',
-                '/captcha/{cid}',
-                controller = 'Orphie_Public',
-                 action = 'captchaPic',
-                 cid = 0)
-    map.connect('register', '/register/{invite}',
-                controller = 'Orphie_Public',
-                action = 'register')
-    map.connect('banned', '/youAreBanned',
-                controller = 'Orphie_Public',
-                action = 'banned')
-    map.connect('ipBanned', '/ipBanned',
-                controller = 'Orphie_Public',
-                action = 'ipBanned')
 
-    # Oekaki
-    map.connect('oekakiDraw',
-                '/oekakiDraw/{url}/{sourceId}/{selfy}/{anim}/{tool}',
-                controller = 'Orphie_Posting',
-                action = 'oekakiDraw',
-                selfy = None,
-                anim = None,
-                tool = None,
-                sourceId = '0',
-                requirements = dict(sourceId = r'\d+'))
-    map.connect('oekakiSave',
-                '/oekakiSave/:url/:tempid',
-                controller = 'Orphie_Public',
-                action = 'oekakiSave',
-                url = '',
-                requirements = dict(tempid = r'\d+'))
-
-    # Threads
-    map.connect('postReply', '/{post}',
-                controller = 'Orphie_Posting',
-                action = 'PostReply',
-                conditions = dict(method = ['POST']),
-                requirements = dict(post = r'\d+'))
-    map.connect('delete', '/{board}/delete',
-                controller = 'Orphie_Posting',
-                action = 'DeletePost',
-                conditions = dict(method = ['POST']))
-    map.connect('postThread', '/{board}',
-                controller = 'Orphie_Posting',
-                action = 'PostThread',
-                conditions = dict(method = ['POST']))
 
     ## VIEW
     map.connect('thread', '/{post}/{tempid}',

@@ -38,6 +38,7 @@ log = logging.getLogger(__name__)
 class HomeNewsFeedPlugin(BasePlugin, AbstractHomeExtension, AbstractPostingHook):
     def __init__(self):
         config = {'name' : N_('News feed for main page'),
+                  'deps' : ('base_view',)
                  }
 
         BasePlugin.__init__(self, 'newsgenerator', config)

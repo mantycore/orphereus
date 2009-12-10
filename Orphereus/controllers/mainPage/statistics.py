@@ -36,6 +36,7 @@ log = logging.getLogger(__name__)
 class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
     def __init__(self):
         config = {'name' : N_('Statistics for main page'),
+                  'deps' : ('base_view',)
                  }
 
         BasePlugin.__init__(self, 'statistics', config)

@@ -152,6 +152,7 @@ class GraphsCommand(command.Command):
 class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
     def __init__(self):
         config = {'name' : N_('Graphical statistics for main page'),
+                  'deps' : ('base_view',)
                  }
 
         BasePlugin.__init__(self, 'statgraph', config)

@@ -35,6 +35,7 @@ log = getLogger(__name__)
 class MediaPlayerPlugin(BasePlugin, AbstractPostOutputHook):
     def __init__(self):
         config = {'name' : N_('Flash player for music files'),
+                  'deps' : ('base_view',)
                  }
 
         BasePlugin.__init__(self, 'mediaplayer', config)

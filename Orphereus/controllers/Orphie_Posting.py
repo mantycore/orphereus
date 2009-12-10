@@ -45,10 +45,43 @@ from Orphereus.lib.OrphieMark.OrphieParser import OrphieParser
 from Orphereus.lib.fileHolder import AngryFileHolder
 from Orphereus.lib.processFile import processFile
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
+from Orphereus.lib.BasePlugin import BasePlugin
 
 log = logging.getLogger(__name__)
 
-#TODO: new debug system. Don't forget about c.log and c.sum
+class OrphiePostingPlugin(BasePlugin):
+    def __init__(self):
+        config = {'name' : N_('Posting (Obligatory)'),
+                 }
+        BasePlugin.__init__(self, 'base_posting', config)
+
+    # Implementing BasePlugin
+    def initRoutes(self, map):
+        # Oekaki
+        map.connect('oekakiDraw',
+                    '/oekakiDraw/{url}/{sourceId}/{selfy}/{anim}/{tool}',
+                    controller = 'Orphie_Posting',
+                    action = 'oekakiDraw',
+                    selfy = None,
+                    anim = None,
+                    tool = None,
+                    sourceId = '0',
+                    requirements = dict(sourceId = r'\d+'))
+
+        # Threads
+        map.connect('postReply', '/{post}',
+                    controller = 'Orphie_Posting',
+                    action = 'PostReply',
+                    conditions = dict(method = ['POST']),
+                    requirements = dict(post = r'\d+'))
+        map.connect('delete', '/{board}/delete',
+                    controller = 'Orphie_Posting',
+                    action = 'DeletePost',
+                    conditions = dict(method = ['POST']))
+        map.connect('postThread', '/{board}',
+                    controller = 'Orphie_Posting',
+                    action = 'PostThread',
+                    conditions = dict(method = ['POST']))
 
 class OrphiePostingController(OrphieBaseController):
     def __before__(self):

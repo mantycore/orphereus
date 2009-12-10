@@ -35,6 +35,7 @@ log = logging.getLogger(__name__)
 class LikeSearchPlugin(BasePlugin, AbstractSearchModule):
     def __init__(self):
         config = {'name' : N_('Search based on LIKE operator'),
+                  'deps' : ('base_search',)
                  }
         BasePlugin.__init__(self, 'search_like', config)
 

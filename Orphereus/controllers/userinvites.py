@@ -84,7 +84,7 @@ class UserInviteData(object):
 class InvitesPlugin(BasePlugin, AbstractProfileExtension, AbstractPageHook):
     def __init__(self):
         config = {'name' : N_('Userspace invite generator'),
-                  'deps' : ('adminpanel',)
+                  'deps' : ('adminpanel', 'base_profile')
                  }
         BasePlugin.__init__(self, 'invites', config)
 

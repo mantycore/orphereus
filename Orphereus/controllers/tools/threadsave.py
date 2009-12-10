@@ -35,6 +35,7 @@ log = logging.getLogger(__name__)
 class UserTagsPlugin(BasePlugin, AbstractPageHook):
     def __init__(self):
         config = {'name' : N_('Thread saving plugin'),
+                  'deps' : ('base_view',)
                  }
         BasePlugin.__init__(self, 'threadsave', config)
 

@@ -31,8 +31,52 @@ import datetime
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
+from Orphereus.lib.BasePlugin import BasePlugin
 
 log = logging.getLogger(__name__)
+
+class OrphiePublicPlugin(BasePlugin):
+    def __init__(self):
+        config = {'name' : N_('Public services (Obligatory)'),
+                 }
+        BasePlugin.__init__(self, 'base_public', config)
+
+    # Implementing BasePlugin
+    def initRoutes(self, map):
+        map.connect('authorize', '/authorize',
+                    controller = 'Orphie_Public',
+                    action = 'authorize',
+                    url = '')
+        map.connect('authorizeToUrl',
+                    '/{url:.*?}/authorize',
+                    controller = 'Orphie_Public',
+                    action = 'authorize',
+                    url = '')
+        map.connect('logout', '/logout',
+                    controller = 'Orphie_Public',
+                    action = 'logout',
+                    url = '')
+        map.connect('captcha',
+                    '/captcha/{cid}',
+                    controller = 'Orphie_Public',
+                    action = 'captchaPic',
+                    cid = 0)
+        map.connect('register', '/register/{invite}',
+                    controller = 'Orphie_Public',
+                    action = 'register')
+        map.connect('banned', '/youAreBanned',
+                    controller = 'Orphie_Public',
+                    action = 'banned')
+        map.connect('ipBanned', '/ipBanned',
+                    controller = 'Orphie_Public',
+                    action = 'ipBanned')
+        map.connect('oekakiSave',
+                    '/oekakiSave/:url/:tempid',
+                    controller = 'Orphie_Public',
+                    action = 'oekakiSave',
+                    url = '',
+                    requirements = dict(tempid = r'\d+'))
+
 
 class OrphiePublicController(OrphieBaseController):
     def __before__(self):

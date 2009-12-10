@@ -17,7 +17,7 @@
     %if g.OPT.useZMenu:
       <%include file="wakaba.z-menu.mako" />
     %else:
-            ${c.menuRender}
+            ${c.renderedTopMenu}
     %endif
             <%include file="wakaba.logo.mako" />
             <hr />
@@ -35,7 +35,7 @@
                     </tr>
                 </tbody>
             </table>
-            ${c.menuRender}
+            ${c.renderedBottomMenu}
             <%include file="wakaba.footer.mako" />
         %endif
     </body>

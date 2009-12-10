@@ -1,3 +1,5 @@
+<%page args="bottomMenu"/>
+
 <div class="adminbar">
 <span class="boardlist">
 ${h.boardMenu([h.itemsToSection(
@@ -18,7 +20,7 @@ ${h.boardMenu([h.itemsToSection(
 %endif
 </span>
 
-<div class="CSSMenu">
+<div class="${bottomMenu and 'CSSMenu CSSMenuBottom' or 'CSSMenu'}">
 <ul>
   <li>
 %if not c.userInst.Anonymous:
@@ -51,15 +53,17 @@ ${h.boardMenu([h.itemsToSection(
   <li>
     [<a href="#">${_('Links')}</a>]
     <ul class="CSSMenuBase">
+      %if c.userInst.isAdmin() or g.OPT.usersCanViewLogs:
           <li><span class="CSSMenuHeader">${_("Special")}</a></li>
+      %endif
       %if c.userInst.isAdmin():
           <li><a href="${h.url_for('holySynod')}">${_('Holy Synod')}</a></li>
       %endif
       %if g.OPT.usersCanViewLogs:
           <li><a href="${h.url_for('viewLogBase')}">${_('Logs')}</a></li>
       %endif
-          <li><span class="CSSMenuHeader">${_("Other")}</a></li>
       %if c.menuLinks:
+          <li><span class="CSSMenuHeader">${_("Other")}</a></li>
           %for link in c.menuLinks:
               %if isinstance(link, list) and len(link) == 2:
               <li><a href="${link[0]}">${link[1]}</a></li>

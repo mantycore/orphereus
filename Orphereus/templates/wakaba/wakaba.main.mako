@@ -37,7 +37,7 @@ ${h.headCallback(c)}
   %if g.OPT.useZMenu:
     <%include file="wakaba.z-menu.mako" />
   %else:
-    ${c.menuRender}
+    ${c.renderedTopMenu}
   %endif
 %endif
 
@@ -52,7 +52,7 @@ ${h.headCallback(c)}
 ${self.body()}
 
 %if not c.suppressMenu:
-    ${c.menuRender}
+    ${c.renderedBottomMenu}
 %endif
 
 %if not c.suppressFooter:

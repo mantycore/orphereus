@@ -190,10 +190,13 @@ class OrphiePublicController(OrphieBaseController):
         return self.render('login')
 
     def register(self, invite):
+        def sessionDel(name):
+            if name in session:
+                del session[name]
         def cleanup():
-            del session['invite']
-            del session['iid']
-            del session['roinvite']
+            sessionDel('invite')
+            sessionDel('iid')
+            sessionDel('roinvite')
             session.save()
 
         if 'invite' not in session:

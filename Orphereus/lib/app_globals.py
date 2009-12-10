@@ -343,14 +343,13 @@ class Globals(object):
 
         namespacesToImport = []
         for root, dirs, files in os.walk(pluginsDir):
-            fileList = filter(lambda x: x.endswith('.py') and not x.startswith('__'), files)
-            ignoredFiles = []
-            for file in fileList:
+            def useFilePred(file):
                 if file in self.OPT.disabledModules:
                     _log.warning('File ignored due config settings: %s' % file)
-                    ignoredFiles.append(file)
-
-            fileList = list(set(fileList).difference(ignoredFiles))
+                    return False
+                return True
+            fileList = filter(lambda x: x.endswith('.py') and not x.startswith('__'), files)
+            fileList = filter(useFilePred, fileList)
             fileList = map(lambda x: os.path.join(root, x), fileList)
             fileList = map(lambda x: os.path.splitext(x)[0], fileList)
             fileList = map(lambda x: x.replace(pluginsDir + os.path.sep, ''), fileList)

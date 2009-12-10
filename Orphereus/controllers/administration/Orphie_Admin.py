@@ -91,9 +91,9 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
         map.connect('hsExtensions', '/holySynod/manageExtensions',
                     controller = 'administration/Orphie_Admin',
                     action = 'manageExtensions')
-        map.connect('hsExtensionEdit', '/holySynod/manageExtensions/edit/{name}',
+        map.connect('hsExtensionEdit', '/holySynod/manageExtensions/edit/{ename}',
                      controller = 'administration/Orphie_Admin', action = 'editExtension',
-                     name = '')
+                     ename = '')
         map.connect('hsBoards', '/holySynod/manageBoards',
                     controller = 'administration/Orphie_Admin', action = 'manageBoards')
         map.connect('hsBoardEdit', '/holySynod/manageBoards/edit/{tag}',
@@ -348,26 +348,26 @@ class OrphieAdminController(OrphieBaseController):
         c.showCount = bool(request.POST.get('showCount', False))
         return self.render('manageExtensions')
 
-    def editExtension(self, name):
+    def editExtension(self, ename):
         if not self.userInst.canManageExtensions():
             return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsExtensions'
-        c.boardName = _('Editing extension %s') % name
-        if not name:
-            name = ''
+        c.boardName = _('Editing extension %s') % ename
+        if not ename:
+            ename = ''
 
-        name = filterText(request.POST.get('ext', name))
-        if len(name) > 10:
+        ename = filterText(request.POST.get('ext', ename))
+        if len(ename) > 10:
             return self.error(_('Too long extension'))
 
         c.exists = True
-        ext = Extension.getExtension(name)
+        ext = Extension.getExtension(ename)
 
         if not ext:
             c.exists = False
             c.ext = empty()
-            c.ext.ext = name
+            c.ext.ext = ename
             c.ext.path = ''
             c.ext.thwidth = 0
             c.ext.thheight = 0
@@ -377,8 +377,8 @@ class OrphieAdminController(OrphieBaseController):
         else:
             c.ext = ext
 
-        name = request.POST.get('ext', False)
-        if name:
+        ename = request.POST.get('ext', False)
+        if ename:
             if not bool(request.POST.get('delete', False)):
                 path = filterText(request.POST.get('path', ''))
                 enabled = bool(request.POST.get('enabled', False))
@@ -387,7 +387,7 @@ class OrphieAdminController(OrphieBaseController):
                 thwidth = request.POST.get('thwidth', 0)
                 thheight = request.POST.get('thheight', 0)
                 if not ext:
-                    ext = Extension.create(name, enabled, newWindow, type, path, thwidth, thheight)
+                    ext = Extension.create(ename, enabled, newWindow, type, path, thwidth, thheight)
                     toLog(LOG_EVENT_EXTENSION_EDIT, _('Created extension %s') % ext.ext)
                     c.exists = True
                     c.message = _('Extension created')

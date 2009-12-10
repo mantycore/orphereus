@@ -580,23 +580,24 @@ cursor: pointer;
 
 /* CSS menu styling */
 .CSSMenuBase {
-border: 1px solid #777777;
-background: #DDDDDD;
+border: 1px solid #EEAA88;
+background: #F0E0D6;
 }
 
 .CSSMenuHeader {
-background: #CCCCCC;
-color: #2266AA;
+background: #EEAA88;
+color: #800000;
 padding: 0px 3px 0px 3px;
 font-weight: bold;
-border-top: 1px solid #777777;
-border-bottom: 1px solid #777777;
 display: block;
 }
 
+.CSSMenuBase a {
+color: #800000;
+}
+
 .CSSMenuBase a:hover {
-color: #0066FF;
-background: #EEEEEE;
+background: #FFFFEE;
 }
 
 .CSSMenu ul ul {

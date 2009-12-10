@@ -17,6 +17,11 @@ function changeCSS(event, stylename, csspath)
   event.preventDefault();
   $.ajax({type: 'get', url: "${g.OPT.urlPrefix}ajax/changeOption/style/" + stylename});
   $('#baseCSS').attr('href', csspath).attr('title', '');
+  try
+  {
+      $(parent.top.list.document).find("#baseCSS").attr('href', csspath).attr('title', '');
+  } catch(err) //frame not present
+  {}
 }
 
 function toggle_div(id) {

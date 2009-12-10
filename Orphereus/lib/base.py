@@ -24,6 +24,7 @@
 Provides the BaseController class for subclassing, and other objects
 utilized by Controllers.
 """
+import pylons as __pylons
 from pylons import url, c, cache, config, g, request, response, session
 from pylons.controllers import WSGIController
 from pylons.controllers.util import abort, etag_cache
@@ -35,8 +36,7 @@ from pylons.templating import render_mako as render
 from pylons.controllers.util import redirect
 
 def redirect_to(*args, **kwargs):
-    from pylons import url
-    return redirect(url(*args, **kwargs))
+    return redirect(__pylons.url(*args, **kwargs))
 
 import Orphereus.lib.helpers as h
 import Orphereus.model as model

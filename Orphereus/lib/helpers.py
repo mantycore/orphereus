@@ -28,11 +28,10 @@ from webhelpers import *
 from pylons import config, request, c, g, config
 from pylons.i18n import get_lang, set_lang
 import miscUtils as utils
-import routes
+import pylons as __pylons
 
 def url_for(*args, **kwargs):
-    from pylons import url
-    return url(*args, **kwargs)
+    return __pylons.url(*args, **kwargs)
 
 import time
 import os

@@ -621,3 +621,31 @@ z-index: 9000;
 .easytooltip a{
 cursor: pointer;
 }
+
+/* CSS menu styling */
+.CSSMenuBase {
+border: 1px solid #777777;
+background: #DDDDDD;
+}
+
+.CSSMenuHeader {
+background: #CCCCCC;
+color: #2266AA;
+padding: 0px 3px 0px 3px;
+font-weight: bold;
+border-top: 1px solid #777777;
+border-bottom: 1px solid #777777;
+display: block;
+}
+
+.CSSMenuBase a:hover {
+color: #0066FF;
+background: #EEEEEE;
+}
+
+.CSSMenu ul ul {
+right: 0px;
+position: absolute;
+z-index: 500;
+width: 12em;
+}

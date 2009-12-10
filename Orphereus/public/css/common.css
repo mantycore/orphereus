@@ -13,10 +13,28 @@ font-style: italic;
 }
 
 /**************** menu coding *****************/
+/* CSS menu styling */
+/*.CSSMenuBase {
+border: 1px solid #777777;
+background: #DDDDDD;
+}
+
+.CSSMenuHeader {
+background: #CCCCCC;
+color: #2266AA;
+padding: 0px 3px 0px 3px;
+font-weight: bold;
+border-top: 1px solid #777777;
+border-bottom: 1px solid #777777;
+display: block;
+}
+
+.CSSMenuBase a:hover {
+color: #0066FF;
+background: #EEEEEE;
+}
+*/
 .CSSMenu {
-/*width: 100%;*/
-/*background: #eee;*/
-/*float: right;*/
 display: inline;
 }
 
@@ -25,16 +43,10 @@ list-style: none;
 margin: 0;
 padding: 0;
 display: inline;
-/*width: 12em;*/
-/*float: right;*/
 }
 
 .CSSMenu a, .CSSMenu h2 {
-/*font: bold 11px/16px arial, helvetica, sans-serif;*/
 display: inline;
-/*border-width: 1px;
-border-style: solid;
-border-color: #ccc #888 #555 #bbb;*/
 margin: 0;
 padding: 2px 3px;
 }
@@ -43,32 +55,11 @@ padding: 2px 3px;
 display: block;
 }
 
-.CSSMenu h2 {
-color: #fff;
-background: #000;
-text-transform: uppercase;
-}
-
-.CSSMenu a {
-/*color: #000;
-background: #efefef;*/
+.CSSMenuBase a {
 text-decoration: none;
 }
 
-.CSSMenu a:hover {
-color: #a00;
-background: #fff;
-}
-
 .CSSMenu li {position: relative; display: inline;}
-
-.CSSMenu ul ul {
-left: 0px;
-
-position: absolute;
-z-index: 500;
-width: 12em;
-}
 
 .CSSMenu ul ul ul {
 position: absolute;

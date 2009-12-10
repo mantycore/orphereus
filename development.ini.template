@@ -193,7 +193,7 @@ antispam.banTimeDays = 5
 antispam.enableAutoBan = false
 antispam.autoBanAnonTotally = false
 htmlCompressor.disableCompressionList = wakaba/wakaba.spainter.mako,wakaba/wakaba.shiAnimation.mako
-mediaplayer.extensionTypeToPlay = music
+mediaplayer.extensionTypeToPlay = audio-playable
 # FA-related features
 finalanonymity.enableFinalAnonymity = true
 finalanonymity.finalAHoursDelay = 24

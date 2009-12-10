@@ -98,8 +98,9 @@ def setup_config(command, filename, section, vars):
         Extension.create('rar', True, True, 'archive', 'generic/archive.png', 128, 128)
         Extension.create('tar', True, True, 'archive', 'generic/archive.png', 128, 128)
         Extension.create('7z', True, True, 'archive', 'generic/archive.png', 128, 128)
-        Extension.create('mp3', True, True, 'music', 'generic/sound.png', 128, 128)
-        Extension.create('ogg', True, True, 'music', 'generic/sound.png', 128, 128)
+        Extension.create('mp3', True, True, 'audio-playable', 'generic/sound.png', 128, 128)
+        Extension.create('ogg', True, True, 'audio-playable', 'generic/sound.png', 128, 128)
+        Extension.create('mid', True, True, 'audio', 'generic/sound.png', 128, 128)
         Extension.create('txt', True, True, 'text', 'generic/text.png', 128, 128)
         Extension.create('log', True, True, 'text', 'generic/text.png', 128, 128)
 
@@ -116,7 +117,7 @@ def setup_config(command, filename, section, vars):
         tag.comment = u'Random'
         tag.sectionId = 1
         tag.persistent = True
-        tag.specialRules = u"It's /b/, there is no rules"
+        tag.specialRules = u"It is /b/, there is no rules"
         meta.Session.add(tag)
         meta.Session.commit()
 

@@ -25,10 +25,14 @@ Consists of functions to typically be used within templates, but also
 available to Controllers. This module is available to both as 'h'.
 """
 from webhelpers import *
-from pylons import config, request, c, g
+from pylons import config, request, c, g, config
 from pylons.i18n import get_lang, set_lang
 import miscUtils as utils
-from routes.util import url_for
+import routes
+
+def url_for(*args, **kwargs):
+    from pylons import url
+    return url(*args, **kwargs)
 
 import time
 import os

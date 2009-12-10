@@ -29,11 +29,43 @@ from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from Orphereus.lib.interfaces.AbstractHomeExtension import AbstractHomeExtension
 from OrphieBaseController import OrphieBaseController
+from Orphereus.lib.BasePlugin import BasePlugin
 
 import logging
 log = logging.getLogger(__name__)
 
-#TODO: new debug system. Don't forget about c.log and c.sum
+class OrphieViewPlugin(BasePlugin):
+    def __init__(self):
+        config = {'name' : N_('Threads and boards (Obligatory)'),
+                 }
+        BasePlugin.__init__(self, 'base_view', config)
+
+    # Implementing BasePlugin
+    def initRoutes(self, map):
+        map.connect('makeFwdTo', '/makeFwdTo',
+                    controller = 'Orphie_View',
+                    action = 'makeFwdTo')
+        map.connect('frameMenu', '/frameMenu',
+                    controller = 'Orphie_View',
+                    action = 'frameMenu')
+        map.connect('viewLogBase', '/viewLog',
+                     controller = 'Orphie_View',
+                     action = 'viewLog', page = 0,
+                     requirements = dict(page = r'\d+'))
+        map.connect('viewLog', '/viewLog/page/{page}',
+                    controller = 'Orphie_View',
+                    action = 'viewLog',
+                    requirements = dict(page = r'\d+'))
+        map.connect('viewAnimation',
+                    '/viewAnimation/{source}/{animid}',
+                    controller = 'Orphie_View',
+                    action = 'viewAnimation',
+                    animid = '0',
+                    requirements = dict(source = r'\d+', animid = r'\d+'))
+        map.connect('static', '/static/{page}',
+                    controller = 'Orphie_View',
+                    action = 'showStatic',
+                    page = 'rules')
 
 class OrphieViewController(OrphieBaseController):
     def __before__(self):

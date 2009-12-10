@@ -561,11 +561,11 @@ class MaintenancePlugin(BasePlugin, AbstractPostingHook, AbstractMenuProvider):
     # Implementing BasePlugin
     def initRoutes(self, map):
         map.connect('hsMaintenance', '/holySynod/service/{actid}',
-                    controller = 'Orphie_Maintenance', action = 'mtnAction',
+                    controller = 'Orphie_Profiletenance', action = 'mtnAction',
                     actid = '')
         """
         map.connect('hsMaintenance', '/holySynod/service/{actid}/{secid}',
-        controller = 'Orphie_Maintenance', action = 'mtnAction',
+        controller = 'Orphie_Profiletenance', action = 'mtnAction',
         actid = '',
         secid = '')
         """

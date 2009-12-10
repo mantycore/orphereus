@@ -30,11 +30,28 @@ from Orphereus.model import *
 from Orphereus.lib.miscUtils import *
 from OrphieBaseController import OrphieBaseController
 from Orphereus.lib.interfaces.AbstractSearchModule import AbstractSearchModule
-
+from Orphereus.lib.BasePlugin import BasePlugin
 
 log = logging.getLogger(__name__)
 
-#TODO: new debug system. Don't forget about c.log and c.sum
+class OrphieSearchPlugin(BasePlugin):
+    def __init__(self):
+        config = {'name' : N_('Search support (Obligatory)'),
+                 }
+        BasePlugin.__init__(self, 'base_search', config)
+
+    # Implementing BasePlugin
+    def initRoutes(self, map):
+        map.connect('searchBase', '/search/{text}',
+                    controller = 'Orphie_Search',
+                    action = 'search',
+                    text = '',
+                    page = 0,
+                    requirements = dict(page = r'\d+'))
+        map.connect('search', '/search/{text}/page/{page}',
+                    controller = 'Orphie_Search',
+                    action = 'search',
+                    requirements = dict(page = r'\d+'))
 
 class OrphieSearchController(OrphieBaseController):
     def __before__(self):

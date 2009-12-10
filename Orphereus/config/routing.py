@@ -37,11 +37,12 @@ def make_map():
                  always_scan = config['debug'])
 
     map.explicit = True
-    map.minimization = False
+    map.minimization = True
 
     # The ErrorController route (handles 404/500 error pages); it should
     # likely stay at the top, ensuring it can always be resolved
-    map.connect('error/{action}/{id}', controller = 'error')
+    map.connect('/error/{action}', controller = 'error')
+    map.connect('/error/{action}/{id}', controller = 'error')
 
     # CUSTOM ROUTES HERE
     # debug route
@@ -59,34 +60,6 @@ def make_map():
         #    log.info('calling routing initializer %s from: %s' % (str(rinit), plugin.pluginId()))
         #    rinit(map)
     log.info('COMPLETED ROUTING INITIALIZATION STAGE')
-
-    ## VIEW
-    map.connect('makeFwdTo', '/makeFwdTo',
-                controller = 'Orphie_View',
-                action = 'makeFwdTo')
-    map.connect('frameMenu', '/frameMenu',
-                controller = 'Orphie_View',
-                action = 'frameMenu')
-    map.connect('viewLogBase', '/viewLog',
-                 controller = 'Orphie_View',
-                 action = 'viewLog', page = 0,
-                 requirements = dict(page = r'\d+'))
-    map.connect('viewLog', '/viewLog/page/{page}',
-                controller = 'Orphie_View',
-                action = 'viewLog',
-                requirements = dict(page = r'\d+'))
-    map.connect('viewAnimation',
-                '/viewAnimation/{source}/{animid}',
-                controller = 'Orphie_View',
-                action = 'viewAnimation',
-                animid = '0',
-                requirements = dict(source = r'\d+', animid = r'\d+'))
-    map.connect('static', '/static/{page}',
-                controller = 'Orphie_View',
-                action = 'showStatic',
-                page = 'rules')
-    ## VIEW: END
-
 
     # Special routes
     map.connect('authorize', '/authorize',
@@ -116,22 +89,6 @@ def make_map():
     map.connect('ipBanned', '/ipBanned',
                 controller = 'Orphie_Public',
                 action = 'ipBanned')
-
-    map.connect('searchBase', '/search/{text}',
-                controller = 'Orphie_Search',
-                action = 'search',
-                text = '',
-                page = 0,
-                requirements = dict(page = r'\d+'))
-    map.connect('search', '/search/{text}/page/{page}',
-                controller = 'Orphie_Search',
-                action = 'search',
-                requirements = dict(page = r'\d+'))
-
-    # Users subsystem
-    map.connect('userProfile', '/userProfile',
-                controller = 'Orphie_Main',
-                action = 'showProfile')
 
     # Oekaki
     map.connect('oekakiDraw',

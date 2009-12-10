@@ -73,10 +73,10 @@ class AjaxServicesPlugin(BasePlugin):
                     controller = 'Orphie_Ajax', action = 'checkCaptcha',
                     text = '', requirements = dict(id = r'\d+'))
         map.connect('ajPostThread', '/ajax/postThread/{board}',
-                    controller = 'Orphie_Main', action = 'ajaxPostThread',
+                    controller = 'Orphie_Profile', action = 'ajaxPostThread',
                     conditions = dict(method = ['POST']))
         map.connect('ajPostReply', '/ajax/postReply/{post}',
-                    controller = 'Orphie_Main', action = 'ajaxPostReply',
+                    controller = 'Orphie_Profile', action = 'ajaxPostReply',
                     conditions = dict(method = ['POST']),
                     requirements = dict(post = r'\d+'))
         map.connect('ajTagsCheck', '/ajax/checkTags',

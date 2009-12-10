@@ -143,7 +143,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
     def tagCreationHandler(self, tagstring, userInst, textFilter):
         afterPostCallbackParams = []
         #newTagString = tagstring
-        from Orphereus.controllers.Orphie_Main import OrphieMainController
+        from Orphereus.controllers.Orphie_Profile import OrphieMainController
         ns = self.namespace()
         tags, dummy, nonexistent = Tag.stringToTagLists(tagstring, False)
         existent = []

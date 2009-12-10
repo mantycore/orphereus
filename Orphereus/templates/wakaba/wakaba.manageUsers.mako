@@ -11,6 +11,9 @@
                 </tr>
                 %endif
                 <tr>
+                    <td colspan="2" class="theader">${_('Edit user')}</td>
+                </tr>
+                <tr>
                     <td  colspan="2" class="postblock">${_('UID or uidNumber')}</td>
                 </tr>
                 <tr>
@@ -20,6 +23,9 @@
                     <td>
                         <input type="submit" name="view" value="${_('View')}" />
                     </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="theader">${_('UID Statistics')}</td>
                 </tr>
                 <tr>
                     <td><a href="${h.url_for("hsBans")}">${_("Banned:")}</a></td>
@@ -33,8 +39,39 @@
                     <td>${_("Total:")}</td>
                     <td>${c.ustats[0]}</td>
                 </tr>
-%if c.roActive:
-%endif
+                %if c.roBanned or c.roActive:
+                <tr>
+                    <td colspan="2" class="theader">${_('Read-only users')}</td>
+                </tr>
+                %endif
+                %if c.roActive:
+                <tr>
+                    <td colspan="2">
+                    <b>${_("Active RO users")}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                    %for user in c.roActive:
+                    <a href='${h.url_for('hsUserEdit', uid=user.uidNumber)}'>${user.uidNumber}</a>
+                    %endfor
+                    </td>
+                </tr>
+                %endif
+                %if c.roBanned:
+                <tr>
+                    <td colspan="2">
+                    <b>${_("Banned RO users")}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                    %for user in c.roBanned:
+                    <a href='${h.url_for('hsUserEdit', uid=user.uidNumber)}'>${user.uidNumber}</a>
+                    %endfor
+                    </td>
+                </tr>
+                %endif
             </tbody>
         </table>
     </form>

@@ -602,7 +602,6 @@ class OrphieAdminController(OrphieBaseController):
         c.currentItemId = 'id_hsUsers'
         c.boardName = _('Users management')
 
-        print request.POST
         uid = request.POST.get("uid", False)
         if uid and "view" in request.POST:
             user = False

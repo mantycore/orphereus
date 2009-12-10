@@ -407,7 +407,7 @@ div a.show-hide-thread:hover {
     background: #FF6600;
 }
 .postInfo{
-background: #E8E8E8;
+background: #484848;
 }
 
 .img_loading{
@@ -438,7 +438,8 @@ border: none;
 /* Y reply form*/
 #y_replyform {
     display: block; border: 1px #ccc solid; margin: 0 2px 2px 2px; padding: 5px;
-    background-color: #ddd; -moz-border-radius: 5px;
+    background-color: #49525D; 
+    -moz-border-radius: 5px;
     float: left; width: 98%;
 }
 .y_replyform{
@@ -582,8 +583,8 @@ a img{ border: 0}
 }
 
 .list div a:hover {
-    color: #0066FF;
-    background: #EEEEEE;
+    color: #111111;
+    background: #6B7B8D;
 }
 
 .file_thread {
@@ -630,23 +631,23 @@ cursor: pointer;
 
 /* CSS menu styling */
 .CSSMenuBase {
-border: 1px solid #777777;
-background: #DDDDDD;
+/*border: 1px solid #777777;*/
+background: #49525D;
 }
 
 .CSSMenuHeader {
-background: #CCCCCC;
-color: #2266AA;
+background: #39424D;
+color: #FFFFFF;
 padding: 0px 3px 0px 3px;
 font-weight: bold;
-border-top: 1px solid #777777;
-border-bottom: 1px solid #777777;
+border-top: 1px solid #49525D;
+border-bottom: 1px solid #49525D;
 display: block;
 }
 
 .CSSMenuBase a:hover {
-color: #0066FF;
-background: #EEEEEE;
+color: #111111;
+background: #6B7B8D;
 }
 
 .CSSMenu ul ul {

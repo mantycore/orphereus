@@ -49,7 +49,7 @@ ${h.boardMenu([h.itemsToSection(
   </li>
 
   <li>
-    [<a href="${h.url_for('userProfile')}">${_('Links')}</a>]
+    [<a href="#">${_('Links')}</a>]
     <ul class="CSSMenuBase">
           <li><span class="CSSMenuHeader">${_("Special")}</a></li>
       %if c.userInst.isAdmin():

@@ -68,6 +68,26 @@ class OrphieViewPlugin(BasePlugin):
                     action = 'showStatic',
                     page = 'rules')
 
+    def postInitRoutes(self, map):
+        map.connect('thread', '/{post}/{tempid}',
+                    controller = 'Orphie_View',
+                    action = 'GetThread',
+                    tempid = 0,
+                    requirements = dict(post = r'\d+', tempid = r'\d+'))
+        gvars = config['pylons.app_globals']
+        framedMain = gvars.OPT.framedMain
+        map.connect('boardBase', '/{board}/{tempid}',
+                    controller = 'Orphie_View',
+                    action = 'GetBoard',
+                    board = not framedMain and defaultBoard or None,
+                    tempid = 0, page = 0,
+                    requirements = dict(tempid = r'\d+'))
+        map.connect('board', '/{board}/page/{page}',
+                    controller = 'Orphie_View',
+                    action = 'GetBoard',
+                    tempid = 0,
+                    requirements = dict(page = r'\d+'))
+
 class OrphieViewController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)

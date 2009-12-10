@@ -48,6 +48,9 @@ class BasePlugin(object):
     def initRoutes(self, map):
         pass
 
+    def postInitRoutes(self, map):
+        pass
+
     def initORM(self, orm, engine, dialectProps, propDict):
         pass
 

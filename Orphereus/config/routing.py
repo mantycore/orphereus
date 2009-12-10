@@ -29,7 +29,7 @@ from pylons import config
 from routes import Mapper
 
 import logging
-log = logging.getLogger("ROUTING (%s)" % __name__)
+log = logging.getLogger("ROUTING")
 
 def make_map():
     """Create, configure and return the routes Mapper"""
@@ -44,44 +44,13 @@ def make_map():
     map.connect('/error/{action}', controller = 'error')
     map.connect('/error/{action}/{id}', controller = 'error')
 
-    # CUSTOM ROUTES HERE
-    # debug route
     gvars = config['pylons.app_globals']
-    framedMain = gvars.OPT.framedMain
-
     log.info('Initialzing routes, registered plugins: %d' % (len(gvars.plugins)),)
-    # Calling routing initializers from plugins
     for plugin in gvars.plugins:
         plugin.initRoutes(map)
-
-        #rinit = plugin.routingInit()
-        #if rinit:
-        #    log.error('config{} is deprecated')
-        #    log.info('calling routing initializer %s from: %s' % (str(rinit), plugin.pluginId()))
-        #    rinit(map)
+    for plugin in gvars.plugins:
+        plugin.postInitRoutes(map)
     log.info('COMPLETED ROUTING INITIALIZATION STAGE')
-
-
-
-    ## VIEW
-    map.connect('thread', '/{post}/{tempid}',
-                controller = 'Orphie_View',
-                action = 'GetThread',
-                tempid = 0,
-                requirements = dict(post = r'\d+', tempid = r'\d+'))
-    # Generic filter
-    map.connect('boardBase', '/{board}/{tempid}',
-                controller = 'Orphie_View',
-                action = 'GetBoard',
-                board = not framedMain and defaultBoard or None,
-                tempid = 0, page = 0,
-                requirements = dict(tempid = r'\d+'))
-    map.connect('board', '/{board}/page/{page}',
-                controller = 'Orphie_View',
-                action = 'GetBoard',
-                tempid = 0,
-                requirements = dict(page = r'\d+'))
-    ## VIEW: END
 
     map.connect('*url', controller = 'Orphie_Public', action = 'UnknownAction')
     return map

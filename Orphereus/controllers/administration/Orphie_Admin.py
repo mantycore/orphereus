@@ -55,26 +55,70 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('holySynod', '/holySynod', controller = 'administration/Orphie_Admin', action = 'index')
-        map.connect('hsViewLogBase', '/holySynod/viewLog', controller = 'administration/Orphie_Admin', action = 'viewLog', page = 0)
-        map.connect('hsViewLog', '/holySynod/viewLog/page/:page', controller = 'administration/Orphie_Admin', action = 'viewLog', requirements = dict(page = '\d+'))
-        map.connect('hsInvite', '/holySynod/makeInvite', controller = 'administration/Orphie_Admin', action = 'makeInvite')
-        map.connect('hsCancelInvite', '/holySynod/cancelInvite/:id', controller = 'administration/Orphie_Admin', action = 'cancelInvite', requirements = dict(id = '\d+'))
-        map.connect('hsMappings', '/holySynod/manageMappings/:act/:id/:tagid', controller = 'administration/Orphie_Admin', action = 'manageMappings', act = 'show', id = 0, tagid = 0, requirements = dict(id = '\d+', tagid = '\d+'))
-        map.connect('hsMergeTags', '/holySynod/mergeTags/:act', controller = 'administration/Orphie_Admin', action = 'mergeTags', act = None)
-        map.connect('hsBans', '/holySynod/manageBans', controller = 'administration/Orphie_Admin', action = 'manageBans')
-        map.connect('hsBanEdit', '/holySynod/manageBans/edit/:id', controller = 'administration/Orphie_Admin', id = 0, action = 'editBan')
-        map.connect('hsExtensions', '/holySynod/manageExtensions', controller = 'administration/Orphie_Admin', action = 'manageExtensions')
-        map.connect('hsExtensionEdit', '/holySynod/manageExtensions/edit/:name', controller = 'administration/Orphie_Admin', name = '', action = 'editExtension')
-        map.connect('hsBoards', '/holySynod/manageBoards', controller = 'administration/Orphie_Admin', action = 'manageBoards')
-        map.connect('hsBoardEdit', '/holySynod/manageBoards/edit/:tag', controller = 'administration/Orphie_Admin', tag = '', action = 'editBoard')
-        map.connect('hsUsers', '/holySynod/manageUsers', controller = 'administration/Orphie_Admin', action = 'manageUsers')
-        map.connect('hsUserEditAttempt', '/holySynod/manageUsers/editAttempt/:pid', controller = 'administration/Orphie_Admin', action = 'editUserAttempt', requirements = dict(pid = '\d+'))
-        map.connect('hsIpBanAttempt', '/holySynod/manageUsers/banAttempt/:pid', controller = 'administration/Orphie_Admin', action = 'ipBanAttempt', requirements = dict(pid = '\d+'))
-        map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/:pid', controller = 'administration/Orphie_Admin', action = 'editUserByPost', requirements = dict(pid = '\d+'))
-        map.connect('hsUserEdit', '/holySynod/manageUsers/edit/:uid', controller = 'administration/Orphie_Admin', action = 'editUser', requirements = dict(uid = '\d+'))
-        map.connect('hsPin', '/holySynod/pinThread/:act/:id', controller = 'administration/Orphie_Admin', action = 'pinThread', requirements = dict(id = '\d+'))
-        map.connect('hsManageByIp', '/holySynod/manageByIp/:ip/:act', controller = 'administration/Orphie_Admin', action = 'manageByIp', act = 'show', requirements = dict(ip = '\d+'))
+        map.connect('holySynod', '/holySynod',
+                    controller = 'administration/Orphie_Admin',
+                    action = 'index')
+        map.connect('hsViewLogBase', '/holySynod/viewLog',
+                    controller = 'administration/Orphie_Admin',
+                    action = 'viewLog', page = 0)
+        map.connect('hsViewLog', '/holySynod/viewLog/page/{page}',
+                    controller = 'administration/Orphie_Admin',
+                    action = 'viewLog',
+                    requirements = dict(page = r'\d+'))
+        map.connect('hsInvite', '/holySynod/makeInvite',
+                    controller = 'administration/Orphie_Admin',
+                    action = 'makeInvite')
+        map.connect('hsCancelInvite', '/holySynod/cancelInvite/{id}',
+                    controller = 'administration/Orphie_Admin',
+                    action = 'cancelInvite',
+                    requirements = dict(id = r'\d+'))
+        map.connect('hsMappings', '/holySynod/manageMappings/{act}/{id}/{tagid}',
+                    controller = 'administration/Orphie_Admin',
+                    action = 'manageMappings',
+                    act = 'show',
+                    id = 0,
+                    tagid = 0,
+                    requirements = dict(id = r'\d+', tagid = r'\d+'))
+        map.connect('hsMergeTags', '/holySynod/mergeTags/{act}',
+                    controller = 'administration/Orphie_Admin', action = 'mergeTags',
+                    act = None)
+        map.connect('hsBans', '/holySynod/manageBans',
+                    controller = 'administration/Orphie_Admin', action = 'manageBans')
+        map.connect('hsBanEdit', '/holySynod/manageBans/edit/{id}',
+                    controller = 'administration/Orphie_Admin', action = 'editBan',
+                    id = 0,
+                    requirements = dict(id = r'\d+'))
+        map.connect('hsExtensions', '/holySynod/manageExtensions',
+                    controller = 'administration/Orphie_Admin',
+                    action = 'manageExtensions')
+        map.connect('hsExtensionEdit', '/holySynod/manageExtensions/edit/{name}',
+                     controller = 'administration/Orphie_Admin', action = 'editExtension',
+                     name = '')
+        map.connect('hsBoards', '/holySynod/manageBoards',
+                    controller = 'administration/Orphie_Admin', action = 'manageBoards')
+        map.connect('hsBoardEdit', '/holySynod/manageBoards/edit/{tag}',
+                    controller = 'administration/Orphie_Admin', action = 'editBoard',
+                    tag = '')
+        map.connect('hsUsers', '/holySynod/manageUsers',
+                    controller = 'administration/Orphie_Admin', action = 'manageUsers')
+        map.connect('hsUserEditAttempt', '/holySynod/manageUsers/editAttempt/{pid}',
+                    controller = 'administration/Orphie_Admin', action = 'editUserAttempt',
+                    requirements = dict(pid = r'\d+'))
+        map.connect('hsIpBanAttempt', '/holySynod/manageUsers/banAttempt/{pid}',
+                    controller = 'administration/Orphie_Admin', action = 'ipBanAttempt',
+                    requirements = dict(pid = r'\d+'))
+        map.connect('hsUserEditByPost', '/holySynod/manageUsers/editUserByPost/{pid}',
+                    controller = 'administration/Orphie_Admin', action = 'editUserByPost',
+                    requirements = dict(pid = r'\d+'))
+        map.connect('hsUserEdit', '/holySynod/manageUsers/edit/{uid}',
+                    controller = 'administration/Orphie_Admin', action = 'editUser',
+                    requirements = dict(uid = r'\d+'))
+        map.connect('hsPin', '/holySynod/pinThread/{act}/{id}',
+                    controller = 'administration/Orphie_Admin', action = 'pinThread',
+                    requirements = dict(id = r'\d+'))
+        map.connect('hsManageByIp', '/holySynod/manageByIp/{ip}/{act}',
+                    controller = 'administration/Orphie_Admin', action = 'manageByIp',
+                    act = 'show', requirements = dict(ip = r'\d+'))
 
     def MenuItemIsVisible(self, id, baseController):
         user = baseController.userInst

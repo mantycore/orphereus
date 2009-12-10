@@ -560,8 +560,15 @@ class MaintenancePlugin(BasePlugin, AbstractPostingHook, AbstractMenuProvider):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('hsMaintenance', '/holySynod/service/:actid', controller = 'Orphie_Maintenance', actid = '', action = 'mtnAction')
-        #map.connect('hsMaintenance', '/holySynod/service/:actid/:secid', controller = 'Orphie_Maintenance', actid = '', secid = '', action = 'mtnAction')
+        map.connect('hsMaintenance', '/holySynod/service/{actid}',
+                    controller = 'Orphie_Maintenance', action = 'mtnAction',
+                    actid = '')
+        """
+        map.connect('hsMaintenance', '/holySynod/service/{actid}/{secid}',
+        controller = 'Orphie_Maintenance', action = 'mtnAction',
+        actid = '',
+        secid = '')
+        """
 
     def beforePostCallback(self, controller, request, **kwargs):
         thread = kwargs.get("thread", None)

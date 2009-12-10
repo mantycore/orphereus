@@ -44,7 +44,9 @@ class RssFeedPlugin(BasePlugin, AbstractPageHook):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('feed', '/:watch/feed/auth/:authid/:uid.:feedType', controller = 'tools/rssfeed', action = 'rss', requirements = dict(authid = '\d+'))
+        map.connect('feed', '/{watch}/feed/auth/{authid}/{uid}.{feedType}',
+                    controller = 'tools/rssfeed', action = 'rss',
+                    requirements = dict(authid = r'\d+'))
 
     # AbstractPageHook
     def headCallback(self, context):

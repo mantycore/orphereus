@@ -90,8 +90,12 @@ class InvitesPlugin(BasePlugin, AbstractProfileExtension, AbstractPageHook):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('userInvitesManager', '/userProfile/invites/:act', controller = 'userinvites', action = 'manageInvites', act = 'show')
-        map.connect('userInvitesGive', '/holySynod/giveInvite/:post', controller = 'userinvites', action = 'giveInvite', requirements = dict(post = '\d+'))
+        map.connect('userInvitesManager', '/userProfile/invites/{act}',
+                    controller = 'userinvites', action = 'manageInvites',
+                    act = 'show')
+        map.connect('userInvitesGive', '/holySynod/giveInvite/{post}',
+                    controller = 'userinvites', action = 'giveInvite',
+                    requirements = dict(post = r'\d+'))
 
     def initORM(self, orm, engine, dialectProps, propDict):
         namespace = self.namespace()

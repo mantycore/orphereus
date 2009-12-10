@@ -41,27 +41,66 @@ class AjaxServicesPlugin(BasePlugin):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('ajHideThread', '/ajax/hideThread/:post/:redirect/:realm/:page', controller = 'Orphie_Ajax', action = 'hideThread', redirect = '', realm = '', page = 0, requirements = dict(post = '\d+', page = '\d+'))
-        map.connect('ajShowThread', '/ajax/showThread/:post/:redirect/:realm/:page', controller = 'Orphie_Ajax', action = 'showThread', redirect = '', realm = '', page = 0, requirements = dict(post = '\d+', page = '\d+'))
-        map.connect('ajGetPost', '/ajax/getPost/:post', controller = 'Orphie_Ajax', action = 'getPost', requirements = dict(post = '\d+'))
-        map.connect('ajGetRenderedPost', '/ajax/getRenderedPost/:post', controller = 'Orphie_Ajax', action = 'getRenderedPost', requirements = dict(post = '\d+'))
-        map.connect('ajGetRenderedReplies', '/ajax/getRenderedReplies/:thread', controller = 'Orphie_Ajax', action = 'getRenderedReplies', requirements = dict(thread = '\d+'))
-        map.connect('ajAddUserFilter', '/ajax/addUserFilter/:filter', controller = 'Orphie_Ajax', action = 'addUserFilter')
-        map.connect('ajEditUserFilter', '/ajax/editUserFilter/:fid/:filter', controller = 'Orphie_Ajax', action = 'editUserFilter', requirements = dict(fid = '\d+'))
-        map.connect('ajDeleteUserFilter', '/ajax/deleteUserFilter/:fid', controller = 'Orphie_Ajax', action = 'deleteUserFilter', requirements = dict(fid = '\d+'))
-        map.connect('ajCheckCaptcha', '/ajax/checkCaptcha/:id/:text', controller = 'Orphie_Ajax', action = 'checkCaptcha', text = '', requirements = dict(id = '\d+'))
-        map.connect('ajPostThread', '/ajax/postThread/:board', controller = 'Orphie_Main', action = 'ajaxPostThread', conditions = dict(method = ['POST']))
-        map.connect('ajPostReply', '/ajax/postReply/:post', controller = 'Orphie_Main', action = 'ajaxPostReply', conditions = dict(method = ['POST']), requirements = dict(post = '\d+'))
-        map.connect('ajTagsCheck', '/ajax/checkTags', controller = 'Orphie_Ajax', action = 'checkTags')
-        map.connect('ajGetMyPostIds', '/ajax/getMyPostIds/:thread', controller = 'Orphie_Ajax', action = 'getMyPostIds', requirements = dict(thread = '\d+'))
-        map.connect('ajChangeOption', '/ajax/changeOption/:name/:value', controller = 'Orphie_Ajax', action = 'changeOption')
+        map.connect('ajHideThread', '/ajax/hideThread/{post}/{redirect}/{realm}/{page}',
+                    controller = 'Orphie_Ajax', action = 'hideThread',
+                    redirect = '', realm = '',
+                    page = 0,
+                    requirements = dict(post = r'\d+', page = r'\d+'))
+        map.connect('ajShowThread', '/ajax/showThread/{post}/{redirect}/{realm}/{page}',
+                    controller = 'Orphie_Ajax', action = 'showThread',
+                    redirect = '',
+                    realm = '',
+                    page = 0,
+                    requirements = dict(post = r'\d+', page = r'\d+'))
+        map.connect('ajGetPost', '/ajax/getPost/{post}',
+                    controller = 'Orphie_Ajax', action = 'getPost',
+                    requirements = dict(post = r'\d+'))
+        map.connect('ajGetRenderedPost', '/ajax/getRenderedPost/{post}',
+                    controller = 'Orphie_Ajax', action = 'getRenderedPost',
+                    requirements = dict(post = r'\d+'))
+        map.connect('ajGetRenderedReplies', '/ajax/getRenderedReplies/{thread}',
+                    controller = 'Orphie_Ajax', action = 'getRenderedReplies',
+                    requirements = dict(thread = r'\d+'))
+        map.connect('ajAddUserFilter', '/ajax/addUserFilter/{filter}',
+                    controller = 'Orphie_Ajax', action = 'addUserFilter')
+        map.connect('ajEditUserFilter', '/ajax/editUserFilter/{fid}/{filter}',
+                    controller = 'Orphie_Ajax', action = 'editUserFilter',
+                    requirements = dict(fid = r'\d+'))
+        map.connect('ajDeleteUserFilter', '/ajax/deleteUserFilter/{fid}',
+                    controller = 'Orphie_Ajax', action = 'deleteUserFilter',
+                    requirements = dict(fid = r'\d+'))
+        map.connect('ajCheckCaptcha', '/ajax/checkCaptcha/{id}/{text}',
+                    controller = 'Orphie_Ajax', action = 'checkCaptcha',
+                    text = '', requirements = dict(id = r'\d+'))
+        map.connect('ajPostThread', '/ajax/postThread/{board}',
+                    controller = 'Orphie_Main', action = 'ajaxPostThread',
+                    conditions = dict(method = ['POST']))
+        map.connect('ajPostReply', '/ajax/postReply/{post}',
+                    controller = 'Orphie_Main', action = 'ajaxPostReply',
+                    conditions = dict(method = ['POST']),
+                    requirements = dict(post = r'\d+'))
+        map.connect('ajTagsCheck', '/ajax/checkTags',
+                    controller = 'Orphie_Ajax', action = 'checkTags')
+        map.connect('ajGetMyPostIds', '/ajax/getMyPostIds/{thread}',
+                    controller = 'Orphie_Ajax', action = 'getMyPostIds',
+                    requirements = dict(thread = r'\d+'))
+        map.connect('ajChangeOption', '/ajax/changeOption/{name}/{value}',
+                    controller = 'Orphie_Ajax', action = 'changeOption')
 
         # routines below isn't actually used
-        map.connect('ajGetText', '/ajax/getText/:text', controller = 'Orphie_Ajax', action = 'getText', text = '')
-        map.connect('/ajax/getRepliesCountForThread/:post', controller = 'Orphie_Ajax', action = 'getRepliesCountForThread', requirements = dict(post = '\d+'))
-        map.connect('/ajax/getRepliesIds/:post', controller = 'Orphie_Ajax', action = 'getRepliesIds', requirements = dict(post = '\d+'))
-        map.connect('/ajax/getUserSettings', controller = 'Orphie_Ajax', action = 'getUserSettings')
-        map.connect('/ajax/getUploadsPath', controller = 'Orphie_Ajax', action = 'getUploadsPath')
+        map.connect('ajGetText', '/ajax/getText/{text}',
+                    controller = 'Orphie_Ajax', action = 'getText',
+                    text = '')
+        map.connect('/ajax/getRepliesCountForThread/{post}',
+                    controller = 'Orphie_Ajax', action = 'getRepliesCountForThread',
+                    requirements = dict(post = r'\d+'))
+        map.connect('/ajax/getRepliesIds/{post}',
+                    controller = 'Orphie_Ajax', action = 'getRepliesIds',
+                    requirements = dict(post = r'\d+'))
+        map.connect('/ajax/getUserSettings',
+                    controller = 'Orphie_Ajax', action = 'getUserSettings')
+        map.connect('/ajax/getUploadsPath',
+                    controller = 'Orphie_Ajax', action = 'getUploadsPath')
 
     def beforeRequestCallback(self, baseController):
         if baseController.userInst.isValid():

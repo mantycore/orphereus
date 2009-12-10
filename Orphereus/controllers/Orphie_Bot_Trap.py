@@ -20,11 +20,31 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
+from Orphereus.lib.base import N_
 from Orphereus.lib.base import g
 from OrphieBaseController import OrphieBaseController
+from Orphereus.lib.BasePlugin import BasePlugin
 
 import logging
 log = logging.getLogger(__name__)
+
+class BotTrapPlugin(BasePlugin):
+    def __init__(self):
+        config = {'name' : N_('Automatic ban for download spiders'),
+                 }
+        BasePlugin.__init__(self, 'bottrap', config)
+
+    # Implementing BasePlugin
+    def initRoutes(self, map):
+        map.connect('botTrap1',
+                    '/ajax/stat/{confirm}',
+                    controller = 'Orphie_Bot_Trap',
+                     action = 'selfBan',
+                     confirm = '')
+        map.connect('botTrap2', '/holySynod/stat/{confirm}',
+                    controller = 'Orphie_Bot_Trap',
+                    action = 'selfBan',
+                    confirm = '')
 
 class OrphieBotTrapController(OrphieBaseController):
     def __before__(self):

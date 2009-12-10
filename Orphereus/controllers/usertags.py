@@ -80,8 +80,16 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('userTagsMapper', '/postTags/:post/:act/:tagid', controller = 'usertags', action = 'postTags', act = 'show', tagid = 0, requirements = dict(post = '\d+', tagid = '\d+'))
-        map.connect('userTagsManager', '/userProfile/manageUserTags/:act/:tagid', controller = 'usertags', action = 'postTagsManage', act = 'show', tagid = 0, requirements = dict(tagid = '\d+'))
+        map.connect('userTagsMapper', '/postTags/{post}/{act}/{tagid}',
+                    controller = 'usertags', action = 'postTags',
+                    act = 'show',
+                    tagid = 0,
+                    requirements = dict(post = r'\d+', tagid = r'\d+'))
+        map.connect('userTagsManager', '/userProfile/manageUserTags/{act}/{tagid}',
+                    controller = 'usertags', action = 'postTagsManage',
+                    act = 'show',
+                    tagid = 0,
+                    requirements = dict(tagid = r'\d+'))
 
     def initORM(self, orm, engine, dialectProps, propDict):
         namespace = self.namespace()

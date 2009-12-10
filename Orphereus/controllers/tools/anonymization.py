@@ -42,7 +42,9 @@ class FinalAnonymizationPlugin(BasePlugin, AbstractPageHook):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('anonymize', '/:post/anonymize', controller = 'tools/anonymization', action = 'Anonimyze', requirements = dict(post = '\d+'))
+        map.connect('anonymize', '/{post}/anonymize',
+                    controller = 'tools/anonymization', action = 'Anonimyze',
+                    requirements = dict(post = r'\d+'))
 
     def updateGlobals(self, globj):
         boolValues = [('finalanonymity', ('enableFinalAnonymity', 'hlAnonymizedPosts',)), ]

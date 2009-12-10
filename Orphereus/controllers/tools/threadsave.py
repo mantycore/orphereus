@@ -40,7 +40,9 @@ class UserTagsPlugin(BasePlugin, AbstractPageHook):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('saveThread', '/saveThread/:post', controller = 'tools/threadsave', action = 'save', requirements = dict(post = '\d+'))
+        map.connect('saveThread', '/saveThread/{post}',
+                     controller = 'tools/threadsave', action = 'save',
+                     requirements = dict(post = r'\d+'))
 
     # AbstractPageHook
     def threadPanelCallback(self, thread, userInst):

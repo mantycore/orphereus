@@ -166,7 +166,7 @@ def init_model(engine, meta):
         'tags' : orm.relation(Tag, secondary = t_tagsToPostsMap),
         #'file': orm.relation(Picture),
         #'attachments'  : orm.relation(Picture, secondary = t_filesToPostsMap),
-        'attachments'  : orm.relation(PictureAssociation, cascade = "all, delete, delete-orphan"),
+        'attachments'  : orm.relation(PictureAssociation, cascade = "all, delete, delete-orphan", order_by = [t_filesToPostsMap.c.id]),
         'parentPost' : orm.relation(Post, remote_side = [t_posts.c.id]),
         }
     LogEntryProps = {

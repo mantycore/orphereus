@@ -478,7 +478,7 @@ class OrphiePostingController(OrphieBaseController):
                     picInfo.relationInfo = None
                     picInfo.animPath = None
 
-                if picInfo.extension.type == 'music':
+                if picInfo.extension.type == g.OPT.typeToExtractID3Tags:
                     try:
                         audio = EasyID3(picInfo.localFilePath)
                         taglist = sorted(audio.keys())

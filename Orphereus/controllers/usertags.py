@@ -144,7 +144,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
     def tagCreationHandler(self, tagstring, userInst, textFilter):
         afterPostCallbackParams = []
         #newTagString = tagstring
-        from Orphereus.controllers.Orphie_Profile import OrphieMainController
+        from Orphereus.controllers.Orphie_Posting import OrphiePostingController
         ns = self.namespace()
         tags, dummy, nonexistent = Tag.stringToTagLists(tagstring, False)
         existent = []
@@ -155,7 +155,7 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
                     tagName = Tag.cutTag(usertag[1:], True)
                     tag = ns.UserTag.get(tagName, userInst)
                     if not tag:
-                        descr = OrphieMainController.getTagDescription(usertag, textFilter)
+                        descr = OrphiePostingController.getTagDescription(usertag, textFilter)
                         tag = ns.UserTag(tagName, descr, userInst.uidNumber)
                         meta.Session.add(tag)
                         meta.Session.commit()

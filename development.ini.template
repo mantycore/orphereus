@@ -107,6 +107,7 @@ core.searchPluginId = search_like
 # if you want full-text search, use the next line
 # (see http://www.sphinxsearch.com for information about Sphinx Search Engine)
 #core.searchPluginId = search_sphinx
+core.typeToExtractID3Tags = audio-playable
 
 # in order to speed-up many operations, there is support for memcached
 memcache.memcachedServers = 127.0.0.1:11211

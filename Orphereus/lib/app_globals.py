@@ -104,7 +104,8 @@ class OptHolder(object):
                                ('urlPrefix', 'hashSecret', 'baseDomain',
                                 'staticPathWeb', 'filesPathWeb', 'actuator',
                                 'staticPath', 'uploadPath',
-                                'searchPluginId'
+                                'searchPluginId',
+                                'typeToExtractID3Tags'
                                )
                               ),
 

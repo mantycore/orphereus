@@ -305,7 +305,7 @@ class OrphieAjaxController(OrphieBaseController):
         else:
             ok = None
         if ok:
-            setattr(self.userInst, name, val)
+            setattr(self.userInst, str(name), val)
             if not c.userInst.Anonymous:
                 meta.Session.commit()
             returnTo = request.params.get('returnTo', None)

@@ -69,6 +69,7 @@ class OrphiePostingPlugin(BasePlugin):
                     sourceId = '0',
                     requirements = dict(sourceId = r'\d+'))
 
+    def postInitRoutes(self, map):
         # Threads
         map.connect('postReply', '/{post}',
                     controller = 'Orphie_Posting',

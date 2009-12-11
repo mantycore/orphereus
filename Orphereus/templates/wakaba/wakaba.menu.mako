@@ -36,11 +36,11 @@ ${h.boardMenu([h.itemsToSection(
           <a href="${h.url_for('userProfile')}">${_('Settings')}</a>
       %endif
       </li>
-      <li><span class="CSSMenuHeader">${_("Quick switch")}</a></li>
+      <li><span class="CSSMenuHeader">${_("Quick switch")}</span></li>
       <li><a href="${h.url_for('ajChangeOption', name='useFrame', value=not c.userInst.useFrame, returnTo=c.currentURL)}">
       ${c.userInst.useFrame and _("Turn frame off") or _("Turn frame on")}
       </a></li>
-      <li><span class="CSSMenuHeader">${_("Style")}</a></li>
+      <li><span class="CSSMenuHeader">${_("Style")}</span></li>
       %for style in c.styles:
       <li><a onclick="changeCSS(event, '${style}', '${h.staticFile(style + ".css")}')" \
       href="${h.url_for('ajChangeOption', name='style', value=style, returnTo=c.currentURL)}">
@@ -54,7 +54,7 @@ ${h.boardMenu([h.itemsToSection(
     [<a href="#">${_('Links')}</a>]
     <ul class="CSSMenuBase">
       %if c.userInst.isAdmin() or g.OPT.usersCanViewLogs:
-          <li><span class="CSSMenuHeader">${_("Special")}</a></li>
+          <li><span class="CSSMenuHeader">${_("Special")}</span></li>
       %endif
       %if c.userInst.isAdmin():
           <li><a href="${h.url_for('holySynod')}">${_('Holy Synod')}</a></li>
@@ -63,7 +63,7 @@ ${h.boardMenu([h.itemsToSection(
           <li><a href="${h.url_for('viewLogBase')}">${_('Logs')}</a></li>
       %endif
       %if c.menuLinks:
-          <li><span class="CSSMenuHeader">${_("Other")}</a></li>
+          <li><span class="CSSMenuHeader">${_("Other")}</span></li>
           %for link in c.menuLinks:
               %if isinstance(link, list) and len(link) == 2:
               <li><a href="${link[0]}">${link[1]}</a></li>

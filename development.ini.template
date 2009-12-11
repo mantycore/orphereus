@@ -33,6 +33,7 @@ smtp_use_tls = true
 
 [server:main]
 use = egg:Paste#http
+# use = egg:PasteScript#flup_scgi_thread
 host = 127.0.0.1
 port = 5000
 scriptName = ""
@@ -41,7 +42,7 @@ scriptName = ""
 # do not change
 set debug = false
 use = egg:Orphereus
-full_stack = true
+full_stack = false
 
 # default board and JS language
 lang = en

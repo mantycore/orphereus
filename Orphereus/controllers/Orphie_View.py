@@ -119,11 +119,7 @@ class OrphieViewController(OrphieBaseController):
             for tag in tagList:
                 if not Tag.getTag(tag):
                     return self.error(_(u"Board creation denied: %s") % tag)
-        if isNumber(page):
-            page = int(page)
-        else:
-            page = 0
-
+        page = toNumber(page, 0, 0)
         c.board = board
 
         extensions = g.caches.setdefaultEx('extensions', Extension.getList, True)
@@ -247,10 +243,7 @@ class OrphieViewController(OrphieBaseController):
         c.PostAction = h.url_for('postThread', board = board) #board
         c.currentRealm = board
 
-        if isNumber(page):
-            page = int(page)
-        else:
-            page = 0
+        page = toNumber(page, 0, 0)
 
         filter = Post.buildMetaboardFilter(board, self.userInst)
         tags = Tag.getAllByNames(filter[1])

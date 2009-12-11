@@ -65,10 +65,7 @@ class OrphieSearchController(OrphieBaseController):
             rawtext = request.POST.get('query', u'')
         text = filterText(rawtext)
 
-        if isNumber(page):
-            page = int(page)
-        else:
-            page = 0
+        page = toNumber(page, 0, 0)
 
         pp = self.userInst.threadsPerPage
         c.boardName = _("Search")

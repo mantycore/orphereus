@@ -40,6 +40,9 @@ def chBoardList():
     section = []
     boards = chGetBoards()
 
+    def sortedSection(s):
+        return sorted(s, lambda taga, tagb: cmp(taga.sectionWeight, tagb.sectionWeight))
+
     def sectionName(id):
         sName = ''
         if sectionId < len(g.sectionNames):
@@ -50,15 +53,16 @@ def chBoardList():
             sectionId = b.sectionId
             section = []
         if sectionId != b.sectionId:
-            boardlist.append((section, sectionName(sectionId), sectionId))
+            boardlist.append((sortedSection(section), sectionName(sectionId), sectionId))
             sectionId = b.sectionId
             section = []
         bc = empty()
         bc.tag = b.tag
         bc.comment = b.comment
+        bc.sectionWeight = b.sectionWeight
         section.append(bc) #b.tag)
     if section:
-        boardlist.append((section, sectionName(sectionId), sectionId))
+        boardlist.append((sortedSection(section), sectionName(sectionId), sectionId))
     return boardlist
 
 def chSectionNames(boardlist):

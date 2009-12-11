@@ -409,17 +409,16 @@ class OrphieAdminController(OrphieBaseController):
             return self.error(_("No way! You aren't holy enough!"))
 
         c.boardName = _('Pin thread')
-        if isNumber(id):
-            id = int(id)
-            post = Post.getPost(id)
-            if post:
-                if act == 'pin':
-                    post.pinned = True
-                else:
-                    post.pinned = None
-                meta.Session.commit()
-                c.message = _('Post %d is %s now') % (id, post.pinned and "pinned" or "not pinned")
-                return self.render('managementMessage')
+        id = int(id)
+        post = Post.getPost(id)
+        if post:
+            if act == 'pin':
+                post.pinned = True
+            else:
+                post.pinned = None
+            meta.Session.commit()
+            c.message = _('Post %d is %s now') % (id, post.pinned and "pinned" or "not pinned")
+            return self.render('managementMessage')
 
         return self.error(_("Incorrect thread number"))
 
@@ -478,23 +477,20 @@ class OrphieAdminController(OrphieBaseController):
 
         #log.debug("%s\n\n%s\nact:%s" %(c,request.POST,act))
 
-        if isNumber(id) and isNumber(tagid):
-            id = int(id)
-            tagid = int(tagid)
+        id = int(id)
+        tagid = int(tagid)
 
-            if id == 0:
-                id = filterText(request.POST.get('postId', ''))
-                if id and isNumber(id):
-                    id = int(id)
+        if id == 0:
+            id = filterText(request.POST.get('postId', ''))
+            if id and isNumber(id):
+                id = int(id)
 
-            if tagid == 0:
-                tagName = filterText(request.POST.get('tagName', u''))
-                if tagName:
-                    tag = Tag.getTag(tagName)
-                    if tag:
-                        tagid = tag.id
-        else:
-            return self.error(_("Incorrect input values"))
+        if tagid == 0:
+            tagName = filterText(request.POST.get('tagName', u''))
+            if tagName:
+                tag = Tag.getTag(tagName)
+                if tag:
+                    tagid = tag.id
 
         if act == 'show':
             if id and id > 0:
@@ -584,12 +580,6 @@ class OrphieAdminController(OrphieBaseController):
                         oldtag = u''
                     c.tag.comment = filterText(request.POST.get('comment', u''))
                     c.tag.specialRules = filterText(request.POST.get('specialRules', u''))
-                    sid = request.POST.get('sectionId', 0)
-                    if isNumber(sid) and int(sid) >= 0:
-                        sid = int(sid)
-                    else:
-                        sid = 0
-                    c.tag.sectionId = sid
                     c.tag.persistent = bool(request.POST.get('persistent', False))
                     c.tag.service = bool(request.POST.get('service', False))
                     c.tag.imagelessThread = bool(request.POST.get('imagelessThread', False))
@@ -600,20 +590,20 @@ class OrphieAdminController(OrphieBaseController):
                     c.tag.selfModeration = bool(request.POST.get('selfModeration', False))
                     c.tag.showInOverview = bool(request.POST.get('showInOverview', False))
                     c.tag.adminOnly = bool(request.POST.get('adminOnly', False))
-                    c.tag.maxFileSize = request.POST.get('maxFileSize', g.OPT.defMaxFileSize)
-                    c.tag.minPicSize = request.POST.get('minPicSize', g.OPT.defMinPicSize)
-                    c.tag.thumbSize = request.POST.get('thumbSize', g.OPT.defThumbSize)
+                    c.tag.sectionId = toNumber(request.POST.get('sectionId', 0), 0, 0)
+                    c.tag.maxFileSize = toNumber(request.POST.get('maxFileSize', g.OPT.defMaxFileSize), g.OPT.defMaxFileSize, 0)
+                    c.tag.minPicSize = toNumber(request.POST.get('minPicSize', g.OPT.defMinPicSize), g.OPT.defMinPicSize, 0)
+                    c.tag.thumbSize = toNumber(request.POST.get('thumbSize', g.OPT.defThumbSize), g.OPT.defThumbSize, 0)
+                    c.tag.sectionWeight = toNumber(request.POST.get('sectionWeight', 0), 0)
                     allowedFilesCount = request.POST.get('allowedAdditionalFiles', g.OPT.allowedAdditionalFiles)
-                    if isNumber(allowedFilesCount):
-                        allowedFilesCount = int(allowedFilesCount)
-                    else:
-                        allowedFilesCount = None
+                    allowedFilesCount = toNumber(allowedFilesCount, None)
                     c.tag.allowedAdditionalFiles = allowedFilesCount
                     bumplimit = request.POST.get('bumplimit', g.OPT.defBumplimit)
                     if not isNumber(bumplimit) or int(bumplimit) == 0:
                         bumplimit = None
                     c.tag.bumplimit = bumplimit
                     c.tag.save()
+                    g.caches.invalidate('boardlist')
                     if bool(request.POST.get('deleteBoard', False)) and c.tag.id:
                         count = c.tag.getExactThreadCount()
                         if count > 0:

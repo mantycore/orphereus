@@ -44,6 +44,12 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Weight in section')}</td>
+                    <td>
+                        <input type="text" name="sectionWeight" size="35" value="${c.tag.sectionWeight}" />
+                    </td>
+                </tr>
+                <tr>
                     <td class="postblock">${_('Persistent')}</td>
                     <td>
                         <input type="checkbox" name="persistent" ${c.tag.persistent and 'checked="checked"' or ""} />

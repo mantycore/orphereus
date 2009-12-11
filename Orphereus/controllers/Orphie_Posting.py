@@ -102,16 +102,10 @@ class OrphiePostingController(OrphieBaseController):
         tagLine = request.POST.get('tagLine', postTagline)
 
         dest = int(request.POST.get('goto', 0))
-        if isNumber(dest):
-            dest = int(dest)
-        else:
-            dest = 0
+        dest = toNumber(dest, 0, 0)
 
         curPage = request.POST.get('curPage', 0)
-        if isNumber(curPage):
-            curPage = int(curPage)
-        else:
-            curPage = 0
+        curPage = toNumber(curPage, 0, 0)
 
         anchor = "i%d" % post.id
 
@@ -270,10 +264,7 @@ class OrphiePostingController(OrphieBaseController):
         if not self.currentUserCanPost():
             return errorHandler(_("Posting is disabled"))
 
-        if isNumber(postid):
-            postid = int(postid)
-        else:
-            postid = None
+        postid = toNumber(postid, None)
 
         baseEncoded = 'baseAndUrlEncoded' in request.POST
         def normalFilter(text):

@@ -62,6 +62,11 @@ def isNumber(n):
     else:
         return False
 
+def toNumber(n, default = 0, minimum = None):
+    if isNumber(n) and (not minimum or int(n) >= minimum):
+        return int(n)
+    return default
+
 def currentUID():
     try:
         if c.userInst:

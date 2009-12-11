@@ -133,10 +133,7 @@ class OrphieAjaxController(OrphieBaseController):
 
     def realmRedirect(self, redirect, realm, page):
         args = {}
-        if page and isNumber(page):
-            page = int(page)
-        else:
-            page = 0
+        page = toNumber(page, 0, 0)
         if realm:
             if 'board' == redirect:
                 args['board'] = realm

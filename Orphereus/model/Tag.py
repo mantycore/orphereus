@@ -60,6 +60,7 @@ def t_tags_init(dialectProps):
         sa.Column("bumplimit", sa.types.Integer, nullable = True),
         sa.Column("allowedAdditionalFiles", sa.types.Integer, nullable = True),
         sa.Column("adminOnly", sa.types.Boolean, nullable = False, index = True),
+        sa.Column("sectionWeight", sa.types.Integer, nullable = False),
         )
 
     t_tagsToPostsMap = sa.Table("tagsToPostsMap", meta.metadata,
@@ -85,6 +86,7 @@ class Tag(object):
         self.tag = tag
         self.replyCount = 0
         self.threadCount = 0
+        self.sectionWeight = 0
         #self.options = TagOptions()
         self.sectionId = 0
         self.persistent = False

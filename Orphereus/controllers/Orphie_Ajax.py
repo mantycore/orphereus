@@ -85,7 +85,7 @@ class AjaxServicesPlugin(BasePlugin):
         map.connect('ajGetMyPostIds', '/ajax/getMyPostIds/{thread}',
                     controller = 'Orphie_Ajax', action = 'getMyPostIds',
                     requirements = dict(thread = r'\d+'))
-        map.connect('ajChangeOption', '/ajax/changeOption/{name}/{value}',
+        map.connect('ajChangeOption', '/ajax/option/{name}/{value}/set',
                     controller = 'Orphie_Ajax', action = 'changeOption')
 
         # routines below isn't actually used
@@ -312,7 +312,7 @@ class OrphieAjaxController(OrphieBaseController):
             if not c.userInst.Anonymous:
                 meta.Session.commit()
             returnTo = request.params.get('returnTo', None)
-            if returnTo:
+            if not returnTo is None:
                 if c.userInst.useFrame:
                     c.frameTargetToRedir = returnTo
                     c.currentURL = None
@@ -322,5 +322,5 @@ class OrphieAjaxController(OrphieBaseController):
                 c.suppressLoginMessage = True
                 return self.render('loginRedirect')
             else:
-                return 'ok'
+                return 'ok. "%s" changed to "%s"' % (str(name), str(val))
         return abort(404)

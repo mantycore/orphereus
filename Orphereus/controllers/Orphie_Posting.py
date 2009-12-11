@@ -52,6 +52,7 @@ log = logging.getLogger(__name__)
 class OrphiePostingPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('Posting (Obligatory)'),
+                  'deps' : ('base_public',)
                  }
         BasePlugin.__init__(self, 'base_posting', config)
 

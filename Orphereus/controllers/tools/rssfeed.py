@@ -121,8 +121,11 @@ class RssfeedController(OrphieBaseController):
             posts = filter.order_by(Post.bumpDate.desc())[0 : tpp]
 
         feed = None
+        link = h.url_for('feed', uid = uid,
+                                authid = authid,
+                                watch = watch, feedType = feedType)
         args = dict(title = title,
-                link = h.url_for(),
+                link = link,
                 description = descr,
                 language = u"en",
                 )

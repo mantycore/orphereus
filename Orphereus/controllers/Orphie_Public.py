@@ -135,6 +135,7 @@ class OrphiePublicController(OrphieBaseController):
         return str(pic)
 
     def authorize(self, url):
+        #log.warning("Access request for url: %s" % str(url))
         if url:
             c.currentURL = u'/%s' % url #.encode('utf-8')
         else:
@@ -150,6 +151,7 @@ class OrphiePublicController(OrphieBaseController):
         captcha = False
 
         if tracker.attempts >= 2:
+            log.warning('captcha')
             if session and session.has_key('anonCaptId'):
                 anonCapt = Captcha.getCaptcha(session['anonCaptId'])
                 if tracker.cid and (str(tracker.cid) != str(anonCapt.id)):

@@ -220,13 +220,13 @@ class OrphieBaseController(BaseController):
         if not self.userInst.isBanned():
             tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : self.userInst.template, 'page' : page}
         return tpath
-    
+
     # returns template filename and actuator test path
     def getTemplatePaths(self, page, tmplName = None):
         if page:
             templRelativePath = "std.%s.mako" % page
             actuator = actuatorTest = "actuators/%s/" % (g.OPT.actuator)
-    
+
             try:
                 if not tmplName == 'std' and self.userInst and not self.userInst.isBanned():
                     templName = tmplName or self.userInst.template
@@ -240,7 +240,7 @@ class OrphieBaseController(BaseController):
         pathResolution = self.getTemplatePaths(page, tmplName)
         c.template = tpath = pathResolution[0]
         c.actuator, c.actuatorTest = pathResolution[1], pathResolution[2]
-        
+
         #fpath = os.path.join(g.OPT.templPath, tpath)
         #log.debug ("Tpath:  %s ; Fpath: %s" %(tpath,fpath))
 

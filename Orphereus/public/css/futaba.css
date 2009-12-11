@@ -394,7 +394,7 @@ border: none;
 /* Y reply form*/
 #y_replyform {
     display: block; border: 1px #ccc solid; margin: 0 2px 2px 2px; padding: 5px;
-    background-color: #ddd; -moz-border-radius: 5px;
+    background-color: #F0E0D6; -moz-border-radius: 5px;
     float: left; width: 98%;
 }
 .y_replyform{

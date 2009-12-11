@@ -15,7 +15,7 @@ function menu_show(id) {
 function changeCSS(event, stylename, csspath)
 {
   event.preventDefault();
-  $.ajax({type: 'get', url: "${g.OPT.urlPrefix}ajax/changeOption/style/" + stylename});
+  $.ajax({type: 'get', url: "${g.OPT.urlPrefix}ajax/option/style/" + stylename+"/set"});
   $('#baseCSS').attr('href', csspath).attr('title', '');
   try
   {

@@ -53,7 +53,7 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
         if g.firstRequest and not g.OPT.disableJSRegeneration:
             log.info('Generating js files...')
             self.generateFiles()
-            set_lang(oldLang)
+            set_lang(currentLang)
 
         if baseController.userInst.isValid():
             template = baseController.userInst.template

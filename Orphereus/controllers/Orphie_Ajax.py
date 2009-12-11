@@ -305,6 +305,7 @@ class OrphieAjaxController(OrphieBaseController):
         else:
             ok = None
         if ok:
+            self.forceNoncachedUser()
             setattr(self.userInst, str(name), val)
             if not c.userInst.Anonymous:
                 meta.Session.commit()

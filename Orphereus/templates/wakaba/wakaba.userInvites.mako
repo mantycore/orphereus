@@ -30,7 +30,7 @@
   </tbody>
   </table>
 %else:
-<div class="theader">${_("You wasn't create any invites")}</div>
+<div class="theader">${_("You haven't created any invites.")}</div>
 %endif
 
 </div>
@@ -43,7 +43,7 @@
     </tr>
     <tr>
         <td>&nbsp;</td>
-        <td><input name="create" type="submit" value="${_('Create invite (%d left)') % c.invitesCount}" \
+        <td><input name="create" type="submit" value="${_('Make an invitation (%d left)') % c.invitesCount}" \
         %if not c.invitesCount:
         disabled="disabled" \
         %endif

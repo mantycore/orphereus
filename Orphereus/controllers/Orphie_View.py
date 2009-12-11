@@ -94,8 +94,10 @@ class OrphieViewController(OrphieBaseController):
         self.initiate()
 
     def showStatic(self, page):
-        c.boardName = _(page)
-        return self.render('static.%s' % page)
+        fpath = os.path.join(g.OPT.templPath, self.getTemplatePaths('static.%s' % page)[0])
+        if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/') == fpath.replace('\\', '/'):
+            c.boardName = _(page)
+            return self.render('static.%s' % page)
 
     def frameMenu(self):
         c.suppressMenu = True

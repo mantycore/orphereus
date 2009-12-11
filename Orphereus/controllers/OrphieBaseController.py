@@ -38,6 +38,7 @@ from Orphereus.lib.miscUtils import *
 from Orphereus.lib.cachedutils import *
 from Orphereus.lib.FakeUser import FakeUser
 from Orphereus.lib.constantValues import *
+from Orphereus.lib.cache import CacheDict
 
 log = logging.getLogger(__name__)
 
@@ -59,6 +60,7 @@ class OrphieBaseController(BaseController):
             self.userInst = FakeUser()
 
         c.userInst = self.userInst
+        c.cache = CacheDict()
         c.uidNumber = self.userInst.uidNumber
         if self.userInst.isValid():
             c.jsFiles = g.OPT.jsFiles[self.userInst.template]
@@ -218,20 +220,28 @@ class OrphieBaseController(BaseController):
         if not self.userInst.isBanned():
             tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : self.userInst.template, 'page' : page}
         return tpath
+    
+    # returns template filename and actuator test path
+    def getTemplatePaths(self, page, tmplName = None):
+        if page:
+            templRelativePath = "std.%s.mako" % page
+            actuator = actuatorTest = "actuators/%s/" % (g.OPT.actuator)
+    
+            try:
+                if not tmplName == 'std' and self.userInst and not self.userInst.isBanned():
+                    templName = tmplName or self.userInst.template
+                    templRelativePath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : templName, 'page' : page}
+                    actuatorTest = "%s/actuators/%s/" % (templName, g.OPT.actuator)
+            except: #userInst not defined or user banned
+                pass
+            return templRelativePath, actuator, actuatorTest
 
     def render(self, page, tmplName = None, **options):
-        c.template = tpath = "std.%s.mako" % page
-        c.actuatorTest = c.actuator = "actuators/%s/" % (g.OPT.actuator)
-
-        try:
-            if not tmplName == 'std' and self.userInst and not self.userInst.isBanned():
-                tname = tmplName or self.userInst.template
-                c.template = tpath = "%(template)s/%(template)s.%(page)s.mako" % {'template' : tname, 'page' : page}
-                c.actuatorTest = "%s/actuators/%s/" % (tname, g.OPT.actuator)
-        except: #userInst not defined or user banned
-            pass
-
-        fpath = os.path.join(g.OPT.templPath, tpath)
+        pathResolution = self.getTemplatePaths(page, tmplName)
+        c.template = tpath = pathResolution[0]
+        c.actuator, c.actuatorTest = pathResolution[1], pathResolution[2]
+        
+        #fpath = os.path.join(g.OPT.templPath, tpath)
         #log.debug ("Tpath:  %s ; Fpath: %s" %(tpath,fpath))
 
         for menuName in self.requestedMenus:
@@ -242,23 +252,18 @@ class OrphieBaseController(BaseController):
         c.builtMenus = self.builtMenus
         #log.debug(self.builtMenus)
 
-        #TODO: it may be excessive
-        if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/') == fpath.replace('\\', '/'):
-            if g.OPT.devMode:
-                c.renderStartTime = time.time()
-                c.processStartTime = 0
-                if self.__dict__.has_key('startTime'):
-                    c.processStartTime = self.startTime
-                    c.log.append("processing: %s" % str(c.renderStartTime - self.startTime))
-            options['controller'] = self
-            output = render('/' + tpath, extra_vars = options)
-            if g.globalFilterStack and not options.get('disableFiltering', None):
-                return h.applyFilters(output, True)
-            else:
-                return output
+        if g.OPT.devMode:
+            c.renderStartTime = time.time()
+            c.processStartTime = 0
+            if self.__dict__.has_key('startTime'):
+                c.processStartTime = self.startTime
+                c.log.append("processing: %s" % str(c.renderStartTime - self.startTime))
+        options['controller'] = self
+        output = render('/' + tpath, extra_vars = options)
+        if g.globalFilterStack and not options.get('disableFiltering', None):
+            return h.applyFilters(output, True)
         else:
-            log.debug ("Template problem:  %s" % page)
-            abort(404)
+            return output
 
     def error(self, text, header = None):
         c.errorText = text

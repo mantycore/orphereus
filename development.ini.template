@@ -36,7 +36,6 @@ use = egg:Paste#http
 # use = egg:PasteScript#flup_scgi_thread
 host = 127.0.0.1
 port = 5000
-scriptName = ""
 
 [app:main]
 # do not change

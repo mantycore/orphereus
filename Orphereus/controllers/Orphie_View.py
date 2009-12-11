@@ -95,9 +95,18 @@ class OrphieViewController(OrphieBaseController):
 
     def showStatic(self, page):
         fpath = os.path.join(g.OPT.templPath, self.getTemplatePaths('static.%s' % page)[0])
+        if not(os.path.abspath(fpath).startswith(g.OPT.templPath)):
+            # successful include-exploit attempt. TEH DRAMA
+            msg = _("Hacking attempt from %s!") % getUserIp()
+            log.error(msg)
+            toLog(LOG_EVENT_SECURITY_VIOLATION, msg)
+            adminAlert(msg)
+            return self.error(_('Page not found'), '265')
         if page and os.path.isfile(fpath) and os.path.abspath(fpath).replace('\\', '/') == fpath.replace('\\', '/'):
             c.boardName = _(page)
             return self.render('static.%s' % page)
+        else:
+            return self.error(_('Page not found'), '404')
 
     def frameMenu(self):
         c.suppressMenu = True

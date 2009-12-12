@@ -85,6 +85,8 @@ class GraphsCommand(command.Command):
         import matplotlib.pyplot as plt
         from matplotlib import rc
         from matplotlib.dates import date2num
+
+        header = "%s\n%s" % (header, h.tsFormat(datetime.datetime.now()))
         maincolor = "#6c6c6c"
         linecolor = "#2f3f3f"
         #rc('xtick', labelsize = 12, color = 'white', direction = 'out') # x tick labels

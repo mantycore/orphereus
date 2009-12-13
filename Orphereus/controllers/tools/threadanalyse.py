@@ -89,6 +89,7 @@ class AnalyseCommand(command.Command):
         if not os.path.exists(savePath):
             os.mkdir(savePath)
         f = open(saveTo, 'w+')
+        #
         header = """digraph Orphie {
 ranksep=3;\n
 ratio=auto;\n
@@ -151,7 +152,7 @@ node [style=filled];
                         f.write('node [shape=ellipse, color="#%s"];\n' % grad[postPos])
                     if previd:
                         #f.write('"%d" -> "%d" [dir=none, color=green];\n' % (previd, post.id))
-                        f.write('"%d" -> "%d" [color=green];\n' % (previd, post.id))
+                        f.write('"%d" -> "%d" [color=green, len=0.6];\n' % (previd, post.id))
                     previd = post.id
                     links = re.findall(rex, post.message)
                     links = map(lambda x: int(x), links)

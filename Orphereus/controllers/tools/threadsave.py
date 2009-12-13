@@ -51,7 +51,7 @@ class UserTagsPlugin(BasePlugin, AbstractPageHook):
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import OrphieBaseController
 
-def safeCopy(self, src, dest, baseSrcDir, baseDestDir):
+def safeCopy(src, dest, baseSrcDir, baseDestDir):
     if os.path.abspath(src).startswith(baseSrcDir) and os.path.abspath(dest).startswith(baseDestDir):
           shutil.copyfile(src, dest)
 

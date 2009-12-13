@@ -60,7 +60,7 @@ def t_posts_init(dialectProps):
     sa.Column("replyCount" , sa.types.Integer, nullable = False, server_default = '0'),
     sa.Column("removemd5"  , sa.types.String(32), nullable = True),
     sa.Column("ip"         , meta.UIntType, nullable = True),
-    sa.Column("pinned"  , sa.types.Boolean, nullable = True, index = True),
+    sa.Column("pinned"  , sa.types.Boolean, nullable = False, index = True),
     #sa.Column("spoiler"  , sa.types.Boolean, nullable = True),
     )
 #sa.Index('idx_BumpPin', t_posts.c.bumpDate, t_posts.c.pinned)
@@ -68,6 +68,7 @@ def t_posts_init(dialectProps):
 class Post(object):
     def __init__(self):
         self.date = datetime.datetime.now()
+        self.pinned = False
 
     @staticmethod
     def create(postParams):

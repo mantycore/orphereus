@@ -94,8 +94,7 @@ class AnalyseCommand(command.Command):
 ranksep=3;\n
 ratio=auto;\n
 pack=true;
-model=subset;
-normalize=true;
+model=circuit;
 node [style=filled];
 """
         f.write(header)

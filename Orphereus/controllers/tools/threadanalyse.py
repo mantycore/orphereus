@@ -94,6 +94,7 @@ class AnalyseCommand(command.Command):
 ranksep=3;\n
 ratio=auto;\n
 pack=true;
+overlap=orthoxy;
 model=circuit;
 node [style=filled];
 """

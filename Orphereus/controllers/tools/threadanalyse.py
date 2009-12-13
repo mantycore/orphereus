@@ -79,7 +79,7 @@ class AnalyseCommand(command.Command):
         print "Saved to:", self.analyse([])[0]
 
     @staticmethod
-    def analyse(postIds, algo = 'dot'):
+    def analyse(postIds, algo = 'dot', opt = ''): # algo = 'neato', opt='-Kneato'
         if not postIds:
             allThreads = meta.Session.query(Post.id).filter(Post.parentid == None).all()
             postIds = map(lambda x: x[0], allThreads)
@@ -125,7 +125,7 @@ node [style=filled];
                                 f.write("node [shape=ellipse, color=lightblue2];\n")
         f.write('}')
         f.close()
-        cmd = '%s -v -Kneato -Tpng "%s" -o"%s.png"' % (algo, saveTo, saveTo)
+        cmd = '%s -v %s -Tpng "%s" -o"%s.png"' % (algo, opt, saveTo, saveTo)
         print cmd
         os.system(cmd)
         return (saveTo, saveName + ".png")

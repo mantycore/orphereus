@@ -12,8 +12,14 @@ class AbstractMenuProvider(object):
             self.__pmenuItems[id] = ret
         return ret
 
-    def MenuItemIsVisible(self, id, baseController):
+    def menuItemIsVisible(self, id, baseController):
         return True
+
+    def modifyMenuItem(self, menuItem, baseController):
+        return menuItem
+
+    def insertAfterMenuItem(self, menuItem, baseController):
+        return ()
 
     def menuItems(self, menuId):
         return ()

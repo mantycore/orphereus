@@ -48,7 +48,7 @@ class SettingsManagerPlugin(BasePlugin, AbstractMenuProvider):
             menu = (MenuItem('id_ExtSettings', _("Extended settings"), h.url_for('hsCfgManage'), 601, 'id_adminBoard'),)
         return menu
 
-    def MenuItemIsVisible(self, id, baseController):
+    def menuItemIsVisible(self, id, baseController):
         user = baseController.userInst
         if id == 'id_ExtSettings':
             return user.canChangeSettings()
@@ -101,6 +101,7 @@ class SetsmgrController(OrphieBaseController):
         toLog(LOG_EVENT_SETTINGS_EDIT, _("Performed global settings reset."))
         c.message = N_('Engine settings were set to default values.')
         c.returnUrl = h.url_for('hsCfgManage')
+        g.invalidateMenuCache('topMenu')
         return self.render('managementMessage')
 
     def deleteOrphaned(self):
@@ -136,6 +137,7 @@ class SetsmgrController(OrphieBaseController):
                         Setting.getSetting(s).setValue(val)
                         g.OPT.autoSetValue(shortName, val)
             upd_globals()
+            g.invalidateMenuCache('topMenu')
             c.message = _('Settings were updated')
 
         c.cfg = {}

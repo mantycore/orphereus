@@ -127,7 +127,7 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
                     )
         return menu
 
-    def MenuItemIsVisible(self, id, baseController):
+    def menuItemIsVisible(self, id, baseController):
         user = baseController.userInst
         if id == 'id_RebuildJs':
             return user.canRunMaintenance()

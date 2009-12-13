@@ -1,6 +1,12 @@
-<%page args="menuId, menuSource, currentItemId = False"/>
+<%page args="menuId, menuSource, bottomMenu = False"/>
 
-<hr/>
+<div class="adminbar">
+<span class="boardlist">
+
+%if g.OPT.spiderTrap:
+<span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap2', confirm=c.userInst.secid())}">.</a></span>
+%endif
+
 %if menuSource:
 %for item in menuSource[menuId][False]: # sections
 %if menuSource[menuId].get(item.id, None):
@@ -37,4 +43,14 @@
 %endif
 %endfor
 %endif
-<hr/>
+
+</span>
+%if not c.userInst.Anonymous and c.userInst.filters:
+    <br />
+    [ \
+    %for f in c.userInst.filters:
+        <a href="${h.url_for('boardBase', board=f.filter)}">/${f.filter}/</a> \
+    %endfor
+    ]
+%endif
+</div>

@@ -36,7 +36,7 @@ class PluginsListPlugin(BasePlugin, AbstractMenuProvider):
                     )
         return menu
 
-    def MenuItemIsVisible(self, id, baseController):
+    def menuItemIsVisible(self, id, baseController):
         user = baseController.userInst
         if id == 'id_ListPlugins':
             return user.canRunMaintenance()

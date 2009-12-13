@@ -15,7 +15,7 @@ class MenuItem(object):
         self.plugin = ''
         self.hint = hint
         self.collapse = collapse
-        self.onclick = ""
+        self.onclick = onclick
 
     def __repr__(self):
         return self.id

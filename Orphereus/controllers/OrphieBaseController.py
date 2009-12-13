@@ -135,8 +135,8 @@ class OrphieBaseController(BaseController):
         c.boardlist = g.caches.setdefaultEx('boardlist', chBoardList)
         #c.sectionNames = g.caches.setdefaultEx('sectionNames', chSectionNames, c.boardlist)
         c.menuLinks = g.additionalLinks
-        c.renderedTopMenu = self.fastRender('menu', bottomMenu = False)
-        c.renderedBottomMenu = self.fastRender('menu', bottomMenu = True)
+        #c.renderedTopMenu = self.fastRender('menu', bottomMenu = False)
+        #c.renderedBottomMenu = self.fastRender('menu', bottomMenu = True)
         c.sectionNames = g.sectionNames
 
         self.setCookie()
@@ -204,18 +204,21 @@ class OrphieBaseController(BaseController):
     def buildLinearMenu(self, id, level, source, target):
         if source and id in source:
             for item in source[id]:
-                if  item.plugin.MenuItemIsVisible(item.id, self):
-                    target.append((item, level))
+                if item.plugin.menuItemIsVisible(item.id, self):
+                    target.append((item.plugin.modifyMenuItem(item, self), level))
+                    dynItems = item.plugin.insertAfterMenuItem(item, self)
+                    for ditem in dynItems:
+                        target.append((ditem, level))
                     self.buildLinearMenu(item.id, level + 1, source, target)
 
-    """
-    def buildMenu(self, id,source, targetList):
-        if source and id in source:
-            for item in source[id]:
-                if  item.plugin.MenuItemIsVisible(item.id, self):
-                    target.append((item, level))
-                    self.buildLinearMenu(item.id, level + 1, source, target)
-    """
+    def buildMenu(self, id, source, target):
+        for sourceBranch in source:
+            branch = []
+            for item in source[sourceBranch]:
+                if item.plugin.menuItemIsVisible(item.id, self):
+                    branch.append(item.plugin.modifyMenuItem(item, self))
+                    branch.extend(item.plugin.insertAfterMenuItem(item, self))
+            target[sourceBranch] = branch
 
     def fastRender(self, tname, **options):
         return self._fastRender(self.fastTemplatePath(tname), **options)
@@ -253,16 +256,17 @@ class OrphieBaseController(BaseController):
         #log.debug ("Tpath:  %s ; Fpath: %s" %(tpath,fpath))
 
         for menuName in self.requestedMenus:
-            menu = []
             menuItems = g.getMenuItems(menuName)
+            menu = None
             if self.requestedMenus[menuName]['linearize']:
+                menu = []
                 self.buildLinearMenu(False, 0, menuItems, menu)
             else:
-                menu = menuItems
+                menu = {}
+                self.buildMenu(False, menuItems, menu)
             if menu:
                 self.builtMenus[menuName] = menu
         c.builtMenus = self.builtMenus
-        print c.builtMenus
         #log.debug(self.builtMenus)
 
         if g.OPT.devMode:

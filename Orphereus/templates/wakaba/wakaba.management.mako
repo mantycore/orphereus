@@ -15,9 +15,9 @@
     <body>
         %if not c.serviceOut:
     %if g.OPT.useZMenu:
-      <%include file="wakaba.z-menu.mako" />
+      <%include file="wakaba.menu-zero.mako" />
     %else:
-            ${c.renderedTopMenu}
+      <%include file="wakaba.menuTop.mako" args="menuId='topMenu', menuSource=c.builtMenus" />
     %endif
             <%include file="wakaba.logo.mako" />
             <hr />
@@ -35,7 +35,9 @@
                     </tr>
                 </tbody>
             </table>
-            ${c.renderedBottomMenu}
+            %if not g.OPT.useZMenu:
+              <%include file="wakaba.menuTop.mako" args="menuId='topMenu', menuSource=c.builtMenus, bottomMenu = True" />
+            %endif
             <%include file="wakaba.footer.mako" />
         %endif
     </body>

@@ -31,11 +31,13 @@ import datetime
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
+from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.BasePlugin import BasePlugin
 
 log = logging.getLogger(__name__)
 
-class OrphiePublicPlugin(BasePlugin):
+class OrphiePublicPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Public services (Obligatory)'),
                  }
@@ -77,6 +79,37 @@ class OrphiePublicPlugin(BasePlugin):
                     url = '',
                     requirements = dict(tempid = r'\d+'))
 
+    def menuItems(self, menuId):
+        menu = None
+        if menuId == "topMenu":
+            menu = [MenuItem('id_auth_tmPages', _("Auth pages"), None, 1000, False),
+                    MenuItem('id_auth_Login', _("Login"), None, 1100, 'id_auth_tmPages'),
+                    MenuItem('id_auth_Logout', _("Logout"), h.url_for('logout'), 1200, 'id_auth_tmPages'),
+                    MenuItem('id_auth_Kill', _("Kill session"), h.url_for('logout'), 1300, 'id_auth_tmPages'),
+                    MenuItem('id_auth_Reg', _("Register"), h.url_for('register', invite = 'register'), 1400, 'id_auth_tmPages'),
+                    ]
+        return menu
+
+    def menuItemIsVisible(self, id, baseController):
+        user = baseController.userInst
+        if id == 'id_auth_Login':
+            return user.Anonymous
+        if id == 'id_auth_Logout':
+            return not user.Anonymous
+        if id == 'id_auth_Kill':
+            return user.Anonymous
+        if id == 'id_auth_Reg':
+            return user.Anonymous and g.OPT.allowRegistration
+        return id.startswith('id_auth_')
+
+    def modifyMenuItem(self, menuItem, baseController):
+        user = baseController.userInst
+        if menuItem.id == 'id_auth_Login':
+            if c.currentURL:
+                menuItem.route = h.url_for('authorizeToUrl', url = c.currentURL)
+            else:
+                menuItem.route = h.url_for('authorize')
+        return menuItem
 
 class OrphiePublicController(OrphieBaseController):
     def __before__(self):

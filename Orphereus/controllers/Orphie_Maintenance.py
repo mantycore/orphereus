@@ -580,7 +580,7 @@ class MaintenancePlugin(BasePlugin, AbstractPostingHook, AbstractMenuProvider):
         return [('maintenance', "MaintenanceCommand"), ]
 
     # Implementing AbstractMenuProvider
-    def MenuItemIsVisible(self, id, baseController):
+    def menuItemIsVisible(self, id, baseController):
         user = baseController.userInst
         if id == 'id_hsMaintenance':
             return user.canRunMaintenance()

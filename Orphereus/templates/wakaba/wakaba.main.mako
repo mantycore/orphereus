@@ -35,17 +35,11 @@ ${h.headCallback(c)}
 
 %if not c.suppressMenu:
   %if g.OPT.useZMenu:
-    <%include file="wakaba.z-menu.mako" />
+    <%include file="wakaba.menu-zero.mako" />
   %else:
-    ${c.renderedTopMenu}
+    <%include file="wakaba.menuTop.mako" args="menuId='topMenu', menuSource=c.builtMenus" />
   %endif
 %endif
-
-<div class="adminbar">
-<span class="boardlist">
-<%include file="wakaba.menuSimple.mako" args="menuId='topMenu', menuSource=c.builtMenus, currentItemId = 'none' " />
-</span>
-</div>
 
 %if not c.disableLogo:
 <%include file="wakaba.logo.mako" />
@@ -57,8 +51,8 @@ ${h.headCallback(c)}
 
 ${self.body()}
 
-%if not c.suppressMenu:
-    ${c.renderedBottomMenu}
+%if not c.suppressMenu and not g.OPT.useZMenu:
+    <%include file="wakaba.menuTop.mako" args="menuId='topMenu', menuSource=c.builtMenus, bottomMenu = True" />
 %endif
 
 %if not c.suppressFooter:

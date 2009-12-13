@@ -32,11 +32,13 @@ from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 from Orphereus.lib.interfaces.AbstractProfileExtension import AbstractProfileExtension
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
+from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.BasePlugin import BasePlugin
 
 log = logging.getLogger(__name__)
 
-class OrphieProfilePlugin(BasePlugin):
+class OrphieProfilePlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('User profile (Obligatory)'),
                   'deps' : ('base_view',)
@@ -48,6 +50,25 @@ class OrphieProfilePlugin(BasePlugin):
         map.connect('userProfile', '/userProfile',
                     controller = 'Orphie_Profile',
                     action = 'showProfile')
+
+    def menuItems(self, menuId):
+        menu = None
+        if menuId == "topMenu":
+            menu = [MenuItem('id_profile_ProfileTop', _("Profile"), None, 250, False, collapse = True),
+                    MenuItem('id_profile_Profile', _("Profile"), h.url_for('userProfile'), 100, 'id_profile_ProfileTop'),
+                    #MenuItem('id_profile_ProfileSub', _("Profile"), h.url_for('userProfile'), 100, 'id_profile_Profile'),
+                    ]
+        return menu
+
+    def menuItemIsVisible(self, id, baseController):
+        #user = baseController.userInst
+        return id.startswith('id_profile_')
+
+    def modifyMenuItem(self, menuItem, baseController):
+        user = baseController.userInst
+        if menuItem.id == 'id_profile_Profile':
+            menuItem.text = user.Anonymous and _('Settings') or _('Profile')
+        return menuItem
 
 class OrphieProfileController(OrphieBaseController):
     def __before__(self):

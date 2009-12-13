@@ -32,8 +32,8 @@ from Orphereus.lib.constantValues import *
 from Orphereus.lib.cachedutils import *
 from Orphereus.lib.interfaces.AbstractHomeExtension import AbstractHomeExtension
 from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
-from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.MenuItem import MenuItem
+from Orphereus.lib.BasePlugin import BasePlugin
 from OrphieBaseController import OrphieBaseController
 
 import logging
@@ -125,13 +125,23 @@ class OrphieViewPlugin(BasePlugin, AbstractMenuProvider):
                                          submenuId,
                                          tag.comment))
 
-            menu.append(MenuItem("id_view_links_caption", _("Other"), None, 100, 'id_view_tmLinks'))
+            menu.append(MenuItem("id_view_links_special", _("Special"), None, 0, 'id_view_tmLinks'))
+            menu.append(MenuItem("id_view_links_log", _("Logs"), h.url_for('viewLogBase'), 100, 'id_view_tmLinks'))
+            menu.append(MenuItem("id_view_links_caption", _("Other"), None, 200, 'id_view_tmLinks'))
             for id, link in enumerate(g.additionalLinks):
-                menu.append(MenuItem("id_view_link_%s" % link[0], link[1], link[0], 100 + id, 'id_view_tmLinks'))
+                menu.append(MenuItem("id_view_link_%s" % link[0], link[1], link[0], 200 + id, 'id_view_tmLinks'))
         return menu
 
-    def MenuItemIsVisible(self, id, baseController):
-        #user = baseController.userInst
+    def menuItemIsVisible(self, id, baseController):
+        user = baseController.userInst
+        if id == 'id_view_links_log':
+            return g.OPT.usersCanViewLogs
+        if id == 'id_view_links_special':
+            return g.OPT.usersCanViewLogs or user.isAdmin()
+        if id == 'id_view_links_caption':
+            return g.additionalLinks
+        if id in ['id_view_mythreads', 'id_view_related']:
+            return not user.Anonymous
         return id.startswith('id_view_')
 
 class OrphieViewController(OrphieBaseController):

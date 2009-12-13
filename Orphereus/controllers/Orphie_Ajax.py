@@ -28,12 +28,14 @@ from Orphereus.model import *
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
-from Orphereus.lib.BasePlugin import BasePlugin
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
+from Orphereus.lib.MenuItem import MenuItem
+from Orphereus.lib.BasePlugin import BasePlugin
 
 log = logging.getLogger(__name__)
 
-class AjaxServicesPlugin(BasePlugin):
+class AjaxServicesPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Ajax helpers'),
                   'deps' : ('base_view', 'base_profile')
@@ -102,6 +104,45 @@ class AjaxServicesPlugin(BasePlugin):
                     controller = 'Orphie_Ajax', action = 'getUserSettings')
         map.connect('/ajax/getUploadsPath',
                     controller = 'Orphie_Ajax', action = 'getUploadsPath')
+
+    def menuItems(self, menuId):
+        menu = None
+        if menuId == "topMenu":
+            menu = [MenuItem('id_profile_ProfileQS', _("Quick switch"), None, 200, 'id_profile_Profile'),
+                    MenuItem('id_profile_frame', "", "", 300, 'id_profile_Profile'),
+                    MenuItem('id_profile_style', _("Style"), None, 400, 'id_profile_Profile'),
+                    ]
+
+            #for style in c.styles:
+        return menu
+
+    def menuItemIsVisible(self, id, baseController):
+        #user = baseController.userInst
+        return id.startswith('id_profile_')
+
+    def modifyMenuItem(self, menuItem, baseController):
+        user = baseController.userInst
+        if menuItem.id == 'id_profile_frame':
+            menuItem.route = h.url_for('ajChangeOption',
+                                       name = 'useFrame',
+                                       value = not user.useFrame,
+                                       returnTo = c.currentURL)
+            menuItem.text = user.useFrame and _("Turn frame off") or _("Turn frame on")
+        return menuItem
+
+    def insertAfterMenuItem(self, menuItem, baseController):
+        user = baseController.userInst
+        ret = []
+        if menuItem.id == 'id_profile_style':
+            onclicktemplate = "changeCSS(event, '%s', '%s')"
+            for style in c.styles:
+                ret.append(MenuItem('id_profile_style_%s' % style,
+                                    style,
+                                    h.url_for('ajChangeOption', name = 'style', value = style, returnTo = c.currentURL),
+                                    401,
+                                    'id_profile_Profile',
+                                    onclick = onclicktemplate % (style, h.staticFile("%s.css" % style))))
+        return ret
 
     def beforeRequestCallback(self, baseController):
         if baseController.userInst.isValid():

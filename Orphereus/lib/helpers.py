@@ -193,10 +193,7 @@ def renderNCTop(items, source):
             elements.append(element)
     return ''.join(elements)
 
-    #linkTemplate = (g.OPT.dvachStyleMenu and r'<a href="%s" title="%s" onclick="%s"><b>%s</b></a>') \
-    #                    or r'<a href="%s" title="%s" onclick="%s"><b>/%s/</b></a>'
-    #return linkTemplate % (href, title, onclick, text)
-
+"""
 def renderSection(section):
     linkTemplate = (g.OPT.dvachStyleMenu and r'<a href="%s" title="%s"><b>%s</b></a>') \
                         or r'<a href="%s" title="%s"><b>/%s/</b></a>'
@@ -217,16 +214,18 @@ def boardMenu(sections, sectionIsTags = True):
         boardsRender = [renderSection(section) for section in sections]
     joiner = (g.OPT.dvachStyleMenu and '//') or '] ['
     return '[%s]' % (joiner.join(boardsRender))
+"""
 
+"""
 def itemsToSection(items):
-    """
+    "" "
     #returns section-like list.
     #items: list of tuples: (name, url, testCase, hint)
     #each item is shown, if it's testCase is True. Rendered to
     #    <a hred="%(url)" title="%(hint)>
-    """
+    "" "
     return [(url, hint, name,) for (name, url, testCase, hint) in items if testCase]
-
+"""
 def templateExists(relName):
     #log.debug(os.path.join(g.OPT.templPath, relName))
     key = os.path.join(g.OPT.templPath, relName)

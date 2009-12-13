@@ -118,7 +118,7 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
                     controller = 'administration/Orphie_Admin', action = 'manageByIp',
                     act = 'show', requirements = dict(ip = r'\d+'))
 
-    def MenuItemIsVisible(self, id, baseController):
+    def menuItemIsVisible(self, id, baseController):
         user = baseController.userInst
         if id == 'id_hsSettings':
             return user.canChangeSettings()
@@ -138,6 +138,8 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
             return user.canMakeInvite()
         if id == 'id_hsViewLogBase':
             return True
+        if id == 'id_view_links_synod':
+            return user.isAdmin()
         return True
 
     def menuItems(self, menuId):
@@ -157,6 +159,8 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
                     MenuItem('id_hsMergeTags', _("Merge tags"), h.url_for('hsMergeTags'), 270, 'id_adminPosts'),
                     MenuItem('id_hsViewLogBase', _("View logs"), h.url_for('hsViewLogBase'), 260, False),
                     )
+        elif menuId == 'topMenu':
+            menu = (MenuItem('id_view_links_synod', _('Holy Synod'), h.url_for('holySynod'), 100, 'id_view_tmLinks'),)
         return menu
 
     def postPanelCallback(self, thread, post, userInst):

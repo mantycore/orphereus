@@ -481,7 +481,6 @@ class Globals(object):
         langMenuId = menuId + get_lang()[0]
         mitems = self.menuCache.get(langMenuId, None)
         if not mitems:
-            print "NOT"
             parentedItems = {}
             uniqueIds = []
             menuProviders = self.implementationsOf(AbstractMenuProvider)
@@ -505,7 +504,6 @@ class Globals(object):
                 parentedItems[key] = sorted(parentedItems[key], itemsscmp)
             self.menuCache[langMenuId] = parentedItems
             mitems = parentedItems
-        print mitems
         return mitems
 
     def extractFromConfigs(self, elementName):

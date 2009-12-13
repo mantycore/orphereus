@@ -92,23 +92,30 @@ class AnalyseCommand(command.Command):
         header = """digraph Orphie {
 ranksep=3;\n
 ratio=auto;\n
+overlap=false;\n
 node [style=filled];
 """
         f.write(header)
 
         rex = re.compile(r'&gt;&gt;(\d+)')
+        def colorFor(post, postPos, postsCount):
+            hexcolor = '#%02x%02x%02x' % (0, 230, 255.0 * postPos / postsCount)
+            return hexcolor
+
         for threadId in postIds:
             thread = Post.getPost(threadId)
             if not thread.parentid:
-                f.write("node [shape=box, color=lightgrey];\n")
+                f.write("node [shape=box, color=red];\n")
                 f.write('"%d";\n' % thread.id)
-                f.write("node [shape=ellipse, color=lightblue2];\n")
+                #f.write("node [shape=ellipse, color=lightblue2];\n")
                 posts = Post.getThread(threadId)
                 previd = None
-                for post in posts:
+                postsCount = len(posts)
+                for postPos, post in enumerate(posts):
+                    f.write('node [shape=ellipse, color="%s"];\n' % colorFor(post, postPos, postsCount))
                     if previd:
                         #f.write('"%d" -> "%d" [dir=none, color=green];\n' % (previd, post.id))
-                        f.write('"%d" -> "%d" [color=green, len=2];\n' % (previd, post.id))
+                        f.write('"%d" -> "%d" [color=green];\n' % (previd, post.id))
                     previd = post.id
                     links = re.findall(rex, post.message)
                     links = map(lambda x: int(x), links)
@@ -120,9 +127,10 @@ node [style=filled];
                             elif target.parentid:
                                 f.write('"%d" -> "%d" [color=red];\n' % (post.id, link))
                             else:
-                                f.write("node [shape=box, color=lightgrey];\n")
+                                f.write("node [shape=box, color=lightblue2];\n")
                                 f.write('"%d" -> "%d" [color=red];\n' % (post.id, link))
-                                f.write("node [shape=ellipse, color=lightblue2];\n")
+                                #f.write("node [shape=ellipse, color=lightblue2];\n")
+                                #f.write('node [shape=ellipse, color="%s"];\n' % colorFor(post, postPos, postsCount))
         f.write('}')
         f.close()
         cmd = '%s -v %s -Tpng "%s" -o"%s.png"' % (algo, opt, saveTo, saveTo)

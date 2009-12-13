@@ -98,9 +98,41 @@ node [style=filled];
         f.write(header)
 
         rex = re.compile(r'&gt;&gt;(\d+)')
-        def colorFor(post, postPos, postsCount):
-            hexcolor = '#%02x%02x%02x' % (0, 230, 255.0 * postPos / postsCount)
-            return hexcolor
+        #def colorFor(post, postPos, postsCount):
+        #    hexcolor = '#%02x%02x%02x' % (170, 170, 170 + (255 - 170) * postPos / postsCount)
+        #    return hexcolor
+
+        def gradient(start, end, length):
+            __sr = int(start[0:2].upper(), 16) # 0
+            __sg = int(start[2:4].upper(), 16) # 0
+            __sb = int(start[4:6].upper(), 16) # 0
+            __er = int(end[0:2].upper(), 16) # 255
+            __eg = int(end[2:4].upper(), 16) # 255
+            __eb = int(end[4:6].upper(), 16) # 255
+            stepr = (__er - __sr) / (length - 1) # 63
+            stepg = (__eg - __sg) / (length - 1) # 63
+            stepb = (__eb - __sb) / (length - 1) # 63
+            colors = [0] * length
+            for i in range(0, length):
+                if i == 0:
+                    # first color
+                    r = '%02X' % __sr
+                    g = '%02X' % __sg
+                    b = '%02X' % __sb
+                elif i == length - 1:
+                    # last color
+                    r = '%02X' % __er
+                    g = '%02X' % __eg
+                    b = '%02X' % __eb
+                else:
+                    # middle color
+                    r = '%02X' % (__sr + int(stepr) * i)
+                    g = '%02X' % (__sg + int(stepg) * i)
+                    b = '%02X' % (__sb + int(stepb) * i)
+
+                colors[i] = r + g + b
+
+            return colors
 
         for threadId in postIds:
             thread = Post.getPost(threadId)
@@ -111,8 +143,12 @@ node [style=filled];
                 posts = Post.getThread(threadId)
                 previd = None
                 postsCount = len(posts)
+                grad = gradient('995555', '5555ff', postsCount)
                 for postPos, post in enumerate(posts):
-                    f.write('node [shape=ellipse, color="%s"];\n' % colorFor(post, postPos, postsCount))
+                    if postPos == postsCount - 1:
+                        f.write('node [shape=ellipse, color="blue"];\n')
+                    else:
+                        f.write('node [shape=ellipse, color="#%s"];\n' % grad[postPos])
                     if previd:
                         #f.write('"%d" -> "%d" [dir=none, color=green];\n' % (previd, post.id))
                         f.write('"%d" -> "%d" [color=green];\n' % (previd, post.id))

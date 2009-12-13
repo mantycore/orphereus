@@ -108,7 +108,7 @@ node [style=filled];
                 for post in posts:
                     if previd:
                         #f.write('"%d" -> "%d" [dir=none, color=green];\n' % (previd, post.id))
-                        f.write('"%d" -> "%d" [color=green];\n' % (previd, post.id))
+                        f.write('"%d" -> "%d" [color=green, len=2];\n' % (previd, post.id))
                     previd = post.id
                     links = re.findall(rex, post.message)
                     links = map(lambda x: int(x), links)

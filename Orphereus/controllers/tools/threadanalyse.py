@@ -93,8 +93,8 @@ class AnalyseCommand(command.Command):
         header = """digraph Orphie {
 ranksep=3;\n
 ratio=auto;\n
-pack=false;
-model=circuit;
+pack=true;
+model=subset;
 normalize=true;
 node [style=filled];
 """

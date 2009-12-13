@@ -20,21 +20,26 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-from Orphereus.lib.base import *
-from Orphereus.model import *
 import sqlalchemy
 import time
 import re
+from webhelpers.html.tags import link_to
+
+from Orphereus.model import *
+from Orphereus.lib.base import *
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.constantValues import *
+from Orphereus.lib.cachedutils import *
 from Orphereus.lib.interfaces.AbstractHomeExtension import AbstractHomeExtension
-from OrphieBaseController import OrphieBaseController
+from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
 from Orphereus.lib.BasePlugin import BasePlugin
+from Orphereus.lib.MenuItem import MenuItem
+from OrphieBaseController import OrphieBaseController
 
 import logging
 log = logging.getLogger(__name__)
 
-class OrphieViewPlugin(BasePlugin):
+class OrphieViewPlugin(BasePlugin, AbstractMenuProvider):
     def __init__(self):
         config = {'name' : N_('Threads and boards (Obligatory)'),
                   'deps' : ('base_public', 'base_posting')
@@ -88,10 +93,52 @@ class OrphieViewPlugin(BasePlugin):
                     tempid = 0,
                     requirements = dict(page = r'\d+'))
 
+    def menuItems(self, menuId):
+        menu = None
+        if menuId == "topMenu":
+            menu = [MenuItem('id_view_tmSpecialPagesTop', _("Special pages"), None, 100, False),
+                    MenuItem('id_view_tmSpecialPages', _("Special pages"), None, 100, 'id_view_tmSpecialPagesTop'),
+                    MenuItem('id_view_tmBoards', _("Boards"), None, 200, False),
+                    MenuItem('id_view_tmLinksTop', _("Links"), None, 300, False, collapse = True),
+                    MenuItem('id_view_tmLinks', _("Links"), None, 100, 'id_view_tmLinksTop'),
+
+                    MenuItem('id_view_overview', _("~"), h.url_for('boardBase', board = '~'), 100, 'id_view_tmSpecialPages',
+                             _('Overview')),
+                    MenuItem('id_view_related', _("@"), h.url_for('boardBase', board = '@'), 200, 'id_view_tmSpecialPages',
+                             _('Related threads')),
+                    MenuItem('id_view_mythreads', _("*"), h.url_for('boardBase', board = '*'), 300, 'id_view_tmSpecialPages',
+                             _('My threads')),
+                    MenuItem('id_view_homepage', _("!"), h.url_for('boardBase', board = '!'), 400, 'id_view_tmSpecialPages',
+                             _('Home')),
+                    ]
+
+            tagsections = g.caches.setdefaultEx('boardlist', chBoardList)
+            for section, sectionName, sectionId in tagsections:
+                submenuId = 'id_view_tagsection_%d' % sectionId
+                menu.append(MenuItem(submenuId, sectionName, None, 200 + sectionId * 5, 'id_view_tmBoards'))
+
+                for id, tag in enumerate(section):
+                    menu.append(MenuItem('id_view_tag_%s' % tag.tag,
+                                         tag.tag,
+                                         h.url_for('boardBase', board = tag.tag),
+                                         id,
+                                         submenuId,
+                                         tag.comment))
+
+            menu.append(MenuItem("id_view_links_caption", _("Other"), None, 100, 'id_view_tmLinks'))
+            for id, link in enumerate(g.additionalLinks):
+                menu.append(MenuItem("id_view_link_%s" % link[0], link[1], link[0], 100 + id, 'id_view_tmLinks'))
+        return menu
+
+    def MenuItemIsVisible(self, id, baseController):
+        #user = baseController.userInst
+        return id.startswith('id_view_')
+
 class OrphieViewController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
+        self.requestForMenu("topMenu", False)
 
     def showStatic(self, page):
         fpath = os.path.join(g.OPT.templPath, self.getTemplatePaths('static.%s' % page)[0])

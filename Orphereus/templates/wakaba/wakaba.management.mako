@@ -25,7 +25,7 @@
                 <tbody>
                     <tr>
                     <td class="adminMenu" style="width: 200px;">
-                        <%include file="wakaba.simpleMenu.mako" args="menuId='managementMenu', menuSource=c.builtMenus, currentItemId = c.currentItemId" />
+                        <%include file="wakaba.menuLinear.mako" args="menuId='managementMenu', menuSource=c.builtMenus, currentItemId = c.currentItemId" />
                     </td>
                     <td style="vertical-align: top;">
         %endif

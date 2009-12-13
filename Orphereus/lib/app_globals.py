@@ -469,12 +469,19 @@ class Globals(object):
 
         _log.info('COMPLETED PLUGINS CONNECTION STAGE')
 
+    def invalidateMenuCache(self, menuId):
+        if menuId in self.menuCache:
+            self.menuCache[menuId] = None
+        else:
+            _log.warning("Nothing to invalidate: %s" % str(menuId))
+
     def getMenuItems(self, menuId):
         def itemsscmp(a, b):
             return cmp(a.weight, b.weight)
-        id = menuId + get_lang()[0]
-        mitems = self.menuCache.get(id, False)
+        langMenuId = menuId + get_lang()[0]
+        mitems = self.menuCache.get(langMenuId, None)
         if not mitems:
+            print "NOT"
             parentedItems = {}
             uniqueIds = []
             menuProviders = self.implementationsOf(AbstractMenuProvider)
@@ -496,8 +503,9 @@ class Globals(object):
 
             for key in parentedItems.keys():
                 parentedItems[key] = sorted(parentedItems[key], itemsscmp)
-            self.menuCache[id] = parentedItems
+            self.menuCache[langMenuId] = parentedItems
             mitems = parentedItems
+        print mitems
         return mitems
 
     def extractFromConfigs(self, elementName):

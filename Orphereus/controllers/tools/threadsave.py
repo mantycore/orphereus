@@ -24,7 +24,6 @@ from tempfile import mkdtemp
 from webhelpers.html.tags import link_to
 
 from Orphereus.lib.BasePlugin import BasePlugin
-from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.base import *
 from Orphereus.lib.interfaces.AbstractPageHook import AbstractPageHook
 from Orphereus.model import *

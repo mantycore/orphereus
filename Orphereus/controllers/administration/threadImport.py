@@ -70,11 +70,11 @@ class ImportWorker():
     cutMessage = False
     cutLength = 1024
     url_for = h.url_for
-    
+
     def __init__(self, **option_kwargs):
         for option in option_kwargs:
             setattr(self, option, option_kwargs[option])
-        
+
     def fixReferences(self, text):
         def replacer(match):
             postId = match.groups()[0]
@@ -182,7 +182,7 @@ class ThreadimportController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
-            self.requestForMenu("managementMenu")
+            self.requestForMenu("managementMenu", True)
 
     def initChecks(self):
         if not self.currentUserIsAuthorized():

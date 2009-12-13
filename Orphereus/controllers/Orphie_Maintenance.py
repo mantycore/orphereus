@@ -597,7 +597,7 @@ class MaintenancePlugin(BasePlugin, AbstractPostingHook, AbstractMenuProvider):
 class OrphieMaintenanceController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        self.requestForMenu("managementMenu")
+        self.requestForMenu("managementMenu", True)
 
     def mtnAction(self, actid): #, secid):
         #secTestPassed = False

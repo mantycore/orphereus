@@ -25,7 +25,6 @@ from webhelpers.html.tags import link_to
 from string import *
 
 from Orphereus.lib.BasePlugin import BasePlugin
-from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.miscUtils import *
 from Orphereus.lib.base import *
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook

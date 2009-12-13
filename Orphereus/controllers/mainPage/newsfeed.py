@@ -24,7 +24,6 @@ from pylons.i18n import N_
 from string import *
 
 from Orphereus.lib.BasePlugin import BasePlugin
-from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.base import *
 from Orphereus.model import *

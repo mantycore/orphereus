@@ -64,7 +64,7 @@ class OrphieBaseController(BaseController):
         c.uidNumber = self.userInst.uidNumber
         if self.userInst.isValid():
             c.jsFiles = g.OPT.jsFiles[self.userInst.template]
-        self.requestedMenus = []
+        self.requestedMenus = {}
         self.builtMenus = {}
 
         # IP ban checks
@@ -197,17 +197,25 @@ class OrphieBaseController(BaseController):
                     toLog(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, getUserIp(), filterText(request.headers.get('User-Agent', '?'))))
                     redirect_to(str(redir))
 
-    def requestForMenu(self, menuId):
+    def requestForMenu(self, menuId, linearize):
         if not menuId in self.requestedMenus:
-            self.requestedMenus.append(menuId)
+            self.requestedMenus[menuId] = {'linearize' : linearize}
 
-    def buildMenu(self, id, level, source, target):
+    def buildLinearMenu(self, id, level, source, target):
         if source and id in source:
             for item in source[id]:
-                #test = item.plugin.menuTest()
-                if  item.plugin.MenuItemIsVisible(item.id, self): # (not test or (test and test(item.id, self))):
+                if  item.plugin.MenuItemIsVisible(item.id, self):
                     target.append((item, level))
-                    self.buildMenu(item.id, level + 1, source, target)
+                    self.buildLinearMenu(item.id, level + 1, source, target)
+
+    """
+    def buildMenu(self, id,source, targetList):
+        if source and id in source:
+            for item in source[id]:
+                if  item.plugin.MenuItemIsVisible(item.id, self):
+                    target.append((item, level))
+                    self.buildLinearMenu(item.id, level + 1, source, target)
+    """
 
     def fastRender(self, tname, **options):
         return self._fastRender(self.fastTemplatePath(tname), **options)
@@ -246,10 +254,15 @@ class OrphieBaseController(BaseController):
 
         for menuName in self.requestedMenus:
             menu = []
-            self.buildMenu(False, 0, g.getMenuItems(menuName), menu)
+            menuItems = g.getMenuItems(menuName)
+            if self.requestedMenus[menuName]['linearize']:
+                self.buildLinearMenu(False, 0, menuItems, menu)
+            else:
+                menu = menuItems
             if menu:
                 self.builtMenus[menuName] = menu
         c.builtMenus = self.builtMenus
+        print c.builtMenus
         #log.debug(self.builtMenus)
 
         if g.OPT.devMode:

@@ -27,6 +27,7 @@ available to Controllers. This module is available to both as 'h'.
 from webhelpers import *
 from pylons import config, request, c, g, config
 from pylons.i18n import get_lang, set_lang
+from webhelpers.html.tags import link_to
 import miscUtils as utils
 import pylons as __pylons
 
@@ -148,6 +149,53 @@ def modLink(filePath, secid, hidePrefixes = False):
             return baseName
 
     return filePath
+
+def renderTopLink(menuitem):
+    return '<b>%s</b>' % link_to(menuitem.text,
+                   menuitem.route or '#',
+                   title = menuitem.hint,
+                   onclick = menuitem.onclick)
+
+def renderCollapsedLink(menuitem):
+    return '%s' % link_to(menuitem.text,
+                   menuitem.route or '#',
+                   title = menuitem.hint,
+                   onclick = menuitem.onclick)
+
+def renderSubLink(menuitem):
+    texttemplate = g.OPT.dvachStyleMenu and '%s' or '/%s/'
+    return '<b>%s</b>' % link_to(texttemplate % menuitem.text,
+                   menuitem.route or '#',
+                   title = menuitem.hint,
+                   onclick = menuitem.onclick)
+
+def renderNCSection(section, splitter):
+    return splitter.join([renderSubLink(subsubitem) for subsubitem in section])
+
+def renderNCTop(items, source):
+    ilen = len(items)
+    elements = []
+    splitter = (g.OPT.dvachStyleMenu and '/') or ''
+    subSplitter = (g.OPT.dvachStyleMenu and '//') or '] ['
+    for pos, item in enumerate(items):
+        atBegin = (pos == 0)
+        atEnd = (pos == (ilen - 1))
+        subitems = source.get(item.id, None)
+        if subitems:
+            element = renderNCSection(subitems, splitter)
+            if not atEnd:
+                element += subSplitter
+            elements.append(element)
+        else:
+            element = renderTopLink(item)
+            if not atEnd:
+                element += subSplitter
+            elements.append(element)
+    return ''.join(elements)
+
+    #linkTemplate = (g.OPT.dvachStyleMenu and r'<a href="%s" title="%s" onclick="%s"><b>%s</b></a>') \
+    #                    or r'<a href="%s" title="%s" onclick="%s"><b>/%s/</b></a>'
+    #return linkTemplate % (href, title, onclick, text)
 
 def renderSection(section):
     linkTemplate = (g.OPT.dvachStyleMenu and r'<a href="%s" title="%s"><b>%s</b></a>') \

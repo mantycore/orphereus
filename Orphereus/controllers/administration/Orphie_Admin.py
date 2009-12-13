@@ -199,7 +199,7 @@ class OrphieAdminController(OrphieBaseController):
         c.userInst = self.userInst
         if not checkAdminIP():
             return redirect_to('boardBase')
-        self.requestForMenu("managementMenu")
+        self.requestForMenu("managementMenu", True)
 
     def index(self):
         c.boardName = _('Index')
@@ -625,6 +625,7 @@ class OrphieAdminController(OrphieBaseController):
             else:
                 c.message = _("Board name should be non-empty and should contain only valid symbols")
         g.caches.invalidate('boardlist')
+        g.invalidateMenuCache('topMenu')
         return self.render('manageBoard')
 
     def manageUsers(self):

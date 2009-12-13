@@ -65,7 +65,7 @@ class SetsmgrController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
-            self.requestForMenu("managementMenu")
+            self.requestForMenu("managementMenu", True)
 
     def __init__(self):
         self.settings = self.getSettingsDict(Setting.getAll())

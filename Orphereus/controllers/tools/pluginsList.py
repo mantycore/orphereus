@@ -47,7 +47,7 @@ class PluginslistController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
-            self.requestForMenu("managementMenu")
+            self.requestForMenu("managementMenu", True)
 
     def show(self):
         if not self.currentUserIsAuthorized():

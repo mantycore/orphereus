@@ -41,6 +41,12 @@ ${h.headCallback(c)}
   %endif
 %endif
 
+<div class="adminbar">
+<span class="boardlist">
+<%include file="wakaba.menuSimple.mako" args="menuId='topMenu', menuSource=c.builtMenus, currentItemId = 'none' " />
+</span>
+</div>
+
 %if not c.disableLogo:
 <%include file="wakaba.logo.mako" />
 %endif

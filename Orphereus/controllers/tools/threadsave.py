@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-import re, shutil, tarfile
+import re, shutil, tarfile, os
 from tempfile import mkdtemp
 from webhelpers.html.tags import link_to
 
@@ -51,6 +51,10 @@ class UserTagsPlugin(BasePlugin, AbstractPageHook):
 # this import MUST be placed after public definitions to avoid loop importing
 from OrphieBaseController import OrphieBaseController
 
+def safeCopy(self, src, dest, baseSrcDir, baseDestDir):
+    if os.path.abspath(src).startswith(baseSrcDir) and os.path.abspath(dest).startswith(baseDestDir):
+          shutil.copyfile(src, dest)
+
 class ThreadsaveController(OrphieBaseController):
     def __init__(self):
         OrphieBaseController.__before__(self)
@@ -70,9 +74,18 @@ class ThreadsaveController(OrphieBaseController):
         html = re.sub('%s[^"]+/([^"]+")' % meta.globj.OPT.filesPathWeb, r'files/\1', html)
 
         #html = re.sub('f="/\d+(#i\d+)', r'f="\1', html)
+        dir = filter(lambda s: re.sub("[^a-zA-Z@\d]","",s), dir) 
         map(lambda dir: dir and os.mkdir('%s/%s' % (self.path, dir)), dirs)
-        map(lambda fn: shutil.copyfile('%s/%s' % (meta.globj.OPT.staticPath, fn), '%s/%s' % (self.path, fn)) , staticFiles)
-        map(lambda fn: shutil.copyfile('%s/%s' % (meta.globj.OPT.uploadPath, fn), '%s/files/%s' % (self.path, os.path.basename(fn))), postFiles)
+        map(lambda fn: safeCopy('%s/%s' % (meta.globj.OPT.staticPath, fn), 
+                                '%s/%s' % (self.path, fn), 
+                                meta.globj.OPT.staticPath, 
+                                self.path), 
+                        staticFiles)
+        map(lambda fn: safeCopy('%s/%s' % (meta.globj.OPT.uploadPath, fn), 
+                                '%s/files/%s' % (self.path, os.path.basename(fn)),
+                                meta.globj.OPT.uploadPath, 
+                                self.path), 
+                        postFiles)
         return html
 
     def loadThread(self):

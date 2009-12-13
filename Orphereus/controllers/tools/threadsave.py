@@ -31,7 +31,7 @@ from Orphereus.model import *
 import logging
 log = logging.getLogger(__name__)
 
-class UserTagsPlugin(BasePlugin, AbstractPageHook):
+class ThreadSavePlugin(BasePlugin, AbstractPageHook):
     def __init__(self):
         config = {'name' : N_('Thread saving plugin'),
                   'deps' : ('base_view',)
@@ -48,8 +48,7 @@ class UserTagsPlugin(BasePlugin, AbstractPageHook):
     def threadPanelCallback(self, thread, userInst):
         return link_to(_("[Save]"), h.url_for('saveThread', post = thread.id), target = "_blank")
 
-# this import MUST be placed after public definitions to avoid loop importing
-from OrphieBaseController import OrphieBaseController
+from Orphereus.controllers.OrphieBaseController import OrphieBaseController
 
 def safeCopy(src, dest, baseSrcDir, baseDestDir):
     if os.path.abspath(src).startswith(baseSrcDir) and os.path.abspath(dest).startswith(baseDestDir):
@@ -74,17 +73,17 @@ class ThreadsaveController(OrphieBaseController):
         html = re.sub('%s[^"]+/([^"]+")' % meta.globj.OPT.filesPathWeb, r'files/\1', html)
 
         #html = re.sub('f="/\d+(#i\d+)', r'f="\1', html)
-        dirs = filter(lambda s: re.sub("[^a-zA-Z@\d]","",s), dirs) 
+        dirs = filter(lambda s: re.sub("[^a-zA-Z@\d]", "", s), dirs)
         map(lambda dir: dir and os.mkdir('%s/%s' % (self.path, dir)), dirs)
-        map(lambda fn: safeCopy('%s/%s' % (meta.globj.OPT.staticPath, fn), 
-                                '%s/%s' % (self.path, fn), 
-                                meta.globj.OPT.staticPath, 
-                                self.path), 
+        map(lambda fn: safeCopy('%s/%s' % (meta.globj.OPT.staticPath, fn),
+                                '%s/%s' % (self.path, fn),
+                                meta.globj.OPT.staticPath,
+                                self.path),
                         staticFiles)
-        map(lambda fn: safeCopy('%s/%s' % (meta.globj.OPT.uploadPath, fn), 
+        map(lambda fn: safeCopy('%s/%s' % (meta.globj.OPT.uploadPath, fn),
                                 '%s/files/%s' % (self.path, os.path.basename(fn)),
-                                meta.globj.OPT.uploadPath, 
-                                self.path), 
+                                meta.globj.OPT.uploadPath,
+                                self.path),
                         postFiles)
         return html
 

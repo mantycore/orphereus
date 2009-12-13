@@ -200,6 +200,7 @@ class UserinvitesController(OrphieBaseController):
     def __init__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
+        self.requestForMenu("topMenu", False)
 
     def manageInvites(self, act):
         if self.userInst.Anonymous:

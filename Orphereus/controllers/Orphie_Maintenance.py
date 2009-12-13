@@ -598,6 +598,7 @@ class OrphieMaintenanceController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.requestForMenu("managementMenu", True)
+        self.requestForMenu("topMenu", False)
 
     def mtnAction(self, actid): #, secid):
         #secTestPassed = False

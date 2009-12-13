@@ -183,6 +183,7 @@ class ThreadimportController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
             self.requestForMenu("managementMenu", True)
+        self.requestForMenu("topMenu", False)
 
     def initChecks(self):
         if not self.currentUserIsAuthorized():

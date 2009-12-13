@@ -217,6 +217,7 @@ class UsertagsController(OrphieBaseController):
     def __init__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
+        self.requestForMenu("topMenu", False)
 
     def postTags(self, post, act, tagid):
         if self.userInst.Anonymous:

@@ -58,6 +58,7 @@ class OrphieSearchController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
+        self.requestForMenu("topMenu", False)
 
     def search(self, text, page = 0):
         rawtext = text

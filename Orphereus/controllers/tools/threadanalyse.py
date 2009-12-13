@@ -79,7 +79,7 @@ class AnalyseCommand(command.Command):
         print "Saved to:", self.analyse([])[0]
 
     @staticmethod
-    def analyse(postIds, algo = 'dot', opt = ''): # algo = 'neato', opt='-Kneato'
+    def analyse(postIds, algo = 'neato', opt = '-Kneato'): # algo = 'neato', opt='-Kneato' \\ algo = 'dot', opt = ''
         if not postIds:
             allThreads = meta.Session.query(Post.id).filter(Post.parentid == None).all()
             postIds = map(lambda x: x[0], allThreads)

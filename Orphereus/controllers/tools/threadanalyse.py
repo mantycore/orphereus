@@ -89,27 +89,26 @@ class AnalyseCommand(command.Command):
         if not os.path.exists(savePath):
             os.mkdir(savePath)
         f = open(saveTo, 'w+')
-        #overlap=false;\n
+        #overlap=false;\n model=circuit;
         header = """digraph Orphie {
 ranksep=3;\n
 ratio=auto;\n
-pack=true;
-overlap=orthoxy;
-model=circuit;
+pack=true;\n
+overlap=orthoxy;\n
 node [style=filled];
 """
         f.write(header)
 
         rex = re.compile(r'&gt;&gt;(\d+)')
         def colorFor(post, postPos, postsCount):
-            hexcolor = '#0900c1%02x' % (255 * postPos / postsCount)
+            hexcolor = '#0900c1%02x' % (40 + ((255 - 40) * postPos / postsCount))
             return hexcolor
 
 
         for threadId in postIds:
             thread = Post.getPost(threadId)
             if not thread.parentid:
-                f.write('node [shape=doublecircle, color="#3000b9"];\n')
+                f.write('node [shape=doublecircle, color="green"];\n')
                 f.write('"%d";\n' % thread.id)
                 #f.write("node [shape=ellipse, color=lightblue2];\n")
                 posts = Post.getThread(threadId)
@@ -118,7 +117,7 @@ node [style=filled];
                 #grad = gradient('3000b9', 'b90000', postsCount)
                 for postPos, post in enumerate(posts):
                     if postPos == postsCount - 1:
-                        f.write('node [shape=circle, color="#0900c1"];\n')
+                        f.write('node [shape=circle, color="red"];\n')
                     else:
                         f.write('node [shape=box, color="%s"];\n' % colorFor(post, postPos, postsCount))
                     if previd:

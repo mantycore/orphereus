@@ -89,11 +89,10 @@ class AnalyseCommand(command.Command):
         if not os.path.exists(savePath):
             os.mkdir(savePath)
         f = open(saveTo, 'w+')
-        #
+        #overlap=false;\n
         header = """digraph Orphie {
 ranksep=3;\n
 ratio=auto;\n
-overlap=false;\n
 node [style=filled];
 """
         f.write(header)

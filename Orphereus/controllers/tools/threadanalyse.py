@@ -137,18 +137,18 @@ node [style=filled];
         for threadId in postIds:
             thread = Post.getPost(threadId)
             if not thread.parentid:
-                f.write("node [shape=box, color=red];\n")
+                f.write('node [shape=doublecircle, color="#3000b9"];\n')
                 f.write('"%d";\n' % thread.id)
                 #f.write("node [shape=ellipse, color=lightblue2];\n")
                 posts = Post.getThread(threadId)
                 previd = None
                 postsCount = len(posts)
-                grad = gradient('995555', '5555ff', postsCount)
+                grad = gradient('3000b9', 'b90000', postsCount)
                 for postPos, post in enumerate(posts):
                     if postPos == postsCount - 1:
-                        f.write('node [shape=ellipse, color="blue"];\n')
+                        f.write('node [shape=circle, color="#b90000"];\n')
                     else:
-                        f.write('node [shape=ellipse, color="#%s"];\n' % grad[postPos])
+                        f.write('node [shape=box, color="#%s"];\n' % grad[postPos])
                     if previd:
                         #f.write('"%d" -> "%d" [dir=none, color=green];\n' % (previd, post.id))
                         f.write('"%d" -> "%d" [color=green, len=0.6];\n' % (previd, post.id))

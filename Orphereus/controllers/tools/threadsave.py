@@ -74,7 +74,7 @@ class ThreadsaveController(OrphieBaseController):
         html = re.sub('%s[^"]+/([^"]+")' % meta.globj.OPT.filesPathWeb, r'files/\1', html)
 
         #html = re.sub('f="/\d+(#i\d+)', r'f="\1', html)
-        dir = filter(lambda s: re.sub("[^a-zA-Z@\d]","",s), dir) 
+        dirs = filter(lambda s: re.sub("[^a-zA-Z@\d]","",s), dirs) 
         map(lambda dir: dir and os.mkdir('%s/%s' % (self.path, dir)), dirs)
         map(lambda fn: safeCopy('%s/%s' % (meta.globj.OPT.staticPath, fn), 
                                 '%s/%s' % (self.path, fn), 

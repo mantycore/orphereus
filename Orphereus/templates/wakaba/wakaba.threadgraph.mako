@@ -15,3 +15,5 @@ ${_('Image format:')}
 <input type="hidden" name="proceed" value="" />
 <input type="submit" value="${_('Make graph!')}" />
 </form>
+
+<hr/>

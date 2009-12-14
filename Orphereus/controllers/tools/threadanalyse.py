@@ -127,9 +127,12 @@ node [style=filled];
                         f.write('node [shape=circle, color="red"];\n')
                     else:
                         f.write('node [shape=box, color="%s"];\n' % colorFor(post, postPos, postsCount))
-                    if previd and showThreadLines:
-                        #f.write('"%d" -> "%d" [dir=none, color=green];\n' % (previd, post.id))
-                        f.write('"%d" -> "%d" [color=green];\n' % (previd, post.id))
+                    if previd:
+                        if showThreadLines:
+                            #f.write('"%d" -> "%d" [dir=none, color=green];\n' % (previd, post.id))
+                            f.write('"%d" -> "%d" [color=green];\n' % (previd, post.id))
+                        else:
+                            f.write('"%d";\n' % (post.id))
                     previd = post.id
                     links = re.findall(rex, post.message)
                     links = map(lambda x: int(x), links)

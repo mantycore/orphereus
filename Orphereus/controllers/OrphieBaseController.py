@@ -65,7 +65,6 @@ class OrphieBaseController(BaseController):
         if self.userInst.isValid():
             c.jsFiles = g.OPT.jsFiles[self.userInst.template]
         self.requestedMenus = {}
-        log.error("!!")
         self.disabledMenus = []
         self.builtMenus = {}
 
@@ -97,12 +96,6 @@ class OrphieBaseController(BaseController):
 
         for plugin in g.plugins:
             plugin.beforeRequestCallback(self)
-        """
-            hook = plugin.requestHook()
-            if hook:
-                log.error('config{} is deprecated')
-                hook(self)
-        """
 
         if g.firstRequest:
             g.firstRequest = False
@@ -134,7 +127,6 @@ class OrphieBaseController(BaseController):
 
     def initEnvironment(self):
         self.requestForMenu("topMenu", False)
-        log.debug(self.requestedMenus)
         c.title = g.OPT.title
         c.boardlist = g.caches.setdefaultEx('boardlist', chBoardList)
         #c.sectionNames = g.caches.setdefaultEx('sectionNames', chSectionNames, c.boardlist)
@@ -206,7 +198,6 @@ class OrphieBaseController(BaseController):
             self.requestedMenus[menuId] = {'linearize' : linearize}
 
     def disableMenu(self, menuId):
-        log.error("dis")
         if not menuId in self.disabledMenus:
             self.disabledMenus.append(menuId)
         if menuId in self.requestedMenus:
@@ -265,7 +256,6 @@ class OrphieBaseController(BaseController):
 
         #fpath = os.path.join(g.OPT.templPath, tpath)
         #log.debug ("Tpath:  %s ; Fpath: %s" %(tpath,fpath))
-        log.debug(self.requestedMenus)
         for menuName in self.requestedMenus:
             menuItems = g.getMenuItems(menuName)
             menu = None

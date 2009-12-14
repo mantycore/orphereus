@@ -61,11 +61,11 @@ class User(AbstractUser):
         if value != None:
             setattr(self.options, name, value)
 
-    def __init__(self, uid, createOptions = True):
+    def __init__(self, uid, createOptions = True, setRO = False):
         self.uid = uid
         if createOptions:
             self.options = UserOptions()
-            UserOptions.initDefaultOptions(self.options, meta.globj.OPT)
+            UserOptions.initDefaultOptions(self.options, meta.globj.OPT, setRO)
 
     @staticmethod
     def getStats():
@@ -73,9 +73,10 @@ class User(AbstractUser):
 
     @staticmethod
     def create(uid, readonly = False):
-        user = User(uid)
+        user = User(uid, True, readonly)
         user.options.readonly = readonly
         meta.Session.add(user)
+        meta.Session.add(user.options)
         meta.Session.commit()
         return user
 
@@ -85,8 +86,10 @@ class User(AbstractUser):
         if ret:
             if meta.globj: #TODO: legacy code
                 if ret and not ret.options:
+                    log.error("EMPTY OPT OBJECT FOR USER %d" % ret.uidNumber)
                     ret.options = UserOptions()
                     UserOptions.initDefaultOptions(ret.options, meta.globj.OPT)
+                    meta.Session.add(ret.options)
                     meta.Session.commit()
 
             ret.Anonymous = False

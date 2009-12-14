@@ -87,7 +87,7 @@ class UserOptions(object):
         return ret
 
     @staticmethod
-    def initDefaultOptions(optionsObject, globalOptHolder):
+    def initDefaultOptions(optionsObject, globalOptHolder, setRO = False):
         optionsObject.isAdmin = False
         optionsObject.canDeleteAllPosts = False
         optionsObject.canMakeInvite = False
@@ -99,7 +99,7 @@ class UserOptions(object):
         optionsObject.canManageMappings = False
         optionsObject.canRunMaintenance = False
         optionsObject.bantime = 0
-        optionsObject.readonly = False
+        optionsObject.readonly = setRO
         #
         optionsObject.template = globalOptHolder.templates[0]
         optionsObject.style = globalOptHolder.cssFiles[optionsObject.template][0]

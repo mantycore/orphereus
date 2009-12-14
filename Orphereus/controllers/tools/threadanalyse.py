@@ -194,10 +194,11 @@ class ThreadanalyseController(OrphieBaseController):
     #    shutil.rmtree(self.path, True)
 
     def graph(self, post):
-        self.path = mkdtemp()
-        self.tid = post
         c.postId = post
         if 'proceed' in request.POST:
+            post = Post.getPost(int(post))
+            if not post or not h.postEnabledToShow(postInst, self.userInst):
+                return self.error(_("Post not found"))
             showThreadLines = bool(request.POST.get('showThreadLines', False))
             format = filterText(request.POST.get('format', 'png')).strip()
             format = format[:3] # excessive restrictions applied because this string will be sent to commandline

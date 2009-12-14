@@ -220,19 +220,6 @@ class OrphieAjaxController(OrphieBaseController):
             #return redirect_to(str('/%s' % redirect.encode('utf-8')))
         return ''
 
-    def getPost(self, post):
-        postInst = Post.getPost(post)
-        if postInst:
-            if not self.userInst.isAdmin():
-                tocheck = postInst
-                if postInst.parentPost:
-                    tocheck = postInst.parentPost
-                for t in tocheck.tags:
-                    if t.adminOnly:
-                        abort(403)
-            return postInst.message
-        abort(404)
-
     @jsonify
     def getMyPostIds(self, thread):
         if self.userInst.Anonymous:
@@ -244,9 +231,12 @@ class OrphieAjaxController(OrphieBaseController):
             return ids
         abort(404)
 
-    def getRenderedPost(self, post):
+    def getPost(self, post):
         postInst = Post.getPost(post)
         if postInst:
+            if not h.postEnabledToShow(postInst, self.userInst):
+                abort(403)
+            """
             if not self.userInst.isAdmin():
                 tocheck = postInst
                 if postInst.parentPost:
@@ -254,6 +244,24 @@ class OrphieAjaxController(OrphieBaseController):
                 for t in tocheck.tags:
                     if t.adminOnly:
                         abort(403)
+            """
+            return postInst.message
+        abort(404)
+
+    def getRenderedPost(self, post):
+        postInst = Post.getPost(post)
+        if postInst:
+            if not h.postEnabledToShow(postInst, self.userInst):
+                abort(403)
+            """
+            if not self.userInst.isAdmin():
+                tocheck = postInst
+                if postInst.parentPost:
+                    tocheck = postInst.parentPost
+                for t in tocheck.tags:
+                    if t.adminOnly:
+                        abort(403)
+            """
             parent = postInst.parentPost
             if not parent:
                 parent = postInst
@@ -267,10 +275,14 @@ class OrphieAjaxController(OrphieBaseController):
         c.board = 'Fake'
         postInst = Post.getPost(thread)
         if postInst and not postInst.parentPost:
+            if not h.postEnabledToShow(postInst, self.userInst):
+                abort(403)
+            """
             if not self.userInst.isAdmin():
                 for t in postInst.tags:
                     if t.adminOnly:
                         abort(403)
+            """
             postInst.Replies = postInst.filterReplies().all()
             self.setRightsInfo()
             return self.render('replies', None, disableFiltering = True, thread = postInst)

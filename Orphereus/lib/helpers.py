@@ -291,10 +291,11 @@ def postEnabledToShow(post, user):
     if user.isAdmin():
         return True
 
+    tocheck = post
     if post.parentPost:
-        post = post.parentPost
+        tocheck = post.parentPost
 
-    for tag in post.tags:
+    for tag in tocheck.tags:
         if tag.adminOnly:
             return False
 

@@ -37,7 +37,11 @@ from email import Encoders
 from Orphereus.lib.constantValues import *
 
 class empty(object):
-    pass
+    def get(self, key, defaultValue = None):
+        if key in self.__dict__.keys(): 
+            return getattr(self, key)
+        else:
+            return defaultValue
 
 class FieldStorageLike(object):
     def __init__(self, filename, filepath):

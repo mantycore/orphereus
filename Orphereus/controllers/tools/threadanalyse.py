@@ -142,10 +142,10 @@ node [style=filled];
                             if target.parentid == thread.id or target.id == thread.id:
                                 f.write('"%d" -> "%d" [color=blue];\n' % (post.id, link))
                             elif target.parentid:
-                                f.write('node [shape=circle, color="darkolivegreen"]');
+                                f.write('node [shape=ellipse, color="darkolivegreen"]');
                                 f.write('"%d" -> "%d" [color=red];\n' % (post.id, link))
                             else:
-                                f.write("node [shape=circle, color=goldenrod1];\n")
+                                f.write("node [shape=circle, color=darkseagreen1];\n")
                                 f.write('"%d" -> "%d" [color=red];\n' % (post.id, link))
                                 #f.write("node [shape=ellipse, color=lightblue2];\n")
                                 #f.write('node [shape=ellipse, color="%s"];\n' % colorFor(post, postPos, postsCount))

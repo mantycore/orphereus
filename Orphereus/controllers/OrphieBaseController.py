@@ -59,6 +59,10 @@ class OrphieBaseController(BaseController):
         if not self.userInst:
             self.userInst = FakeUser()
 
+        if self.userInst.uidNumber == 1031:
+            log.error("1031:: %s" % str(request))
+            log.error("1031:: %s" % str(request.POST))
+            log.error("1031:: %s" % str(request.GET))
         c.userInst = self.userInst
         c.cache = CacheDict()
         c.uidNumber = self.userInst.uidNumber

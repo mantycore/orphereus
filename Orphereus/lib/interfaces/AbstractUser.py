@@ -33,6 +33,12 @@ class EAbstractFunctionCall(Exception):
     def __repr__(self):
         return "Call to abstract function"
 
+def safeListUnpickle(val):
+    try:
+        return pickle.loads(str(val))
+    except:
+        return []
+
 class AbstractUser(object):
     booleanValues = ('hideLongComments',
                           'useFrame',
@@ -79,8 +85,8 @@ class AbstractUser(object):
                'hideThreads' : lambda val: pickle.dumps(val),
               }
 
-    preparators = {'homeExclude' : lambda val: pickle.loads(str(val)),
-                   'hideThreads' : lambda val: pickle.loads(str(val)),
+    preparators = {'homeExclude' : lambda val: safeListUnpickle(val), #lambda val: pickle.loads(str(val)),
+                   'hideThreads' : lambda val: safeListUnpickle(val), #lambda val: pickle.loads(str(val)),
                   }
     simpleValues = booleanValues + intValues + stringValues + pickleValues
 

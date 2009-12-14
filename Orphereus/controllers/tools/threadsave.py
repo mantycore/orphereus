@@ -63,14 +63,14 @@ class ThreadsaveController(OrphieBaseController):
         shutil.rmtree(self.path, True)
 
     def _prepareHtml(self, html):
-        staticFiles = list(set(re.findall('%s([^"]+)"' % meta.globj.OPT.staticPathWeb, html)))
+        staticFiles = list(set(re.findall('%s([^">]+)"' % meta.globj.OPT.staticPathWeb, html)))
         staticFiles = map(lambda s: s.split('?')[0], staticFiles)
         dirs = list(set(map(lambda fn: (fn.find('/') > -1) and fn.split('/')[0] or '', staticFiles)))
         dirs.append('files')
-        html = re.sub('%s([^"]+")' % meta.globj.OPT.staticPathWeb, r'\1', html)
+        html = re.sub('%s([^">]+")' % meta.globj.OPT.staticPathWeb, r'\1', html)
 
         postFiles = list(set(re.findall('%s([^"]+)"' % meta.globj.OPT.filesPathWeb, html)))
-        html = re.sub('%s[^"]+/([^"]+")' % meta.globj.OPT.filesPathWeb, r'files/\1', html)
+        html = re.sub('%s[^">]+/([^">]+")' % meta.globj.OPT.filesPathWeb, r'files/\1', html)
 
         #html = re.sub('f="/\d+(#i\d+)', r'f="\1', html)
         dirs = filter(lambda s: re.sub("[^a-zA-Z@\d]", "", s), dirs)

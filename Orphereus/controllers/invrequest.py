@@ -46,25 +46,54 @@ class RequestPlugin(BasePlugin):
                     action = 'invrequest',
                    )
 
+    def updateGlobals(self, globj):
+        intValues = [('invites', 
+                       ('threadToSaveApplications',)
+                     ),
+                    ]
+        boolValues = [('invites',
+                       ('enableInvitationRequest',)
+                      ),
+                     ]
+
+        if not globj.OPT.eggSetupMode:
+            globj.OPT.registerCfgValues(intValues, CFG_INT)
+            globj.OPT.registerCfgValues(boolValues, CFG_BOOL)
+
 class InvrequestController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        #self.initiate()
         
-    def saveAppl(self, text, mail):
-        Post.createDef(title = 'Request',
-                       message = text,
-                       messageInfo = '<span class="postInfo">Contact: %s</span>' % mail,
-                       parentid = 1)
+    def _captInit(self):
+        captcha = Captcha.create()
+        session['cid'] = captcha.id
+        session.save()
+        c.captcha = captcha
 
     def invrequest(self):
-        c.hideform = False
-        mail, text = filterText(request.POST.get('mail', u'')), filterText(request.POST.get('text', u''))
-        c.mail, c.text = filterText(mail), filterText(text)
-        if mail and text:
-            self.saveAppl(c.text, c.mail)
-            c.message = "Application saved."
+        if not(g.OPT.enableInvitationRequest):
             c.hideform = True
-        elif mail or text:
-            c.message = "Please, fill in all fields."
+            c.message = "Invitation requests are not allowed."
+        else:
+            if session.get('cid', False):
+                c.captcha = Captcha.getCaptcha(session['cid'])
+            if not c.captcha:
+                self._captInit()
+            c.hideform = False
+            mail, text = filterText(request.POST.get('mail', u'')), filterText(request.POST.get('text', u''))
+            c.mail, c.text = filterText(mail), filterText(text)
+            if mail and text:
+                captchaOk = c.captcha.test(request.POST.get('captcha', ''))
+                if not(captchaOk):
+                    self._captInit()
+                    c.message = "Captcha failed." 
+                else:
+                    Post.createDef(title = 'Request',
+                           message = c.text,
+                           messageInfo = '<span class="postInfo">Contact: %s</span>' % c.mail,
+                           parentid = g.OPT.threadToSaveApplications)
+                    c.message = "Application saved."
+                    c.hideform = True
+            elif mail or text:
+                c.message = "Please, fill in all fields."
         return self.render('request')

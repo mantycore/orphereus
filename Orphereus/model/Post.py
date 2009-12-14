@@ -73,8 +73,10 @@ class Post(object):
     @staticmethod
     def create(postParams):
         post = Post()
-        post.secondaryIndex = postParams.get('secondaryIndex', None)
-        post.date = postParams.get('date', None)
+        if postParams.get('secondaryIndex', False):
+            post.secondaryIndex = postParams.get('secondaryIndex')
+        if postParams.get('date', False):
+            post.date = postParams.get('date')
         post.message = postParams.message
         post.messageShort = postParams.messageShort
         post.messageRaw = postParams.messageRaw

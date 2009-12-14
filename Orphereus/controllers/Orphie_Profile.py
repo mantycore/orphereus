@@ -98,6 +98,12 @@ class OrphieProfileController(OrphieBaseController):
             lang = filterText(request.POST.get('lang', self.userInst.lang))
             c.reload = (h.makeLangValid(lang) != self.userInst.lang)
 
+            for valueName in self.userInst.disabledValues:
+                if valueName in request.POST:
+                    log.error("Disabled attribute changing attempt: %s, %d" % (valueName, self.userInst.uidNumber))
+                    user.ban(777, _("Lucky seven!."), -1)
+                    abort(403)
+
             oldUseFrame = self.userInst.useFrame
             for valueName in self.userInst.booleanValues:
                 val = bool(request.POST.get(valueName, False))

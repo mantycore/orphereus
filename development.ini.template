@@ -206,6 +206,9 @@ invites.minimalRecentPostsCount = 45
 invites.minimalAge = 182
 invites.recentPostsPercentage = 5
 invites.inviteIssuingInterval = 7
+invites.enableInvitationRequest = false
+invites.threadToSaveApplications = 0
+
 
 ##################
 # Board defaults #

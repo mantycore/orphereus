@@ -82,10 +82,11 @@ class OrphiePublicPlugin(BasePlugin, AbstractMenuProvider):
     def menuItems(self, menuId):
         menu = None
         if menuId == "topMenu":
+            reloadJS = "parent.top.list.location.reload(true);"
             menu = [MenuItem('id_auth_tmPages', _("Auth pages"), None, 1000, False),
                     MenuItem('id_auth_Login', _("Login"), None, 1100, 'id_auth_tmPages'),
-                    MenuItem('id_auth_Logout', _("Logout"), h.url_for('logout'), 1200, 'id_auth_tmPages'),
-                    MenuItem('id_auth_Kill', _("Kill session"), h.url_for('logout'), 1300, 'id_auth_tmPages'),
+                    MenuItem('id_auth_Logout', _("Logout"), h.url_for('logout'), 1200, 'id_auth_tmPages', onclick = reloadJS, target = "_top"),
+                    MenuItem('id_auth_Kill', _("Kill session"), h.url_for('logout'), 1300, 'id_auth_tmPages', onclick = reloadJS, target = "_top"),
                     MenuItem('id_auth_Reg', _("Register"), h.url_for('register', invite = 'register'), 1400, 'id_auth_tmPages'),
                     ]
         return menu
@@ -143,21 +144,8 @@ class OrphiePublicController(OrphieBaseController):
         # TODO: fix shitty code
         #log.debug('user cap lang: %s' %c.userInst.cLang)
         self.setLang(True)
-
-        """
-            sessionCid = None
-            if session.has_key('anonCaptId'):
-                sessionCid = session['anonCaptId']
-            if session.has_key('cid'):
-                sessionCid = session['cid']
-        """
         pic = Captcha.picture(cid, g.OPT.captchaFont)
-        """
-            if sessionCid:
-                log.debug("%s:%s" % (str(cid), str(sessionCid)))
-                if (str(cid) != str(sessionCid)):
-                   redirect_to('captcha', cid = sessionCid)
-        """
+        # TODO: Why "Wrong ID"? Maybe None will be enough?
         if ("Wrong ID" == pic):
             newCaptcha = Captcha.create()
             session['anonCaptId'] = newCaptcha.id
@@ -177,6 +165,10 @@ class OrphiePublicController(OrphieBaseController):
         if not g.OPT.allowLogin:
             return self.error(_("Authorization disabled"))
 
+        if self.userInst.isValid() and not self.userInst.Anonymous:
+            c.loginSuccessful = True
+            return self.redirectAuthorized(self.userInst)
+
         ip = getUserIp()
         tracker = LoginTracker.getTracker(ip)
 
@@ -184,13 +176,17 @@ class OrphiePublicController(OrphieBaseController):
         captcha = False
 
         if tracker.attempts >= 2:
-            log.warning('captcha')
+            #log.warning('captcha')
             if session and session.has_key('anonCaptId'):
                 anonCapt = Captcha.getCaptcha(session['anonCaptId'])
-                if tracker.cid and (str(tracker.cid) != str(anonCapt.id)):
+                # If captcha in session differs from one in tracker remove old captcha in tracker
+                if tracker.cid and (not anonCapt or (str(tracker.cid) != str(anonCapt.id))):
                     trackerCapt = Captcha.getCaptcha(tracker.cid)
                     if trackerCapt:
                         trackerCapt.delete()
+                if not anonCapt:
+                    print "NOT"
+                    anonCapt = self.initSessionCaptcha(True)
                 tracker.cid = anonCapt.id
                 meta.Session.commit()
 
@@ -201,6 +197,10 @@ class OrphiePublicController(OrphieBaseController):
                 captcha = Captcha.getCaptcha(tracker.cid)
 
             if not captcha:
+                captcha = self.initSessionCaptcha(True)
+                tracker.cid = captcha.id
+                meta.Session.commit()
+                """
                 if c.userInst.isValid():
                     oldLang = h.setLang(self.userInst.cLang)
                 captcha = Captcha.create()
@@ -208,9 +208,9 @@ class OrphiePublicController(OrphieBaseController):
                     h.setLang(oldLang)
                 tracker.cid = captcha.id
                 meta.Session.commit()
-
-            c.captcha = Captcha.getCaptcha(tracker.cid)
-
+                """
+            #c.captcha = Captcha.getCaptcha(tracker.cid)
+            c.captcha = captcha
         code = request.POST.get('password', False)
         if code:
             code = User.genUid(code.encode('utf-8'))
@@ -246,6 +246,11 @@ class OrphiePublicController(OrphieBaseController):
 
             meta.Session.commit()
             #log.debug("redir: %s" % c.currentURL)
+            return self.redirectAuthorized(user)
+        c.boardName = _('Login')
+        return self.render('login')
+
+    def redirectAuthorized(self, user):
             if (not g.OPT.framedMain or (user and not(user.useFrame))): # (1) frame turned off
                 if (g.OPT.allowAnonymous): # (1.1) remove navigation frame if exists
                     c.proceedRedirect = True
@@ -264,9 +269,6 @@ class OrphiePublicController(OrphieBaseController):
                         return redirect_to('boardBase', frameTarget = c.currentURL)
                     else:
                         return redirect_to('boardBase')
-
-        c.boardName = _('Login')
-        return self.render('login')
 
     def register(self, invite):
         def sessionDel(name):

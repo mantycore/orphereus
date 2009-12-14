@@ -6,7 +6,8 @@ class MenuItem(object):
                        parentId = False,
                        hint = '',
                        collapse = False,
-                       onclick = ""):
+                       onclick = None,
+                       target = None):
         self.id = id
         self.text = text
         self.route = route
@@ -16,6 +17,7 @@ class MenuItem(object):
         self.hint = hint
         self.collapse = collapse
         self.onclick = onclick
+        self.target = target
 
     def __repr__(self):
         return self.id

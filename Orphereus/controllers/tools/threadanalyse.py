@@ -142,9 +142,10 @@ node [style=filled];
                             if target.parentid == thread.id or target.id == thread.id:
                                 f.write('"%d" -> "%d" [color=blue];\n' % (post.id, link))
                             elif target.parentid:
+                                f.write('node [shape=ellipse, color="darkseagreen1"]');
                                 f.write('"%d" -> "%d" [color=red];\n' % (post.id, link))
                             else:
-                                f.write("node [shape=box, color=lightblue2];\n")
+                                f.write('node [shape=circle, color="goldenrod1"];\n')
                                 f.write('"%d" -> "%d" [color=red];\n' % (post.id, link))
                                 #f.write("node [shape=ellipse, color=lightblue2];\n")
                                 #f.write('node [shape=ellipse, color="%s"];\n' % colorFor(post, postPos, postsCount))
@@ -193,10 +194,11 @@ class ThreadanalyseController(OrphieBaseController):
     #    shutil.rmtree(self.path, True)
 
     def graph(self, post):
-        self.path = mkdtemp()
-        self.tid = post
         c.postId = post
         if 'proceed' in request.POST:
+            postInst = Post.getPost(int(post))
+            if not postInst or not h.postEnabledToShow(postInst, self.userInst):
+                return self.error(_("Post not found"))
             showThreadLines = bool(request.POST.get('showThreadLines', False))
             format = filterText(request.POST.get('format', 'png')).strip()
             format = format[:3] # excessive restrictions applied because this string will be sent to commandline

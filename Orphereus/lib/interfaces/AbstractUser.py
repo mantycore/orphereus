@@ -40,10 +40,10 @@ def safeListUnpickle(val):
         return []
 
 class AbstractUser(object):
-    """
-        disabledValues = ('readonly',
-                          )
-    """
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # This values intended ONLY for options
+    # which user can change himself
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     booleanValues = ('hideLongComments',
                           'useFrame',
                           'useAjax',

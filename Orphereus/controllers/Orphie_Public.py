@@ -82,10 +82,11 @@ class OrphiePublicPlugin(BasePlugin, AbstractMenuProvider):
     def menuItems(self, menuId):
         menu = None
         if menuId == "topMenu":
+            reloadJS = "parent.top.list.location.reload(true);"
             menu = [MenuItem('id_auth_tmPages', _("Auth pages"), None, 1000, False),
                     MenuItem('id_auth_Login', _("Login"), None, 1100, 'id_auth_tmPages'),
-                    MenuItem('id_auth_Logout', _("Logout"), h.url_for('logout'), 1200, 'id_auth_tmPages'),
-                    MenuItem('id_auth_Kill', _("Kill session"), h.url_for('logout'), 1300, 'id_auth_tmPages'),
+                    MenuItem('id_auth_Logout', _("Logout"), h.url_for('logout'), 1200, 'id_auth_tmPages', onclick = reloadJS, target = "_top"),
+                    MenuItem('id_auth_Kill', _("Kill session"), h.url_for('logout'), 1300, 'id_auth_tmPages', onclick = reloadJS, target = "_top"),
                     MenuItem('id_auth_Reg', _("Register"), h.url_for('register', invite = 'register'), 1400, 'id_auth_tmPages'),
                     ]
         return menu

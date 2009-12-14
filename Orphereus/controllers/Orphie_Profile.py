@@ -56,7 +56,7 @@ class OrphieProfilePlugin(BasePlugin, AbstractMenuProvider):
         if menuId == "topMenu":
             menu = [MenuItem('id_profile_ProfileTop', _("Profile"), None, 250, False, collapse = True),
                     MenuItem('id_profile_Profile', _("Profile"), h.url_for('userProfile'), 100, 'id_profile_ProfileTop'),
-                    #MenuItem('id_profile_ProfileSub', _("Profile"), h.url_for('userProfile'), 100, 'id_profile_Profile'),
+                    MenuItem('id_profile_ProfileSub', _("Profile"), h.url_for('userProfile'), 100, 'id_profile_Profile'),
                     ]
         return menu
 
@@ -66,7 +66,7 @@ class OrphieProfilePlugin(BasePlugin, AbstractMenuProvider):
 
     def modifyMenuItem(self, menuItem, baseController):
         user = baseController.userInst
-        if menuItem.id == 'id_profile_Profile':
+        if menuItem.id in ['id_profile_Profile', 'id_profile_ProfileSub']:
             menuItem.text = user.Anonymous and _('Settings') or _('Profile')
         return menuItem
 
@@ -74,7 +74,7 @@ class OrphieProfileController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-        
+
 
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:

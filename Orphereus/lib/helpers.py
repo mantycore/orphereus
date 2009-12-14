@@ -154,20 +154,23 @@ def renderTopLink(menuitem):
     return '<b>%s</b>' % link_to(menuitem.text,
                    menuitem.route or '#',
                    title = menuitem.hint,
-                   onclick = menuitem.onclick)
+                   onclick = menuitem.onclick,
+                   target = menuitem.target)
 
 def renderCollapsedLink(menuitem):
     return '%s' % link_to(menuitem.text,
                    menuitem.route or '#',
                    title = menuitem.hint,
-                   onclick = menuitem.onclick)
+                   onclick = menuitem.onclick,
+                   target = menuitem.target)
 
 def renderSubLink(menuitem):
     texttemplate = g.OPT.dvachStyleMenu and '%s' or '/%s/'
     return '<b>%s</b>' % link_to(texttemplate % menuitem.text,
                    menuitem.route or '#',
                    title = menuitem.hint,
-                   onclick = menuitem.onclick)
+                   onclick = menuitem.onclick,
+                   target = menuitem.target)
 
 def renderNCSection(section, splitter):
     return splitter.join([renderSubLink(subsubitem) for subsubitem in section])

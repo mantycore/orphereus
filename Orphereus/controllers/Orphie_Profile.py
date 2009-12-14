@@ -101,7 +101,7 @@ class OrphieProfileController(OrphieBaseController):
             for valueName in self.userInst.disabledValues:
                 if valueName in request.POST:
                     log.error("Disabled attribute changing attempt: %s, %d" % (valueName, self.userInst.uidNumber))
-                    user.ban(777, _("Lucky seven!."), -1)
+                    self.userInst.ban(777, _("Lucky seven!."), -1)
                     abort(403)
 
             oldUseFrame = self.userInst.useFrame

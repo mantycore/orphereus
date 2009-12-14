@@ -40,8 +40,10 @@ def safeListUnpickle(val):
         return []
 
 class AbstractUser(object):
-    disabledValues = ('readonly',
-                      )
+    """
+        disabledValues = ('readonly',
+                          )
+    """
     booleanValues = ('hideLongComments',
                           'useFrame',
                           'useAjax',
@@ -53,7 +55,7 @@ class AbstractUser(object):
                           'useTitleCollapse',
                           'hlOwnPosts',
                           'invertSortingMode',
-                          'readonly'
+                          #'readonly'
                          )
     intValues = ('threadsPerPage',
                  'repliesPerThread',
@@ -136,6 +138,9 @@ class AbstractUser(object):
         raise EAbstractFunctionCall()
 
     #rights
+    def readonly(self):
+        raise EAbstractFunctionCall()
+
     def isAdmin(self):
         raise EAbstractFunctionCall()
 

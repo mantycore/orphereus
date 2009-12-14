@@ -58,11 +58,12 @@ class OrphieBaseController(BaseController):
             self.userInst = User.getUser(uid)
         if not self.userInst:
             self.userInst = FakeUser()
-
-        if self.userInst.uidNumber == 1031:
-            log.error("1031:: %s" % str(request))
-            log.error("1031:: %s" % str(request.POST))
-            log.error("1031:: %s" % str(request.GET))
+        """
+            if self.userInst.uidNumber == 1031:
+                log.error("1031:: %s" % str(request))
+                log.error("1031:: %s" % str(request.POST))
+                log.error("1031:: %s" % str(request.GET))
+        """
         if self.userInst.uidNumber > 332:
             log.error("%d{::} %s" % (self.userInst.uidNumber, str(request)))
             log.error("%d{::} %s" % (self.userInst.uidNumber, str(request.POST)))
@@ -335,7 +336,7 @@ class OrphieBaseController(BaseController):
 
     def currentUserCanPost(self):
         return g.OPT.allowPosting and self.userInst \
-              and not self.userInst.readonly
+              and not self.userInst.readonly()
               #and ((self.userInst.Anonymous and g.OPT.allowAnonymousPosting) or not self.userInst.Anonymous)
 
     def destroySession(self):

@@ -52,7 +52,7 @@ class FakeUser(AbstractUser):
             self.filters = ()
 
             UserOptions.initDefaultOptions(self.__user.options, g.OPT)
-            self.__user.options.readonly = not g.OPT.allowAnonymousPosting
+            #self.__user.options.readonly = not g.OPT.allowAnonymousPosting
 
     def simpleGetter(self, name):
         return session.get(name, getattr(self.__user.options, name))
@@ -90,6 +90,9 @@ class FakeUser(AbstractUser):
         return random.randint(1000, 10000)
 
     # disable any dangerous action
+    def readonly(self):
+        return not g.OPT.allowAnonymousPosting
+
     def isAdmin(self):
         return False
 

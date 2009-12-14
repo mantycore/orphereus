@@ -355,8 +355,10 @@ class OrphieAjaxController(OrphieBaseController):
     def changeOption(self, name, value):
         val = None
         ok = True
-        if name in self.userInst.disabledValues:
-            return abort(403)
+        """
+            if name in self.userInst.disabledValues:
+                return abort(403)
+        """
         if name in self.userInst.booleanValues:
             val = asbool(value)
         elif name in self.userInst.intValues and isNumber(value):

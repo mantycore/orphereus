@@ -225,6 +225,9 @@ class User(AbstractUser):
     def getBanned():
         return User.query.options(eagerload('options')).filter(User.options.has(UserOptions.bantime > 0)).all()
 
+    def readonly(self):
+        return self.options.readonly
+
     def isAdmin(self):
         return self.options.isAdmin
 

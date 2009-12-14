@@ -136,12 +136,22 @@ class OrphieBaseController(BaseController):
         c.sectionNames = g.sectionNames
 
         self.setCookie()
+        c.captcha = self.initSessionCaptcha()
 
         if self.userInst.Anonymous:
+            remPassCookie = request.cookies.get('orhpieRemPass', randomStr())
+            c.remPass = remPassCookie
+            response.set_cookie('orhpieRemPass', unicode(remPassCookie), max_age = 3600)
+        self.setRightsInfo()
+
+    def initSessionCaptcha(self, force = False):
+        ret = None
+        if self.userInst.Anonymous or force:
             anonCaptId = session.get('anonCaptId', False)
             if not anonCaptId or not Captcha.exists(anonCaptId):
                 #log.debug('recreate')
-                if self.userInst.cLang:
+                captcha = None
+                if self.userInst.isValid() and self.userInst.cLang:
                     oldLang = h.setLang(self.userInst.cLang)
                     captcha = Captcha.create()
                     h.setLang(oldLang)
@@ -149,14 +159,10 @@ class OrphieBaseController(BaseController):
                     captcha = Captcha.create()
                 session['anonCaptId'] = captcha.id
                 session.save()
-                c.captcha = captcha
+                ret = captcha
             else:
-                c.captcha = Captcha.getCaptcha(anonCaptId)
-
-            remPassCookie = request.cookies.get('orhpieRemPass', randomStr())
-            c.remPass = remPassCookie
-            response.set_cookie('orhpieRemPass', unicode(remPassCookie), max_age = 3600)
-        self.setRightsInfo()
+                ret = Captcha.getCaptcha(anonCaptId)
+        return ret
 
     def initiate(self):
         c.destinations = destinations

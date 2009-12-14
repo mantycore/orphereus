@@ -223,8 +223,11 @@ class OrphieAjaxController(OrphieBaseController):
     def getPost(self, post):
         postInst = Post.getPost(post)
         if postInst:
-            if not self.userInst.isAdmin() and postInst.parentPost:
-                for t in postInst.parentPost.tags:
+            if not self.userInst.isAdmin():
+                tocheck = postInst
+                if postInst.parentPost:
+                    tocheck = postInst.parentPost
+                for t in tocheck.tags:
                     if t.adminOnly:
                         abort(403)
             return postInst.message
@@ -244,8 +247,11 @@ class OrphieAjaxController(OrphieBaseController):
     def getRenderedPost(self, post):
         postInst = Post.getPost(post)
         if postInst:
-            if not self.userInst.isAdmin() and postInst.parentPost:
-                for t in postInst.parentPost.tags:
+            if not self.userInst.isAdmin():
+                tocheck = postInst
+                if postInst.parentPost:
+                    tocheck = postInst.parentPost
+                for t in tocheck.tags:
                     if t.adminOnly:
                         abort(403)
             parent = postInst.parentPost
@@ -289,7 +295,6 @@ class OrphieAjaxController(OrphieBaseController):
                     ret.append(str(reply.id))
                 return str(','.join(ret))
         abort(404)
-
 
     @jsonify
     def getUserSettings(self):

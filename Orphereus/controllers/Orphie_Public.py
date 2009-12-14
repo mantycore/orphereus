@@ -251,24 +251,24 @@ class OrphiePublicController(OrphieBaseController):
         return self.render('login')
 
     def redirectAuthorized(self, user):
-            if (not g.OPT.framedMain or (user and not(user.useFrame))): # (1) frame turned off
-                if (g.OPT.allowAnonymous): # (1.1) remove navigation frame if exists
-                    c.proceedRedirect = True
-                    c.frameEnabled = False
-                    return self.render('loginRedirect')
-                else: # (1.2) frame is impossible
-                    return redirect_to('boardBase', board = c.currentURL)
-            else: # (2) frame turned on
-                if (g.OPT.allowAnonymous and not g.OPT.obligatoryFrameCreation):
-                    # (2.1) change navigation frame location if exists. DON'T create frame!
-                    c.proceedRedirect = True
-                    c.frameEnabled = True
-                    return self.render('loginRedirect')
-                else: # (2.2) create new frame with correct target.
-                    if c.currentURL:
-                        return redirect_to('boardBase', frameTarget = c.currentURL)
-                    else:
-                        return redirect_to('boardBase')
+        if (not g.OPT.framedMain or (user and not(user.useFrame))): # (1) frame turned off
+            if (g.OPT.allowAnonymous): # (1.1) remove navigation frame if exists
+                c.proceedRedirect = True
+                c.frameEnabled = False
+                return self.render('loginRedirect')
+            else: # (1.2) frame is impossible
+                return redirect_to('boardBase', board = c.currentURL)
+        else: # (2) frame turned on
+            if g.OPT.allowAnonymous: # and not g.OPT.obligatoryFrameCreation):
+                # (2.1) change navigation frame location if exists. DON'T create frame!
+                c.proceedRedirect = True
+                c.frameEnabled = True
+                return self.render('loginRedirect')
+            else: # (2.2) create new frame with correct target.
+                if c.currentURL:
+                    return redirect_to('boardBase', frameTarget = c.currentURL)
+                else:
+                    return redirect_to('boardBase')
 
     def register(self, invite):
         def sessionDel(name):

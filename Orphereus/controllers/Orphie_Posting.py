@@ -89,7 +89,7 @@ class OrphiePostingController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-        
+
 
     #parser callback
     def cbGetPostAndUser(self, id):
@@ -113,9 +113,9 @@ class OrphiePostingController(OrphieBaseController):
 
         if dest == 0: #current thread
             if post.parentid:
-                return redirect_to(controller = 'Orphie_View', action = 'GetThread', post = post.parentid, board = None, anchor = anchor)
+                return redirect_to(controller = 'Orphie_View', action = 'GetThread', post = post.parentid, anchor = anchor)
             else:
-                return redirect_to(controller = 'Orphie_View', action = 'GetThread', post = post.id, board = None, anchor = anchor)
+                return redirect_to(controller = 'Orphie_View', action = 'GetThread', post = post.id, anchor = anchor)
         elif dest == 1 or dest == 2: # current board
             if  tagLine:
                 if dest == 1:

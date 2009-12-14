@@ -77,7 +77,7 @@ class OptHolder(object):
                                  'allowAnswersWithoutCaptcha', 'forbidCaptcha',
                                  'useFrameLogo', 'permissiveFileSizeConjunction',
                                  'boardWideProoflabels', 'allowOverview', 'framedMain',
-                                 'obligatoryFrameCreation', 'showShortStatistics', 'mixOldThreads',
+                                 'showShortStatistics', 'mixOldThreads',
                                  'newsSiteMode', 'useTopPaginator', 'useZMenu', 'dvachStyleMenu',
                                  'permissiveAdditionalFilesCountConjunction'
                                 )

@@ -155,7 +155,6 @@ frontend.framedMain = true
 frontend.useFrameLogo = true
 frontend.frameLogo = logo.png
 frontend.defaultBoard = !
-frontend.obligatoryFrameCreation = false
 frontend.mixOldThreads = true
 frontend.showShortStatistics = true
 frontend.homeModules = newsgenerator,statistics

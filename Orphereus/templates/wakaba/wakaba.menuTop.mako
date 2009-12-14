@@ -1,7 +1,7 @@
 <%page args="menuId, menuSource, bottomMenu = False"/>
 
 <div class="adminbar">
-<span class="boardlist">
+<div class="boardlist">
 
 %if g.OPT.spiderTrap:
 <span style="display: none"><a href="${h.url_for('botTrap1', confirm=c.userInst.secid())}">...</a><a href="${h.url_for('botTrap2', confirm=c.userInst.secid())}">.</a></span>
@@ -44,7 +44,7 @@
 %endfor
 %endif
 
-</span>
+</div>
 %if not c.userInst.Anonymous and c.userInst.filters:
     <br />
     [ \

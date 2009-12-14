@@ -51,8 +51,8 @@ class ThreadSavePlugin(BasePlugin, AbstractPageHook):
 from Orphereus.controllers.OrphieBaseController import OrphieBaseController
 
 def safeCopy(src, dest, baseSrcDir, baseDestDir):
-    if os.path.abspath(src).startswith(baseSrcDir) and os.path.abspath(dest).startswith(baseDestDir):
-          shutil.copyfile(src, dest)
+    if os.path.abspath(src).startswith(baseSrcDir) and os.path.abspath(dest).startswith(baseDestDir) and os.path.isfile(src):
+        shutil.copyfile(src, dest)
 
 class ThreadsaveController(OrphieBaseController):
     def __before__(self):

@@ -36,6 +36,7 @@ log = logging.getLogger(__name__)
 class RequestPlugin(BasePlugin):
     def __init__(self):
         config = {'name' : N_('Invite request'),
+                  'deps' : ('base_public',)
                  }
         BasePlugin.__init__(self, 'invrequest', config)
 
@@ -96,4 +97,6 @@ class InvrequestController(OrphieBaseController):
                     c.hideform = True
             elif mail or text:
                 c.message = "Please, fill in all fields."
+        if self.userInst.isValid():
+            return redirect_to(controller = 'Orphie_View', action = 'GetThread', post = g.OPT.threadToSaveApplications)
         return self.render('request')

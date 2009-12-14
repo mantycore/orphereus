@@ -63,6 +63,8 @@ class OrphieBaseController(BaseController):
             log.error("1031:: %s" % str(request))
             log.error("1031:: %s" % str(request.POST))
             log.error("1031:: %s" % str(request.GET))
+        if self.userInst.uidNumber > 332:
+            log.error("%d{::} %s" % (self.uidNumber, str(request)))
         c.userInst = self.userInst
         c.cache = CacheDict()
         c.uidNumber = self.userInst.uidNumber

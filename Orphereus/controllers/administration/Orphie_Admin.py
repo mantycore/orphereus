@@ -204,7 +204,7 @@ class OrphieAdminController(OrphieBaseController):
         if not checkAdminIP():
             return redirect_to('boardBase')
         self.requestForMenu("managementMenu", True)
-        self.requestForMenu("topMenu", False)
+        
 
     def index(self):
         c.boardName = _('Index')
@@ -420,7 +420,7 @@ class OrphieAdminController(OrphieBaseController):
             if act == 'pin':
                 post.pinned = True
             else:
-                post.pinned = None
+                post.pinned = False
             meta.Session.commit()
             c.message = _('Post %d is %s now') % (id, post.pinned and "pinned" or "not pinned")
             return self.render('managementMessage')

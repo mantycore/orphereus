@@ -55,7 +55,7 @@ def safeCopy(src, dest, baseSrcDir, baseDestDir):
           shutil.copyfile(src, dest)
 
 class ThreadsaveController(OrphieBaseController):
-    def __init__(self):
+    def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
 

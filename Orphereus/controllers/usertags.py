@@ -214,10 +214,9 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
 from OrphieBaseController import OrphieBaseController
 
 class UsertagsController(OrphieBaseController):
-    def __init__(self):
+    def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-        self.requestForMenu("topMenu", False)
 
     def postTags(self, post, act, tagid):
         if self.userInst.Anonymous:

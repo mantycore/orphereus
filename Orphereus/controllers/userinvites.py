@@ -197,10 +197,9 @@ class InvitesPlugin(BasePlugin, AbstractProfileExtension, AbstractPageHook):
 from OrphieBaseController import OrphieBaseController
 
 class UserinvitesController(OrphieBaseController):
-    def __init__(self):
+    def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-        self.requestForMenu("topMenu", False)
 
     def manageInvites(self, act):
         if self.userInst.Anonymous:

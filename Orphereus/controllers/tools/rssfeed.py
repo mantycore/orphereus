@@ -77,7 +77,7 @@ class RssFeedPlugin(BasePlugin, AbstractPageHook):
 from OrphieBaseController import OrphieBaseController
 
 class RssfeedController(OrphieBaseController):
-    def __init__(self):
+    def __before__(self):
         OrphieBaseController.__before__(self)
 
     def rss(self, watch, authid, uid, feedType):

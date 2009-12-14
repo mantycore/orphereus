@@ -154,6 +154,7 @@ class OrphieAjaxController(OrphieBaseController):
         c.userInst = self.userInst
         if not self.currentUserIsAuthorized() or self.userInst.isBanned():
             abort(403)
+        self.disableMenu("topMenu")
 
     def checkTags(self):
         tags = request.POST.get('tags', '')

@@ -50,6 +50,7 @@ class OrphieBotTrapController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
+        self.disableMenu("topMenu")
 
     def selfBan(self, confirm):
         if g.OPT.spiderTrap and not self.userInst.Anonymous:

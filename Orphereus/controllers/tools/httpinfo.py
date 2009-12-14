@@ -44,7 +44,7 @@ class HTTPInfoPlugin(BasePlugin):
 from Orphereus.controllers.OrphieBaseController import OrphieBaseController
 
 class HttpinfoController(OrphieBaseController):
-    def __init__(self):
+    def __before__(self):
         OrphieBaseController.__before__(self)
 
     def uaInfo(self):

@@ -88,7 +88,7 @@ class AnonymizationController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-        self.requestForMenu("topMenu", False)
+        
 
     def Anonimyze(self, post):
         postid = request.POST.get('postId', False)

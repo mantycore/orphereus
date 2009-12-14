@@ -329,8 +329,7 @@ class OrphiePublicController(OrphieBaseController):
                     cleanup()
                     return self.error(_("You entered already existing password. Previous account was banned. Contact administrator please."))
 
-                user = User.create(uid)
-                user.options.readonly = session['roinvite']
+                user = User.create(uid, session['roinvite'])
                 regId = user.secid() * user.secid() - user.secid()
                 infoline = "[%d]" % regId
 

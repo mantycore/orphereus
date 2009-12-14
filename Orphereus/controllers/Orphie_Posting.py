@@ -89,7 +89,7 @@ class OrphiePostingController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-        self.requestForMenu("topMenu", False)
+        
 
     #parser callback
     def cbGetPostAndUser(self, id):

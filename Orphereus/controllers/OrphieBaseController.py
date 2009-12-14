@@ -65,6 +65,8 @@ class OrphieBaseController(BaseController):
         if self.userInst.isValid():
             c.jsFiles = g.OPT.jsFiles[self.userInst.template]
         self.requestedMenus = {}
+        log.error("!!")
+        self.disabledMenus = []
         self.builtMenus = {}
 
         # IP ban checks
@@ -131,6 +133,8 @@ class OrphieBaseController(BaseController):
             response.set_cookie('Orphereus', str(sessCookie), domain = '.' + g.OPT.baseDomain)
 
     def initEnvironment(self):
+        self.requestForMenu("topMenu", False)
+        log.debug(self.requestedMenus)
         c.title = g.OPT.title
         c.boardlist = g.caches.setdefaultEx('boardlist', chBoardList)
         #c.sectionNames = g.caches.setdefaultEx('sectionNames', chSectionNames, c.boardlist)
@@ -198,8 +202,15 @@ class OrphieBaseController(BaseController):
                     redirect_to(str(redir))
 
     def requestForMenu(self, menuId, linearize):
-        if not menuId in self.requestedMenus:
+        if (not menuId in self.requestedMenus) and (not menuId in self.disabledMenus):
             self.requestedMenus[menuId] = {'linearize' : linearize}
+
+    def disableMenu(self, menuId):
+        log.error("dis")
+        if not menuId in self.disabledMenus:
+            self.disabledMenus.append(menuId)
+        if menuId in self.requestedMenus:
+            self.requestedMenus.pop(menuId)
 
     def buildLinearMenu(self, id, level, source, target):
         if source and id in source:
@@ -254,7 +265,7 @@ class OrphieBaseController(BaseController):
 
         #fpath = os.path.join(g.OPT.templPath, tpath)
         #log.debug ("Tpath:  %s ; Fpath: %s" %(tpath,fpath))
-
+        log.debug(self.requestedMenus)
         for menuName in self.requestedMenus:
             menuItems = g.getMenuItems(menuName)
             menu = None

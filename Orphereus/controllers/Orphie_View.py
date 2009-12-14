@@ -148,7 +148,7 @@ class OrphieViewController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-        self.requestForMenu("topMenu", False)
+        
 
     def showStatic(self, page):
         fpath = os.path.join(g.OPT.templPath, self.getTemplatePaths('static.%s' % page)[0])

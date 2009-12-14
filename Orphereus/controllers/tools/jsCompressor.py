@@ -149,7 +149,7 @@ class JscompressorController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
             self.requestForMenu("managementMenu", True)
-        self.requestForMenu("topMenu", False)
+        
 
     def rebuild(self):
         if not self.currentUserIsAuthorized():

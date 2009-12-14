@@ -79,16 +79,23 @@ class AnalyseCommand(command.Command):
         print "Saved to:", self.analyse([])[0]
 
     @staticmethod
-    def analyse(postIds, algo = 'neato', opt = '-Kneato'): # algo = 'neato', opt='-Kneato' \\ algo = 'dot', opt = ''
+    def analyse(postIds, **kwargs): # algo = 'neato', opt='-Kneato' \\ algo = 'dot', opt = ''
+        algo = kwargs.get('algo', 'neato')
+        opt = kwargs.get('opt', '-Kneato')
+        showThreadLines = kwargs.get('showThreadLines', True)
+        format = kwargs.get('format', 'png')
+        if not format in ['svg', 'png', 'jpg', 'gif']:
+            format = 'png'
+
         if not postIds:
             allThreads = meta.Session.query(Post.id).filter(Post.parentid == None).all()
             postIds = map(lambda x: x[0], allThreads)
-        saveName = '%s.gv' % str(long(time.time() * 10 ** 7))
+        gvName = '%s.gv' % str(long(time.time() * 10 ** 7))
         savePath = os.path.join(meta.globj.OPT.uploadPath, 'save')
-        saveTo = os.path.join(savePath, saveName)
+        writeGvTo = os.path.join(savePath, gvName)
         if not os.path.exists(savePath):
             os.mkdir(savePath)
-        f = open(saveTo, 'w+')
+        f = open(writeGvTo, 'w+')
         #overlap=false;\n model=circuit;
         header = """digraph Orphie {
 ranksep=3;\n
@@ -120,7 +127,7 @@ node [style=filled];
                         f.write('node [shape=circle, color="red"];\n')
                     else:
                         f.write('node [shape=box, color="%s"];\n' % colorFor(post, postPos, postsCount))
-                    if previd:
+                    if previd and showThreadLines:
                         #f.write('"%d" -> "%d" [dir=none, color=green];\n' % (previd, post.id))
                         f.write('"%d" -> "%d" [color=green];\n' % (previd, post.id))
                     previd = post.id
@@ -140,10 +147,17 @@ node [style=filled];
                                 #f.write('node [shape=ellipse, color="%s"];\n' % colorFor(post, postPos, postsCount))
         f.write('}')
         f.close()
-        cmd = '%s -v %s -Tpng "%s" -o"%s.png"' % (algo, opt, saveTo, saveTo)
-        print cmd
+
+        picturePath = "%s.%s" % (writeGvTo, format)
+        pictureName = "%s.%s" % (gvName, format)
+        cmd = '%s -v %s -T%s "%s" -o"%s"' % (algo, opt, format, writeGvTo, picturePath)
+        log.debug(cmd)
         os.system(cmd)
-        return (saveTo, saveName + ".png")
+        if os.path.exists(picturePath):
+            return (picturePath, pictureName)
+        else:
+            log.error("Can't create graph: <%s>, <%s>" % (cmd, picturePath))
+            return (writeGvTo, gvName)
 
 class ThreadAnalysisPlugin(BasePlugin, AbstractPageHook):
     def __init__(self):
@@ -168,7 +182,7 @@ class ThreadAnalysisPlugin(BasePlugin, AbstractPageHook):
 from Orphereus.controllers.OrphieBaseController import OrphieBaseController
 
 class ThreadanalyseController(OrphieBaseController):
-    def __init__(self):
+    def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
 
@@ -178,6 +192,13 @@ class ThreadanalyseController(OrphieBaseController):
     def graph(self, post):
         self.path = mkdtemp()
         self.tid = post
-        filename = 'save/%s' % AnalyseCommand.analyse([int(post)])[1]
-        return redirect_to(str('%s%s' % (meta.globj.OPT.filesPathWeb, filename)))
-
+        c.postId = post
+        if 'proceed' in request.POST:
+            showThreadLines = bool(request.POST.get('showThreadLines', False))
+            format = filterText(request.POST.get('format', 'png')).strip()
+            format = format[:3] # excessive restrictions applied because this string will be sent to commandline
+            if not re.compile("^\w+$").match(format):
+                format = 'png'
+            filename = 'save/%s' % AnalyseCommand.analyse([int(post)], format = format, showThreadLines = showThreadLines)[1]
+            return redirect_to(str('%s%s' % (meta.globj.OPT.filesPathWeb, filename)))
+        return self.render('threadgraph')

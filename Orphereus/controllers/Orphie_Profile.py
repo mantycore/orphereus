@@ -74,7 +74,7 @@ class OrphieProfileController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-        self.requestForMenu("topMenu", False)
+        
 
     def showProfile(self):
         if self.userInst.Anonymous and not g.OPT.allowAnonProfile:

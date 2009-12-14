@@ -204,7 +204,7 @@ class OrphieAdminController(OrphieBaseController):
         if not checkAdminIP():
             return redirect_to('boardBase')
         self.requestForMenu("managementMenu", True)
-        self.requestForMenu("topMenu", False)
+        
 
     def index(self):
         c.boardName = _('Index')

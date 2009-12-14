@@ -72,8 +72,9 @@ class User(AbstractUser):
         return (User.query.count(), User.query.filter(User.options.has(UserOptions.bantime > 0)).count())
 
     @staticmethod
-    def create(uid):
+    def create(uid, readonly = False):
         user = User(uid)
+        user.options.readonly = readonly
         meta.Session.add(user)
         meta.Session.commit()
         return user

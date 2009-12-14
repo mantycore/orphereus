@@ -73,14 +73,8 @@ class Post(object):
     @staticmethod
     def create(postParams):
         post = Post()
-        try:        # no better ideas.
-            post.secondaryIndex = postParams.secondaryIndex
-        except:
-            pass
-        try:
-            post.date = postParams.date
-        except:
-            pass
+        post.secondaryIndex = postParams.get('secondaryIndex', None)
+        post.date = postParams.get('date', None)
         post.message = postParams.message
         post.messageShort = postParams.messageShort
         post.messageRaw = postParams.messageRaw
@@ -143,6 +137,29 @@ class Post(object):
         meta.Session.add(post)
         meta.Session.commit()
         return post
+    
+    # TODO: add file support
+    @staticmethod
+    def createDef(**params):
+        defaultParams = {'message': u'',
+                         'messageShort': u'',
+                         'messageRaw': u'',
+                         'messageInfo': u'',
+                         'title': u'',
+                         'uidNumber': u'',
+                         'parentid': 1,
+                         'ip': 0, 
+                         'uidNumber': 0,
+                         'date': datetime.datetime.now(),
+                         'pinned': False,
+                         'sage': False, 
+                         }
+        defaultParams.update(params)
+        post = Post()
+        for key in defaultParams.keys():
+            setattr(post, key, defaultParams[key])
+        meta.Session.add(post)
+        meta.Session.commit()
 
     def removeTag(self, tag):
         if not self.parentid:

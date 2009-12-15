@@ -55,7 +55,7 @@ class OrphieBotTrapController(OrphieBaseController):
     def selfBan(self, confirm):
         if g.OPT.spiderTrap and not self.userInst.Anonymous:
             if confirm:
-                self.userInst.ban(2, _("[AUTOMATIC BAN] Security alert type 2"), -1)
+                self.userInst.ban(2, "[AUTOMATIC BAN] Security alert type 2", -1)
                 redirect_to('boardBase')
             else:
                 return self.render('selfBan')

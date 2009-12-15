@@ -149,6 +149,7 @@ class OrphiePostingController(OrphieBaseController):
         for i in request.POST:
             if retest.match(request.POST[i]):
                 post = Post.getPost(request.POST[i])
+                res = None
                 if post:
                     res = post.deletePost(self.userInst, fileonly, True, reason, remPass)
                 opPostDeleted = opPostDeleted or res

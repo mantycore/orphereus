@@ -20,6 +20,11 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
+class ExtraPostingField(object):
+    def __init__(self, name, text, **kwargs):
+        self.name = name
+        self.text = text
+
 class AbstractPostingHook(object):
     def tagCheckHandler(self, tagName, userInst):
         pass
@@ -35,3 +40,6 @@ class AbstractPostingHook(object):
 
     def tagHandler(self, tag, userInst):
         return None, None
+
+    def extraPostingFields(self, context, atTop):
+        return None

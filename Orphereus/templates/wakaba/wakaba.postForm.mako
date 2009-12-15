@@ -48,6 +48,17 @@ href="${h.url_for('ajChangeOption', name='useTitleCollapse', value=c.userInst.us
 <input type="hidden" id="createdRows" value="0" />
 <input type="hidden" id="nextRowId" value="0" />
 
+<%def name="extraPostingFields(atTop)">
+%for field in h.extraPostingFields(c, atTop):
+    <tr id="tr_filed_${field.name}">
+        <td class="postblock">${field.text}</td>
+        <td>
+            <input type="text" name="${field.name}" size="35" />
+        </td>
+    </tr>
+%endfor
+</%def>
+
 <div id="paramPlaceholderContent" style="display: none;">
     <img  alt="${_("Loading")}" src="${g.OPT.staticPathWeb}images/loading.gif" />
 </div>
@@ -61,17 +72,13 @@ href="${h.url_for('ajChangeOption', name='useTitleCollapse', value=c.userInst.us
 </div>
 <table id="postControls">
     <tbody >
-%if h.templateExists(c.actuatorTest+'wakaba.postFormTop.mako'):
-    <%include file="${c.actuator+'wakaba.postFormTop.mako'}" />
-%endif
-
 %if not c.board:
     <tr id="trsage">
         <td class="postblock">${_('Sage')}</td>
         <td><input type="checkbox" name="sage" /></td>
     </tr>
 %endif
-
+    ${extraPostingFields(True)}
     <tr id="trsubject">
         <td class="postblock">${_('Title')}</td>
         <td>
@@ -160,9 +167,7 @@ href="${h.url_for('ajChangeOption', name='useTitleCollapse', value=c.userInst.us
             </select>
         </td>
     </tr>
-%if h.templateExists(c.actuatorTest+'wakaba.postFormBottom.mako'):
-    <%include file="${c.actuator+'wakaba.postFormBottom.mako'}" />
-%endif
+  ${extraPostingFields(False)}
 </tbody>
 </table>
 </form>

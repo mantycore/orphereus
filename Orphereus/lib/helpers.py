@@ -40,6 +40,7 @@ import socket, struct, sys
 
 from Orphereus.lib.interfaces.AbstractPageHook import AbstractPageHook
 from Orphereus.lib.interfaces.AbstractPostOutputHook import AbstractPostOutputHook
+from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 
 import logging
 log = logging.getLogger(__name__)
@@ -77,9 +78,9 @@ def repliesProxy(thread, controller):
     sortedPostsRender = list([postsRender[id] for id in sorted(postsRender.keys())])
     return ''.join(sortedPostsRender)
 
-def universalCallback(methodName, *args):
+def universalStrCallback(methodName, interface, *args):
     gvars = config['pylons.app_globals']
-    callbacks = gvars.implementationsOf(AbstractPageHook)
+    callbacks = gvars.implementationsOf(interface)
     result = ''
     for cb in callbacks:
         method = getattr(cb, methodName)
@@ -88,26 +89,40 @@ def universalCallback(methodName, *args):
             result += ret
     return result
 
+def universalListCallback(methodName, interface, *args):
+    gvars = config['pylons.app_globals']
+    callbacks = gvars.implementationsOf(interface)
+    result = []
+    for cb in callbacks:
+        method = getattr(cb, methodName)
+        ret = method(*args)
+        if ret:
+            result.extend(ret)
+    return result
+
 def threadPanelCallback(thread, userInst):
-    return universalCallback("threadPanelCallback", thread, userInst)
+    return universalStrCallback("threadPanelCallback", AbstractPageHook, thread, userInst)
 
 def threadInfoCallback(thread, userInst):
-    return universalCallback("threadInfoCallback", thread, userInst)
+    return universalStrCallback("threadInfoCallback", AbstractPageHook, thread, userInst)
 
 def postPanelCallback(thread, post, userInst):
-    return universalCallback("postPanelCallback", thread, post, userInst)
+    return universalStrCallback("postPanelCallback", AbstractPageHook, thread, post, userInst)
 
 def postHeaderCallback(thread, post, userInst):
-    return universalCallback("postHeaderCallback", thread, post, userInst)
+    return universalStrCallback("postHeaderCallback", AbstractPageHook, thread, post, userInst)
 
 def threadHeaderCallback(thread, userInst):
-    return universalCallback("threadHeaderCallback", thread, userInst)
+    return universalStrCallback("threadHeaderCallback", AbstractPageHook, thread, userInst)
 
 def headCallback(context):
-    return universalCallback("headCallback", context)
+    return universalStrCallback("headCallback", AbstractPageHook, context)
 
 def boardInfoCallback(context):
-    return universalCallback("boardInfoCallback", context)
+    return universalStrCallback("boardInfoCallback", AbstractPageHook, context)
+
+def extraPostingFields(context, atTop):
+    return universalListCallback("extraPostingFields", AbstractPostingHook, context, atTop)
 
 def currentTime():
     return time.time()

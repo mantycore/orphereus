@@ -83,6 +83,10 @@ class AnalyseCommand(command.Command):
         algo = kwargs.get('algo', 'neato')
         opt = kwargs.get('opt', '-Kneato')
         showThreadLines = kwargs.get('showThreadLines', True)
+        showThreadLines = kwargs.get('showThreadLines', True)
+        showGreenLabels = kwargs.get('showGreenLabels', True)
+        showRedLabels = kwargs.get('showRedLabels', True)
+
         format = kwargs.get('format', 'png')
         if not format in ['svg', 'png', 'jpg', 'gif']:
             format = 'png'
@@ -107,10 +111,10 @@ node [style=filled];
         f.write(header)
 
         rex = re.compile(r'&gt;&gt;(\d+)')
+        plrex = re.compile(r'##((\d+|(op))(,(\d+|(op)))*)')
         def colorFor(post, postPos, postsCount):
             hexcolor = '#0900c1%02x' % (40 + ((255 - 40) * postPos / postsCount))
             return hexcolor
-
 
         for threadId in postIds:
             thread = Post.getPost(threadId)
@@ -130,7 +134,7 @@ node [style=filled];
                     if previd:
                         if showThreadLines:
                             #f.write('"%d" -> "%d" [dir=none, color=green];\n' % (previd, post.id))
-                            f.write('"%d" -> "%d" [color=green];\n' % (previd, post.id))
+                            f.write('"%d" -> "%d" [color="darkorange1"];\n' % (previd, post.id))
                         else:
                             f.write('"%d";\n' % (post.id))
                     previd = post.id
@@ -140,15 +144,33 @@ node [style=filled];
                         target = post.getPost(link)
                         if target:
                             if target.parentid == thread.id or target.id == thread.id:
-                                f.write('"%d" -> "%d" [color=blue];\n' % (post.id, link))
+                                f.write('"%d" -> "%d" [color="blue"];\n' % (post.id, link))
                             elif target.parentid:
                                 f.write('node [shape=ellipse, color="darkseagreen1"]');
-                                f.write('"%d" -> "%d" [color=red];\n' % (post.id, link))
+                                f.write('"%d" -> "%d" [color="red"];\n' % (post.id, link))
                             else:
                                 f.write('node [shape=circle, color="goldenrod1"];\n')
-                                f.write('"%d" -> "%d" [color=red];\n' % (post.id, link))
-                                #f.write("node [shape=ellipse, color=lightblue2];\n")
-                                #f.write('node [shape=ellipse, color="%s"];\n' % colorFor(post, postPos, postsCount))
+                                f.write('"%d" -> "%d" [color="red"];\n' % (post.id, link))
+                    pllinks = re.findall(plrex, post.message)
+                    print pllinks
+                    pllinks = map(lambda x: int(x), pllinks)
+                    for link in pllinks:
+                        target = post.getPost(link)
+                        if target:
+                            plcolor = "forestgreen"
+                            if not target.uidNumber or not post.uidNumber:
+                                 plcolor = "gray36"
+                            elif target.uidNumber != post.uidNumber:
+                                plcolor = "deeppink3"
+                            if target.parentid == thread.id or target.id == thread.id:
+                                f.write('"%d" -> "%d" [color="%s"];\n' % (post.id, link, plcolor))
+                            elif target.parentid:
+                                f.write('node [shape=ellipse, color="darkseagreen1"]');
+                                f.write('"%d" -> "%d" [color="%s"];\n' % (post.id, link, plcolor))
+                            else:
+                                f.write('node [shape=circle, color="goldenrod1"];\n')
+                                f.write('"%d" -> "%d" [color="%s"];\n' % (post.id, link, plcolor))
+
         f.write('}')
         f.close()
 
@@ -189,6 +211,7 @@ class ThreadanalyseController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
+        c.boardName = _('Graph builder')
 
     #def __del__(self):
     #    shutil.rmtree(self.path, True)
@@ -200,10 +223,16 @@ class ThreadanalyseController(OrphieBaseController):
             if not postInst or not h.postEnabledToShow(postInst, self.userInst):
                 return self.error(_("Post not found"))
             showThreadLines = bool(request.POST.get('showThreadLines', False))
+            showGreenLabels = bool(request.POST.get('showGreenLabels', False))
+            showRedLabels = bool(request.POST.get('showRedLabels', False))
             format = filterText(request.POST.get('format', 'png')).strip()
             format = format[:3] # excessive restrictions applied because this string will be sent to commandline
             if not re.compile("^\w+$").match(format):
                 format = 'png'
-            filename = 'save/%s' % AnalyseCommand.analyse([int(post)], format = format, showThreadLines = showThreadLines)[1]
+            filename = 'save/%s' % AnalyseCommand.analyse([int(post)],
+                                                          format = format,
+                                                          showThreadLines = showThreadLines,
+                                                          showRedLabels = showRedLabels,
+                                                          showGreenLabels = showGreenLabels)[1]
             return redirect_to(str('%s%s' % (meta.globj.OPT.filesPathWeb, filename)))
         return self.render('threadgraph')

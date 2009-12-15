@@ -59,7 +59,7 @@ sqlalchemy.pool_recycle = 3600
 
 # Disabled modules (file or module namespace  names)
 # This option is not configurable at runtime
-core.disabledModules = httpinfo.py,tools.htmlCompressor,mainPage.statgraph
+core.disabledModules = httpinfo.py,dbglog.py,tools.htmlCompressor,mainPage.statgraph
 
 # makes engine ignore configuration in database and use this file
 core.recovery = false
@@ -208,6 +208,10 @@ invites.inviteIssuingInterval = 7
 invites.enableInvitationRequest = false
 invites.threadToSaveApplications = 0
 
+dbglog.minimalUidNumberToLog = -1
+dbglog.dumpRequests = false
+dbglog.dumpEnv = false
+dbglog.dumpHeaders = false
 
 ##################
 # Board defaults #

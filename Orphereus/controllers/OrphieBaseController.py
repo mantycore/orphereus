@@ -58,16 +58,6 @@ class OrphieBaseController(BaseController):
             self.userInst = User.getUser(uid)
         if not self.userInst:
             self.userInst = FakeUser()
-        """
-            if self.userInst.uidNumber == 1031:
-                log.error("1031:: %s" % str(request))
-                log.error("1031:: %s" % str(request.POST))
-                log.error("1031:: %s" % str(request.GET))
-        """
-        if self.userInst.uidNumber > 332:
-            log.error("%d{::} %s" % (self.userInst.uidNumber, str(request)))
-            log.error("%d{::} %s" % (self.userInst.uidNumber, str(request.POST)))
-            log.error("%d{::} %s" % (self.userInst.uidNumber, str(request.GET)))
         c.userInst = self.userInst
         c.cache = CacheDict()
         c.uidNumber = self.userInst.uidNumber

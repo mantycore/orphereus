@@ -89,8 +89,8 @@ class AbstractUser(object):
                'hideThreads' : lambda val: pickle.dumps(val),
               }
 
-    preparators = {'homeExclude' : lambda val: safeListUnpickle(val), #lambda val: pickle.loads(str(val)),
-                   'hideThreads' : lambda val: safeListUnpickle(val), #lambda val: pickle.loads(str(val)),
+    preparators = {'homeExclude' : safeListUnpickle, #lambda val: pickle.loads(str(val)),
+                   'hideThreads' : safeListUnpickle, #lambda val: pickle.loads(str(val)),
                   }
     simpleValues = booleanValues + intValues + stringValues + pickleValues
 

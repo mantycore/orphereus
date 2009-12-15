@@ -69,7 +69,7 @@ class ThreadsaveController(OrphieBaseController):
         dirs.append('files')
         html = re.sub('%s([^">]+")' % meta.globj.OPT.staticPathWeb, r'\1', html)
 
-        postFiles = list(set(re.findall('%s([^"]+)"' % meta.globj.OPT.filesPathWeb, html)))
+        postFiles = list(set(re.findall('%s([^">]+)"' % meta.globj.OPT.filesPathWeb, html)))
         html = re.sub('%s[^">]+/([^">]+")' % meta.globj.OPT.filesPathWeb, r'files/\1', html)
 
         #html = re.sub('f="/\d+(#i\d+)', r'f="\1', html)

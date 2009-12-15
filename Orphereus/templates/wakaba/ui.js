@@ -367,7 +367,7 @@ function expandable_threads(){
       thread.find(".replies").html(t);
 
       t = me.data("orig_html");
-      me.data("orig_html", me.tml());
+      me.data("orig_html", me.html());
       me.html(t);
 
       expandable_threads.mass_repair(thread.find(".replies"));

@@ -48,7 +48,7 @@ class RequestPlugin(BasePlugin):
                    )
 
     def updateGlobals(self, globj):
-        intValues = [('invites', 
+        intValues = [('invites',
                        ('threadToSaveApplications',)
                      ),
                     ]
@@ -64,7 +64,8 @@ class RequestPlugin(BasePlugin):
 class InvrequestController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
-        
+        c.boardName = _('Invitation request')
+
     def _captInit(self):
         captcha = Captcha.create()
         session['cid'] = captcha.id
@@ -87,7 +88,7 @@ class InvrequestController(OrphieBaseController):
                 captchaOk = c.captcha.test(request.POST.get('captcha', ''))
                 if not(captchaOk):
                     self._captInit()
-                    c.message = "Captcha failed." 
+                    c.message = "Captcha failed."
                 else:
                     Post.createDef(title = 'Request',
                            message = c.text,

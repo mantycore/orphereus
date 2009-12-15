@@ -5,13 +5,14 @@
     ${c.message}
 %endif
 </div>
-<br /><br /> 
+<br /><br />
 %if not(c.hideform) :
     <div class="postarea">
     <form id="postform" action="${h.url_for('invRequest')}" method="post">
-    <span class="postblock">${_('Enter your e-mail/jabber address')}</span>
-    <input type="text" name="mail" value="${c.mail}" /><br />
-    <textarea name="text" cols="45" rows="6" >${c.text}</textarea></td>
+    <span class="postblock">${_('Enter your e-mail/jabber address')}</span><br/>
+    <input type="text" name="mail" value="${c.mail}" /><br /><br/>
+    <span class="postblock">${_('Enter request details')}</span><br/>
+    <textarea name="text" cols="45" rows="6" >${c.text}</textarea>
     %if c.captcha:
         <br/>
         <span class="postblock">${_('Enter captcha')}</span>

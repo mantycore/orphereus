@@ -139,7 +139,7 @@ class Post(object):
         meta.Session.add(post)
         meta.Session.commit()
         return post
-    
+
     # TODO: add file support
     @staticmethod
     def createDef(**params):
@@ -149,17 +149,20 @@ class Post(object):
                          'messageInfo': u'',
                          'title': u'',
                          'uidNumber': u'',
-                         'parentid': 1,
-                         'ip': 0, 
+                         'parentid': None,
+                         'ip': 0,
                          'uidNumber': 0,
                          'date': datetime.datetime.now(),
                          'pinned': False,
-                         'sage': False, 
+                         'sage': False,
                          }
         defaultParams.update(params)
         post = Post()
         for key in defaultParams.keys():
             setattr(post, key, defaultParams[key])
+        parentpost = Post.getPost(params.get('parentid', None))
+        if parentpost:
+            parentpost.bumpDate = params.get('date', defaultParams['date'])
         meta.Session.add(post)
         meta.Session.commit()
 

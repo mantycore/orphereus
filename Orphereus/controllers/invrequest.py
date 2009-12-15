@@ -90,6 +90,11 @@ class InvrequestController(OrphieBaseController):
                     self._captInit()
                     c.message = "Captcha failed."
                 else:
+                    targetPost = Post.getPost(g.OPT.threadToSaveApplications)
+                    if (not targetPost or targetPost.parentid):
+                        log.error("Thread for invitation requests configured improperly!")
+                        return self.error(_("Incorrect plugin configuration"))
+
                     Post.createDef(title = 'Request',
                            message = c.text,
                            messageInfo = '<span class="postInfo">Contact: %s</span>' % c.mail,

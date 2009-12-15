@@ -83,9 +83,9 @@ class AnalyseCommand(command.Command):
         algo = kwargs.get('algo', 'neato')
         opt = kwargs.get('opt', '-Kneato')
         showThreadLines = kwargs.get('showThreadLines', True)
-        showThreadLines = kwargs.get('showThreadLines', True)
-        showGreenLabels = kwargs.get('showGreenLabels', True)
-        showRedLabels = kwargs.get('showRedLabels', True)
+        showYellowLabels = kwargs.get('showYellowLabels', False)
+        showGreenLabels = kwargs.get('showGreenLabels', False)
+        showRedLabels = kwargs.get('showRedLabels', False)
 
         format = kwargs.get('format', 'png')
         if not format in ['svg', 'png', 'jpg', 'gif']:
@@ -151,25 +151,42 @@ node [style=filled];
                             else:
                                 f.write('node [shape=circle, color="goldenrod1"];\n')
                                 f.write('"%d" -> "%d" [color="red"];\n' % (post.id, link))
-                    pllinks = re.findall(plrex, post.message)
-                    print pllinks
-                    pllinks = map(lambda x: int(x), pllinks)
-                    for link in pllinks:
-                        target = post.getPost(link)
-                        if target:
-                            plcolor = "forestgreen"
-                            if not target.uidNumber or not post.uidNumber:
-                                 plcolor = "gray36"
-                            elif target.uidNumber != post.uidNumber:
-                                plcolor = "deeppink3"
-                            if target.parentid == thread.id or target.id == thread.id:
-                                f.write('"%d" -> "%d" [color="%s"];\n' % (post.id, link, plcolor))
-                            elif target.parentid:
-                                f.write('node [shape=ellipse, color="darkseagreen1"]');
-                                f.write('"%d" -> "%d" [color="%s"];\n' % (post.id, link, plcolor))
+
+                    if post.messageRaw and (showRedLabels or showGreenLabels or showYellowLabels):
+                        pllinks = re.findall(plrex, post.messageRaw)
+                        pllinks = map(lambda x: x[0], pllinks)
+                        reallinks = []
+                        for linkset in pllinks:
+                            reallinks.extend(linkset.split(','))
+                        reallinks = list(set(reallinks))
+                        print reallinks
+                        for link in reallinks:
+                            if link.lower() == 'op':
+                                link = thread.id
                             else:
-                                f.write('node [shape=circle, color="goldenrod1"];\n')
-                                f.write('"%d" -> "%d" [color="%s"];\n' % (post.id, link, plcolor))
+                                link = int(link)
+                            target = post.getPost(link)
+                            if target:
+                                if not target.uidNumber or not post.uidNumber:
+                                     plcolor = "gray36"
+                                     if not showYellowLabels:
+                                         continue
+                                elif target.uidNumber != post.uidNumber:
+                                    plcolor = "deeppink3"
+                                    if not showRedLabels:
+                                        continue
+                                else:
+                                    plcolor = "forestgreen"
+                                    if not showGreenLabels:
+                                        continue
+                                if (target.parentid == thread.id or target.id == thread.id):
+                                    f.write('"%d" -> "%d" [color="%s"];\n' % (post.id, link, plcolor))
+                                elif target.parentid:
+                                    f.write('node [shape=ellipse, color="darkseagreen1"]');
+                                    f.write('"%d" -> "%d" [color="%s"];\n' % (post.id, link, plcolor))
+                                else:
+                                    f.write('node [shape=circle, color="goldenrod1"];\n')
+                                    f.write('"%d" -> "%d" [color="%s"];\n' % (post.id, link, plcolor))
 
         f.write('}')
         f.close()
@@ -218,14 +235,14 @@ class ThreadanalyseController(OrphieBaseController):
 
     def graph(self, post):
         c.postId = post
-        if 'proceed' in request.POST:
+        if 'proceed' in request.GET:
             postInst = Post.getPost(int(post))
             if not postInst or not h.postEnabledToShow(postInst, self.userInst):
                 return self.error(_("Post not found"))
-            showThreadLines = bool(request.POST.get('showThreadLines', False))
-            showGreenLabels = bool(request.POST.get('showGreenLabels', False))
-            showRedLabels = bool(request.POST.get('showRedLabels', False))
-            format = filterText(request.POST.get('format', 'png')).strip()
+            showThreadLines = bool(request.GET.get('showThreadLines', False))
+            showGreenLabels = bool(request.GET.get('showGreenLabels', False))
+            showRedLabels = bool(request.GET.get('showRedLabels', False))
+            format = filterText(request.GET.get('format', 'png')).strip()
             format = format[:3] # excessive restrictions applied because this string will be sent to commandline
             if not re.compile("^\w+$").match(format):
                 format = 'png'

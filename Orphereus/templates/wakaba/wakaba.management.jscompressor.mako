@@ -13,7 +13,7 @@ ${line}
 
 <label><input type="checkbox" name="useGClosure" />Use Google Closure</label><br/>
 
-<label><input type="checkbox" name="advancedOpt" />
+<label><input type="checkbox" name="advancedOpt" disabled="disabled" />
 Use Closure Advanced Optimizations (<span style="color: red;">dangerous</span>)</label><br/>
 
 <input type="submit" name="rebuildjs" value="Rebuild" />

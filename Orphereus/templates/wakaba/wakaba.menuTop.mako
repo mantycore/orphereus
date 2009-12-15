@@ -46,7 +46,6 @@
 
 </div>
 %if not c.userInst.Anonymous and c.userInst.filters:
-    <br />
     [ \
     %for f in c.userInst.filters:
         <a href="${h.url_for('boardBase', board=f.filter)}">/${f.filter}/</a> \

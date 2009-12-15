@@ -159,7 +159,6 @@ node [style=filled];
                         for linkset in pllinks:
                             reallinks.extend(linkset.split(','))
                         reallinks = list(set(reallinks))
-                        print reallinks
                         for link in reallinks:
                             if link.lower() == 'op':
                                 link = thread.id

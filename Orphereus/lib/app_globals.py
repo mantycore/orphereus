@@ -52,7 +52,7 @@ class OptHolder(object):
         self.captchaFont = os.path.join(self.appRoot, 'Orphereus/cfont.ttf')
         self.revisionId = ''
         try:
-            f = open(os.path.join(self.appRoot, 'revision'))
+            f = open(os.path.join(self.appRoot, 'revision')) #
             self.revisionId = re.sub("[^\d]", "", f.read())
         finally:
             f.close()

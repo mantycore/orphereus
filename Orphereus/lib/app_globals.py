@@ -52,9 +52,10 @@ class OptHolder(object):
         self.captchaFont = os.path.join(self.appRoot, 'Orphereus/cfont.ttf')
         self.revisionId = ''
         try:
-            self.revisionId = open(os.path.join(self.appRoot, 'Orphereus/revision')).read()
-        except:
-            pass
+            f = open(os.path.join(self.appRoot, 'Orphereus/revision'))
+            self.revisionId = re.sub("[^\d]", "", f.read())
+        finally:
+            f.close
         self.disabledModules = []
 
         self.booleanValues = [('core',

@@ -50,6 +50,11 @@ class OptHolder(object):
         self.templPath = os.path.realpath(os.path.join(self.appPath, 'templates'))
 
         self.captchaFont = os.path.join(self.appRoot, 'Orphereus/cfont.ttf')
+        self.revisionId = ''
+        try:
+            self.revisionId = open(os.path.join(self.appRoot, 'Orphereus/revision')).read()
+        except:
+            pass
         self.disabledModules = []
 
         self.booleanValues = [('core',
@@ -329,6 +334,8 @@ class Globals(object):
         self.enumeratePlugins('%s.controllers.' % appName)
         self.firstRequest = True
         self.version = engineVersion
+        if self.OPT.revisionId:
+            self.version += ".%s" % self.OPT.revisionId
         self.menuCache = {}
         self.mc = None
 

@@ -144,6 +144,7 @@ frontend.allowCrosspostingSvc = true
 frontend.allowPureSvcTagline = true
 frontend.allowTagCreation = true
 frontend.allowAnswersWithoutCaptcha = false
+frontend.easyCaptcha = false
 frontend.forbidCaptcha = false
 # if true, sets thread sorting mode to their creation time, not bump-date
 frontend.newsSiteMode = false

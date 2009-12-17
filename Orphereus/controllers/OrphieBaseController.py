@@ -144,9 +144,8 @@ class OrphieBaseController(BaseController):
         self.setRightsInfo()
 
     def initSessionCaptcha(self, force = False):
-        ret = None
         if self.userInst.Anonymous or force:
-            anonCaptId = session.get('anonCaptId', False)
+            anonCaptId = session.get('anonCaptId', None)
             if not anonCaptId or not Captcha.exists(anonCaptId):
                 #log.debug('recreate')
                 captcha = None
@@ -158,10 +157,18 @@ class OrphieBaseController(BaseController):
                     captcha = Captcha.create()
                 session['anonCaptId'] = captcha.id
                 session.save()
-                ret = captcha
+                return captcha
             else:
-                ret = Captcha.getCaptcha(anonCaptId)
-        return ret
+                return Captcha.getCaptcha(anonCaptId)
+        return None
+
+    def checkSessionCaptcha(self, value):
+        anonCaptId = session.get('anonCaptId', False)
+        captcha = Captcha.getCaptcha(anonCaptId)
+        #log.debug("captcha: id == %s, object == %s " %(str(anonCaptId), str(captcha)))
+        if captcha:
+            return captcha.test(value)
+        return None
 
     def initiate(self):
         c.destinations = destinations

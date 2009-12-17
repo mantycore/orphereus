@@ -89,7 +89,8 @@ class OptHolder(object):
                                  'boardWideProoflabels', 'allowOverview', 'framedMain',
                                  'showShortStatistics', 'mixOldThreads',
                                  'newsSiteMode', 'useTopPaginator', 'useZMenu', 'dvachStyleMenu',
-                                 'permissiveAdditionalFilesCountConjunction'
+                                 'permissiveAdditionalFilesCountConjunction',
+                                 'easyCaptcha',
                                 )
                               ),
 

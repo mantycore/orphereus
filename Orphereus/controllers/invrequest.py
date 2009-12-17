@@ -65,29 +65,19 @@ class InvrequestController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         c.boardName = _('Invitation request')
-
-    def _captInit(self):
-        captcha = Captcha.create()
-        session['cid'] = captcha.id
-        session.save()
-        c.captcha = captcha
+        c.captcha = self.initSessionCaptcha(True)
 
     def invrequest(self):
         if not(g.OPT.enableInvitationRequest):
             c.hideform = True
             c.message = "Invitation requests are not allowed."
         else:
-            if session.get('cid', False):
-                c.captcha = Captcha.getCaptcha(session['cid'])
-            if not c.captcha:
-                self._captInit()
             c.hideform = False
             mail, text = filterText(request.POST.get('mail', u'')), filterText(request.POST.get('text', u''))
             c.mail, c.text = filterText(mail), filterText(text)
             if mail and text:
-                captchaOk = c.captcha.test(request.POST.get('captcha', ''))
-                if not(captchaOk):
-                    self._captInit()
+                captchaOk = self.checkSessionCaptcha(request.POST.get('captcha', '')) #c.captcha.test(request.POST.get('captcha', ''))
+                if not captchaOk:
                     c.message = "Captcha failed."
                 else:
                     targetPost = Post.getPost(g.OPT.threadToSaveApplications)

@@ -37,9 +37,10 @@ except ImportError:
 from Captcha.Visual import Text, Backgrounds, Distortions, ImageCaptcha
 
 class CaptchaGenerator(ImageCaptcha):
-    def __init__(self, word, font, *args, **kwargs):
+    def __init__(self, word, font, easyMode, *args, **kwargs):
         self.word = word
         self.font = font
+        self.easyMode = easyMode
         super(CaptchaGenerator, self).__init__(*args, **kwargs)
 
     def getLayers(self):
@@ -47,13 +48,15 @@ class CaptchaGenerator(ImageCaptcha):
         ff = Text.FontFactory(26, self.font)
         bg = random.choice([Backgrounds.SolidColor(), Backgrounds.CroppedImage(), Backgrounds.TiledImage(), ])
         bg = (bg, Backgrounds.Grid(), Distortions.SineWarp(amplitudeRange = (6, 10), periodRange = (0.1, 0.4)))
-        return [ bg,
-            Backgrounds.RandomDots(),
-            #Distortions.WigglyBlocks(),
+        layers = [bg, ]
+        if not self.easyMode:
+            layers.append(Backgrounds.RandomDots())
+        layers.extend([#Distortions.WigglyBlocks(),
             Text.TextLayer(word, borderSize = 1, fontFactory = ff),
             Distortions.SineWarp()
             #Distortions.SineWarp()
-            ]
+            ])
+        return layers
 
 import logging
 log = logging.getLogger(__name__)
@@ -93,6 +96,9 @@ class Captcha(object):
         self.text = text
         self.timestamp = datetime.datetime.now()
 
+    def __repr__(self):
+        return "<Captcha '%s', pic='%s b'>" % (self.text, str(self.content and len(self.content) or 0))
+
     def delete(self):
         meta.Session.delete(self)
         meta.Session.commit()
@@ -125,7 +131,7 @@ class Captcha(object):
         return (Captcha.query.filter(Captcha.id == id).count() == 1)
 
     @staticmethod
-    def picture(cid, font):
+    def picture(cid, font, easyMode):
         captcha = Captcha.query.filter(Captcha.id == cid).first()
 
         out = ""
@@ -135,7 +141,7 @@ class Captcha(object):
             text = force_unicode(captcha.text)
 
             size = (150, 40)
-            cgen = CaptchaGenerator(text, font)
+            cgen = CaptchaGenerator(text, font, easyMode)
             textPic = cgen.render(size)
 
             f = StringIO.StringIO()
@@ -146,8 +152,7 @@ class Captcha(object):
                 meta.Session.commit()
             out = pic
             return str(out)
-        else:
-            return "Wrong ID"
+        return None
 
     """
         pw = 300

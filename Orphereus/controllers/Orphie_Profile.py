@@ -62,7 +62,8 @@ class OrphieProfilePlugin(BasePlugin, AbstractMenuProvider):
 
     def menuItemIsVisible(self, id, baseController):
         #user = baseController.userInst
-        return id.startswith('id_profile_')
+        return id.startswith('id_profile_') and \
+              (not baseController.userInst.Anonymous or g.OPT.allowAnonProfile)
 
     def modifyMenuItem(self, menuItem, baseController):
         user = baseController.userInst

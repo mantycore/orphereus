@@ -141,12 +141,10 @@ class OrphiePublicController(OrphieBaseController):
         redirect_to('boardBase')
 
     def captchaPic(self, cid):
-        # TODO: fix shitty code
         #log.debug('user cap lang: %s' %c.userInst.cLang)
         self.setLang(True)
-        pic = Captcha.picture(cid, g.OPT.captchaFont)
-        # TODO: Why "Wrong ID"? Maybe None will be enough?
-        if ("Wrong ID" == pic):
+        pic = Captcha.picture(cid, g.OPT.captchaFont, g.OPT.easyCaptcha)
+        if not pic:
             newCaptcha = Captcha.create()
             session['anonCaptId'] = newCaptcha.id
             session.save()

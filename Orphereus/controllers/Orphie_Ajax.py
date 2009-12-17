@@ -353,6 +353,8 @@ class OrphieAjaxController(OrphieBaseController):
             abort(404)
 
     def changeOption(self, name, value):
+        if self.userInst.Anonymous and not g.OPT.allowAnonProfile:
+            abort(403)
         val = None
         ok = True
         if name in self.userInst.booleanValues:

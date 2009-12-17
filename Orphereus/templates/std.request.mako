@@ -2,7 +2,9 @@
 <div align="center">
 <h2>${_('Invitation request')}</h2>
 %if c.message:
+<h3 class="errorMessage">
     ${c.message}
+</h3>
 %endif
 </div>
 <br /><br />

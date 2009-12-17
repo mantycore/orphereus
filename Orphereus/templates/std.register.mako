@@ -4,6 +4,11 @@
 <div class="postarea">
 <form id="postform" action="${h.url_for('register', invite='doesntmatteranymore')}" method="post">
 <h2>${_('New UID')}</h2>
+%if c.message:
+<h3 class="errorMessage">
+    ${c.message}
+</h3>
+%endif
 
 <p><i>
 ${_('Now you can enter your personal security code.')}

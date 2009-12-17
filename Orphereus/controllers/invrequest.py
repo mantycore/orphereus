@@ -78,7 +78,7 @@ class InvrequestController(OrphieBaseController):
             if mail and text:
                 captchaOk = self.checkSessionCaptcha(request.POST.get('captcha', '')) #c.captcha.test(request.POST.get('captcha', ''))
                 if not captchaOk:
-                    c.message = "Captcha failed."
+                    c.message = _("Captcha failed")
                 else:
                     targetPost = Post.getPost(g.OPT.threadToSaveApplications)
                     if (not targetPost or targetPost.parentid):

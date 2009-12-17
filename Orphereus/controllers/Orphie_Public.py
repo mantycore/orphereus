@@ -305,7 +305,15 @@ class OrphiePublicController(OrphieBaseController):
         c.captcha = None
         captchaOk = True
         if c.openReg:
-            captchaOk = False
+            captchaOk = None
+            captcha = request.POST.get('captcha', False)
+            if captcha:
+                captchaOk = self.checkSessionCaptcha(captcha)
+            if not captchaOk:
+                if captcha:
+                    c.message = _("Captcha failed")
+                c.captcha = self.initSessionCaptcha(True)
+            """
             if session.get('cid', False):
                 captcha = Captcha.getCaptcha(session['cid'])
                 if captcha:
@@ -317,7 +325,7 @@ class OrphiePublicController(OrphieBaseController):
                 session['cid'] = captcha.id
                 session.save()
                 c.captcha = captcha
-
+            """
         key = request.POST.get('key', '').encode('utf-8')
         key2 = request.POST.get('key2', '').encode('utf-8')
         if key and captchaOk:

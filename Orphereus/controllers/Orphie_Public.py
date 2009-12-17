@@ -183,7 +183,6 @@ class OrphiePublicController(OrphieBaseController):
                     if trackerCapt:
                         trackerCapt.delete()
                 if not anonCapt:
-                    print "NOT"
                     anonCapt = self.initSessionCaptcha(True)
                 tracker.cid = anonCapt.id
                 meta.Session.commit()
@@ -333,7 +332,10 @@ class OrphiePublicController(OrphieBaseController):
                 uid = User.genUid(key)
                 user = User.getByUid(uid)
                 if user:
-                    user.ban(7777, _("Your Security Code was used during registration by another user. Contact administrator immediately please."), -1)
+                    if not user.isBanned():
+                        user.ban(7777, _("Your Security Code was used during registration by another user. Contact administrator immediately please."), -1)
+                    else:
+                        toLog(LOG_EVENT_BAN_ERROR, _("User %d should be banned becuse his code was entered during registration but he is already banned ") % (user.uidNumber,))
                     cleanup()
                     return self.error(_("You entered already existing password. Previous account was banned. Contact administrator please."))
 
@@ -347,7 +349,7 @@ class OrphiePublicController(OrphieBaseController):
                 toLog(LOG_EVENT_INVITE_USED, _("Completed registration by invite #%d; %s") % (session['iid'], infoline))
                 cleanup()
                 self.login(user)
-                redirect_to('boardBase', board = '!')
+                redirect_to('boardBase') #, board = '!')
         c.boardName = _('Register')
         return self.render('register')
 

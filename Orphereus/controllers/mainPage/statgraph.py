@@ -22,10 +22,14 @@
 
 from pylons.i18n import N_
 from string import *
+from array import array
 from beaker.cache import CacheManager
 from Orphereus.model.Picture import Picture
 import datetime
-import  sqlalchemy as sa
+import urllib2
+import re
+import tempfile
+import sqlalchemy as sa
 from sqlalchemy.sql import and_, or_, not_
 
 from Orphereus.lib.BasePlugin import BasePlugin
@@ -62,6 +66,18 @@ class GraphsCommand(command.Command):
                       dest = 'path',
                       help = 'working dir (e.g. ".")')
 
+    parser.add_option('--onlypreparedata',
+                      action = 'store_true',
+                      dest = 'preparedata',
+                      default = False,
+                      help = 'prepare statistical data')
+
+    parser.add_option('--solar',
+                      action = 'store_true',
+                      dest = 'solar',
+                      default = False,
+                      help = 'prepare statistical data')
+
     @staticmethod
     def setup_config(filename, relative_to):
         ch = logging.StreamHandler()
@@ -80,7 +96,7 @@ class GraphsCommand(command.Command):
         load_environment(conf.global_conf, conf.local_conf, False)
         g._push_object(meta.globj) #zomg teh h4x
 
-    def plotStdGraph(self, xsvals, ysvals, name, header):
+    def plotStdGraph(self, xsvals, ysvals, name, header, labels):
         import matplotlib
         import matplotlib.pyplot as plt
         from matplotlib import rc
@@ -102,9 +118,15 @@ class GraphsCommand(command.Command):
         plt.suptitle(header) # color = maincolor)
         ax = fig.add_subplot(1, 1, 1) #, axisbg = "#E2E0A7")
         ax.axes.grid(color = maincolor)
-        line = plt.plot_date(xsvals, ysvals, '-', color = linecolor, linewidth = 1)
+        colors = [linecolor, 'b', 'r', 'g', 'm', 'y']
+        for dataset, linecolor in zip(ysvals, colors):
+            line = plt.plot_date(xsvals, dataset, '-', color = linecolor, linewidth = 1)
         plt.grid(True)
         fig.autofmt_xdate()
+        if labels:
+            legend = plt.legend(labels, labelspacing = 0.1) #loc=(0.9, .95),
+            plt.setp(legend.get_texts(), fontsize = 'small')
+
         imgdata = StringIO.StringIO()
         plt.savefig(imgdata, format = 'png')
         plt.close()
@@ -119,10 +141,54 @@ class GraphsCommand(command.Command):
 
     def command(self):
         #devIni = self.args[0]
-        import matplotlib
-        matplotlib.use('Agg')
-
         self.setup_config(self.options.config, self.options.path)
+
+        if self.options.preparedata:
+            self.prepareData(self.options.solar)
+        else:
+            import matplotlib
+            matplotlib.use('Agg')
+
+            xsvals = []
+            ysvalsPPD = []
+            ysvalsTotal = []
+            ysvalsUUsers = []
+
+            radioFlux = []
+            sunspotNumber = []
+            sunspotArea = []
+
+            for sr in StatRecord.query:
+                xsvals.append(sr.timestamp)
+                ysvalsPPD.append(sr.postsAtDay)
+                ysvalsTotal.append(sr.totalPostsUntil)
+                ysvalsUUsers.append(sr.uniqueUsers)
+                radioFlux.append(sr.radioFlux)
+                sunspotNumber.append(sr.sunspotNumber)
+                sunspotArea.append(sr.sunspotArea)
+
+            period = 6
+            ppdEMA = self.calculateEMA(ysvalsPPD, period)
+            ppdEMAv = [0] * (period - 1)
+            ppdEMAv.extend(ppdEMA)
+
+            uuEMA = self.calculateEMA(ysvalsUUsers, period)
+            uuEMAv = [0] * (period - 1)
+            uuEMAv.extend(uuEMA)
+
+            self.plotStdGraph(xsvals,
+                              [ysvalsPPD, ppdEMAv, radioFlux, sunspotNumber, sunspotArea],
+                              "stat_posts_pd",
+                              "Posts per day",
+                              ("Posts per day", "Exp Moving Average", "Radio flux", "Sunspot number", "Sunspot Area"))
+            self.plotStdGraph(xsvals, [ysvalsTotal], "stat_posts_total", "Total posts", None)
+            self.plotStdGraph(xsvals, [ysvalsUUsers, uuEMAv, radioFlux, sunspotNumber, sunspotArea],
+                              "stat_users_pd",
+                              "Unique users per day",
+                              ("Posts per day", "Exp Moving Average", "Radio flux", "Sunspot number", "Sunspot Area"))
+
+    def prepareData(self, downloadSolarData):
+        ns = g.pluginsDict['statgraph'].namespace()
         birthdate = meta.Session.query(sa.sql.functions.min(Post.date)).scalar()
         lastdate = datetime.datetime.now()
         currentdate = birthdate
@@ -132,6 +198,7 @@ class GraphsCommand(command.Command):
         ysvalsUU = []
         dayscount = (lastdate - birthdate).days
         ccount = 0
+        values = {}
         while currentdate < lastdate:
             nextdate = (currentdate + datetime.timedelta(days = 1))
             uniqueUidsExpr = meta.Session.query(Post.uidNumber).distinct()
@@ -143,13 +210,127 @@ class GraphsCommand(command.Command):
             ysvalsPPD.append(countfordate)
             ysvalsT.append(countupdate)
             ysvalsUU.append(uuserscount)
-            currentdate = nextdate
-            print "Day %d/%d: %d posts, %d total, %d uniq users" % (ccount, dayscount, countfordate, countupdate, uuserscount)
+            print "Day %d/%d (%s): %d posts, %d total, %d uniq users" % (ccount,
+                                                                    dayscount,
+                                                                    currentdate.date(),
+                                                                    countfordate,
+                                                                    countupdate,
+                                                                    uuserscount)
+            dayvalues = {'postsAtDay' : countfordate,
+                      'uniqueUsers' : uuserscount,
+                      'totalPostsUntil' : countupdate,
+                      'radioFlux' : None,
+                      'sunspotNumber' : None,
+                      'sunspotArea' : None,
+                      }
+            values[currentdate.date()] = dayvalues
             ccount += 1
-        self.plotStdGraph(xsvals, ysvalsPPD, "stat_posts_pd", "Posts per day")
-        self.plotStdGraph(xsvals, ysvalsT, "stat_posts_total", "Total posts")
-        self.plotStdGraph(xsvals, ysvalsUU, "stat_users_pd", "Unique users per day")
+            currentdate = nextdate
 
+        if downloadSolarData:
+            idxbase = 'http://www.swpc.noaa.gov/ftpdir/indices/old_indices'
+            curidx = 'http://www.swpc.noaa.gov/ftpdir/indices/quar_DSD.txt'
+            #tmpd = tempfile.mkdtemp()
+            #print "Temporary directory: %s" % tmpd
+            def download(url):
+                print "Downloading %s..." % url
+                response = urllib2.urlopen(url)
+                html = response.read()
+                """
+                f = open(os.path.join(tmpd, url.split(r'/')[-1]), 'w+')
+                f.write(html)
+                f.close()
+                """
+                print "ok"
+                return html
+            min_year = "2008"
+            print "Downloading index from %s..." % idxbase
+            response = urllib2.urlopen(idxbase)
+            oldind = response.read()
+            print "ok"
+            rex = re.compile(r"%s\w*_DSD\.txt" % min_year)
+            filesToDownload = list(set(re.findall(rex, oldind)))
+            filesToDownload = map(lambda x: "%s/%s" % (idxbase, x), filesToDownload)
+            filesToDownload.append(curidx)
+            print "Files to download: %s" % str(filesToDownload)
+            mergedData = ""
+            for ftd in filesToDownload:
+                mergedData += download(ftd)
+            mergedData = filter(lambda x: not ('#' in x or ':' in x), mergedData.splitlines())
+            mergedData = sorted(mergedData)
+            fmts = '%Y %m %d'
+            slen = 10
+            solarvalues = {}
+            rex = re.compile("^\d+\s+\d+\s+\d+\s+(\d+)\s+(\d+)\s+(\d+)\s+.+$")
+
+            for line in mergedData:
+                ts = datetime.datetime.strptime(line[:slen], fmts)
+                groups = rex.match(line).groups()
+                solarvalues[ts.date()] = (groups[0], groups[1], groups[2])
+
+            print "Setting data..."
+            for date in values:
+                solarDayValues = solarvalues.get(date, None)
+                if solarDayValues:
+                    print "%s" % str(date)
+                    dayvalues = values[date]
+                    dayvalues['radioFlux'] = solarDayValues[0]
+                    dayvalues['sunspotNumber'] = solarDayValues[1]
+                    dayvalues['sunspotArea'] = solarDayValues[2]
+                    values[date] = dayvalues
+            print "ok"
+        for date in values:
+            ns.StatRecord.setFor(date, **values[date])
+        meta.Session.commit()
+    @staticmethod
+    def calculateEMA(values_array, n):
+        """
+        returns an n period exponential moving average for
+        the time series values_array
+
+        values_array is a list ordered from oldest (index 0) to most recent (index
+        -1) n is an integer
+
+        returns a numeric array of the exponential moving average
+        """
+        values_array = array('d', values_array)
+        exponential_moving_average_array = []
+        j = 1
+        #get n sma first and calculate the next n period ema
+        sma = sum(values_array[:n]) / n
+        multiplier = 2 / float(1 + n)
+        exponential_moving_average_array.append(sma)
+        #EMA(current) = ( (Price(current) - EMA(prev) ) xMultiplier) + EMA(prev)
+        exponential_moving_average_array.append(((values_array[n] - sma) * multiplier) + sma)
+        #now calculate the rest of the values
+        for i in values_array[n + 1:]:
+            tmp = ((i - exponential_moving_average_array[j]) * multiplier) + exponential_moving_average_array[j]
+            j = j + 1
+            exponential_moving_average_array.append(tmp)
+        return exponential_moving_average_array
+
+class StatRecord(object):
+    def __init__(self, timestamp, **kwargs):
+        self.timestamp = timestamp
+        StatRecord.setValues(self, **kwargs)
+
+    @staticmethod
+    def setValues(instance, **values):
+        for arg in values:
+            setattr(instance, arg, values[arg])
+
+    @staticmethod
+    def setFor(date, **values):
+        record = StatRecord.query.filter(StatRecord.timestamp == date).first()
+        if not record:
+            record = StatRecord(date, **values)
+            meta.Session.add(record)
+        else:
+            StatRecord.setValues(record, **values)
+
+    @staticmethod
+    def getFor(date):
+        return StatRecord.query.filter(StatRecord.date == date).first()
 
 class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
     def __init__(self):
@@ -162,6 +343,21 @@ class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
 
     def entryPointsList(self):
         return [('statgraphs', "GraphsCommand"), ]
+
+    def initORM(self, orm, engine, dialectProps, propDict):
+        namespace = self.namespace()
+        t_statistics = sa.Table("statlog", meta.metadata,
+            sa.Column("timestamp"       , sa.types.Date, unique = True, primary_key = True),
+            sa.Column('postsAtDay'  , sa.types.Integer, nullable = True),
+            sa.Column('uniqueUsers'  , sa.types.Integer, nullable = True),
+            sa.Column('totalPostsUntil'  , sa.types.Integer, nullable = True),
+            sa.Column('radioFlux'  , meta.FloatType, nullable = True),
+            sa.Column('sunspotNumber'  , meta.FloatType, nullable = True),
+            sa.Column('sunspotArea'  , meta.FloatType, nullable = True),
+            )
+
+        #orm.mapper
+        meta.mapper(namespace.StatRecord, t_statistics, properties = {})
 
     def prepareData(self, controller, container):
         c.graphsToShow = []

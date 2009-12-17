@@ -98,7 +98,10 @@ class OrphieProfileController(OrphieBaseController):
         if bool(request.POST.get('update', False)):
             lang = filterText(request.POST.get('lang', self.userInst.lang))
             c.reload = (h.makeLangValid(lang) != self.userInst.lang)
+
             oldUseFrame = self.userInst.useFrame
+            oldStyle = self.userInst.style
+
             for valueName in self.userInst.booleanValues:
                 val = bool(request.POST.get(valueName, False))
                 setattr(self.userInst, valueName, val)
@@ -112,7 +115,9 @@ class OrphieProfileController(OrphieBaseController):
                 val = filterText(request.POST.get(valueName, getattr(self.userInst, valueName)))
                 setattr(self.userInst, valueName, val)
 
-            if oldUseFrame != self.userInst.useFrame:
+            performRedirect = (oldUseFrame != self.userInst.useFrame) or \
+                              (oldStyle != self.userInst.style)
+            if performRedirect:
                 c.proceedRedirect = True
                 if self.userInst.useFrame:
                     c.frameTargetToRedir = h.url_for('userProfile')

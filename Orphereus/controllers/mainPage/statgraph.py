@@ -320,19 +320,21 @@ class GraphsCommand(command.Command):
                 """
                 print "ok"
                 return html
-            min_year = "2008"
             print "Downloading index from %s..." % idxbase
             response = urllib2.urlopen(idxbase)
             oldind = response.read()
             print "ok"
-            rex = re.compile(r"%s\w*_DSD\.txt" % min_year)
-            filesToDownload = list(set(re.findall(rex, oldind)))
-            filesToDownload = map(lambda x: "%s/%s" % (idxbase, x), filesToDownload)
-            filesToDownload.append(curidx)
-            print "Files to download: %s" % str(filesToDownload)
             mergedData = ""
-            for ftd in filesToDownload:
-                mergedData += download(ftd)
+            cur_year = 2008
+            while cur_year <= datetime.datetime.now().year:
+                rex = re.compile(r"%d\w*_DSD\.txt" % cur_year)
+                filesToDownload = list(set(re.findall(rex, oldind)))
+                filesToDownload = map(lambda x: "%s/%s" % (idxbase, x), filesToDownload)
+                filesToDownload.append(curidx)
+                print "Files to download: %s" % str(filesToDownload)
+                for ftd in filesToDownload:
+                    mergedData += download(ftd)
+                cur_year += 1
             mergedData = filter(lambda x: not ('#' in x or ':' in x), mergedData.splitlines())
             mergedData = sorted(mergedData)
             fmts = '%Y %m %d'

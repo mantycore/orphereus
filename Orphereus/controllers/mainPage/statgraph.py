@@ -105,18 +105,11 @@ class GraphsCommand(command.Command):
         header = "%s\n%s" % (header, h.tsFormat(datetime.datetime.now()))
         maincolor = "#6c6c6c"
         linecolor = "#2f3f3f"
-        #rc('xtick', labelsize = 12, color = 'white', direction = 'out') # x tick labels
-        #rc('lines', lw = 0.5, color = maincolor) # thicker black lines
-        #rc('grid', c = maincolor, lw = 0.5) # solid gray grid lines
-        #rc('text', color = maincolor)
         rc('axes', edgecolor = maincolor)
-        #rc('xtick', color = maincolor)
-        #rc('ytick', color = maincolor)
-
         fig = plt.figure(1)
         fig.patch.set_alpha(0.0)
-        plt.suptitle(header) # color = maincolor)
-        ax = fig.add_subplot(1, 1, 1) #, axisbg = "#E2E0A7")
+        plt.suptitle(header)
+        ax = fig.add_subplot(1, 1, 1) 
         ax.axes.grid(color = maincolor)
         colors = [linecolor, 'b', 'r', 'g', 'm', 'y']
         for dataset, linecolor in zip(ysvals, colors):
@@ -126,6 +119,89 @@ class GraphsCommand(command.Command):
         if labels:
             legend = plt.legend(labels, labelspacing = 0.1) #loc=(0.9, .95),
             plt.setp(legend.get_texts(), fontsize = 'small')
+
+        imgdata = StringIO.StringIO()
+        plt.savefig(imgdata, format = 'png')
+        plt.close()
+        imgdata.seek(0)
+        out = imgdata.getvalue()
+        path = os.path.join(g.OPT.staticPath, "%s.png" % name)
+        print "Created:", path
+        f = open(path, "wb+")
+        f.write(out)
+        f.close()
+        Picture.makeThumbnail(path, os.path.join(g.OPT.staticPath, "%ss.png" % name), (200, 200))
+
+        
+    def plotMultiGraph(self, xsvals, ysvals, name, header, labels):
+        import matplotlib
+        import matplotlib.pyplot as plt
+        from matplotlib import rc
+        from matplotlib.dates import date2num
+        import matplotlib.font_manager as font_manager
+
+        header = "%s\n%s" % (header, h.tsFormat(datetime.datetime.now()))
+        maincolor = "#6c6c6c"
+        linecolor = "#2f3f3f"
+        #rc('xtick', labelsize = 12, color = 'white', direction = 'out') # x tick labels
+        #rc('lines', lw = 0.5, color = maincolor) # thicker black lines
+        #rc('grid', c = maincolor, lw = 0.5) # solid gray grid lines
+        #rc('text', color = maincolor)
+        rc('axes', edgecolor = maincolor, grid = True)
+        plt.rc('grid', color = '0.75', linestyle = '-', linewidth = 0.5)
+
+        #rc('xtick', color = maincolor)
+        #rc('ytick', color = maincolor)
+
+        fig = plt.figure(1)
+        fig.patch.set_alpha(0.0)
+        plt.suptitle(header) # color = maincolor)
+        #ax = fig.add_subplot(1, 1, 1) #, axisbg = "#E2E0A7")
+        left, width = 0.1, 0.8
+        rect1 = [left, 0.7, width, 0.2]
+        rect2 = [left, 0.3, width, 0.4]
+        rect3 = [left, 0.1, width, 0.2]
+        ax1 = fig.add_axes(rect1)
+        ax2 = fig.add_axes(rect2, sharex = ax1)
+        ax3 = fig.add_axes(rect3, sharex = ax1)
+
+        assert len(ysvals) == 5
+        ax = [ax2,
+              ax2,
+              ax1,
+              ax3,
+              ax3]
+        #ax.axes.grid(color = maincolor)
+        #ax.set_yscale('log')
+        colors = [linecolor, 'b', 'r', 'g', 'm', 'y']
+        for dataset, linecolor, axc, label in zip(ysvals, colors, ax, labels):
+            line = axc.plot_date(xsvals, dataset, '-', color = linecolor, linewidth = 1, label = label)
+
+        for ax in ax1, ax2, ax3:
+            if ax != ax3:
+                for label in ax.get_xticklabels():
+                    label.set_visible(False)
+            else:
+                for label in ax.get_xticklabels():
+                    label.set_rotation(15)
+                    label.set_horizontalalignment('right')
+            yl = ax.get_yticklabels()
+            yl[0].set_visible(False)
+            yl[-1].set_visible(False)
+
+        #plt.grid(True)
+        #fig.autofmt_xdate()
+        #if labels:
+        props = font_manager.FontProperties(size=8)
+        leg = ax2.legend(loc='upper left', shadow=True, fancybox=False, prop=props)
+        leg.get_frame().set_alpha(0.5)
+        leg = ax1.legend(loc='upper left', shadow=True, fancybox=True, prop=props)
+        leg.get_frame().set_alpha(0.5)
+        leg = ax3.legend(loc='upper left', shadow=True, fancybox=True, prop=props)
+        leg.get_frame().set_alpha(0.5)
+
+        #    legend = plt.legend(labels, labelspacing = 0.1) #loc=(0.9, .95),
+        #    plt.setp(legend.get_texts(), fontsize = 'small')
 
         imgdata = StringIO.StringIO()
         plt.savefig(imgdata, format = 'png')
@@ -158,7 +234,7 @@ class GraphsCommand(command.Command):
             sunspotNumber = []
             sunspotArea = []
 
-            for sr in StatRecord.query:
+            for sr in StatRecord.query.order_by(StatRecord.timestamp.asc()):
                 xsvals.append(sr.timestamp)
                 ysvalsPPD.append(sr.postsAtDay)
                 ysvalsTotal.append(sr.totalPostsUntil)
@@ -176,16 +252,16 @@ class GraphsCommand(command.Command):
             uuEMAv = [0] * (period - 1)
             uuEMAv.extend(uuEMA)
 
-            self.plotStdGraph(xsvals,
+            self.plotStdGraph(xsvals, [ysvalsTotal], "stat_posts_total", "Total posts", None)
+            self.plotMultiGraph(xsvals,
                               [ysvalsPPD, ppdEMAv, radioFlux, sunspotNumber, sunspotArea],
                               "stat_posts_pd",
                               "Posts per day",
-                              ("Posts per day", "Exp Moving Average", "Radio flux", "Sunspot number", "Sunspot Area"))
-            self.plotStdGraph(xsvals, [ysvalsTotal], "stat_posts_total", "Total posts", None)
-            self.plotStdGraph(xsvals, [ysvalsUUsers, uuEMAv, radioFlux, sunspotNumber, sunspotArea],
+                              ("Posts", "Exp MA", "Radio flux", "Sunspot number", "Sunspot Area"))
+            self.plotMultiGraph(xsvals, [ysvalsUUsers, uuEMAv, radioFlux, sunspotNumber, sunspotArea],
                               "stat_users_pd",
                               "Unique users per day",
-                              ("Posts per day", "Exp Moving Average", "Radio flux", "Sunspot number", "Sunspot Area"))
+                              ("Users", "Exp MA", "Radio", "Sunspot number", "Sunspot Area"))
 
     def prepareData(self, downloadSolarData):
         ns = g.pluginsDict['statgraph'].namespace()
@@ -282,6 +358,7 @@ class GraphsCommand(command.Command):
         for date in values:
             ns.StatRecord.setFor(date, **values[date])
         meta.Session.commit()
+
     @staticmethod
     def calculateEMA(values_array, n):
         """

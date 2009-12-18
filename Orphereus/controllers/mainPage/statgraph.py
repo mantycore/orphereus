@@ -170,11 +170,11 @@ class GraphsCommand(command.Command):
         ax = [ax2,
               ax2,
               ax1,
-              ax3,
+              ax1,
               ax3]
         #ax.axes.grid(color = maincolor)
         #ax.set_yscale('log')
-        colors = [linecolor, 'b', 'r', 'g', 'm', 'y']
+        colors = ['#abaeae', 'r', 'b', 'g', 'm', 'y']
         for dataset, linecolor, axc, label in zip(ysvals, colors, ax, labels):
             line = axc.plot_date(xsvals, dataset, '-', color = linecolor, linewidth = 1, label = label)
 

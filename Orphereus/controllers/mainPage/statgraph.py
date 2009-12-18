@@ -154,6 +154,7 @@ class GraphsCommand(command.Command):
         #rc('ytick', color = maincolor)
 
         fig = plt.figure(1)
+        fig.set_size_inches(9, 6)
         fig.patch.set_alpha(0.0)
         plt.suptitle(header) # color = maincolor)
         #ax = fig.add_subplot(1, 1, 1) #, axisbg = "#E2E0A7")
@@ -257,11 +258,11 @@ class GraphsCommand(command.Command):
                               [ysvalsPPD, ppdEMAv, radioFlux, sunspotNumber, sunspotArea],
                               "stat_posts_pd",
                               "Posts per day",
-                              ("Posts", "Exp MA", "Radio flux", "Sunspot number", "Sunspot Area"))
+                              ("Posts", "Exp MA", "Radio Flux", "Sunspot Number", "Sunspot Area"))
             self.plotMultiGraph(xsvals, [ysvalsUUsers, uuEMAv, radioFlux, sunspotNumber, sunspotArea],
                               "stat_users_pd",
                               "Unique users per day",
-                              ("Users", "Exp MA", "Radio", "Sunspot number", "Sunspot Area"))
+                              ("Posts", "Exp MA", "Radio Flux", "Sunspot Number", "Sunspot Area"))
 
     def prepareData(self, downloadSolarData):
         ns = g.pluginsDict['statgraph'].namespace()

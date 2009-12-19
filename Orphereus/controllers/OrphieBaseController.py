@@ -162,12 +162,13 @@ class OrphieBaseController(BaseController):
                 return Captcha.getCaptcha(anonCaptId)
         return None
 
-    def checkSessionCaptcha(self, value):
-        anonCaptId = session.get('anonCaptId', False)
-        captcha = Captcha.getCaptcha(anonCaptId)
-        #log.debug("captcha: id == %s, object == %s " %(str(anonCaptId), str(captcha)))
-        if captcha:
-            return captcha.test(value)
+    def checkSessionCaptcha(self, value, id = None):
+        anonCaptId = session.get('anonCaptId', id)
+        if anonCaptId:
+            captcha = Captcha.getCaptcha(anonCaptId)
+            #log.debug("captcha: id == %s, object == %s " %(str(anonCaptId), str(captcha)))
+            if captcha:
+                return captcha.test(value)
         return None
 
     def initiate(self):

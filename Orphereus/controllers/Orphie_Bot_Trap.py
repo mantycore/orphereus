@@ -20,10 +20,9 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-from Orphereus.lib.base import N_
-from Orphereus.lib.base import g
-from OrphieBaseController import OrphieBaseController
+from Orphereus.lib.base import N_, g, redirect_to
 from Orphereus.lib.BasePlugin import BasePlugin
+from OrphieBaseController import OrphieBaseController
 
 import logging
 log = logging.getLogger(__name__)

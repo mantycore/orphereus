@@ -349,7 +349,8 @@ class OrphiePublicController(OrphieBaseController):
                 toLog(LOG_EVENT_INVITE_USED, _("Completed registration by invite #%d; %s") % (session['iid'], infoline))
                 cleanup()
                 self.login(user)
-                redirect_to('boardBase') #, board = '!')
+                c.currentURL = g.OPT.defaultBoard
+                return self.redirectAuthorized(user)
         c.boardName = _('Register')
         return self.render('register')
 

@@ -3,10 +3,10 @@
 function redirect() {
     var destination = "${h.url_for('boardBase', board = c.currentURL, frameTarget = c.frameTargetToRedir or g.OPT.defaultBoard)}";
 %if c.frameEnabled:
-    parent.top.list.location.reload(true);
     try
     {
-        parent.top.board.window.location=destination;
+      parent.top.list.location.reload(true);
+      parent.top.board.window.location=destination;
     } catch(err) //frame not present
     {}
     document.location=destination;

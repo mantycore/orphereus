@@ -66,7 +66,7 @@ class SetsmgrController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
             self.requestForMenu("managementMenu", True)
-        
+
 
     def __init__(self):
         self.settings = self.getSettingsDict(Setting.getAll())
@@ -147,5 +147,7 @@ class SetsmgrController(OrphieBaseController):
         c.allSettings = self.settings
         for sect in self.getSectionNames():
             c.cfg[sect] = self.cutSectionNames(self.getSettingsDict(Setting.getSection(sect)))
-
+        log.info('ONLINE CONFIGURATION DATA UPDATE STARTED')
+        init_globals(g, False)
+        log.info('ONLINE CONFIGURATION DATA UPDATE COMPLETED')
         return self.render('manageExtSettings')

@@ -79,12 +79,13 @@ class OrphieViewPlugin(BasePlugin, AbstractMenuProvider):
                     action = 'GetThread',
                     tempid = 0,
                     requirements = dict(post = r'\d+', tempid = r'\d+'))
-        gvars = config['pylons.app_globals']
-        framedMain = gvars.OPT.framedMain
+        #gvars = config['pylons.app_globals']
+        #framedMain = gvars.OPT.framedMain
         map.connect('boardBase', '/{board}/{tempid}',
                     controller = 'Orphie_View',
                     action = 'GetBoard',
-                    board = not framedMain and defaultBoard or None,
+                    #board = not framedMain and defaultBoard or None,
+                    board = None,
                     tempid = 0, page = 0,
                     requirements = dict(tempid = r'\d+'))
         map.connect('board', '/{board}/page/{page}',
@@ -148,7 +149,7 @@ class OrphieViewController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-        
+
 
     def showStatic(self, page):
         fpath = os.path.join(g.OPT.templPath, self.getTemplatePaths('static.%s' % page)[0])

@@ -152,14 +152,9 @@ frontend.permissiveFileSizeConjunction = true
 frontend.permissiveAdditionalFilesCountConjunction = false
 frontend.boardWideProoflabels = true
 frontend.allowOverview = true
-
-# Runtime changing of this option may cause strange side-effects
 frontend.framedMain = true
-
 frontend.useFrameLogo = true
 frontend.frameLogo = logo.png
-
-# Runtime changing of this option may cause strange side-effects
 frontend.defaultBoard = !
 
 frontend.mixOldThreads = true

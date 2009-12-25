@@ -109,7 +109,7 @@ class GraphsCommand(command.Command):
         fig = plt.figure(1)
         fig.patch.set_alpha(0.0)
         plt.suptitle(header)
-        ax = fig.add_subplot(1, 1, 1) 
+        ax = fig.add_subplot(1, 1, 1)
         ax.axes.grid(color = maincolor)
         colors = [linecolor, 'b', 'r', 'g', 'm', 'y']
         for dataset, linecolor in zip(ysvals, colors):
@@ -132,7 +132,7 @@ class GraphsCommand(command.Command):
         f.close()
         Picture.makeThumbnail(path, os.path.join(g.OPT.staticPath, "%ss.png" % name), (200, 200))
 
-        
+
     def plotMultiGraph(self, xsvals, ysvals, name, header, labels):
         import matplotlib
         import matplotlib.pyplot as plt
@@ -193,12 +193,12 @@ class GraphsCommand(command.Command):
         #plt.grid(True)
         #fig.autofmt_xdate()
         #if labels:
-        props = font_manager.FontProperties(size=8)
-        leg = ax2.legend(loc='upper left', shadow=True, fancybox=False, prop=props)
+        props = font_manager.FontProperties(size = 8)
+        leg = ax2.legend(loc = 'upper left', shadow = True, fancybox = False, prop = props)
         leg.get_frame().set_alpha(0.5)
-        leg = ax1.legend(loc='upper left', shadow=True, fancybox=True, prop=props)
+        leg = ax1.legend(loc = 'upper left', shadow = True, fancybox = True, prop = props)
         leg.get_frame().set_alpha(0.5)
-        leg = ax3.legend(loc='upper left', shadow=True, fancybox=True, prop=props)
+        leg = ax3.legend(loc = 'upper left', shadow = True, fancybox = True, prop = props)
         leg.get_frame().set_alpha(0.5)
 
         #    legend = plt.legend(labels, labelspacing = 0.1) #loc=(0.9, .95),
@@ -264,6 +264,7 @@ class GraphsCommand(command.Command):
                               "Unique users per day",
                               ("Posts", "Exp MA", "Radio Flux", "Sunspot Number", "Sunspot Area"))
 
+    # TODO: option to disable recomputing already existing records
     def prepareData(self, downloadSolarData):
         ns = g.pluginsDict['statgraph'].namespace()
         birthdate = meta.Session.query(sa.sql.functions.min(Post.date)).scalar()
@@ -345,7 +346,7 @@ class GraphsCommand(command.Command):
             for line in mergedData:
                 ts = datetime.datetime.strptime(line[:slen], fmts)
                 groups = rex.match(line).groups()
-                solarvalues[ts.date()] = (groups[0], groups[1], groups[2])
+                solarvalues[ts.date()] = (float(groups[0]), float(groups[1]), float(groups[2]))
 
             print "Setting data..."
             for date in values:
@@ -358,9 +359,19 @@ class GraphsCommand(command.Command):
                     dayvalues['sunspotArea'] = solarDayValues[2]
                     values[date] = dayvalues
             print "ok"
+
+        newRecords = []
+        existingRecords = []
         for date in values:
-            ns.StatRecord.setFor(date, **values[date])
-        meta.Session.commit()
+            if StatRecord.getFor(date):
+                existingRecords.append(date)
+            else:
+                newRecords.append(date)
+        # SQLAlchemy workaround
+        for recordSet in [newRecords, existingRecords]:
+            for date in recordSet:
+                ns.StatRecord.setFor(date, **values[date])
+            meta.Session.commit()
 
     @staticmethod
     def calculateEMA(values_array, n):
@@ -410,7 +421,7 @@ class StatRecord(object):
 
     @staticmethod
     def getFor(date):
-        return StatRecord.query.filter(StatRecord.date == date).first()
+        return StatRecord.query.filter(StatRecord.timestamp == date).first()
 
 class HomeStatisticsPlugin(BasePlugin, AbstractHomeExtension):
     def __init__(self):

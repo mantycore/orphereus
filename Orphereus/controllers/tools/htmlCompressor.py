@@ -56,7 +56,7 @@ class HTMLCompressorPlugin(BasePlugin):
         #            output_encoding = 'utf8',
         #            )
         #result = str(tidy.parseString(str(inp), **options))
-        document, errors = tidy_document(str(inp),
+        result, errors = tidy_document(str(inp),
                                          options = {'output-xhtml' : 1,
                                                   'add-xml-decl' : 0,
                                                   'indent' : 0,

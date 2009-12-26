@@ -27,7 +27,8 @@ from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.constantValues import CFG_LIST
 from Orphereus.lib.base import *
 
-import tidy
+#import tidy
+from tidylib import tidy_document
 
 import logging
 log = logging.getLogger(__name__)
@@ -47,14 +48,24 @@ class HTMLCompressorPlugin(BasePlugin):
         if c.template in g.OPT.disableCompressionList:
             return inp
 
-        options = dict(output_xhtml = 1,
-                    add_xml_decl = 0,
-                    indent = 0,
-                    tidy_mark = 0,
-                    input_encoding = 'utf8',
-                    output_encoding = 'utf8',
-                    )
-        result = str(tidy.parseString(str(inp), **options))
+        #options = dict(output_xhtml = 1,
+        #            add_xml_decl = 0,
+        #            indent = 0,
+        #            tidy_mark = 0,
+        #            input_encoding = 'utf8',
+        #            output_encoding = 'utf8',
+        #            )
+        #result = str(tidy.parseString(str(inp), **options))
+        document, errors = tidy_document(str(inp),
+                                         options = {'output-xhtml' : 1,
+                                                  'add-xml-decl' : 0,
+                                                  'indent' : 0,
+                                                  'tidy-mark' : 0,
+                                                  'input-encoding' : 'utf8',
+                                                  'output-encoding' : 'utf8',
+                                                  })
+        if errors:
+            log.error("tidy errors for %s: %s" % (str(c.template), str(errors)))
         if result:
             return result
         #return inp

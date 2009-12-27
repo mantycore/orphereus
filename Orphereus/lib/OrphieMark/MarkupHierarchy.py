@@ -155,6 +155,8 @@ class MarkupElement(RootElement):
             else:
                 childrensData = replaceEntities(childrensData) # Don't forget, PlainText returns unsafe strings inside code blocks!
                 begin += '<pre>'
+                if lexername:
+                    begin += '%s\n' % replaceEntities(lexername)
                 end = '%s%s' % ('</pre>', end)
 
         return '%s%s%s' % (begin, childrensData, end)

@@ -70,12 +70,10 @@ class FakeUser(AbstractUser):
         ownPostsList = session.get('ownPostsList', [])
         ownPostsList.append(post.id)
         session['ownPostsList'] = ownPostsList
-        print ownPostsList
         session.save()
 
     def ownPost(self, post):
         ownPostsList = session.get('ownPostsList', None)
-        print ownPostsList
         return ownPostsList and post.id in ownPostsList
 
     def isValid(self):

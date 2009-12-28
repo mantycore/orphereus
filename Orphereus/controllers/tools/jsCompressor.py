@@ -20,6 +20,7 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
+from paste.deploy.converters import asbool
 from pylons.i18n import N_
 from string import *
 
@@ -46,7 +47,13 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
 
     # Implementing BasePlugin
     def initRoutes(self, map):
-        map.connect('hsRebuildJs', '/holySynod/rebuildJs', controller = 'tools/jsCompressor', action = 'rebuild')
+        map.connect('hsRebuildJs', '/holySynod/rebuildJs',
+                    controller = 'tools/jsCompressor',
+                    action = 'rebuild')
+        map.connect('hsRebuildJsQuick', '/holySynod/rebuildJs/quick/{key}/{closure}',
+                    controller = 'tools/jsCompressor',
+                    action = 'rebuildQuick',
+                    key = '', closure = 'true')
 
     def beforeRequestCallback(self, baseController):
         currentLang = get_lang()
@@ -138,9 +145,15 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
                                )
                               ),
                             ]
+        stringValues = [('jsCompressor',
+                               ('jsregensecret',
+                               )
+                              ),
+                            ]
 
         if not globj.OPT.eggSetupMode:
             globj.OPT.registerCfgValues(booleanValues, CFG_BOOL)
+            globj.OPT.registerCfgValues(stringValues, CFG_STRING)
 
 from Orphereus.controllers.OrphieBaseController import OrphieBaseController
 
@@ -149,9 +162,9 @@ class JscompressorController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
             self.requestForMenu("managementMenu", True)
-        
 
-    def rebuild(self):
+
+    def rebuild(self, key):
         if not self.currentUserIsAuthorized():
             return redirect_to('boardBase')
         self.initEnvironment()
@@ -170,3 +183,13 @@ class JscompressorController(OrphieBaseController):
         c.boardName = _('Rebuild JavaScript')
         c.currentItemId = 'id_RebuildJs'
         return self.render('management.jscompressor')
+
+    def rebuildQuick(self, key, closure):
+        if not key or key != g.OPT.jsregensecret:
+            abort(403)
+
+        return JSCompressorPlugin.generateFiles(asbool(closure),
+                                               False,
+                                               False
+                                               )
+

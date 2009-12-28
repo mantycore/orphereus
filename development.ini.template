@@ -175,6 +175,9 @@ frontend.sectionNames = Main,Second,Third
 ###########
 # if true, engine doesn't recreate compress JS files on every startup
 jsCompressor.disableJSRegeneration = false
+# Allows you to regenerat JS just by getting http://anoma.ch/holySynod/rebuildJs/quick/verysecurepasword/true
+jsCompressor.jsregensecret = verysecurepasword
+
 statistics.statsCacheTime = 180
 newsgenerator.newsToShow = 4
 newsgenerator.newsTag = news

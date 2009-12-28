@@ -110,5 +110,7 @@ function performHighlight(){
 }
 performHighlight();
 %endif
+
+window.gotoCreatedPost = ${str(c.userInst.gotoCreatedPost).lower()};
 </script>
 

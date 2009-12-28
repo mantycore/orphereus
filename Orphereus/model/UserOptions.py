@@ -125,5 +125,5 @@ class UserOptions(object):
         optionsObject.useTitleCollapse = False
         optionsObject.hlOwnPosts = False
         optionsObject.invertSortingMode = False
-
+        optionsObject.gotoCreatedPost = True
 

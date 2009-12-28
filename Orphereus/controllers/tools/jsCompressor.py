@@ -165,7 +165,7 @@ class JscompressorController(OrphieBaseController):
             self.requestForMenu("managementMenu", True)
 
 
-    def rebuild(self, key):
+    def rebuild(self):
         if not self.currentUserIsAuthorized():
             return redirect_to('boardBase')
         self.initEnvironment()

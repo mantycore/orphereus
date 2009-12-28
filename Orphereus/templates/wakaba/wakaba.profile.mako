@@ -124,7 +124,7 @@
         %endif
 
         <tr id="trgoto">
-            <td class="postblock">${_('By default Go To')}</td>
+            <td class="postblock">${_('After posting by default go to')}</td>
             <td>
             <select name="defaultGoto" style="width: 170px;">
                     %for dest in c.destinations.keys():
@@ -138,6 +138,10 @@
                     %endfor
             </select>
             </td>
+        </tr>
+        <tr>
+            <td class="postblock">${_('If possible scroll page to recent post')}</td>
+            <td><input type="checkbox" name="gotoCreatedPost" ${c.userInst.gotoCreatedPost and 'checked="checked"' or ""} /></td>
         </tr>
         <tr id="trtempl">
             <td class="postblock">${_('Template')}</td>

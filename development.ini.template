@@ -176,6 +176,8 @@ frontend.sectionNames = Main,Second,Third
 # if true, engine doesn't recreate compress JS files on every startup
 jsCompressor.disableJSRegeneration = false
 # Allows you to regenerat JS just by getting http://anoma.ch/holySynod/rebuildJs/quick/verysecurepasword/true
+# for example you can use this command in update script:
+# wget --quiet --output-document=- http://anoma.ch/holySynod/rebuildJs/quick/verysecurepasword/true
 jsCompressor.jsregensecret = verysecurepasword
 
 statistics.statsCacheTime = 180

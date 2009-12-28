@@ -40,10 +40,10 @@ def safeListUnpickle(val):
         return []
 
 class AbstractUser(object):
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # This values intended ONLY for options
-    # which user can change himself
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #
+    # These routines intended ONLY for options #
+    # which user can change himself            #
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #
     booleanValues = ('hideLongComments',
                           'useFrame',
                           'useAjax',
@@ -55,7 +55,7 @@ class AbstractUser(object):
                           'useTitleCollapse',
                           'hlOwnPosts',
                           'invertSortingMode',
-                          #'readonly'
+                          'gotoCreatedPost'
                          )
     intValues = ('threadsPerPage',
                  'repliesPerThread',

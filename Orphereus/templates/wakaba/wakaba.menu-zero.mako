@@ -1,6 +1,6 @@
 <div id="boardlist_header">
 <div id="overlay_menu" style="position: fixed; top: 0px;" class="reply list" onmouseout="javascript:menu_show('');">
-<script>var menu_current = '';</script>
+<script type="text/javascript">var menu_current = '';</script>
 [<a href="#" onmouseover="javascript:menu_show('menu_special');">${_('Special pages')}</a>]
 %if c.boardlist:
     %for section in c.boardlist:

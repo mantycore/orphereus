@@ -127,6 +127,8 @@ class AbstractUser(object):
     def authid(self):
         raise EAbstractFunctionCall()
 
+    def postCreatedCallback(self, post):
+        pass
     # bans
     def isBanned(self):
         raise EAbstractFunctionCall()

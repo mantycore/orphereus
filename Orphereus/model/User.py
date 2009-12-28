@@ -197,6 +197,9 @@ class User(AbstractUser):
     def optionsDump(self):
         return UserOptions.optionsDump(self.options)
 
+    def ownPost(self, post):
+        return post.uidNumber == self.uidNumber
+
     # access
     def isBanned(self):
         if self.options.bantime > 0:

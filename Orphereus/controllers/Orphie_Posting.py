@@ -549,6 +549,7 @@ class OrphiePostingController(OrphieBaseController):
         for hook in postingHooks:
             hook.afterPostCallback(post, self.userInst, afterPostCallbackParams.get(hook.pluginId(), None))
 
+        self.userInst.postCreatedCallback(post)
         response.set_cookie('orphie-postingCompleted', 'yes')
 
         if ajaxRequest:

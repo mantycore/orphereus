@@ -18,7 +18,7 @@
 %for thread in c.threads:
 %if not thread.hideFromBoards:
     <div
-    %if thread.uidNumber != c.uidNumber or not c.userInst.hlOwnPosts:
+    %if not (c.userInst.hlOwnPosts and c.userInst.ownPost(thread)): #thread.uidNumber != c.uidNumber or not c.userInst.hlOwnPosts:
     class="thread"
     %else:
     class="thread mythread"
@@ -55,7 +55,7 @@
            %endif
 
             %if c.userInst.Anonymous:
-                ${_('Password')}: <input type="password" name="remPass" size="10" value="${c.remPass}" />
+                ${_('Password')}: <input type="password" name="remPass" size="10" value="${c.remPass}" title="${_("Correct password only required if session in which post was made already expired/deleted")}" />
             %endif
             [<label><input type="checkbox" name="fileonly" value="on" />${_('Only file')}</label>]
             <input value="${_('Delete post(s)')}" type="submit" />

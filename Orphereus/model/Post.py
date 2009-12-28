@@ -358,7 +358,8 @@ class Post(object):
     def deletePost(self, userInst, fileonly = False, checkOwnage = True, reason = "???", rempPass = False):
         opPostDeleted = False
 
-        if userInst.Anonymous and self.removemd5 != rempPass:
+        #if userInst.Anonymous and self.removemd5 != rempPass:
+        if userInst.Anonymous and not (self.removemd5 == rempPass or userInst.ownPost(self)):
             return False
 
         threadRemove = True

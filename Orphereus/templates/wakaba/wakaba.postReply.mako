@@ -7,7 +7,7 @@
 %if g.OPT.memcachedPosts and not(c.userInst.isAdmin()):
   class="reply"
 %else:
-  %if post.uidNumber != c.uidNumber or not c.userInst.hlOwnPosts:
+  %if not (c.userInst.hlOwnPosts and c.userInst.ownPost(post)): #post.uidNumber != c.uidNumber or not c.userInst.hlOwnPosts:
   class="reply"
   %else:
   class="reply myreply"

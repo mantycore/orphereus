@@ -66,7 +66,7 @@ def repliesProxy(thread, controller):
     postPairs = []
     for post in thread.Replies:
         postPairs.append((post.id, post))
-        if c.userInst.hlOwnPosts and post.uidNumber == c.userInst.uidNumber:
+        if c.userInst.hlOwnPosts and c.userInst.ownPost(post): #post.uidNumber == c.userInst.uidNumber:
             c.userPostsToHighlight.append(post.id)
     postsDict = dict(postPairs)
     postsRender = g.mc.get_multi(postsDict.keys(), key_prefix = keyPrefix)

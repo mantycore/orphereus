@@ -75,6 +75,8 @@ def t_useroptions_init(dialectProps):
         sa.Column("lang", sa.types.String(2), nullable = True),
         sa.Column("cLang", sa.types.String(2), nullable = True),
         sa.Column("readonly", sa.types.Boolean, nullable = True),
+        sa.Column("canViewLogs", sa.types.Boolean, nullable = True),
+        sa.Column("gotoCreatedPost", sa.types.Boolean, nullable = True),
         )
 
 class UserOptions(object):

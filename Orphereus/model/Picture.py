@@ -42,6 +42,7 @@ def t_picture_init(dialectProps):
         sa.Column("md5"      , sa.types.String(32), nullable = False, index = True),
         sa.Column("extid"    , sa.types.Integer, sa.ForeignKey('extension.id')),
         sa.Column("pictureInfo"  , sa.types.UnicodeText, nullable = True),
+        sa.Column("pInfoPic", sa.types.Text, nullable = True), # TODO: field for metadata
         #sa.Column("animpath" , sa.types.String(255), nullable = True), #TODO: XXX: dirty solution
         )
 
@@ -54,6 +55,7 @@ def t_picture_init(dialectProps):
         sa.Column("spoiler", sa.types.Boolean, nullable = True),
         sa.Column("relationInfo"  , sa.types.UnicodeText, nullable = True),
         sa.Column("animpath" , sa.types.String(255), nullable = True),
+        sa.Column("pInfoRel", sa.types.Text, nullable = True), # TODO: field for metadata
         )
     #sa.UniqueConstraint(t_filesToPostsMap.c.postId, t_filesToPostsMap.c.fileId)
     sa.Index('ix_filemap_postid_fileid', t_filesToPostsMap.c.postId, t_filesToPostsMap.c.fileId)

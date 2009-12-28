@@ -91,6 +91,13 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="postblock">${_('Can view logs')}</td>
+                    <td>
+                        <input type="checkbox" name="canViewLogs" ${not c.userInst.canChangeRights() and 'disabled="disabled"' or ""}
+                        ${c.user.options.canViewLogs and 'checked="checked"' or ""} />
+                    </td>
+                </tr>
+                <tr>
                     <td class="postblock">${_('Can manage users')}
                     <div style="font-size: 60%; font-style:italic;">${_('(Suppresses by canChangeRights)')}</div>
                     </td>

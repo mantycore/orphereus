@@ -170,3 +170,6 @@ class AbstractUser(object):
 
     def canRunMaintenance(self):
         raise EAbstractFunctionCall()
+
+    def canViewLogs(self):
+        raise EAbstractFunctionCall()

@@ -61,7 +61,7 @@ def t_posts_init(dialectProps):
     sa.Column("removemd5"  , sa.types.String(32), nullable = True),
     sa.Column("ip"         , meta.UIntType, nullable = True),
     sa.Column("pinned"  , sa.types.Boolean, nullable = False, index = True),
-    #sa.Column("spoiler"  , sa.types.Boolean, nullable = True),
+    sa.Column("pInfoMsg", sa.types.Text, nullable = True), # TODO: field for metadata
     )
 #sa.Index('idx_BumpPin', t_posts.c.bumpDate, t_posts.c.pinned)
 

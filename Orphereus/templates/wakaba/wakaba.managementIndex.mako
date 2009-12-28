@@ -13,6 +13,7 @@ ${_('Current members of Holy Synod')}
 <td width="10%" align="center">Ext</td>
 <td width="10%" align="center">Mapping</td>
 <td width="10%" align="center">Maint</td>
+<td width="10%" align="center">Logs</td>
 </tr>
 %for u in c.admins:
     <tr>
@@ -30,6 +31,7 @@ ${_('Current members of Holy Synod')}
         <td align="center">${u.canManageExtensions() and "&#8226;" or ""}</td>
         <td align="center">${u.canManageMappings() and "&#8226;" or ""}</td>
         <td align="center">${u.canRunMaintenance() and "&#8226;" or ""}</td>
+        <td align="center">${u.canViewLogs() and "&#8226;" or ""}</td>
     </tr>
 %endfor
 </table>

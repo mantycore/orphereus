@@ -257,3 +257,6 @@ class User(AbstractUser):
 
     def canRunMaintenance(self):
         return self.options.isAdmin and self.options.canRunMaintenance
+
+    def canViewLogs(self):
+        return self.options.isAdmin and self.options.canViewLogs

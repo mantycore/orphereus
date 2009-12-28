@@ -137,7 +137,7 @@ class AdminPanelPlugin(BasePlugin, AbstractMenuProvider, AbstractPageHook):
         if id == 'id_hsInvite':
             return user.canMakeInvite()
         if id == 'id_hsViewLogBase':
-            return True
+            return user.canViewLogs()
         if id == 'id_view_links_synod':
             return user.isAdmin()
         return True
@@ -204,7 +204,7 @@ class OrphieAdminController(OrphieBaseController):
         if not checkAdminIP():
             return redirect_to('boardBase')
         self.requestForMenu("managementMenu", True)
-        
+
 
     def index(self):
         c.boardName = _('Index')
@@ -213,6 +213,9 @@ class OrphieAdminController(OrphieBaseController):
         return self.render('managementIndex')
 
     def viewLog(self, page):
+        if not self.userInst.canViewLogs():
+            return self.error(_("No way! You aren't holy enough!"))
+
         c.boardName = _('Logs')
         c.currentItemId = 'id_hsViewLogBase'
         page = int(page)
@@ -778,7 +781,7 @@ class OrphieAdminController(OrphieBaseController):
 
                 map(setRight, ["canDeleteAllPosts", "canMakeInvite", "canChangeRights", "canChangeSettings",
                                  "canManageBoards", "canManageUsers", "canManageExtensions", "canManageMappings",
-                                 "canRunMaintenance", "readonly"])
+                                 "canRunMaintenance", "canViewLogs", "readonly"])
                 c.message = _('User access was changed')
             elif bool(request.POST.get('ban', False)):
                 if user.options.bantime > 0:

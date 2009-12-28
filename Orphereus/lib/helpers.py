@@ -258,7 +258,7 @@ def staticFile(fileName):
         localFileName = os.path.join(spl, fileName)
         relFileName = fileName
     if os.path.exists(localFileName):
-        version = g.caches.setdefaultEx(localFileName, os.path.getmtime, localFileName)
+        version = g.caches.setdefaultEx(fileName, os.path.getmtime, localFileName)
         return u"%s%s?version=%s" % (spw, relFileName, str(version))
     log.error("Static file not found: %s" % localFileName)
     return u"fileNotFound"

@@ -98,15 +98,15 @@ else:
         It is used when memcache package is unavaliable.'''
         valid = False
         __init__ = set = get = delete = set_multi = set_sqla = get_sqla = disconnect_all = set_servers = \
-             lambda *args, **kwargs: None
-        get_multi = lambda *args, **kwargs: {}
+             lambda * args, **kwargs: None
+        get_multi = lambda * args, **kwargs: {}
         setdefaultEx = setdefault_sqlaEx = \
              lambda key, function, *args, **kwargs: function(*args)
 
 class CacheDict(dict):
     def __init__(self):
         self.lock = threading.Lock()
-    
+
     def setdefaultEx(self, key, function, *args):
         '''extended setdefault, returns stored value, if it exists.\
         Otherwise, executes function(), saves and returns the result'''
@@ -119,7 +119,7 @@ class CacheDict(dict):
                 return self.setdefault(key, function(*args))
             finally:
                 self.lock.release()
-                
+
     def invalidate(self, key):
         if key in self:
             try:
@@ -129,4 +129,4 @@ class CacheDict(dict):
             finally:
                 self.lock.release()
         else:
-            log.warning("Attempt to invalidate a non-existent key!")
+            log.warning("Attempt to invalidate a non-existent key %s!" % key)

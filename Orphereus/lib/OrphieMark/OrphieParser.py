@@ -50,8 +50,8 @@ class OrphieParser(object):
         fullMessage = fixHtml(fullMessage)
 
         shortMessage = None
-        linesTolerance = 1
-        symbolsTolerance = 100
+        linesTolerance = 2
+        symbolsTolerance = 200
         if len(fullMessage) > maxLen or len(rootElement.children) > maxLines:
             if len(rootElement.children) > maxLines + linesTolerance:
                 rootElement.children = rootElement.children[:maxLines]

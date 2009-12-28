@@ -85,6 +85,7 @@ class JSCompressorPlugin(BasePlugin, AbstractMenuProvider):
                     lid = g.OPT.defaultLang
                 set_lang(lid)
                 path = "%s_%s.js" % (template, lang)
+                g.caches.invalidate(path)
                 logMsg("Generating '%s' as '%s'..." % (path, lid))
                 newJS = ""
                 for js in g.OPT.jsFiles.get(template, []):

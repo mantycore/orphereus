@@ -242,9 +242,19 @@ class OptHolder(object):
         # Basic IB settings
         if not os.path.exists(self.uploadPath):
             self.uploadPath = os.path.join(self.appRoot, 'Orphereus/uploads/')
+            log.error("Upload path doesn't exists, using '%s' instead" % self.uploadPath)
 
         if not os.path.exists(self.staticPath):
             self.staticPath = os.path.join(self.appRoot, 'Orphereus/public/')
+            log.error("Static path doesn't exists, using '%s' instead" % self.staticPath)
+
+        self.uploadPath = os.path.realpath(self.uploadPath)
+        self.staticPath = os.path.realpath(self.staticPath)
+
+        if not os.access(self.uploadPath, os.F_OK | os.R_OK | os.W_OK | os.X_OK):
+            msg = "Upload path '%s' is not writeable, aborting..." % self.uploadPath
+            log.critical(msg)
+            raise Exception(msg)
 
         #self.languages.insert(0, 'Default')
         self.obfuscator = self.obfuscator.replace('$(', '%(')
@@ -298,7 +308,7 @@ class OptHolder(object):
                 rawValue = config.get(paramName, None)
                 if rawValue is None:
                     msg = "Required option '%s' (assotiated with '%s') isn't defined in config!" % (paramName, getter.__name__)
-                    log.error(msg)
+                    log.critical(msg)
                     raise Exception(msg)
                 value = getter(rawValue)
                 if self.setter and not(self.recoveryMode):

@@ -43,7 +43,8 @@ from Orphereus.lib.constantValues import *
 from OrphieBaseController import OrphieBaseController
 from Orphereus.lib.OrphieMark.OrphieParser import OrphieParser
 from Orphereus.lib.fileHolder import AngryFileHolder
-from Orphereus.lib.processFile import processFile
+from Orphereus.lib.processFile import safeFileProcess
+#from Orphereus.lib.processFile import FileProcessingException, CantWriteExc, NoExtension, ExtensionDisallowed, BrokenPicture
 from Orphereus.lib.interfaces.AbstractPostingHook import AbstractPostingHook
 from Orphereus.lib.BasePlugin import BasePlugin
 
@@ -437,7 +438,8 @@ class OrphiePostingController(OrphieBaseController):
             if len(picInfos) == options.allowedAdditionalFiles + 1:
                 break
 
-            fileDescriptors = processFile(file, options.thumbSize, baseEncoded = baseEncoded)
+            fileDescriptors = safeFileProcess(file, options.thumbSize, baseEncoded, True)
+
             #log.debug(fileDescriptors)
             fileHolder = False
             #existentPic = False

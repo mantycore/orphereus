@@ -26,7 +26,7 @@ from Orphereus.lib.BasePlugin import *
 from Orphereus.lib.constantValues import CFG_LIST
 from Orphereus.lib.base import *
 from Orphereus.lib.MenuItem import MenuItem
-from Orphereus.lib.processFile import processFile
+from Orphereus.lib.processFile import safeFileProcess
 
 from Orphereus.lib.ibparser.chans.Post import *
 from Orphereus.lib.ibparser.chans.Thread import *
@@ -92,7 +92,7 @@ class ImportWorker():
 
     def fileProcessor(self, fn):
         if self.reader:
-            return processFile(self.reader.fieldStorage(fn), 200, False)
+            return safeFileProcess(self.reader.fieldStorage(fn), 200, False)
 
     def postToPInfo(self, post, tagstr, parent = None):
         pInfo = empty()
@@ -183,7 +183,7 @@ class ThreadimportController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         if ('adminpanel' in g.pluginsDict.keys()):
             self.requestForMenu("managementMenu", True)
-        
+
 
     def initChecks(self):
         if not self.currentUserIsAuthorized():

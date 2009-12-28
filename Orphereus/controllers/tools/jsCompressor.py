@@ -189,7 +189,7 @@ class JscompressorController(OrphieBaseController):
         if not key or key != g.OPT.jsregensecret:
             abort(403)
 
-        return str(JSCompressorPlugin.generateFiles(asbool(closure),
+        return '\n'.join(JSCompressorPlugin.generateFiles(asbool(closure),
                                                False,
                                                False
                                                ))

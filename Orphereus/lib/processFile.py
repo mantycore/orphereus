@@ -32,7 +32,24 @@ import base64, hashlib
 import logging
 log = logging.getLogger(__name__)
 
-def processFile(file, thumbSize = 250, baseEncoded = False):
+class FileProcessingException(Exception):
+    pass
+
+class CantWriteExc(FileProcessingException):
+    def __init__(self, msg):
+        self.msg = msg
+
+class NoExtension(FileProcessingException):
+    pass
+
+class ExtensionDisallowed(FileProcessingException):
+    def __init__(self, ext):
+        self.ext = ext
+
+class BrokenPicture(FileProcessingException):
+    pass
+
+def processFile(file, thumbSize, baseEncoded):
     #log.debug('got file %s, dict: %s, test: %s' %(file, file.__dict__, isinstance(file, FieldStorageLike)))
     if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
         name = str(long(time.time() * 10 ** 7))
@@ -45,33 +62,40 @@ def processFile(file, thumbSize = 250, baseEncoded = False):
         if ext:
             ext = ext[0].lstrip(os.sep).lower()
         else:    # Panic, no extention found
-            ext = ''
-            return [False, False, False, _("Can't post files without extension")]
+            #ext = ''
+            #return [False, False, False, _("Can't post files without extension")]
+            raise NoExtension()
 
         # Make sure its something we want to have
         extParams = Extension.getExtension(ext)
         if not extParams or not extParams.enabled:
-            return [False, False, False, _(u'Extension "%s" is disallowed') % ext]
+            #return [False, False, False, _(u'Extension "%s" is disallowed') % ext]
+            raise ExtensionDisallowed(ext)
 
         relativeFilePath = h.expandName('%s.%s' % (name, ext))
         localFilePath = os.path.realpath(os.path.join(meta.globj.OPT.uploadPath, relativeFilePath))
         targetDir = os.path.dirname(localFilePath)
         #log.debug(localFilePath)
         #log.debug(targetDir)
-        if not os.path.exists(targetDir):
-            os.makedirs(targetDir)
 
-        localFile = open(localFilePath, 'w+b')
-        if not baseEncoded:
-            shutil.copyfileobj(file.file, localFile)
-        else:
-            base64.decode(file.file, localFile)
-        localFile.seek(0)
-        md5 = hashlib.md5(localFile.read()).hexdigest()
-        file.file.close()
-        localFile.close()
+        try:
+            if not os.path.exists(targetDir):
+                os.makedirs(targetDir)
+            localFile = open(localFilePath, 'w+b')
+            if not baseEncoded:
+                shutil.copyfileobj(file.file, localFile)
+            else:
+                base64.decode(file.file, localFile)
+            localFile.seek(0)
+            md5 = hashlib.md5(localFile.read()).hexdigest()
+            localFile.close()
+        except Exception, e:
+            log.error("Exception '%s' while saving file to '%s'" % (str(e), localFilePath))
+            raise CantWriteExc(str(e))
+        finally:
+            file.file.close()
+
         fileSize = os.stat(localFilePath)[6]
-
         picInfo = empty()
         picInfo.localFilePath = localFilePath
         picInfo.relativeFilePath = relativeFilePath
@@ -108,13 +132,34 @@ def processFile(file, thumbSize = 250, baseEncoded = False):
             if not picInfo.sizes:
                 picInfo.sizes = Picture.makeThumbnail(localFilePath, localThumbPath, (thumbSize, thumbSize))
         except Exception, e:
-            log.debug("Exception in image thumbnail maker: %s" % str(e))
+            log.warning("Exception in image thumbnail maker: %s" % str(e))
             try:
                 os.unlink(localFilePath)
             except Exception, e:
-                log.debug("can't remove incorrect file %s (%s)" % (localFilePath, str(e)))
-            return [False, False, False, _(u"Broken picture. Maybe it is interlaced PNG?")]
+                log.warning("can't remove incorrect file %s (%s)" % (localFilePath, str(e)))
+            raise BrokenPicture()
+            #return [False, False, False, _(u"Broken picture. Maybe it is interlaced PNG?")]
 
         return [AngryFileHolder((localFilePath, localThumbPath)), picInfo, False, False]
     else:
         return False
+
+def safeFileProcess(file, thumbSize, baseEncoded, translateErrors):
+        fileDescriptors = [False, False, False, False]
+        tr = lambda x: x
+        if translateErrors:
+            tr = _
+        try:
+            fileDescriptors = processFile(file, thumbSize, baseEncoded)
+        except FileProcessingException, e:
+            msg = "Unknown file processing exception"
+            if isinstance(e, CantWriteExc):
+                msg = tr("Can't write to target path. Looks like improper engine configuration.")
+            elif isinstance(e, NoExtension):
+                msg = tr("Can't post files without extension")
+            elif isinstance(e, ExtensionDisallowed):
+                msg = tr(u'Extension "%s" is disallowed') % e.ext
+            elif isinstance(e, BrokenPicture):
+                msg = tr(u"Broken picture. Maybe it is interlaced PNG?")
+            fileDescriptors[-1] = msg
+        return fileDescriptors

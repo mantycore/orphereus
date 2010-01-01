@@ -105,8 +105,8 @@ class UserTagsPlugin(BasePlugin, AbstractPostingHook, AbstractProfileExtension, 
             sa.Column('tagId'   , sa.types.Integer, sa.ForeignKey('usertag.id'), primary_key = True),
             )
 
-        sa.UniqueConstraint(t_usertags.c.userId,
-                            t_usertags.c.tag)
+        #sa.UniqueConstraint(t_usertags.c.userId,
+        #                    t_usertags.c.tag)
 
         if not meta.dialectProps['disableComplexIndexes']:
             sa.Index('ix_usertagmap_postid_tagid',

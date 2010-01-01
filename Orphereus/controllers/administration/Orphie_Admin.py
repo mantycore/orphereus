@@ -775,7 +775,7 @@ class OrphieAdminController(OrphieBaseController):
                 def setRight(name):
                     right = bool(request.POST.get(name, False))
                     reason = filterText(request.POST.get('reason', '???'))
-                    if getattr(user.options, name) != right:
+                    if bool(getattr(user.options, name)) != right:
                         setattr(user.options, name, right)
                         toLog(LOG_EVENT_USER_ACCESS, _('Changed right "%s" for user #%s to %s. Reason: %s') % (name, user.uidNumber, right, reason))
 

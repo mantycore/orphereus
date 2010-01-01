@@ -206,7 +206,7 @@ class OrphieBaseController(BaseController):
                     toLog(LOG_EVENT_RICKROLLD, "Request rickrolld. Referer: %s, Redir: %s, IP: %s, User-Agent: %s" % (ref, redir, getUserIp(), filterText(request.headers.get('User-Agent', '?'))))
                     redirect_to(str(redir))
 
-    def requestForMenu(self, menuId, linearize):
+    def requestForMenu(self, menuId, linearize = True):
         if (not menuId in self.requestedMenus) and (not menuId in self.disabledMenus):
             self.requestedMenus[menuId] = {'linearize' : linearize}
 

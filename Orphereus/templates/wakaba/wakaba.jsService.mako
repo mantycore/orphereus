@@ -23,14 +23,14 @@
         <input type="file" id="y_replyform_file_field" name="file_0" size="10" tabindex="40" class="y_fileField" onchange="YFormMarkSelected(0);" />
 
         %if c.boardOptions.allowedAdditionalFiles:
-          %for idx in range(1, c.boardOptions.allowedAdditionalFiles):
+          %for idx in range(1, c.boardOptions.allowedAdditionalFiles+1):
             <input type="file" style="display: none;" id="y_replyform_file_field_${idx}" name="file_${idx}" size="10" tabindex="40" class="y_fileField"  onchange="YFormMarkSelected(${idx});" />
           %endfor
         %endif
         %if c.boardOptions.allowedAdditionalFiles:
           <span class="filesize">[
           <a id="y_replyform_file_link_0" onclick="YFormActivateFile(0);" class="y_fileLink y_fileLinkActive">1</a>
-          %for idx in range(1, c.boardOptions.allowedAdditionalFiles):
+          %for idx in range(1, c.boardOptions.allowedAdditionalFiles+1):
             <a id="y_replyform_file_link_${idx}" onclick="YFormActivateFile(${idx});" class="y_fileLink">${idx+1}</a>
           %endfor
           ]</span>

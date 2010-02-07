@@ -52,7 +52,7 @@ class BrokenPicture(FileProcessingException):
 def processFile(file, thumbSize, baseEncoded):
     #log.debug('got file %s, dict: %s, test: %s' %(file, file.__dict__, isinstance(file, FieldStorageLike)))
     if isinstance(file, cgi.FieldStorage) or isinstance(file, FieldStorageLike):
-        name = str(long(time.time() * 10 ** 7))
+        name = unixTs()
         ext = file.filename.rsplit('.', 1)[:0:-1]
 
         #ret: [FileHolder, PicInfo, Picture, Error]

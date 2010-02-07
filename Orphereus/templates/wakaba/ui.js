@@ -671,11 +671,11 @@ function highlight(post)
 /*      var match=/^([^#]*)/.exec(document.location.toString());
         document.location=match[1]+"#"+post;
 */
-        if (!window.gotoCreatedPost)
+        /*if (!window.gotoCreatedPost)
         {
           var match=/^([^#]*)/.exec(document.location.toString());
           document.location=match[1]+'#';
-        }
+        }*/
         return false;
     }
     return true;

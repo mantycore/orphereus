@@ -27,6 +27,7 @@ import re
 import os
 import logging
 import datetime
+import time
 
 import smtplib
 from email.MIMEMultipart import MIMEMultipart
@@ -38,7 +39,7 @@ from Orphereus.lib.constantValues import *
 
 class empty(object):
     def get(self, key, defaultValue = None):
-        if key in self.__dict__.keys(): 
+        if key in self.__dict__.keys():
             return getattr(self, key)
         else:
             return defaultValue
@@ -156,3 +157,6 @@ def getRPN(text, operators):
     while stack:
         result.append(stack.pop())
     return result
+
+def unixTs():
+    return str(long(time.time() * 10 ** 7))

@@ -111,6 +111,8 @@ class OrphiePostingController(OrphieBaseController):
         curPage = toNumber(curPage, 0, 0)
 
         anchor = "i%d" % post.id
+        if not self.userInst.gotoCreatedPost:
+            anchor = unixTs()[::-1][8:]
 
         if dest == 0: #current thread
             if post.parentid:

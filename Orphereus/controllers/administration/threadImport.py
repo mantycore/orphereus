@@ -96,7 +96,10 @@ class ImportWorker():
 
     def postToPInfo(self, post, tagstr, parent = None):
         pInfo = empty()
-        pInfo.message = self.fixReferences(unicode(post.text))
+        try:
+            pInfo.message = self.fixReferences(unicode(post.text))
+        except:
+            pInfo.message = u'<i>Post processing failed.</i>'
         pInfo.title = unicode(post.topic)
         pInfo.savedId = post.id
         if self.saveDates:

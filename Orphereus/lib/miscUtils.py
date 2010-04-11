@@ -20,7 +20,7 @@
 ################################################################################
 
 from pylons import config
-from pylons import c, cache, config, g, request, response, session
+from pylons import tmpl_context as c, cache, config, app_globals as g, request, response, session
 from pylons.i18n import _, ungettext, N_
 
 import re

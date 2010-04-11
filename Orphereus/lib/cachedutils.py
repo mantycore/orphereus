@@ -20,7 +20,7 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-from pylons import config, request, c, g
+from pylons import config, request, tmpl_context as c, app_globals as g
 from pylons.i18n import get_lang, set_lang
 import miscUtils as utils
 

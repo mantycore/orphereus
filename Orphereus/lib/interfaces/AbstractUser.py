@@ -27,7 +27,7 @@ except:
 
 from Orphereus.lib.constantValues import *
 import Orphereus.lib.helpers as h
-from pylons import g
+from pylons import app_globals as g
 
 class EAbstractFunctionCall(Exception):
     def __repr__(self):

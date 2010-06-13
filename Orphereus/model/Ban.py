@@ -44,7 +44,13 @@ def t_bans_init(dialectProps):
 
 class Ban(object):
     def __init__(self, ip, mask, type, reason, date, period, enabled):
-        self._setData(ip, mask, type, reason, date, period, enabled)
+        self.ip = ip
+        self.mask = mask
+        self.type = typeName   # 0 for read-only access, 1 for full ban
+        self.reason = reason
+        self.date = date
+        self.period = period
+        self.enabled = enabled
 
     def delete(self):
         meta.Session.delete(self)
@@ -62,19 +68,6 @@ class Ban(object):
         meta.Session.add(ban)
         meta.Session.commit()
         return ban
-
-    def setData(self, ip, mask, type, reason, date, period, enabled):
-        self._setData(ip, mask, type, reason, date, period, enabled)
-        meta.Session.commit()
-
-    def _setData(self, ip, mask, typeName, reason, date, period, enabled):
-        self.ip = ip
-        self.mask = mask
-        self.type = typeName   # 0 for read-only access, 1 for full ban
-        self.reason = reason
-        self.date = date
-        self.period = period
-        self.enabled = enabled
 
     @staticmethod
     def getBans():

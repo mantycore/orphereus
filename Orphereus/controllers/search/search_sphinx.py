@@ -60,7 +60,7 @@ class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
             result = []
 
             postIds = []
-            if g.OPT.enableFiltersForSearch:
+            if g.OPT.enableFiltersForSearch and filteringClause:
                 timestart = time.time()
                 base = meta.Session.query(Post.id).filter(filteringClause)
                 negBase = meta.Session.query(Post.id).filter(not_(filteringClause))
@@ -76,10 +76,10 @@ class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
                         postIds = negBase.all()
                     postIds = map(lambda seq: int(seq[0]), postIds)
                 else:
-                    warnings.append(_("Search restrictions was ignored due large allowed range"))
+                    warnings.append(_("Search restrictions were ignored due to large allowed range"))
                 c.log.append("Search: restriction computing time: %s" % (time.time() - timestart))
             else:
-                warnings.append(_("Search restrictions was ignored due config settings"))
+                warnings.append(_("Search restrictions were ignored due to config settings"))
 
             timestart = time.time()
 
@@ -107,7 +107,7 @@ class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
             elif res.has_key('matches'):
                 count = res['total_found']
                 if count > maxCount:
-                    warnings.append(_("%d posts was found during search, %d was ignored due engine restrictions") % (count, count - maxCount))
+                    warnings.append(_("%d posts were found during search, %d was ignored due to engine restrictions") % (count, count - maxCount))
                     count = maxCount
                 for match in res['matches']:
                     result.append(match['id'])

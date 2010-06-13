@@ -50,6 +50,10 @@ if Client:
         def delete(self, key, **kwargs):
             return Client.delete(self, self.uniqeKey + str(key), **kwargs)
 
+        def delete_multi(self, keys, **kwargs):
+            for key in keys:
+                self.delete(self, key, **kwargs)
+
         def set(self, key, val, **kwargs):
             return Client.set(self, self.uniqeKey + str(key), val, **kwargs)
 

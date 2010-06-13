@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 <p>В данный момент разрешен полнотекстовый поиск. Информацию о синтаксисе поисковых запросов можно
 получить <a href="http://www.sphinxsearch.com/docs/current.html#extended-syntax">здесь</a>.</p>
 

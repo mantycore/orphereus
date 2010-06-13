@@ -155,6 +155,7 @@ class Post(object):
                          'date': datetime.datetime.now(),
                          'pinned': False,
                          'sage': False,
+#                         'hasAttachment': False,
                          }
         defaultParams.update(params)
         post = Post()
@@ -162,7 +163,9 @@ class Post(object):
             setattr(post, key, defaultParams[key])
         parentpost = Post.getPost(params.get('parentid', None))
         if parentpost:
+            parentpost.replyCount += 1
             parentpost.bumpDate = params.get('date', defaultParams['date'])
+        post.incrementStats()
         meta.Session.add(post)
         meta.Session.commit()
 

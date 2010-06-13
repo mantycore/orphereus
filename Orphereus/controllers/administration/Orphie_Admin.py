@@ -359,9 +359,11 @@ class OrphieAdminController(OrphieBaseController):
             return self.error(_("No way! You aren't holy enough!"))
 
         c.currentItemId = 'id_hsExtensions'
-        c.boardName = _('Editing extension %s') % ename
         if not ename:
             ename = ''
+            c.boardName = _('New extension')
+        else:
+            c.boardName = _('Editing extension %s') % ename
 
         ename = filterText(request.POST.get('ext', ename))
         if len(ename) > 10:

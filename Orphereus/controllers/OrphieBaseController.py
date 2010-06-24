@@ -43,11 +43,7 @@ from Orphereus.lib.cache import CacheDict
 log = logging.getLogger(__name__)
 
 class OrphieBaseController(BaseController):
-    def __after__(self):
-        log.debug('Done processing')
-    
     def __before__(self):
-        log.debug('Started processing')
         if g.OPT.refControlForAnyRequest:
             self.refererCheck()
 
@@ -102,7 +98,6 @@ class OrphieBaseController(BaseController):
 
         if g.firstRequest:
             g.firstRequest = False
-            
 
     def forceNoncachedUser(self):
         if g.OPT.memcachedUsers and not(self.userInst.Anonymous):

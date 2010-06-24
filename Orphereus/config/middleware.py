@@ -84,9 +84,9 @@ def make_app(global_conf, full_stack = True, **app_conf):
     # Establish the Registry for this application
     app = RegistryManager(app)
 
-    # Static files
     if config['pylons.app_globals'].OPT.compressionEnabled:
         app = gzipper(app, config['pylons.app_globals'].OPT.compressionLevel)
+    # Static files
     static_app = StaticURLParser(config['pylons.paths']['static_files'])
     app = Cascade([static_app, app])
     prefix = config['pylons.app_globals'].OPT.urlPrefix

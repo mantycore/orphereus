@@ -109,6 +109,11 @@ class OptHolder(object):
                                 'useAnalBarriering',
                                ),
                               ),
+                              
+                              ('gzip',
+                               ('compressionEnabled',
+                               ),
+                              ),
                              ]
 
         self.stringValues = [('core',
@@ -170,7 +175,10 @@ class OptHolder(object):
                                 )
                               ),
 
-
+                              ('gzip',
+                               ('compressionLevel',
+                               ),
+                              ),
                             ]
 
         self.strListValues = [('core',

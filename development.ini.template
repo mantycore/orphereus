@@ -170,6 +170,9 @@ frontend.disabledTags = logout,authorize,register,youAreBanned,userProfile,holyS
 frontend.additionalLinks = http://orphereus.anoma.ch|Orphereus,http://anoma.ch|Anoma
 frontend.sectionNames = Main,Second,Third
 
+gzip.compressionEnabled = false
+gzip.compressionLevel = 6
+
 ###########
 # Plugins #
 ###########

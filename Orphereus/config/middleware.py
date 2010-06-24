@@ -40,6 +40,7 @@ from paste.deploy.config import PrefixMiddleware
 from pylons.wsgiapp import PylonsApp
 
 from Orphereus.config.environment import load_environment
+from paste.gzipper import middleware as gzipper 
 
 def make_app(global_conf, full_stack = True, **app_conf):
     """Create a Pylons WSGI application and return it
@@ -84,6 +85,8 @@ def make_app(global_conf, full_stack = True, **app_conf):
     app = RegistryManager(app)
 
     # Static files
+    if config['pylons.app_globals'].OPT.compressionEnabled:
+        app = gzipper(app, config['pylons.app_globals'].OPT.compressionLevel)
     static_app = StaticURLParser(config['pylons.paths']['static_files'])
     app = Cascade([static_app, app])
     prefix = config['pylons.app_globals'].OPT.urlPrefix

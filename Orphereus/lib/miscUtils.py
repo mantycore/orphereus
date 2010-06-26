@@ -105,7 +105,7 @@ def adminAlert(alertStr):
 
 def getUserIp():
     if g.OPT.useXRealIP:
-        return request.headers["X-Real-IP"]
+        return request.headers.get(g.OPT.XRealIpKey, "0.0.0.0")
     return request.environ["REMOTE_ADDR"]
 
 def checkAdminIP():

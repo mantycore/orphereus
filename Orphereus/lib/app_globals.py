@@ -137,7 +137,7 @@ class OptHolder(object):
 
                               ('security',
                                ('alertServer', 'alertSender', 'alertPassword',
-                                'obfuscator',
+                                'obfuscator', 'XRealIpKey',
                                )
                               ),
 

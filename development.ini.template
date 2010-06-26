@@ -245,6 +245,7 @@ defaults.allowedAdditionalFiles = 4
 #####################
 # use this option only with httpd configured as proxy
 security.useXRealIP = false
+security.XRealIpKey = X-Real-Ip
 # if true, saves IP for every post
 # if false, saves only for Anonymous users
 security.saveAnyIP = false

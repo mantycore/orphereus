@@ -20,52 +20,35 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. #
 ################################################################################
 
-import hashlib
-
 from Orphereus.lib.BasePlugin import BasePlugin
-from Orphereus.lib.base import redirect_to, request, g
-from Orphereus.lib.miscUtils import filterText
-
+from Orphereus.lib.base import redirect_to
 from Orphereus.lib.interfaces.AbstractMultifileHook import AbstractMultifileHook
-from Orphereus.model import Post
+from Orphereus.model import Post, meta
 
 import logging
 log = logging.getLogger(__name__)
 
 class PostdeletePlugin(BasePlugin, AbstractMultifileHook):
-    template = "multifile.delete"
-    action = "delete"
+    template = "multifile.spoiler"
+    action = "spoiler"
     def __init__(self):
-        config = {'name' : 'Post deletion',
+        config = {'name' : 'Post censoring',
                   'deps' : ('base_public',)
                  }
-        BasePlugin.__init__(self, 'postdelete', config)
+        BasePlugin.__init__(self, 'postspoiler', config)
         
     def allowDisplay(self, context, user):
-        return True
+        return user.canDeleteAllPosts()
     
     def operationCallback(self, controller, postIds):
-        if not controller.currentUserCanPost():
-            return controller.error(_("Removing prohibited"))
-
-        fileonly = 'fileonly' in request.POST
-        redirectAddr = request.POST.get('tagLine', g.OPT.allowOverview and '~' or '!')
-
-        opPostDeleted = False
-        reason = filterText(request.POST.get('reason', '???'))
-
-        remPass = ''
-        if controller.userInst.Anonymous:
-            remPass = hashlib.md5(request.POST.get('remPass', '').encode('utf-8')).hexdigest()
-
-        for postId in postIds:
-            post = Post.getPost(postId)
-            res = post.deletePost(controller.userInst, fileonly, True, reason, remPass)
-            opPostDeleted = opPostDeleted or res
-
-        """tagLine = request.POST.get('tagLine', g.OPT.allowOverview and '~' or '!')
-        if opPostDeleted:
-            redirectAddr = tagLine"""
-
-        return redirect_to('boardBase', board = redirectAddr)
+        if not controller.userInst.canDeleteAllPosts():
+            return controller.error(_("Operation prohibited"))
+        
+        for post in postIds:
+            res = Post.getPost(post)
+            for attach in res.attachments:
+                attach.spoiler = True
+        meta.Session.commit()
+        
+        return redirect_to('boardBase', board = '~')
         

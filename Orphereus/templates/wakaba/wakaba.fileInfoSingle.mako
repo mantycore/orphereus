@@ -1,6 +1,6 @@
 <%page args="attachment"/>
 
-%if attachment.attachedFile.pictureInfo or attachment.relationInfo:
+%if attachment.attachedFile and (attachment.attachedFile.pictureInfo or attachment.relationInfo):
 <!-- hr/ -->
 <div>
   %if attachment.attachedFile.pictureInfo:

@@ -432,7 +432,10 @@ class Post(object):
             meta.Session.commit()
 
             for picAssoc in filesToDelete:
-                picAssoc.deletePicture(True)
+            try:
+                    picAssoc.deletePicture(True)
+                except:
+                    pass
 
         if not (fileonly and postOptions.imagelessPost):
             invisBumpDisabled = not(asbool(meta.globj.OPT.invisibleBump))

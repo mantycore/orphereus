@@ -136,6 +136,13 @@ class ImportWorker():
                 log.error(errorMessage)
                 return None
         pInfo.picInfos = [picInfo]
+        #FIXME: dirty solution
+        if post.name and post.name.lower() != u'\u0410\u043d\u043e\u043d\u0438\u043c'.lower():
+            #print post.name
+            pInfo.messageInfo += "<span class='postInfo'><b>name:</b> %s</span><br/>" % post.name
+        if post.trip:
+            pInfo.messageInfo += "<span class='postInfo'><b>trip:</b> %s</span><br/>" % post.trip
+       
         #pInfo.picInfo = picInfo
         #pInfo.existentPic = existentPic
         return pInfo

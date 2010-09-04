@@ -3,7 +3,7 @@
 %if post.attachments:
 %if len(post.attachments) > 1:
   %for attachmentId, attachment in enumerate(post.attachments):
-    %if attachment.attachedFile.id != 0:
+    %if attachment.attachedFile and attachment.attachedFile.id != 0:
       <div class="file_thread">
       %if not newsMode:
             <a href="${g.OPT.filesPathWeb + h.modLink(attachment.attachedFile.path, c.userInst.secid())}" \
@@ -69,7 +69,7 @@
 <br style="clear: both" />
 %else: # len(attachments) == 1
   %for attachmentId, attachment in enumerate(post.attachments):
-    %if attachment.attachedFile.id != 0:
+    %if attachment.attachedFile and attachment.attachedFile.id != 0:
         %if not newsMode:
           %if not opPost:
           <!-- <br /> -->

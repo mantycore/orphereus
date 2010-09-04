@@ -173,6 +173,7 @@ class MaintenanceWorker(object):
                     mtnLog.append(LogElement('Info', "Deleted old captcha <b>#%d</b>" % (ct.id)))
                     meta.Session.delete(ct)
         batchProcess(Captcha.query, captchaSearch)
+        meta.Session.commit()
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 

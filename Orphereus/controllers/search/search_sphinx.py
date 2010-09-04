@@ -60,7 +60,7 @@ class SphinxSearchPlugin(BasePlugin, AbstractSearchModule):
             result = []
 
             postIds = []
-            if g.OPT.enableFiltersForSearch and filteringClause:
+            if g.OPT.enableFiltersForSearch and not (filteringClause is None):
                 timestart = time.time()
                 base = meta.Session.query(Post.id).filter(filteringClause)
                 negBase = meta.Session.query(Post.id).filter(not_(filteringClause))

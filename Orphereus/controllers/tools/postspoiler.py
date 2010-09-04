@@ -50,5 +50,6 @@ class PostdeletePlugin(BasePlugin, AbstractMultifileHook):
                 attach.spoiler = True
         meta.Session.commit()
         
+        # FIXME: redirect!
         return redirect_to('boardBase', board = '~')
         

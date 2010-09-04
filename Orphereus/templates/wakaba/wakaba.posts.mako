@@ -48,13 +48,11 @@
 %if not(c.minimalRender):
 <table class="userdelete">
     <tbody>
-        <tr>
 			%for tmpl in c.multifileTemplates:
-			<td>
+			<tr><td>
         	<%include file="wakaba.${tmpl}.mako" />
-			</td>
+			</tr></td>
 			%endfor
-		</tr>
     </tbody>
 </table>
 

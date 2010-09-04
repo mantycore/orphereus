@@ -13,7 +13,7 @@
 <hr/>
 %endif
 
-<form action="${h.url_for('delete', board=c.currentRealm)}" method="post">
+<form action="${h.url_for('process', board=c.currentRealm)}" method="post">
 <input type="hidden" name="tagLine" value="${c.tagLine}" />
 %for thread in c.threads:
 %if not thread.hideFromBoards:
@@ -48,18 +48,13 @@
 %if not(c.minimalRender):
 <table class="userdelete">
     <tbody>
-        <tr><td>
-            <input type="hidden" name="task" value="delete" />
-          %if c.isAdmin:
-            ${_('Reason')}: <input type="text" name="reason" size="35" />
-           %endif
-
-            %if c.userInst.Anonymous:
-                ${_('Password')}: <input type="password" name="remPass" size="10" value="${c.remPass}" title="${_("Correct password only required if session in which post was made already expired/deleted")}" />
-            %endif
-            [<label><input type="checkbox" name="fileonly" value="on" />${_('Only file')}</label>]
-            <input value="${_('Delete post(s)')}" type="submit" />
-        </td></tr>
+        <tr>
+			%for tmpl in c.multifileTemplates:
+			<td>
+        	<%include file="wakaba.${tmpl}.mako" />
+			</td>
+			%endfor
+		</tr>
     </tbody>
 </table>
 
@@ -68,8 +63,9 @@
 <form action="${h.url_for('searchBase')}" method="post">
     <input type="text" name="query" size="20" />
     <input value="${_('Search')}" type="submit" />
-</form>
 %endif
+
+</form>
 
 <%include file="wakaba.jsService.mako" />
 

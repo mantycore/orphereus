@@ -69,9 +69,10 @@ class ImportWorker():
     reader = None
     cutMessage = False
     cutLength = 1024
-    url_for = h.url_for
+    thumbSize = 200
 
     def __init__(self, **option_kwargs):
+        self.url_for = h.url_for
         for option in option_kwargs:
             setattr(self, option, option_kwargs[option])
 
@@ -87,12 +88,15 @@ class ImportWorker():
                 else:
                     urlArgs = (localPostLink, localPostId, localPostId)
                 return '<a href="%s" onclick="highlight(%s)">&gt;&gt;%s</a>' % urlArgs
+            else:
+                # TODO: post id not found; leave external link?
+                pass 
         refRe = re.compile('<a href=[^>]+>&gt\;&gt\;(\d+)</a>')
         return refRe.sub(replacer, text)
 
     def fileProcessor(self, fn):
         if self.reader:
-            return safeFileProcess(self.reader.fieldStorage(fn), 200, False)
+            return safeFileProcess(self.reader.fieldStorage(fn), self.thumbSize, False, False)
 
     def postToPInfo(self, post, tagstr, parent = None):
         pInfo = empty()

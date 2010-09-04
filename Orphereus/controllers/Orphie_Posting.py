@@ -77,10 +77,6 @@ class OrphiePostingPlugin(BasePlugin):
                     action = 'PostReply',
                     conditions = dict(method = ['POST']),
                     requirements = dict(post = r'\d+'))
-        map.connect('delete', '/{board}/delete',
-                    controller = 'Orphie_Posting',
-                    action = 'DeletePost',
-                    conditions = dict(method = ['POST']))
         map.connect('postThread', '/{board}',
                     controller = 'Orphie_Posting',
                     action = 'PostThread',
@@ -90,7 +86,6 @@ class OrphiePostingController(OrphieBaseController):
     def __before__(self):
         OrphieBaseController.__before__(self)
         self.initiate()
-
 
     #parser callback
     def cbGetPostAndUser(self, id):
@@ -133,35 +128,6 @@ class OrphiePostingController(OrphieBaseController):
 
         # impossible with correct data
         return redirect_to('boardBase', board = g.OPT.allowOverview and '~' or postTagline, anchor = anchor)
-
-    def DeletePost(self, board):
-        if not self.currentUserCanPost():
-            return self.error(_("Removing prohibited"))
-
-        fileonly = 'fileonly' in request.POST
-        redirectAddr = board
-
-        opPostDeleted = False
-        reason = filterText(request.POST.get('reason', '???'))
-
-        remPass = ''
-        if self.userInst.Anonymous:
-            remPass = hashlib.md5(request.POST.get('remPass', '').encode('utf-8')).hexdigest()
-
-        retest = re.compile("^\d+$")
-        for i in request.POST:
-            if retest.match(request.POST[i]):
-                post = Post.getPost(request.POST[i])
-                res = None
-                if post:
-                    res = post.deletePost(self.userInst, fileonly, True, reason, remPass)
-                opPostDeleted = opPostDeleted or res
-
-        tagLine = request.POST.get('tagLine', g.OPT.allowOverview and '~' or '!')
-        if opPostDeleted:
-            redirectAddr = tagLine
-
-        return redirect_to('boardBase', board = redirectAddr)
 
     def oekakiDraw(self, url, selfy, anim, tool, sourceId):
         if not self.currentUserCanPost():

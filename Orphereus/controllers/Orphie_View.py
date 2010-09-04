@@ -32,6 +32,7 @@ from Orphereus.lib.constantValues import *
 from Orphereus.lib.cachedutils import *
 from Orphereus.lib.interfaces.AbstractHomeExtension import AbstractHomeExtension
 from Orphereus.lib.interfaces.AbstractMenuProvider import AbstractMenuProvider
+from Orphereus.lib.interfaces.AbstractMultifileHook import AbstractMultifileHook
 from Orphereus.lib.MenuItem import MenuItem
 from Orphereus.lib.BasePlugin import BasePlugin
 from OrphieBaseController import OrphieBaseController
@@ -150,6 +151,15 @@ class OrphieViewController(OrphieBaseController):
         OrphieBaseController.__before__(self)
         self.initiate()
 
+        # multifile ops template init
+        c.multifileTemplates = []
+        gvars = config['pylons.app_globals']
+        callbacks = gvars.implementationsOf(AbstractMultifileHook)
+        for cb in callbacks:
+            allowDisplay, template = getattr(cb, 'allowDisplay'), getattr(cb, 'template')
+            if allowDisplay(c, self.userInst):
+                c.multifileTemplates.append(template) 
+        #log.info("APPROVED TEMPLATES: %s" % c.multifileTemplates)
 
     def showStatic(self, page):
         fpath = os.path.join(g.OPT.templPath, self.getTemplatePaths('static.%s' % page)[0])

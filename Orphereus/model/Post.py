@@ -432,7 +432,7 @@ class Post(object):
             meta.Session.commit()
 
             for picAssoc in filesToDelete:
-            try:
+                try:
                     picAssoc.deletePicture(True)
                 except:
                     pass

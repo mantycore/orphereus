@@ -20,7 +20,7 @@ class PicListManagerPlugin(BasePlugin, AbstractMenuProvider):
         config = {'name' : 'File-only moderation system',
                   'deps' : ('adminpanel',)
                  }
-        BasePlugin.__init__(self, 'setsmgr', config)
+        BasePlugin.__init__(self, 'piclist', config)
 
     def menuItems(self, menuId):
         menu = None

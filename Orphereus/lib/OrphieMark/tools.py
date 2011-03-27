@@ -47,9 +47,9 @@ def replaceEntities(text):
 
 def replaceAcromyns(text):
     return text.replace('(c)', '&copy;') \
-               .replace('--', '&mdash;') \
+               .replace(' -- ', ' &mdash; ') \
                .replace('(tm)', '&#153;') \
-               .replace('...', '&#8230;') \
+               .replace('... ', '&#8230; ') \
 
 def filterText(text):
     return replaceAcromyns(replaceEntities(text))

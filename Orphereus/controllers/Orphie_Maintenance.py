@@ -397,7 +397,7 @@ class MaintenanceWorker(object):
                     if threadCount == 0 and not tag.service:
                         mtnLog.append(LogElement('Info', "Removed tag %s" % tag.tag))
                         meta.Session.delete(tag)
-        batchProcess(Tag.query, searchRoutine)
+        batchProcess(Tag.getAll(), searchRoutine)
         mtnLog.append(LogElement('Task', 'Done'))
         return mtnLog
 

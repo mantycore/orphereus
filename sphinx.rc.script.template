@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# PROVIDE: sphinx
+# REQUIRE: LOGIN postgresql
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="sphinx"
+rcvar=`set_rcvar`
+command="/usr/local/bin/searchd"
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+status_cmd="${name}_status"
+
+extra_commands="reindex reindex_all"
+reindex_cmd="${name}_reindex"
+reindex_all_cmd="${name}_reindex_all"
+
+load_rc_config $name
+
+
+sphinx_start()
+{
+    $command -c /var/searchd/sphinx.conf
+    echo "Sphinx started."
+}
+
+sphinx_stop()
+{
+    $command -c /var/searchd/sphinx.conf --stop
+    echo "Sphinx stopped."
+}
+
+sphinx_status()
+{
+    $command -c /var/searchd/sphinx.conf --status
+#    echo "Sphinx stopped."
+}
+
+sphinx_reindex()
+{
+    echo "Reindexing deltas..."
+    indexer --rotate --config /var/searchd/sphinx.conf $sphinx_deltas
+}
+
+sphinx_reindex_all()
+{
+    echo "Reindexing..."
+    indexer --rotate --config /var/searchd/sphinx.conf --all
+}
+
+
+load_rc_config $name
+run_rc_command "$1"

@@ -21,7 +21,7 @@
 ################################################################################
 
 from Orphereus.lib.BasePlugin import BasePlugin
-from Orphereus.lib.base import redirect_to
+from Orphereus.lib.base import redirect_to, request, g
 from Orphereus.lib.interfaces.AbstractMultifileHook import AbstractMultifileHook
 from Orphereus.model import Post, meta
 
@@ -40,9 +40,11 @@ class PostdeletePlugin(BasePlugin, AbstractMultifileHook):
     def allowDisplay(self, context, user):
         return user.canDeleteAllPosts()
     
-    def operationCallback(self, controller, postIds):
+    def operationCallback(self, controller, postIds, noRedirect):
         if not controller.userInst.canDeleteAllPosts():
             return controller.error(_("Operation prohibited"))
+
+        redirectAddr = request.POST.get('tagLine', g.OPT.allowOverview and '~' or '!')
         
         for post in postIds:
             res = Post.getPost(post)
@@ -51,5 +53,5 @@ class PostdeletePlugin(BasePlugin, AbstractMultifileHook):
         meta.Session.commit()
         
         # FIXME: redirect!
-        return redirect_to('boardBase', board = '~')
+        return (not(noRedirect) and redirect_to('boardBase', board = redirectAddr)) or None
         

@@ -44,7 +44,7 @@ class PostdeletePlugin(BasePlugin, AbstractMultifileHook):
     def allowDisplay(self, context, user):
         return True
     
-    def operationCallback(self, controller, postIds):
+    def operationCallback(self, controller, postIds, noRedirect):
         if not controller.currentUserCanPost():
             return controller.error(_("Removing prohibited"))
 
@@ -67,5 +67,5 @@ class PostdeletePlugin(BasePlugin, AbstractMultifileHook):
         if opPostDeleted:
             redirectAddr = tagLine"""
 
-        return redirect_to('boardBase', board = redirectAddr)
+        return (not(noRedirect) and redirect_to('boardBase', board = redirectAddr)) or None
         

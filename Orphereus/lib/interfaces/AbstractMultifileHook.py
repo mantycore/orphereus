@@ -5,5 +5,5 @@ class AbstractMultifileHook(object):
     def allowDisplay(self, context, user):
         return False
     
-    def operationCallback(self, controller, postIds):
+    def operationCallback(self, controller, postIds, noRedirect=False):
         return 

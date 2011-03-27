@@ -65,7 +65,7 @@ class OrphieMultipostopController(OrphieBaseController):
         for cb in callbacks:
             callback, action = getattr(cb, 'operationCallback'), getattr(cb, 'action')
             if (action == task):
-                return callback(self, posts) 
+                return callback(self, posts, False) 
         return "Callback for action %s not found!" % task
 
         #return "Using task: %s \nposts: %s ^_^\n" % (task, posts)

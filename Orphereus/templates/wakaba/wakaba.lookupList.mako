@@ -11,7 +11,7 @@
 <blockquote style="margin: 0; padding: 0;">
 
 
-<a href="${h.postUrl(post.parentid, post.id)}">&gt;&gt;${post.id}</a>
+<a target="_blank" href="${h.postUrl(post.parentid, post.id)}">&gt;&gt;${post.id}</a>
 %if not(post.parentPost):
     <b>[op]</b>
 %endif

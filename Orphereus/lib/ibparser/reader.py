@@ -22,31 +22,31 @@ class ThreadReader():
         self.tempDir = mkdtemp()
         if archive:
             self.readArc()
-        
+
     def __del__(self):
         shutil.rmtree(self.tempDir, True)
-        
+
     def unpack(self):
         if not(self.tempDir in self.archive):
             shutil.copy(self.archive, self.tempDir)
         os.chdir(self.tempDir)
         arc = tarfile.open(self.arcName, 'r')
         arc.extractall('./data/')
-    
+
     def readArc(self):
         self.unpack()
         self.thread = Thread.createFromXmlString(read('./data/thread.xml'))
-        
+
     def fieldStorage(self, fname):
         try:
             if fname and self.fsClass:
                 return self.fsClass(fname, './data/%s' %fname)
         except:
             return None
-    
+
     def test(self):
         return (read('./data/thread.xml') == self.thread.toXmlString())
-    
+
     @staticmethod
     def createFromPostData(data):
         reader = ThreadReader('')

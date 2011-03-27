@@ -26,7 +26,6 @@ from paste.urlparser import StaticURLParser
 from paste.deploy.converters import asbool
 
 from pylons import config
-from pylons.error import error_template
 """
 from pylons.middleware import error_mapper, ErrorDocuments, ErrorHandler, \
     StaticJavascripts

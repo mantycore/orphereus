@@ -49,7 +49,7 @@ def load_environment(global_conf, app_conf, deployMode):
 
     # Initialize config with the basic options
     config.init_app(global_conf, app_conf, package = 'Orphereus',
-                    template_engine = 'mako', paths = paths)
+                    paths = paths)
 
     #config['pylons.strict_c'] = False
     #config['pylons.c_attach_args'] = True

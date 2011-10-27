@@ -28,6 +28,7 @@ from Orphereus.lib.base import *
 from Orphereus.lib.constantValues import CFG_BOOL, CFG_INT, CFG_STRING, CFG_LIST
 from Orphereus.lib.interfaces.AbstractPageHook import AbstractPageHook
 from Orphereus.model import *
+from Orphereus.lib.miscUtils import checkAdminIP
 
 from webhelpers.feedgenerator import Atom1Feed, Rss201rev2Feed
 from webhelpers.html.tags import auto_discovery_link

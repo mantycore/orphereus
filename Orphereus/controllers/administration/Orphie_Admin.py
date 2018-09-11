@@ -25,7 +25,7 @@ import cgi
 import shutil
 import datetime
 import time
-import Image
+from PIL import Image
 import os
 import hashlib
 import re

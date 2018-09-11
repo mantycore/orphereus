@@ -29,7 +29,7 @@ import os
 import cgi
 import datetime
 import time
-import Image
+from PIL import Image
 import os
 import shutil
 import hashlib

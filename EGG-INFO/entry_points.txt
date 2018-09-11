@@ -1,0 +1,12 @@
+
+    [paste.app_factory]
+    main = Orphereus.config.middleware:make_app
+
+    [paste.app_install]
+    main = pylons.util:PylonsInstaller
+
+[paste.paster_command]
+import = Orphereus.controllers.administration.threadImport:ConsoleImport
+maintenance = Orphereus.controllers.Orphie_Maintenance:MaintenanceCommand
+graph = Orphereus.controllers.tools.threadanalyse:AnalyseCommand
+statgraphs = Orphereus.controllers.mainPage.statgraph:GraphsCommand

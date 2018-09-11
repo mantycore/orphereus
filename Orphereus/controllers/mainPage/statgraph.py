@@ -126,7 +126,7 @@ class GraphsCommand(command.Command):
         imgdata.seek(0)
         out = imgdata.getvalue()
         path = os.path.join(g.OPT.staticPath, "%s.png" % name)
-        print "Created:", path
+        print "Create:", path
         f = open(path, "wb+")
         f.write(out)
         f.close()
@@ -254,15 +254,18 @@ class GraphsCommand(command.Command):
             uuEMAv.extend(uuEMA)
 
             self.plotStdGraph(xsvals, [ysvalsTotal], "stat_posts_total", "Total posts", None)
-            self.plotMultiGraph(xsvals,
-                              [ysvalsPPD, ppdEMAv, radioFlux, sunspotNumber, sunspotArea],
-                              "stat_posts_pd",
-                              "Posts per day",
-                              ("Posts", "Exp MA", "Radio Flux", "Sunspot Number", "Sunspot Area"))
-            self.plotMultiGraph(xsvals, [ysvalsUUsers, uuEMAv, radioFlux, sunspotNumber, sunspotArea],
-                              "stat_users_pd",
-                              "Unique users per day",
-                              ("Posts", "Exp MA", "Radio Flux", "Sunspot Number", "Sunspot Area"))
+
+            self.plotStdGraph(xsvals, [ysvalsPPD], "stat_posts_pd", "Posts per day", None)
+            self.plotStdGraph(xsvals, [ysvalsUUsers], "stat_users_pd", "Unique users per day", None)
+            #self.plotMultiGraph(xsvals,
+            #                  [ysvalsPPD, ppdEMAv, radioFlux, sunspotNumber, sunspotArea],
+            #                  "stat_posts_pd",
+            #                  "Posts per day",
+            #                  ("Posts", "Exp MA", "Radio Flux", "Sunspot Number", "Sunspot Area"))
+            #self.plotMultiGraph(xsvals, [ysvalsUUsers, uuEMAv, radioFlux, sunspotNumber, sunspotArea],
+            #                  "stat_users_pd",
+            #                  "Unique users per day",
+            #                  ("Posts", "Exp MA", "Radio Flux", "Sunspot Number", "Sunspot Area"))
 
     # TODO: option to disable recomputing already existing records
     def prepareData(self, downloadSolarData):

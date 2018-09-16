@@ -10,3 +10,6 @@
 /Orphereus/public/js/wakaba_en.js
 /Orphereus/public/js/wakaba_ru.js
 /Orphereus/public/stat_*.png
+build/
+captcha/
+dist/

@@ -249,12 +249,14 @@ class OptHolder(object):
 
         # Basic IB settings
         if not os.path.exists(self.uploadPath):
+            log.error("Upload path '%s' doesn't exists" % self.uploadPath)
             self.uploadPath = os.path.join(self.appRoot, 'Orphereus/uploads/')
-            log.error("Upload path doesn't exists, using '%s' instead" % self.uploadPath)
+            log.error("Using '%s' instead" % self.uploadPath)
 
         if not os.path.exists(self.staticPath):
+            log.error("Static path '%s' doesn't exists" % self.staticPath)
             self.staticPath = os.path.join(self.appRoot, 'Orphereus/public/')
-            log.error("Static path doesn't exists, using '%s' instead" % self.staticPath)
+            log.error("Using '%s' instead" % self.staticPath)
 
         self.uploadPath = os.path.realpath(self.uploadPath)
         self.staticPath = os.path.realpath(self.staticPath)

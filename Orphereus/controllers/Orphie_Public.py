@@ -303,7 +303,7 @@ class OrphiePublicController(OrphieBaseController):
         c.roInvite = session['roinvite']
         c.captcha = None
         captchaOk = True
-        if False: #emergent patch# c.openReg:
+        if c.openReg:
             captchaOk = None
             captcha = request.POST.get('captcha', False)
             if captcha:

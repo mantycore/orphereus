@@ -25,7 +25,7 @@ import sqlalchemy
 import os
 import datetime
 import time
-import Image
+from PIL import Image
 import hashlib
 import re
 import base64

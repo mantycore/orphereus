@@ -29,7 +29,7 @@ from Orphereus.model import meta
 import datetime
 import string
 import random
-import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 try:
     import cStringIO as StringIO
 except ImportError:

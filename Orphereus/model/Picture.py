@@ -24,7 +24,7 @@ from sqlalchemy import orm
 
 from Orphereus.model import meta
 import os
-import Image
+from PIL import Image
 
 import logging
 log = logging.getLogger(__name__)

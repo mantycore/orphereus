@@ -65,21 +65,13 @@ setup(
                         "sqlalchemy>=0.6b",
                         "ipcalc>=0.1",
                         "mutagen>=1.15",
-                        "pil>=1.1.6",
                         "pygments>=1.0",
                         "lxml>=2.0",
-                        "pycaptcha>=0.4",
                         "html5lib>=0.11.0",
                       ],
     packages = find_packages(exclude = ['ez_setup']),
     include_package_data = True,
     test_suite = 'nose.collector',
     package_data = {'Orphereus': ['i18n/*/LC_MESSAGES/*.mo']},
-    message_extractors = {'Orphereus': [
-            ('**.py', 'python', None),
-            ('templates/**.mako', 'mako', None),
-            ('templates/**.js', 'mako', None),
-            ('public/**', 'ignore', None)]},
-
     entry_points = entry_points,
 )

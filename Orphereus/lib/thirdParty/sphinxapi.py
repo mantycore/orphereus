@@ -169,7 +169,11 @@ class SphinxClient:
 		"""
 		INTERNAL METHOD, DO NOT CALL. Gets and checks response packet from searchd server.
 		"""
-		(status, ver, length) = unpack('>2HL', sock.recv(8))
+                r = sock.recv(8)
+                if len(r) == 0:
+                    self._error  ='received zero-sized searchd header'
+                    return None
+		(status, ver, length) = unpack('>2HL', r)
 		response = ''
 		left = length
 		while left>0:
